@@ -48,18 +48,26 @@ abstract class BlacklistedTagsEvent extends Equatable {
 class BlacklistedTagAdded extends BlacklistedTagsEvent {
   const BlacklistedTagAdded({
     required this.tag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String tag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [tag, onSuccess, onFailure];
 }
 
 class BlacklistedTagRemoved extends BlacklistedTagsEvent {
   const BlacklistedTagRemoved({
     required this.tag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String tag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
   List<Object?> get props => [tag];
@@ -69,9 +77,13 @@ class BlacklistedTagReplaced extends BlacklistedTagsEvent {
   const BlacklistedTagReplaced({
     required this.newTag,
     required this.oldTag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String newTag;
   final String oldTag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
   List<Object?> get props => [newTag, oldTag];
@@ -129,11 +141,7 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagAdded>((event, emit) async {
       if (state.blacklistedTags == null) {
-        emit(const BlacklistedTagsError(
-          blacklistedTags: null,
-          status: LoadStatus.failure,
-          errorMessage: 'Fail to add tag',
-        ));
+        event.onFailure?.call('Fail to add tag');
 
         return;
       }
@@ -145,16 +153,12 @@ class BlacklistedTagsBloc
             blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onUnknownFailure: (stackTrace, error) {
-          emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to add tag',
-          ));
+          event.onFailure?.call('Fail to add tag');
         },
         onSuccess: (_) async {
+          event.onSuccess?.call(tags);
           emit(state.copyWith(
             blacklistedTags: () => tags,
-            status: LoadStatus.success,
           ));
         },
       );
@@ -163,11 +167,7 @@ class BlacklistedTagsBloc
     on<BlacklistedTagRemoved>(
       (event, emit) async {
         if (state.blacklistedTags == null) {
-          emit(const BlacklistedTagsError(
-            blacklistedTags: null,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to remove tag',
-          ));
+          event.onFailure?.call('Fail to remove tag');
 
           return;
         }
@@ -178,15 +178,13 @@ class BlacklistedTagsBloc
           action: () =>
               blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onUnknownFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to remove tag',
-          )),
+          onUnknownFailure: (stackTrace, error) {
+            event.onFailure?.call('Fail to remove tag');
+          },
           onSuccess: (_) async {
+            event.onSuccess?.call(tags);
             emit(state.copyWith(
               blacklistedTags: () => tags,
-              status: LoadStatus.success,
             ));
           },
         );
@@ -197,11 +195,7 @@ class BlacklistedTagsBloc
     on<BlacklistedTagReplaced>(
       (event, emit) async {
         if (state.blacklistedTags == null) {
-          emit(const BlacklistedTagsError(
-            blacklistedTags: null,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to replace tag',
-          ));
+          event.onFailure?.call('Fail to replace tag');
 
           return;
         }
@@ -215,15 +209,13 @@ class BlacklistedTagsBloc
           action: () =>
               blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onUnknownFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to replace tag',
-          )),
+          onUnknownFailure: (stackTrace, error) {
+            event.onFailure?.call('Fail to replace tag');
+          },
           onSuccess: (success) async {
+            event.onSuccess?.call(tags);
             emit(state.copyWith(
               blacklistedTags: () => tags,
-              status: LoadStatus.success,
             ));
           },
         );
