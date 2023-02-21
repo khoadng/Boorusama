@@ -12,6 +12,35 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
 @immutable
+class BlacklistedTagsState extends Equatable {
+  const BlacklistedTagsState({
+    required this.blacklistedTags,
+    required this.status,
+  });
+
+  factory BlacklistedTagsState.initial() => const BlacklistedTagsState(
+        blacklistedTags: null,
+        status: LoadStatus.initial,
+      );
+
+  BlacklistedTagsState copyWith({
+    List<String>? Function()? blacklistedTags,
+    LoadStatus? status,
+  }) =>
+      BlacklistedTagsState(
+        blacklistedTags:
+            blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
+        status: status ?? this.status,
+      );
+
+  final List<String>? blacklistedTags;
+  final LoadStatus status;
+
+  @override
+  List<Object?> get props => [blacklistedTags, status];
+}
+
+@immutable
 abstract class BlacklistedTagsEvent extends Equatable {
   const BlacklistedTagsEvent();
 }
@@ -53,35 +82,6 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
 
   @override
   List<Object?> get props => [];
-}
-
-@immutable
-class BlacklistedTagsState extends Equatable {
-  const BlacklistedTagsState({
-    required this.blacklistedTags,
-    required this.status,
-  });
-
-  factory BlacklistedTagsState.initial() => const BlacklistedTagsState(
-        blacklistedTags: null,
-        status: LoadStatus.initial,
-      );
-
-  BlacklistedTagsState copyWith({
-    List<String>? Function()? blacklistedTags,
-    LoadStatus? status,
-  }) =>
-      BlacklistedTagsState(
-        blacklistedTags:
-            blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
-        status: status ?? this.status,
-      );
-
-  final List<String>? blacklistedTags;
-  final LoadStatus status;
-
-  @override
-  List<Object?> get props => [blacklistedTags, status];
 }
 
 class BlacklistedTagsError extends BlacklistedTagsState {
