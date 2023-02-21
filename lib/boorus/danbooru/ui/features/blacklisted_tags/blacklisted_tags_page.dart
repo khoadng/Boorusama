@@ -93,16 +93,7 @@ class BlacklistedTagsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
-      listenWhen: (previous, current) => current is BlacklistedTagsError,
-      listener: (context, state) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6,
-          content: Text((state as BlacklistedTagsError).errorMessage),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
+    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
       builder: (context, state) {
         if (state.status == LoadStatus.success ||
             state.status == LoadStatus.loading) {

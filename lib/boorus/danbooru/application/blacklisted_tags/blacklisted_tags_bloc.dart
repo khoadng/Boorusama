@@ -96,29 +96,6 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
   List<Object?> get props => [];
 }
 
-class BlacklistedTagsError extends BlacklistedTagsState {
-  const BlacklistedTagsError({
-    required super.blacklistedTags,
-    required super.status,
-    required this.errorMessage,
-  });
-
-  final String errorMessage;
-
-  @override
-  BlacklistedTagsError copyWith({
-    List<String>? Function()? blacklistedTags,
-    LoadStatus? status,
-    String? errorMessage,
-  }) =>
-      BlacklistedTagsError(
-        blacklistedTags:
-            blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
-        status: status ?? this.status,
-        errorMessage: errorMessage ?? this.errorMessage,
-      );
-}
-
 //TODO: handle empty account, just in case
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {

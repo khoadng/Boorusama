@@ -69,17 +69,7 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
-              listenWhen: (previous, current) =>
-                  current is BlacklistedTagsError,
-              listener: (context, state) {
-                final snackbar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  elevation: 6,
-                  content: Text((state as BlacklistedTagsError).errorMessage),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
-              },
+            child: BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
               builder: (context, state) {
                 switch (state.status) {
                   case LoadStatus.initial:
