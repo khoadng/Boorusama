@@ -4,6 +4,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+// Project imports:
+import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/permission.dart';
+
 class DeviceStoragePermissionState extends Equatable {
   const DeviceStoragePermissionState({
     required this.storagePermission,
@@ -56,6 +60,7 @@ class DeviceStoragePermissionBloc
     extends Bloc<DeviceStoragePermissionEvent, DeviceStoragePermissionState> {
   DeviceStoragePermissionBloc({
     required PermissionStatus initialStatus,
+    required DeviceInfo deviceInfo,
   }) : super(DeviceStoragePermissionState(
           storagePermission: initialStatus,
           isNotificationRead: false,
@@ -70,7 +75,7 @@ class DeviceStoragePermissionBloc
 
     on<DeviceStoragePermissionRequested>(
       (event, emit) async {
-        final status = await Permission.storage.request();
+        final status = await requestStoragePermissions(deviceInfo);
         emit(state.copyWith(
           storagePermission: status,
           isNotificationRead: false,

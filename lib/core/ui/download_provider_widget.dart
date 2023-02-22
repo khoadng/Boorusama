@@ -51,45 +51,37 @@ class DownloadProviderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isAndroid() || isIOS()
-        ? BlocProvider(
-            create: (context) => DeviceStoragePermissionBloc(
-              initialStatus: PermissionStatus.denied,
-            )..add(DeviceStoragePermissionFetched()),
-            child: Builder(builder: (context) {
-              return BlocConsumer<DeviceStoragePermissionBloc,
-                  DeviceStoragePermissionState>(
-                listener: (context, state) {
-                  if (state.storagePermission ==
-                          PermissionStatus.permanentlyDenied &&
-                      !state.isNotificationRead) {
-                    showSimpleSnackBar(
-                      context: context,
-                      action: SnackBarAction(
-                        label: 'download.open_app_settings'.tr(),
-                        onPressed: openAppSettings,
-                      ),
-                      behavior: SnackBarBehavior.fixed,
-                      content:
-                          const Text('download.storage_permission_explanation')
-                              .tr(),
-                    );
-                    context.read<DeviceStoragePermissionBloc>().add(
-                          const DeviceStorageNotificationDisplayStatusChanged(
-                            isDisplay: true,
-                          ),
-                        );
-                  }
-                },
-                builder: (context, state) => builder(
-                  context,
-                  (downloadable) => _download(
-                    context,
-                    downloadable,
-                    permission: state.storagePermission,
+        ? BlocConsumer<DeviceStoragePermissionBloc,
+            DeviceStoragePermissionState>(
+            listener: (context, state) {
+              if (state.storagePermission ==
+                      PermissionStatus.permanentlyDenied &&
+                  !state.isNotificationRead) {
+                showSimpleSnackBar(
+                  context: context,
+                  action: SnackBarAction(
+                    label: 'download.open_app_settings'.tr(),
+                    onPressed: openAppSettings,
                   ),
-                ),
-              );
-            }),
+                  behavior: SnackBarBehavior.fixed,
+                  content: const Text('download.storage_permission_explanation')
+                      .tr(),
+                );
+                context.read<DeviceStoragePermissionBloc>().add(
+                      const DeviceStorageNotificationDisplayStatusChanged(
+                        isDisplay: true,
+                      ),
+                    );
+              }
+            },
+            builder: (context, state) => builder(
+              context,
+              (downloadable) => _download(
+                context,
+                downloadable,
+                permission: state.storagePermission,
+              ),
+            ),
           )
         : builder(
             context,
