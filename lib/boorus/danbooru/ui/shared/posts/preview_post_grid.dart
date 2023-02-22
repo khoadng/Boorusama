@@ -2,14 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
@@ -43,29 +41,20 @@ class PreviewPostGrid extends StatelessWidget {
           shrinkWrap: true,
           physics: physics ?? const NeverScrollableScrollPhysics(),
           itemCount: posts.length,
-          itemBuilder: (context, index) => ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            child: GestureDetector(
+          itemBuilder: (context, index) {
+            final post = posts[index].post;
+
+            return GestureDetector(
               onTap: () => onTap(index),
-              child: CachedNetworkImage(
-                httpHeaders: {
-                  'User-Agent': context.read<UserAgentGenerator>().generate(),
-                },
-                cacheManager: cacheManager,
-                fit: BoxFit.cover,
-                imageUrl: _getImageUrl(
-                  posts[index].post,
-                  imageQuality,
-                ),
-                placeholder: (context, url) => Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  ),
+              child: LayoutBuilder(
+                builder: (context, constraints) => BooruImage(
+                  imageUrl: _getImageUrl(post, imageQuality),
+                  placeholderUrl: post.thumbnailImageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
