@@ -157,10 +157,17 @@ Future<List<PostData>> createPostData(
 
 Future<List<PostData>> Function(List<PostData> posts) filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
+  AccountRepository accountRepository,
 ) =>
-    (posts) => blacklistedTagsRepository
-        .getBlacklistedTags()
-        .then((blacklistedTags) => filter(posts, blacklistedTags));
+    (posts) async {
+      final account = await accountRepository.get();
+
+      if (account == Account.empty) return posts;
+
+      return blacklistedTagsRepository
+          .getBlacklistedTags(account.id)
+          .then((blacklistedTags) => filter(posts, blacklistedTags));
+    };
 
 Future<List<PostData>> Function(List<PostData> posts) filterUnsupportedFormat(
   Set<String> fileExtensions,

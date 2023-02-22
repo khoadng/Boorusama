@@ -12,6 +12,35 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
 @immutable
+class BlacklistedTagsState extends Equatable {
+  const BlacklistedTagsState({
+    required this.blacklistedTags,
+    required this.status,
+  });
+
+  factory BlacklistedTagsState.initial() => const BlacklistedTagsState(
+        blacklistedTags: null,
+        status: LoadStatus.initial,
+      );
+
+  BlacklistedTagsState copyWith({
+    List<String>? Function()? blacklistedTags,
+    LoadStatus? status,
+  }) =>
+      BlacklistedTagsState(
+        blacklistedTags:
+            blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
+        status: status ?? this.status,
+      );
+
+  final List<String>? blacklistedTags;
+  final LoadStatus status;
+
+  @override
+  List<Object?> get props => [blacklistedTags, status];
+}
+
+@immutable
 abstract class BlacklistedTagsEvent extends Equatable {
   const BlacklistedTagsEvent();
 }
@@ -19,18 +48,26 @@ abstract class BlacklistedTagsEvent extends Equatable {
 class BlacklistedTagAdded extends BlacklistedTagsEvent {
   const BlacklistedTagAdded({
     required this.tag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String tag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [tag, onSuccess, onFailure];
 }
 
 class BlacklistedTagRemoved extends BlacklistedTagsEvent {
   const BlacklistedTagRemoved({
     required this.tag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String tag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
   List<Object?> get props => [tag];
@@ -40,9 +77,13 @@ class BlacklistedTagReplaced extends BlacklistedTagsEvent {
   const BlacklistedTagReplaced({
     required this.newTag,
     required this.oldTag,
+    this.onSuccess,
+    this.onFailure,
   });
   final String newTag;
   final String oldTag;
+  final void Function(List<String> tags)? onSuccess;
+  final void Function(String message)? onFailure;
 
   @override
   List<Object?> get props => [newTag, oldTag];
@@ -55,56 +96,6 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
   List<Object?> get props => [];
 }
 
-@immutable
-class BlacklistedTagsState extends Equatable {
-  const BlacklistedTagsState({
-    required this.blacklistedTags,
-    required this.status,
-  });
-
-  factory BlacklistedTagsState.initial() => const BlacklistedTagsState(
-        blacklistedTags: [],
-        status: LoadStatus.initial,
-      );
-
-  BlacklistedTagsState copyWith({
-    List<String>? blacklistedTags,
-    LoadStatus? status,
-  }) =>
-      BlacklistedTagsState(
-        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
-        status: status ?? this.status,
-      );
-
-  final List<String> blacklistedTags;
-  final LoadStatus status;
-
-  @override
-  List<Object?> get props => [blacklistedTags, status];
-}
-
-class BlacklistedTagsError extends BlacklistedTagsState {
-  const BlacklistedTagsError({
-    required super.blacklistedTags,
-    required super.status,
-    required this.errorMessage,
-  });
-
-  final String errorMessage;
-
-  @override
-  BlacklistedTagsError copyWith({
-    List<String>? blacklistedTags,
-    LoadStatus? status,
-    String? errorMessage,
-  }) =>
-      BlacklistedTagsError(
-        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
-        status: status ?? this.status,
-        errorMessage: errorMessage ?? this.errorMessage,
-      );
-}
-
 //TODO: handle empty account, just in case
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
@@ -113,36 +104,41 @@ class BlacklistedTagsBloc
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {
+      final account = await accountRepository.get();
+      if (account == Account.empty) return;
+
       await tryAsync<List<String>>(
-        action: () => blacklistedTagsRepository.getBlacklistedTags(),
+        action: () => blacklistedTagsRepository.getBlacklistedTags(account.id),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (tags) async => emit(state.copyWith(
-          blacklistedTags: tags,
+          blacklistedTags: () => tags,
           status: LoadStatus.success,
         )),
       );
     });
 
     on<BlacklistedTagAdded>((event, emit) async {
+      if (state.blacklistedTags == null) {
+        event.onFailure?.call('Fail to add tag');
+
+        return;
+      }
+
       final account = await accountRepository.get();
-      final tags = [...state.blacklistedTags, event.tag];
+      final tags = [...state.blacklistedTags!, event.tag];
       await tryAsync<bool>(
         action: () =>
             blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) {
-          emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to add tag',
-          ));
+        onUnknownFailure: (stackTrace, error) {
+          event.onFailure?.call('Fail to add tag');
         },
         onSuccess: (_) async {
+          event.onSuccess?.call(tags);
           emit(state.copyWith(
-            blacklistedTags: tags,
-            status: LoadStatus.success,
+            blacklistedTags: () => tags,
           ));
         },
       );
@@ -150,21 +146,25 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagRemoved>(
       (event, emit) async {
+        if (state.blacklistedTags == null) {
+          event.onFailure?.call('Fail to remove tag');
+
+          return;
+        }
+
         final account = await accountRepository.get();
-        final tags = [...state.blacklistedTags]..remove(event.tag);
+        final tags = [...state.blacklistedTags!]..remove(event.tag);
         await tryAsync<bool>(
           action: () =>
               blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to remove tag',
-          )),
+          onUnknownFailure: (stackTrace, error) {
+            event.onFailure?.call('Fail to remove tag');
+          },
           onSuccess: (_) async {
+            event.onSuccess?.call(tags);
             emit(state.copyWith(
-              blacklistedTags: tags,
-              status: LoadStatus.success,
+              blacklistedTags: () => tags,
             ));
           },
         );
@@ -174,24 +174,28 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagReplaced>(
       (event, emit) async {
+        if (state.blacklistedTags == null) {
+          event.onFailure?.call('Fail to replace tag');
+
+          return;
+        }
+
         final account = await accountRepository.get();
         final tags = [
-          ...[...state.blacklistedTags]..remove(event.oldTag),
+          ...[...state.blacklistedTags!]..remove(event.oldTag),
           event.newTag,
         ];
         await tryAsync<bool>(
           action: () =>
               blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: 'Fail to replace tag',
-          )),
-          onSuccess: (_) async {
+          onUnknownFailure: (stackTrace, error) {
+            event.onFailure?.call('Fail to replace tag');
+          },
+          onSuccess: (success) async {
+            event.onSuccess?.call(tags);
             emit(state.copyWith(
-              blacklistedTags: tags,
-              status: LoadStatus.success,
+              blacklistedTags: () => tags,
             ));
           },
         );

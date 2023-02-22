@@ -192,7 +192,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
             const Account(id: 1, apiKey: '', username: ''));
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
             .thenThrow(1);
@@ -270,7 +270,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
@@ -317,7 +317,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
             const Account(id: 1, apiKey: '', username: ''));
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
             .thenAnswer((invocation) async => []);
@@ -367,7 +367,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
@@ -430,7 +430,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
