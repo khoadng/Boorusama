@@ -4,3 +4,6 @@ import 'package:boorusama/core/infra/device_info_service.dart';
 
 bool hasScopedStorage(DeviceInfo deviceInfo) =>
     isAndroid() && deviceInfo.versionCode >= 29;
+
+bool hasGranularMediaPermissions(DeviceInfo deviceInfo) =>
+    isAndroid() && deviceInfo.versionCode >= 33;
