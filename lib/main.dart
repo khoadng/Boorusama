@@ -330,7 +330,7 @@ void main() async {
                   final poolRepo = PoolRepositoryApi(api, accountRepo);
 
                   final blacklistedTagRepo =
-                      BlacklistedTagsRepository(userRepo, accountRepo);
+                      BlacklistedTagsRepository(userRepo);
 
                   final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,
@@ -540,7 +540,6 @@ void main() async {
                                 currentUserBloc.add(const CurrentUserFetched());
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
-                                blacklistedTagRepo.clearCache();
                                 currentUserBloc.add(const CurrentUserFetched());
                               }
                             },

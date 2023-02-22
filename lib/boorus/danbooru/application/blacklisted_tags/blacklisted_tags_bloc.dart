@@ -104,8 +104,11 @@ class BlacklistedTagsBloc
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {
+      final account = await accountRepository.get();
+      if (account == Account.empty) return;
+
       await tryAsync<List<String>>(
-        action: () => blacklistedTagsRepository.getBlacklistedTags(),
+        action: () => blacklistedTagsRepository.getBlacklistedTags(account.id),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),

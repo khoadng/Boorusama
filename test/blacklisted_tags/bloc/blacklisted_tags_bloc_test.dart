@@ -1,5 +1,9 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
@@ -16,7 +20,7 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 BlacklistedTagsRepository createBlacklistedTagRepo() {
   final MockBlacklistedTagsRepository mockBlacklistedTagsRepository =
       MockBlacklistedTagsRepository();
-  when(() => mockBlacklistedTagsRepository.getBlacklistedTags())
+  when(() => mockBlacklistedTagsRepository.getBlacklistedTags(any()))
       .thenAnswer((_) async => ['foo', 'bar']);
 
   when(() => mockBlacklistedTagsRepository.setBlacklistedTags(any(), any()))
@@ -42,33 +46,21 @@ void main() {
     ],
   );
 
+  Completer? completer;
+
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
     'when add a tag to blacklist, emit current blacklisted tags with that tag',
     build: () => BlacklistedTagsBloc(
       accountRepository: fakeAccountRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
+    seed: () =>
+        BlacklistedTagsState.initial().copyWith(blacklistedTags: () => []),
+    setUp: () => completer = Completer<List<String>>(),
+    tearDown: () => completer = null,
     act: (bloc) => bloc
-      ..add(const BlacklistedTagAdded(tag: 'foo'))
-      ..add(const BlacklistedTagAdded(tag: 'bar')),
-    expect: () => [
-      const BlacklistedTagsState(
-        blacklistedTags: [],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.success,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo', 'bar'],
-        status: LoadStatus.success,
-      ),
-    ],
+      ..add(BlacklistedTagAdded(tag: 'bar', onSuccess: completer!.complete)),
+    verify: (bloc) => expect(completer!.isCompleted, true),
   );
 
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
@@ -77,27 +69,18 @@ void main() {
       accountRepository: fakeAccountRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
+    seed: () =>
+        BlacklistedTagsState.initial().copyWith(blacklistedTags: () => []),
+    setUp: () => completer = Completer<List<String>>(),
+    tearDown: () => completer = null,
     act: (bloc) => bloc
       ..add(const BlacklistedTagAdded(tag: 'foo'))
-      ..add(const BlacklistedTagReplaced(oldTag: 'foo', newTag: 'bar')),
-    expect: () => [
-      const BlacklistedTagsState(
-        blacklistedTags: [],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.success,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['bar'],
-        status: LoadStatus.success,
-      ),
-    ],
+      ..add(BlacklistedTagReplaced(
+        oldTag: 'foo',
+        newTag: 'bar',
+        onSuccess: completer!.complete,
+      )),
+    verify: (bloc) => expect(completer!.isCompleted, true),
   );
 
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
@@ -106,35 +89,17 @@ void main() {
       accountRepository: fakeAccountRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
+    seed: () => BlacklistedTagsState.initial()
+        .copyWith(blacklistedTags: () => ['foo', 'bar']),
+    setUp: () => completer = Completer<List<String>>(),
+    tearDown: () => completer = null,
     act: (bloc) => bloc
-      ..add(const BlacklistedTagAdded(tag: 'foo'))
-      ..add(const BlacklistedTagAdded(tag: 'bar'))
-      ..add(const BlacklistedTagRemoved(tag: 'foo')),
-    expect: () => [
-      const BlacklistedTagsState(
-        blacklistedTags: [],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.success,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo'],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo', 'bar'],
-        status: LoadStatus.success,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['foo', 'bar'],
-        status: LoadStatus.loading,
-      ),
-      const BlacklistedTagsState(
-        blacklistedTags: ['bar'],
-        status: LoadStatus.success,
-      ),
-    ],
+      ..add(BlacklistedTagRemoved(
+        tag: 'foo',
+        onSuccess: completer!.complete,
+      )),
+    verify: (bloc) {
+      expect(completer!.isCompleted, true);
+    },
   );
 }
