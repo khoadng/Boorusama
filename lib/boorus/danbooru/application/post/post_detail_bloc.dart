@@ -387,6 +387,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             type: RecommendType.character,
             title: tag,
             posts: posts
+                .where((e) => !e.isFlash)
                 .take(6)
                 .map((e) => PostData(
                       post: e,
@@ -420,6 +421,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             type: RecommendType.artist,
             title: tag,
             posts: posts
+                .where((e) => !e.isFlash)
                 .take(6)
                 .map((e) => PostData(
                       post: e,
