@@ -130,6 +130,7 @@ class BlacklistedTagsList extends StatelessWidget {
                               newTag:
                                   tagItems.map((e) => e.toString()).join(' '),
                             ));
+                            Navigator.of(context).pop();
                           },
                           oldWidget: this,
                         );
