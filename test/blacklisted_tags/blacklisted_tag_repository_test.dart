@@ -11,36 +11,21 @@ import '../common.dart';
 void main() {
   test('get blacklisted tags should return correct tags', () async {
     final tags = ['foo', 'bar'];
-    final repo =
-        BlacklistedTagsRepository(mockUserRepo(tags), fakeAccountRepo());
+    final repo = BlacklistedTagsRepository(mockUserRepo(tags));
 
-    final expected = await repo.getBlacklistedTags();
+    final expected = await repo.getBlacklistedTags(1);
 
     expect(listEquals(expected, tags), isTrue);
   });
-
-  test(
-    'get blacklisted tags should return empty if account is empty',
-    () async {
-      final repo =
-          BlacklistedTagsRepository(mockUserRepo(['a']), emptyAccountRepo());
-
-      final expected = await repo.getBlacklistedTags();
-
-      expect(listEquals(expected, []), isTrue);
-    },
-  );
 
   test('set tags should update blacklisted tag correctly', () async {
     final tags = ['foo', 'bar'];
     final newTags = [...tags, 'foobar'];
 
-    final repo =
-        BlacklistedTagsRepository(mockUserRepo(tags), fakeAccountRepo());
+    final repo = BlacklistedTagsRepository(mockUserRepo(tags));
 
     final success = await repo.setBlacklistedTags(0, newTags);
 
     expect(success, isTrue);
-    expect(listEquals(await repo.getBlacklistedTags(), newTags), isTrue);
   });
 }

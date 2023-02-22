@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
 import 'package:boorusama/core/domain/posts/rating.dart';
@@ -226,3 +227,31 @@ class Post extends Equatable
 }
 
 bool isPostValid(Post post) => post.id != 0 && post.viewable;
+
+extension PostX on Post {
+  List<Tag> extractTags() {
+    final tags = <Tag>[];
+
+    for (final t in artistTags) {
+      tags.add(Tag(name: t, category: TagCategory.artist, postCount: 0));
+    }
+
+    for (final t in copyrightTags) {
+      tags.add(Tag(name: t, category: TagCategory.copyright, postCount: 0));
+    }
+
+    for (final t in characterTags) {
+      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
+    }
+
+    for (final t in metaTags) {
+      tags.add(Tag(name: t, category: TagCategory.meta, postCount: 0));
+    }
+
+    for (final t in generalTags) {
+      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
+    }
+
+    return tags;
+  }
+}

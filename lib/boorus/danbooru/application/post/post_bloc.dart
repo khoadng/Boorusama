@@ -56,7 +56,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -76,7 +76,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -102,7 +102,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -124,7 +124,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),

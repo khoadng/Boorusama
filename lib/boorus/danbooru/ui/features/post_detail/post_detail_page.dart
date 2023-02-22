@@ -553,6 +553,9 @@ class MoreActionButton extends StatelessWidget {
                 case 'add_to_favgroup':
                   goToAddToFavoriteGroupSelectionPage(context, [post]);
                   break;
+                case 'add_to_blacklist':
+                  goToAddToBlacklistPage(context, post);
+                  break;
                 case 'view_in_browser':
                   launchExternalUrl(
                     post.getUriLink(endpoint),
@@ -574,6 +577,11 @@ class MoreActionButton extends StatelessWidget {
                 const PopupMenuItem(
                   value: 'add_to_favgroup',
                   child: Text('Add to favorite group'),
+                ),
+              if (authenticationState is Authenticated)
+                const PopupMenuItem(
+                  value: 'add_to_blacklist',
+                  child: Text('Add to blacklist'),
                 ),
               PopupMenuItem(
                 value: 'view_in_browser',
