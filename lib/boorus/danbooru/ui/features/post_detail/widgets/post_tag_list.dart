@@ -58,6 +58,7 @@ class PostTagList extends StatelessWidget {
                           ),
                           onSuccess: (_) => showSimpleSnackBar(
                             context: context,
+                            duration: const Duration(seconds: 2),
                             content: const Text('Blacklisted tags updated'),
                           ),
                         )),

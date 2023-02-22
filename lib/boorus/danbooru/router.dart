@@ -56,6 +56,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
@@ -1478,6 +1479,34 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
           ),
         );
       },
+    ),
+  );
+}
+
+Future<bool?> goToAddToBlacklistPage(
+  BuildContext context,
+  Post post,
+) {
+  final bloc = context.read<BlacklistedTagsBloc>();
+
+  return showMaterialModalBottomSheet<bool>(
+    context: navigatorKey.currentContext ?? context,
+    duration: const Duration(milliseconds: 200),
+    expand: true,
+    builder: (dialogContext) => AddToBlacklistPage(
+      tags: post.extractTags(),
+      onAdded: (tag) => bloc.add(BlacklistedTagAdded(
+        tag: tag.rawName,
+        onFailure: (message) => showSimpleSnackBar(
+          context: context,
+          content: Text(message),
+        ),
+        onSuccess: (_) => showSimpleSnackBar(
+          context: context,
+          duration: const Duration(seconds: 2),
+          content: const Text('Blacklisted tags updated'),
+        ),
+      )),
     ),
   );
 }
