@@ -6,12 +6,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'android.dart';
 
-Future<PermissionStatus> requestStoragePermissions(
+Future<PermissionStatus> requestMediaPermissions(
   DeviceInfo deviceInfo,
 ) async {
-  final statuses = !hasGranularMediaPermissions(deviceInfo)
-      ? await [Permission.storage].request()
-      : await [Permission.photos, Permission.videos].request();
+  final statuses = hasGranularMediaPermissions(deviceInfo)
+      ? await [Permission.photos, Permission.videos].request()
+      : await [Permission.storage].request();
 
   final allAccepted =
       statuses.values.every((e) => e == PermissionStatus.granted);

@@ -75,7 +75,7 @@ class DeviceStoragePermissionBloc
 
     on<DeviceStoragePermissionRequested>(
       (event, emit) async {
-        final status = await requestStoragePermissions(deviceInfo);
+        final status = await requestMediaPermissions(deviceInfo);
         emit(state.copyWith(
           storagePermission: status,
           isNotificationRead: false,
