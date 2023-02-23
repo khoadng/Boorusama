@@ -15,17 +15,9 @@ class DeviceInfoService {
   //TODO: support other platforms
   Future<DeviceInfo> getDeviceInfo() async {
     if (isAndroid()) {
-      final p = await _plugin.androidInfo;
-
-      return _plugin.androidInfo.then((value) => DeviceInfo(
-            androidDeviceInfo: p,
-          ));
+      return DeviceInfo(androidDeviceInfo: await _plugin.androidInfo);
     } else if (isIOS()) {
-      final p = await _plugin.iosInfo;
-
-      return _plugin.androidInfo.then((value) => DeviceInfo(
-            iosDeviceInfo: p,
-          ));
+      return DeviceInfo(iosDeviceInfo: await _plugin.iosInfo);
     } else {
       return DeviceInfo.empty();
     }
