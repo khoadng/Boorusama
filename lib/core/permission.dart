@@ -3,14 +3,36 @@ import 'package:collection/collection.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
-import 'android.dart';
 
 Future<PermissionStatus> requestMediaPermissions(
   DeviceInfo deviceInfo,
+) {
+  if (isAndroid()) {
+    return _requestMediaPermissionsAndroid(
+      deviceInfo.androidDeviceInfo?.version.sdkInt,
+    );
+  } else if (isIOS()) {
+    return _requestMediaPermissionsIos();
+  } else {
+    return Future.value(PermissionStatus.denied);
+  }
+}
+
+Future<PermissionStatus> _requestMediaPermissionsAndroid(
+  AndroidVersion? androidVersion,
 ) async {
-  final statuses = hasGranularMediaPermissions(deviceInfo)
-      ? await [Permission.photos, Permission.videos].request()
+  final hasGranularPerm = hasGranularMediaPermissions(androidVersion);
+
+  if (hasGranularPerm == null) return PermissionStatus.denied;
+
+  final statuses = hasGranularPerm
+      ? await [
+          Permission.photos,
+          Permission.videos,
+          Permission.notification,
+        ].request()
       : await [Permission.storage].request();
 
   final allAccepted =
@@ -22,4 +44,16 @@ Future<PermissionStatus> requestMediaPermissions(
   return allAccepted
       ? PermissionStatus.granted
       : otherStatuses ?? PermissionStatus.denied;
+}
+
+Future<PermissionStatus> _requestMediaPermissionsIos() async {
+  final statuses = await [
+    Permission.storage,
+    Permission.notification,
+  ].request();
+
+  final allAccepted =
+      statuses.values.every((e) => e == PermissionStatus.granted);
+
+  return allAccepted ? PermissionStatus.granted : PermissionStatus.denied;
 }

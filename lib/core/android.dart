@@ -1,9 +1,13 @@
-// Project imports:
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
+typedef AndroidVersion = int;
 
-bool hasScopedStorage(DeviceInfo deviceInfo) =>
-    isAndroid() && deviceInfo.versionCode >= 29;
+bool? hasScopedStorage(AndroidVersion? version) {
+  if (version == null) return null;
 
-bool hasGranularMediaPermissions(DeviceInfo deviceInfo) =>
-    isAndroid() && deviceInfo.versionCode >= 33;
+  return version >= 29;
+}
+
+bool? hasGranularMediaPermissions(AndroidVersion? version) {
+  if (version == null) return null;
+
+  return version >= 33;
+}

@@ -15,14 +15,16 @@ class DeviceInfoService {
   //TODO: support other platforms
   Future<DeviceInfo> getDeviceInfo() async {
     if (isAndroid()) {
+      final p = await _plugin.androidInfo;
+
       return _plugin.androidInfo.then((value) => DeviceInfo(
-            versionCode: value.version.sdkInt,
-            release: value.version.release,
+            androidDeviceInfo: p,
           ));
-    } else if (isWeb()) {
-      return _plugin.webBrowserInfo.then((value) => DeviceInfo(
-            versionCode: -1,
-            release: value.browserName.name,
+    } else if (isIOS()) {
+      final p = await _plugin.iosInfo;
+
+      return _plugin.androidInfo.then((value) => DeviceInfo(
+            iosDeviceInfo: p,
           ));
     } else {
       return DeviceInfo.empty();
@@ -32,15 +34,15 @@ class DeviceInfoService {
 
 class DeviceInfo extends Equatable {
   const DeviceInfo({
-    required this.versionCode,
-    required this.release,
+    this.androidDeviceInfo,
+    this.iosDeviceInfo,
   });
 
-  factory DeviceInfo.empty() => const DeviceInfo(versionCode: -1, release: '');
+  factory DeviceInfo.empty() => const DeviceInfo();
 
-  final int versionCode;
-  final String release;
+  final AndroidDeviceInfo? androidDeviceInfo;
+  final IosDeviceInfo? iosDeviceInfo;
 
   @override
-  List<Object?> get props => [versionCode, release];
+  List<Object?> get props => [androidDeviceInfo, iosDeviceInfo];
 }

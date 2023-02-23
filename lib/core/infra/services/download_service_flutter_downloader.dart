@@ -20,13 +20,18 @@ import 'package:boorusama/core/infra/services/alternative_download_service.dart'
 import 'package:boorusama/core/infra/services/macos_download_service.dart';
 import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
-bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
-    hasScopedStorage(deviceInfo);
+// ignore: avoid_bool_literals_in_conditional_expressions
+bool _shouldUsePublicStorage(DeviceInfo deviceInfo) => isAndroid()
+    ? hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
+    : false;
 
-Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
-    hasScopedStorage(deviceInfo)
-        ? defaultPath
-        : await IOHelper.getDownloadPath();
+Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
+  if (isIOS()) return IOHelper.getDownloadPath();
+
+  return hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
+      ? defaultPath
+      : await IOHelper.getDownloadPath();
+}
 
 Future<DownloadService<Post>> createDownloader(
   DownloadMethod method,
