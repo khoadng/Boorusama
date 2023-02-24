@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
@@ -50,6 +51,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -263,6 +265,13 @@ void main() async {
                   settings: settings,
                 ),
               ),
+              if (isAndroid() || isIOS())
+                BlocProvider(
+                  create: (context) => DeviceStoragePermissionBloc(
+                    deviceInfo: deviceInfo,
+                    initialStatus: PermissionStatus.denied,
+                  )..add(DeviceStoragePermissionFetched()),
+                ),
             ],
             child: MultiBlocListener(
               listeners: [

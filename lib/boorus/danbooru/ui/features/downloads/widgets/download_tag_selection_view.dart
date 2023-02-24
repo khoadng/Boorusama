@@ -171,10 +171,20 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
               builder: (context, state) {
                 return state.shouldDisplayWarning(
-                  hasScopeStorage: hasScopedStorage(context.read<DeviceInfo>()),
+                  hasScopeStorage: hasScopedStorage(context
+                          .read<DeviceInfo>()
+                          .androidDeviceInfo
+                          ?.version
+                          .sdkInt) ??
+                      true,
                 )
                     ? _DownloadPathWarning(
-                        releaseName: context.read<DeviceInfo>().release,
+                        releaseName: context
+                                .read<DeviceInfo>()
+                                .androidDeviceInfo
+                                ?.version
+                                .release ??
+                            'Unknown',
                         allowedFolders: state.allowedFolders,
                       )
                     : const SizedBox.shrink();
@@ -186,8 +196,12 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               builder: (context, state) {
                 return ElevatedButton(
                   onPressed: state.isValidToStartDownload(
-                    hasScopeStorage:
-                        hasScopedStorage(context.read<DeviceInfo>()),
+                    hasScopeStorage: hasScopedStorage(context
+                            .read<DeviceInfo>()
+                            .androidDeviceInfo
+                            ?.version
+                            .sdkInt) ??
+                        false,
                   )
                       ? () => context.read<BulkImageDownloadBloc>().add(
                             BulkImagesDownloadRequested(
