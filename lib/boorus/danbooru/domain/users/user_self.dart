@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'user.dart';
 import 'user_level.dart';
 import 'user_repository.dart';
 
@@ -30,7 +31,7 @@ class UserSelf extends Equatable {
   List<Object?> get props => [id, level, name, blacklistedTags];
 }
 
-extension UserX on UserSelf {
+extension UserSelfX on UserSelf {
   UserSelf copyWith({
     UserId? id,
     UserLevel? level,
@@ -43,9 +44,6 @@ extension UserX on UserSelf {
         blacklistedTags: blacklistedTags,
       );
 }
-
-typedef UserId = int;
-typedef Username = String;
 
 List<String> tagStringToListTagString(String str) => str.split('\n');
 
