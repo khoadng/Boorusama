@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'user.dart';
+import 'user_self.dart';
 
 abstract class UserRepository {
   Future<List<UserSelf>> getUsersByIdStringComma(
