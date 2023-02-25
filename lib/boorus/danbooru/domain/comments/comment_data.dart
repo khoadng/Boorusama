@@ -113,7 +113,7 @@ Future<List<CommentData>> Function(List<Comment> comments)
 
 CommentData commentDataFrom(
   Comment comment,
-  User? user,
+  UserSelf? user,
   Account account,
   List<CommentVote> votes,
 ) =>

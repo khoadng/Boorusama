@@ -26,8 +26,8 @@ void main() {
 
       when(() => userRepo.getUsersByIdStringComma(any()))
           .thenAnswer((invocation) async => [
-                User.placeholder().copyWith(id: 1),
-                User.placeholder().copyWith(id: 2),
+                UserSelf.placeholder().copyWith(id: 1),
+                UserSelf.placeholder().copyWith(id: 2),
               ]);
     },
     tearDown: () {
@@ -46,11 +46,11 @@ void main() {
         refreshing: false,
         upvoters: [
           Voter.create(
-            User.placeholder().copyWith(id: 1),
+            UserSelf.placeholder().copyWith(id: 1),
             PostVote.empty().copyWith(id: 1, userId: 1),
           ),
           Voter.create(
-            User.placeholder().copyWith(id: 2),
+            UserSelf.placeholder().copyWith(id: 2),
             PostVote.empty().copyWith(id: 2, userId: 2),
           ),
         ],
@@ -97,8 +97,8 @@ void main() {
 
       when(() => userRepo.getUsersByIdStringComma(any()))
           .thenAnswer((invocation) async => [
-                User.placeholder().copyWith(id: 3),
-                User.placeholder().copyWith(id: 4),
+                UserSelf.placeholder().copyWith(id: 3),
+                UserSelf.placeholder().copyWith(id: 4),
               ]);
     },
     tearDown: () {
@@ -110,11 +110,11 @@ void main() {
       userRepository: userRepo,
       initialVoters: [
         Voter.create(
-          User.placeholder().copyWith(id: 1),
+          UserSelf.placeholder().copyWith(id: 1),
           PostVote.empty().copyWith(id: 1, userId: 1),
         ),
         Voter.create(
-          User.placeholder().copyWith(id: 2),
+          UserSelf.placeholder().copyWith(id: 2),
           PostVote.empty().copyWith(id: 2, userId: 2),
         ),
       ],
@@ -125,11 +125,11 @@ void main() {
         loading: true,
         upvoters: [
           Voter.create(
-            User.placeholder().copyWith(id: 1),
+            UserSelf.placeholder().copyWith(id: 1),
             PostVote.empty().copyWith(id: 1, userId: 1),
           ),
           Voter.create(
-            User.placeholder().copyWith(id: 2),
+            UserSelf.placeholder().copyWith(id: 2),
             PostVote.empty().copyWith(id: 2, userId: 2),
           ),
         ],
@@ -139,19 +139,19 @@ void main() {
         page: 2,
         upvoters: [
           Voter.create(
-            User.placeholder().copyWith(id: 1),
+            UserSelf.placeholder().copyWith(id: 1),
             PostVote.empty().copyWith(id: 1, userId: 1),
           ),
           Voter.create(
-            User.placeholder().copyWith(id: 2),
+            UserSelf.placeholder().copyWith(id: 2),
             PostVote.empty().copyWith(id: 2, userId: 2),
           ),
           Voter.create(
-            User.placeholder().copyWith(id: 3),
+            UserSelf.placeholder().copyWith(id: 3),
             PostVote.empty().copyWith(id: 3, userId: 3),
           ),
           Voter.create(
-            User.placeholder().copyWith(id: 4),
+            UserSelf.placeholder().copyWith(id: 4),
             PostVote.empty().copyWith(id: 4, userId: 24),
           ),
         ],

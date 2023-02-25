@@ -26,7 +26,7 @@ class MockUserRepo extends Mock implements UserRepository {}
 UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();
   when(() => repo.getUserById(any())).thenAnswer(
-    (_) async => User(
+    (_) async => UserSelf(
       id: 0,
       level: UserLevel.member,
       name: 'User',

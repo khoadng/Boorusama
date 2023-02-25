@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -9,16 +6,15 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'user_level.dart';
 import 'user_repository.dart';
 
-@immutable
-class User extends Equatable {
-  const User({
+class UserSelf extends Equatable {
+  const UserSelf({
     required this.id,
     required this.level,
     required this.name,
     required this.blacklistedTags,
   });
 
-  factory User.placeholder() => const User(
+  factory UserSelf.placeholder() => const UserSelf(
         id: 0,
         level: UserLevel.member,
         name: 'User',
@@ -34,13 +30,13 @@ class User extends Equatable {
   List<Object?> get props => [id, level, name, blacklistedTags];
 }
 
-extension UserX on User {
-  User copyWith({
+extension UserX on UserSelf {
+  UserSelf copyWith({
     UserId? id,
     UserLevel? level,
     Username? name,
   }) =>
-      User(
+      UserSelf(
         id: id ?? this.id,
         level: level ?? this.level,
         name: name ?? this.name,
@@ -53,7 +49,7 @@ typedef Username = String;
 
 List<String> tagStringToListTagString(String str) => str.split('\n');
 
-Future<List<User>> Function(List<Favorite> favs) createUserWith(
+Future<List<UserSelf>> Function(List<Favorite> favs) createUserWith(
   UserRepository userRepository,
 ) =>
     (favs) async {

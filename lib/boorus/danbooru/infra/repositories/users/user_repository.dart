@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
-List<User> parseUser(
+List<UserSelf> parseUser(
   HttpResponse<dynamic> value,
   List<String> defaultBlacklistedTags,
 ) =>
@@ -30,7 +30,7 @@ class UserRepositoryApi implements UserRepository {
   final List<String> defaultBlacklistedTags;
 
   @override
-  Future<List<User>> getUsersByIdStringComma(
+  Future<List<UserSelf>> getUsersByIdStringComma(
     String idComma, {
     CancelToken? cancelToken,
   }) async {
@@ -56,7 +56,7 @@ class UserRepositoryApi implements UserRepository {
   }
 
   @override
-  Future<User> getUserById(int id) => _accountRepository
+  Future<UserSelf> getUserById(int id) => _accountRepository
       .get()
       .then(
         (account) => _api.getUserById(
@@ -81,12 +81,12 @@ class UserRepositoryApi implements UserRepository {
           );
 }
 
-User userDtoToUser(
+UserSelf userDtoToUser(
   UserDto d,
   List<String> defaultBlacklistedTags,
 ) {
   try {
-    return User(
+    return UserSelf(
       id: d.id!,
       level: intToUserLevel(d.level!),
       name: d.name!,

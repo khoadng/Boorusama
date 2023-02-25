@@ -57,7 +57,7 @@ class Comment extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
-  final User? creator;
+  final UserSelf? creator;
 
   @override
   List<Object?> get props => [

@@ -26,8 +26,8 @@ void main() {
 
       when(() => userRepo.getUsersByIdStringComma(any()))
           .thenAnswer((invocation) async => [
-                User.placeholder().copyWith(id: 1),
-                User.placeholder().copyWith(id: 2),
+                UserSelf.placeholder().copyWith(id: 1),
+                UserSelf.placeholder().copyWith(id: 2),
               ]);
     },
     tearDown: () {
@@ -45,8 +45,8 @@ void main() {
       PostFavoriteState.initial().copyWith(
         refreshing: false,
         favoriters: [
-          User.placeholder().copyWith(id: 1),
-          User.placeholder().copyWith(id: 2),
+          UserSelf.placeholder().copyWith(id: 1),
+          UserSelf.placeholder().copyWith(id: 2),
         ],
       ),
     ],
@@ -91,8 +91,8 @@ void main() {
 
       when(() => userRepo.getUsersByIdStringComma(any()))
           .thenAnswer((invocation) async => [
-                User.placeholder().copyWith(id: 3),
-                User.placeholder().copyWith(id: 4),
+                UserSelf.placeholder().copyWith(id: 3),
+                UserSelf.placeholder().copyWith(id: 4),
               ]);
     },
     tearDown: () {
@@ -103,8 +103,8 @@ void main() {
       favoritePostRepository: favRepo,
       userRepository: userRepo,
       initialData: [
-        User.placeholder().copyWith(id: 1),
-        User.placeholder().copyWith(id: 2),
+        UserSelf.placeholder().copyWith(id: 1),
+        UserSelf.placeholder().copyWith(id: 2),
       ],
     ),
     act: (bloc) => bloc.add(const PostFavoriteFetched(postId: 1)),
@@ -112,18 +112,18 @@ void main() {
       PostFavoriteState.initial().copyWith(
         loading: true,
         favoriters: [
-          User.placeholder().copyWith(id: 1),
-          User.placeholder().copyWith(id: 2),
+          UserSelf.placeholder().copyWith(id: 1),
+          UserSelf.placeholder().copyWith(id: 2),
         ],
       ),
       PostFavoriteState.initial().copyWith(
         page: 2,
         loading: false,
         favoriters: [
-          User.placeholder().copyWith(id: 1),
-          User.placeholder().copyWith(id: 2),
-          User.placeholder().copyWith(id: 3),
-          User.placeholder().copyWith(id: 4),
+          UserSelf.placeholder().copyWith(id: 1),
+          UserSelf.placeholder().copyWith(id: 2),
+          UserSelf.placeholder().copyWith(id: 3),
+          UserSelf.placeholder().copyWith(id: 4),
         ],
       ),
     ],

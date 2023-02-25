@@ -14,10 +14,10 @@ class CurrentUserState extends Equatable {
 
   factory CurrentUserState.initial() => const CurrentUserState(user: null);
 
-  final User? user;
+  final UserSelf? user;
 
   CurrentUserState copyWith({
-    User? Function()? user,
+    UserSelf? Function()? user,
   }) =>
       CurrentUserState(
         user: user != null ? user() : this.user,
@@ -50,7 +50,7 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
         return;
       }
 
-      await tryAsync<User>(
+      await tryAsync<UserSelf>(
         action: () => userRepository.getUserById(account.id),
         onSuccess: (data) async {
           emit(state.copyWith(

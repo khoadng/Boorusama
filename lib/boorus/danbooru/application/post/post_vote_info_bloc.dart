@@ -110,12 +110,12 @@ class Voter extends Equatable {
     required this.voteTime,
   });
 
-  factory Voter.create(User user, PostVote vote) => Voter(
+  factory Voter.create(UserSelf user, PostVote vote) => Voter(
         user: user,
         voteTime: vote.createdAt,
       );
 
-  final User user;
+  final UserSelf user;
   final DateTime voteTime;
 
   @override
