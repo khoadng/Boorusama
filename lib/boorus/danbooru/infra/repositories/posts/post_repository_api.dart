@@ -63,12 +63,17 @@ class PostRepositoryApi implements PostRepository {
         .then(parsePostWithOptions(includeInvalid: includeInvalid ?? false))
         .catchError((e) {
       handleError(e);
+
+      return <Post>[];
     });
   }
 
   @override
-  Future<List<Post>> getPostsFromIds(List<int> ids) =>
-      getPosts('id:${ids.join(',')}', 1);
+  Future<List<Post>> getPostsFromIds(List<int> ids) => getPosts(
+        'id:${ids.join(',')}',
+        1,
+        limit: ids.length,
+      );
 
   @override
   Future<bool> putTag(int postId, String tagString) => _accountRepository
@@ -96,9 +101,9 @@ Post postDtoToPost(PostDto dto) {
 
     return Post(
       id: dto.id!,
-      previewImageUrl: dto.previewFileUrl ?? '',
-      normalImageUrl: dto.largeFileUrl ?? '',
-      fullImageUrl: dto.fileUrl ?? '',
+      thumbnailImageUrl: dto.previewFileUrl ?? '',
+      sampleImageUrl: dto.largeFileUrl ?? '',
+      originalImageUrl: dto.fileUrl ?? '',
       copyrightTags: splitTag(dto.copyrightTags),
       characterTags: splitTag(dto.characterTags),
       artistTags: splitTag(dto.artistTags),

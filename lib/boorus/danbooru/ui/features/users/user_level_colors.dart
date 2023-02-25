@@ -11,7 +11,9 @@ int getUserHexColor(UserLevel level) {
       return 0xff808080;
     case UserLevel.builder:
       return 0xff6633ff;
-    case UserLevel.janitor:
+    case UserLevel.contributor:
+      return 0xff6633ff;
+    case UserLevel.approver:
       return 0xffffa500;
     case UserLevel.moderator:
       return 0xff33ba48;

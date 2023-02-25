@@ -9,11 +9,11 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tag_provider_widget.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/tags/favorite_tag_bloc.dart';
@@ -34,40 +34,50 @@ class PostTagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) {
-        return BlacklistedTagProviderWidget(
-          builder: (context, action) => BlocBuilder<TagBloc, TagState>(
-            builder: (context, state) {
-              if (state.status == LoadStatus.success) {
-                final widgets = <Widget>[];
-                for (final g in state.tags!) {
-                  widgets
-                    ..add(_TagBlockTitle(
-                      title: g.groupName,
-                      isFirstBlock: g.groupName == state.tags!.first.groupName,
-                    ))
-                    ..add(_buildTags(
-                      context,
-                      authState,
-                      g.tags,
-                      onAddToBlacklisted: (tag) => action(tag),
-                    ));
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ...widgets,
-                  ],
-                );
-              } else {
-                return const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
-                );
+        return BlocBuilder<TagBloc, TagState>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              final widgets = <Widget>[];
+              for (final g in state.tags!) {
+                widgets
+                  ..add(_TagBlockTitle(
+                    title: g.groupName,
+                    isFirstBlock: g.groupName == state.tags!.first.groupName,
+                  ))
+                  ..add(_buildTags(
+                    context,
+                    authState,
+                    g.tags,
+                    onAddToBlacklisted: (tag) => context
+                        .read<BlacklistedTagsBloc>()
+                        .add(BlacklistedTagAdded(
+                          tag: tag.rawName,
+                          onFailure: (message) => showSimpleSnackBar(
+                            context: context,
+                            content: Text(message),
+                          ),
+                          onSuccess: (_) => showSimpleSnackBar(
+                            context: context,
+                            duration: const Duration(seconds: 2),
+                            content: const Text('Blacklisted tags updated'),
+                          ),
+                        )),
+                  ));
               }
-            },
-          ),
-          operation: BlacklistedOperation.add,
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ...widgets,
+                ],
+              );
+            } else {
+              return const Padding(
+                padding: EdgeInsets.all(8),
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              );
+            }
+          },
         );
       },
     );
@@ -90,9 +100,6 @@ class PostTagList extends StatelessWidget {
 
             return ContextMenu<String>(
               items: [
-                // PopupMenuItem(
-                //     value: 'blacklist',
-                //     child: const Text('post.detail.add_to_blacklist').tr()),
                 PopupMenuItem(
                   value: 'wiki',
                   child: const Text('post.detail.open_wiki').tr(),
@@ -101,6 +108,11 @@ class PostTagList extends StatelessWidget {
                   value: 'add_to_favorites',
                   child: const Text('post.detail.add_to_favorites').tr(),
                 ),
+                if (authenticationState is Authenticated)
+                  PopupMenuItem(
+                    value: 'blacklist',
+                    child: const Text('post.detail.add_to_blacklist').tr(),
+                  ),
                 if (authenticationState is Authenticated)
                   PopupMenuItem(
                     value: 'copy_and_move_to_saved_search',
@@ -117,10 +129,7 @@ class PostTagList extends StatelessWidget {
                 } else if (value == 'copy_and_move_to_saved_search') {
                   Clipboard.setData(
                     ClipboardData(text: tag.rawName),
-                  ).then((value) => AppRouter.router.navigateTo(
-                        context,
-                        '/saved_search/edit',
-                      ));
+                  ).then((value) => goToSavedSearchEditPage(context));
                 } else if (value == 'add_to_favorites') {
                   context
                       .read<FavoriteTagBloc>()
@@ -128,11 +137,7 @@ class PostTagList extends StatelessWidget {
                 }
               },
               child: GestureDetector(
-                onTap: () => AppRouter.router.navigateTo(
-                  context,
-                  '/posts/search',
-                  routeSettings: RouteSettings(arguments: [tag.rawName]),
-                ),
+                onTap: () => goToSearchPage(context, tag: tag.rawName),
                 child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
               ),
             );
@@ -245,7 +250,7 @@ class _TagHeader extends StatelessWidget {
         title,
         style: Theme.of(context)
             .textTheme
-            .bodyText1!
+            .bodyLarge!
             .copyWith(fontWeight: FontWeight.w900),
       ),
     );

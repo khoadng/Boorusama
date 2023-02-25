@@ -1,3 +1,32 @@
+# 2.10.0
+- Add support for favorite groups
+- Add a search bar in search history page
+- Reduce memory usage when loading images
+- Fix a bug where pick a previous item with multiple tags in history will be meshed into 1 tag
+- Fix the API access denied issue
+
+# 2.9.0
+- Replace preview menu with context menu when long press an image  
+- Add a mode where you can select multiple images at once to perform actions on them. You can find it in the context menu  
+- Open search page will now auto focus the search bar. You can turn it off in search settings  
+- Add a rotate button in full image view  
+- Partially support Japanese language  
+- Show more useful error messages
+- Fix an issue where download failed to start when using experimental download method  
+- Fix a bug that caused pages to be skipped when browsing character/artist posts  
+
+# 2.8.4
+- Remove Curated section
+- Posts with Flash format are hidden because the app can't play Flash files at all
+- Minor compatibility fixes with animated posts
+
+# 2.8.3
+- Images in pools are now sorted in decreasing order, which means newer images are showed first
+- Slightly increase pool loading speed
+- Tapping on favorites count now will show a list of users that favorites a post correctly
+- Fix an issue where pool cover images cannot be showed
+- Fix a bug where the app failed to search for any tag combination that has fewer than 60 items 
+
 # 2.8.2
 - Fix an issue where images failed to load
 

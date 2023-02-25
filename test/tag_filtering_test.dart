@@ -10,9 +10,9 @@ import 'package:boorusama/core/domain/posts/rating.dart';
 
 Post _createPost(int id, List<String> tags) => Post(
       id: id,
-      previewImageUrl: '',
-      normalImageUrl: '',
-      fullImageUrl: '',
+      thumbnailImageUrl: '',
+      sampleImageUrl: '',
+      originalImageUrl: '',
       copyrightTags: const [],
       characterTags: const [],
       artistTags: const [],

@@ -67,12 +67,6 @@ class ExplorePreviewFetcher implements PostFetcher {
           scale: scale,
           exploreRepository: exploreRepository,
         );
-      case ExploreCategory.curated:
-        return CuratedPostFetcher(
-          date: d,
-          scale: scale,
-          exploreRepository: exploreRepository,
-        );
       case ExploreCategory.mostViewed:
         return MostViewedPostFetcher(
           date: d,

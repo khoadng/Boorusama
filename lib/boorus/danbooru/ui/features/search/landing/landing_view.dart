@@ -19,11 +19,13 @@ class LandingView extends StatefulWidget {
     required this.onTagTap,
     required this.onHistoryRemoved,
     required this.onHistoryCleared,
+    required this.onFullHistoryRequested,
   });
 
   final ValueChanged<String> onOptionTap;
   final ValueChanged<String> onHistoryTap;
   final ValueChanged<SearchHistory> onHistoryRemoved;
+  final VoidCallback onFullHistoryRequested;
   final VoidCallback onHistoryCleared;
   final ValueChanged<String> onTagTap;
 
@@ -83,7 +85,7 @@ class _LandingViewState extends State<LandingView>
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   'search.trending'.tr().toUpperCase(),
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                 ),
@@ -94,6 +96,7 @@ class _LandingViewState extends State<LandingView>
                 onHistoryRemoved: (history) =>
                     widget.onHistoryRemoved.call(history),
                 onHistoryCleared: () => widget.onHistoryCleared.call(),
+                onFullHistoryRequested: widget.onFullHistoryRequested,
               ),
             ],
           ),

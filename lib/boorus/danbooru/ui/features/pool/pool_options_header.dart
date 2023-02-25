@@ -50,7 +50,7 @@ class PoolOptionsHeader extends StatelessWidget {
             builder: (context, state) {
               return TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).textTheme.headline6!.color,
+                  foregroundColor: Theme.of(context).textTheme.titleLarge!.color,
                   backgroundColor: Theme.of(context).cardColor,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(18)),

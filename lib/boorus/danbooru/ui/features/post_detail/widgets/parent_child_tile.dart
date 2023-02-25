@@ -12,10 +12,12 @@ class ParentChildTile extends StatelessWidget {
     super.key,
     required this.data,
     required this.onTap,
+    this.minVerticalPadding,
   });
 
   final ParentChildData data;
   final void Function(ParentChildData data) onTap;
+  final double? minVerticalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class ParentChildTile extends StatelessWidget {
         ColoredBox(
           color: Theme.of(context).cardColor,
           child: ListTile(
+            minVerticalPadding: minVerticalPadding,
             dense: true,
             title: Text(data.description).tr(),
             trailing: Padding(

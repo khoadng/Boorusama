@@ -17,3 +17,8 @@ Rating mapStringToRating(String str) {
       return Rating.questionable;
   }
 }
+
+extension RatingX on Rating {
+  bool isNSFW() => this == Rating.explicit || this == Rating.questionable;
+  bool isSFW() => !isNSFW();
+}

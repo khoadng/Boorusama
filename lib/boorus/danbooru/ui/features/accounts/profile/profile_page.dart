@@ -23,13 +23,12 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('profile.profile'.tr()),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ReadContext(context).read<AuthenticationCubit>().logOut();
-              AppRouter.router
-                  .navigateTo(context, '/', clearStack: true, replace: true);
+              context.read<AuthenticationCubit>().logOut();
+              goToHomePage(context, replace: true);
             },
           ),
         ],
@@ -37,7 +36,7 @@ class ProfilePage extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<ProfileCubit, AsyncLoadState<Profile>>(
           listener: (context, state) => state.status == LoadStatus.success
-              ? ReadContext(context)
+              ? context
                   .read<FavoritesCubit>()
                   .getUserFavoritePosts(state.data!.name)
               : null,
@@ -46,7 +45,7 @@ class ProfilePage extends StatelessWidget {
               final profile = state.data!;
 
               return CustomScrollView(
-                slivers: <Widget>[
+                slivers: [
                   SliverToBoxAdapter(
                     child: Column(
                       children: [

@@ -7,12 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 final languages = {
   'en': 'english',
   'vi': 'vietnamese',
   'ru': 'russian',
   'be': 'belarusian',
+  'ja': 'japanese',
 };
 
 String getLanguageText(String value) {
@@ -29,39 +31,38 @@ class LanguagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.language != current.settings.language,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: hasAppBar
-              ? AppBar(
-                  title: const Text('settings.language.language').tr(),
-                )
-              : null,
-          body: SafeArea(
-            child: Column(
-              children: languages.keys
-                  .map(
-                    (e) => RadioListTile<String>(
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      groupValue: state.settings.language,
-                      value: e,
-                      title: Text(getLanguageText(e).tr()),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        context
-                            .read<SettingsCubit>()
-                            .update(state.settings.copyWith(language: value));
-                        context.setLocale(Locale(value));
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        );
-      },
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
+
+    return ConditionalParentWidget(
+      condition: hasAppBar,
+      conditionalBuilder: (child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('settings.language.language').tr(),
+        ),
+        body: child,
+      ),
+      child: SafeArea(
+        child: Column(
+          children: languages.keys
+              .map(
+                (e) => RadioListTile<String>(
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  groupValue: settings.language,
+                  value: e,
+                  title: Text(getLanguageText(e).tr()),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    context
+                        .read<SettingsCubit>()
+                        .update(settings.copyWith(language: value));
+                    context.setLocale(Locale(value));
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }

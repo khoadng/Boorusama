@@ -32,7 +32,7 @@ class _TimeScaleToggleSwitchState extends State<TimeScaleToggleSwitch> {
           dividerColor: Colors.black,
           changeOnTap: false,
           initialLabelIndex: value,
-          minWidth: 80,
+          minWidth: 100,
           minHeight: 30,
           cornerRadius: 5,
           labels: [

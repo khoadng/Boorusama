@@ -49,7 +49,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -57,6 +56,7 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 422)),
           exceptionMessage: 'search.errors.tag_limit',
         ),
       ],
@@ -79,7 +79,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -87,6 +86,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error:
+              BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
           exceptionMessage: 'Cannot reach server, please check your connection',
         ),
       ],
@@ -109,7 +110,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -117,6 +117,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error:
+              BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
           exceptionMessage:
               'Failed to parse data, please report this issue to the developer',
         ),
@@ -138,7 +140,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -146,6 +147,7 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 500)),
           exceptionMessage: 'search.errors.database_timeout',
         ),
       ],
@@ -156,7 +158,7 @@ void main() {
       setUp: () {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: Error()));
+            .thenThrow(BooruError(error: 1));
       },
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
@@ -166,7 +168,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -174,7 +175,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
-          exceptionMessage: 'search.errors.unknown',
+          error: BooruError(error: 1),
+          exceptionMessage: 'generic.errors.unknown',
         ),
       ],
     );
@@ -190,10 +192,10 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
             const Account(id: 1, apiKey: '', username: ''));
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
-            .thenThrow(Error());
+            .thenThrow(1);
         when(() => mockPoolRepo.getPoolsByPostIds(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockPostVoteRepo.getPostVotes(any()))
@@ -214,7 +216,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -222,7 +223,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
-          exceptionMessage: 'search.errors.unknown',
+          error: BooruError(error: 1),
+          exceptionMessage: 'generic.errors.unknown',
         ),
       ],
     );
@@ -242,7 +244,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -250,6 +251,7 @@ void main() {
         PostState.initial().copyWith(status: LoadStatus.loading),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 9999)),
           exceptionMessage: 'search.errors.unknown',
         ),
       ],
@@ -268,7 +270,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
@@ -289,7 +291,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -316,7 +317,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
             const Account(id: 1, apiKey: '', username: ''));
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
             .thenAnswer((invocation) async => []);
@@ -340,7 +341,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -367,7 +367,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
@@ -393,7 +393,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -431,7 +430,7 @@ void main() {
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => mockBlacklistedRepo.getBlacklistedTags())
+        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
@@ -456,7 +455,6 @@ void main() {
           PostData.empty(),
           PostData.empty(),
         ],
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -500,7 +498,6 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
-        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(
@@ -542,7 +539,6 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
-        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(

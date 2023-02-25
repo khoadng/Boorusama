@@ -29,7 +29,7 @@ class LoginField extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Theme.of(context).cardColor,
+        fillColor: Theme.of(context).colorScheme.background,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide.none,
         ),
@@ -40,10 +40,10 @@ class LoginField extends StatelessWidget {
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
         contentPadding: const EdgeInsets.all(12),
         labelText: labelText,

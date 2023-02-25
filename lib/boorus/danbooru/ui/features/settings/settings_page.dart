@@ -1,26 +1,21 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
-import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
@@ -62,133 +57,63 @@ class SettingsPage extends StatelessWidget {
                               ListTile(
                                 leading: const FaIcon(FontAwesomeIcons.gears),
                                 title: const Text('settings.general').tr(),
-                                onTap: () => Navigator.of(context)
-                                    .push(ParallaxSlideInPageRoute(
-                                  enterWidget: const GeneralPage(),
-                                  oldWidget: this,
-                                )),
+                                onTap: () => goToSettingsGeneral(context, this),
                               ),
                               ListTile(
                                 leading: const FaIcon(
                                   FontAwesomeIcons.paintRoller,
                                 ),
                                 title: const Text('settings.appearance').tr(),
-                                onTap: () => Navigator.of(context).push(
-                                  ParallaxSlideInPageRoute(
-                                    enterWidget: const AppearancePage(),
-                                    oldWidget: this,
-                                  ),
-                                ),
+                                onTap: () =>
+                                    goToSettingsAppearance(context, this),
                               ),
                               ListTile(
                                 title: const Text('settings.language.language')
                                     .tr(),
                                 leading: const Icon(Icons.translate),
-                                onTap: () => Navigator.of(context).push(
-                                  ParallaxSlideInPageRoute(
-                                    enterWidget: const LanguagePage(),
-                                    oldWidget: this,
-                                  ),
-                                ),
+                                onTap: () =>
+                                    goToSettingsLanguage(context, this),
                               ),
                               ListTile(
                                 title: const Text('download.download').tr(),
                                 leading:
                                     const FaIcon(FontAwesomeIcons.download),
-                                onTap: () => Navigator.of(context)
-                                    .push(ParallaxSlideInPageRoute(
-                                  enterWidget: const DownloadPage(),
-                                  oldWidget: this,
-                                )),
+                                onTap: () =>
+                                    goToSettingsDownload(context, this),
+                              ),
+                              ListTile(
+                                title: const Text(
+                                  'settings.performance.performance',
+                                ).tr(),
+                                leading: const FaIcon(FontAwesomeIcons.gear),
+                                onTap: () =>
+                                    goToSettingsPerformance(context, this),
                               ),
                               ListTile(
                                 title: const Text('settings.search').tr(),
                                 leading: const FaIcon(
                                   FontAwesomeIcons.magnifyingGlass,
                                 ),
-                                onTap: () => Navigator.of(context)
-                                    .push(ParallaxSlideInPageRoute(
-                                  enterWidget: const SearchSettingsPage(),
-                                  oldWidget: this,
-                                )),
+                                onTap: () => goToSettingsSearch(context, this),
                               ),
                               ListTile(
                                 title:
                                     const Text('settings.privacy.privacy').tr(),
                                 leading:
                                     const FaIcon(FontAwesomeIcons.shieldHalved),
-                                onTap: () => Navigator.of(context).push(
-                                  ParallaxSlideInPageRoute(
-                                    enterWidget: const PrivacyPage(),
-                                    oldWidget: this,
-                                  ),
-                                ),
+                                onTap: () => goToSettingsPrivacy(context, this),
                               ),
                               ListTile(
                                 title: const Text('settings.changelog').tr(),
                                 leading: const FaIcon(
                                   FontAwesomeIcons.solidNoteSticky,
                                 ),
-                                onTap: () => showGeneralDialog(
-                                  context: context,
-                                  pageBuilder: (context, __, ___) => Scaffold(
-                                    appBar: AppBar(
-                                      title:
-                                          const Text('settings.changelog').tr(),
-                                      automaticallyImplyLeading: false,
-                                      shadowColor: Colors.transparent,
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                      actions: [
-                                        IconButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          icon: const Icon(
-                                            Icons.close,
-                                            size: 24,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    body: FutureBuilder<String>(
-                                      future:
-                                          rootBundle.loadString('CHANGELOG.md'),
-                                      builder: (context, snapshot) {
-                                        return snapshot.hasData
-                                            ? Markdown(
-                                                data: snapshot.data!,
-                                              )
-                                            : const Center(
-                                                child: CircularProgressIndicator
-                                                    .adaptive(),
-                                              );
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                onTap: () => goToChanglog(context),
                               ),
                               ListTile(
                                 title: const Text('settings.information').tr(),
                                 leading: const Icon(Icons.info),
-                                onTap: () => showAboutDialog(
-                                  context: context,
-                                  applicationIcon: Image.asset(
-                                    'assets/icon/icon-512x512.png',
-                                    width: 64,
-                                    height: 64,
-                                  ),
-                                  applicationVersion: getVersion(
-                                    RepositoryProvider.of<PackageInfoProvider>(
-                                      context,
-                                    ).getPackageInfo(),
-                                  ),
-                                  applicationLegalese:
-                                      '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                                  applicationName: context
-                                      .read<AppInfoProvider>()
-                                      .appInfo
-                                      .appName,
-                                ),
+                                onTap: () => goToAppAboutPage(context),
                               ),
                             ],
                           ),

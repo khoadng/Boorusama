@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/core/core.dart';
+
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({
     super.key,
@@ -33,7 +36,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         ),
         Wrap(
           spacing: 4,
-          runSpacing: -4,
+          runSpacing: isMobilePlatform() ? -4 : 8,
           children: widget.childrenBuilder(editMode),
         ),
       ],
@@ -50,7 +53,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
             children: [
               Text(
                 widget.title.toUpperCase(),
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
               ),

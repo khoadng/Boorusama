@@ -11,7 +11,9 @@ UserLevel intToUserLevel(int value) {
     case 32:
       return UserLevel.builder;
     case 35:
-      return UserLevel.janitor;
+      return UserLevel.contributor;
+    case 37:
+      return UserLevel.approver;
     case 40:
       return UserLevel.moderator;
     case 50:
@@ -35,8 +37,10 @@ UserLevel stringToUserLevel(String value) {
       return UserLevel.platinum;
     case 'builder':
       return UserLevel.builder;
-    case 'janitor':
-      return UserLevel.janitor;
+    case 'contributor':
+      return UserLevel.contributor;
+    case 'approver':
+      return UserLevel.approver;
     case 'moderator':
       return UserLevel.moderator;
     case 'admin':
@@ -48,13 +52,34 @@ UserLevel stringToUserLevel(String value) {
   }
 }
 
+bool isBooruGoldPlusAccount(UserLevel level) {
+  switch (level) {
+    case UserLevel.restricted:
+    case UserLevel.member:
+      return false;
+    case UserLevel.gold:
+    case UserLevel.platinum:
+    case UserLevel.builder:
+    case UserLevel.contributor:
+    case UserLevel.approver:
+    case UserLevel.moderator:
+    case UserLevel.admin:
+    case UserLevel.owner:
+      return true;
+  }
+}
+
+bool isBooruGoldPlusAccountInt(int level) =>
+    isBooruGoldPlusAccount(intToUserLevel(level));
+
 enum UserLevel {
   restricted,
   member,
   gold,
   platinum,
   builder,
-  janitor,
+  contributor,
+  approver,
   moderator,
   admin,
   owner,

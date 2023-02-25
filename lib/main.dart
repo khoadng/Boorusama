@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,13 +6,13 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:timeago/timeago.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_factory.dart';
@@ -30,11 +29,11 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
@@ -47,9 +46,12 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -60,28 +62,24 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/sentry.dart';
+import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
+import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
-import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'boorus/danbooru/application/tag/trending_tag_cubit.dart';
+import 'boorus/danbooru/domain/favorites/favorites.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
 import 'core/infra/preloader/preloader.dart';
-
-//TODO: should parse from translation files instead of hardcoding
-const supportedLocales = [
-  Locale('en', ''),
-  Locale('vi', ''),
-  Locale('ru', ''),
-  Locale('be', ''),
-];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 const savedSearchHelpUrl =
@@ -91,8 +89,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final fileNameGenerator = PostFileNameGenerator();
-
-  await EasyLocalization.ensureInitialized();
 
   if (!isWeb()) {
     final dbDirectory = isAndroid()
@@ -168,11 +164,17 @@ void main() async {
 
   final tempPath = await getTemporaryDirectory();
 
+  final userAgentGenerator = UserAgentGeneratorImpl(
+    appVersion: packageInfo.packageInfo.version,
+    appName: appInfo.appInfo.appName,
+  );
+
   //TODO: this notification is only used for download feature
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   const InitializationSettings initializationSettings = InitializationSettings(
     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     iOS: DarwinInitializationSettings(),
+    macOS: DarwinInitializationSettings(),
   );
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
@@ -184,6 +186,7 @@ void main() async {
     fileNameGenerator,
     deviceInfo,
     flutterLocalNotificationsPlugin,
+    userAgentGenerator,
   );
   final bulkDownloader = BulkDownloader<Post>(
     idSelector: (item) => item.id,
@@ -192,29 +195,27 @@ void main() async {
     deviceInfo: deviceInfo,
   );
 
-  await bulkDownloader.init();
+  if (isMobilePlatform()) {
+    await bulkDownloader.init();
+  }
+
+  if (isWindows()) WindowsVideoPlayer.registerWith();
 
   final previewImageCacheManager = PreviewImageCacheManager();
   final previewPreloader = PostPreviewPreloaderImp(
     previewImageCacheManager,
     httpHeaders: {
-      'User-Agent': userAgent,
+      'User-Agent': userAgentGenerator.generate(),
     },
   );
 
-  //TODO: shouldn't hardcode language.
-  setLocaleMessages('vi', ViMessages());
-  setLocaleMessages('ru', RuMessages());
-  setLocaleMessages('be', RuMessages());
+  await ensureI18nInitialized();
+  await initializeAnalytics(settings);
+  initializeErrorHandlers(settings);
 
   void run() {
     runApp(
-      EasyLocalization(
-        useOnlyLangCode: true,
-        supportedLocales: supportedLocales,
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en', ''),
-        useFallbackTranslations: true,
+      BooruLocalization(
         child: MultiRepositoryProvider(
           providers: [
             RepositoryProvider.value(value: packageInfo),
@@ -235,6 +236,9 @@ void main() async {
             RepositoryProvider<PreviewImageCacheManager>.value(
               value: previewImageCacheManager,
             ),
+            RepositoryProvider<UserAgentGenerator>.value(
+              value: userAgentGenerator,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -245,7 +249,8 @@ void main() async {
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,
-                  onDioRequest: (baseUrl) => dio(tempPath, baseUrl),
+                  onDioRequest: (baseUrl) =>
+                      dio(tempPath, baseUrl, userAgentGenerator),
                 ),
               ),
               BlocProvider(
@@ -260,6 +265,13 @@ void main() async {
                   settings: settings,
                 ),
               ),
+              if (isAndroid() || isIOS())
+                BlocProvider(
+                  create: (context) => DeviceStoragePermissionBloc(
+                    deviceInfo: deviceInfo,
+                    initialStatus: PermissionStatus.denied,
+                  )..add(DeviceStoragePermissionFetched()),
+                ),
             ],
             child: MultiBlocListener(
               listeners: [
@@ -327,7 +339,7 @@ void main() async {
                   final poolRepo = PoolRepositoryApi(api, accountRepo);
 
                   final blacklistedTagRepo =
-                      BlacklistedTagsRepository(userRepo, accountRepo);
+                      BlacklistedTagsRepository(userRepo);
 
                   final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,
@@ -359,9 +371,14 @@ void main() async {
                   final savedSearchRepo =
                       SavedSearchRepositoryApi(api, accountRepo);
 
+                  final favoriteGroupRepo = FavoriteGroupRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final popularSearchCubit = SearchKeywordCubit(
+                  final trendingTagCubit = TrendingTagCubit(
                     popularSearchRepo,
                     settings.safeMode ? tagInfo.r18Tags.toSet() : {},
                   )..getTags();
@@ -385,7 +402,7 @@ void main() async {
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
                     accountRepository: accountRepo,
                     blacklistedTagsRepository: blacklistedTagRepo,
-                  );
+                  )..add(const BlacklistedTagRequested());
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
                       category: PoolCategory.series,
@@ -427,16 +444,19 @@ void main() async {
                         accountRepository: accountRepo,
                         postVoteRepository: postVoteRepo,
                         poolRepository: poolRepo,
-                        singleRefresh: true,
                       );
 
                   final exploreBloc = ExploreBloc(
                     exploreRepository: exploreRepo,
                     popular: create(),
                     hot: create(),
-                    curated: create(),
                     mostViewed: create(),
                   )..add(const ExploreFetched());
+
+                  final currentUserBloc = CurrentUserBloc(
+                    userRepository: userRepo,
+                    accountRepository: accountRepo,
+                  )..add(const CurrentUserFetched());
 
                   return MultiRepositoryProvider(
                     providers: [
@@ -491,10 +511,13 @@ void main() async {
                       RepositoryProvider<SavedSearchRepository>.value(
                         value: savedSearchRepo,
                       ),
+                      RepositoryProvider<FavoriteGroupRepository>.value(
+                        value: favoriteGroupRepo,
+                      ),
                     ],
                     child: MultiBlocProvider(
                       providers: [
-                        BlocProvider.value(value: popularSearchCubit),
+                        BlocProvider.value(value: trendingTagCubit),
                         BlocProvider.value(value: favoritedCubit),
                         BlocProvider.value(value: profileCubit),
                         BlocProvider.value(value: commentBloc),
@@ -513,6 +536,7 @@ void main() async {
                         BlocProvider.value(value: savedSearchBloc),
                         BlocProvider.value(value: favoriteTagBloc),
                         BlocProvider.value(value: exploreBloc),
+                        BlocProvider.value(value: currentUserBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
@@ -522,9 +546,10 @@ void main() async {
                               //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
+                                currentUserBloc.add(const CurrentUserFetched());
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
-                                blacklistedTagRepo.clearCache();
+                                currentUserBloc.add(const CurrentUserFetched());
                               }
                             },
                           ),
@@ -539,7 +564,7 @@ void main() async {
                             },
                           ),
                         ],
-                        child: const App(),
+                        child: App(settings: settings),
                       ),
                     ),
                   );
@@ -552,15 +577,7 @@ void main() async {
     );
   }
 
-  if (kDebugMode) {
-    run();
-  } else {
-    if (settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      await runWithSentry(run);
-    } else {
-      run();
-    }
-  }
+  run();
 }
 
 Future<void> _localNotificatonHandler(NotificationResponse response) async {

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class BooruImageLegacy extends StatefulWidget {
   const BooruImageLegacy({
@@ -14,12 +15,16 @@ class BooruImageLegacy extends StatefulWidget {
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
+    this.cacheHeight,
+    this.cacheWidth,
   });
 
   final String imageUrl;
   final String? placeholderUrl;
   final BorderRadiusGeometry? borderRadius;
   final BoxFit? fit;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   @override
   State<BooruImageLegacy> createState() => _BooruImageLegacyState();
@@ -40,7 +45,7 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       image: CachedNetworkImageProvider(
         widget.imageUrl,
         headers: {
-          'User-Agent': userAgent,
+          'User-Agent': context.read<UserAgentGenerator>().generate(),
         },
       ),
     );
@@ -55,9 +60,11 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      httpHeaders: const {
-        'User-Agent': userAgent,
+      httpHeaders: {
+        'User-Agent': context.read<UserAgentGenerator>().generate(),
       },
+      memCacheWidth: widget.cacheWidth,
+      memCacheHeight: widget.cacheHeight,
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) {
         return Container(
@@ -73,8 +80,8 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       },
       placeholder: (context, url) => widget.placeholderUrl != null
           ? CachedNetworkImage(
-              httpHeaders: const {
-                'User-Agent': userAgent,
+              httpHeaders: {
+                'User-Agent': context.read<UserAgentGenerator>().generate(),
               },
               imageUrl: widget.placeholderUrl!,
               imageBuilder: (context, imageProvider) => Container(

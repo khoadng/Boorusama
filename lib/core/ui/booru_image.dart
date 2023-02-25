@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class BooruImage extends StatelessWidget {
   const BooruImage({
@@ -15,8 +16,10 @@ class BooruImage extends StatelessWidget {
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
-    required this.aspectRatio,
+    this.aspectRatio = 1,
     this.previewCacheManager,
+    this.cacheHeight,
+    this.cacheWidth,
   });
 
   final String imageUrl;
@@ -25,23 +28,34 @@ class BooruImage extends StatelessWidget {
   final BoxFit? fit;
   final double aspectRatio;
   final CacheManager? previewCacheManager;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl.isEmpty) {
+      return AspectRatio(
+        aspectRatio: aspectRatio,
+        child: _Empty(borderRadius: borderRadius),
+      );
+    }
+
     return ClipRRect(
       borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       child: AspectRatio(
         aspectRatio: aspectRatio,
         child: CachedNetworkImage(
-          httpHeaders: const {
-            'User-Agent': userAgent,
+          httpHeaders: {
+            'User-Agent': context.read<UserAgentGenerator>().generate(),
           },
+          memCacheWidth: cacheWidth,
+          memCacheHeight: cacheHeight,
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
           placeholder: (context, url) => placeholderUrl != null
               ? CachedNetworkImage(
-                  httpHeaders: const {
-                    'User-Agent': userAgent,
+                  httpHeaders: {
+                    'User-Agent': context.read<UserAgentGenerator>().generate(),
                   },
                   fit: fit ?? BoxFit.fill,
                   imageUrl: placeholderUrl!,
@@ -65,6 +79,21 @@ class BooruImage extends StatelessWidget {
           fadeOutDuration: const Duration(microseconds: 500),
         ),
       ),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({
+    required this.borderRadius,
+  });
+
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImagePlaceHolder(
+      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
     );
   }
 }
@@ -123,7 +152,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: Theme.of(context).backgroundColor.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.background.withOpacity(0.7),
           ),
         ),
       ),

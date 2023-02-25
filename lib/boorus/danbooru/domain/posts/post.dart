@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
 import 'package:boorusama/core/domain/posts/rating.dart';
@@ -17,9 +18,9 @@ class Post extends Equatable
     implements base.Post {
   const Post({
     required this.id,
-    required this.previewImageUrl,
-    required this.normalImageUrl,
-    required this.fullImageUrl,
+    required this.thumbnailImageUrl,
+    required this.sampleImageUrl,
+    required this.originalImageUrl,
     required this.copyrightTags,
     required this.characterTags,
     required this.artistTags,
@@ -52,9 +53,9 @@ class Post extends Equatable
 
   factory Post.empty() => Post(
         id: 0,
-        previewImageUrl: '',
-        normalImageUrl: '',
-        fullImageUrl: '',
+        thumbnailImageUrl: '',
+        sampleImageUrl: '',
+        originalImageUrl: '',
         copyrightTags: const [],
         characterTags: const [],
         artistTags: const [],
@@ -87,11 +88,11 @@ class Post extends Equatable
   @override
   final int id;
   @override
-  final String previewImageUrl;
+  final String thumbnailImageUrl;
   @override
-  final String normalImageUrl;
+  final String sampleImageUrl;
   @override
-  final String fullImageUrl;
+  final String originalImageUrl;
   final List<String> copyrightTags;
   final List<String> characterTags;
   final List<String> artistTags;
@@ -138,8 +139,8 @@ class Post extends Equatable
     String? format,
     String? md5,
     DateTime? lastCommentAt,
-    String? normalImageUrl,
-    String? fullImageUrl,
+    String? sampleImageUrl,
+    String? originalImageUrl,
     int? upScore,
     int? downScore,
     int? score,
@@ -151,9 +152,9 @@ class Post extends Equatable
   }) =>
       Post(
         id: id ?? this.id,
-        previewImageUrl: previewImageUrl,
-        normalImageUrl: normalImageUrl ?? this.normalImageUrl,
-        fullImageUrl: fullImageUrl ?? this.fullImageUrl,
+        thumbnailImageUrl: thumbnailImageUrl,
+        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
+        originalImageUrl: originalImageUrl ?? this.originalImageUrl,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
         artistTags: artistTags ?? this.artistTags,
@@ -187,7 +188,7 @@ class Post extends Equatable
   bool get hasComment => lastCommentAt != null;
 
   @override
-  String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
+  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
 
   bool get hasParent => parentId != null;
   bool get hasBothParentAndChildren => hasChildren && hasParent;
@@ -208,14 +209,15 @@ class Post extends Equatable
   }
 
   bool get viewable => [
-        previewImageUrl,
-        normalImageUrl,
-        fullImageUrl,
+        thumbnailImageUrl,
+        sampleImageUrl,
+        originalImageUrl,
         md5,
       ].every((e) => e != '');
 
   @override
-  String getLink(String baseUrl) => '$baseUrl/posts/$id';
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
@@ -225,3 +227,31 @@ class Post extends Equatable
 }
 
 bool isPostValid(Post post) => post.id != 0 && post.viewable;
+
+extension PostX on Post {
+  List<Tag> extractTags() {
+    final tags = <Tag>[];
+
+    for (final t in artistTags) {
+      tags.add(Tag(name: t, category: TagCategory.artist, postCount: 0));
+    }
+
+    for (final t in copyrightTags) {
+      tags.add(Tag(name: t, category: TagCategory.copyright, postCount: 0));
+    }
+
+    for (final t in characterTags) {
+      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
+    }
+
+    for (final t in metaTags) {
+      tags.add(Tag(name: t, category: TagCategory.meta, postCount: 0));
+    }
+
+    for (final t in generalTags) {
+      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
+    }
+
+    return tags;
+  }
+}

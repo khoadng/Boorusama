@@ -10,14 +10,15 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 void main() {
   group('[int to UserLevel]', () {
     test('exist level mapping ', () {
-      final input = [10, 20, 30, 31, 32, 35, 40, 50, 60];
+      final input = [10, 20, 30, 31, 32, 35, 37, 40, 50, 60];
       final expected = [
         UserLevel.restricted,
         UserLevel.member,
         UserLevel.gold,
         UserLevel.platinum,
         UserLevel.builder,
-        UserLevel.janitor,
+        UserLevel.contributor,
+        UserLevel.approver,
         UserLevel.moderator,
         UserLevel.admin,
         UserLevel.owner,
@@ -58,7 +59,8 @@ void main() {
         'gold',
         'platinum',
         'builder',
-        'janitor',
+        'contributor',
+        'approver',
         'moderator',
         'admin',
         'owner',
@@ -69,7 +71,8 @@ void main() {
         UserLevel.gold,
         UserLevel.platinum,
         UserLevel.builder,
-        UserLevel.janitor,
+        UserLevel.contributor,
+        UserLevel.approver,
         UserLevel.moderator,
         UserLevel.admin,
         UserLevel.owner,

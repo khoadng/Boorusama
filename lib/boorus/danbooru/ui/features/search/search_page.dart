@@ -10,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -30,10 +31,12 @@ class SearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
+    this.autoFocusSearchBar = true,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
+  final bool autoFocusSearchBar;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -79,10 +82,12 @@ class _SearchPageState extends State<SearchPage> {
         child: Screen.of(context).size != ScreenSize.small
             ? _LargeLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               )
             : _SmallLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               ),
       ),
@@ -94,10 +99,12 @@ class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -194,14 +201,9 @@ class _SelectedTagList extends StatelessWidget {
           context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
       onDelete: (tag) =>
           context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
-      onBulkDownload: (tags) => AppRouter.router.navigateTo(
+      onBulkDownload: (tags) => goToBulkDownloadPage(
         context,
-        '/bulk_download',
-        routeSettings: RouteSettings(
-          arguments: [
-            tags.map((e) => e.toString()).toList(),
-          ],
-        ),
+        tags.map((e) => e.toString()).toList(),
       ),
     );
   }
@@ -238,16 +240,36 @@ class _LandingView extends StatelessWidget {
       },
       onTagTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+        _onTagTap(context, value);
       },
-      onHistoryRemoved: (value) {
-        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-      },
-      onHistoryCleared: () {
-        context.read<SearchBloc>().add(const SearchHistoryCleared());
+      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
+      onHistoryCleared: () => _onHistoryCleared(context),
+      onFullHistoryRequested: () {
+        final searchBloc = context.read<SearchBloc>();
+
+        goToSearchHistoryPage(
+          context,
+          onClear: () => _onHistoryCleared(context),
+          onRemove: (value) => _onHistoryRemoved(context, value),
+          onTap: (value) => _onHistoryTap(context, value, searchBloc),
+        );
       },
     );
   }
+
+  void _onTagTap(BuildContext context, String value) =>
+      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+
+  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
+    Navigator.of(context).pop();
+    bloc.add(SearchHistoryTagSelected(tag: value));
+  }
+
+  void _onHistoryCleared(BuildContext context) =>
+      context.read<SearchBloc>().add(const SearchHistoryCleared());
+
+  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
+      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
 }
 
 // ignore: prefer_mixin
@@ -286,10 +308,12 @@ class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -314,6 +338,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
+            autofocus: widget.autoFocus,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),

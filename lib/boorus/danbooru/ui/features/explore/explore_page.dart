@@ -22,7 +22,10 @@ const _padding = EdgeInsets.symmetric(horizontal: 2);
 class ExplorePage extends StatelessWidget {
   const ExplorePage({
     super.key,
+    this.useAppBarPadding = true,
   });
+
+  final bool useAppBarPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +37,13 @@ class ExplorePage extends StatelessWidget {
         primary: false,
         slivers: [
           SliverToBoxAdapter(
-            child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
+            child: SizedBox(
+              height:
+                  useAppBarPadding ? MediaQuery.of(context).viewPadding.top : 0,
+            ),
           ),
           const SliverToBoxAdapter(child: _PopularExplore()),
           const SliverToBoxAdapter(child: _HotExplore()),
-          const SliverToBoxAdapter(child: _CuratedExplore()),
           const SliverToBoxAdapter(child: _MostViewedExplore()),
           const SliverToBoxAdapter(
             child: SizedBox(height: kBottomNavigationBarHeight + 20),
@@ -91,22 +96,6 @@ class _MostViewedExplore extends StatelessWidget {
       title: 'explore.most_viewed'.tr(),
       category: ExploreCategory.mostViewed,
       builder: (_) => mapToCarousel(context, mostViewed),
-    );
-  }
-}
-
-class _CuratedExplore extends StatelessWidget {
-  const _CuratedExplore();
-
-  @override
-  Widget build(BuildContext context) {
-    final curated = context.select((ExploreBloc bloc) => bloc.state.curated);
-
-    return ExploreSection(
-      date: curated.date,
-      title: 'explore.curated'.tr(),
-      category: ExploreCategory.curated,
-      builder: (_) => mapToCarousel(context, curated),
     );
   }
 }
@@ -185,9 +174,9 @@ class _ExploreListState extends State<_ExploreList> {
                   BooruImage(
                     aspectRatio: post.aspectRatio,
                     imageUrl: post.isAnimated
-                        ? post.previewImageUrl
-                        : post.normalImageUrl,
-                    placeholderUrl: post.previewImageUrl,
+                        ? post.thumbnailImageUrl
+                        : post.sampleImageUrl,
+                    placeholderUrl: post.thumbnailImageUrl,
                   ),
                   Positioned.fill(
                     child: ShadowGradientOverlay(
@@ -205,7 +194,7 @@ class _ExploreListState extends State<_ExploreList> {
                       '${index + 1}',
                       style: Theme.of(context)
                           .textTheme
-                          .headline2!
+                          .displayMedium!
                           .copyWith(color: Colors.white),
                     ),
                   ),

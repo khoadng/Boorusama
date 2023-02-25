@@ -19,31 +19,6 @@ class ExploreRepositoryApi implements ExploreRepository {
   static const int _limit = 60;
 
   @override
-  Future<List<Post>> getCuratedPosts(
-    DateTime date,
-    int page,
-    TimeScale scale, {
-    int? limit,
-  }) =>
-      accountRepository
-          .get()
-          .then(
-            (account) => api.getCuratedPosts(
-              account.username,
-              account.apiKey,
-              '${date.year}-${date.month}-${date.day}',
-              scale.toString().split('.').last,
-              page,
-              postParams,
-              limit ?? _limit,
-            ),
-          )
-          .then(parsePost)
-          .catchError((e) {
-        handleError(e);
-      });
-
-  @override
   Future<List<Post>> getHotPosts(
     int page, {
     int? limit,
@@ -71,6 +46,8 @@ class ExploreRepositoryApi implements ExploreRepository {
           .then(parsePost)
           .catchError((e) {
         handleError(e);
+
+        return <Post>[];
       });
 
   @override
@@ -96,5 +73,7 @@ class ExploreRepositoryApi implements ExploreRepository {
           .then(parsePost)
           .catchError((e) {
         handleError(e);
+
+        return <Post>[];
       });
 }

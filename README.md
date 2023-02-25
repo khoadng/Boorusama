@@ -34,6 +34,7 @@ Boorusama is one of the most feature-rich unofficial clients for [Danbooru](http
 - View translation notes
 - Search, filter, and view images pool
 - Easily blacklist any tags
+- Create and manage multiple favorite groups for different interests or projects.
 
 ## Installation
 - Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
@@ -47,6 +48,16 @@ cd Boorusama
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
+
+- Setup a [Firebase](https://firebase.google.com/) project and then install [FlutterFire](https://firebase.flutter.dev/docs/overview/) (Ignore this step you use the `boorusama-foss` branch)
+```
+# Install the CLI if not already done so
+dart pub global activate flutterfire_cli
+
+# Run the `configure` command, select a Firebase project and platforms
+flutterfire configure
+```
+
 - Connect to an Android device/emulator and run the app.
 ```bash
 flutter run --release
@@ -56,17 +67,19 @@ or you could build an apk and install it manually.
 ```bash
 flutter build apk --release
 ```
+
+
 ## Translation
 1. Fork this repo
 2. Use the existing English translations as a reference.
 2. Create a new file JSON in [translation](./assets/translations/) folder with your two-letter [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
 3. [Submit a PR](https://github.com/khoadng/Boorusama/pulls)
 
-Or just send me the JSON file through Discord if you are not familiar with programming.
-
 |Language|Contributors|Source|
 |--------|------------|------|
+|English| [@khoadng](https://github.com/khoadng) |[`en.json`](./assets/translations/en.json)|
 |Vietnamese| [@khoadng](https://github.com/khoadng) |[`vi.json`](./assets/translations/vi.json)|
+|Japanese| [@khoadng](https://github.com/khoadng) |[`ja.json`](./assets/translations/ja.json)|
 |Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru.json`](./assets/translations/ru.json)|
 |Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be.json`](./assets/translations/be.json)|
 

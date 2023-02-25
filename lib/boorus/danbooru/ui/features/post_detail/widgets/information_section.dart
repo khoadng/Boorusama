@@ -42,7 +42,7 @@ class InformationSection extends StatelessWidget {
                               .removeUnderscoreWithSpace()
                               .titleCase,
                       overflow: TextOverflow.fade,
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 5),
                     Text(
@@ -52,7 +52,7 @@ class InformationSection extends StatelessWidget {
                               .removeUnderscoreWithSpace()
                               .titleCase,
                       overflow: TextOverflow.fade,
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 5),
                     Text(
@@ -60,7 +60,7 @@ class InformationSection extends StatelessWidget {
                         post.createdAt,
                         locale: Localizations.localeOf(context).languageCode,
                       ),
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

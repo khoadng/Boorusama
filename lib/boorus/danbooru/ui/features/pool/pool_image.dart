@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 // Project imports:
 
@@ -23,8 +24,8 @@ class PoolImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return (pool.coverUrl != null)
         ? CachedNetworkImage(
-            httpHeaders: const {
-              'User-Agent': userAgent,
+            httpHeaders: {
+              'User-Agent': context.read<UserAgentGenerator>().generate(),
             },
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,

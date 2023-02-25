@@ -12,6 +12,10 @@ mixin MediaInfoMixin {
     return supportVideoFormat.contains(format);
   }
 
+  bool get isFlash => format == 'swf';
+
+  bool get isWebm => format == 'webm';
+
   bool get isAnimated {
     return isVideo || (format == 'gif');
   }

@@ -8,12 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PostStatsTile extends StatelessWidget {
@@ -34,23 +32,7 @@ class PostStatsTile extends StatelessWidget {
         children: [
           _StatButton(
             enable: post.hasFavorite,
-            onTap: () => showAdaptiveBottomSheet(
-              context,
-              height: MediaQuery.of(context).size.height * 0.65,
-              builder: (context) => BlocProvider(
-                create: (context) => PostFavoriteBloc(
-                  favoritePostRepository:
-                      context.read<FavoritePostRepository>(),
-                  userRepository: context.read<UserRepository>(),
-                )..add(PostFavoriteFetched(
-                    postId: post.id,
-                    refresh: true,
-                  )),
-                child: _FavoriterView(
-                  post: post,
-                ),
-              ),
-            ),
+            onTap: () => goToPostFavoritesDetails(context, post),
             child: RichText(
               text: TextSpan(
                 text: '${post.favCount} ',
@@ -73,22 +55,7 @@ class PostStatsTile extends StatelessWidget {
           ),
           _StatButton(
             enable: post.hasVoter,
-            onTap: () => showAdaptiveBottomSheet(
-              context,
-              height: MediaQuery.of(context).size.height * 0.65,
-              builder: (context) => BlocProvider(
-                create: (context) => PostVoteInfoBloc(
-                  postVoteRepository: context.read<PostVoteRepository>(),
-                  userRepository: context.read<UserRepository>(),
-                )..add(PostVoteInfoFetched(
-                    postId: post.id,
-                    refresh: true,
-                  )),
-                child: _VoterView(
-                  post: post,
-                ),
-              ),
-            ),
+            onTap: () => goToPostVotesDetails(context, post),
             child: RichText(
               text: TextSpan(
                 text: '${post.score} ',
@@ -171,18 +138,20 @@ String _generatePercentText(Post post) {
       : '';
 }
 
-class _VoterView extends StatefulWidget {
-  const _VoterView({
+// ignore: prefer-single-widget-per-file
+class VoterDetailsView extends StatefulWidget {
+  const VoterDetailsView({
+    super.key,
     required this.post,
   });
 
   final Post post;
 
   @override
-  State<_VoterView> createState() => _VoterViewState();
+  State<VoterDetailsView> createState() => _VoterDetailsViewState();
 }
 
-class _VoterViewState extends State<_VoterView> {
+class _VoterDetailsViewState extends State<VoterDetailsView> {
   final scrollController = ScrollController();
 
   @override
@@ -275,18 +244,20 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
-class _FavoriterView extends StatefulWidget {
-  const _FavoriterView({
+// ignore: prefer-single-widget-per-file
+class FavoriterDetailsView extends StatefulWidget {
+  const FavoriterDetailsView({
+    super.key,
     required this.post,
   });
 
   final Post post;
 
   @override
-  State<_FavoriterView> createState() => _FavoriterViewState();
+  State<FavoriterDetailsView> createState() => _FavoriterDetailsViewState();
 }
 
-class _FavoriterViewState extends State<_FavoriterView> {
+class _FavoriterDetailsViewState extends State<FavoriterDetailsView> {
   final scrollController = ScrollController();
 
   @override

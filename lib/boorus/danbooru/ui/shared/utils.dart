@@ -67,10 +67,10 @@ final _aspectRatio = [
 ];
 
 String getImageUrlForDisplay(Post post, ImageQuality quality) {
-  if (post.isAnimated) return post.previewImageUrl;
-  if (quality == ImageQuality.low) return post.previewImageUrl;
+  if (post.isAnimated) return post.thumbnailImageUrl;
+  if (quality == ImageQuality.low) return post.thumbnailImageUrl;
 
-  return post.normalImageUrl;
+  return post.sampleImageUrl;
 }
 
 Widget createRandomPlaceholderContainer(

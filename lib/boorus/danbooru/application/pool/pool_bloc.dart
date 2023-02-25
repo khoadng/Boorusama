@@ -191,9 +191,9 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
 
 String? postToCoverUrl(Post post) {
   if (post.id == 0) return null;
-  if (post.isAnimated) return post.previewImageUrl;
+  if (post.isAnimated) return post.thumbnailImageUrl;
 
-  return post.normalImageUrl;
+  return post.sampleImageUrl;
 }
 
 Tuple2<Post, Pool> _(List<Object> pair) =>

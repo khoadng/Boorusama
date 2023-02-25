@@ -38,7 +38,7 @@ class Tag extends Equatable {
   String get rawName => name;
 
   @override
-  String toString() => '$rawName (${postCount.toString()})';
+  String toString() => '$rawName ($postCount)';
 
   @override
   List<Object?> get props => [name, category, postCount];

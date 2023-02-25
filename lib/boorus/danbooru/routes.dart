@@ -1,8 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:context_menus/context_menus.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
@@ -24,6 +26,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -39,6 +42,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -50,12 +55,15 @@ import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'router.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
+import 'ui/features/home/home_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
@@ -64,9 +72,62 @@ final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
     conditionalBuilder: (child) => createAppRatingWidget(child: child),
-    child: const HomePage(),
+    child: CallbackShortcuts(
+      bindings: {
+        const SingleActivator(
+          LogicalKeyboardKey.keyF,
+          control: true,
+        ): () => goToSearchPage(context!),
+      },
+      child: CustomContextMenuOverlay(
+        child: Focus(
+          autofocus: true,
+          child:
+              isMobilePlatform() ? const HomePage() : const HomePageDesktop(),
+        ),
+      ),
+    ),
   ),
 );
+
+class CustomContextMenuOverlay extends StatelessWidget {
+  const CustomContextMenuOverlay({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ContextMenuOverlay(
+      cardBuilder: (context, children) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(children: children),
+        ),
+      ),
+      buttonBuilder: (context, config, [__]) => ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 200),
+        child: Material(
+          color: Colors.transparent,
+          child: Ink(
+            child: ListTile(
+              dense: true,
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              hoverColor: Theme.of(context).colorScheme.primary,
+              onTap: config.onPressed,
+              title: Text(config.label),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              minVerticalPadding: 0,
+            ),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
 
 final artistHandler = Handler(handlerFunc: (
   context,
@@ -87,9 +148,11 @@ final artistHandler = Handler(handlerFunc: (
         value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
       ),
     ],
-    child: ArtistPage(
-      artistName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: ArtistPage(
+        artistName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -113,9 +176,11 @@ final characterHandler = Handler(handlerFunc: (
         value: context.read<WikiBloc>()..add(WikiFetched(tag: args.first)),
       ),
     ],
-    child: CharacterPage(
-      characterName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: CharacterPage(
+        characterName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -183,7 +248,12 @@ final postDetailHandler = Handler(handlerFunc: (
               accountRepository: context.read<AccountRepository>(),
               postVoteRepository: context.read<PostVoteRepository>(),
               tags: tags,
-              onPostChanged: (post) => postBloc?.add(PostUpdated(post: post)),
+              onPostChanged: (post) {
+                if (postBloc != null && !postBloc.isClosed) {
+                  postBloc.add(PostUpdated(post: post));
+                }
+              },
+              tagCache: {},
             ),
           ),
         ],
@@ -269,9 +339,17 @@ final postSearchHandler = Handler(handlerFunc: (
               ),
               BlocProvider.value(value: relatedTagBloc),
             ],
-            child: SearchPage(
-              metatags: context.read<TagInfo>().metatags,
-              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            child: CustomContextMenuOverlay(
+              child: BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, state) {
+                  return SearchPage(
+                    autoFocusSearchBar: state.settings.autoFocusSearchBar,
+                    metatags: context.read<TagInfo>().metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  );
+                },
+              ),
             ),
           );
         },
@@ -324,12 +402,24 @@ final poolDetailHandler =
                   context.read<PoolDescriptionRepository>(),
             )..add(PoolDescriptionFetched(poolId: pool.id)),
           ),
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(
+                PostRefreshed(
+                  fetcher: PoolPostFetcher(
+                    postIds: pool.postIds.reversed.take(20).toList(),
+                  ),
+                ),
+              ),
+          ),
         ],
-        child: PoolDetailPage(
-          pool: pool,
-          // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
-          // ignore: prefer-iterable-of
-          postIds: QueueList.from(pool.postIds),
+        child: CustomContextMenuOverlay(
+          child: PoolDetailPage(
+            pool: pool,
+            // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
+            // ignore: prefer-iterable-of
+            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+          ),
         ),
       );
     },
@@ -355,11 +445,59 @@ final favoritesHandler =
               )),
           ),
         ],
-        child: FavoritesPage(
-          username: username,
+        child: CustomContextMenuOverlay(
+          child: FavoritesPage(
+            username: username,
+          ),
         ),
       );
     },
+  );
+});
+
+final favoriteGroupsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return BlocBuilder<CurrentUserBloc, CurrentUserState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => FavoriteGroupsBloc.of(
+              context,
+              currentUser: state.user,
+            )..add(const FavoriteGroupsRefreshed(includePreviews: true)),
+          ),
+        ],
+        child: const FavoriteGroupsPage(),
+      );
+    },
+  );
+});
+
+final favoriteGroupDetailsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+
+  final FavoriteGroup group = args.first;
+  final FavoriteGroupsBloc bloc = args[1];
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            fetcher:
+                FavoriteGroupPostFetcher(ids: group.postIds.take(60).toList()),
+          )),
+      ),
+      BlocProvider.value(value: bloc),
+    ],
+    child: CustomContextMenuOverlay(
+      child: FavoriteGroupDetailsPage(
+        group: group,
+        postIds: QueueList.from(group.postIds.skip(60)),
+      ),
+    ),
   );
 });
 
@@ -416,7 +554,7 @@ final savedSearchHandler =
         )..add(const SavedSearchFeedRefreshed()),
       ),
     ],
-    child: const SavedSearchFeedPage(),
+    child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
   );
 });
 

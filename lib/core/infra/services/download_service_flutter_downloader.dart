@@ -13,46 +13,66 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:boorusama/core/infra/services/alternative_download_service.dart';
+import 'package:boorusama/core/infra/services/macos_download_service.dart';
+import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
-bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
-    hasScopedStorage(deviceInfo);
+// ignore: avoid_bool_literals_in_conditional_expressions
+bool _shouldUsePublicStorage(DeviceInfo deviceInfo) => isAndroid()
+    ? hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
+    : false;
 
-Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
-    hasScopedStorage(deviceInfo)
-        ? defaultPath
-        : await IOHelper.getDownloadPath();
+Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
+  if (isIOS()) return IOHelper.getDownloadPath();
+
+  return hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
+      ? defaultPath
+      : await IOHelper.getDownloadPath();
+}
 
 Future<DownloadService<Post>> createDownloader(
   DownloadMethod method,
   FileNameGenerator fileNameGenerator,
   DeviceInfo deviceInfo,
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+  UserAgentGenerator agentGenerator,
 ) async {
-  if (method == DownloadMethod.imageGallerySaver) {
-    final d = AlternativeDownloadService(
+  if (isMobilePlatform()) {
+    if (method == DownloadMethod.imageGallerySaver) {
+      final d = AlternativeDownloadService(
+        fileNameGenerator: fileNameGenerator,
+        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+        agentGenerator: agentGenerator,
+      );
+      await d.init();
+
+      return d;
+    }
+
+    final d = DownloadServiceFlutterDownloader(
       fileNameGenerator: fileNameGenerator,
-      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+      deviceInfo: deviceInfo,
     );
+
+    if (isAndroid() || isIOS()) {
+      await FlutterDownloader.initialize();
+    }
+
+    await d.init();
+
+    return d;
+  } else {
+    final d = isMacOS()
+        ? MacOSDownloader(fileNameGenerator, agentGenerator)
+        : WindowDownloader(fileNameGenerator, agentGenerator);
+
     await d.init();
 
     return d;
   }
-
-  final d = DownloadServiceFlutterDownloader(
-    fileNameGenerator: fileNameGenerator,
-    deviceInfo: deviceInfo,
-  );
-
-  if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize();
-  }
-
-  await d.init();
-
-  return d;
 }
 
 @pragma('vm:entry-point')

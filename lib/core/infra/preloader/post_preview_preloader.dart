@@ -17,7 +17,7 @@ class PostPreviewPreloaderImp implements PostPreviewPreloader {
   @override
   Future<void> preload(Post post) {
     return cache.downloadFile(
-      post.previewImageUrl,
+      post.thumbnailImageUrl,
       authHeaders: httpHeaders,
     );
   }

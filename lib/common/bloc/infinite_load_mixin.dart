@@ -54,6 +54,8 @@ mixin InfiniteLoadMixin<T, State> {
       page = 1;
 
       if (emit != null) {
+        if (emit.emitter.isDone) return;
+
         emit.emitter(emit.stateGetter().copyLoadState(
               refreshing: refreshing,
               loading: loading,
@@ -78,6 +80,7 @@ mixin InfiniteLoadMixin<T, State> {
       onData?.call(data);
 
       if (emit != null) {
+        if (emit.emitter.isDone) return;
         emit.emitter(emit.stateGetter().copyLoadState(
               refreshing: refreshing,
               loading: loading,
@@ -105,6 +108,7 @@ mixin InfiniteLoadMixin<T, State> {
       loading = true;
       onFetchStart?.call();
       if (emit != null) {
+        if (emit.emitter.isDone) return;
         emit.emitter(emit.stateGetter().copyLoadState(
               refreshing: refreshing,
               loading: loading,
@@ -126,6 +130,7 @@ mixin InfiniteLoadMixin<T, State> {
 
       onFetchEnd?.call(data);
       if (emit != null) {
+        if (emit.emitter.isDone) return;
         emit.emitter(emit.stateGetter().copyLoadState(
               refreshing: refreshing,
               loading: loading,
@@ -143,5 +148,16 @@ mixin InfiniteLoadMixin<T, State> {
     if (index < 0 || index > data.length - 1) return;
 
     data[index] = item;
+  }
+
+  void swap(int fromIndex, int toIndex) {
+    final tmp = data[fromIndex];
+    data[fromIndex] = data[toIndex];
+    data[toIndex] = tmp;
+  }
+
+  void moveAndInsert(int from, int to) {
+    final item = data.removeAt(from);
+    data.insert(to, item);
   }
 }

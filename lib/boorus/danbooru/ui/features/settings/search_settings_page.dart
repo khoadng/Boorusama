@@ -7,7 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
 
 class SearchSettingsPage extends StatefulWidget {
@@ -25,39 +27,54 @@ class SearchSettingsPage extends StatefulWidget {
 class _SearchSettingsPageState extends State<SearchSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.hasAppBar
-          ? AppBar(
-              title: const Text('settings.search').tr(),
-            )
-          : null,
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SafeArea(
-            child: ListView(
-              primary: false,
-              children: [
-                SettingsTile<ContentOrganizationCategory>(
-                  title:
-                      const Text('settings.result_layout.result_layout').tr(),
-                  selectedOption: state.settings.contentOrganizationCategory,
-                  subtitle: state.settings.contentOrganizationCategory ==
-                          ContentOrganizationCategory.infiniteScroll
-                      ? const Text(
-                          'settings.infinite_scroll_warning',
-                        ).tr()
-                      : null,
-                  items: const [...ContentOrganizationCategory.values],
-                  onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(contentOrganizationCategory: value),
-                      ),
-                  optionBuilder: (value) => Text(_layoutToString(value)).tr(),
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
+
+    return ConditionalParentWidget(
+      condition: widget.hasAppBar,
+      conditionalBuilder: (child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('settings.search').tr(),
+        ),
+        body: child,
+      ),
+      child: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: [
+            if (isMobilePlatform())
+              ListTile(
+                title: const Text(
+                  'Auto focus search bar when first open search view',
                 ),
-              ],
+                trailing: Switch(
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  value: settings.autoFocusSearchBar,
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().update(settings.copyWith(
+                          autoFocusSearchBar: value,
+                        ));
+                  },
+                ),
+              ),
+            SettingsTile<ContentOrganizationCategory>(
+              title: const Text('settings.result_layout.result_layout').tr(),
+              selectedOption: settings.contentOrganizationCategory,
+              subtitle: settings.contentOrganizationCategory ==
+                      ContentOrganizationCategory.infiniteScroll
+                  ? const Text(
+                      'settings.infinite_scroll_warning',
+                    ).tr()
+                  : null,
+              items: const [...ContentOrganizationCategory.values],
+              onChanged: (value) => context.read<SettingsCubit>().update(
+                    settings.copyWith(contentOrganizationCategory: value),
+                  ),
+              optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
