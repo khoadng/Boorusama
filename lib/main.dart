@@ -74,7 +74,7 @@ import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
-import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'boorus/danbooru/application/tag/trending_tag_cubit.dart';
 import 'boorus/danbooru/domain/favorites/favorites.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
@@ -378,7 +378,7 @@ void main() async {
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final popularSearchCubit = SearchKeywordCubit(
+                  final trendingTagCubit = TrendingTagCubit(
                     popularSearchRepo,
                     settings.safeMode ? tagInfo.r18Tags.toSet() : {},
                   )..getTags();
@@ -517,7 +517,7 @@ void main() async {
                     ],
                     child: MultiBlocProvider(
                       providers: [
-                        BlocProvider.value(value: popularSearchCubit),
+                        BlocProvider.value(value: trendingTagCubit),
                         BlocProvider.value(value: favoritedCubit),
                         BlocProvider.value(value: profileCubit),
                         BlocProvider.value(value: commentBloc),

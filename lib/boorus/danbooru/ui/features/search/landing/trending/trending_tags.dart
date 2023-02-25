@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
 import 'package:boorusama/core/core.dart';
 
 class TrendingTags extends StatelessWidget {
@@ -18,7 +18,7 @@ class TrendingTags extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tags = context.select((SearchKeywordCubit cubit) => cubit.state.data);
+    final tags = context.select((TrendingTagCubit cubit) => cubit.state.tags);
 
     return tags != null && tags.isNotEmpty
         ? Wrap(
