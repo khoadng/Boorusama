@@ -61,6 +61,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
@@ -339,7 +340,7 @@ void main() async {
                   final poolRepo = PoolRepositoryApi(api, accountRepo);
 
                   final blacklistedTagRepo =
-                      BlacklistedTagsRepository(userRepo);
+                      BlacklistedTagsRepositoryImpl(userRepo);
 
                   final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,

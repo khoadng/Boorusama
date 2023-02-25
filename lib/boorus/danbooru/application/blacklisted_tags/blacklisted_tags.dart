@@ -1,2 +1,2 @@
 export 'blacklisted_tags_bloc.dart';
-export 'blacklisted_tags_repository.dart';
+export '../../infra/repositories/tags/blacklisted_tags_repository.dart';

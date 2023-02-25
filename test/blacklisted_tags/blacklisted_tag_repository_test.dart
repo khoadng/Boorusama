@@ -11,7 +11,7 @@ import '../common.dart';
 void main() {
   test('get blacklisted tags should return correct tags', () async {
     final tags = ['foo', 'bar'];
-    final repo = BlacklistedTagsRepository(mockUserRepo(tags));
+    final repo = BlacklistedTagsRepositoryImpl(mockUserRepo(tags));
 
     final expected = await repo.getBlacklistedTags(1);
 
@@ -22,7 +22,7 @@ void main() {
     final tags = ['foo', 'bar'];
     final newTags = [...tags, 'foobar'];
 
-    final repo = BlacklistedTagsRepository(mockUserRepo(tags));
+    final repo = BlacklistedTagsRepositoryImpl(mockUserRepo(tags));
 
     final success = await repo.setBlacklistedTags(0, newTags);
 
