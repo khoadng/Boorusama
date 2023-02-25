@@ -17,19 +17,26 @@ void _download(
   Post downloadable, {
   PermissionStatus? permission,
 }) {
+  final service = context.read<DownloadService>();
+  void download() => service.download(downloadable);
+
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
-    context.read<DownloadService>().download(downloadable);
+    download();
 
     return;
   }
 
   if (permission == PermissionStatus.granted) {
-    context.read<DownloadService>().download(downloadable);
+    download();
   } else {
     context
         .read<DeviceStoragePermissionBloc>()
-        .add(DeviceStoragePermissionRequested());
+        .add(DeviceStoragePermissionRequested(
+      onDone: (isGranted) {
+        if (isGranted) download();
+      },
+    ));
   }
 }
 

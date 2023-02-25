@@ -40,8 +40,14 @@ class DeviceStoragePermissionFetched extends DeviceStoragePermissionEvent {
 }
 
 class DeviceStoragePermissionRequested extends DeviceStoragePermissionEvent {
+  const DeviceStoragePermissionRequested({
+    this.onDone,
+  });
+
+  final void Function(bool isGranted)? onDone;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [onDone];
 }
 
 class DeviceStorageNotificationDisplayStatusChanged
@@ -76,6 +82,9 @@ class DeviceStoragePermissionBloc
     on<DeviceStoragePermissionRequested>(
       (event, emit) async {
         final status = await requestMediaPermissions(deviceInfo);
+
+        event.onDone?.call(status == PermissionStatus.granted);
+
         emit(state.copyWith(
           storagePermission: status,
           isNotificationRead: false,
