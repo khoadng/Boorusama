@@ -90,17 +90,6 @@ class UserRepositoryApi implements UserRepository {
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserSelfDto.fromJson(e))
       .then((d) => userDtoToUserSelf(d, defaultBlacklistedTags));
-
-  @override
-  Future<void> setUserBlacklistedTags(int id, String blacklistedTags) =>
-      _accountRepository.get().then(
-            (account) => _api.setBlacklistedTags(
-              account.username,
-              account.apiKey,
-              id,
-              blacklistedTags,
-            ),
-          );
 }
 
 User userDtoToUser(

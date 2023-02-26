@@ -11,5 +11,4 @@ abstract class UserRepository {
   });
   Future<User> getUserById(int id);
   Future<UserSelf?> getUserSelfById(int id);
-  Future<void> setUserBlacklistedTags(int id, String blacklistedTags);
 }

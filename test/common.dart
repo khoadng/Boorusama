@@ -42,8 +42,5 @@ UserRepository mockUserRepo(List<String> tags) {
     ),
   );
 
-  when(() => repo.setUserBlacklistedTags(any(), any()))
-      .thenAnswer((_) async => true);
-
   return repo;
 }
