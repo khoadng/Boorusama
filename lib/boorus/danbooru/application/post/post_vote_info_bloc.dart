@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_self.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 
 class PostVoteInfoState extends Equatable
@@ -110,12 +109,12 @@ class Voter extends Equatable {
     required this.voteTime,
   });
 
-  factory Voter.create(UserSelf user, PostVote vote) => Voter(
+  factory Voter.create(User user, PostVote vote) => Voter(
         user: user,
         voteTime: vote.createdAt,
       );
 
-  final UserSelf user;
+  final User user;
   final DateTime voteTime;
 
   @override

@@ -13,4 +13,5 @@ export 'related_tag_dto.dart';
 export 'saved_search_dto.dart';
 export 'tag_dto.dart';
 export 'user_dto.dart';
+export 'user_self_dto.dart';
 export 'wiki_dto.dart';

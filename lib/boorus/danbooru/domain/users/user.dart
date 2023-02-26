@@ -2,7 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'user_level.dart';
+import 'user_repository.dart';
 
 class User extends Equatable {
   const User({
@@ -40,3 +42,18 @@ extension UserX on User {
 
 typedef UserId = int;
 typedef Username = String;
+
+List<String> tagStringToListTagString(String str) => str.split('\n');
+
+Future<List<User>> Function(List<Favorite> favs) createUserWith(
+  UserRepository userRepository,
+) =>
+    (favs) async {
+      if (favs.isEmpty) {
+        return [];
+      }
+
+      return userRepository.getUsersByIdStringComma(
+        favs.map((e) => e.userId).join(','),
+      );
+    };

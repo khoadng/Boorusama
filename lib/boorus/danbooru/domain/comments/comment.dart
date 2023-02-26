@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user_self.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 typedef CommentId = int;
 typedef CommentScore = int;
@@ -57,7 +57,7 @@ class Comment extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
-  final UserSelf? creator;
+  final User? creator;
 
   @override
   List<Object?> get props => [

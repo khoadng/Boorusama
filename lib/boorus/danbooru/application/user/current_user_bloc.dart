@@ -50,8 +50,8 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
         return;
       }
 
-      await tryAsync<UserSelf>(
-        action: () => userRepository.getUserById(account.id),
+      await tryAsync<UserSelf?>(
+        action: () => userRepository.getUserSelfById(account.id),
         onSuccess: (data) async {
           emit(state.copyWith(
             user: () => data,

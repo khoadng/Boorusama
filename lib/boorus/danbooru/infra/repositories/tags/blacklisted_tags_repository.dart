@@ -13,8 +13,8 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   @override
   Future<List<String>> getBlacklistedTags(int uid) {
     return userRepository
-        .getUserById(uid)
-        .then((value) => value.blacklistedTags);
+        .getUserSelfById(uid)
+        .then((value) => value?.blacklistedTags ?? []);
   }
 
   @override

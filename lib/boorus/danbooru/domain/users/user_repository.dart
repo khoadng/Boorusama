@@ -2,13 +2,14 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'user_self.dart';
+import 'users.dart';
 
 abstract class UserRepository {
-  Future<List<UserSelf>> getUsersByIdStringComma(
+  Future<List<User>> getUsersByIdStringComma(
     String idComma, {
     CancelToken? cancelToken,
   });
-  Future<UserSelf> getUserById(int id);
+  Future<User> getUserById(int id);
+  Future<UserSelf?> getUserSelfById(int id);
   Future<void> setUserBlacklistedTags(int id, String blacklistedTags);
 }

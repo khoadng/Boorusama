@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 
 class PostFavoriteState extends Equatable
-    implements InfiniteLoadState<UserSelf, PostFavoriteState> {
+    implements InfiniteLoadState<User, PostFavoriteState> {
   const PostFavoriteState({
     required this.favoriters,
     required this.page,
@@ -26,9 +26,9 @@ class PostFavoriteState extends Equatable
         loading: false,
       );
 
-  final List<UserSelf> favoriters;
+  final List<User> favoriters;
   @override
-  List<UserSelf> get data => favoriters;
+  List<User> get data => favoriters;
   @override
   final int page;
   @override
@@ -40,7 +40,7 @@ class PostFavoriteState extends Equatable
   final String? error;
 
   PostFavoriteState copyWith({
-    List<UserSelf>? favoriters,
+    List<User>? favoriters,
     int? page,
     bool? hasMore,
     bool? refreshing,
@@ -72,7 +72,7 @@ class PostFavoriteState extends Equatable
     required bool hasMore,
     required bool refreshing,
     required bool loading,
-    required List<UserSelf> data,
+    required List<User> data,
   }) =>
       copyWith(
         favoriters: [...data],
@@ -104,11 +104,11 @@ class PostFavoriteFetched extends PostFavoriteEvent {
 }
 
 class PostFavoriteBloc extends Bloc<PostFavoriteEvent, PostFavoriteState>
-    with InfiniteLoadMixin<UserSelf, PostFavoriteState> {
+    with InfiniteLoadMixin<User, PostFavoriteState> {
   PostFavoriteBloc({
     required FavoritePostRepository favoritePostRepository,
     required UserRepository userRepository,
-    List<UserSelf>? initialData,
+    List<User>? initialData,
   }) : super(PostFavoriteState.initial()) {
     on<PostFavoriteFetched>(
       (event, emit) async {
