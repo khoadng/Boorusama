@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/dtext_parser.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/core/core.dart';
@@ -37,6 +38,10 @@ class CommentItem extends StatelessWidget {
           authorName: comment.authorName,
           authorLevel: comment.authorLevel,
           createdAt: comment.createdAt,
+          onTap: () => goToUserDetailsPage(
+            context,
+            uid: comment.authorId,
+          ),
         ),
         const SizedBox(height: 4),
         Dtext.parse(

@@ -14,11 +14,13 @@ class CommentHeader extends StatelessWidget {
     required this.authorName,
     this.authorLevel,
     required this.createdAt,
+    this.onTap,
   });
 
   final String authorName;
   final UserLevel? authorLevel;
   final DateTime createdAt;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +28,17 @@ class CommentHeader extends StatelessWidget {
       alignment: WrapAlignment.center,
       runAlignment: WrapAlignment.center,
       children: [
-        Text(
-          authorName.replaceAll('_', ' '),
-          style: TextStyle(
-            color: authorLevel != null
-                ? Color(getUserHexColor(authorLevel!))
-                : null,
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            authorName.replaceAll('_', ' '),
+            style: TextStyle(
+              color: authorLevel != null
+                  ? Color(getUserHexColor(authorLevel!))
+                  : null,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         const SizedBox(

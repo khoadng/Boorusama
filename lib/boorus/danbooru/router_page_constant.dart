@@ -33,6 +33,7 @@ class RouterPageConstant {
   static const savedSearchCreate = 'saved_search/create';
   static const savedSearchPatch = 'saved_search/patch';
 
+  static const user = 'user/details';
   static const profile = 'profile';
   static const favorties = 'favorites';
   static const favoriteGroups = 'favorite_groups';

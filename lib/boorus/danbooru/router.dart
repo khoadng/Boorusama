@@ -29,6 +29,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -71,6 +72,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -997,6 +999,25 @@ void goToCommentUpdatePage(
         postId: postId,
         commentId: commentId,
         initialContent: commentBody,
+      ),
+      settings: const RouteSettings(
+        name: RouterPageConstant.commentUpdate,
+      ),
+    ),
+  );
+}
+
+void goToUserDetailsPage(
+  BuildContext context, {
+  required int uid,
+}) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => BlocProvider(
+        create: (context) => UserBloc(
+          userRepository: context.read<UserRepository>(),
+        )..add(UserFetched(uid: uid)),
+        child: const UserDetailsPage(),
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
