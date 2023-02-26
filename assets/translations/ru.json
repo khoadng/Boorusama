@@ -87,7 +87,7 @@
             "login_required_notice" : "Вы должны войти в аккаунт для совершения действия",
             "open_wiki" : "Открыть wiki",
             "add_to_blacklist" : "Добавить в чёрный список",
-            "add_to_favorites" : "Add to favorites",
+            "add_to_favorites" : "Добавить в любимое",
             "copy_and_open_saved_search" : "Сохранить и открыть сохранённый запрос",
             "score" : {
                 "one" : "Оценка",
@@ -98,10 +98,10 @@
             "children_of": "Дочерний для"
         },
         "action" : {
-            "preview" : "Preview",
-            "view_comments" : "View comments",
-            "add_to_favorite_group": "Add to favorite group",
-            "select" : "Select"
+            "preview" : "Предпросмотр",
+            "view_comments" : "Просмотреть комментарии",
+            "add_to_favorite_group": "Добавить в любимое",
+            "select" : "Выбрать"
         },
         "image_fullview" : {
             "view_original" : "Просмотреть оригинальное изображение",
@@ -145,13 +145,13 @@
             "generic" : "Что-то пошло не так",
             "tag_limit" : "Максимальное количество тегов. Обновите свой аккаунт для расширения лимита",
             "database_timeout" : "Запрос прерван из-за слишком долгой обработки",
-            "rate_limited" : "You're being rate limited. Please try again later",
-            "pagination_limit" : "You're have reached pagination limit. It means you cannot scroll more",
-            "max_capacity" : "Server is under heavy load and cannot handle the request be, please try again later",
-            "down" : "Server is downn. please try again later",
-            "access_denied" : "Access denied",
-            "forbidden" : "Authentication failed",
-            "unknown" : "Unknown server error, please report this issue to the developer"
+            "rate_limited" : "Вы были ограниченны в количестве запросов, попробуйте позже",
+            "pagination_limit" : "Вы достигли предела разбивки на страницы, и теперь вы не можете прокручивать дальше",
+            "max_capacity" : "Сервер находится под нагрузкой и не может обработать запрос. Попробуйте позже",
+            "down" : "Сервер недоступен, пожалуйста, попробуйте позже",
+            "access_denied" : "Доступ запрещён",
+            "forbidden" : "Неудачная попытка аунтефикации",
+            "unknown" : "Неизвестная ошибка сервера, пожалуйста, сообщите об ней разработчикам"
         },
         "hint": "Поиск...",
         "no_result" : "Мы искали и там, и тут, но ничего не нашли.",
@@ -269,9 +269,9 @@
             "send_error_data_notice" : "Отправлять анонимные данные для обработки ошибок"
         },
         "performance" : {
-            "performance" : "Performance",
-            "posts_per_page" : "Posts per page",
-            "posts_per_page_explain" : "Number of thumbnails per page"
+            "performance" : "Производительность",
+            "posts_per_page" : "Размер страницы",
+            "posts_per_page_explain" : "Количество изображений на одной странице"
         },
         "safe_mode" : "Безопасный режим"
     },
@@ -360,29 +360,29 @@
     },
 
     "favorite_groups" : {
-        "favorite_groups" : "Favorite Groups",
-        "empty_group_notice" : "No favorite groups",
-        "create_group" : "Create group",
-        "edit_group" : "Edit group",
-        "add_to_group_dialog_title" : "Add to favorite group",
-        "add_to" : "Add to",
-        "create" : "Create",
+        "favorite_groups" : "Сборники",
+        "empty_group_notice" : "Нет сборников",
+        "create_group" : "Создать сборник",
+        "edit_group" : "Изменить сборник",
+        "add_to_group_dialog_title" : "Добавить в сборник",
+        "add_to" : "Добавить в",
+        "create" : "Создать",
         "private" : "Private",
-        "view_more_popup": "View",
-        "items_added_notification_popup" : "{0} posts added to {1}",
-        "group_name" : "Group name",
-        "group_name_hint" : "New group",
-        "all_posts" : "Posts",
-        "initial_posts_hint": "Enter ID numbers, separated by spaces (Optional)",
-        "is_private_group_option": "Private group",
-        "create_group_cancel" : "Cancel",
+        "view_more_popup": "Просмотреть",
+        "items_added_notification_popup" : "{0} изображений добавленно в {1}",
+        "group_name" : "Название группы",
+        "group_name_hint" : "Новый сборник",
+        "all_posts" : "Изображения",
+        "initial_posts_hint": "Введите индефикаторы изображений, разделяя их пробелом (необязательно)",
+        "is_private_group_option": "Приватный сборник",
+        "create_group_cancel" : "Отмена",
         "create_group_confirm" : "OK",
-        "max_limit_warning" : "Member can only create 10 favorite groups",
-        "duplicate_items_warning_notification" : "The entered posts already exist in the group",
-        "detete_confirmation" : "Are you sure you want to delete this favorite group",
+        "max_limit_warning" : "Учасники могут создать только 10 сборников",
+        "duplicate_items_warning_notification" : "Это изображение уже присутствует в сборнике",
+        "detete_confirmation" : "Вы уверенны в том, что хотите удалить этот сборник?",
         "group_item_counter" : {
-            "one": "{} item",
-            "other": "{} items"
+            "one": "{} предмет",
+            "other": "{} предмета/ов"
         } 
     },
 
