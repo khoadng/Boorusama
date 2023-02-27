@@ -556,6 +556,8 @@ class MoreActionButton extends StatelessWidget {
                 case 'add_to_blacklist':
                   goToAddToBlacklistPage(context, post);
                   break;
+                case 'set_wallpaper':
+                  break;
                 case 'view_in_browser':
                   launchExternalUrl(
                     post.getUriLink(endpoint),
@@ -582,6 +584,11 @@ class MoreActionButton extends StatelessWidget {
                 const PopupMenuItem(
                   value: 'add_to_blacklist',
                   child: Text('Add to blacklist'),
+                ),
+              if (isAndroid())
+                const PopupMenuItem(
+                  value: 'set_wallpaper',
+                  child: Text('Set as wallpaper'),
                 ),
               PopupMenuItem(
                 value: 'view_in_browser',
