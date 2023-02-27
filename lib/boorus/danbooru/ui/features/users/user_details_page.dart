@@ -40,7 +40,6 @@ class UserDetailsPage extends StatelessWidget {
     if (state.status == LoadStatus.success) {
       return Container(
         padding: const EdgeInsets.all(4),
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -75,100 +74,39 @@ class UserDetailsPage extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: Divider(),
+              child: Divider(
+                thickness: 2,
+                height: 26,
+              ),
             ),
             if (state.favorites != null)
               if (state.favorites!.isNotEmpty)
                 SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      const ListTile(
-                        title: Text('Favorites'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: SizedBox(
-                          height: 160,
-                          child: ListView.builder(
-                            itemCount: state.favorites!.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              final post = state.favorites![index];
-
-                              return Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: GestureDetector(
-                                  onTap: () => goToDetailPage(
-                                    context: context,
-                                    posts: state.favorites!
-                                        .map((e) => PostData(
-                                              post: e,
-                                              isFavorited: false,
-                                              pools: const [],
-                                            ))
-                                        .toList(),
-                                    initialIndex: index,
-                                  ),
-                                  child: BooruImage(
-                                    imageUrl: post.thumbnailImageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: _PreviewList(
+                    posts: state.favorites!,
+                    onViewMore: () =>
+                        goToSearchPage(context, tag: 'ordfav:${user.name}'),
+                    title: 'Favorites',
                   ),
                 )
               else
                 const SliverToBoxAdapter(
                   child: Center(child: CircularProgressIndicator()),
                 ),
+            const SliverToBoxAdapter(
+              child: Divider(
+                thickness: 2,
+                height: 26,
+              ),
+            ),
             if (state.uploads != null)
               if (state.uploads!.isNotEmpty)
                 SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      const ListTile(
-                        title: Text('Uploads'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: SizedBox(
-                          height: 160,
-                          child: ListView.builder(
-                            itemCount: state.uploads!.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              final post = state.uploads![index];
-
-                              return Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: GestureDetector(
-                                  onTap: () => goToDetailPage(
-                                    context: context,
-                                    posts: state.favorites!
-                                        .map((e) => PostData(
-                                              post: e,
-                                              isFavorited: false,
-                                              pools: const [],
-                                            ))
-                                        .toList(),
-                                    initialIndex: index,
-                                  ),
-                                  child: BooruImage(
-                                    imageUrl: post.thumbnailImageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: _PreviewList(
+                    posts: state.uploads!,
+                    onViewMore: () =>
+                        goToSearchPage(context, tag: 'user:${user.name}'),
+                    title: 'Uploads',
                   ),
                 )
               else
@@ -187,5 +125,74 @@ class UserDetailsPage extends StatelessWidget {
         child: CircularProgressIndicator(),
       );
     }
+  }
+}
+
+class _PreviewList extends StatelessWidget {
+  const _PreviewList({
+    required this.title,
+    required this.posts,
+    required this.onViewMore,
+  });
+
+  final String title;
+  final List<Post> posts;
+  final void Function() onViewMore;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w900),
+          ),
+          visualDensity: const VisualDensity(
+            horizontal: -4,
+            vertical: -4,
+          ),
+          trailing: TextButton(
+            onPressed: onViewMore,
+            child: const Text('View all'),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: SizedBox(
+            height: 160,
+            child: ListView.builder(
+              itemCount: posts.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+
+                return Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: GestureDetector(
+                    onTap: () => goToDetailPage(
+                      context: context,
+                      posts: posts
+                          .map((e) => PostData(
+                                post: e,
+                                isFavorited: false,
+                                pools: const [],
+                              ))
+                          .toList(),
+                      initialIndex: index,
+                    ),
+                    child: BooruImage(
+                      borderRadius: BorderRadius.zero,
+                      imageUrl: post.thumbnailImageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
