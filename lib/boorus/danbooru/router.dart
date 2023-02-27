@@ -1016,6 +1016,7 @@ void goToUserDetailsPage(
       builder: (context) => BlocProvider(
         create: (context) => UserBloc(
           userRepository: context.read<UserRepository>(),
+          postRepository: context.read<PostRepository>(),
         )..add(UserFetched(uid: uid)),
         child: const UserDetailsPage(),
       ),
