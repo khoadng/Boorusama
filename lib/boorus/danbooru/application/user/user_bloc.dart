@@ -94,9 +94,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         onUnknownFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (data) async {
-          //TODO: remove hardcoded
-          add(const _FetchedFavorites(username: 'Strobe_Red'));
-          add(const _FetchedUploads(username: 'Strobe_Red'));
+          add(_FetchedFavorites(username: data.name));
+
+          if (data.uploadCount > 0) {
+            add(_FetchedUploads(username: data.name));
+          }
 
           emit(state.copyWith(
             user: data,

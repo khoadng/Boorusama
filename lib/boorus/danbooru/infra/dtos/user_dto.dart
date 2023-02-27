@@ -10,6 +10,12 @@ class UserDto {
     required this.postUploadCount,
     required this.isBanned,
     required this.levelString,
+    required this.uploadCount,
+    required this.tagEditCount,
+    required this.noteEditCount,
+    required this.commentCount,
+    required this.forumPostCount,
+    required this.favoriteGroupCount,
   });
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,12 @@ class UserDto {
       postUploadCount: json['post_upload_count'],
       isBanned: json['is_banned'],
       levelString: json['level_string'],
+      uploadCount: json['post_upload_count'],
+      tagEditCount: json['post_update_count'],
+      noteEditCount: json['note_update_count'],
+      commentCount: json['comment_count'],
+      forumPostCount: json['forum_post_count'],
+      favoriteGroupCount: json['favorite_group_count'],
     );
   }
 
@@ -39,4 +51,11 @@ class UserDto {
   final int? postUploadCount;
   final bool? isBanned;
   final String? levelString;
+
+  final int? uploadCount;
+  final int? tagEditCount;
+  final int? noteEditCount;
+  final int? commentCount;
+  final int? forumPostCount;
+  final int? favoriteGroupCount;
 }

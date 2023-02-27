@@ -101,6 +101,12 @@ User userDtoToUser(
       level: intToUserLevel(d.level!),
       name: d.name!,
       joinedDate: d.createdAt!,
+      uploadCount: d.uploadCount ?? 0,
+      tagEditCount: d.tagEditCount ?? 0,
+      noteEditCount: d.noteEditCount ?? 0,
+      commentCount: d.commentCount ?? 0,
+      forumPostCount: d.forumPostCount ?? 0,
+      favoriteGroupCount: d.favoriteGroupCount ?? 0,
     );
   } catch (e, stackTrace) {
     Error.throwWithStackTrace(

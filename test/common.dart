@@ -31,6 +31,12 @@ UserRepository mockUserRepo(List<String> tags) {
       level: UserLevel.member,
       name: 'User',
       joinedDate: DateTime(1),
+      uploadCount: 0,
+      tagEditCount: 0,
+      noteEditCount: 0,
+      commentCount: 0,
+      forumPostCount: 0,
+      favoriteGroupCount: 0,
     ),
   );
 

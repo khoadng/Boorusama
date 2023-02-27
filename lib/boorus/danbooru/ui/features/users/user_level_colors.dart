@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:flutter/material.dart';
 
 int getUserHexColor(UserLevel level) {
   switch (level) {
@@ -24,4 +25,8 @@ int getUserHexColor(UserLevel level) {
     case UserLevel.restricted:
       return 0xff0073ff;
   }
+}
+
+extension UserColor on UserLevel {
+  Color toColor() => Color(getUserHexColor(this));
 }

@@ -12,6 +12,12 @@ class User extends Equatable {
     required this.level,
     required this.name,
     required this.joinedDate,
+    required this.uploadCount,
+    required this.tagEditCount,
+    required this.noteEditCount,
+    required this.commentCount,
+    required this.forumPostCount,
+    required this.favoriteGroupCount,
   });
 
   factory User.placeholder() => User(
@@ -19,15 +25,38 @@ class User extends Equatable {
         level: UserLevel.member,
         name: 'User',
         joinedDate: DateTime(1),
+        uploadCount: 0,
+        tagEditCount: 0,
+        noteEditCount: 0,
+        commentCount: 0,
+        forumPostCount: 0,
+        favoriteGroupCount: 0,
       );
 
   final UserId id;
   final UserLevel level;
   final Username name;
   final DateTime joinedDate;
+  final int uploadCount;
+  final int tagEditCount;
+  final int noteEditCount;
+  final int commentCount;
+  final int forumPostCount;
+  final int favoriteGroupCount;
 
   @override
-  List<Object?> get props => [id, level, name, joinedDate];
+  List<Object?> get props => [
+        id,
+        level,
+        name,
+        joinedDate,
+        uploadCount,
+        tagEditCount,
+        noteEditCount,
+        commentCount,
+        forumPostCount,
+        favoriteGroupCount,
+      ];
 }
 
 extension UserX on User {
@@ -42,6 +71,12 @@ extension UserX on User {
         level: level ?? this.level,
         name: name ?? this.name,
         joinedDate: joinedDate ?? this.joinedDate,
+        uploadCount: uploadCount,
+        tagEditCount: tagEditCount,
+        noteEditCount: noteEditCount,
+        commentCount: commentCount,
+        forumPostCount: forumPostCount,
+        favoriteGroupCount: favoriteGroupCount,
       );
 }
 
