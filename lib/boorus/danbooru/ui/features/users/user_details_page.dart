@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
+import 'package:recase/recase.dart';
 
 class UserDetailsPage extends StatelessWidget {
   const UserDetailsPage({
@@ -19,42 +20,48 @@ class UserDetailsPage extends StatelessWidget {
     final user = context.watch<UserBloc>().state;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
       appBar: AppBar(
         title: Text('profile.profile'.tr()),
       ),
       body: SafeArea(
-        child: _buildBody(user),
+        child: _buildBody(context, user),
       ),
     );
   }
 
-  Widget _buildBody(UserState state) {
+  Widget _buildBody(BuildContext context, UserState state) {
     final user = state.user;
 
     if (state.status == LoadStatus.success) {
-      return CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                ListTile(
-                  dense: true,
-                  leading: const Text('profile.user_id').tr(),
-                  trailing: Text(
-                    user.id.toString(),
-                  ),
+      return Container(
+        padding: const EdgeInsets.all(4),
+        margin: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  children: [
+                    Text(
+                      user.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Chip(label: Text(user.level.name.sentenceCase)),
+                  ],
                 ),
-                ListTile(
-                  dense: true,
-                  leading: const Text('profile.level').tr(),
-                  trailing: Text(
-                    user.level.name,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SliverToBoxAdapter(
+              child: Divider(),
+            ),
+          ],
+        ),
       );
     } else if (state.status == LoadStatus.failure) {
       return const Center(
