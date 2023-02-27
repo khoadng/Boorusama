@@ -1,19 +1,18 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:recase/recase.dart';
-
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'user_level_colors.dart';
 
 class UserDetailsPage extends StatelessWidget {
