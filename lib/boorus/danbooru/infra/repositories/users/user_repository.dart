@@ -100,6 +100,7 @@ User userDtoToUser(
       id: d.id!,
       level: intToUserLevel(d.level!),
       name: d.name!,
+      joinedDate: d.createdAt!,
     );
   } catch (e, stackTrace) {
     Error.throwWithStackTrace(

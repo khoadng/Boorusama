@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:recase/recase.dart';
 
 class UserDetailsPage extends StatelessWidget {
@@ -47,13 +48,26 @@ class UserDetailsPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      user.name,
-                      style: Theme.of(context).textTheme.titleLarge,
+                    Row(
+                      children: [
+                        Text(
+                          user.name,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Chip(label: Text(user.level.name.sentenceCase)),
+                      ],
                     ),
-                    Chip(label: Text(user.level.name.sentenceCase)),
+                    Row(
+                      children: [
+                        const Text('Member since '),
+                        Text(
+                          DateFormat('MMM dd, yyyy').format(user.joinedDate),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

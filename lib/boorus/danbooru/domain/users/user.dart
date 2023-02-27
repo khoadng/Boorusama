@@ -11,20 +11,23 @@ class User extends Equatable {
     required this.id,
     required this.level,
     required this.name,
+    required this.joinedDate,
   });
 
-  factory User.placeholder() => const User(
+  factory User.placeholder() => User(
         id: 0,
         level: UserLevel.member,
         name: 'User',
+        joinedDate: DateTime(1),
       );
 
   final UserId id;
   final UserLevel level;
   final Username name;
+  final DateTime joinedDate;
 
   @override
-  List<Object?> get props => [id, level, name];
+  List<Object?> get props => [id, level, name, joinedDate];
 }
 
 extension UserX on User {
@@ -32,11 +35,13 @@ extension UserX on User {
     UserId? id,
     UserLevel? level,
     Username? name,
+    DateTime? joinedDate,
   }) =>
       User(
         id: id ?? this.id,
         level: level ?? this.level,
         name: name ?? this.name,
+        joinedDate: joinedDate ?? this.joinedDate,
       );
 }
 
