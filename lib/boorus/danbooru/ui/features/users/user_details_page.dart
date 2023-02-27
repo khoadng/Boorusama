@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +43,7 @@ class UserDetailsPage extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: CustomScrollView(
           slivers: [
@@ -95,9 +97,22 @@ class UserDetailsPage extends StatelessWidget {
 
                               return Padding(
                                 padding: const EdgeInsets.all(4),
-                                child: BooruImage(
-                                  imageUrl: post.thumbnailImageUrl,
-                                  fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () => goToDetailPage(
+                                    context: context,
+                                    posts: state.favorites!
+                                        .map((e) => PostData(
+                                              post: e,
+                                              isFavorited: false,
+                                              pools: const [],
+                                            ))
+                                        .toList(),
+                                    initialIndex: index,
+                                  ),
+                                  child: BooruImage(
+                                    imageUrl: post.thumbnailImageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               );
                             },
@@ -131,9 +146,22 @@ class UserDetailsPage extends StatelessWidget {
 
                               return Padding(
                                 padding: const EdgeInsets.all(4),
-                                child: BooruImage(
-                                  imageUrl: post.thumbnailImageUrl,
-                                  fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () => goToDetailPage(
+                                    context: context,
+                                    posts: state.favorites!
+                                        .map((e) => PostData(
+                                              post: e,
+                                              isFavorited: false,
+                                              pools: const [],
+                                            ))
+                                        .toList(),
+                                    initialIndex: index,
+                                  ),
+                                  child: BooruImage(
+                                    imageUrl: post.thumbnailImageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               );
                             },
