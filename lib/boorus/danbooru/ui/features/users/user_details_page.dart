@@ -25,7 +25,6 @@ class UserDetailsPage extends StatelessWidget {
     final user = context.watch<UserBloc>().state;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
