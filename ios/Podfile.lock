@@ -51,18 +51,18 @@ PODS:
   - Firebase/Performance (10.3.0):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 10.3.0)
-  - firebase_analytics (10.1.3):
+  - firebase_analytics (10.1.4):
     - Firebase/Analytics (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.6.1):
+  - firebase_core (2.7.0):
     - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_crashlytics (3.0.14):
+  - firebase_crashlytics (3.0.15):
     - Firebase/Crashlytics (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_performance (0.9.0-13):
+  - firebase_performance (0.9.0-14):
     - Firebase/Performance (= 10.3.0)
     - firebase_core
     - Flutter
@@ -310,10 +310,10 @@ SPEC CHECKSUMS:
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_analytics: 649edaf7b1f891d4f04e5e3d52c051d8d73432f8
-  firebase_core: 6242f038aefa4582e028536e71312f7e3a41e6bb
-  firebase_crashlytics: 0c975a4052e8a0dc4238b98fff3ac7208a45b20d
-  firebase_performance: 3126f5e08dc0ba6623dc6073cc15fdd6c86cbb32
+  firebase_analytics: 4f57c422c9c6225cd5ddd5fca28f92bde5fb21b5
+  firebase_core: 128d8c43c3a453a4a67463314fc3761bedff860b
+  firebase_crashlytics: 0a99d06e38030d769021340b551d8ac4b27345fc
+  firebase_performance: 3c1458dca5341be250ed91b704c9e424690ca46e
   FirebaseABTesting: e6660693429b4663573c82f8d2f1041deff1753a
   FirebaseAnalytics: 036232b6a1e2918e5f67572417be1173576245f3
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
@@ -332,20 +332,20 @@ SPEC CHECKSUMS:
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   rate_my_app: 96f658ddb7f0a8d2f46d54452583f084760aef57
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: 9c36e66c8ce4620b41a7407698dda44211a96764
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
-  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
+  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
-  url_launcher_ios: fb12c43172927bb5cf75aeebd073f883801f1993
-  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
+  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  video_player_avfoundation: 6d971a232d72e6ee25368378d48a079dea01f1cf
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
+  webview_flutter_wkwebview: d08f59cde5e8402c345c0bdda35ac0031352dcae
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 

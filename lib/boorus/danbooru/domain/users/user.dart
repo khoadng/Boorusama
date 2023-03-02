@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -9,29 +6,57 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'user_level.dart';
 import 'user_repository.dart';
 
-@immutable
 class User extends Equatable {
   const User({
     required this.id,
     required this.level,
     required this.name,
-    required this.blacklistedTags,
+    required this.joinedDate,
+    required this.uploadCount,
+    required this.tagEditCount,
+    required this.noteEditCount,
+    required this.commentCount,
+    required this.forumPostCount,
+    required this.favoriteGroupCount,
   });
 
-  factory User.placeholder() => const User(
+  factory User.placeholder() => User(
         id: 0,
         level: UserLevel.member,
         name: 'User',
-        blacklistedTags: [],
+        joinedDate: DateTime(1),
+        uploadCount: 0,
+        tagEditCount: 0,
+        noteEditCount: 0,
+        commentCount: 0,
+        forumPostCount: 0,
+        favoriteGroupCount: 0,
       );
 
   final UserId id;
   final UserLevel level;
   final Username name;
-  final List<String> blacklistedTags;
+  final DateTime joinedDate;
+  final int uploadCount;
+  final int tagEditCount;
+  final int noteEditCount;
+  final int commentCount;
+  final int forumPostCount;
+  final int favoriteGroupCount;
 
   @override
-  List<Object?> get props => [id, level, name, blacklistedTags];
+  List<Object?> get props => [
+        id,
+        level,
+        name,
+        joinedDate,
+        uploadCount,
+        tagEditCount,
+        noteEditCount,
+        commentCount,
+        forumPostCount,
+        favoriteGroupCount,
+      ];
 }
 
 extension UserX on User {
@@ -39,12 +64,19 @@ extension UserX on User {
     UserId? id,
     UserLevel? level,
     Username? name,
+    DateTime? joinedDate,
   }) =>
       User(
         id: id ?? this.id,
         level: level ?? this.level,
         name: name ?? this.name,
-        blacklistedTags: blacklistedTags,
+        joinedDate: joinedDate ?? this.joinedDate,
+        uploadCount: uploadCount,
+        tagEditCount: tagEditCount,
+        noteEditCount: noteEditCount,
+        commentCount: commentCount,
+        forumPostCount: forumPostCount,
+        favoriteGroupCount: favoriteGroupCount,
       );
 }
 
