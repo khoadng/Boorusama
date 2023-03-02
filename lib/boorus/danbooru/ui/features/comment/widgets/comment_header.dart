@@ -28,7 +28,7 @@ class CommentHeader extends StatelessWidget {
       alignment: WrapAlignment.center,
       runAlignment: WrapAlignment.center,
       children: [
-        GestureDetector(
+        InkWell(
           onTap: onTap,
           child: Text(
             authorName.replaceAll('_', ' '),
