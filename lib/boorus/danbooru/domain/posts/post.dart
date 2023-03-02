@@ -18,8 +18,8 @@ class Post extends Equatable
     implements base.Post {
   const Post({
     required this.id,
-    required this.thumbnailImageUrl,
-    required this.sampleImageUrl,
+    required String thumbnailImageUrl,
+    required String sampleImageUrl,
     required this.originalImageUrl,
     required this.copyrightTags,
     required this.characterTags,
@@ -49,7 +49,9 @@ class Post extends Equatable
     required this.comments,
     required this.totalComments,
     this.artistCommentary,
-  }) : _source = source;
+  })  : _source = source,
+        _sampleImageUrl = sampleImageUrl,
+        _thumbnailImageUrl = thumbnailImageUrl;
 
   factory Post.empty() => Post(
         id: 0,
@@ -85,12 +87,20 @@ class Post extends Equatable
         parentId: null,
       );
 
+  final String _thumbnailImageUrl;
+  final String _sampleImageUrl;
+
   @override
   final int id;
   @override
-  final String thumbnailImageUrl;
+  String get thumbnailImageUrl =>
+      _thumbnailImageUrl.replaceAll('preview', '360x360');
   @override
-  final String sampleImageUrl;
+  String get sampleImageUrl => _thumbnailImageUrl.isNotEmpty
+      ? _thumbnailImageUrl
+          .replaceAll('preview', '720x720')
+          .replaceAll('.jpg', '.webp')
+      : _sampleImageUrl;
   @override
   final String originalImageUrl;
   final List<String> copyrightTags;
