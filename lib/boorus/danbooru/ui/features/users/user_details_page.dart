@@ -54,7 +54,7 @@ class UserDetailsPage extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: SizedBox(height: 8),
+              child: SizedBox(height: 12),
             ),
             SliverToBoxAdapter(
               child: Row(
@@ -127,7 +127,7 @@ class UserDetailsPage extends StatelessWidget {
                 const SliverToBoxAdapter(
                   child: Divider(
                     thickness: 2,
-                    height: 26,
+                    height: 36,
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -260,7 +260,7 @@ class _PreviewList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: SizedBox(
-            height: 120,
+            height: 150,
             child: ListView.builder(
               itemCount: posts.length,
               scrollDirection: Axis.horizontal,
