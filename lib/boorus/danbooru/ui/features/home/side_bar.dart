@@ -117,14 +117,6 @@ class SideBarMenu extends StatelessWidget {
                           goToSettingPage(context);
                         },
                       ),
-                      _SideMenuTile(
-                        icon: const Icon(Icons.settings_outlined),
-                        title: Text('sideMenu.settings'.tr()),
-                        onTap: () {
-                          if (popOnSelect) Navigator.of(context).pop();
-                          goToUserDetailsPage(context, uid: 562846);
-                        },
-                      ),
                     ],
                   )
                 : const SizedBox.shrink();
