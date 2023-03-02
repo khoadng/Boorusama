@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 typedef CommentId = int;
 typedef CommentScore = int;

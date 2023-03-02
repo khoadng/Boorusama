@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 
 class PostVoteInfoState extends Equatable

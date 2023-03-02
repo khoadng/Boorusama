@@ -339,8 +339,11 @@ void main() async {
 
                   final poolRepo = PoolRepositoryApi(api, accountRepo);
 
-                  final blacklistedTagRepo =
-                      BlacklistedTagsRepositoryImpl(userRepo);
+                  final blacklistedTagRepo = BlacklistedTagsRepositoryImpl(
+                    userRepo,
+                    accountRepo,
+                    api,
+                  );
 
                   final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,

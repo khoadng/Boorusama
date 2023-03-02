@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -24,4 +27,8 @@ int getUserHexColor(UserLevel level) {
     case UserLevel.restricted:
       return 0xff0073ff;
   }
+}
+
+extension UserColor on UserLevel {
+  Color toColor() => Color(getUserHexColor(this));
 }
