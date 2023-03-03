@@ -96,11 +96,16 @@ class Post extends Equatable
   String get thumbnailImageUrl =>
       _thumbnailImageUrl.replaceAll('preview', '360x360');
   @override
-  String get sampleImageUrl => _thumbnailImageUrl.isNotEmpty
-      ? _thumbnailImageUrl
-          .replaceAll('preview', '720x720')
-          .replaceAll('.jpg', '.webp')
-      : _sampleImageUrl;
+  String get sampleImageUrl {
+    if (isAnimated) return _sampleImageUrl;
+
+    return _thumbnailImageUrl.isNotEmpty
+        ? _thumbnailImageUrl
+            .replaceAll('preview', '720x720')
+            .replaceAll('.jpg', '.webp')
+        : _sampleImageUrl;
+  }
+
   @override
   final String originalImageUrl;
   final List<String> copyrightTags;
@@ -162,8 +167,8 @@ class Post extends Equatable
   }) =>
       Post(
         id: id ?? this.id,
-        thumbnailImageUrl: thumbnailImageUrl,
-        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
+        thumbnailImageUrl: _thumbnailImageUrl,
+        sampleImageUrl: sampleImageUrl ?? _sampleImageUrl,
         originalImageUrl: originalImageUrl ?? this.originalImageUrl,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,

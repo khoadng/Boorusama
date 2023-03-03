@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -65,7 +64,7 @@ int displaySizeToGridCountWeight(ScreenSize size) {
   return 3;
 }
 
-class SliverPostGrid extends HookWidget {
+class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({
     super.key,
     required this.posts,
@@ -98,26 +97,6 @@ class SliverPostGrid extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Workaround to prevent memory leak, clear images every 10 seconds
-    final timer = useState(Timer.periodic(const Duration(seconds: 10), (_) {
-      PaintingBinding.instance.imageCache.clearLiveImages();
-    }));
-
-    useEffect(
-      () {
-        return () => timer.value.cancel();
-      },
-      [],
-    );
-
-    // Clear live image cache everytime this widget built
-    useEffect(() {
-      PaintingBinding.instance.imageCache.clearLiveImages();
-
-      // ignore: no-empty-block
-      return () {};
-    });
-
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) {
         return BlocBuilder<SettingsCubit, SettingsState>(
