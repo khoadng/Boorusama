@@ -82,61 +82,77 @@ class _InfinitePostListState extends State<InfinitePostList> {
           });
         }
       },
-      child: InfiniteLoadListScrollView(
-        bottomBuilder: () =>
-            widget.multiSelectActions?.call(selectedPosts, _endMultiSelect) ??
-            DefaultMultiSelectionActions(
-              selectedPosts: selectedPosts,
-              endMultiSelect: _endMultiSelect,
+      child: WillPopScope(
+        onWillPop: _onWillPop,
+        child: InfiniteLoadListScrollView(
+          bottomBuilder: () =>
+              widget.multiSelectActions?.call(
+                selectedPosts,
+                _endMultiSelect,
+              ) ??
+              DefaultMultiSelectionActions(
+                selectedPosts: selectedPosts,
+                endMultiSelect: _endMultiSelect,
+              ),
+          topBuilder: () => AppBar(
+            leading: IconButton(
+              onPressed: _endMultiSelect,
+              icon: const Icon(Icons.close),
             ),
-        topBuilder: () => AppBar(
-          leading: IconButton(
-            onPressed: _endMultiSelect,
-            icon: const Icon(Icons.close),
+            title: selectedPosts.isEmpty
+                ? const Text('Select items')
+                : Text('${selectedPosts.length} Items selected'),
           ),
-          title: selectedPosts.isEmpty
-              ? const Text('Select items')
-              : Text('${selectedPosts.length} Items selected'),
+          enableRefresh: widget.onRefresh != null,
+          multiSelect: multiSelect,
+          isLoading: state.loading,
+          enableLoadMore: state.hasMore,
+          onLoadMore: () => widget.onLoadMore.call(),
+          onRefresh: (controller) {
+            widget.onRefresh?.call(controller);
+            Future.delayed(
+              const Duration(seconds: 1),
+              () => controller.refreshCompleted(),
+            );
+          },
+          scrollController: _autoScrollController,
+          refreshController: _refreshController,
+          sliverBuilder: (controller) => [
+            if (widget.sliverHeaderBuilder != null)
+              ...widget.sliverHeaderBuilder!(context),
+            PostGrid(
+              controller: controller,
+              onPostSelectChanged: (post, selected) {
+                setState(() {
+                  if (selected) {
+                    selectedPosts.add(post);
+                  } else {
+                    selectedPosts.remove(post);
+                  }
+                });
+              },
+              multiSelect: multiSelect,
+              contextMenuBuilder: (post) =>
+                  widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
+                  DefaultPostContextMenu(
+                    onMultiSelect: _enableMultiSelect,
+                    post: post,
+                  ),
+            ),
+          ],
         ),
-        enableRefresh: widget.onRefresh != null,
-        multiSelect: multiSelect,
-        isLoading: state.loading,
-        enableLoadMore: state.hasMore,
-        onLoadMore: () => widget.onLoadMore.call(),
-        onRefresh: (controller) {
-          widget.onRefresh?.call(controller);
-          Future.delayed(
-            const Duration(seconds: 1),
-            () => controller.refreshCompleted(),
-          );
-        },
-        scrollController: _autoScrollController,
-        refreshController: _refreshController,
-        sliverBuilder: (controller) => [
-          if (widget.sliverHeaderBuilder != null)
-            ...widget.sliverHeaderBuilder!(context),
-          PostGrid(
-            controller: controller,
-            onPostSelectChanged: (post, selected) {
-              setState(() {
-                if (selected) {
-                  selectedPosts.add(post);
-                } else {
-                  selectedPosts.remove(post);
-                }
-              });
-            },
-            multiSelect: multiSelect,
-            contextMenuBuilder: (post) =>
-                widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
-                DefaultPostContextMenu(
-                  onMultiSelect: _enableMultiSelect,
-                  post: post,
-                ),
-          ),
-        ],
       ),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    if (multiSelect) {
+      _endMultiSelect();
+
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void _enableMultiSelect() => setState(() {
