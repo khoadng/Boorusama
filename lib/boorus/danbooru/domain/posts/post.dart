@@ -107,6 +107,9 @@ class Post extends Equatable
   }
 
   @override
+  String get sampleLargeImageUrl => _sampleImageUrl;
+
+  @override
   final String originalImageUrl;
   final List<String> copyrightTags;
   final List<String> characterTags;

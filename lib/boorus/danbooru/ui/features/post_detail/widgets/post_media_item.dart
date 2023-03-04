@@ -91,7 +91,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                       'User-Agent':
                           context.read<UserAgentGenerator>().generate(),
                     },
-                    imageUrl: widget.post.sampleImageUrl,
+                    imageUrl: widget.post.sampleLargeImageUrl,
                     imageBuilder: (context, imageProvider) {
                       DefaultCacheManager()
                           .getFileFromCache(widget.post.sampleImageUrl)

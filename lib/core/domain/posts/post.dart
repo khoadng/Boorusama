@@ -5,6 +5,7 @@ abstract class Post {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
+  String get sampleLargeImageUrl;
   String get originalImageUrl;
   List<String> get tags;
   String? get source;
