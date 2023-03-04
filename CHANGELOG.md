@@ -1,3 +1,11 @@
+# 2.11.0
+- Add a user details page
+- Add a new settings for performance
+- You can long press a tag to quickly add it to blacklist in post details
+- Add a view comments button in context menu
+- Add compatibility support for Android 13
+- Use higher quality images for animated posts' thumbnails
+
 # 2.10.0
 - Add support for favorite groups
 - Add a search bar in search history page
