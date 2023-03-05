@@ -29,6 +29,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -56,6 +57,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
@@ -66,9 +68,11 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.d
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -832,6 +836,18 @@ void goToSettingsDownload(BuildContext context, Widget oldWidget) {
   );
 }
 
+void goToSettingsPerformance(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const PerformancePage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsPerformance,
+      ),
+    ),
+  );
+}
+
 void goToSettingsSearch(BuildContext context, Widget oldWidget) {
   Navigator.of(context).push(
     ParallaxSlideInPageRoute(
@@ -983,6 +999,26 @@ void goToCommentUpdatePage(
         postId: postId,
         commentId: commentId,
         initialContent: commentBody,
+      ),
+      settings: const RouteSettings(
+        name: RouterPageConstant.commentUpdate,
+      ),
+    ),
+  );
+}
+
+void goToUserDetailsPage(
+  BuildContext context, {
+  required int uid,
+}) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => BlocProvider(
+        create: (context) => UserBloc(
+          userRepository: context.read<UserRepository>(),
+          postRepository: context.read<PostRepository>(),
+        )..add(UserFetched(uid: uid)),
+        child: const UserDetailsPage(),
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
@@ -1342,9 +1378,9 @@ void goToImagePreviewPage(BuildContext context, Post post) {
     ),
     pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
       child: BooruImage(
-        placeholderUrl: post.previewImageUrl,
+        placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
-        imageUrl: post.normalImageUrl,
+        imageUrl: post.sampleImageUrl,
         previewCacheManager: context.read<PreviewImageCacheManager>(),
       ),
     ),
@@ -1465,6 +1501,34 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
           ),
         );
       },
+    ),
+  );
+}
+
+Future<bool?> goToAddToBlacklistPage(
+  BuildContext context,
+  Post post,
+) {
+  final bloc = context.read<BlacklistedTagsBloc>();
+
+  return showMaterialModalBottomSheet<bool>(
+    context: navigatorKey.currentContext ?? context,
+    duration: const Duration(milliseconds: 200),
+    expand: true,
+    builder: (dialogContext) => AddToBlacklistPage(
+      tags: post.extractTags(),
+      onAdded: (tag) => bloc.add(BlacklistedTagAdded(
+        tag: tag.rawName,
+        onFailure: (message) => showSimpleSnackBar(
+          context: context,
+          content: Text(message),
+        ),
+        onSuccess: (_) => showSimpleSnackBar(
+          context: context,
+          duration: const Duration(seconds: 2),
+          content: const Text('Blacklisted tags updated'),
+        ),
+      )),
     ),
   );
 }

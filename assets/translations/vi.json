@@ -97,8 +97,11 @@
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
         },
-        "quick_preview" : {
-            "view_notes" : "Xem ảnh đã được dịch"
+        "action" : {
+            "preview" : "Preview",
+            "view_comments" : "View comments",
+            "add_to_favorite_group": "Add to favorite group",
+            "select" : "Select"
         },
         "image_fullview" : {
             "view_original" : "Xem ảnh gốc",
@@ -263,6 +266,11 @@
         "privacy" : {
             "privacy" : "Riêng tư",
             "send_error_data_notice" : "Tự động gửi lỗi cho dev"
+        },
+        "performance" : {
+            "performance" : "Performance",
+            "posts_per_page" : "Posts per page",
+            "posts_per_page_explain" : "Number of thumbnails per page"
         },
         "safe_mode" : "18+ mode"
     },

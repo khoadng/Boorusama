@@ -30,12 +30,24 @@ UserRepository mockUserRepo(List<String> tags) {
       id: 0,
       level: UserLevel.member,
       name: 'User',
-      blacklistedTags: tags,
+      joinedDate: DateTime(1),
+      uploadCount: 0,
+      tagEditCount: 0,
+      noteEditCount: 0,
+      commentCount: 0,
+      forumPostCount: 0,
+      favoriteGroupCount: 0,
     ),
   );
 
-  when(() => repo.setUserBlacklistedTags(any(), any()))
-      .thenAnswer((_) async => true);
+  when(() => repo.getUserSelfById(any())).thenAnswer(
+    (_) async => UserSelf(
+      id: 0,
+      level: UserLevel.member,
+      name: 'User',
+      blacklistedTags: tags,
+    ),
+  );
 
   return repo;
 }

@@ -9,7 +9,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
@@ -19,8 +18,10 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
+import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
     with
@@ -37,6 +38,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
     bool? pagination,
+    int? postsPerPage,
   }) : super(PostState.initial(pagination: pagination)) {
     on<PostRefreshed>(
       (event, emit) async {
@@ -47,14 +49,14 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -67,14 +69,14 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: 1,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: postPerPage)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -93,14 +95,14 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -115,14 +117,14 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: event.page!,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: postPerPage)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository))
+                .then(filterWith(blacklistedTagsRepository, accountRepository))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -225,9 +227,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
+        postsPerPage: context.read<SettingsCubit>().state.settings.postsPerPage,
       );
-
-  static const postPerPage = 60;
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(
     Emitter emit,

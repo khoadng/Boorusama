@@ -237,7 +237,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     required FavoriteGroupRepository favoriteGroupRepository,
     required AccountRepository accountRepository,
     required PostRepository postRepository,
-    required User? currentUser,
+    required UserSelf? currentUser,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
       final currentUser = await accountRepository.get();
@@ -433,7 +433,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
 
     on<_FetchPreviews>((event, emit) async {
       final posts = await postRepository.getPostsFromIds(event.ids);
-      final map = {for (final p in posts) p.id: p.previewImageUrl};
+      final map = {for (final p in posts) p.id: p.thumbnailImageUrl};
 
       emit(state.copyWith(previews: map));
     });
@@ -441,7 +441,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
 
   factory FavoriteGroupsBloc.of(
     BuildContext context, {
-    required User? currentUser,
+    required UserSelf? currentUser,
   }) =>
       FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),

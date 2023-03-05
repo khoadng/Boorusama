@@ -54,8 +54,8 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: BooruImage(
                     imageUrl: posts[index].isAnimated
-                        ? posts[index].previewImageUrl
-                        : posts[index].normalImageUrl,
+                        ? posts[index].thumbnailImageUrl
+                        : posts[index].sampleImageUrl,
                     aspectRatio: posts[index].aspectRatio,
                   ),
                 ),

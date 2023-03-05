@@ -259,9 +259,9 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                   image: BooruImage(
                                     fit: BoxFit.cover,
                                     imageUrl: post.post.isAnimated
-                                        ? post.post.previewImageUrl
-                                        : post.post.normalImageUrl,
-                                    placeholderUrl: post.post.previewImageUrl,
+                                        ? post.post.thumbnailImageUrl
+                                        : post.post.sampleImageUrl,
+                                    placeholderUrl: post.post.thumbnailImageUrl,
                                   ),
                                   isAnimated: post.post.isAnimated,
                                   isTranslated: post.post.isTranslated,

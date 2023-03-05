@@ -97,8 +97,11 @@
         "parent_child": {
             "children_of": "Children of"
         },
-        "quick_preview" : {
-            "view_notes" : "View translated notes"
+        "action" : {
+            "preview" : "Preview",
+            "view_comments" : "View comments",
+            "add_to_favorite_group": "Add to favorite group",
+            "select" : "Select"
         },
         "image_fullview" : {
             "view_original" : "View original",
@@ -264,6 +267,11 @@
         "privacy" : {
             "privacy" : "プライバシー",
             "send_error_data_notice" : "Send anonymous data for error logging"
+        },
+        "performance" : {
+            "performance" : "Performance",
+            "posts_per_page" : "Posts per page",
+            "posts_per_page_explain" : "Number of thumbnails per page"
         },
         "safe_mode" : "Safe Mode"
     },

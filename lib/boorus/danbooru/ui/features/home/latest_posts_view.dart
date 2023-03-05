@@ -9,7 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
@@ -113,7 +113,7 @@ class _MostSearchTagSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status =
-        context.select((SearchKeywordCubit cubit) => cubit.state.status);
+        context.select((TrendingTagCubit cubit) => cubit.state.status);
 
     switch (status) {
       case LoadStatus.success:

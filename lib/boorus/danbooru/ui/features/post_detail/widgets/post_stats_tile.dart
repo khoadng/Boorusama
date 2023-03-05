@@ -206,6 +206,10 @@ class _VoterDetailsViewState extends State<VoterDetailsView> {
                         return _InfoTile(
                           title: voter.user.name,
                           level: voter.user.level,
+                          onTap: () => goToUserDetailsPage(
+                            context,
+                            uid: voter.user.id,
+                          ),
                         );
                       },
                       childCount: state.upvoters.length,
@@ -227,10 +231,12 @@ class _InfoTile extends StatelessWidget {
   const _InfoTile({
     required this.title,
     required this.level,
+    required this.onTap,
   });
 
   final String title;
   final UserLevel level;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +246,7 @@ class _InfoTile extends StatelessWidget {
         title,
         style: TextStyle(color: Color(getUserHexColor(level))),
       ),
+      onTap: onTap,
     );
   }
 }
@@ -309,12 +316,12 @@ class _FavoriterDetailsViewState extends State<FavoriterDetailsView> {
                       (context, index) {
                         final user = state.favoriters[index];
 
-                        return ListTile(
-                          title: Text(
-                            user.name,
-                            style: TextStyle(
-                              color: Color(getUserHexColor(user.level)),
-                            ),
+                        return _InfoTile(
+                          title: user.name,
+                          level: user.level,
+                          onTap: () => goToUserDetailsPage(
+                            context,
+                            uid: user.id,
                           ),
                         );
                       },

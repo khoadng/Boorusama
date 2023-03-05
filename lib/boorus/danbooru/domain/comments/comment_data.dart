@@ -21,6 +21,7 @@ class CommentData extends Equatable {
     required this.id,
     required this.authorName,
     required this.authorLevel,
+    required this.authorId,
     required this.body,
     required this.createdAt,
     required this.updatedAt,
@@ -35,6 +36,7 @@ class CommentData extends Equatable {
   final int id;
   final String authorName;
   final UserLevel authorLevel;
+  final UserId authorId;
   final String body;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -56,6 +58,7 @@ class CommentData extends Equatable {
         id: id,
         authorName: authorName,
         authorLevel: authorLevel,
+        authorId: authorId,
         body: body,
         createdAt: createdAt,
         updatedAt: updatedAt,
@@ -72,6 +75,7 @@ class CommentData extends Equatable {
         id,
         authorName,
         authorLevel,
+        authorId,
         body,
         createdAt,
         updatedAt,
@@ -121,6 +125,7 @@ CommentData commentDataFrom(
       id: comment.id,
       authorName: user?.name ?? 'User',
       authorLevel: user?.level ?? UserLevel.member,
+      authorId: user?.id ?? 0,
       body: comment.body,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,

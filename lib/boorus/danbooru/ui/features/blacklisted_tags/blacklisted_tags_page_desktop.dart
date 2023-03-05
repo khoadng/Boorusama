@@ -69,32 +69,33 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
-              listenWhen: (previous, current) =>
-                  current is BlacklistedTagsError,
-              listener: (context, state) {
-                final snackbar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  elevation: 6,
-                  content: Text((state as BlacklistedTagsError).errorMessage),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
-              },
+            child: BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
               builder: (context, state) {
                 switch (state.status) {
                   case LoadStatus.initial:
                   case LoadStatus.loading:
                     return const Center(child: CircularProgressIndicator());
                   case LoadStatus.success:
+                    final tags = state.blacklistedTags;
+                    if (tags == null) {
+                      return Center(
+                        child: const Text('blacklisted_tags.load_error').tr(),
+                      );
+                    }
+
                     return ListView.builder(
-                      itemCount: state.blacklistedTags.length,
-                      itemBuilder: (context, index) => BlacklistedTagTile(
-                        tag: state.blacklistedTags[index],
-                        onEditTap: () => _showEditView(
-                          context,
-                          initialTags: state.blacklistedTags[index].split(' '),
-                        ),
-                      ),
+                      itemCount: tags.length,
+                      itemBuilder: (context, index) {
+                        final tag = tags[index];
+
+                        return BlacklistedTagTile(
+                          tag: tag,
+                          onEditTap: () => _showEditView(
+                            context,
+                            initialTags: tag.split(' '),
+                          ),
+                        );
+                      },
                     );
                   case LoadStatus.failure:
                     return Center(

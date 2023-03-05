@@ -33,16 +33,21 @@ class DefaultPostContextMenu extends StatelessWidget {
       builder: (context, download) => GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            'Preview',
+            'post.action.preview'.tr(),
             onPressed: () => goToImagePreviewPage(context, post.post),
           ),
+          if (post.post.hasComment)
+            ContextMenuButtonConfig(
+              'post.action.view_comments'.tr(),
+              onPressed: () => goToCommentPage(context, post.post.id),
+            ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
             onPressed: () => download(post.post),
           ),
           if (authState is Authenticated)
             ContextMenuButtonConfig(
-              'Add to favorite group',
+              'post.action.add_to_favorite_group'.tr(),
               onPressed: () {
                 goToAddToFavoriteGroupSelectionPage(
                   context,
@@ -52,7 +57,7 @@ class DefaultPostContextMenu extends StatelessWidget {
             ),
           if (onMultiSelect != null)
             ContextMenuButtonConfig(
-              'Select',
+              'post.action.select'.tr(),
               onPressed: () {
                 onMultiSelect?.call();
               },

@@ -104,12 +104,12 @@ void main() {
     test('video format should use normal image url', () {
       final posts = [..._videoFormat].map((e) => Post.empty().copyWith(
             format: e,
-            normalImageUrl: 'foo',
-            fullImageUrl: 'bar',
+            sampleImageUrl: 'foo',
+            originalImageUrl: 'bar',
           ));
 
       expect(
-        posts.every((post) => post.downloadUrl == post.normalImageUrl),
+        posts.every((post) => post.downloadUrl == post.sampleImageUrl),
         isTrue,
       );
     });
@@ -117,12 +117,12 @@ void main() {
     test('non video format should use full image url', () {
       final posts = [..._imageFormat, 'gif'].map((e) => Post.empty().copyWith(
             format: e,
-            normalImageUrl: 'foo',
-            fullImageUrl: 'bar',
+            sampleImageUrl: 'foo',
+            originalImageUrl: 'bar',
           ));
 
       expect(
-        posts.every((post) => post.downloadUrl == post.fullImageUrl),
+        posts.every((post) => post.downloadUrl == post.originalImageUrl),
         isTrue,
       );
     });

@@ -97,8 +97,11 @@
         "parent_child": {
             "children_of": "Дачэрны для"
         },
-        "quick_preview" : {
-            "view_notes" : "Паказаць пераклад тэксту"
+        "action" : {
+            "preview" : "Preview",
+            "view_comments" : "View comments",
+            "add_to_favorite_group": "Add to favorite group",
+            "select" : "Select"
         },
         "image_fullview" : {
             "view_original" : "Паглядзець арыгінальны малюнак",
@@ -264,6 +267,11 @@
         "privacy" : {
             "privacy" : "Прыватнасць",
             "send_error_data_notice" : "Адпраўляць ананімныя дадзеныя для апрацоўкі памылак"
+        },
+        "performance" : {
+            "performance" : "Performance",
+            "posts_per_page" : "Posts per page",
+            "posts_per_page_explain" : "Number of thumbnails per page"
         },
         "safe_mode" : "Бяспечны рэжым"
     },

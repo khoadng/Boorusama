@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 class PostData extends Equatable {
   const PostData({
@@ -157,16 +157,25 @@ Future<List<PostData>> createPostData(
 
 Future<List<PostData>> Function(List<PostData> posts) filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
+  AccountRepository accountRepository,
 ) =>
-    (posts) => blacklistedTagsRepository
-        .getBlacklistedTags()
-        .then((blacklistedTags) => filter(posts, blacklistedTags));
+    (posts) async {
+      final account = await accountRepository.get();
+
+      if (account == Account.empty) return posts;
+
+      return blacklistedTagsRepository
+          .getBlacklistedTags(account.id)
+          .then((blacklistedTags) => filter(posts, blacklistedTags));
+    };
 
 Future<List<PostData>> Function(List<PostData> posts) filterUnsupportedFormat(
   Set<String> fileExtensions,
 ) =>
-    (posts) async =>
-        posts.where((e) => !fileExtensions.contains(e.post.format)).toList();
+    (posts) async => posts
+        .where((e) => !fileExtensions.contains(e.post.format))
+        .where((e) => !e.post.metaTags.contains('flash'))
+        .toList();
 
 Future<List<PostData>> Function(List<PostData> posts) preloadPreviewImagesWith(
   PostPreviewPreloader? preloader,

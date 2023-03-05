@@ -49,6 +49,7 @@ class Settings extends Equatable {
     required this.detailsDisplay,
     required this.contentOrganizationCategory,
     required this.autoFocusSearchBar,
+    required this.postsPerPage,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -89,6 +90,7 @@ class Settings extends Equatable {
                     .values[json['contentOrganizationCategory']]
                 : ContentOrganizationCategory.infiniteScroll,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
+        postsPerPage = json['postsPerPage'] ?? 60,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -110,6 +112,7 @@ class Settings extends Equatable {
     detailsDisplay: DetailsDisplay.postFocus,
     contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
     autoFocusSearchBar: true,
+    postsPerPage: 60,
   );
 
   final String blacklistedTags;
@@ -139,6 +142,8 @@ class Settings extends Equatable {
 
   final bool autoFocusSearchBar;
 
+  final int postsPerPage;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -157,6 +162,7 @@ class Settings extends Equatable {
     DetailsDisplay? detailsDisplay,
     ContentOrganizationCategory? contentOrganizationCategory,
     bool? autoFocusSearchBar,
+    int? postsPerPage,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -179,6 +185,7 @@ class Settings extends Equatable {
         contentOrganizationCategory:
             contentOrganizationCategory ?? this.contentOrganizationCategory,
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
+        postsPerPage: postsPerPage ?? this.postsPerPage,
       );
 
   Map<String, dynamic> toJson() => {
@@ -199,6 +206,7 @@ class Settings extends Equatable {
         'detailsDisplay': detailsDisplay.index,
         'contentOrganizationCategory': contentOrganizationCategory.index,
         'autoFocusSearchBar': autoFocusSearchBar,
+        'postsPerPage': postsPerPage,
       };
 
   @override
@@ -220,5 +228,6 @@ class Settings extends Equatable {
         detailsDisplay,
         contentOrganizationCategory,
         autoFocusSearchBar,
+        postsPerPage,
       ];
 }

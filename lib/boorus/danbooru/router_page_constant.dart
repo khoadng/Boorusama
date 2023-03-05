@@ -15,6 +15,7 @@ class RouterPageConstant {
   static const settingsAppearance = 'settings/appearance';
   static const settingsLanguage = 'settings/language';
   static const settingsDownload = 'settings/download';
+  static const settingsPerformance = 'settings/performance';
   static const settingsSearch = 'settings/search';
   static const settingsPrivacy = 'settings/privacy';
   static const settingsChangelog = 'settings/changelog';
@@ -32,6 +33,7 @@ class RouterPageConstant {
   static const savedSearchCreate = 'saved_search/create';
   static const savedSearchPatch = 'saved_search/patch';
 
+  static const user = 'user/details';
   static const profile = 'profile';
   static const favorties = 'favorites';
   static const favoriteGroups = 'favorite_groups';

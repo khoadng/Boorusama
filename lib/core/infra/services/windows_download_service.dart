@@ -9,12 +9,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class WindowDownloader implements DownloadService<Post> {
-  WindowDownloader(this._fileNameGenerator);
+  WindowDownloader(this._fileNameGenerator, this._agentGenerator);
   late String? _localPath;
   late String? _savedDir;
   final FileNameGenerator _fileNameGenerator;
+  final UserAgentGenerator _agentGenerator;
 
   @override
   Future<void> init() async {
@@ -39,7 +41,7 @@ class WindowDownloader implements DownloadService<Post> {
 
     final dio = Dio(BaseOptions(
       headers: {
-        'User-Agent': userAgent,
+        'User-Agent': _agentGenerator.generate(),
       },
     ));
     final fileName = _fileNameGenerator.generateFor(item);
