@@ -37,7 +37,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
@@ -368,16 +367,6 @@ final userHandler =
       BlocProvider.value(value: context.read<FavoritesCubit>()),
     ],
     child: const ProfilePage(),
-  );
-});
-
-final loginHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context!)),
-    ],
-    child: const LoginPage(),
   );
 });
 

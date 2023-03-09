@@ -12,41 +12,19 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   AuthenticationCubit({
     required this.accountRepository,
     required this.profileRepository,
-  }) : super(AuthenticationInitial());
+  }) : super(Unauthenticated());
 
   final AccountRepository accountRepository;
   final ProfileRepository profileRepository;
 
   Future<void> logIn([String username = '', String password = '']) async {
-    if (state is AuthenticationInitial) {
-      final account = await accountRepository.get();
-      if (account != Account.empty) {
-        emit(Authenticated(account: account));
-      } else {
-        emit(Unauthenticated());
-      }
-      // ignore: no-empty-block
-    } else if (state is Authenticated) {
-      // Do nothing
-      // ignore: no-empty-block
-    } else if (state is AuthenticationInProgress) {
-      // Do nothing
+    final account = await accountRepository.get();
+    if (account != Account.empty) {
+      emit(Authenticated(account: account));
     } else {
-      try {
-        emit(AuthenticationInProgress());
-        final profile = await profileRepository.getProfile(
-          username: username,
-          apiKey: password,
-        );
-        final account = Account.create(username, password, profile!.id);
-
-        emit(Authenticated(account: account));
-      } on InvalidUsernameOrPassword catch (ex, stack) {
-        emit(AuthenticationError(exception: ex, stackTrace: stack));
-      } on Exception catch (ex, stack) {
-        emit(AuthenticationError(exception: ex, stackTrace: stack));
-      }
+      emit(Unauthenticated());
     }
+    // ignore: no-empty-block
   }
 
   Future<void> logOut() async {

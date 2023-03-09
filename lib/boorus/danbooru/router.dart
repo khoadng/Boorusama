@@ -42,7 +42,6 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
@@ -124,11 +123,6 @@ class AppRouter {
       ..define(
         '/users/profile',
         handler: userHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
-        '/login',
-        handler: loginHandler,
         transitionType: TransitionType.inFromRight,
       )
       ..define(
@@ -596,25 +590,6 @@ Future<T?> showDesktopFullScreenWindow<T>(
         return builder(context);
       },
     );
-
-void goToLoginPage(BuildContext context) {
-  if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/login',
-      routeSettings: const RouteSettings(
-        name: RouterPageConstant.login,
-      ),
-    );
-  } else {
-    showDesktopDialogWindow(
-      context,
-      width: min(MediaQuery.of(context).size.width * 0.8, 1000),
-      height: min(MediaQuery.of(context).size.height * 0.8, 700),
-      builder: (context) => const LoginPageDesktop(),
-    );
-  }
-}
 
 void goToExploreDetailPage(
   BuildContext context,

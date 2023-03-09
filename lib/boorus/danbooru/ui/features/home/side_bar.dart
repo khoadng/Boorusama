@@ -45,24 +45,6 @@ class SideBarMenu extends StatelessWidget {
                         ...initialContentBuilder!(context)!,
                         const Divider(),
                       ],
-                      if (state.data! == Account.empty)
-                        _SideMenuTile(
-                          icon: const Icon(Icons.login_outlined),
-                          title: Text('sideMenu.login'.tr()),
-                          onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
-                            goToLoginPage(context);
-                          },
-                        )
-                      else
-                        _SideMenuTile(
-                          icon: const Icon(Icons.person_outline),
-                          title: Text('sideMenu.profile'.tr()),
-                          onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
-                            goToProfilePage(context);
-                          },
-                        ),
                       if (state.data! != Account.empty)
                         _SideMenuTile(
                           icon: const Icon(Icons.favorite_outline),
