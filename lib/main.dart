@@ -120,7 +120,7 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  final accountBox = Hive.openBox('accounts');
+  final accountBox = Hive.openBox('accounts_v2');
   final accountRepo = AccountRepositoryApi(accountBox);
 
   Box<String> userMetatagBox;

@@ -43,6 +43,11 @@ class AccountRepositoryApi implements AccountRepository {
       return Account.empty;
     }
 
-    return Account.create(record['username'], record['apiKey'], record['id']);
+    return Account.create(
+      record['username'],
+      record['apiKey'],
+      record['id'],
+      record['booru'],
+    );
   }
 }

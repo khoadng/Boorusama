@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:bloc_test/bloc_test.dart';
+import 'package:boorusama/boorus/booru.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -190,8 +191,13 @@ void main() {
                   Post.empty(),
                   Post.empty(),
                 ]);
-        when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
+        when(() => mockAccountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  id: 1,
+                  apiKey: '',
+                  username: '',
+                  booru: BooruType.unknown,
+                ));
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
@@ -315,8 +321,13 @@ void main() {
                   Post.empty(),
                   Post.empty(),
                 ]);
-        when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
+        when(() => mockAccountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  id: 1,
+                  apiKey: '',
+                  username: '',
+                  booru: BooruType.unknown,
+                ));
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))

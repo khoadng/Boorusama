@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:bloc_test/bloc_test.dart';
+import 'package:boorusama/boorus/booru.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -407,8 +408,13 @@ void main() {
       setUp: () {
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  id: 1,
+                  apiKey: '',
+                  username: '',
+                  booru: BooruType.unknown,
+                ));
       },
       tearDown: () {
         reset(favRepo);
@@ -489,8 +495,13 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  id: 1,
+                  apiKey: '',
+                  username: '',
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -541,8 +552,13 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  apiKey: '',
+                  username: '',
+                  id: 100,
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -586,8 +602,13 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  id: 1,
+                  apiKey: '',
+                  username: '',
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -645,8 +666,13 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  apiKey: '',
+                  username: '',
+                  id: 100,
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -698,8 +724,13 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  apiKey: '',
+                  username: '',
+                  id: 100,
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))
@@ -761,8 +792,13 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  apiKey: '',
+                  username: '',
+                  id: 100,
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -814,8 +850,13 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => const Account(
+                  apiKey: '',
+                  username: '',
+                  id: 100,
+                  booru: BooruType.unknown,
+                ));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))

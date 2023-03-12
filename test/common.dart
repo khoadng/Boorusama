@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
@@ -18,7 +19,7 @@ AccountRepository mockAccountRepo({
 
 AccountRepository emptyAccountRepo() => mockAccountRepo();
 AccountRepository fakeAccountRepo() => mockAccountRepo(
-      account: Account.create('foo', 'bar', 0),
+      account: Account.create('foo', 'bar', 0, BooruType.unknown),
     );
 
 class MockUserRepo extends Mock implements UserRepository {}

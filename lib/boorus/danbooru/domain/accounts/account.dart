@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:equatable/equatable.dart';
 
 class Account extends Equatable {
@@ -6,22 +7,32 @@ class Account extends Equatable {
     required this.username,
     required this.apiKey,
     required this.id,
+    required this.booru,
   });
 
-  factory Account.create(String username, String apiKey, int id) => Account(
+  factory Account.create(
+    String username,
+    String apiKey,
+    int id,
+    BooruType booru,
+  ) =>
+      Account(
         username: username,
         apiKey: apiKey,
         id: id,
+        booru: booru,
       );
 
   final String? username;
   final String? apiKey;
   final int id;
+  final BooruType booru;
 
   static const empty = Account(
     username: null,
     apiKey: null,
     id: 0,
+    booru: BooruType.unknown,
   );
 
   Map<String, dynamic> toMap() {
@@ -29,6 +40,7 @@ class Account extends Equatable {
       'username': username,
       'apiKey': apiKey,
       'id': id,
+      'type': booru,
     };
   }
 
@@ -38,5 +50,5 @@ class Account extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, username, apiKey];
+  List<Object?> get props => [id, username, apiKey, booru];
 }
