@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -50,6 +51,7 @@ class Settings extends Equatable {
     required this.contentOrganizationCategory,
     required this.autoFocusSearchBar,
     required this.postsPerPage,
+    required this.currentBooru,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -91,6 +93,7 @@ class Settings extends Equatable {
                 : ContentOrganizationCategory.infiniteScroll,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
+        currentBooru = json['currentBooru'] ?? BooruType.unknown,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -113,6 +116,7 @@ class Settings extends Equatable {
     contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
     autoFocusSearchBar: true,
     postsPerPage: 60,
+    currentBooru: BooruType.unknown,
   );
 
   final String blacklistedTags;
@@ -144,6 +148,8 @@ class Settings extends Equatable {
 
   final int postsPerPage;
 
+  final BooruType currentBooru;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -163,6 +169,7 @@ class Settings extends Equatable {
     ContentOrganizationCategory? contentOrganizationCategory,
     bool? autoFocusSearchBar,
     int? postsPerPage,
+    BooruType? currentBooru,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -186,6 +193,7 @@ class Settings extends Equatable {
             contentOrganizationCategory ?? this.contentOrganizationCategory,
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
+        currentBooru: currentBooru ?? this.currentBooru,
       );
 
   Map<String, dynamic> toJson() => {
@@ -207,6 +215,7 @@ class Settings extends Equatable {
         'contentOrganizationCategory': contentOrganizationCategory.index,
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
+        'currentBooru': currentBooru,
       };
 
   @override
@@ -229,5 +238,6 @@ class Settings extends Equatable {
         contentOrganizationCategory,
         autoFocusSearchBar,
         postsPerPage,
+        currentBooru,
       ];
 }
