@@ -1,4 +1,9 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_factory.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
@@ -89,6 +95,30 @@ class SideBarMenu extends StatelessWidget {
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
                           goToBulkDownloadPage(context, null);
+                        },
+                      ),
+                      _SideMenuTile(
+                        icon: const Icon(Icons.account_box_sharp),
+                        title: const Text('Manage Accounts'),
+                        onTap: () {
+                          if (popOnSelect) Navigator.of(context).pop();
+                          showMaterialModalBottomSheet(
+                            context: context,
+                            builder: (context) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => ManageBooruUserBloc(
+                                    userBooruRepository:
+                                        context.read<UserBooruRepository>(),
+                                    booruFactory: context.read<BooruFactory>(),
+                                    booruUserIdentityProvider: context
+                                        .read<BooruUserIdentityProvider>(),
+                                  )..add(const ManageBooruUserFetched()),
+                                ),
+                              ],
+                              child: const ManageBooruUserPage(),
+                            ),
+                          );
                         },
                       ),
                       _SideMenuTile(

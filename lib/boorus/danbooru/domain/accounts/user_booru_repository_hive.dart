@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/common/utils.dart';
 import 'package:collection/collection.dart';
@@ -10,11 +12,13 @@ class HiveUserBooruRepository implements UserBooruRepository {
   HiveUserBooruRepository({
     required this.box,
   });
-  final Box<UserBooruCredential> box;
+  final Box<String> box;
 
   @override
   Future<UserBooru?> add(UserBooruCredential credential) async {
-    final id = await box.add(credential);
+    final json = credential.toJson();
+    final jsonString = jsonEncode(json);
+    final id = await box.add(jsonString);
 
     return convertToUserBooru(
       id: id,
@@ -30,10 +34,17 @@ class HiveUserBooruRepository implements UserBooruRepository {
   @override
   Future<List<UserBooru>> getAll() async {
     return box.keys
-        .map((e) => convertToUserBooru(
-              id: castOrNull<int>(e),
-              credential: box.get(e),
-            ))
+        .map((e) {
+          final jsonString = box.get(e);
+          if (jsonString == null) return null;
+          final json = jsonDecode(jsonString);
+          final credential = UserBooruCredential.fromJson(json);
+
+          return convertToUserBooru(
+            id: castOrNull<int>(e),
+            credential: credential,
+          );
+        })
         .whereNotNull()
         .toList();
   }

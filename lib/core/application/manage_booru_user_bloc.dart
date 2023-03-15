@@ -1,0 +1,159 @@
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/boorus/booru_factory.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_credential.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ManageBooruUserState extends Equatable {
+  const ManageBooruUserState({
+    required this.users,
+  });
+
+  factory ManageBooruUserState.initial() =>
+      const ManageBooruUserState(users: []);
+
+  final List<UserBooru>? users;
+
+  ManageBooruUserState copyWith({
+    List<UserBooru>? Function()? users,
+  }) =>
+      ManageBooruUserState(
+        users: users != null ? users() : this.users,
+      );
+
+  @override
+  List<Object?> get props => [users];
+}
+
+abstract class ManageBooruUserEvent extends Equatable {
+  const ManageBooruUserEvent();
+}
+
+class ManageBooruUserFetched extends ManageBooruUserEvent {
+  const ManageBooruUserFetched();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ManageBooruUserAdded extends ManageBooruUserEvent {
+  const ManageBooruUserAdded({
+    required this.login,
+    required this.apiKey,
+    required this.booru,
+    this.onFailure,
+  });
+
+  final String login;
+  final String apiKey;
+  final BooruType booru;
+  final void Function(String message)? onFailure;
+
+  @override
+  List<Object?> get props => [login, apiKey, booru, onFailure];
+}
+
+class ManageBooruUserRemoved extends ManageBooruUserEvent {
+  const ManageBooruUserRemoved({
+    required this.user,
+    required this.onFailure,
+  });
+
+  final UserBooru user;
+  final void Function(String message)? onFailure;
+
+  @override
+  List<Object?> get props => [user, onFailure];
+}
+
+class ManageBooruUserBloc
+    extends Bloc<ManageBooruUserEvent, ManageBooruUserState> {
+  ManageBooruUserBloc({
+    required UserBooruRepository userBooruRepository,
+    required BooruUserIdentityProvider booruUserIdentityProvider,
+    required BooruFactory booruFactory,
+  }) : super(ManageBooruUserState.initial()) {
+    on<ManageBooruUserFetched>((event, emit) async {
+      await tryAsync<List<UserBooru>>(
+        action: () => userBooruRepository.getAll(),
+        onSuccess: (data) async {
+          emit(state.copyWith(
+            users: () => data,
+          ));
+        },
+      );
+    });
+
+    on<ManageBooruUserAdded>((event, emit) async {
+      try {
+        final booru = booruFactory.from(type: event.booru);
+        final id = await booruUserIdentityProvider.getAccountId(
+          login: event.login,
+          apiKey: event.apiKey,
+          booru: booru,
+        );
+        final credential = UserBooruCredential.withAccount(
+          login: event.login,
+          apiKey: event.apiKey,
+          booruUserId: id,
+          booru: event.booru,
+        );
+
+        if (credential == null) {
+          event.onFailure
+              ?.call('Fail to add account. Account might be incorrect');
+
+          return;
+        }
+
+        final user = await userBooruRepository.add(credential);
+
+        if (user == null) {
+          event.onFailure
+              ?.call('Fail to add account. Account might be incorrect');
+
+          return;
+        }
+
+        final users = state.users ?? [];
+
+        emit(state.copyWith(
+          users: () => [
+            ...users,
+            user,
+          ],
+        ));
+      } catch (e) {
+        event.onFailure?.call('Failed to add account');
+      }
+    });
+
+    on<ManageBooruUserRemoved>((event, emit) async {
+      if (state.users == null) {
+        event.onFailure?.call('User does not exists');
+
+        return;
+      }
+
+      final users = [...state.users!];
+
+      await tryAsync<void>(
+        action: () => userBooruRepository.remove(event.user),
+        onFailure: (error, stackTrace) =>
+            event.onFailure?.call(error.toString()),
+        onUnknownFailure: (stackTrace, error) =>
+            event.onFailure?.call(error.toString()),
+        onSuccess: (_) async {
+          users.remove(event.user);
+          emit(state.copyWith(
+            users: () => users,
+          ));
+        },
+      );
+    });
+  }
+}

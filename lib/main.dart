@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository_hive.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -120,8 +123,11 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  final accountBox = Hive.openBox('accounts_v2');
+  final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepositoryApi(accountBox);
+
+  final booruUserBox = await Hive.openBox<String>('booru_users');
+  final booruUserRepo = HiveUserBooruRepository(box: booruUserBox);
 
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
@@ -239,6 +245,12 @@ void main() async {
             ),
             RepositoryProvider<UserAgentGenerator>.value(
               value: userAgentGenerator,
+            ),
+            RepositoryProvider<BooruFactory>.value(
+              value: booruFactory,
+            ),
+            RepositoryProvider<UserBooruRepository>.value(
+              value: booruUserRepo,
             ),
           ],
           child: MultiBlocProvider(
@@ -380,6 +392,9 @@ void main() async {
                     accountRepository: accountRepo,
                   );
 
+                  final booruUserIdProvider =
+                      BooruUserIdentityProviderImpl(profileRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final trendingTagCubit = TrendingTagCubit(
@@ -517,6 +532,9 @@ void main() async {
                       ),
                       RepositoryProvider<FavoriteGroupRepository>.value(
                         value: favoriteGroupRepo,
+                      ),
+                      RepositoryProvider<BooruUserIdentityProvider>.value(
+                        value: booruUserIdProvider,
                       ),
                     ],
                     child: MultiBlocProvider(

@@ -20,6 +20,19 @@ class UserBooruCredential {
         booruUserId: null,
       );
 
+  static UserBooruCredential? fromJson(Map<String, dynamic> json) {
+    try {
+      return UserBooruCredential._(
+        booruId: json['booruId'] as int,
+        apiKey: json['apiKey'] as String,
+        login: json['login'] as String,
+        booruUserId: json['booruUserId'] as int?,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
   static UserBooruCredential? withAccount({
     required BooruType booru,
     required String login,
@@ -36,6 +49,15 @@ class UserBooruCredential {
       login: login,
       booruUserId: booruUserId,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'booruId': booruId,
+      'apiKey': apiKey,
+      'login': login,
+      'booruUserId': booruUserId,
+    };
   }
 
   final int booruId;
