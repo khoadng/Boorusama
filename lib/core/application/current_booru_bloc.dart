@@ -1,5 +1,6 @@
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +51,7 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
   CurrentBooruBloc({
     required SettingsCubit settingsCubit,
     required BooruFactory booruFactory,
+    required ApiCubit apiCubit,
   }) : super(CurrentBooruState.initial()) {
     on<CurrentBooruFetched>((event, emit) async {
       final settings = settingsCubit.state.settings;
@@ -67,6 +69,8 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
       settingsCubit.update(settings.copyWith(
         currentBooru: booru.booruType,
       ));
+
+      apiCubit.changeApi(booru);
 
       emit(state.copyWith(
         booru: () => booru,

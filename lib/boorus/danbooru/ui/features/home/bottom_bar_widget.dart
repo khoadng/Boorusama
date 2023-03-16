@@ -6,10 +6,12 @@ class BottomBar extends StatefulWidget {
     super.key,
     required this.onTabChanged,
     this.initialValue = 0,
+    this.hasPool = true,
   });
 
   final ValueChanged<int> onTabChanged;
   final int initialValue;
+  final bool hasPool;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -52,12 +54,13 @@ class _BottomBarState extends State<BottomBar> {
               ? const Icon(Icons.explore)
               : const Icon(Icons.explore_outlined),
         ),
-        BottomNavigationBarItem(
-          label: 'Pool',
-          icon: currentIndex == 2
-              ? const Icon(Icons.photo_album)
-              : const Icon(Icons.photo_album_outlined),
-        ),
+        if (widget.hasPool)
+          BottomNavigationBarItem(
+            label: 'Pool',
+            icon: currentIndex == 2
+                ? const Icon(Icons.photo_album)
+                : const Icon(Icons.photo_album_outlined),
+          ),
       ],
       currentIndex: currentIndex,
       onTap: changePage,

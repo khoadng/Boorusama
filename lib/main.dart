@@ -222,6 +222,11 @@ void main() async {
     settings: settings,
   );
 
+  final apiCubit = ApiCubit(
+    defaultUrl: defaultBooru.url,
+    onDioRequest: (baseUrl) => dio(tempPath, baseUrl, userAgentGenerator),
+  );
+
   await ensureI18nInitialized();
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
@@ -266,11 +271,7 @@ void main() async {
                 lazy: false,
               ),
               BlocProvider(
-                create: (_) => ApiCubit(
-                  defaultUrl: defaultBooru.url,
-                  onDioRequest: (baseUrl) =>
-                      dio(tempPath, baseUrl, userAgentGenerator),
-                ),
+                create: (_) => apiCubit,
               ),
               BlocProvider(
                 create: (_) => ApiEndpointCubit(
@@ -483,7 +484,8 @@ void main() async {
                   final currentBooruBloc = CurrentBooruBloc(
                     settingsCubit: settingsCubit,
                     booruFactory: booruFactory,
-                  );
+                    apiCubit: apiCubit,
+                  )..add(const CurrentBooruFetched());
 
                   return MultiRepositoryProvider(
                     providers: [
