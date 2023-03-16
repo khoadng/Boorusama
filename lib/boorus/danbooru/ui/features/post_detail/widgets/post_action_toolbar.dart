@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
-import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'modal_share.dart';
@@ -84,10 +85,12 @@ class PostActionToolbar extends StatelessWidget {
   }
 
   Widget _buildShareButton(BuildContext context) {
-    final modal = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    final modal = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (context, state) {
+        final booru = state.booru ?? safebooru();
+
         return ModalShare(
-          endpoint: state.booru.url,
+          endpoint: booru.url,
           onTap: Share.share,
           onTapFile: (filePath) => Share.shareXFiles([XFile(filePath)]),
           post: post,

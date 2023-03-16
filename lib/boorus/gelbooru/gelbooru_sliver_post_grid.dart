@@ -14,13 +14,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 
 import 'gelbooru_post.dart';

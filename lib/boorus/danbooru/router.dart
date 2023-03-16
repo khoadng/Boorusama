@@ -2,6 +2,8 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -403,7 +405,6 @@ void goToDetailPage({
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: context.read<AuthenticationCubit>()),
-              BlocProvider.value(value: context.read<ApiEndpointCubit>()),
               BlocProvider.value(value: context.read<ThemeBloc>()),
               BlocProvider(
                 create: (context) => PostDetailBloc(
@@ -450,7 +451,7 @@ void goToSearchPage(
     );
   } else {
     showDesktopFullScreenWindow(context, builder: (context) {
-      return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (context, state) {
           return BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, settingsState) {
@@ -500,7 +501,7 @@ void goToSearchPage(
                       postBloc: postBloc,
                       postCountRepository: context.read<PostCountRepository>(),
                       initialQuery: tag,
-                      booruType: state.booru.booruType,
+                      booruType: state.booru?.booruType ?? BooruType.safebooru,
                     ),
                   ),
                   BlocProvider.value(value: relatedTagBloc),
@@ -1050,12 +1051,14 @@ void goToRelatedTagsPage(
   required RelatedTag relatedTag,
 }) {
   final bloc = context.read<SearchBloc>();
-  final page = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+  final page = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
+      final booru = state.booru ?? safebooru();
+
       return RelatedTagActionSheet(
         relatedTag: relatedTag,
         onOpenWiki: (tag) => launchWikiPage(
-          state.booru.url,
+          booru.url,
           tag,
         ),
         onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),

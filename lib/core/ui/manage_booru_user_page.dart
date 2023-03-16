@@ -58,11 +58,13 @@ class ManageBooruUserPage extends StatelessWidget {
                         )),
                     icon: const Icon(Icons.close),
                   ),
-                  onTap: () =>
-                      context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
-                            booru: BooruType.values[user.booruId],
-                            settings: settings,
-                          )),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
+                          booru: BooruType.values[user.booruId],
+                          settings: settings,
+                        ));
+                  },
                 );
               },
             ),

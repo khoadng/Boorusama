@@ -1,3 +1,4 @@
+import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 
@@ -11,10 +12,10 @@ abstract class BooruUserIdentityProvider {
 
 class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
   BooruUserIdentityProviderImpl(
-    this.profileRepository,
+    this.api,
   );
 
-  final ProfileRepository profileRepository;
+  final Api api;
 
   @override
   Future<int> getAccountId({
@@ -29,14 +30,18 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.danbooru:
       case BooruType.safebooru:
       case BooruType.testbooru:
-        final profile = await profileRepository.getProfile(
-          username: login,
-          apiKey: apiKey,
-        );
+        final id = await api
+            .getProfile(
+              login,
+              apiKey,
+            )
+            .then((value) => value.data)
+            .then((value) => value['id'])
+            .catchError((_) => null);
 
-        if (profile == null) throw Exception('Profile is null');
+        if (id == null) throw Exception('Profile is null');
 
-        return profile.id;
+        return id;
     }
   }
 }

@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,10 +30,11 @@ class SimplePostTagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) {
-        return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
           builder: (context, state) {
             return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, themeState) {
+                final booru = state.booru ?? safebooru();
                 final tags_ = [
                   ...tags.where(
                     (e) => e.category == TagCategory.artist.stringify(),
@@ -88,7 +91,7 @@ class SimplePostTagList extends StatelessWidget {
                                     // onAddToBlacklisted(tag);
                                   } else if (value == 'wiki') {
                                     launchWikiPage(
-                                      state.booru.url,
+                                      booru.url,
                                       tag.rawName,
                                     );
                                   } else if (value ==

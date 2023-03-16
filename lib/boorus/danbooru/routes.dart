@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -48,7 +50,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -234,7 +235,6 @@ final postDetailHandler = Handler(handlerFunc: (
         providers: [
           BlocProvider(create: (context) => SliverPostGridBloc()),
           BlocProvider.value(value: context.read<AuthenticationCubit>()),
-          BlocProvider.value(value: context.read<ApiEndpointCubit>()),
           BlocProvider.value(value: context.read<ThemeBloc>()),
           BlocProvider(
             create: (context) => PostDetailBloc(
@@ -288,7 +288,7 @@ final postSearchHandler = Handler(handlerFunc: (
 ) {
   final args = context!.settings!.arguments as List;
 
-  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
       return BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
@@ -333,7 +333,7 @@ final postSearchHandler = Handler(handlerFunc: (
                   postBloc: postBloc,
                   postCountRepository: context.read<PostCountRepository>(),
                   initialQuery: args.first,
-                  booruType: state.booru.booruType,
+                  booruType: state.booru?.booruType ?? BooruType.safebooru,
                 ),
               ),
               BlocProvider.value(value: relatedTagBloc),
@@ -380,13 +380,15 @@ final poolDetailHandler =
   final args = context!.settings!.arguments as List;
   final pool = args.first as Pool;
 
-  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
+      final booru = state.booru ?? safebooru();
+
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(
             value: PoolDescriptionBloc(
-              endpoint: state.booru.url,
+              endpoint: booru.url,
               poolDescriptionRepository:
                   context.read<PoolDescriptionRepository>(),
             )..add(PoolDescriptionFetched(poolId: pool.id)),
@@ -420,7 +422,7 @@ final favoritesHandler =
   final args = context!.settings!.arguments as List;
   final String username = args.first;
 
-  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
       return MultiBlocProvider(
         providers: [

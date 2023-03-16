@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -15,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
-import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/tags/favorite_tag_bloc.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
@@ -89,8 +90,10 @@ class PostTagList extends StatelessWidget {
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
-    return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (context, state) {
+        final booru = state.booru ?? safebooru();
+
         return Tags(
           alignment: WrapAlignment.start,
           runSpacing: isMobilePlatform() ? 0 : 4,
@@ -125,7 +128,7 @@ class PostTagList extends StatelessWidget {
                 if (value == 'blacklist') {
                   onAddToBlacklisted(tag);
                 } else if (value == 'wiki') {
-                  launchWikiPage(state.booru.url, tag.rawName);
+                  launchWikiPage(booru.url, tag.rawName);
                 } else if (value == 'copy_and_move_to_saved_search') {
                   Clipboard.setData(
                     ClipboardData(text: tag.rawName),

@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -19,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_s
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
@@ -532,8 +533,9 @@ class MoreActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final post =
         context.select((PostDetailBloc bloc) => bloc.state.currentPost.post);
-    final endpoint =
-        context.select((ApiEndpointCubit cubit) => cubit.state.booru.url);
+    final endpoint = context.select(
+      (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
+    );
     final authenticationState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
