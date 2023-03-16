@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,15 @@ class SideBarMenu extends StatelessWidget {
                     children: [
                       SizedBox(
                         height: MediaQuery.of(context).viewPadding.top,
+                      ),
+                      BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+                        builder: (context, state) {
+                          return state.booru != null
+                              ? ListTile(
+                                  title: Text(state.booru!.name),
+                                )
+                              : const SizedBox.shrink();
+                        },
                       ),
                       if (initialContentBuilder != null) ...[
                         ...initialContentBuilder!(context)!,

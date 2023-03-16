@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository_hive.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -216,6 +217,11 @@ void main() async {
     },
   );
 
+  final settingsCubit = SettingsCubit(
+    settingRepository: settingRepository,
+    settings: settings,
+  );
+
   await ensureI18nInitialized();
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
@@ -273,10 +279,7 @@ void main() async {
                 ),
               ),
               BlocProvider(
-                create: (_) => SettingsCubit(
-                  settingRepository: settingRepository,
-                  settings: settings,
-                ),
+                create: (_) => settingsCubit,
               ),
               if (isAndroid() || isIOS())
                 BlocProvider(
@@ -477,6 +480,11 @@ void main() async {
                     accountRepository: accountRepo,
                   )..add(const CurrentUserFetched());
 
+                  final currentBooruBloc = CurrentBooruBloc(
+                    settingsCubit: settingsCubit,
+                    booruFactory: booruFactory,
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -559,6 +567,7 @@ void main() async {
                         BlocProvider.value(value: favoriteTagBloc),
                         BlocProvider.value(value: exploreBloc),
                         BlocProvider.value(value: currentUserBloc),
+                        BlocProvider.value(value: currentBooruBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

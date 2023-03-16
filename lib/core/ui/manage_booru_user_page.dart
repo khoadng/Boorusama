@@ -1,4 +1,5 @@
 import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +53,10 @@ class ManageBooruUserPage extends StatelessWidget {
                         )),
                     icon: const Icon(Icons.close),
                   ),
+                  onTap: () =>
+                      context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
+                            booru: BooruType.values[user.booruId],
+                          )),
                 );
               },
             ),

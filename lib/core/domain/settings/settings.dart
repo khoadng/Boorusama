@@ -215,7 +215,7 @@ class Settings extends Equatable {
         'contentOrganizationCategory': contentOrganizationCategory.index,
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
-        'currentBooru': currentBooru,
+        'currentBooru': currentBooru.index,
       };
 
   @override
