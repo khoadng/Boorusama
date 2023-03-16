@@ -2,6 +2,7 @@ import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,21 +31,24 @@ abstract class CurrentBooruEvent extends Equatable {
 }
 
 class CurrentBooruFetched extends CurrentBooruEvent {
-  const CurrentBooruFetched();
+  const CurrentBooruFetched(this.settings);
+  final Settings settings;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [settings];
 }
 
 class CurrentBooruChanged extends CurrentBooruEvent {
   const CurrentBooruChanged({
     required this.booru,
+    required this.settings,
   });
 
   final BooruType booru;
+  final Settings settings;
 
   @override
-  List<Object?> get props => [booru];
+  List<Object?> get props => [booru, settings];
 }
 
 class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
@@ -54,8 +58,7 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     required ApiCubit apiCubit,
   }) : super(CurrentBooruState.initial()) {
     on<CurrentBooruFetched>((event, emit) async {
-      final settings = settingsCubit.state.settings;
-      final booru = booruFactory.from(type: settings.currentBooru);
+      final booru = booruFactory.from(type: event.settings.currentBooru);
 
       emit(state.copyWith(
         booru: () => booru,
@@ -63,10 +66,9 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     });
 
     on<CurrentBooruChanged>((event, emit) {
-      final settings = settingsCubit.state.settings;
       final booru = booruFactory.from(type: event.booru);
 
-      settingsCubit.update(settings.copyWith(
+      settingsCubit.update(event.settings.copyWith(
         currentBooru: booru.booruType,
       ));
 

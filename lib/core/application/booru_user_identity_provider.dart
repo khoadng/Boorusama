@@ -23,6 +23,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
     required String apiKey,
   }) async {
     switch (booru.booruType) {
+      case BooruType.gelbooru:
       case BooruType.unknown:
         throw UnimplementedError();
       case BooruType.danbooru:

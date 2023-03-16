@@ -10,5 +10,9 @@
     {
         "name" : "testbooru",
         "url" : "https://testbooru.donmai.us/"
+    },
+    {
+        "name" : "gelbooru",
+        "url" : "https://gelbooru.com/"
     }
 ]

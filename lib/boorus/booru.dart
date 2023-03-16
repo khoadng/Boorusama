@@ -47,6 +47,7 @@ enum BooruType {
   danbooru,
   safebooru,
   testbooru,
+  gelbooru,
 }
 
 Booru safebooru() => booruDataToBooru(
@@ -72,6 +73,8 @@ BooruType _stringToBooruType(String value) {
       return BooruType.safebooru;
     case 'testbooru':
       return BooruType.testbooru;
+    case 'gelbooru':
+      return BooruType.gelbooru;
     default:
       return BooruType.unknown;
   }

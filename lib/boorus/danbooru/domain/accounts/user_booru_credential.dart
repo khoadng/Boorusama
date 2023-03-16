@@ -73,7 +73,6 @@ UserBooru? convertToUserBooru({
   if (credential == null || id == null) return null;
 
   final booruUserId = credential.booruUserId;
-  if (booruUserId == null) return null;
 
   return UserBooru(
     id: id,

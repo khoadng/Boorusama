@@ -91,42 +91,66 @@ class ManageBooruUserBloc
     on<ManageBooruUserAdded>((event, emit) async {
       try {
         final booru = booruFactory.from(type: event.booru);
-        final id = await booruUserIdentityProvider.getAccountId(
-          login: event.login,
-          apiKey: event.apiKey,
-          booru: booru,
-        );
-        final credential = UserBooruCredential.withAccount(
-          login: event.login,
-          apiKey: event.apiKey,
-          booruUserId: id,
-          booru: event.booru,
-        );
 
-        if (credential == null) {
-          event.onFailure
-              ?.call('Fail to add account. Account might be incorrect');
+        if (event.booru != BooruType.gelbooru) {
+          final id = await booruUserIdentityProvider.getAccountId(
+            login: event.login,
+            apiKey: event.apiKey,
+            booru: booru,
+          );
+          final credential = UserBooruCredential.withAccount(
+            login: event.login,
+            apiKey: event.apiKey,
+            booruUserId: id,
+            booru: event.booru,
+          );
 
-          return;
+          if (credential == null) {
+            event.onFailure
+                ?.call('Fail to add account. Account might be incorrect');
+
+            return;
+          }
+
+          final user = await userBooruRepository.add(credential);
+
+          if (user == null) {
+            event.onFailure
+                ?.call('Fail to add account. Account might be incorrect');
+
+            return;
+          }
+
+          final users = state.users ?? [];
+
+          emit(state.copyWith(
+            users: () => [
+              ...users,
+              user,
+            ],
+          ));
+        } else {
+          final credential = UserBooruCredential.anonymous(
+            booru: event.booru,
+          );
+
+          final user = await userBooruRepository.add(credential);
+          final users = state.users ?? [];
+
+          if (user == null) {
+            event.onFailure
+                ?.call('Fail to add account. Account might be incorrect');
+
+            return;
+          }
+
+          emit(state.copyWith(
+            users: () => [
+              ...users,
+              user,
+            ],
+          ));
         }
-
-        final user = await userBooruRepository.add(credential);
-
-        if (user == null) {
-          event.onFailure
-              ?.call('Fail to add account. Account might be incorrect');
-
-          return;
-        }
-
-        final users = state.users ?? [];
-
-        emit(state.copyWith(
-          users: () => [
-            ...users,
-            user,
-          ],
-        ));
       } catch (e) {
         event.onFailure?.call('Failed to add account');
       }

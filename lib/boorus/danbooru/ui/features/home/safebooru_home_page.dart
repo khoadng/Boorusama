@@ -6,11 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
@@ -19,7 +15,6 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
-import 'bottom_bar_widget.dart';
 
 class SafebooruHomePage extends StatefulWidget {
   const SafebooruHomePage({

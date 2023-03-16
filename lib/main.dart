@@ -485,7 +485,7 @@ void main() async {
                     settingsCubit: settingsCubit,
                     booruFactory: booruFactory,
                     apiCubit: apiCubit,
-                  )..add(const CurrentBooruFetched());
+                  )..add(CurrentBooruFetched(settings));
 
                   return MultiRepositoryProvider(
                     providers: [

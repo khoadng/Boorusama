@@ -23,7 +23,7 @@ class UserBooru extends Equatable {
   final int booruId;
   final String apiKey;
   final String login;
-  final int booruUserId;
+  final int? booruUserId;
 
   Map<String, dynamic> toJson() {
     return {
