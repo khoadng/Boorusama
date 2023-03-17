@@ -93,7 +93,9 @@ class Settings extends Equatable {
                 : ContentOrganizationCategory.infiniteScroll,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
-        currentBooru = json['currentBooru'] ?? BooruType.unknown,
+        currentBooru = json['currentBooru'] != null
+            ? BooruType.values[json['currentBooru']]
+            : BooruType.unknown,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
