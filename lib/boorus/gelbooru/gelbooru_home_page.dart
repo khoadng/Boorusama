@@ -1,4 +1,8 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_post_detail_page.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -123,13 +127,11 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                 ),
                                                 // ignore: no-empty-block
                                                 onTap: (post, index) {
-                                                  // goToDetailPage(
-                                                  //   context: context,
-                                                  //   posts: state.posts,
-                                                  //   initialIndex: index,
-                                                  //   scrollController: controller,
-                                                  //   postBloc: context.read<PostBloc>(),
-                                                  // );
+                                                  goToDetailPage(
+                                                    context: context,
+                                                    posts: state.data,
+                                                    initialIndex: index,
+                                                  );
                                                 },
                                                 contextMenuBuilder: (post) =>
                                                     GelbooruPostContextMenu(
@@ -186,6 +188,31 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
         );
       },
     );
+  }
+
+  void goToDetailPage({
+    required BuildContext context,
+    required List<core.Post> posts,
+    required int initialIndex,
+  }) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) =>
+          BlocSelector<SettingsCubit, SettingsState, Settings>(
+        selector: (state) => state.settings,
+        builder: (context, settings) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: context.read<ThemeBloc>()),
+              BlocProvider(create: (context) => SliverPostGridBloc()),
+            ],
+            child: GelbooruPostDetailPage(
+              posts: posts,
+              initialIndex: initialIndex,
+            ),
+          );
+        },
+      ),
+    ));
   }
 }
 

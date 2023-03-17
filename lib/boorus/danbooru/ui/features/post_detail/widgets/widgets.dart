@@ -1,4 +1,4 @@
-export 'embedded_webview_webm.dart';
+export '../../../../../../core/ui/embedded_webview_webm.dart';
 export 'floating_glassy_card.dart';
 export 'recommend_artist_list.dart';
 export 'information_section.dart';

@@ -17,8 +17,7 @@ class GelbooruPost extends Equatable
     required this.md5,
     required this.originalImageUrl,
     required this.rating,
-    required this.sampleImageUrl,
-    required this.sampleLargeImageUrl,
+    required String sampleImageUrl,
     required this.source,
     required this.tags,
     required this.thumbnailImageUrl,
@@ -26,7 +25,10 @@ class GelbooruPost extends Equatable
     required this.downloadUrl,
     required this.hasComment,
     required this.hasParentOrChildren,
-  });
+    required this.fileSize,
+  }) : _sampleImageUrl = sampleImageUrl;
+
+  final String _sampleImageUrl;
 
   @override
   final String downloadUrl;
@@ -60,10 +62,11 @@ class GelbooruPost extends Equatable
   final Rating rating;
 
   @override
-  final String sampleImageUrl;
+  String get sampleImageUrl =>
+      _sampleImageUrl.isEmpty ? originalImageUrl : _sampleImageUrl;
 
   @override
-  final String sampleLargeImageUrl;
+  String get sampleLargeImageUrl => sampleImageUrl;
 
   @override
   final String? source;
@@ -82,4 +85,7 @@ class GelbooruPost extends Equatable
 
   @override
   final bool hasParentOrChildren;
+
+  @override
+  final int fileSize;
 }

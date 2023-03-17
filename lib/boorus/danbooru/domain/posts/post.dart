@@ -136,6 +136,7 @@ class Post extends Equatable
   final int uploaderId;
   @override
   final Rating rating;
+  @override
   final int fileSize;
   final int? pixivId;
   final bool isBanned;

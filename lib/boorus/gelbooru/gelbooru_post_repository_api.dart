@@ -61,10 +61,10 @@ GelbooruPost postDtoToPost(PostDto dto) {
     rating: mapStringToRating(dto.rating ?? 'general'),
     downloadUrl: dto.previewUrl ?? '',
     md5: dto.md5 ?? '',
-    sampleLargeImageUrl: dto.sampleUrl ?? '',
     hasComment: _boolFromString(dto.hasComments),
     hasParentOrChildren: _boolFromString(dto.hasChildren) ||
         (dto.parentId != null && dto.parentId != 0),
+    fileSize: 0,
   );
 }
 
