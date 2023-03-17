@@ -1,8 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/file_details_section.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_media_item.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +7,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/file_details_section.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_post_media_item.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 

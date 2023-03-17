@@ -7,7 +7,7 @@ import 'package:filesize/filesize.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 
 class InfoChips extends StatelessWidget {
   const InfoChips({

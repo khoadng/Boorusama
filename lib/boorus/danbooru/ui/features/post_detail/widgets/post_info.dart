@@ -9,8 +9,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
+import 'package:boorusama/core/ui/source_link.dart';
 import 'package:boorusama/core/utils.dart';
-import 'source_link.dart';
 
 enum ArtistCommentaryTranlationState {
   original,

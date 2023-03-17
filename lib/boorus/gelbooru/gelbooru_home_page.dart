@@ -1,8 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_detail_page.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
-import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -11,12 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_context_menu.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_post_detail_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
