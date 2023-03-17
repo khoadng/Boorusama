@@ -222,7 +222,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                 conditionalBuilder: (child) =>
                                     ContextMenuRegion(
                                   contextMenu:
-                                      DefaultPostContextMenu(post: post),
+                                      DefaultPostContextMenu(post: post.post),
                                   child: child,
                                 ),
                                 child: ImageGridItem(

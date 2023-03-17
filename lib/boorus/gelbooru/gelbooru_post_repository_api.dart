@@ -61,5 +61,14 @@ GelbooruPost postDtoToPost(PostDto dto) {
     downloadUrl: dto.previewUrl ?? '',
     md5: dto.md5 ?? '',
     sampleLargeImageUrl: dto.sampleUrl ?? '',
+    hasComment: _boolFromString(dto.hasComments),
   );
+}
+
+bool _boolFromString(String? value) {
+  if (value == null) return false;
+  if (value == 'false') return false;
+  if (value == 'true') return true;
+
+  return false;
 }

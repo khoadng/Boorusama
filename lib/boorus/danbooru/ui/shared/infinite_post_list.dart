@@ -136,7 +136,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
                   widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
                   DefaultPostContextMenu(
                     onMultiSelect: _enableMultiSelect,
-                    post: post,
+                    post: post.post,
                   ),
             ),
           ],

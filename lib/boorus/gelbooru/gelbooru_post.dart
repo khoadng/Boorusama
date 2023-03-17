@@ -23,6 +23,7 @@ class GelbooruPost extends Equatable
     required this.thumbnailImageUrl,
     required this.width,
     required this.downloadUrl,
+    required this.hasComment,
   });
 
   @override
@@ -73,4 +74,7 @@ class GelbooruPost extends Equatable
 
   @override
   final double width;
+
+  @override
+  final bool hasComment;
 }

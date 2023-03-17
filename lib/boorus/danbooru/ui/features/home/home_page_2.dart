@@ -36,6 +36,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_repository_api.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -51,7 +52,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'danbooru_home_page.dart';
-import 'gelbooru_home_page.dart';
 
 class HomePage2 extends StatelessWidget {
   const HomePage2({

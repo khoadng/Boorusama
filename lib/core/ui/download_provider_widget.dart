@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';

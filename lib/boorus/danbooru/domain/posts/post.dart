@@ -203,6 +203,7 @@ class Post extends Equatable
         parentId: parentId ?? this.parentId,
       );
 
+  @override
   bool get hasComment => lastCommentAt != null;
 
   @override

@@ -83,6 +83,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
@@ -1348,7 +1349,7 @@ Future<Object?> goToFavoriteGroupEditPage(
   );
 }
 
-void goToImagePreviewPage(BuildContext context, Post post) {
+void goToImagePreviewPage(BuildContext context, core.Post post) {
   showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -1461,7 +1462,7 @@ void goToFavoriteGroupDetailsPage(
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
   BuildContext context,
-  List<Post> posts,
+  List<core.Post> posts,
 ) {
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,

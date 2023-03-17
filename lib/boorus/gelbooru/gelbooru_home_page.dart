@@ -1,6 +1,8 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_post_context_menu.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_sliver_post_grid.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
@@ -134,7 +136,9 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                 onFavoriteUpdated:
                                                     (postId, value) {},
                                                 contextMenuBuilder: (post) =>
-                                                    Container(),
+                                                    GelbooruPostContextMenu(
+                                                  post: post,
+                                                ),
                                               );
                                             } else if (state.loading) {
                                               return const SliverToBoxAdapter(
