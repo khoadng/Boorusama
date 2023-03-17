@@ -13,6 +13,8 @@ abstract class Post with MediaInfoMixin {
   String? get source;
   Rating get rating;
   bool get hasComment;
+  bool get isTranslated;
+  bool get hasParentOrChildren;
 
   String get downloadUrl;
 

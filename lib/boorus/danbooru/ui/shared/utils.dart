@@ -2,10 +2,10 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 

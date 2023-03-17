@@ -24,6 +24,7 @@ class GelbooruPost extends Equatable
     required this.width,
     required this.downloadUrl,
     required this.hasComment,
+    required this.hasParentOrChildren,
   });
 
   @override
@@ -77,4 +78,7 @@ class GelbooruPost extends Equatable
 
   @override
   final bool hasComment;
+
+  @override
+  final bool hasParentOrChildren;
 }

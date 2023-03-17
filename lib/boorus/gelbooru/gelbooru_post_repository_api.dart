@@ -62,6 +62,8 @@ GelbooruPost postDtoToPost(PostDto dto) {
     md5: dto.md5 ?? '',
     sampleLargeImageUrl: dto.sampleUrl ?? '',
     hasComment: _boolFromString(dto.hasComments),
+    hasParentOrChildren: _boolFromString(dto.hasChildren) ||
+        (dto.parentId != null && dto.parentId != 0),
   );
 }
 
