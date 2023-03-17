@@ -2,8 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +16,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -75,15 +74,16 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_p
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';

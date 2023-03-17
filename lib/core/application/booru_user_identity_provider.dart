@@ -1,6 +1,6 @@
+// Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 
 abstract class BooruUserIdentityProvider {
   Future<int> getAccountId({

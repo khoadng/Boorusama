@@ -1,10 +1,11 @@
+// Package imports:
+import 'package:path/path.dart' as path;
+import 'package:retrofit/retrofit.dart';
+
+// Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/gelbooru/post_dto.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
-import 'package:retrofit/retrofit.dart';
-
-import 'package:path/path.dart' as path;
-
 import 'gelbooru_post.dart';
 
 List<GelbooruPost> parsePost(HttpResponse<dynamic> value) {

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/sliver_post_grid.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {
   const SliverPostGridPlaceHolder({

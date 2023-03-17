@@ -1,16 +1,7 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:io';
 
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository_hive.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/domain/settings/setting_repository.dart';
-import 'package:dio/dio.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +9,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
@@ -27,13 +19,21 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
+import 'package:boorusama/api/api.dart';
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository_hive.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
@@ -41,6 +41,7 @@ import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';

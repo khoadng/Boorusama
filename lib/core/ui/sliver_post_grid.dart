@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/selectable_icon_button.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,10 +9,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/boorus/danbooru/ui/shared/selectable_icon_button.dart';
 import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';

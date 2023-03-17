@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 
 void _download(
   BuildContext context,

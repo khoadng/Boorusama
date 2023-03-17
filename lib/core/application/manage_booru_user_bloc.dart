@@ -1,3 +1,8 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -5,8 +10,6 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_credential.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ManageBooruUserState extends Equatable {
   const ManageBooruUserState({

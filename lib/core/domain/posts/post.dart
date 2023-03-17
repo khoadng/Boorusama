@@ -1,6 +1,5 @@
 // Project imports:
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
-
 import 'rating.dart';
 
 abstract class Post with MediaInfoMixin {

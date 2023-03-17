@@ -211,6 +211,7 @@ class Post extends Equatable
 
   bool get hasParent => parentId != null;
   bool get hasBothParentAndChildren => hasChildren && hasParent;
+  @override
   bool get hasParentOrChildren => hasChildren || hasParent;
 
   double get upvotePercent => totalVote > 0 ? upScore / totalVote : 1;

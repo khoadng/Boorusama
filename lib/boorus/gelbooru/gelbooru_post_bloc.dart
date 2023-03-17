@@ -1,9 +1,9 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
-import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+// Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Project imports:
+import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
 import 'gelbooru_post.dart';
 import 'gelbooru_post_repository_api.dart';
 

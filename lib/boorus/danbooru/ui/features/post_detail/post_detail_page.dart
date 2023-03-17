@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -9,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -21,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_s
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';

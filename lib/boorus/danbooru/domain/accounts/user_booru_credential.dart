@@ -1,5 +1,5 @@
+// Project imports:
 import 'package:boorusama/boorus/booru.dart';
-
 import 'user_booru.dart';
 
 class UserBooruCredential {

@@ -1,7 +1,6 @@
 // ignore: prefer-single-widget-per-file
 
 // Flutter imports:
-import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class DefaultPostContextMenu extends StatelessWidget {

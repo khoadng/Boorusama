@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,10 +9,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'modal_share.dart';

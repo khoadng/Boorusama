@@ -1,3 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/booru.dart';
@@ -48,9 +55,6 @@ import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/main.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'danbooru_home_page.dart';
 
 class HomePage2 extends StatelessWidget {

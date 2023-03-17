@@ -1,6 +1,8 @@
 // Package imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/booru.dart';
 
 class Account extends Equatable {
   const Account({
