@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';

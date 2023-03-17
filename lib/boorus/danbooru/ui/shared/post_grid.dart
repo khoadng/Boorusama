@@ -1,6 +1,8 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/core/ui/sliver_post_grid.dart';
+import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/error.dart';
