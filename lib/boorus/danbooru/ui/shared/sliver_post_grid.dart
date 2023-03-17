@@ -14,7 +14,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -69,7 +69,7 @@ class SliverPostGrid extends StatelessWidget {
     super.key,
     required this.posts,
     required this.scrollController,
-    required this.onFavoriteUpdated,
+    this.onFavoriteUpdated,
     this.onItemChanged,
     this.onTap,
     this.quality,
@@ -79,181 +79,160 @@ class SliverPostGrid extends StatelessWidget {
     this.onPostSelectChanged,
     this.multiSelect = false,
     required this.contextMenuBuilder,
+    required this.enableFavorite,
   });
 
-  final List<PostData> posts;
+  final List<core.Post> posts;
   final AutoScrollController scrollController;
   final ValueChanged<int>? onItemChanged;
-  final void Function(Post post, int index)? onTap;
+  final void Function(core.Post post, int index)? onTap;
   final ImageQuality? quality;
   final GridSize gridSize;
   final BorderRadiusGeometry? borderRadius;
-  final Widget Function(BuildContext context, Post post, int index)?
+  final Widget Function(BuildContext context, core.Post post, int index)?
       postAnnotationBuilder;
-  final void Function(int postId, bool value) onFavoriteUpdated;
-  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final void Function(core.Post post, bool value)? onFavoriteUpdated;
+  final void Function(core.Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
-  final Widget Function(PostData post) contextMenuBuilder;
+  final Widget Function(core.Post post) contextMenuBuilder;
+  final bool enableFavorite;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) {
-        return BlocBuilder<SettingsCubit, SettingsState>(
-          buildWhen: (previous, current) =>
-              previous.settings.imageBorderRadius !=
-                  current.settings.imageBorderRadius ||
-              previous.settings.imageGridSpacing !=
-                  current.settings.imageGridSpacing ||
-              previous.settings.imageQuality != current.settings.imageQuality ||
-              previous.settings.imageListType != current.settings.imageListType,
-          builder: (context, state) {
-            Widget buildItem(
-              int index, {
-              required bool legacy,
-            }) {
-              final post = posts[index];
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) =>
+          previous.settings.imageBorderRadius !=
+              current.settings.imageBorderRadius ||
+          previous.settings.imageGridSpacing !=
+              current.settings.imageGridSpacing ||
+          previous.settings.imageQuality != current.settings.imageQuality ||
+          previous.settings.imageListType != current.settings.imageListType,
+      builder: (context, state) {
+        Widget buildItem(
+          int index, {
+          required bool legacy,
+        }) {
+          final post = posts[index];
 
-              return ContextMenuRegion(
-                isEnabled: !multiSelect,
-                contextMenu: contextMenuBuilder(post),
-                child: LayoutBuilder(
-                  builder: (context, constraints) => ImageGridItem(
-                    multiSelect: multiSelect,
-                    multiSelectBuilder: () => SelectableIconButton(
-                      unSelectedIcon: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black45,
-                        ),
-                        child: const Icon(
-                          FontAwesomeIcons.circle,
-                          size: 32,
-                        ),
-                      ),
-                      selectedIcon: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        child: const Icon(
-                          Icons.check,
-                        ),
-                      ),
-                      onChanged: (value) =>
-                          onPostSelectChanged?.call(post.post, value),
+          return ContextMenuRegion(
+            isEnabled: !multiSelect,
+            contextMenu: contextMenuBuilder(post),
+            child: LayoutBuilder(
+              builder: (context, constraints) => ImageGridItem(
+                multiSelect: multiSelect,
+                multiSelectBuilder: () => SelectableIconButton(
+                  unSelectedIcon: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black45,
                     ),
-                    isFaved: post.isFavorited,
-                    enableFav: authState is Authenticated,
-                    onFavToggle: (isFaved) async {
-                      final success =
-                          await _getFavAction(context, !isFaved, post.post.id);
-                      if (success) {
-                        onFavoriteUpdated.call(
-                          post.post.id,
-                          isFaved,
-                        );
-                      }
-                    },
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: scrollController,
-                      index: index,
+                    child: const Icon(
+                      FontAwesomeIcons.circle,
+                      size: 32,
                     ),
-                    image: legacy
-                        ? BooruImageLegacy(
-                            imageUrl: getImageUrlForDisplay(
-                              post.post,
-                              getImageQuality(
-                                size: gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
-                            ),
-                            placeholderUrl: post.post.thumbnailImageUrl,
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
-                          )
-                        : BooruImage(
-                            aspectRatio: post.post.aspectRatio,
-                            imageUrl: getImageUrlForDisplay(
-                              post.post,
-                              getImageQuality(
-                                size: gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
-                            ),
-                            placeholderUrl: post.post.thumbnailImageUrl,
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            previewCacheManager:
-                                context.read<PreviewImageCacheManager>(),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
-                          ),
-                    onTap: () => onTap?.call(post.post, index),
-                    isAnimated: post.post.isAnimated,
-                    isTranslated: post.post.isTranslated,
-                    hasComments: post.post.hasComment,
-                    hasParentOrChildren: post.post.hasParentOrChildren,
                   ),
+                  selectedIcon: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                    ),
+                  ),
+                  onChanged: (value) => onPostSelectChanged?.call(post, value),
                 ),
-              );
-            }
+                isFaved: enableFavorite,
+                enableFav: enableFavorite,
+                onFavToggle: (isFaved) async {
+                  onFavoriteUpdated?.call(post, isFaved);
+                },
+                autoScrollOptions: AutoScrollOptions(
+                  controller: scrollController,
+                  index: index,
+                ),
+                image: legacy
+                    ? BooruImageLegacy(
+                        imageUrl: getImageUrlForDisplay(
+                          post,
+                          getImageQuality(
+                            size: gridSize,
+                            presetImageQuality: state.settings.imageQuality,
+                          ),
+                        ),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          state.settings.imageBorderRadius,
+                        ),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      )
+                    : BooruImage(
+                        aspectRatio: post.aspectRatio,
+                        imageUrl: getImageUrlForDisplay(
+                          post,
+                          getImageQuality(
+                            size: gridSize,
+                            presetImageQuality: state.settings.imageQuality,
+                          ),
+                        ),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          state.settings.imageBorderRadius,
+                        ),
+                        previewCacheManager:
+                            context.read<PreviewImageCacheManager>(),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      ),
+                onTap: () => onTap?.call(post, index),
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                hasComments: post.hasComment,
+                hasParentOrChildren: post.hasParentOrChildren,
+              ),
+            ),
+          );
+        }
 
-            switch (state.settings.imageListType) {
-              case ImageListType.standard:
-                return SliverGrid(
-                  gridDelegate: gridSizeToGridDelegate(
-                    size: gridSize,
-                    spacing: state.settings.imageGridSpacing,
-                    screenWidth: MediaQuery.of(context).size.width,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => buildItem(index, legacy: true),
-                    childCount: posts.length,
-                  ),
-                );
+        switch (state.settings.imageListType) {
+          case ImageListType.standard:
+            return SliverGrid(
+              gridDelegate: gridSizeToGridDelegate(
+                size: gridSize,
+                spacing: state.settings.imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildItem(index, legacy: true),
+                childCount: posts.length,
+              ),
+            );
 
-              case ImageListType.masonry:
-                final data = gridSizeToGridData(
-                  size: gridSize,
-                  spacing: state.settings.imageGridSpacing,
-                  screenWidth: MediaQuery.of(context).size.width,
-                );
-                final crossAxisCount = data.first;
-                final mainAxisSpacing = data[1];
-                final crossAxisSpacing = data[2];
+          case ImageListType.masonry:
+            final data = gridSizeToGridData(
+              size: gridSize,
+              spacing: state.settings.imageGridSpacing,
+              screenWidth: MediaQuery.of(context).size.width,
+            );
+            final crossAxisCount = data.first;
+            final mainAxisSpacing = data[1];
+            final crossAxisSpacing = data[2];
 
-                return SliverMasonryGrid.count(
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: mainAxisSpacing,
-                  crossAxisSpacing: crossAxisSpacing,
-                  childCount: posts.length,
-                  itemBuilder: (context, index) =>
-                      buildItem(index, legacy: false),
-                );
-            }
-          },
-        );
+            return SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
+              childCount: posts.length,
+              itemBuilder: (context, index) => buildItem(index, legacy: false),
+            );
+        }
       },
     );
-  }
-
-  Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {
-    return isFaved
-        ? context.read<FavoritePostRepository>().removeFromFavorites(postId)
-        : context.read<FavoritePostRepository>().addToFavorites(postId);
   }
 }
 

@@ -196,7 +196,7 @@ class _PaginationState extends State<_Pagination>
             controller: widget.scrollController,
             onTap: () => FocusScope.of(context).unfocus(),
             contextMenuBuilder: (post) => DefaultPostContextMenu(
-              post: post.post,
+              post: post,
               // ignore: no-empty-block
               onMultiSelect: () {},
             ),

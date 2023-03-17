@@ -1,9 +1,7 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_post_context_menu.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_sliver_post_grid.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
@@ -114,7 +112,7 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                 gridSize: gridSize,
                                               );
                                             } else if (state.data.isNotEmpty) {
-                                              return GelbooruSliverPostGrid(
+                                              return SliverPostGrid(
                                                 posts: state.data.toList(),
                                                 scrollController: controller,
                                                 gridSize: gridSize,
@@ -132,13 +130,11 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                   //   postBloc: context.read<PostBloc>(),
                                                   // );
                                                 },
-                                                // ignore: no-empty-block
-                                                onFavoriteUpdated:
-                                                    (postId, value) {},
                                                 contextMenuBuilder: (post) =>
                                                     GelbooruPostContextMenu(
                                                   post: post,
                                                 ),
+                                                enableFavorite: false,
                                               );
                                             } else if (state.loading) {
                                               return const SliverToBoxAdapter(

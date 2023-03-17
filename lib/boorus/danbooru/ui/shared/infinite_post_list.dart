@@ -9,7 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
@@ -33,11 +33,11 @@ class InfinitePostList extends StatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
-  final Widget Function(PostData post, void Function() next)?
+  final Widget Function(core.Post post, void Function() next)?
       contextMenuBuilder;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    List<core.Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
@@ -46,7 +46,7 @@ class InfinitePostList extends StatefulWidget {
 }
 
 class _InfinitePostListState extends State<InfinitePostList> {
-  var selectedPosts = <Post>[];
+  var selectedPosts = <core.Post>[];
   var multiSelect = false;
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
@@ -136,7 +136,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
                   widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
                   DefaultPostContextMenu(
                     onMultiSelect: _enableMultiSelect,
-                    post: post.post,
+                    post: post,
                   ),
             ),
           ],
@@ -175,7 +175,7 @@ class DefaultMultiSelectionActions extends StatelessWidget {
     required this.endMultiSelect,
   });
 
-  final List<Post> selectedPosts;
+  final List<core.Post> selectedPosts;
   final void Function() endMultiSelect;
 
   @override
@@ -230,7 +230,7 @@ class FavoriteGroupMultiSelectionActions extends StatelessWidget {
     required this.onRemoveFromFavGroup,
   });
 
-  final List<Post> selectedPosts;
+  final List<core.Post> selectedPosts;
   final void Function() endMultiSelect;
   final void Function() onRemoveFromFavGroup;
 

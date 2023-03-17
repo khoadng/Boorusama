@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,7 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -34,9 +36,9 @@ class PostGrid extends StatelessWidget {
   final VoidCallback? onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
-  final Widget Function(PostData post) contextMenuBuilder;
+  final Widget Function(core.Post post) contextMenuBuilder;
   final bool multiSelect;
-  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final void Function(core.Post post, bool selected)? onPostSelectChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -165,9 +167,9 @@ class _SliverPostGrid extends StatelessWidget {
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
-  final Widget Function(PostData post) contextMenuBuilder;
+  final Widget Function(core.Post post) contextMenuBuilder;
 
-  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final void Function(core.Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
 
   @override
@@ -175,10 +177,12 @@ class _SliverPostGrid extends StatelessWidget {
     final gridSize =
         context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
     final posts = context.select((PostBloc bloc) => bloc.state.posts);
+    final auth = context.select((AuthenticationCubit cubit) => cubit.state);
 
     return posts.isNotEmpty
         ? SliverPostGrid(
-            posts: posts,
+            posts: posts.map((e) => e.post).toList(),
+            enableFavorite: auth is Authenticated,
             scrollController: controller,
             gridSize: gridSize,
             borderRadius: _gridSizeToBorderRadius(gridSize),
@@ -195,9 +199,19 @@ class _SliverPostGrid extends StatelessWidget {
                 postBloc: context.read<PostBloc>(),
               );
             },
-            onFavoriteUpdated: (postId, value) => context.read<PostBloc>().add(
-                  PostFavoriteUpdated(postId: postId, favorite: value),
-                ),
+            onFavoriteUpdated: (post, isFaved) async {
+              final bloc = context.read<PostBloc>();
+              final favRepo = context.read<FavoritePostRepository>();
+              final success = await (isFaved
+                  ? favRepo.removeFromFavorites(post.id)
+                  : favRepo.addToFavorites(post.id));
+
+              if (success) {
+                bloc.add(
+                  PostFavoriteUpdated(postId: post.id, favorite: isFaved),
+                );
+              }
+            },
           )
         : const SliverToBoxAdapter(child: NoDataBox());
   }
