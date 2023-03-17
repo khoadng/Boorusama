@@ -2,6 +2,9 @@
 import 'dart:math' as math;
 
 // Flutter imports:
+import 'package:boorusama/core/ui/embedded_webview_webm.dart';
+import 'package:boorusama/core/ui/interactive_image.dart';
+import 'package:boorusama/core/ui/post_video.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,8 +14,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/interactive_image.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 
