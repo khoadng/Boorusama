@@ -16,7 +16,7 @@ import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'ui/gelbooru_post_detail_page.dart';
 
-void goToPostDetailsPage({
+void goToGelbooruPostDetailsPage({
   required BuildContext context,
   required List<Post> posts,
   required int initialIndex,
@@ -52,3 +52,8 @@ void goToPostDetailsPage({
     ),
   ));
 }
+
+void goToGelbooruSearchPage(
+  BuildContext context, {
+  String? tag,
+}) {}

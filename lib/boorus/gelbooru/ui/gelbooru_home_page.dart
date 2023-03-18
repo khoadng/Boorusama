@@ -15,6 +15,7 @@ import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
@@ -72,8 +73,6 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                           buildWhen: (previous, current) => !current.hasMore,
                           builder: (context, state) {
                             return InfiniteLoadList(
-                              extendBody:
-                                  Screen.of(context).size == ScreenSize.small,
                               enableLoadMore: state.hasMore,
                               onLoadMore: () => context
                                   .read<GelbooruPostBloc>()
@@ -92,8 +91,19 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                   CustomScrollView(
                                 controller: controller,
                                 slivers: [
-                                  // _buildAppBar(context),
-
+                                  SliverAppBar(
+                                    backgroundColor: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    toolbarHeight: kToolbarHeight * 1.2,
+                                    title: SearchBar(
+                                      enabled: false,
+                                      onTap: () =>
+                                          goToGelbooruSearchPage(context),
+                                    ),
+                                    floating: true,
+                                    snap: true,
+                                    automaticallyImplyLeading: false,
+                                  ),
                                   SliverPadding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 20,
@@ -124,7 +134,7 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                 ),
                                                 // ignore: no-empty-block
                                                 onTap: (post, index) {
-                                                  goToPostDetailsPage(
+                                                  goToGelbooruPostDetailsPage(
                                                     context: context,
                                                     posts: state.data,
                                                     initialIndex: index,
