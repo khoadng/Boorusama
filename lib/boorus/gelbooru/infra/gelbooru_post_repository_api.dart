@@ -5,11 +5,12 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/gelbooru/domain/gelbooru_post.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'post_dto.dart';
 
-List<GelbooruPost> parsePost(HttpResponse<dynamic> value) {
+List<Post> parsePost(HttpResponse<dynamic> value) {
   final dtos = <PostDto>[];
   for (final item in value.response.data['post']) {
     dtos.add(PostDto.fromJson(item));
@@ -28,7 +29,7 @@ class GelbooruPostRepositoryApi implements PostRepository {
   final GelbooruApi api;
 
   @override
-  Future<List<GelbooruPost>> getPostsFromTags(
+  Future<List<Post>> getPostsFromTags(
     String tags,
     int page, {
     int? limit,
@@ -48,7 +49,7 @@ class GelbooruPostRepositoryApi implements PostRepository {
   }
 }
 
-GelbooruPost postDtoToPost(PostDto dto) {
+Post postDtoToPost(PostDto dto) {
   return GelbooruPost(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',

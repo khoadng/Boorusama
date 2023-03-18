@@ -11,16 +11,15 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/tags/favorite_tag_bloc.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class PostTagList extends StatelessWidget {

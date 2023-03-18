@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/core/application/tags/tag_bloc.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 
 void main() {

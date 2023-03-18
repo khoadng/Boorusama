@@ -6,10 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
-import '../domain/gelbooru_post.dart';
 
 class GelbooruPostState extends Equatable
-    implements InfiniteLoadState<GelbooruPost, GelbooruPostState> {
+    implements InfiniteLoadState<Post, GelbooruPostState> {
   const GelbooruPostState({
     required this.data,
     required this.hasMore,
@@ -31,7 +30,7 @@ class GelbooruPostState extends Equatable
     bool? hasMore,
     bool? refreshing,
     bool? loading,
-    List<GelbooruPost>? data,
+    List<Post>? data,
   }) =>
       GelbooruPostState(
         page: page ?? this.page,
@@ -50,7 +49,7 @@ class GelbooruPostState extends Equatable
     required bool hasMore,
     required bool refreshing,
     required bool loading,
-    required List<GelbooruPost> data,
+    required List<Post> data,
   }) =>
       copyWith(
         page: page,
@@ -61,7 +60,7 @@ class GelbooruPostState extends Equatable
       );
 
   @override
-  final List<GelbooruPost> data;
+  final List<Post> data;
 
   @override
   final bool hasMore;

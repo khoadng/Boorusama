@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_repository.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
+import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/main.dart';
 import 'infra/gelbooru_post_repository_api.dart';
 import 'infra/gelbooru_tag_repository_api.dart';
@@ -34,6 +34,22 @@ class GelbooruProvider extends StatelessWidget {
     );
 
     final tagRepo = GelbooruTagRepositoryApi(api);
+
+    return GelbooruProvider(
+      postRepository: postRepo,
+      tagRepository: tagRepo,
+      builder: builder,
+    );
+  }
+
+  factory GelbooruProvider.of(
+    BuildContext context, {
+    // ignore: avoid_unused_constructor_parameters
+    required Booru booru,
+    required Widget Function(BuildContext context) builder,
+  }) {
+    final postRepo = context.read<PostRepository>();
+    final tagRepo = context.read<TagRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,

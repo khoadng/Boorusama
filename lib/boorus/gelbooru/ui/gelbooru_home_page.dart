@@ -7,14 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
-import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
@@ -22,7 +20,6 @@ import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 import 'gelbooru_post_context_menu.dart';
-import 'gelbooru_post_detail_page.dart';
 
 class GelbooruHomePage extends StatefulWidget {
   const GelbooruHomePage({
@@ -127,7 +124,7 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                                 ),
                                                 // ignore: no-empty-block
                                                 onTap: (post, index) {
-                                                  goToDetailPage(
+                                                  goToPostDetailsPage(
                                                     context: context,
                                                     posts: state.data,
                                                     initialIndex: index,
@@ -190,43 +187,18 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
     );
   }
 
-  void goToDetailPage({
-    required BuildContext context,
-    required List<core.Post> posts,
-    required int initialIndex,
-  }) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) =>
-          BlocSelector<SettingsCubit, SettingsState, Settings>(
-        selector: (state) => state.settings,
-        builder: (context, settings) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: context.read<ThemeBloc>()),
-              BlocProvider(create: (context) => SliverPostGridBloc()),
-            ],
-            child: GelbooruPostDetailPage(
-              posts: posts,
-              initialIndex: initialIndex,
-            ),
-          );
-        },
-      ),
-    ));
-  }
-}
-
-BorderRadius _gridSizeToBorderRadius(GridSize size) {
-  switch (size) {
-    case GridSize.small:
-      return const BorderRadius.all(Radius.circular(3));
-    // case GridSize.large:
-    //   return const BorderRadius.only(
-    //     topLeft: Radius.circular(8),
-    //     topRight: Radius.circular(8),
-    //   );
-    case GridSize.normal:
-    case GridSize.large:
-      return const BorderRadius.all(Radius.circular(8));
+  BorderRadius _gridSizeToBorderRadius(GridSize size) {
+    switch (size) {
+      case GridSize.small:
+        return const BorderRadius.all(Radius.circular(3));
+      // case GridSize.large:
+      //   return const BorderRadius.only(
+      //     topLeft: Radius.circular(8),
+      //     topRight: Radius.circular(8),
+      //   );
+      case GridSize.normal:
+      case GridSize.large:
+        return const BorderRadius.all(Radius.circular(8));
+    }
   }
 }

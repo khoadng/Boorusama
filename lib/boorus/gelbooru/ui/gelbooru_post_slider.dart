@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
+import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
@@ -177,7 +179,12 @@ class _CarouselContentState extends State<_CarouselContent> {
                   //   _ParentChildTile(post: widget.preloadPost),
                   if (!widget.preloadPost.hasParentOrChildren)
                     const Divider(height: 8, thickness: 1),
-                  // TagsTile(post: post),
+                  TagsTile(
+                    post: post,
+                    onExpand: () => context
+                        .read<TagBloc>()
+                        .add(TagFetched(tags: post.tags)),
+                  ),
                   const Divider(height: 8, thickness: 1),
                   FileDetailsSection(
                     post: post,
