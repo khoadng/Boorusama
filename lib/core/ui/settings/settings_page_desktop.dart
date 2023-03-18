@@ -8,15 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/ui/settings/appearance_page.dart';
+import 'package:boorusama/core/ui/settings/download_page.dart';
+import 'package:boorusama/core/ui/settings/general_page.dart';
+import 'package:boorusama/core/ui/settings/language_page.dart';
+import 'package:boorusama/core/ui/settings/performance_page.dart';
+import 'package:boorusama/core/ui/settings/privacy_page.dart';
+import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'settings_page.dart';
 
 class SettingsPageDesktop extends StatelessWidget {

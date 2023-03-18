@@ -3,13 +3,11 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
@@ -79,15 +77,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_provider.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -100,14 +89,14 @@ import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/info_container.dart';
-import 'package:boorusama/core/ui/original_image_page.dart';
+import 'package:boorusama/core/ui/settings/settings_page.dart';
+import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
@@ -910,161 +899,6 @@ Widget provideBlacklistedTagPageDependencies(
         ),
       );
     },
-  );
-}
-
-void goToOriginalImagePage(BuildContext context, Post post) {
-  Navigator.of(context).push(PageTransition(
-    type: PageTransitionType.fade,
-    settings: const RouteSettings(
-      name: RouterPageConstant.originalImage,
-    ),
-    child: OriginalImagePage(
-      post: post,
-      initialOrientation: MediaQuery.of(context).orientation,
-    ),
-  ));
-}
-
-void goToSettingsGeneral(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(ParallaxSlideInPageRoute(
-    enterWidget: const GeneralPage(),
-    oldWidget: oldWidget,
-    settings: const RouteSettings(
-      name: RouterPageConstant.settingsGeneral,
-    ),
-  ));
-}
-
-void goToSettingsAppearance(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const AppearancePage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsAppearance,
-      ),
-    ),
-  );
-}
-
-void goToSettingsLanguage(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const LanguagePage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsLanguage,
-      ),
-    ),
-  );
-}
-
-void goToSettingsDownload(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const DownloadPage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsDownload,
-      ),
-    ),
-  );
-}
-
-void goToSettingsPerformance(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const PerformancePage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsPerformance,
-      ),
-    ),
-  );
-}
-
-void goToSettingsSearch(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const SearchSettingsPage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsSearch,
-      ),
-    ),
-  );
-}
-
-void goToSettingsPrivacy(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
-    ParallaxSlideInPageRoute(
-      enterWidget: const PrivacyPage(),
-      oldWidget: oldWidget,
-      settings: const RouteSettings(
-        name: RouterPageConstant.settingsPrivacy,
-      ),
-    ),
-  );
-}
-
-void goToChanglog(BuildContext context) {
-  showGeneralDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.settingsChangelog,
-    ),
-    pageBuilder: (context, __, ___) => Scaffold(
-      appBar: AppBar(
-        title: const Text('settings.changelog').tr(),
-        automaticallyImplyLeading: false,
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(
-              Icons.close,
-              size: 24,
-            ),
-          ),
-        ],
-      ),
-      body: FutureBuilder<String>(
-        future: rootBundle.loadString('CHANGELOG.md'),
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? Markdown(
-                  data: snapshot.data!,
-                )
-              : const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-        },
-      ),
-    ),
-  );
-}
-
-void goToAppAboutPage(BuildContext context) {
-  showAboutDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.settingsInformation,
-    ),
-    applicationIcon: Image.asset(
-      'assets/icon/icon-512x512.png',
-      width: 64,
-      height: 64,
-    ),
-    applicationVersion: getVersion(
-      RepositoryProvider.of<PackageInfoProvider>(
-        context,
-      ).getPackageInfo(),
-    ),
-    applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
-    applicationName: context.read<AppInfoProvider>().appInfo.appName,
   );
 }
 

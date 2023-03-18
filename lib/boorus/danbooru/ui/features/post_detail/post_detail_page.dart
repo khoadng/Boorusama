@@ -23,6 +23,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/floating_glassy_card.dart';
