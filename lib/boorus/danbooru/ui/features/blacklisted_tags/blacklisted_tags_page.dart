@@ -69,7 +69,6 @@ class BlacklistedTagsPage extends StatelessWidget {
 
             goToBlacklistedTagsSearchPage(
               context,
-              oldWidget: this,
               onSelectDone: (tagItems) {
                 bloc.add(BlacklistedTagAdded(
                   tag: tagItems.map((e) => e.toString()).join(' '),
@@ -132,7 +131,6 @@ class BlacklistedTagsList extends StatelessWidget {
                             ));
                             Navigator.of(context).pop();
                           },
-                          oldWidget: this,
                         );
                       },
                     );

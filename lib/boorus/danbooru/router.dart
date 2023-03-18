@@ -97,7 +97,6 @@ import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
-import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
 import 'ui/features/post_detail/post_detail_page.dart';
@@ -905,25 +904,32 @@ Widget provideBlacklistedTagPageDependencies(
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {
   required void Function(List<TagSearchItem> tags) onSelectDone,
-  required Widget oldWidget,
   List<String>? initialTags,
 }) {
-  Navigator.of(context).push(ParallaxSlideInPageRoute(
-    enterWidget: MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => TagSearchBloc(
-            tagInfo: context.read<TagInfo>(),
-            autocompleteRepository: context.read<AutocompleteRepository>(),
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => TagSearchBloc(
+                  tagInfo: dcontext.read<TagInfo>(),
+                  autocompleteRepository:
+                      dcontext.read<AutocompleteRepository>(),
+                ),
+              ),
+            ],
+            child: BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
           ),
-        ),
-      ],
-      child: BlacklistedTagsSearchPage(
-        initialTags: initialTags,
-        onSelectedDone: onSelectDone,
-      ),
+        );
+      },
     ),
-    oldWidget: oldWidget,
     settings: const RouteSettings(
       name: RouterPageConstant.blacklistedSearch,
     ),
