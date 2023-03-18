@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart' show parse;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/core/application/common.dart';
 
 @immutable
 class PoolDescriptionState extends Equatable {

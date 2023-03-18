@@ -13,12 +13,12 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/ui/search/full_history_view.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'empty_view.dart';
@@ -26,7 +26,7 @@ import 'error_view.dart';
 import 'result/result_view.dart';
 import 'selected_tag_list.dart';
 
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+import 'package:boorusama/core/application/search_history/search_history.dart'
     hide SearchHistoryCleared;
 
 class SearchPageDesktop extends StatefulWidget {

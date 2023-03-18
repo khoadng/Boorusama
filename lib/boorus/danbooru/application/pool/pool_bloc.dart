@@ -9,9 +9,9 @@ import 'package:quiver/iterables.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/common.dart';
 
 @immutable
 class PoolState extends Equatable {

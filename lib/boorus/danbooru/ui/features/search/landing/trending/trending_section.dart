@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'trending_tags.dart';
 
 class TrendingSection extends StatelessWidget {

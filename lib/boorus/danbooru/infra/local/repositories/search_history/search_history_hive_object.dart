@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 
 part 'search_history_hive_object.g.dart';
 

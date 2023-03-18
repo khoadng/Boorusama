@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
+import 'package:boorusama/core/application/common.dart';
 
 class WikiState extends Equatable {
   const WikiState({

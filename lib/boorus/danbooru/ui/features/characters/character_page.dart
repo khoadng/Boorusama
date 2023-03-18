@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/core.dart';
 
 class CharacterPage extends StatelessWidget {

@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/core/application/common.dart';
 
 class CommentState extends Equatable {
   const CommentState({

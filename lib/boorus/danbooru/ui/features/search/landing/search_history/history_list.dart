@@ -6,9 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+import 'package:boorusama/core/application/search_history/search_history.dart'
     show SearchHistoryBloc;
 
 class HistoryList extends StatelessWidget {

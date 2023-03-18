@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class GelbooruPostContextMenu extends StatelessWidget {

@@ -28,7 +28,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
@@ -42,7 +41,6 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
@@ -71,7 +69,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
@@ -86,12 +83,10 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
@@ -1352,86 +1347,6 @@ Future<Object?> goToFavoriteGroupEditPage(
                 );
               },
             )),
-          ),
-        );
-      },
-    ),
-  );
-}
-
-void goToImagePreviewPage(BuildContext context, core.Post post) {
-  showGeneralDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.postQuickPreview,
-    ),
-    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
-      child: BooruImage(
-        placeholderUrl: post.thumbnailImageUrl,
-        aspectRatio: post.aspectRatio,
-        imageUrl: post.sampleImageUrl,
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
-      ),
-    ),
-  );
-}
-
-void goToSearchHistoryPage(
-  BuildContext context, {
-  required Function() onClear,
-  required Function(SearchHistory history) onRemove,
-  required Function(String history) onTap,
-}) {
-  final bloc = context.read<SearchHistoryBloc>();
-
-  showMaterialModalBottomSheet(
-    context: context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.searchHistories,
-    ),
-    duration: const Duration(milliseconds: 200),
-    builder: (_) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
-      bloc: bloc,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('search.history.history').tr(),
-            actions: [
-              TextButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: const Text('Are you sure?').tr(),
-                    actions: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onBackground,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('generic.action.cancel').tr(),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          onClear();
-                        },
-                        child: const Text('generic.action.ok').tr(),
-                      ),
-                    ],
-                  ),
-                ),
-                child: const Text('search.history.clear').tr(),
-              ),
-            ],
-          ),
-          body: FullHistoryView(
-            scrollController: ModalScrollController.of(context),
-            onHistoryTap: (value) => onTap(value),
-            onHistoryRemoved: (value) => onRemove(value),
-            onHistoryFiltered: (value) =>
-                bloc.add(SearchHistoryFiltered(value)),
-            histories: state.filteredhistories,
           ),
         );
       },

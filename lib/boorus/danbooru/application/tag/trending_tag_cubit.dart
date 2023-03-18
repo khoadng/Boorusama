@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import '../common.dart';
+import '../../../../core/application/common.dart';
 
 class TrendingTagState extends Equatable {
   const TrendingTagState({

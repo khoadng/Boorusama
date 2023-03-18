@@ -12,13 +12,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {

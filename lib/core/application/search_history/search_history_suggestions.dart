@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 
 class HistorySuggestion extends Equatable {
   const HistorySuggestion({

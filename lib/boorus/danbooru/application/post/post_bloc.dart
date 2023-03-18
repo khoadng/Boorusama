@@ -9,7 +9,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
@@ -18,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';

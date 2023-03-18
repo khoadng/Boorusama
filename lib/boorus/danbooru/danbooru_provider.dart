@@ -34,7 +34,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
@@ -44,6 +43,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';

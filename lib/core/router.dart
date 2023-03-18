@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
@@ -18,15 +19,21 @@ import 'package:boorusama/core/ui/settings/performance_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
+import 'application/search_history/search_history.dart';
 import 'application/tags/tags.dart';
 import 'domain/posts/post.dart';
+import 'domain/searches/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/app_info_provider.dart';
 import 'infra/package_info_provider.dart';
+import 'infra/preloader/preloader.dart';
 import 'platform.dart';
+import 'ui/booru_image.dart';
+import 'ui/image_grid_item.dart';
 import 'ui/info_container.dart';
 import 'ui/original_image_page.dart';
 import 'ui/search/favorite_tags/import_favorite_tag_dialog.dart';
+import 'ui/search/full_history_view.dart';
 import 'ui/widgets/parallax_slide_in_page_route.dart';
 import 'utils.dart';
 
@@ -244,6 +251,86 @@ Future<Object?> goToFavoriteTagImportPage(
       onImport: (tagString) => bloc.add(FavoriteTagImported(
         tagString: tagString,
       )),
+    ),
+  );
+}
+
+void goToImagePreviewPage(BuildContext context, Post post) {
+  showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.postQuickPreview,
+    ),
+    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
+      child: BooruImage(
+        placeholderUrl: post.thumbnailImageUrl,
+        aspectRatio: post.aspectRatio,
+        imageUrl: post.sampleImageUrl,
+        previewCacheManager: context.read<PreviewImageCacheManager>(),
+      ),
+    ),
+  );
+}
+
+void goToSearchHistoryPage(
+  BuildContext context, {
+  required Function() onClear,
+  required Function(SearchHistory history) onRemove,
+  required Function(String history) onTap,
+}) {
+  final bloc = context.read<SearchHistoryBloc>();
+
+  showMaterialModalBottomSheet(
+    context: context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.searchHistories,
+    ),
+    duration: const Duration(milliseconds: 200),
+    builder: (_) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('search.history.history').tr(),
+            actions: [
+              TextButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: const Text('Are you sure?').tr(),
+                    actions: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onBackground,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('generic.action.cancel').tr(),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          onClear();
+                        },
+                        child: const Text('generic.action.ok').tr(),
+                      ),
+                    ],
+                  ),
+                ),
+                child: const Text('search.history.clear').tr(),
+              ),
+            ],
+          ),
+          body: FullHistoryView(
+            scrollController: ModalScrollController.of(context),
+            onHistoryTap: (value) => onTap(value),
+            onHistoryRemoved: (value) => onRemove(value),
+            onHistoryFiltered: (value) =>
+                bloc.add(SearchHistoryFiltered(value)),
+            histories: state.filteredhistories,
+          ),
+        );
+      },
     ),
   );
 }

@@ -11,9 +11,9 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';

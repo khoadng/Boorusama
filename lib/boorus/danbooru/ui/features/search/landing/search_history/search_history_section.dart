@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'history_list.dart';
 
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+import 'package:boorusama/core/application/search_history/search_history.dart'
     show SearchHistoryBloc;
 
 class SearchHistorySection extends StatelessWidget {
