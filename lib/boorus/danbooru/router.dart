@@ -333,21 +333,29 @@ void goToParentChildPage(
     settings: const RouteSettings(
       name: RouterPageConstant.parentChild,
     ),
-    child: MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(PostRefreshed(
-              tag: tagQueryForDataFetching,
-              fetcher: SearchedPostFetcher.fromTags(
-                tagQueryForDataFetching,
+    child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => PostBloc.of(dcontext)
+                  ..add(PostRefreshed(
+                    tag: tagQueryForDataFetching,
+                    fetcher: SearchedPostFetcher.fromTags(
+                      tagQueryForDataFetching,
+                    ),
+                  )),
               ),
-            )),
-        ),
-      ],
-      child: CustomContextMenuOverlay(
-        child: ParentChildPostPage(parentPostId: parentId),
-      ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: ParentChildPostPage(parentPostId: parentId),
+            ),
+          ),
+        );
+      },
     ),
   ));
 }
