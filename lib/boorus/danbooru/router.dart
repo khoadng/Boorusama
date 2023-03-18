@@ -710,7 +710,7 @@ void goToExploreDetailPage(
         ),
         builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
           builder: (_, state) {
-            return DanbooruProvider.create(
+            return DanbooruProvider.of(
               context,
               booru: state.booru!,
               builder: (dcontext) => MultiBlocProvider(
@@ -1155,7 +1155,7 @@ void goToUserDetailsPage(
     MaterialPageRoute(
       builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (_, state) {
-          return DanbooruProvider.create(
+          return DanbooruProvider.of(
             context,
             booru: state.booru!,
             builder: (dcontext) => BlocProvider(
@@ -1177,21 +1177,29 @@ void goToUserDetailsPage(
 
 void goToPoolSearchPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (context) => MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PoolBloc(
-            poolRepository: context.read<PoolRepository>(),
-            postRepository: context.read<PostRepository>(),
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => PoolBloc(
+                  poolRepository: dcontext.read<PoolRepository>(),
+                  postRepository: dcontext.read<PostRepository>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => PoolSearchBloc(
+                  poolRepository: dcontext.read<PoolRepository>(),
+                ),
+              ),
+            ],
+            child: const PoolSearchPage(),
           ),
-        ),
-        BlocProvider(
-          create: (context) => PoolSearchBloc(
-            poolRepository: context.read<PoolRepository>(),
-          ),
-        ),
-      ],
-      child: const PoolSearchPage(),
+        );
+      },
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -1339,7 +1347,7 @@ void goToPostFavoritesDetails(BuildContext context, Post post) {
     height: MediaQuery.of(context).size.height * 0.65,
     builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (_, state) {
-        return DanbooruProvider.create(
+        return DanbooruProvider.of(
           context,
           booru: state.booru!,
           builder: (dcontext) => BlocProvider(
