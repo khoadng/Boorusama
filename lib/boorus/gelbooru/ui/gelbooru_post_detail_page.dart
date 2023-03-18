@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -8,11 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_slider.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
-import 'gelbooru_post_slider.dart';
 
 // Project imports:
 // import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';

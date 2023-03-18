@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/src/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -43,9 +44,10 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_home_page.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_repository_api.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_app.dart';
+import 'package:boorusama/boorus/gelbooru/infra/gelbooru_post_repository_api.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
@@ -344,20 +346,7 @@ class HomePage2 extends StatelessWidget {
             case BooruType.gelbooru:
               final dio = context.read<DioProvider>().getDio(booru.url);
 
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => GelbooruPostBloc(
-                      postRepository: GelbooruPostRepositoryApi(
-                        api: GelbooruApi(dio),
-                      ),
-                    )..add(const GelbooruPostBlocRefreshed(
-                        tag: 'rating:general',
-                      )),
-                  ),
-                ],
-                child: const GelbooruHomePage(),
-              );
+              return GelbooruApp(booru: booru);
           }
         },
       ),

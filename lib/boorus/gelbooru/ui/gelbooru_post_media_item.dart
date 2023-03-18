@@ -2,9 +2,6 @@
 import 'dart:math' as math;
 
 // Flutter imports:
-import 'package:boorusama/core/ui/embedded_webview_webm.dart';
-import 'package:boorusama/core/ui/interactive_image.dart';
-import 'package:boorusama/core/ui/post_video.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,6 +13,9 @@ import 'package:path/path.dart' as p;
 // Project imports:
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/ui/embedded_webview_webm.dart';
+import 'package:boorusama/core/ui/interactive_image.dart';
+import 'package:boorusama/core/ui/post_video.dart';
 
 class GelbooruPostMediaItem extends StatefulWidget {
   const GelbooruPostMediaItem({

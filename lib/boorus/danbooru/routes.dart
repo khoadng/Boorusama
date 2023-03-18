@@ -9,12 +9,10 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
@@ -29,9 +27,7 @@ import 'package:boorusama/boorus/danbooru/application/search_history/search_hist
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -46,9 +42,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_d
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
@@ -185,102 +179,12 @@ final characterHandler = Handler(handlerFunc: (
   );
 });
 
-final postDetailHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  final args = context!.settings!.arguments as List;
-  final postDatas = args.first as List<PostData>;
-  final index = args[1] as int;
+// final postDetailHandler = Handler(handlerFunc: (
+//   context,
+//   Map<String, List<String>> params,
+// ) {
 
-  final AutoScrollController? controller = args[2];
-  final PostBloc? postBloc = args[3];
-
-  final tags = postDatas
-      .map((e) => e.post)
-      .map((p) => [
-            ...p.artistTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.artist.stringify(),
-                  postId: p.id,
-                )),
-            ...p.characterTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.charater.stringify(),
-                  postId: p.id,
-                )),
-            ...p.copyrightTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.copyright.stringify(),
-                  postId: p.id,
-                )),
-            ...p.generalTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.general.stringify(),
-                  postId: p.id,
-                )),
-            ...p.metaTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.meta.stringify(),
-                  postId: p.id,
-                )),
-          ])
-      .expand((e) => e)
-      .toList();
-
-  return BlocSelector<SettingsCubit, SettingsState, Settings>(
-    selector: (state) => state.settings,
-    builder: (context, settings) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => SliverPostGridBloc()),
-          BlocProvider.value(value: context.read<AuthenticationCubit>()),
-          BlocProvider.value(value: context.read<ThemeBloc>()),
-          BlocProvider(
-            create: (context) => PostDetailBloc(
-              noteRepository: context.read<NoteRepository>(),
-              defaultDetailsStyle: settings.detailsDisplay,
-              posts: postDatas,
-              initialIndex: index,
-              postRepository: context.read<PostRepository>(),
-              favoritePostRepository: context.read<FavoritePostRepository>(),
-              accountRepository: context.read<AccountRepository>(),
-              postVoteRepository: context.read<PostVoteRepository>(),
-              tags: tags,
-              onPostChanged: (post) {
-                if (postBloc != null && !postBloc.isClosed) {
-                  postBloc.add(PostUpdated(post: post));
-                }
-              },
-              tagCache: {},
-            ),
-          ),
-        ],
-        child: RepositoryProvider.value(
-          value: context.read<TagRepository>(),
-          child: Builder(
-            builder: (context) =>
-                BlocListener<SliverPostGridBloc, SliverPostGridState>(
-              listenWhen: (previous, current) =>
-                  previous.nextIndex != current.nextIndex,
-              listener: (context, state) {
-                if (controller == null) return;
-                controller.scrollToIndex(
-                  state.nextIndex,
-                  duration: const Duration(milliseconds: 200),
-                );
-              },
-              child: PostDetailPage(
-                intitialIndex: index,
-                posts: postDatas,
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-  );
-});
+// });
 
 final postSearchHandler = Handler(handlerFunc: (
   context,

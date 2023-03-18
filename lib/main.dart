@@ -271,6 +271,10 @@ void main() async {
               BlocProvider(
                 create: (_) => settingsCubit,
               ),
+              BlocProvider(
+                create: (context) =>
+                    ThemeBloc(initialTheme: settings.themeMode),
+              ),
               if (isAndroid() || isIOS())
                 BlocProvider(
                   create: (context) => DeviceStoragePermissionBloc(
@@ -281,26 +285,17 @@ void main() async {
             ],
             child: MultiBlocListener(
               listeners: [
-                BlocProvider(
-                  create: (context) =>
-                      ThemeBloc(initialTheme: settings.themeMode),
+                BlocListener<SettingsCubit, SettingsState>(
+                  listenWhen: (previous, current) =>
+                      previous.settings.themeMode != current.settings.themeMode,
+                  listener: (context, state) {
+                    context.read<ThemeBloc>().add(ThemeChanged(
+                          theme: state.settings.themeMode,
+                        ));
+                  },
                 ),
               ],
-              child: MultiBlocListener(
-                listeners: [
-                  BlocListener<SettingsCubit, SettingsState>(
-                    listenWhen: (previous, current) =>
-                        previous.settings.themeMode !=
-                        current.settings.themeMode,
-                    listener: (context, state) {
-                      context.read<ThemeBloc>().add(ThemeChanged(
-                            theme: state.settings.themeMode,
-                          ));
-                    },
-                  ),
-                ],
-                child: App(settings: settings),
-              ),
+              child: App(settings: settings),
             ),
           ),
         ),

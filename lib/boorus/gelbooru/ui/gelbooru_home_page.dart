@@ -8,9 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_bloc.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_context_menu.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_post_detail_page.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
@@ -23,6 +21,8 @@ import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
+import 'gelbooru_post_context_menu.dart';
+import 'gelbooru_post_detail_page.dart';
 
 class GelbooruHomePage extends StatefulWidget {
   const GelbooruHomePage({
