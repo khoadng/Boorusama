@@ -66,7 +66,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_provider.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
@@ -108,6 +107,7 @@ import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/info_container.dart';
+import 'package:boorusama/core/ui/original_image_page.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';

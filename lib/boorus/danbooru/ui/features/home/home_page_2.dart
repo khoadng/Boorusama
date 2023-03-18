@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_app.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'danbooru_home_page.dart';
 
 class HomePage2 extends StatelessWidget {
