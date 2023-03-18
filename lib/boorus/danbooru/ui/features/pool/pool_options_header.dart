@@ -10,7 +10,6 @@ import 'package:toggle_switch/toggle_switch.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 
 class PoolOptionsHeader extends StatelessWidget {
@@ -50,7 +49,8 @@ class PoolOptionsHeader extends StatelessWidget {
             builder: (context, state) {
               return TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).textTheme.titleLarge!.color,
+                  foregroundColor:
+                      Theme.of(context).textTheme.titleLarge!.color,
                   backgroundColor: Theme.of(context).cardColor,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(18)),
@@ -101,7 +101,7 @@ class _OrderMenu extends StatelessWidget {
                 .map((e) => ListTile(
                       title: Text(_poolOrderToString(e)).tr(),
                       onTap: () {
-                        AppRouter.router.pop(context);
+                        Navigator.of(context).pop();
                         context
                             .read<PoolOverviewBloc>()
                             .add(PoolOverviewChanged(order: e));

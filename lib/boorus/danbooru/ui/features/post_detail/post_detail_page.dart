@@ -657,7 +657,7 @@ class _BackButton extends StatelessWidget {
         context
             .read<SliverPostGridBloc>()
             .add(SliverPostGridExited(lastIndex: currentIndex));
-        AppRouter.router.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

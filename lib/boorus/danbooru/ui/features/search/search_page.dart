@@ -549,7 +549,7 @@ class _SearchBar extends StatelessWidget {
                 ? context
                     .read<SearchBloc>()
                     .add(const SearchGoBackToSearchOptionsRequested())
-                : AppRouter.router.pop(context),
+                : Navigator.of(context).pop(),
           );
         },
       ),

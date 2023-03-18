@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -90,7 +89,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
               queryEditingController: queryEditingController,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => AppRouter.router.pop(context),
+                onPressed: () => Navigator.of(context).pop(),
               ),
               trailing: state.query.isNotEmpty
                   ? IconButton(

@@ -150,7 +150,7 @@ class _LargeLayout extends StatelessWidget {
                     queryEditingController: queryEditingController,
                     leading: IconButton(
                       icon: const Icon(Icons.arrow_back),
-                      onPressed: () => AppRouter.router.pop(context),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                     trailing: BlocSelector<SearchBloc, SearchState, String>(
                       selector: (state) => state.currentQuery,

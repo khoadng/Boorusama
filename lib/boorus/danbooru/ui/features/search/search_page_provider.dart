@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -30,6 +29,7 @@ import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 class SearchPageProvider extends StatelessWidget {
   const SearchPageProvider({

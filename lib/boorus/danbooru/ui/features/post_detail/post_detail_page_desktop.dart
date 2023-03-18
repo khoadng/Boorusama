@@ -452,7 +452,7 @@ class _BackButton extends StatelessWidget {
             : const Icon(Icons.arrow_back_ios),
       ),
       onPressed: () {
-        AppRouter.router.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

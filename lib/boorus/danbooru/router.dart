@@ -2,14 +2,12 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:media_scanner/media_scanner.dart';
@@ -50,7 +48,6 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
@@ -75,6 +72,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_pa
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/favorite_tags/import_favorite_tag_dialog.dart';
@@ -107,6 +105,7 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
@@ -115,15 +114,6 @@ import 'router_page_constant.dart';
 import 'ui/features/post_detail/post_detail_page.dart';
 import 'ui/features/post_detail/post_detail_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
-
-@immutable
-class AppRouter {
-  static final FluroRouter router = FluroRouter.appRouter;
-
-  void setupRoutes() {
-    router..define('/', handler: rootHandler);
-  }
-}
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
@@ -248,16 +238,6 @@ Widget provideCharacterPageDependencies(
   );
 }
 
-void goToProfilePage(BuildContext context) {
-  AppRouter.router.navigateTo(
-    context,
-    '/users/profile',
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.profile,
-    ),
-  );
-}
-
 void goToFavoritesPage(BuildContext context, String? username) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => FavoritesPage.of(context, username: username!),
@@ -376,15 +356,7 @@ void goToHomePage(
   BuildContext context, {
   bool replace = false,
 }) {
-  AppRouter.router.navigateTo(
-    context,
-    '/',
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.home,
-    ),
-    clearStack: true,
-    replace: replace,
-  );
+  Navigator.of(context).popUntil((route) => route.isFirst);
 }
 
 void goToDetailPage({

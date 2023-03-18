@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -8,11 +9,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_2.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_desktop.dart';
 import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'boorus/danbooru/router.dart';
@@ -32,13 +37,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  @override
-  void initState() {
-    super.initState();
-
-    AppRouter().setupRoutes();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Portal(
@@ -76,7 +74,6 @@ class _AppState extends State<App> {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             debugShowCheckedModeBanner: false,
-            onGenerateRoute: AppRouter.router.generator,
             title: context.read<AppInfoProvider>().appInfo.appName,
             navigatorKey: navigatorKey,
             navigatorObservers: isAnalyticsEnabled(widget.settings)
@@ -84,6 +81,27 @@ class _AppState extends State<App> {
                     getAnalyticsObserver(),
                   ]
                 : [],
+            home: ConditionalParentWidget(
+              condition: canRate(),
+              conditionalBuilder: (child) =>
+                  createAppRatingWidget(child: child),
+              child: CallbackShortcuts(
+                bindings: {
+                  const SingleActivator(
+                    LogicalKeyboardKey.keyF,
+                    control: true,
+                  ): () => goToSearchPage(context),
+                },
+                child: CustomContextMenuOverlay(
+                  child: Focus(
+                    autofocus: true,
+                    child: isMobilePlatform()
+                        ? const HomePage2()
+                        : const HomePageDesktop(),
+                  ),
+                ),
+              ),
+            ),
           );
         },
       ),
