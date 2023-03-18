@@ -74,6 +74,7 @@ class SliverPostGrid extends StatelessWidget {
     this.multiSelect = false,
     required this.contextMenuBuilder,
     required this.enableFavorite,
+    this.isFavorite,
   });
 
   final List<core.Post> posts;
@@ -90,6 +91,7 @@ class SliverPostGrid extends StatelessWidget {
   final bool multiSelect;
   final Widget Function(core.Post post) contextMenuBuilder;
   final bool enableFavorite;
+  final bool Function(core.Post post)? isFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +142,7 @@ class SliverPostGrid extends StatelessWidget {
                   ),
                   onChanged: (value) => onPostSelectChanged?.call(post, value),
                 ),
-                isFaved: enableFavorite,
+                isFaved: isFavorite?.call(post) ?? false,
                 enableFav: enableFavorite,
                 onFavToggle: (isFaved) async {
                   onFavoriteUpdated?.call(post, isFaved);

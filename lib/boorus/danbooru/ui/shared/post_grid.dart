@@ -182,6 +182,8 @@ class _SliverPostGrid extends StatelessWidget {
 
     return posts.isNotEmpty
         ? SliverPostGrid(
+            isFavorite: (post) =>
+                posts.firstWhere((e) => e.post.id == post.id).isFavorited,
             posts: posts.map((e) => e.post).toList(),
             enableFavorite: auth is Authenticated,
             scrollController: controller,

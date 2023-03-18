@@ -97,7 +97,14 @@ void main() async {
   final settings = await settingRepository.load();
 
   final accountBox = Hive.openBox('accounts');
-  final accountRepo = AccountRepositoryApi(accountBox);
+  final accountRepo = AccountRepositoryDev(
+    account: Account.create(
+      'tokuji',
+      'ZmpanuR9qcvMZoQvP5MzNpz9',
+      523252,
+      BooruType.danbooru,
+    ),
+  );
 
   final booruUserBox = await Hive.openBox<String>('booru_users');
   final booruUserRepo = HiveUserBooruRepository(box: booruUserBox);
