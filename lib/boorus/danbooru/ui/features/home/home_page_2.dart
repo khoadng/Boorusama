@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -45,10 +46,14 @@ class HomePage2 extends StatelessWidget {
               return DanbooruProvider.create(
                 context,
                 booru: booru,
-                builder: (context) => const DanbooruHomePage(),
+                builder: (context) => const CustomContextMenuOverlay(
+                  child: DanbooruHomePage(),
+                ),
               );
             case BooruType.gelbooru:
-              return GelbooruApp(booru: booru);
+              return CustomContextMenuOverlay(
+                child: GelbooruApp(booru: booru),
+              );
           }
         },
       ),
