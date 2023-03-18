@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
+import 'package:boorusama/core/domain/tags/tags.dart';
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];

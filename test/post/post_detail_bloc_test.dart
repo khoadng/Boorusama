@@ -10,8 +10,8 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/tags/tags.dart';
 
 class MockPostRepository extends Mock implements PostRepository {}
 

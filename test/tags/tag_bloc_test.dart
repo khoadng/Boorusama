@@ -6,8 +6,8 @@ import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/tags/tags.dart';
 
 class MockTagRepository extends Mock implements TagRepository {}
 

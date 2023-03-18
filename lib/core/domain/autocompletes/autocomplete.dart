@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags/tags.dart';
 
 typedef AutocompleteValue = String;
 typedef AutocompleteLabel = String;

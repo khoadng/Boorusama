@@ -4,9 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/tags/tag.dart';
+import 'package:boorusama/core/domain/tags/tag_category.dart';
+import 'package:boorusama/core/domain/tags/tag_repository.dart';
 
 class TagState extends Equatable {
   const TagState({
