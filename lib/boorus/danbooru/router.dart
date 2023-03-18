@@ -48,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
@@ -110,11 +111,6 @@ class AppRouter {
   void setupRoutes() {
     router
       ..define('/', handler: rootHandler)
-      ..define(
-        '/character',
-        handler: characterHandler,
-        transitionType: TransitionType.material,
-      )
       ..define(
         '/users/profile',
         handler: userHandler,
@@ -227,41 +223,63 @@ Widget provideArtistPageDependencies(
 
 void goToCharacterPage(BuildContext context, String tag) {
   if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/character',
-      routeSettings: RouteSettings(
-        name: RouterPageConstant.character,
-        arguments: [
-          tag,
-          '',
-        ],
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => provideCharacterPageDependencies(
+        context,
+        character: tag,
+        page: CharacterPage(
+          characterName: tag,
+          backgroundImageUrl: '',
+        ),
       ),
-    );
+    ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostBloc.of(context)
-              ..add(PostRefreshed(
-                tag: tag,
-                fetcher: SearchedPostFetcher.fromTags(tag),
-              )),
-          ),
-          BlocProvider.value(
-            value: context.read<WikiBloc>()..add(WikiFetched(tag: tag)),
-          ),
-        ],
-        child: CustomContextMenuOverlay(
-          child: CharacterPageDesktop(
-            characterName: tag,
-          ),
+      builder: (context) => provideCharacterPageDependencies(
+        context,
+        character: tag,
+        page: CharacterPageDesktop(
+          characterName: tag,
         ),
       ),
     );
   }
+}
+
+Widget provideCharacterPageDependencies(
+  BuildContext context, {
+  required String character,
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => PostBloc.of(dcontext)
+                  ..add(PostRefreshed(
+                    tag: character,
+                    fetcher: SearchedPostFetcher.fromTags(character),
+                  )),
+              ),
+              BlocProvider.value(
+                value: dcontext.read<WikiBloc>()
+                  ..add(WikiFetched(tag: character)),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
+            ),
+          );
+        },
+      );
+    },
+  );
 }
 
 void goToProfilePage(BuildContext context) {
