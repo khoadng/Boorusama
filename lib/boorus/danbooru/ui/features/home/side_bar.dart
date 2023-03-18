@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -57,52 +56,6 @@ class SideBarMenu extends StatelessWidget {
                   ...initialContentBuilder!(context)!,
                   const Divider(),
                 ],
-                if (state.userBooru?.login.isNotEmpty ?? false)
-                  _SideMenuTile(
-                    icon: const Icon(Icons.favorite_outline),
-                    title: Text('profile.favorites'.tr()),
-                    onTap: () {
-                      if (popOnSelect) Navigator.of(context).pop();
-                      goToFavoritesPage(context, state.userBooru!.login);
-                    },
-                  ),
-                if (state.userBooru?.login.isNotEmpty ?? false)
-                  _SideMenuTile(
-                    icon: const Icon(Icons.collections),
-                    title: const Text('Favorite groups'),
-                    onTap: () {
-                      if (popOnSelect) Navigator.of(context).pop();
-                      goToFavoriteGroupPage(context);
-                    },
-                  ),
-                if (state.userBooru?.login.isNotEmpty ?? false)
-                  _SideMenuTile(
-                    icon: const Icon(Icons.search),
-                    title: const Text('Saved search'),
-                    onTap: () {
-                      if (popOnSelect) Navigator.of(context).pop();
-                      goToSavedSearchPage(context, state.userBooru!.login);
-                    },
-                  ),
-                if (state.userBooru?.login.isNotEmpty ?? false)
-                  _SideMenuTile(
-                    icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
-                    title: const Text(
-                      'blacklisted_tags.blacklisted_tags',
-                    ).tr(),
-                    onTap: () {
-                      if (popOnSelect) Navigator.of(context).pop();
-                      goToBlacklistedTagPage(context);
-                    },
-                  ),
-                _SideMenuTile(
-                  icon: const Icon(Icons.download),
-                  title: const Text('download.bulk_download').tr(),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    goToBulkDownloadPage(context, null);
-                  },
-                ),
                 _SideMenuTile(
                   icon: const Icon(Icons.account_box_sharp),
                   title: const Text('Manage Accounts'),

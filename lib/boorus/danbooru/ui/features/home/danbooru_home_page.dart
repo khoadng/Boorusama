@@ -16,10 +16,10 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dar
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
+import 'other_features_page.dart';
 
 class DanbooruHomePage extends StatefulWidget {
   const DanbooruHomePage({
@@ -35,7 +35,6 @@ class _HomePageState extends State<DanbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = Screen.of(context).size;
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -82,18 +81,17 @@ class _HomePageState extends State<DanbooruHomePage> {
                       ],
                       child: const _PoolPage(),
                     ),
+                    const OtherFeaturesPage(),
                   ],
                 ),
               ),
             ),
           ],
         ),
-        bottomNavigationBar: screenSize == ScreenSize.small
-            ? BottomBar(
-                initialValue: viewIndex.value,
-                onTabChanged: (value) => viewIndex.value = value,
-              )
-            : null,
+        bottomNavigationBar: BottomBar(
+          initialValue: viewIndex.value,
+          onTabChanged: (value) => viewIndex.value = value,
+        ),
       ),
     );
   }

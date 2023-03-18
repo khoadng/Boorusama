@@ -35,7 +35,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
@@ -219,35 +218,6 @@ final poolDetailHandler =
             // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
             // ignore: prefer-iterable-of
             postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-          ),
-        ),
-      );
-    },
-  );
-});
-
-final favoritesHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  final args = context!.settings!.arguments as List;
-  final String username = args.first;
-
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (context, state) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostBloc.of(context)
-              ..add(PostRefreshed(
-                tag: 'ordfav:$username',
-                fetcher: SearchedPostFetcher.fromTags(
-                  'ordfav:$username',
-                ),
-              )),
-          ),
-        ],
-        child: CustomContextMenuOverlay(
-          child: FavoritesPage(
-            username: username,
           ),
         ),
       );

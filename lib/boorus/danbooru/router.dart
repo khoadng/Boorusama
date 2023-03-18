@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -135,11 +136,6 @@ class AppRouter {
         transitionType: TransitionType.material,
       )
       ..define(
-        '/favorites',
-        handler: favoritesHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
         '/bulk_download',
         handler: bulkDownloadHandler,
         transitionType: TransitionType.inFromBottom,
@@ -261,14 +257,9 @@ void goToProfilePage(BuildContext context) {
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
-  AppRouter.router.navigateTo(
-    context,
-    '/favorites',
-    routeSettings: RouteSettings(
-      name: RouterPageConstant.favorties,
-      arguments: [username],
-    ),
-  );
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => FavoritesPage.of(context, username: username!),
+  ));
 }
 
 void goToBulkDownloadPage(BuildContext context, List<String>? tags) {

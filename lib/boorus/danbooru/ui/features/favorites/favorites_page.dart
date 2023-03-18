@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/routes.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -19,6 +22,38 @@ class FavoritesPage extends StatelessWidget {
     super.key,
     required this.username,
   });
+
+  static Widget of(
+    BuildContext context, {
+    required String username,
+  }) {
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dContext) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => PostBloc.of(dContext)
+                    ..add(PostRefreshed(
+                      tag: 'ordfav:$username',
+                      fetcher: SearchedPostFetcher.fromTags(
+                        'ordfav:$username',
+                      ),
+                    )),
+                ),
+              ],
+              child: CustomContextMenuOverlay(
+                child: FavoritesPage(username: username),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   final String username;
 
