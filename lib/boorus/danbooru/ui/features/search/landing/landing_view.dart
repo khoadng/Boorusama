@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-import 'favorite_tags/favorite_tags_section.dart';
+import '../../../../../../core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'metatags/metatags_section.dart';
 import 'search_history/search_history_section.dart';
 import 'trending/trending_section.dart';

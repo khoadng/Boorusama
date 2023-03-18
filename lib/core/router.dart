@@ -18,11 +18,16 @@ import 'package:boorusama/core/ui/settings/performance_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
+import 'application/tags/tags.dart';
 import 'domain/posts/post.dart';
+import 'domain/tags/metatag.dart';
 import 'infra/app_info_provider.dart';
 import 'infra/package_info_provider.dart';
+import 'platform.dart';
+import 'ui/info_container.dart';
 import 'ui/original_image_page.dart';
 import 'ui/widgets/parallax_slide_in_page_route.dart';
+import 'utils.dart';
 
 void goToOriginalImagePage(BuildContext context, Post post) {
   Navigator.of(context).push(PageTransition(
@@ -174,5 +179,70 @@ void goToAppAboutPage(BuildContext context) {
     ),
     applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
     applicationName: context.read<AppInfoProvider>().appInfo.appName,
+  );
+}
+
+void goToMetatagsPage(
+  BuildContext context, {
+  required List<Metatag> metatags,
+  required void Function(Metatag tag) onSelected,
+}) {
+  showAdaptiveBottomSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.metatags,
+    ),
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        title: const Text('Metatags'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          InfoContainer(
+            contentBuilder: (context) =>
+                const Text('search.metatags_notice').tr(),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: metatags.length,
+              itemBuilder: (context, index) {
+                final tag = metatags[index];
+
+                return ListTile(
+                  onTap: () => onSelected(tag),
+                  title: Text(tag.name),
+                  trailing: tag.isFree ? const Chip(label: Text('Free')) : null,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Future<Object?> goToFavoriteTagImportPage(
+  BuildContext context,
+  FavoriteTagBloc bloc,
+) {
+  return showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteTagsImport,
+    ),
+    pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      onImport: (tagString) => bloc.add(FavoriteTagImported(
+        tagString: tagString,
+      )),
+    ),
   );
 }

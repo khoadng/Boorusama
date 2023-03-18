@@ -72,7 +72,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_s
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/landing/favorite_tags/import_favorite_tag_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
@@ -88,13 +87,11 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
-import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
-import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
@@ -1139,53 +1136,6 @@ void goToRelatedTagsPage(
   }
 }
 
-void goToMetatagsPage(
-  BuildContext context, {
-  required List<Metatag> metatags,
-  required void Function(Metatag tag) onSelected,
-}) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.metatags,
-    ),
-    builder: (context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Metatags'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: Navigator.of(context).pop,
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          InfoContainer(
-            contentBuilder: (context) =>
-                const Text('search.metatags_notice').tr(),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: metatags.length,
-              itemBuilder: (context, index) {
-                final tag = metatags[index];
-
-                return ListTile(
-                  onTap: () => onSelected(tag),
-                  title: Text(tag.name),
-                  trailing: tag.isFree ? const Chip(label: Text('Free')) : null,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 void goToPostFavoritesDetails(BuildContext context, Post post) {
   showAdaptiveBottomSheet(
     context,
@@ -1344,24 +1294,6 @@ void goToSavedSearchPatchPage(
             'saved_search.saved_search_updated',
           ).tr(),
         ),
-      )),
-    ),
-  );
-}
-
-Future<Object?> goToFavoriteTagImportPage(
-  BuildContext context,
-  FavoriteTagBloc bloc,
-) {
-  return showGeneralDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.favoriteTagsImport,
-    ),
-    pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
-      padding: isMobilePlatform() ? 0 : 8,
-      onImport: (tagString) => bloc.add(FavoriteTagImported(
-        tagString: tagString,
       )),
     ),
   );

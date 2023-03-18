@@ -9,11 +9,11 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/main.dart';
-import '../common/option_tags_arena.dart';
+import '../../../../../../../core/ui/search/common/option_tags_arena.dart';
 
 class MetatagsSection extends StatefulWidget {
   const MetatagsSection({
