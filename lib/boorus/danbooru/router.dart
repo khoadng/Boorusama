@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -129,11 +130,6 @@ class AppRouter {
       ..define(
         '/saved_search/edit',
         handler: savedSearchEditHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
-        '/users/blacklisted_tags',
-        handler: blacklistedTagsHandler,
         transitionType: TransitionType.inFromRight,
       );
   }
@@ -841,29 +837,46 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToBlacklistedTagPage(BuildContext context) {
   if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/users/blacklisted_tags',
-      routeSettings: const RouteSettings(
-        name: RouterPageConstant.blacklistedTags,
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => provideBlacklistedTagPageDependencies(
+        context,
+        page: const BlacklistedTagsPage(),
       ),
-    );
+    ));
   } else {
     showDesktopDialogWindow(
       context,
       width: min(MediaQuery.of(context).size.width * 0.8, 700),
       height: min(MediaQuery.of(context).size.height * 0.8, 600),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(
-            value: BlocProvider.of<BlacklistedTagsBloc>(context)
-              ..add(const BlacklistedTagRequested()),
-          ),
-        ],
-        child: const BlacklistedTagsPageDesktop(),
+      builder: (_) => provideBlacklistedTagPageDependencies(
+        context,
+        page: const BlacklistedTagsPageDesktop(),
       ),
     );
   }
+}
+
+Widget provideBlacklistedTagPageDependencies(
+  BuildContext context, {
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.create(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: dcontext.read<BlacklistedTagsBloc>()
+                ..add(const BlacklistedTagRequested()),
+            ),
+          ],
+          child: page,
+        ),
+      );
+    },
+  );
 }
 
 void goToOriginalImagePage(BuildContext context, Post post) {

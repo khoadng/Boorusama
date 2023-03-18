@@ -10,7 +10,6 @@ import 'package:media_scanner/media_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
@@ -19,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
@@ -90,19 +88,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final blacklistedTagsHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(
-        value: BlocProvider.of<BlacklistedTagsBloc>(context!)
-          ..add(const BlacklistedTagRequested()),
-      ),
-    ],
-    child: const BlacklistedTagsPage(),
-  );
-});
 
 final bulkDownloadHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
