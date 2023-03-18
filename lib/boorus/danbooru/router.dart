@@ -57,6 +57,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_pag
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
@@ -138,11 +139,6 @@ class AppRouter {
         '/favorite_groups/details',
         handler: favoriteGroupDetailsHandler,
         transitionType: TransitionType.inFromRight,
-      )
-      ..define(
-        '/favorite_groups',
-        handler: favoriteGroupsHandler,
-        transitionType: TransitionType.material,
       );
   }
 }
@@ -1563,16 +1559,33 @@ void goToSearchHistoryPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  AppRouter.router.navigateTo(
-    context,
-    '/favorite_groups',
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.favoriteGroups,
-    ),
-    transition: Screen.of(context).size == ScreenSize.small
-        ? TransitionType.inFromRight
-        : null,
-  );
+  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, dstate) {
+        return DanbooruProvider.create(
+          context,
+          booru: dstate.booru!,
+          builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+            builder: (_, state) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) => FavoriteGroupsBloc.of(
+                      dcontext,
+                      currentUser: state.user,
+                    )..add(
+                        const FavoriteGroupsRefreshed(includePreviews: true),
+                      ),
+                  ),
+                ],
+                child: const FavoriteGroupsPage(),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }));
 }
 
 void goToFavoriteGroupDetailsPage(
