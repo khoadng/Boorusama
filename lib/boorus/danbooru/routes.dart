@@ -22,17 +22,12 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
@@ -45,14 +40,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/search/search.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'router.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -60,7 +48,6 @@ import 'ui/features/home/home_page_2.dart';
 import 'ui/features/home/home_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
-import 'ui/features/search/search_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -176,88 +163,6 @@ final characterHandler = Handler(handlerFunc: (
         backgroundImageUrl: args[1],
       ),
     ),
-  );
-});
-
-// final postDetailHandler = Handler(handlerFunc: (
-//   context,
-//   Map<String, List<String>> params,
-// ) {
-
-// });
-
-final postSearchHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  final args = context!.settings!.arguments as List;
-
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (context, state) {
-      return BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, settingsState) {
-          final tagSearchBloc = TagSearchBloc(
-            tagInfo: context.read<TagInfo>(),
-            autocompleteRepository: context.read<AutocompleteRepository>(),
-          );
-
-          final postBloc = PostBloc.of(
-            context,
-            pagination: settingsState.settings.contentOrganizationCategory ==
-                ContentOrganizationCategory.pagination,
-          );
-          final searchHistoryCubit = SearchHistoryBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
-          final relatedTagBloc = RelatedTagBloc(
-            relatedTagRepository: context.read<RelatedTagRepository>(),
-          );
-          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
-
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: searchHistoryCubit),
-              BlocProvider.value(
-                value: context.read<FavoriteTagBloc>()
-                  ..add(const FavoriteTagFetched()),
-              ),
-              BlocProvider.value(value: postBloc),
-              BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
-              BlocProvider.value(value: searchHistorySuggestions),
-              BlocProvider(
-                create: (context) => SearchBloc(
-                  initial: DisplayState.options,
-                  metatags: context.read<TagInfo>().metatags,
-                  tagSearchBloc: tagSearchBloc,
-                  searchHistoryBloc: searchHistoryCubit,
-                  relatedTagBloc: relatedTagBloc,
-                  searchHistorySuggestionsBloc: searchHistorySuggestions,
-                  postBloc: postBloc,
-                  postCountRepository: context.read<PostCountRepository>(),
-                  initialQuery: args.first,
-                  booruType: state.booru?.booruType ?? BooruType.safebooru,
-                ),
-              ),
-              BlocProvider.value(value: relatedTagBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, state) {
-                  return SearchPage(
-                    autoFocusSearchBar: state.settings.autoFocusSearchBar,
-                    metatags: context.read<TagInfo>().metatags,
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      );
-    },
   );
 });
 
