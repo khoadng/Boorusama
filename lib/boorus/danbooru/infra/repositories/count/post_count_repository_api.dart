@@ -9,7 +9,7 @@ class PostCountRepositoryApi implements PostCountRepository {
     required this.accountRepository,
   });
 
-  final Api api;
+  final DanbooruApi api;
   final AccountRepository accountRepository;
 
   @override

@@ -94,7 +94,7 @@ class DanbooruProvider extends StatelessWidget {
     final dio = context.read<DioProvider>().getDio(booru.url);
     final accountRepo = context.read<AccountRepository>();
     final tagInfo = context.read<TagInfo>();
-    final api = Api(dio);
+    final api = DanbooruApi(dio);
 
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();

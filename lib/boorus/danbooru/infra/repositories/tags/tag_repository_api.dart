@@ -20,7 +20,7 @@ class TagRepositoryApi implements TagRepository {
     this._accountRepository,
   );
 
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
 
   @override

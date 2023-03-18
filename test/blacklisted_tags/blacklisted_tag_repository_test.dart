@@ -12,7 +12,7 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import '../common.dart';
 
-class MockApi extends Mock implements Api {}
+class MockApi extends Mock implements DanbooruApi {}
 
 void main() {
   test('get blacklisted tags should return correct tags', () async {

@@ -21,12 +21,12 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
-    Api api,
+    DanbooruApi api,
     AccountRepository accountRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
 
   @override

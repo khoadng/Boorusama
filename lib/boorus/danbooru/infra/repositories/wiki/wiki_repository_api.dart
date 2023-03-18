@@ -8,8 +8,8 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 class WikiRepositoryApi implements WikiRepository {
-  WikiRepositoryApi(Api api) : _api = api;
-  final Api _api;
+  WikiRepositoryApi(DanbooruApi api) : _api = api;
+  final DanbooruApi _api;
 
   @override
   Future<Wiki?> getWikiFor(

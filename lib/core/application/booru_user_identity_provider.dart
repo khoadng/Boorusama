@@ -15,7 +15,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
     this.api,
   );
 
-  final Api api;
+  final DanbooruApi api;
 
   @override
   Future<int> getAccountId({

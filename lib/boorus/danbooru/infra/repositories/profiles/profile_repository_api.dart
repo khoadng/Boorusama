@@ -11,12 +11,12 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 class ProfileRepositoryApi implements ProfileRepository {
   ProfileRepositoryApi({
     required AccountRepository accountRepository,
-    required Api api,
+    required DanbooruApi api,
   })  : _api = api,
         _accountRepository = accountRepository;
 
   final AccountRepository _accountRepository;
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<Profile?> getProfile({

@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 
 class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
   ArtistCommentaryRepositoryApi(this._api, this._accountRepository);
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
 
   @override

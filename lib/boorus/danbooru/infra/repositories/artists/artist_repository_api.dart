@@ -15,10 +15,10 @@ List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(
 
 class ArtistRepositoryApi implements ArtistRepository {
   ArtistRepositoryApi({
-    required Api api,
+    required DanbooruApi api,
   }) : _api = api;
 
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<Artist> getArtist(String name, {CancelToken? cancelToken}) async {

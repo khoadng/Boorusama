@@ -14,7 +14,7 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
 
   final UserRepository userRepository;
   final AccountRepository accountRepository;
-  final Api api;
+  final DanbooruApi api;
 
   @override
   Future<List<String>> getBlacklistedTags(int uid) {

@@ -5,9 +5,9 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 class RelatedTagRepositoryApi implements RelatedTagRepository {
-  const RelatedTagRepositoryApi(Api api) : _api = api;
+  const RelatedTagRepositoryApi(DanbooruApi api) : _api = api;
 
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<RelatedTag> getRelatedTag(String query) => _api

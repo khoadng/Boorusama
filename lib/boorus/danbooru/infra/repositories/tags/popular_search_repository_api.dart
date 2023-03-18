@@ -19,12 +19,12 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
     required AccountRepository accountRepository,
-    required Api api,
+    required DanbooruApi api,
   })  : _accountRepository = accountRepository,
         _api = api;
 
   final AccountRepository _accountRepository;
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<List<Search>> getSearchByDate(DateTime date) async {

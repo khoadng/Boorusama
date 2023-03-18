@@ -16,13 +16,13 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
-    required Api api,
+    required DanbooruApi api,
     required AccountRepository accountRepo,
   })  : _api = api,
         _accountRepository = accountRepo;
 
   final AccountRepository _accountRepository;
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<List<PostVote>> getPostVotes(List<int> postIds) {

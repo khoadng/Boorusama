@@ -14,11 +14,12 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
     ).map(commentVoteDtoToCommentVote).toList();
 
 class CommentVoteApiRepository implements CommentVoteRepository {
-  const CommentVoteApiRepository(Api api, AccountRepository accountRepository)
+  const CommentVoteApiRepository(
+      DanbooruApi api, AccountRepository accountRepository)
       : _api = api,
         _accountRepository = accountRepository;
 
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
 
   @override

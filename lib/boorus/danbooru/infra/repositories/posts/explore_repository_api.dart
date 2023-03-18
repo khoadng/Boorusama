@@ -14,7 +14,7 @@ class ExploreRepositoryApi implements ExploreRepository {
 
   final AccountRepository accountRepository;
   final PostRepository postRepository;
-  final Api api;
+  final DanbooruApi api;
 
   static const int _limit = 60;
 

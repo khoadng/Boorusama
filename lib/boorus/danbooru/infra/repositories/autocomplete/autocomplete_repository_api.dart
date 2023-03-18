@@ -53,12 +53,12 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
-    required Api api,
+    required DanbooruApi api,
     required AccountRepository accountRepository,
   })  : _accountRepository = accountRepository,
         _api = api;
 
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
 
   @override

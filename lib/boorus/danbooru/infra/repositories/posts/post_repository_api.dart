@@ -31,13 +31,13 @@ const String postParams =
 
 class PostRepositoryApi implements PostRepository {
   PostRepositoryApi(
-    Api api,
+    DanbooruApi api,
     AccountRepository accountRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
   final AccountRepository _accountRepository;
-  final Api _api;
+  final DanbooruApi _api;
 
   static const int _limit = 60;
 

@@ -19,7 +19,7 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
     this.accountRepository,
   );
 
-  final Api api;
+  final DanbooruApi api;
   final AccountRepository accountRepository;
 
   @override

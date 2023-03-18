@@ -208,7 +208,8 @@ void main() async {
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
 
   final booruUserIdProvider = BooruUserIdentityProviderImpl(
-    Api(dioProvider.getDio(booruFactory.from(type: BooruType.danbooru).url)),
+    DanbooruApi(
+        dioProvider.getDio(booruFactory.from(type: BooruType.danbooru).url)),
   );
 
   await ensureI18nInitialized();

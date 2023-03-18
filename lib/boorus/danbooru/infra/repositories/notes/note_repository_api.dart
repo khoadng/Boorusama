@@ -17,7 +17,7 @@ const _notesLimit = 200;
 
 class NoteRepositoryApi implements NoteRepository {
   NoteRepositoryApi(this._api);
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<List<Note>> getNotesFrom(

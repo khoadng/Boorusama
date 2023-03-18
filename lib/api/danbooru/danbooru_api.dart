@@ -7,8 +7,8 @@ import 'package:retrofit/retrofit.dart';
 part 'danbooru_api.g.dart';
 
 @RestApi()
-abstract class Api {
-  factory Api(Dio dio, {String baseUrl}) = _Api;
+abstract class DanbooruApi {
+  factory DanbooruApi(Dio dio, {String baseUrl}) = _DanbooruApi;
 
   @POST('/favorites')
   Future<HttpResponse> addToFavorites(

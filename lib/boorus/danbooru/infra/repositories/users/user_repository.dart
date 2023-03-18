@@ -34,7 +34,7 @@ class UserRepositoryApi implements UserRepository {
   );
 
   final AccountRepository _accountRepository;
-  final Api _api;
+  final DanbooruApi _api;
   final List<String> defaultBlacklistedTags;
 
   @override

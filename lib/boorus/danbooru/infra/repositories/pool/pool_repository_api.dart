@@ -19,7 +19,7 @@ class PoolRepositoryApi implements PoolRepository {
     this._accountRepository,
   );
 
-  final Api _api;
+  final DanbooruApi _api;
   final AccountRepository _accountRepository;
   final _limit = 20;
 
