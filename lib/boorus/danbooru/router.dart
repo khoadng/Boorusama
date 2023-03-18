@@ -1329,17 +1329,25 @@ void goToPostFavoritesDetails(BuildContext context, Post post) {
       name: RouterPageConstant.postFavoriters,
     ),
     height: MediaQuery.of(context).size.height * 0.65,
-    builder: (context) => BlocProvider(
-      create: (context) => PostFavoriteBloc(
-        favoritePostRepository: context.read<FavoritePostRepository>(),
-        userRepository: context.read<UserRepository>(),
-      )..add(PostFavoriteFetched(
-          postId: post.id,
-          refresh: true,
-        )),
-      child: FavoriterDetailsView(
-        post: post,
-      ),
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.create(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => BlocProvider(
+            create: (_) => PostFavoriteBloc(
+              favoritePostRepository: dcontext.read<FavoritePostRepository>(),
+              userRepository: dcontext.read<UserRepository>(),
+            )..add(PostFavoriteFetched(
+                postId: post.id,
+                refresh: true,
+              )),
+            child: FavoriterDetailsView(
+              post: post,
+            ),
+          ),
+        );
+      },
     ),
   );
 }
@@ -1351,17 +1359,25 @@ void goToPostVotesDetails(BuildContext context, Post post) {
       name: RouterPageConstant.postVoters,
     ),
     height: MediaQuery.of(context).size.height * 0.65,
-    builder: (context) => BlocProvider(
-      create: (context) => PostVoteInfoBloc(
-        postVoteRepository: context.read<PostVoteRepository>(),
-        userRepository: context.read<UserRepository>(),
-      )..add(PostVoteInfoFetched(
-          postId: post.id,
-          refresh: true,
-        )),
-      child: VoterDetailsView(
-        post: post,
-      ),
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => BlocProvider(
+            create: (_) => PostVoteInfoBloc(
+              postVoteRepository: dcontext.read<PostVoteRepository>(),
+              userRepository: dcontext.read<UserRepository>(),
+            )..add(PostVoteInfoFetched(
+                postId: post.id,
+                refresh: true,
+              )),
+            child: VoterDetailsView(
+              post: post,
+            ),
+          ),
+        );
+      },
     ),
   );
 }
