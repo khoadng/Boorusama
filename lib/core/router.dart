@@ -26,6 +26,7 @@ import 'infra/package_info_provider.dart';
 import 'platform.dart';
 import 'ui/info_container.dart';
 import 'ui/original_image_page.dart';
+import 'ui/search/favorite_tags/import_favorite_tag_dialog.dart';
 import 'ui/widgets/parallax_slide_in_page_route.dart';
 import 'utils.dart';
 

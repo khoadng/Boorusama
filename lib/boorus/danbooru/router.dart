@@ -1330,22 +1330,31 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
-      initialData: group,
-      padding: isMobilePlatform() ? 0 : 8,
-      title: 'favorite_groups.edit_group'.tr(),
-      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
-        group: group,
-        name: name,
-        initialIds: ids,
-        isPrivate: isPrivate,
-        onFailure: (message) {
-          showSimpleSnackBar(
-            context: context,
-            content: Text(message.toString()),
-          );
-        },
-      )),
+    pageBuilder: (dialogContext, _, __) =>
+        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => EditFavoriteGroupDialog(
+            initialData: group,
+            padding: isMobilePlatform() ? 0 : 8,
+            title: 'favorite_groups.edit_group'.tr(),
+            onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
+              group: group,
+              name: name,
+              initialIds: ids,
+              isPrivate: isPrivate,
+              onFailure: (message) {
+                showSimpleSnackBar(
+                  context: context,
+                  content: Text(message.toString()),
+                );
+              },
+            )),
+          ),
+        );
+      },
     ),
   );
 }
