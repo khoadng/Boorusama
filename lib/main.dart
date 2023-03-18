@@ -200,16 +200,12 @@ void main() async {
     settings: settings,
   );
 
-  // final apiCubit = ApiCubit(
-  //   defaultUrl: defaultBooru.url,
-  //   onDioRequest: (baseUrl) => dio(tempPath, baseUrl, userAgentGenerator),
-  // );
-
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
 
   final booruUserIdProvider = BooruUserIdentityProviderImpl(
     DanbooruApi(
-        dioProvider.getDio(booruFactory.from(type: BooruType.danbooru).url)),
+      dioProvider.getDio(booruFactory.from(type: BooruType.danbooru).url),
+    ),
   );
 
   await ensureI18nInitialized();

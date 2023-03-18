@@ -15,8 +15,9 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
 
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
-      DanbooruApi api, AccountRepository accountRepository)
-      : _api = api,
+    DanbooruApi api,
+    AccountRepository accountRepository,
+  )   : _api = api,
         _accountRepository = accountRepository;
 
   final DanbooruApi _api;
