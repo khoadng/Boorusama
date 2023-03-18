@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -56,6 +55,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_pag
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
@@ -1014,6 +1014,19 @@ void goToCommentPage(BuildContext context, int postId) {
     postId: postId,
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
+    ),
+    builder: (context, useAppBar) =>
+        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (context, state) {
+        return DanbooruProvider.create(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => CommentPage(
+            useAppBar: useAppBar,
+            postId: postId,
+          ),
+        );
+      },
     ),
   );
 }

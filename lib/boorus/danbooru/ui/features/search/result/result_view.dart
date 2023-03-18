@@ -9,6 +9,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
@@ -171,6 +172,8 @@ class _PaginationState extends State<_Pagination>
     final maxPage =
         totalResults != null ? (totalResults / postsPerPage).ceil() : 1;
     final state = context.watch<PostBloc>().state;
+    final authState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return Scaffold(
       backgroundColor: widget.backgroundColor,
@@ -199,6 +202,7 @@ class _PaginationState extends State<_Pagination>
               post: post,
               // ignore: no-empty-block
               onMultiSelect: () {},
+              hasAccount: authState is Authenticated,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),

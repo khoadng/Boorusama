@@ -221,8 +221,10 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                 condition: !editing,
                                 conditionalBuilder: (child) =>
                                     ContextMenuRegion(
-                                  contextMenu:
-                                      DefaultPostContextMenu(post: post.post),
+                                  contextMenu: DefaultPostContextMenu(
+                                    post: post.post,
+                                    hasAccount: authState is Authenticated,
+                                  ),
                                   child: child,
                                 ),
                                 child: ImageGridItem(

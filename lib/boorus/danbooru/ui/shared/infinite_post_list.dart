@@ -73,6 +73,8 @@ class _InfinitePostListState extends State<InfinitePostList> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<PostBloc>().state;
+    final authState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
@@ -135,6 +137,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
               contextMenuBuilder: (post) =>
                   widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
                   DefaultPostContextMenu(
+                    hasAccount: authState is Authenticated,
                     onMultiSelect: _enableMultiSelect,
                     post: post,
                   ),

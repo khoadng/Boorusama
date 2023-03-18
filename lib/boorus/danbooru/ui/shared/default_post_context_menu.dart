@@ -19,7 +19,7 @@ class DefaultPostContextMenu extends StatelessWidget {
     super.key,
     required this.post,
     this.onMultiSelect,
-    this.hasAccount = false,
+    required this.hasAccount,
   });
 
   final Post post;
@@ -28,9 +28,6 @@ class DefaultPostContextMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
-
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
         buttonConfigs: [
@@ -47,7 +44,7 @@ class DefaultPostContextMenu extends StatelessWidget {
             'download.download'.tr(),
             onPressed: () => download(post),
           ),
-          if (authState is Authenticated)
+          if (hasAccount)
             ContextMenuButtonConfig(
               'post.action.add_to_favorite_group'.tr(),
               onPressed: () {

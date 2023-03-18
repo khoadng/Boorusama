@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -123,7 +123,7 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildCommentButton(BuildContext context) {
     return IconButton(
-      onPressed: () => showCommentPage(context, postId: post.id),
+      onPressed: () => goToCommentPage(context, post.id),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
       ),

@@ -117,15 +117,14 @@ Future<T?> showCommentPage<T>(
   BuildContext context, {
   required int postId,
   RouteSettings? settings,
+  required Widget Function(BuildContext context, bool useAppBar) builder,
 }) =>
     Screen.of(context).size == ScreenSize.small
         ? showMaterialModalBottomSheet<T>(
             context: context,
             settings: settings,
             duration: const Duration(milliseconds: 250),
-            builder: (context) => CommentPage(
-              postId: postId,
-            ),
+            builder: (context) => builder(context, true),
           )
         : showSideSheetFromRight(
             settings: settings,
@@ -167,10 +166,7 @@ Future<T?> showCommentPage<T>(
                     ),
                   ),
                   Expanded(
-                    child: CommentPage(
-                      useAppBar: false,
-                      postId: postId,
-                    ),
+                    child: builder(context, false),
                   ),
                 ],
               ),
