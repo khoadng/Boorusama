@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -120,18 +121,7 @@ class AppRouter {
   static final FluroRouter router = FluroRouter.appRouter;
 
   void setupRoutes() {
-    router
-      ..define('/', handler: rootHandler)
-      ..define(
-        '/saved_search',
-        handler: savedSearchHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
-        '/saved_search/edit',
-        handler: savedSearchEditHandler,
-        transitionType: TransitionType.inFromRight,
-      );
+    router..define('/', handler: rootHandler);
   }
 }
 
@@ -282,7 +272,7 @@ void goToBulkDownloadPage(
     builder: (_) {
       return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (_, state) {
-          return DanbooruProvider.create(
+          return DanbooruProvider.of(
             context,
             booru: state.booru!,
             builder: (dcontext) => MultiBlocProvider(
@@ -316,7 +306,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
     builder: (_) {
       return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (_, state) {
-          return DanbooruProvider.create(
+          return DanbooruProvider.of(
             context,
             booru: state.booru!,
             builder: (dcontext) => MultiBlocProvider(
@@ -821,42 +811,74 @@ void goToExploreDetailPage(
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/saved_search',
-      routeSettings: RouteSettings(
-        name: RouterPageConstant.savedSearch,
-        arguments: [username],
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => provideSavedSearchPageDependecies(
+        context,
+        page: const SavedSearchFeedPage(),
       ),
-    );
+    ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostBloc.of(context),
-          ),
-          BlocProvider(
-            create: (context) => SavedSearchFeedBloc(
-              savedSearchBloc: context.read<SavedSearchBloc>(),
-            )..add(const SavedSearchFeedRefreshed()),
-          ),
-        ],
-        child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
+      builder: (_) => provideSavedSearchPageDependecies(
+        context,
+        page: const SavedSearchFeedPage(),
       ),
     );
   }
 }
 
-void goToSavedSearchEditPage(BuildContext context) {
-  AppRouter.router.navigateTo(
-    context,
-    '/saved_search/edit',
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.savedSearchEdit,
-    ),
+Widget provideSavedSearchPageDependecies(
+  BuildContext context, {
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => PostBloc.of(dcontext),
+            ),
+            BlocProvider(
+              create: (_) => SavedSearchFeedBloc(
+                savedSearchBloc: dcontext.read<SavedSearchBloc>(),
+              )..add(const SavedSearchFeedRefreshed()),
+            ),
+          ],
+          child: CustomContextMenuOverlay(
+            child: page,
+          ),
+        ),
+      );
+    },
   );
+}
+
+void goToSavedSearchEditPage(BuildContext context) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) {
+      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return DanbooruProvider.of(
+            context,
+            booru: state.booru!,
+            builder: (dcontext) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: dcontext.read<SavedSearchBloc>()
+                    ..add(const SavedSearchFetched()),
+                ),
+              ],
+              child: const SavedSearchPage(),
+            ),
+          );
+        },
+      );
+    },
+  ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
@@ -886,7 +908,7 @@ Widget provideBlacklistedTagPageDependencies(
 }) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (_, state) {
-      return DanbooruProvider.create(
+      return DanbooruProvider.of(
         context,
         booru: state.booru!,
         builder: (dcontext) => MultiBlocProvider(
@@ -1093,10 +1115,9 @@ void goToCommentPage(BuildContext context, int postId) {
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (context, useAppBar) =>
-        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (context, state) {
-        return DanbooruProvider.create(
+    builder: (_, useAppBar) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
           context,
           booru: state.booru!,
           builder: (dcontext) => CommentPage(
@@ -1595,7 +1616,7 @@ void goToFavoriteGroupPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
     return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (_, dstate) {
-        return DanbooruProvider.create(
+        return DanbooruProvider.of(
           context,
           booru: dstate.booru!,
           builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
@@ -1629,7 +1650,7 @@ void goToFavoriteGroupDetailsPage(
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
     return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (_, state) {
-        return DanbooruProvider.create(
+        return DanbooruProvider.of(
           context,
           booru: state.booru!,
           builder: (dcontext) => MultiBlocProvider(

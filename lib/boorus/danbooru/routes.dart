@@ -5,20 +5,14 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:fluro/fluro.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'router.dart';
 import 'ui/features/home/home_page_2.dart';
 import 'ui/features/home/home_page_desktop.dart';
-import 'ui/features/saved_search/saved_search_feed_page.dart';
-import 'ui/features/saved_search/saved_search_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -80,33 +74,3 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final savedSearchHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context) => PostBloc.of(context),
-      ),
-      BlocProvider(
-        create: (context) => SavedSearchFeedBloc(
-          savedSearchBloc: context.read<SavedSearchBloc>(),
-        )..add(const SavedSearchFeedRefreshed()),
-      ),
-    ],
-    child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
-  );
-});
-
-final savedSearchEditHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(
-        value: context!.read<SavedSearchBloc>()
-          ..add(const SavedSearchFetched()),
-      ),
-    ],
-    child: const SavedSearchPage(),
-  );
-});
