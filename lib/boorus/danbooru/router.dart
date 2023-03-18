@@ -57,6 +57,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_pag
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
@@ -133,11 +134,6 @@ class AppRouter {
       ..define(
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
-        '/favorite_groups/details',
-        handler: favoriteGroupDetailsHandler,
         transitionType: TransitionType.inFromRight,
       );
   }
@@ -1593,17 +1589,35 @@ void goToFavoriteGroupDetailsPage(
   FavoriteGroup group,
   FavoriteGroupsBloc bloc,
 ) {
-  AppRouter.router.navigateTo(
-    context,
-    '/favorite_groups/details',
-    routeSettings: RouteSettings(
-      name: RouterPageConstant.favoriteGroupDetails,
-      arguments: [
-        group,
-        bloc,
-      ],
-    ),
-  );
+  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.create(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => PostBloc.of(dcontext)
+                  ..add(PostRefreshed(
+                    fetcher: FavoriteGroupPostFetcher(
+                      ids: group.postIds.take(60).toList(),
+                    ),
+                  )),
+              ),
+              BlocProvider.value(value: bloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: FavoriteGroupDetailsPage(
+                group: group,
+                postIds: QueueList.from(group.postIds.skip(60)),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }));
 }
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
