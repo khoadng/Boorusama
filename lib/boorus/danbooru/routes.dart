@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_downlo
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
@@ -38,7 +37,6 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'router.dart';
-import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page_2.dart';
 import 'ui/features/home/home_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
@@ -104,19 +102,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final userHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  // final String userId = params["id"][0];
-
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(value: context!.read<ProfileCubit>()..getProfile()),
-      BlocProvider.value(value: context.read<FavoritesCubit>()),
-    ],
-    child: const ProfilePage(),
-  );
-});
 
 final settingsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {

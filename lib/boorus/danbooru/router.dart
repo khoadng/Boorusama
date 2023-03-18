@@ -112,11 +112,6 @@ class AppRouter {
     router
       ..define('/', handler: rootHandler)
       ..define(
-        '/users/profile',
-        handler: userHandler,
-        transitionType: TransitionType.inFromRight,
-      )
-      ..define(
         '/settings',
         handler: settingsHandler,
         transitionType: TransitionType.inFromRight,
