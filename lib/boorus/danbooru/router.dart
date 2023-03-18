@@ -1153,12 +1153,20 @@ void goToUserDetailsPage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => UserBloc(
-          userRepository: context.read<UserRepository>(),
-          postRepository: context.read<PostRepository>(),
-        )..add(UserFetched(uid: uid)),
-        child: const UserDetailsPage(),
+      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return DanbooruProvider.create(
+            context,
+            booru: state.booru!,
+            builder: (dcontext) => BlocProvider(
+              create: (_) => UserBloc(
+                userRepository: dcontext.read<UserRepository>(),
+                postRepository: dcontext.read<PostRepository>(),
+              )..add(UserFetched(uid: uid)),
+              child: const UserDetailsPage(),
+            ),
+          );
+        },
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
