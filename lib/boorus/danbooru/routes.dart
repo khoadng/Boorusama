@@ -31,7 +31,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_pa
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
@@ -102,11 +101,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final settingsHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return const SettingsPage();
-});
 
 final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {

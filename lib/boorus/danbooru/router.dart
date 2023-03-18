@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -111,11 +112,6 @@ class AppRouter {
   void setupRoutes() {
     router
       ..define('/', handler: rootHandler)
-      ..define(
-        '/settings',
-        handler: settingsHandler,
-        transitionType: TransitionType.inFromRight,
-      )
       ..define(
         '/pool/detail',
         handler: poolDetailHandler,
@@ -627,13 +623,9 @@ void goToSearchPage(
 
 void goToSettingPage(BuildContext context) {
   if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/settings',
-      routeSettings: const RouteSettings(
-        name: RouterPageConstant.settings,
-      ),
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SettingsPage(),
+    ));
   } else {
     showDesktopDialogWindow(
       context,

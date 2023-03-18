@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -18,6 +17,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
+
+import 'settings_page.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({
@@ -243,5 +244,3 @@ class _SettingsSection extends StatelessWidget {
     );
   }
 }
-
-String getVersion(PackageInfo info) => info.version;
