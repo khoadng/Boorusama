@@ -1199,6 +1199,32 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     onSubmitted: onSubmitted,
     onSelected: onSelected,
+    builder: (_, isMobile) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => isMobile
+              ? SimpleTagSearchView(
+                  onSubmitted: onSubmitted,
+                  ensureValidTag: ensureValidTag,
+                  floatingActionButton: floatingActionButton != null
+                      ? (text) => floatingActionButton.call(text)
+                      : null,
+                  onSelected: onSelected,
+                )
+              : SimpleTagSearchView(
+                  onSubmitted: onSubmitted,
+                  backButton: IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  ensureValidTag: ensureValidTag,
+                  onSelected: onSelected,
+                ),
+        );
+      },
+    ),
   );
 }
 
