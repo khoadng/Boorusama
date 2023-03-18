@@ -83,6 +83,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.favoriteTagsRepo,
     required this.booru,
     required this.tagInfo,
+    required this.trendingTagCubit,
   });
 
   factory DanbooruProvider.create(
@@ -183,6 +184,11 @@ class DanbooruProvider extends StatelessWidget {
 
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
+    final trendingTagCubit = TrendingTagCubit(
+      popularSearchRepo,
+      booru.booruType == BooruType.safebooru ? tagInfo.r18Tags.toSet() : {},
+    )..getTags();
+
     return DanbooruProvider(
       builder: builder,
       accountRepo: accountRepo,
@@ -213,6 +219,7 @@ class DanbooruProvider extends StatelessWidget {
       favoriteTagsRepo: favoriteTagRepo,
       booru: booru,
       tagInfo: tagInfo,
+      trendingTagCubit: trendingTagCubit,
     );
   }
 
@@ -249,6 +256,8 @@ class DanbooruProvider extends StatelessWidget {
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final tagInfo = context.read<TagInfo>();
 
+    final trendingTagCubit = context.read<TrendingTagCubit>();
+
     return DanbooruProvider(
       builder: builder,
       accountRepo: accountRepo,
@@ -279,6 +288,7 @@ class DanbooruProvider extends StatelessWidget {
       favoriteTagsRepo: favoriteTagRepo,
       booru: booru,
       tagInfo: tagInfo,
+      trendingTagCubit: trendingTagCubit,
     );
   }
 
@@ -311,16 +321,14 @@ class DanbooruProvider extends StatelessWidget {
   final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
 
+  final TrendingTagCubit trendingTagCubit;
+
   final Booru booru;
   final TagInfo tagInfo;
 
   @override
   Widget build(BuildContext context) {
     final favoritedCubit = FavoritesCubit(postRepository: postRepo);
-    final trendingTagCubit = TrendingTagCubit(
-      popularSearchRepo,
-      booru.booruType == BooruType.safebooru ? tagInfo.r18Tags.toSet() : {},
-    )..getTags();
     final profileCubit = ProfileCubit(profileRepository: profileRepo);
     final commentBloc = CommentBloc(
       commentVoteRepository: commentVoteRepo,
