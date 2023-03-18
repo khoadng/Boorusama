@@ -41,7 +41,7 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
-import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
@@ -90,7 +90,7 @@ void main() async {
     });
   }
 
-  final settingRepository = SettingRepositoryHive(
+  final settingRepository = SettingsRepositoryHive(
     Hive.openBox('settings'),
     Settings.defaultSettings,
   );
@@ -256,7 +256,7 @@ void main() async {
             RepositoryProvider<DioProvider>.value(
               value: dioProvider,
             ),
-            RepositoryProvider<SettingRepository>.value(
+            RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,
             ),
             RepositoryProvider<BooruUserIdentityProvider>.value(

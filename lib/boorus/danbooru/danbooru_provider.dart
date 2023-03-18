@@ -44,7 +44,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
-import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -96,7 +96,7 @@ class DanbooruProvider extends StatelessWidget {
     final tagInfo = context.read<TagInfo>();
     final api = Api(dio);
 
-    final settingRepository = context.read<SettingRepository>();
+    final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
 
     final popularSearchRepo = PopularSearchRepositoryApi(
@@ -228,7 +228,7 @@ class DanbooruProvider extends StatelessWidget {
     required Booru booru,
     required Widget Function(BuildContext context) builder,
   }) {
-    final settingRepository = context.read<SettingRepository>();
+    final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final artistRepo = context.read<ArtistRepository>();
     final popularSearchRepo = context.read<PopularSearchRepository>();
@@ -298,7 +298,7 @@ class DanbooruProvider extends StatelessWidget {
   final ProfileRepository profileRepo;
   final FavoritePostRepository favoriteRepo;
   final AccountRepository accountRepo;
-  final SettingRepository settingRepository;
+  final SettingsRepository settingRepository;
   final NoteRepository noteRepo;
   final PostRepository postRepo;
   final SearchHistoryRepository searchHistoryRepo;

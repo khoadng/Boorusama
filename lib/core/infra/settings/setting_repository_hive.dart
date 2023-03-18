@@ -5,16 +5,16 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 
-class SettingRepositoryHive implements SettingRepository {
-  SettingRepositoryHive(
+class SettingsRepositoryHive implements SettingsRepository {
+  SettingsRepositoryHive(
     this._db,
-    this._defaultSetting,
+    this._defaultSettings,
   );
   final Future<Box> _db;
-  final Settings _defaultSetting;
+  final Settings _defaultSettings;
 
   @override
   Future<Settings> load() async {
@@ -22,7 +22,7 @@ class SettingRepositoryHive implements SettingRepository {
     final jsonString = db.get('settings');
 
     if (jsonString == null) {
-      return _defaultSetting;
+      return _defaultSettings;
     }
 
     final json = jsonDecode(jsonString);

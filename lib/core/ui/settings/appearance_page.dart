@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'widgets/settings_header.dart';
@@ -98,7 +98,7 @@ class _AppearancePageState extends State<AppearancePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final settings = await context.read<SettingRepository>().load();
+      final settings = await context.read<SettingsRepository>().load();
       _spacingSliderValue.value = settings.imageGridSpacing;
       _borderRadiusSliderValue.value = settings.imageBorderRadius;
     });
