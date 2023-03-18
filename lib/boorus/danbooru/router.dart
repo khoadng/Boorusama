@@ -687,6 +687,7 @@ Future<T?> showDesktopFullScreenWindow<T>(
       },
     );
 
+//TODO: fix me
 void goToExploreDetailPage(
   BuildContext context,
   DateTime? date,
@@ -1681,18 +1682,26 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   List<core.Post> posts,
 ) {
   return showMaterialModalBottomSheet<bool>(
-    context: navigatorKey.currentContext ?? context,
+    context: context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (dialogContext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-      builder: (context, state) {
-        return BlocProvider(
-          create: (context) => FavoriteGroupsBloc.of(
-            context,
-            currentUser: state.user,
-          )..add(const FavoriteGroupsRefreshed()),
-          child: AddToFavoriteGroupPage(
-            posts: posts,
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+            builder: (_, state) {
+              return BlocProvider(
+                create: (_) => FavoriteGroupsBloc.of(
+                  dcontext,
+                  currentUser: state.user,
+                )..add(const FavoriteGroupsRefreshed()),
+                child: AddToFavoriteGroupPage(
+                  posts: posts,
+                ),
+              );
+            },
           ),
         );
       },
