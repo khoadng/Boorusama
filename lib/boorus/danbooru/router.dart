@@ -350,6 +350,13 @@ void goToDetailPage({
   PostBloc? postBloc,
 }) {
   final authCubit = context.read<AuthenticationCubit>();
+  final tagRepo = context.read<TagRepository>();
+  final noteRepo = context.read<NoteRepository>();
+  final postVoteRepo = context.read<PostVoteRepository>();
+  final favRepo = context.read<FavoritePostRepository>();
+  final postRepo = context.read<PostRepository>();
+  final tagBloc = context.read<TagBloc>();
+
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       final tags = posts
@@ -391,18 +398,18 @@ void goToDetailPage({
             providers: [
               BlocProvider(create: (context) => SliverPostGridBloc()),
               BlocProvider.value(value: authCubit),
+              BlocProvider.value(value: tagBloc),
               BlocProvider.value(value: context.read<ThemeBloc>()),
               BlocProvider(
                 create: (context) => PostDetailBloc(
-                  noteRepository: context.read<NoteRepository>(),
+                  noteRepository: noteRepo,
                   defaultDetailsStyle: settings.detailsDisplay,
                   posts: posts,
                   initialIndex: initialIndex,
-                  postRepository: context.read<PostRepository>(),
-                  favoritePostRepository:
-                      context.read<FavoritePostRepository>(),
+                  postRepository: postRepo,
+                  favoritePostRepository: favRepo,
                   accountRepository: context.read<AccountRepository>(),
-                  postVoteRepository: context.read<PostVoteRepository>(),
+                  postVoteRepository: postVoteRepo,
                   tags: tags,
                   onPostChanged: (post) {
                     if (postBloc != null && !postBloc.isClosed) {
@@ -414,7 +421,7 @@ void goToDetailPage({
               ),
             ],
             child: RepositoryProvider.value(
-              value: context.read<TagRepository>(),
+              value: tagRepo,
               child: Builder(
                 builder: (context) =>
                     BlocListener<SliverPostGridBloc, SliverPostGridState>(

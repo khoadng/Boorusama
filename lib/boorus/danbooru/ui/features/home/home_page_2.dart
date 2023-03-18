@@ -344,8 +344,6 @@ class HomePage2 extends StatelessWidget {
                 ),
               );
             case BooruType.gelbooru:
-              final dio = context.read<DioProvider>().getDio(booru.url);
-
               return GelbooruApp(booru: booru);
           }
         },
