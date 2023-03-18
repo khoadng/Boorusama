@@ -10,16 +10,16 @@ import 'package:boorusama/core/domain/settings/settings.dart';
 
 class SettingRepositoryHive implements SettingRepository {
   SettingRepositoryHive(
-    this._prefs,
+    this._db,
     this._defaultSetting,
   );
-  final Future<Box> _prefs;
+  final Future<Box> _db;
   final Settings _defaultSetting;
 
   @override
   Future<Settings> load() async {
-    final prefs = await _prefs;
-    final jsonString = prefs.get('settings');
+    final db = await _db;
+    final jsonString = db.get('settings');
 
     if (jsonString == null) {
       return _defaultSetting;
@@ -35,11 +35,11 @@ class SettingRepositoryHive implements SettingRepository {
 
   @override
   Future<bool> save(Settings setting) async {
-    final prefs = await _prefs;
+    final db = await _db;
     final json = jsonEncode(setting.toJson());
 
     //TODO: should make general name instead
-    await prefs.put('settings', json);
+    await db.put('settings', json);
 
     return true;
   }

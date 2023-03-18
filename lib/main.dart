@@ -51,6 +51,7 @@ import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
+import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';

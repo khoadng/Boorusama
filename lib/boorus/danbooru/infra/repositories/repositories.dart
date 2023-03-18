@@ -7,7 +7,6 @@ export 'notes/notes.dart';
 export 'pool/pool.dart';
 export 'posts/posts.dart';
 export 'profiles/profiles.dart';
-export 'settings/settings.dart';
 export 'tags/tags.dart';
 export 'users/users.dart';
 export 'wiki/wiki.dart';
