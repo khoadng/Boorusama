@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,8 +11,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:media_scanner/media_scanner.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -22,6 +23,7 @@ import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -46,8 +48,10 @@ import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.d
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
@@ -55,6 +59,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
@@ -117,11 +122,6 @@ class AppRouter {
   void setupRoutes() {
     router
       ..define('/', handler: rootHandler)
-      ..define(
-        '/bulk_download',
-        handler: bulkDownloadHandler,
-        transitionType: TransitionType.inFromBottom,
-      )
       ..define(
         '/saved_search',
         handler: savedSearchHandler,
@@ -274,17 +274,41 @@ void goToFavoritesPage(BuildContext context, String? username) {
   ));
 }
 
-void goToBulkDownloadPage(BuildContext context, List<String>? tags) {
-  AppRouter.router.navigateTo(
-    context,
-    '/bulk_download',
-    routeSettings: RouteSettings(
-      name: RouterPageConstant.bulkDownload,
-      arguments: [
-        tags,
-      ],
-    ),
-  );
+void goToBulkDownloadPage(
+  BuildContext context,
+  List<String>? tags,
+) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) {
+      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return DanbooruProvider.create(
+            context,
+            booru: state.booru!,
+            builder: (dcontext) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => BulkImageDownloadBloc(
+                    permissionChecker: () => Permission.storage.status,
+                    permissionRequester: () => Permission.storage.request(),
+                    bulkPostDownloadBloc: BulkPostDownloadBloc(
+                      downloader: dcontext.read<BulkDownloader<Post>>(),
+                      postCountRepository: dcontext.read<PostCountRepository>(),
+                      postRepository: dcontext.read<PostRepository>(),
+                      errorTranslator: getErrorMessage,
+                      onDownloadDone: (path) =>
+                          MediaScanner.loadMedia(path: path),
+                    ),
+                  )..add(BulkImageDownloadTagsAdded(tags: tags)),
+                ),
+              ],
+              child: const BulkDownloadPage(),
+            ),
+          );
+        },
+      );
+    },
+  ));
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {

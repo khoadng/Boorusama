@@ -6,19 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_scanner/media_scanner.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
@@ -88,33 +80,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final bulkDownloadHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  final args = context!.settings!.arguments as List;
-  final List<String>? initialSelectedTags = args.isNotEmpty ? args.first : null;
-
-  final bulkPostDownloadBloc = BulkPostDownloadBloc(
-    downloader: context.read<BulkDownloader<Post>>(),
-    postCountRepository: context.read<PostCountRepository>(),
-    postRepository: context.read<PostRepository>(),
-    errorTranslator: getErrorMessage,
-    onDownloadDone: (path) => MediaScanner.loadMedia(path: path),
-  );
-
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context) => BulkImageDownloadBloc(
-          permissionChecker: () => Permission.storage.status,
-          permissionRequester: () => Permission.storage.request(),
-          bulkPostDownloadBloc: bulkPostDownloadBloc,
-        )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
-      ),
-    ],
-    child: const BulkDownloadPage(),
-  );
-});
 
 final savedSearchHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
