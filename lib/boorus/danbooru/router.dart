@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -73,7 +74,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
@@ -356,163 +356,92 @@ void goToDetailPage({
   final favRepo = context.read<FavoritePostRepository>();
   final postRepo = context.read<PostRepository>();
   final tagBloc = context.read<TagBloc>();
+  final themeBloc = context.read<ThemeBloc>();
+  final accountRepo = context.read<AccountRepository>();
+
+  final tags = posts
+      .map((e) => e.post)
+      .map((p) => [
+            ...p.artistTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: TagCategory.artist.stringify(),
+                  postId: p.id,
+                )),
+            ...p.characterTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: TagCategory.charater.stringify(),
+                  postId: p.id,
+                )),
+            ...p.copyrightTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: TagCategory.copyright.stringify(),
+                  postId: p.id,
+                )),
+            ...p.generalTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: TagCategory.general.stringify(),
+                  postId: p.id,
+                )),
+            ...p.metaTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: TagCategory.meta.stringify(),
+                  postId: p.id,
+                )),
+          ])
+      .expand((e) => e)
+      .toList();
 
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      final tags = posts
-          .map((e) => e.post)
-          .map((p) => [
-                ...p.artistTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.artist.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.characterTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.charater.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.copyrightTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.copyright.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.generalTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.general.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.metaTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.meta.stringify(),
-                      postId: p.id,
-                    )),
-              ])
-          .expand((e) => e)
-          .toList();
-
-      return BlocSelector<SettingsCubit, SettingsState, Settings>(
-        selector: (state) => state.settings,
-        builder: (context, settings) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (context) => SliverPostGridBloc()),
-              BlocProvider.value(value: authCubit),
-              BlocProvider.value(value: tagBloc),
-              BlocProvider.value(value: context.read<ThemeBloc>()),
-              BlocProvider(
-                create: (context) => PostDetailBloc(
-                  noteRepository: noteRepo,
-                  defaultDetailsStyle: settings.detailsDisplay,
-                  posts: posts,
-                  initialIndex: initialIndex,
-                  postRepository: postRepo,
-                  favoritePostRepository: favRepo,
-                  accountRepository: context.read<AccountRepository>(),
-                  postVoteRepository: postVoteRepo,
-                  tags: tags,
-                  onPostChanged: (post) {
-                    if (postBloc != null && !postBloc.isClosed) {
-                      postBloc.add(PostUpdated(post: post));
-                    }
-                  },
-                  tagCache: {},
-                ),
-              ),
-            ],
-            child: RepositoryProvider.value(
-              value: tagRepo,
-              child: Builder(
-                builder: (context) =>
-                    BlocListener<SliverPostGridBloc, SliverPostGridState>(
-                  listenWhen: (previous, current) =>
-                      previous.nextIndex != current.nextIndex,
-                  listener: (context, state) {
-                    if (scrollController == null) return;
-                    scrollController.scrollToIndex(
-                      state.nextIndex,
-                      duration: const Duration(milliseconds: 200),
-                    );
-                  },
-                  child: PostDetailPage(
-                    intitialIndex: initialIndex,
-                    posts: posts,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    }));
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) {
+        return PostDetailPageProvider(
+          authCubit: authCubit,
+          tagBloc: tagBloc,
+          themeBloc: themeBloc,
+          noteRepo: noteRepo,
+          postRepo: postRepo,
+          favRepo: favRepo,
+          accountRepo: accountRepo,
+          postVoteRepo: postVoteRepo,
+          tags: tags,
+          tagRepo: tagRepo,
+          initialIndex: initialIndex,
+          postBloc: postBloc,
+          posts: posts,
+          scrollController: scrollController,
+          builder: (_, __) => PostDetailPage(
+            intitialIndex: initialIndex,
+            posts: posts,
+          ),
+        );
+      },
+    ));
   } else {
-    showDesktopFullScreenWindow(context, builder: (context) {
-      final tags = posts
-          .map((e) => e.post)
-          .map((p) => [
-                ...p.artistTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.artist.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.characterTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.charater.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.copyrightTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.copyright.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.generalTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.general.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.metaTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.meta.stringify(),
-                      postId: p.id,
-                    )),
-              ])
-          .expand((e) => e)
-          .toList();
-
-      return BlocSelector<SettingsCubit, SettingsState, Settings>(
-        selector: (state) => state.settings,
-        builder: (context, settings) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: authCubit),
-              BlocProvider.value(value: context.read<ThemeBloc>()),
-              BlocProvider(
-                create: (context) => PostDetailBloc(
-                  noteRepository: context.read<NoteRepository>(),
-                  defaultDetailsStyle: settings.detailsDisplay,
-                  posts: posts,
-                  initialIndex: initialIndex,
-                  postRepository: context.read<PostRepository>(),
-                  favoritePostRepository:
-                      context.read<FavoritePostRepository>(),
-                  accountRepository: context.read<AccountRepository>(),
-                  postVoteRepository: context.read<PostVoteRepository>(),
-                  tags: tags,
-                  tagCache: {},
-                ),
-              ),
-            ],
-            child: RepositoryProvider.value(
-              value: context.read<TagRepository>(),
-              child: PostDetailPageDesktop(
-                intitialIndex: initialIndex,
-                posts: posts,
-              ),
-            ),
-          );
-        },
-      );
-    });
+    showDesktopFullScreenWindow(
+      context,
+      builder: (context) {
+        return PostDetailPageProvider(
+          authCubit: authCubit,
+          tagBloc: tagBloc,
+          themeBloc: themeBloc,
+          noteRepo: noteRepo,
+          postRepo: postRepo,
+          favRepo: favRepo,
+          accountRepo: accountRepo,
+          postVoteRepo: postVoteRepo,
+          tags: tags,
+          tagRepo: tagRepo,
+          initialIndex: initialIndex,
+          postBloc: postBloc,
+          posts: posts,
+          scrollController: scrollController,
+          builder: (_, __) => PostDetailPageDesktop(
+            intitialIndex: initialIndex,
+            posts: posts,
+          ),
+        );
+      },
+    );
   }
 }
 
