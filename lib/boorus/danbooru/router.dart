@@ -687,7 +687,6 @@ Future<T?> showDesktopFullScreenWindow<T>(
       },
     );
 
-//TODO: fix me
 void goToExploreDetailPage(
   BuildContext context,
   DateTime? date,
@@ -709,37 +708,45 @@ void goToExploreDetailPage(
             }
           }(),
         ),
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => ExploreDetailBloc(initialDate: date),
-            ),
-            BlocProvider(
-              create: (context) => PostBloc.of(context)
-                ..add(
-                  PostRefreshed(
-                    fetcher: categoryToFetcher(
-                      category,
-                      date ?? DateTime.now(),
-                      TimeScale.day,
-                      context,
+        builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+          builder: (_, state) {
+            return DanbooruProvider.create(
+              context,
+              booru: state.booru!,
+              builder: (dcontext) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) => ExploreDetailBloc(initialDate: date),
+                  ),
+                  BlocProvider(
+                    create: (_) => PostBloc.of(dcontext)
+                      ..add(
+                        PostRefreshed(
+                          fetcher: categoryToFetcher(
+                            category,
+                            date ?? DateTime.now(),
+                            TimeScale.day,
+                            dcontext,
+                          ),
+                        ),
+                      ),
+                  ),
+                ],
+                child: CustomContextMenuOverlay(
+                  child: ExploreDetailPage(
+                    title: Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
+                    category: category,
                   ),
                 ),
-            ),
-          ],
-          child: CustomContextMenuOverlay(
-            child: ExploreDetailPage(
-              title: Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(fontWeight: FontWeight.w700),
               ),
-              category: category,
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
