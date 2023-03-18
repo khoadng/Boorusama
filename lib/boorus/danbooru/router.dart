@@ -2,11 +2,11 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,6 +58,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_pag
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
@@ -79,6 +80,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dar
 import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -112,11 +114,6 @@ class AppRouter {
   void setupRoutes() {
     router
       ..define('/', handler: rootHandler)
-      ..define(
-        '/pool/detail',
-        handler: poolDetailHandler,
-        transitionType: TransitionType.material,
-      )
       ..define(
         '/bulk_download',
         handler: bulkDownloadHandler,
@@ -303,16 +300,45 @@ void goToBulkDownloadPage(BuildContext context, List<String>? tags) {
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
-  AppRouter.router.navigateTo(
-    context,
-    'pool/detail',
-    routeSettings: RouteSettings(
-      name: RouterPageConstant.poolDetails,
-      arguments: [
-        pool,
-      ],
-    ),
-  );
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) {
+      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return DanbooruProvider.create(
+            context,
+            booru: state.booru!,
+            builder: (dcontext) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: PoolDescriptionBloc(
+                    endpoint: state.booru!.url,
+                    poolDescriptionRepository:
+                        dcontext.read<PoolDescriptionRepository>(),
+                  )..add(PoolDescriptionFetched(poolId: pool.id)),
+                ),
+                BlocProvider(
+                  create: (_) => PostBloc.of(dcontext)
+                    ..add(
+                      PostRefreshed(
+                        fetcher: PoolPostFetcher(
+                          postIds: pool.postIds.reversed.take(20).toList(),
+                        ),
+                      ),
+                    ),
+                ),
+              ],
+              child: CustomContextMenuOverlay(
+                child: PoolDetailPage(
+                  pool: pool,
+                  postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  ));
 }
 
 void goToParentChildPage(

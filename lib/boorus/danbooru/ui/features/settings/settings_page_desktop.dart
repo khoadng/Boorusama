@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
-
 import 'settings_page.dart';
 
 class SettingsPageDesktop extends StatelessWidget {

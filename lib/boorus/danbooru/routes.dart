@@ -11,18 +11,15 @@ import 'package:media_scanner/media_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
@@ -30,9 +27,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/core/application/app_rating.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'router.dart';
@@ -101,48 +96,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final poolDetailHandler =
-    Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  final args = context!.settings!.arguments as List;
-  final pool = args.first as Pool;
-
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (context, state) {
-      final booru = state.booru ?? safebooru();
-
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider.value(
-            value: PoolDescriptionBloc(
-              endpoint: booru.url,
-              poolDescriptionRepository:
-                  context.read<PoolDescriptionRepository>(),
-            )..add(PoolDescriptionFetched(poolId: pool.id)),
-          ),
-          BlocProvider(
-            create: (context) => PostBloc.of(context)
-              ..add(
-                PostRefreshed(
-                  fetcher: PoolPostFetcher(
-                    postIds: pool.postIds.reversed.take(20).toList(),
-                  ),
-                ),
-              ),
-          ),
-        ],
-        child: CustomContextMenuOverlay(
-          child: PoolDetailPage(
-            pool: pool,
-            // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
-            // ignore: prefer-iterable-of
-            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-          ),
-        ),
-      );
-    },
-  );
-});
 
 final favoriteGroupsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
