@@ -39,8 +39,4 @@ class TagCacher implements TagRepository {
 
     return [...cachedTags, ...freshTags];
   }
-
-  @override
-  Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) =>
-      repo.getTagsByNamePattern(stringPattern, page);
 }

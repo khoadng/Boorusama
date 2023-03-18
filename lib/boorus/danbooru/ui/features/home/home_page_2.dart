@@ -7,9 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_app.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/domain/posts/post_repository.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'danbooru_home_page.dart';
 
@@ -51,8 +55,23 @@ class HomePage2 extends StatelessWidget {
                 ),
               );
             case BooruType.gelbooru:
-              return CustomContextMenuOverlay(
-                child: GelbooruApp(booru: booru),
+              return GelbooruProvider.create(
+                context,
+                booru: booru,
+                builder: (gcontext) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (_) => GelbooruPostBloc(
+                        postRepository: gcontext.read<PostRepository>(),
+                      )..add(const GelbooruPostBlocRefreshed(
+                          tag: 'rating:general',
+                        )),
+                    ),
+                  ],
+                  child: const CustomContextMenuOverlay(
+                    child: GelbooruHomePage(),
+                  ),
+                ),
               );
           }
         },

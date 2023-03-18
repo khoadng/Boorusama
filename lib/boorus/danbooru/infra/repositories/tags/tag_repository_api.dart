@@ -24,25 +24,6 @@ class TagRepositoryApi implements TagRepository {
   final AccountRepository _accountRepository;
 
   @override
-  Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) =>
-      _accountRepository
-          .get()
-          .then(
-            (account) => _api.getTagsByNamePattern(
-              account.username,
-              account.apiKey,
-              page,
-              'yes',
-              '$stringPattern*',
-              'count',
-              30,
-            ),
-          )
-          .then(parseTag)
-          .catchError((Object obj) =>
-              throw Exception('Failed to get tags for $stringPattern'));
-
-  @override
   Future<List<Tag>> getTagsByNameComma(
     String stringComma,
     int page, {

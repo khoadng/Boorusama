@@ -3,8 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/infra/gelbooru_post_repository_api.dart';
 import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts/post_repository.dart';
 import '../domain/gelbooru_post.dart';
 
 class GelbooruPostState extends Equatable
@@ -102,21 +103,21 @@ class GelbooruPostBlocRefreshed extends GelbooruPostEvent {
 }
 
 class GelbooruPostBloc extends Bloc<GelbooruPostEvent, GelbooruPostState>
-    with InfiniteLoadMixin<GelbooruPost, GelbooruPostState> {
+    with InfiniteLoadMixin<Post, GelbooruPostState> {
   GelbooruPostBloc({
-    required GelbooruPostRepositoryApi postRepository,
+    required PostRepository postRepository,
   }) : super(GelbooruPostState.initial()) {
     on<GelbooruPostBlocRefreshed>((event, emit) async {
       await refresh(
         emit: EmitConfig(stateGetter: () => state, emitter: emit),
-        refresh: (page) => postRepository.getPosts(event.tag, page),
+        refresh: (page) => postRepository.getPostsFromTags(event.tag, page),
       );
     });
 
     on<GelbooruPostBlocFetched>((event, emit) async {
       await fetch(
         emit: EmitConfig(stateGetter: () => state, emitter: emit),
-        fetch: (page) => postRepository.getPosts(event.tag, page),
+        fetch: (page) => postRepository.getPostsFromTags(event.tag, page),
       );
     });
   }

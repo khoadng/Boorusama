@@ -19,4 +19,16 @@ abstract class GelbooruApi {
     @Query('json') String json,
     @Query('pid') String pid,
   );
+
+  @GET('/index.php')
+  Future<HttpResponse> getTags(
+    @Query('api_key') String? apiKey,
+    @Query('user_id') String? userId,
+    @Query('page') String page,
+    @Query('s') String s,
+    @Query('q') String q,
+    @Query('names') String names,
+    @Query('json') String json,
+    @Query('pid') String pid,
+  );
 }

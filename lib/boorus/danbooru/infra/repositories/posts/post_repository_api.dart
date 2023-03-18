@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -83,6 +84,19 @@ class PostRepositoryApi implements PostRepository {
             'post[old_tag_string]': '',
           }))
       .then((value) => value.response.statusCode == 200);
+
+  @override
+  Future<List<core.Post>> getPostsFromTags(
+    String tags,
+    int page, {
+    int? limit,
+  }) =>
+      getPosts(
+        tags,
+        page,
+        limit: limit,
+        includeInvalid: true,
+      );
 }
 
 List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');

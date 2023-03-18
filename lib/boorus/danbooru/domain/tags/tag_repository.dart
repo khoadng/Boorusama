@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 
 abstract class TagRepository {
-  Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page);
   Future<List<Tag>> getTagsByNameComma(
     String stringComma,
     int page, {
