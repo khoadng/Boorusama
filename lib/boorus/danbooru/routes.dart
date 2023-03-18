@@ -12,7 +12,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
@@ -29,7 +28,6 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
@@ -108,34 +106,6 @@ class CustomContextMenuOverlay extends StatelessWidget {
     );
   }
 }
-
-final artistHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  final args = context!.settings!.arguments as List;
-
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context) => PostBloc.of(context)
-          ..add(PostRefreshed(
-            tag: args.first,
-            fetcher: SearchedPostFetcher.fromTags(args.first),
-          )),
-      ),
-      BlocProvider.value(
-        value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
-      ),
-    ],
-    child: CustomContextMenuOverlay(
-      child: ArtistPage(
-        artistName: args.first,
-        backgroundImageUrl: args[1],
-      ),
-    ),
-  );
-});
 
 final characterHandler = Handler(handlerFunc: (
   context,

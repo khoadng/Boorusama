@@ -45,7 +45,7 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
@@ -111,11 +111,6 @@ class AppRouter {
     router
       ..define('/', handler: rootHandler)
       ..define(
-        '/artist',
-        handler: artistHandler,
-        transitionType: TransitionType.material,
-      )
-      ..define(
         '/character',
         handler: characterHandler,
         transitionType: TransitionType.material,
@@ -170,41 +165,64 @@ class AppRouter {
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
-    AppRouter.router.navigateTo(
-      context,
-      '/artist',
-      routeSettings: RouteSettings(
-        name: RouterPageConstant.artist,
-        arguments: [
-          artist,
-          '',
-        ],
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => provideArtistPageDependencies(
+        context,
+        artist: artist,
+        page: ArtistPage(
+          artistName: artist,
+          backgroundImageUrl: '',
+        ),
       ),
-    );
+    ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostBloc.of(context)
-              ..add(PostRefreshed(
-                tag: artist,
-                fetcher: SearchedPostFetcher.fromTags(artist),
-              )),
-          ),
-          BlocProvider.value(
-            value: context.read<ArtistBloc>()..add(ArtistFetched(name: artist)),
-          ),
-        ],
-        child: CustomContextMenuOverlay(
-          child: ArtistPageDesktop(
-            artistName: artist,
-          ),
+      builder: (_) => provideArtistPageDependencies(
+        context,
+        artist: artist,
+        page: ArtistPage(
+          artistName: artist,
+          backgroundImageUrl: '',
         ),
       ),
     );
   }
+}
+
+Widget provideArtistPageDependencies(
+  BuildContext context, {
+  required String artist,
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => PostBloc.of(dcontext)
+                  ..add(PostRefreshed(
+                    tag: artist,
+                    fetcher: SearchedPostFetcher.fromTags(artist),
+                  )),
+              ),
+              BlocProvider.value(
+                value: dcontext.read<ArtistBloc>()
+                  ..add(ArtistFetched(name: artist)),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
+            ),
+          );
+        },
+      );
+    },
+  );
 }
 
 void goToCharacterPage(BuildContext context, String tag) {
