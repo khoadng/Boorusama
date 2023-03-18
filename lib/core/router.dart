@@ -11,14 +11,6 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'package:boorusama/core/ui/settings/appearance_page.dart';
-import 'package:boorusama/core/ui/settings/download_page.dart';
-import 'package:boorusama/core/ui/settings/general_page.dart';
-import 'package:boorusama/core/ui/settings/language_page.dart';
-import 'package:boorusama/core/ui/settings/performance_page.dart';
-import 'package:boorusama/core/ui/settings/privacy_page.dart';
-import 'package:boorusama/core/ui/settings/search_settings_page.dart';
-import 'package:boorusama/core/ui/settings/settings_page.dart';
 import 'application/search_history/search_history.dart';
 import 'application/tags/tags.dart';
 import 'domain/posts/post.dart';
@@ -34,6 +26,7 @@ import 'ui/info_container.dart';
 import 'ui/original_image_page.dart';
 import 'ui/search/favorite_tags/import_favorite_tag_dialog.dart';
 import 'ui/search/full_history_view.dart';
+import 'ui/settings/settings.dart';
 import 'ui/widgets/parallax_slide_in_page_route.dart';
 import 'utils.dart';
 

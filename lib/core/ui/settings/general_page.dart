@@ -10,7 +10,7 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'settings_tile.dart';
+import 'widgets/settings_tile.dart';
 
 class GeneralPage extends StatefulWidget {
   const GeneralPage({
