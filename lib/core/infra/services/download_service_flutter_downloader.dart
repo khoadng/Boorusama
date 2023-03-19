@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';

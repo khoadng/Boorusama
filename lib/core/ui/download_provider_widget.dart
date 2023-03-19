@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 
 void _download(
   BuildContext context,

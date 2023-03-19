@@ -2,8 +2,7 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts/post.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/posts.dart';
 
 class PostPreviewPreloaderImp implements PostPreviewPreloader {
   PostPreviewPreloaderImp(

@@ -5,9 +5,7 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/gelbooru/domain/gelbooru_post.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
-import 'package:boorusama/core/domain/posts/post_repository.dart';
-import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'post_dto.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) {

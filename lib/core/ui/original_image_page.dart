@@ -8,7 +8,7 @@ import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/mobile.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';

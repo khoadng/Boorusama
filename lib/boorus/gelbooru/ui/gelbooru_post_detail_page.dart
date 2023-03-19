@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_slider.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 

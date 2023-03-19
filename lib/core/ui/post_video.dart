@@ -6,7 +6,7 @@ import 'package:chewie/chewie.dart' hide MaterialDesktopControls;
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 
 //TODO: implement caching video

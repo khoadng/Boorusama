@@ -8,7 +8,7 @@ import 'package:path/path.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({

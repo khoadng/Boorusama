@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post_repository.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/main.dart';
