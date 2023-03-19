@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
-import '../../../../../../core/ui/search/favorite_tags/favorite_tags_section.dart';
-import 'metatags/metatags_section.dart';
+import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'search_history/search_history_section.dart';
 import 'trending/trending_section.dart';
 
@@ -70,7 +70,7 @@ class _LandingViewState extends State<LandingView>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MetatagsSection(
+              DanbooruMetatagsSection(
                 onOptionTap: widget.onOptionTap,
               ),
               const SizedBox(

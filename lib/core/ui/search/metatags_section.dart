@@ -2,26 +2,30 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/main.dart';
-import '../../../../../../../core/ui/search/common/option_tags_arena.dart';
+import 'package:boorusama/core/ui/search/common/option_tags_arena.dart';
 
 class MetatagsSection extends StatefulWidget {
   const MetatagsSection({
     super.key,
     required this.onOptionTap,
+    required this.metatags,
+    required this.userMetatags,
+    required this.onHelpRequest,
+    required this.onUserMetatagDeleted,
+    required this.onUserMetatagAdded,
   });
 
   final ValueChanged<String>? onOptionTap;
+  final List<Metatag> metatags;
+  final List<String> Function() userMetatags;
+  final void Function() onHelpRequest;
+  final Future<void> Function(String tag) onUserMetatagDeleted;
+  final Future<void> Function(Metatag tag) onUserMetatagAdded;
 
   @override
   State<MetatagsSection> createState() => _MetatagsSectionState();
@@ -30,24 +34,17 @@ class MetatagsSection extends StatefulWidget {
 class _MetatagsSectionState extends State<MetatagsSection> {
   @override
   Widget build(BuildContext context) {
-    final metatags = context.select((SearchBloc bloc) => bloc.state.metatags);
-
     return OptionTagsArena(
       title: 'Metatags',
       titleTrailing: (editMode) => IconButton(
-        onPressed: () {
-          launchExternalUrl(
-            Uri.parse(cheatsheetUrl),
-            mode: LaunchMode.platformDefault,
-          );
-        },
+        onPressed: widget.onHelpRequest,
         icon: const FaIcon(
           FontAwesomeIcons.circleQuestion,
           size: 18,
         ),
       ),
       childrenBuilder: (editMode) =>
-          _buildMetatags(context, editMode, metatags),
+          _buildMetatags(context, editMode, widget.metatags),
     );
   }
 
@@ -57,7 +54,7 @@ class _MetatagsSectionState extends State<MetatagsSection> {
     List<Metatag> metatags,
   ) {
     return [
-      ...context.read<UserMetatagRepository>().getAll().map((tag) => RawChip(
+      ...widget.userMetatags().map((tag) => RawChip(
             label: Text(tag),
             onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
             deleteIcon: const Icon(
@@ -66,7 +63,7 @@ class _MetatagsSectionState extends State<MetatagsSection> {
             ),
             onDeleted: editMode
                 ? () async {
-                    await context.read<UserMetatagRepository>().delete(tag);
+                    await widget.onUserMetatagDeleted.call(tag);
                     setState(() => {});
                   }
                 : null,
@@ -80,7 +77,7 @@ class _MetatagsSectionState extends State<MetatagsSection> {
             metatags: metatags,
             onSelected: (tag) => setState(() {
               Navigator.of(context).pop();
-              context.read<UserMetatagRepository>().put(tag.name);
+              widget.onUserMetatagAdded(tag);
             }),
           ),
           icon: const Icon(Icons.add),

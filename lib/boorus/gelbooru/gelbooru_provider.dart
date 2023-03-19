@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/main.dart';
@@ -22,6 +23,7 @@ class GelbooruProvider extends StatelessWidget {
     required this.tagRepository,
     required this.builder,
     required this.autocompleteRepository,
+    required this.userMetatagRepository,
   });
 
   factory GelbooruProvider.create(
@@ -35,12 +37,14 @@ class GelbooruProvider extends StatelessWidget {
     final postRepo = GelbooruPostRepositoryApi(api: api);
     final tagRepo = GelbooruTagRepositoryApi(api);
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
+    final userMetatagsRepo = context.read<UserMetatagRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
+      userMetatagRepository: userMetatagsRepo,
     );
   }
 
@@ -53,18 +57,21 @@ class GelbooruProvider extends StatelessWidget {
     final postRepo = context.read<PostRepository>();
     final tagRepo = context.read<TagRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
+    final userMetatagsRepo = context.read<UserMetatagRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
+      userMetatagRepository: userMetatagsRepo,
     );
   }
 
   final PostRepository postRepository;
   final TagRepository tagRepository;
   final AutocompleteRepository autocompleteRepository;
+  final UserMetatagRepository userMetatagRepository;
   final Widget Function(BuildContext context) builder;
 
   @override
@@ -74,6 +81,7 @@ class GelbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: tagRepository),
         RepositoryProvider.value(value: autocompleteRepository),
+        RepositoryProvider.value(value: userMetatagRepository),
       ],
       child: Builder(
         builder: builder,
