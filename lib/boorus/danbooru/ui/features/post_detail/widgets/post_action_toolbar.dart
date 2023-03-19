@@ -14,8 +14,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'modal_share.dart';
 

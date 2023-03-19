@@ -11,8 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';

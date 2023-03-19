@@ -1,6 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'user_booru.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class UserBooruCredential {
   const UserBooruCredential._({

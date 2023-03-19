@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 

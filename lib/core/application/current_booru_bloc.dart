@@ -4,10 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
-import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 
 class CurrentBooruState extends Equatable {

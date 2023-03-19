@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme/theme.dart';
-import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 enum DataCollectingStatus {
   allow,

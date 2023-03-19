@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class ManageBooruUserPage extends StatelessWidget {
   const ManageBooruUserPage({

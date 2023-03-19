@@ -15,8 +15,8 @@ import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/search/tag_search_bloc.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
-import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 
