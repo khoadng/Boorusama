@@ -7,8 +7,10 @@ import 'package:readmore/readmore.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 const _message =
@@ -24,6 +26,8 @@ class DownloadEmptyTagView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: Padding(
@@ -45,6 +49,8 @@ class DownloadEmptyTagView extends StatelessWidget {
               ),
             Expanded(
               child: SimpleTagSearchView(
+                textColorBuilder: (tag) =>
+                    generateAutocompleteTagColor(tag, theme),
                 closeOnSelected: false,
                 ensureValidTag: false,
                 onSelected: (tag) {

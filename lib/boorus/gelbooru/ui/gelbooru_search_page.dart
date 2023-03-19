@@ -8,8 +8,10 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_metatags_section.dart';
 import 'package:boorusama/core/application/search_history/search_history.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
@@ -69,7 +71,18 @@ class _SearchPageState extends State<GelbooruSearchPage> {
         child: Column(
           children: [
             SearchLandingView(
-              onAddTagRequest: () => print('object'),
+              onAddTagRequest: () => goToGelbooruQuickSearchPage(
+                context,
+                onSubmitted: (context, text) {
+                  Navigator.of(context).pop();
+                  context
+                      .read<FavoriteTagBloc>()
+                      .add(FavoriteTagAdded(tag: text));
+                },
+                onSelected: (context, tag) => context
+                    .read<FavoriteTagBloc>()
+                    .add(FavoriteTagAdded(tag: tag.value)),
+              ),
               onHistoryTap: (value) => queryEditingController.text = value,
               onTagTap: (value) => queryEditingController.text = value,
               onHistoryRemoved: (value) => context

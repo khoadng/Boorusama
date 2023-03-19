@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:boorusama/core/ui/tag_suggestion_items.dart';
 
 class BlacklistedTagsSearchPage extends StatefulWidget {
   const BlacklistedTagsSearchPage({

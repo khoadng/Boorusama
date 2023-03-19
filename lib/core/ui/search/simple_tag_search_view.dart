@@ -10,20 +10,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:boorusama/core/ui/tag_suggestion_items.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {
   bool ensureValidTag = false,
   Widget Function(String text)? floatingActionButton,
-  required void Function(AutocompleteData tag) onSelected,
-  void Function(BuildContext context, String text)? onSubmitted,
   RouteSettings? settings,
   required Widget Function(BuildContext context, bool isMobile) builder,
 }) {
@@ -65,6 +63,7 @@ class SimpleTagSearchView extends StatelessWidget {
     this.floatingActionButton,
     this.backButton,
     this.onSubmitted,
+    this.textColorBuilder,
   });
 
   final void Function(AutocompleteData tag) onSelected;
@@ -73,6 +72,7 @@ class SimpleTagSearchView extends StatelessWidget {
   final Widget Function(String currentText)? floatingActionButton;
   final Widget? backButton;
   final void Function(BuildContext context, String text)? onSubmitted;
+  final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +112,7 @@ class SimpleTagSearchView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: TagSuggestionItems(
+                        textColorBuilder: textColorBuilder,
                         backgroundColor:
                             Theme.of(context).colorScheme.background,
                         tags: tags,

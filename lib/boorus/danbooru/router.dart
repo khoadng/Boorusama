@@ -63,7 +63,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_provider.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
@@ -85,7 +84,9 @@ import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/settings/settings_page.dart';
 import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
@@ -93,6 +94,7 @@ import 'router_page_constant.dart';
 import 'ui/features/post_detail/post_detail_page.dart';
 import 'ui/features/post_detail/post_detail_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
+import 'ui/utils.dart';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
@@ -623,57 +625,6 @@ void goToSettingPage(BuildContext context) {
   }
 }
 
-Future<T?> showDesktopDialogWindow<T>(
-  BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-  double? width,
-  double? height,
-  Color? backgroundColor,
-  EdgeInsets? margin,
-  RouteSettings? settings,
-}) =>
-    showGeneralDialog(
-      context: context,
-      routeSettings: settings,
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black87,
-      pageBuilder: (context, _, __) {
-        return Dialog(
-          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: Container(
-            width: width ?? MediaQuery.of(context).size.width * 0.8,
-            height: height ?? MediaQuery.of(context).size.height * 0.8,
-            margin: margin ??
-                const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            child: builder(context),
-          ),
-        );
-      },
-    );
-
-Future<T?> showDesktopFullScreenWindow<T>(
-  BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-}) =>
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (context, _, __) {
-        return builder(context);
-      },
-    );
-
 void goToExploreDetailPage(
   BuildContext context,
   DateTime? date,
@@ -1060,31 +1011,37 @@ void goToQuickSearchPage(
     ),
     ensureValidTag: ensureValidTag,
     floatingActionButton: floatingActionButton,
-    onSubmitted: onSubmitted,
-    onSelected: onSelected,
-    builder: (_, isMobile) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => isMobile
-              ? SimpleTagSearchView(
-                  onSubmitted: onSubmitted,
-                  ensureValidTag: ensureValidTag,
-                  floatingActionButton: floatingActionButton != null
-                      ? (text) => floatingActionButton.call(text)
-                      : null,
-                  onSelected: onSelected,
-                )
-              : SimpleTagSearchView(
-                  onSubmitted: onSubmitted,
-                  backButton: IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  ensureValidTag: ensureValidTag,
-                  onSelected: onSelected,
-                ),
+    builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (_, themeState) {
+        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+          builder: (_, state) {
+            return DanbooruProvider.of(
+              context,
+              booru: state.booru!,
+              builder: (dcontext) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, themeState.theme),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      backButton: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, themeState.theme),
+                    ),
+            );
+          },
         );
       },
     ),

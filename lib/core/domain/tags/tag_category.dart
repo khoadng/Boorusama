@@ -46,14 +46,19 @@ TagCategory intToTagCategory(int value) {
 TagCategory stringToTagCategory(String value) {
   switch (value) {
     case '0':
+    case 'tag':
       return TagCategory.general;
     case '1':
+    case 'artist':
       return TagCategory.artist;
     case '3':
+    case 'copyright':
       return TagCategory.copyright;
     case '4':
+    case 'character':
       return TagCategory.charater;
     case '5':
+    case 'metadata':
       return TagCategory.meta;
     default:
       return TagCategory.general;

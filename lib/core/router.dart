@@ -327,3 +327,54 @@ void goToSearchHistoryPage(
     ),
   );
 }
+
+Future<T?> showDesktopDialogWindow<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+  double? width,
+  double? height,
+  Color? backgroundColor,
+  EdgeInsets? margin,
+  RouteSettings? settings,
+}) =>
+    showGeneralDialog(
+      context: context,
+      routeSettings: settings,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black87,
+      pageBuilder: (context, _, __) {
+        return Dialog(
+          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Container(
+            width: width ?? MediaQuery.of(context).size.width * 0.8,
+            height: height ?? MediaQuery.of(context).size.height * 0.8,
+            margin: margin ??
+                const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+            child: builder(context),
+          ),
+        );
+      },
+    );
+
+Future<T?> showDesktopFullScreenWindow<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+}) =>
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return builder(context);
+      },
+    );

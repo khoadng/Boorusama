@@ -32,7 +32,7 @@ abstract class GelbooruApi {
     @Query('pid') String pid,
   );
 
-  @GET('/autocomplete.json')
+  @GET('/index.php')
   Future<HttpResponse> autocomplete(
     @Query('api_key') String? apiKey,
     @Query('user_id') String? userId,

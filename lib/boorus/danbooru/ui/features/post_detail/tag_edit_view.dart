@@ -8,12 +8,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'simple_tag_search_view.dart';
+import '../../../../../core/ui/search/simple_tag_search_view.dart';
 
 class TagEditView extends StatelessWidget {
   const TagEditView({
@@ -29,6 +30,8 @@ class TagEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit tags'),
@@ -118,6 +121,8 @@ class TagEditView extends StatelessWidget {
                         postId: post.id,
                       ));
                     },
+                    textColorBuilder: (tag) =>
+                        generateAutocompleteTagColor(tag, theme),
                   ),
                 );
               },

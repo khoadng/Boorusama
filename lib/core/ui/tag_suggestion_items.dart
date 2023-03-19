@@ -7,13 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
 import 'package:boorusama/core/application/search_history/search_history_suggestions.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
-import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class TagSuggestionItems extends StatelessWidget {
@@ -23,12 +19,14 @@ class TagSuggestionItems extends StatelessWidget {
     required this.onItemTap,
     required this.currentQuery,
     this.backgroundColor,
+    this.textColorBuilder,
   }) : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
   final String currentQuery;
   final Color? backgroundColor;
+  final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +54,12 @@ class TagSuggestionItems extends StatelessWidget {
                             style: const TextStyle(color: Colors.grey),
                           )
                         : null,
-                    title: _getTitle(tag, state.theme, currentQuery),
+                    title: _getTitle(
+                      tag,
+                      state.theme,
+                      currentQuery,
+                      textColorBuilder?.call(tag),
+                    ),
                   ),
                 );
               },
@@ -78,6 +81,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
     required this.onHistoryTap,
     required this.onHistoryDeleted,
     required this.currentQuery,
+    this.textColorBuilder,
   });
 
   final List<AutocompleteData> tags;
@@ -86,6 +90,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   final void Function(HistorySuggestion history) onHistoryTap;
   final void Function(HistorySuggestion history) onHistoryDeleted;
   final String currentQuery;
+  final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +175,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                         tag,
                         state.theme,
                         currentQuery.replaceAll('_', ' '),
+                        textColorBuilder?.call(tag),
                       ),
                     ),
                   ),
@@ -183,13 +189,18 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   }
 }
 
-Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
+Widget _getTitle(
+  AutocompleteData tag,
+  ThemeMode theme,
+  String currentQuery,
+  Color? color,
+) {
   return tag.hasAlias
       ? Html(
           style: {
             'p': Style(
               fontSize: FontSize.medium,
-              color: _getTagColor(tag, theme),
+              color: color,
             ),
             'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
             'b': Style(
@@ -203,7 +214,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
           style: {
             'p': Style(
               fontSize: FontSize.medium,
-              color: _getTagColor(tag, theme),
+              color: color,
             ),
             'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
             'b': Style(
@@ -213,17 +224,4 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
           data:
               '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
         );
-}
-
-Color? _getTagColor(AutocompleteData tag, ThemeMode theme) {
-  if (tag.hasCategory) {
-    return getTagColor(
-      stringToTagCategory(tag.category!),
-      theme,
-    );
-  } else if (tag.hasUserLevel) {
-    return Color(getUserHexColor(stringToUserLevel(tag.level!)));
-  }
-
-  return null;
 }
