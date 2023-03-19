@@ -1,6 +1,6 @@
 // Project imports:
-import 'booru.dart';
+import 'user_booru.dart';
 
-abstract class CurrentBooruRepository {
-  Future<Booru> getCurrentBooru();
+abstract class CurrentUserBooruRepository {
+  Future<UserBooru?> get();
 }

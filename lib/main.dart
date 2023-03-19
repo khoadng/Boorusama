@@ -196,7 +196,7 @@ void main() async {
 
   final currentBooruRepo = CurrentBooruRepositorySettings(
     settingRepository,
-    booruFactory,
+    booruUserRepo,
   );
 
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
@@ -261,7 +261,7 @@ void main() async {
             RepositoryProvider<BooruUserIdentityProvider>.value(
               value: booruUserIdProvider,
             ),
-            RepositoryProvider<CurrentBooruRepository>.value(
+            RepositoryProvider<CurrentUserBooruRepository>.value(
               value: currentBooruRepo,
             ),
           ],

@@ -1,21 +1,25 @@
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings_repository.dart';
 
-class CurrentBooruRepositorySettings implements CurrentBooruRepository {
+class CurrentBooruRepositorySettings implements CurrentUserBooruRepository {
   CurrentBooruRepositorySettings(
     this.settingsRepository,
-    this.booruFactory,
+    this.userBooruRepository,
   );
 
   final SettingsRepository settingsRepository;
-  final BooruFactory booruFactory;
+  final UserBooruRepository userBooruRepository;
 
   @override
-  Future<Booru> getCurrentBooru() async {
+  Future<UserBooru?> get() async {
     final settings = await settingsRepository.load();
-    final booru = settings.currentBooru;
+    final currentBooru = settings.currentBooru;
+    final userBoorus = await userBooruRepository.getAll();
 
-    return booruFactory.from(type: booru);
+    return userBoorus.firstWhereOrNull((e) => e.booruId == currentBooru.index);
   }
 }
