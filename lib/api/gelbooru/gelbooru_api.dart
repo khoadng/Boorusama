@@ -31,4 +31,15 @@ abstract class GelbooruApi {
     @Query('json') String json,
     @Query('pid') String pid,
   );
+
+  @GET('/autocomplete.json')
+  Future<HttpResponse> autocomplete(
+    @Query('api_key') String? apiKey,
+    @Query('user_id') String? userId,
+    @Query('page') String page,
+    @Query('type') String type,
+    @Query('limit') int limit,
+    @Query('term') String term, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

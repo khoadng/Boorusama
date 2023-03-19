@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -19,6 +21,7 @@ class GelbooruProvider extends StatelessWidget {
     required this.postRepository,
     required this.tagRepository,
     required this.builder,
+    required this.autocompleteRepository,
   });
 
   factory GelbooruProvider.create(
@@ -29,16 +32,15 @@ class GelbooruProvider extends StatelessWidget {
     final dio = context.read<DioProvider>().getDio(booru.url);
     final api = GelbooruApi(dio);
 
-    final postRepo = GelbooruPostRepositoryApi(
-      api: api,
-    );
-
+    final postRepo = GelbooruPostRepositoryApi(api: api);
     final tagRepo = GelbooruTagRepositoryApi(api);
+    final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
     return GelbooruProvider(
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
+      autocompleteRepository: autocompleteRepo,
     );
   }
 
@@ -50,16 +52,19 @@ class GelbooruProvider extends StatelessWidget {
   }) {
     final postRepo = context.read<PostRepository>();
     final tagRepo = context.read<TagRepository>();
+    final autocompleteRepo = context.read<AutocompleteRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
+      autocompleteRepository: autocompleteRepo,
     );
   }
 
   final PostRepository postRepository;
   final TagRepository tagRepository;
+  final AutocompleteRepository autocompleteRepository;
   final Widget Function(BuildContext context) builder;
 
   @override
@@ -68,6 +73,7 @@ class GelbooruProvider extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: tagRepository),
+        RepositoryProvider.value(value: autocompleteRepository),
       ],
       child: Builder(
         builder: builder,
