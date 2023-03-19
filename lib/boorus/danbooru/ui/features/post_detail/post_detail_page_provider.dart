@@ -44,15 +44,15 @@ class PostDetailPageProvider extends StatelessWidget {
   final ThemeBloc themeBloc;
   final PostBloc? postBloc;
   final NoteRepository noteRepo;
-  final PostRepository postRepo;
+  final DanbooruPostRepository postRepo;
   final FavoritePostRepository favRepo;
   final AccountRepository accountRepo;
   final PostVoteRepository postVoteRepo;
   final List<PostDetailTag> tags;
   final TagRepository tagRepo;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final int initialIndex;
-  final Widget Function(int initialIndex, List<PostData> posts) builder;
+  final Widget Function(int initialIndex, List<DanbooruPostData> posts) builder;
   final AutoScrollController? scrollController;
 
   @override

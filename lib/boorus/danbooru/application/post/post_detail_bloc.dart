@@ -56,16 +56,16 @@ class _PostDetailNoteFetch extends PostDetailEvent {
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required NoteRepository noteRepository,
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
-    required List<PostData> posts,
-    required Map<String, List<Post>> tagCache,
+    required List<DanbooruPostData> posts,
+    required Map<String, List<DanbooruPost>> tagCache,
     void Function(
-      PostData post,
+      DanbooruPostData post,
     )?
         onPostChanged,
     double Function()? idGenerator,
@@ -369,9 +369,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
   Future<void> _fetchCharactersPosts(
     List<String> tags,
-    PostRepository postRepository,
+    DanbooruPostRepository postRepository,
     Emitter<PostDetailState> emit,
-    Map<String, List<Post>> tagCache,
+    Map<String, List<DanbooruPost>> tagCache,
   ) async {
     for (final tag in tags) {
       final posts = tagCache.containsKey(tag)
@@ -389,7 +389,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             posts: posts
                 .where((e) => !e.isFlash)
                 .take(6)
-                .map((e) => PostData(
+                .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,
                       pools: const [],
@@ -403,9 +403,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
   Future<void> _fetchArtistPosts(
     List<String> tags,
-    PostRepository postRepository,
+    DanbooruPostRepository postRepository,
     Emitter<PostDetailState> emit,
-    Map<String, List<Post>> tagCache,
+    Map<String, List<DanbooruPost>> tagCache,
   ) async {
     for (final tag in tags) {
       final posts = tagCache.containsKey(tag)
@@ -423,7 +423,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             posts: posts
                 .where((e) => !e.isFlash)
                 .take(6)
-                .map((e) => PostData(
+                .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,
                       pools: const [],
@@ -448,7 +448,7 @@ extension PostDetailStateX on PostDetailState {
   }
 }
 
-Post _newPost(Post post, String tag, TagCategory category) {
+DanbooruPost _newPost(DanbooruPost post, String tag, TagCategory category) {
   if (category == TagCategory.artist) {
     return post.copyWith(
       artistTags: [...post.artistTags, tag]..sort(),

@@ -236,7 +236,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
     required AccountRepository accountRepository,
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
     required UserSelf? currentUser,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
@@ -446,7 +446,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
       FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
         accountRepository: context.read<AccountRepository>(),
-        postRepository: context.read<PostRepository>(),
+        postRepository: context.read<DanbooruPostRepository>(),
         currentUser: currentUser,
       );
 }

@@ -25,7 +25,7 @@ class PostDetailState extends Equatable {
         id: 0,
         tags: const [],
         currentIndex: 0,
-        currentPost: PostData.empty(),
+        currentPost: DanbooruPostData.empty(),
         previousPost: null,
         nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
@@ -37,9 +37,9 @@ class PostDetailState extends Equatable {
 
   final List<PostDetailTag> tags;
   final int currentIndex;
-  final PostData currentPost;
-  final PostData? nextPost;
-  final PostData? previousPost;
+  final DanbooruPostData currentPost;
+  final DanbooruPostData? nextPost;
+  final DanbooruPostData? previousPost;
   final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
@@ -54,9 +54,9 @@ class PostDetailState extends Equatable {
     double? id,
     List<PostDetailTag>? tags,
     int? currentIndex,
-    PostData? currentPost,
-    PostData? Function()? nextPost,
-    PostData? Function()? previousPost,
+    DanbooruPostData? currentPost,
+    DanbooruPostData? Function()? nextPost,
+    DanbooruPostData? Function()? previousPost,
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
@@ -124,7 +124,7 @@ class Recommend extends Equatable {
   });
 
   final String title;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final RecommendType type;
 
   @override

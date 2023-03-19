@@ -2,8 +2,8 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/danbooru_post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/danbooru_post_repository.dart';
 import 'fetcher.dart';
 
 class FavoriteGroupPostFetcher implements PostFetcher {
@@ -14,8 +14,8 @@ class FavoriteGroupPostFetcher implements PostFetcher {
   final List<int> ids;
 
   @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
+  Future<List<DanbooruPost>> fetch(
+    DanbooruPostRepository repo,
     int page, {
     int? limit,
   }) async {
@@ -40,7 +40,7 @@ class FavoriteGroupPostFetcher implements PostFetcher {
 class _Payload implements Comparable<_Payload> {
   _Payload(this.order, this.post);
 
-  final Post post;
+  final DanbooruPost post;
   final int order;
 
   @override

@@ -38,7 +38,7 @@ class PostSlider extends StatefulWidget {
     required this.imagePath,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final ValueNotifier<String?> imagePath;
 
   @override
@@ -178,8 +178,8 @@ class _CarouselContent extends StatefulWidget {
 
   final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
-  final PostData post;
-  final Post preloadPost;
+  final DanbooruPostData post;
+  final DanbooruPost preloadPost;
   final List<Pool> pools;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
@@ -189,7 +189,7 @@ class _CarouselContent extends StatefulWidget {
 }
 
 class _CarouselContentState extends State<_CarouselContent> {
-  Post get post => widget.post.post;
+  DanbooruPost get post => widget.post.post;
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +277,7 @@ class TagsTile extends StatelessWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +309,7 @@ class _ParentChildTile extends StatelessWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +333,7 @@ class ActionBar extends StatelessWidget {
   });
 
   final ValueNotifier<String?> imagePath;
-  final PostData postData;
+  final DanbooruPostData postData;
 
   @override
   Widget build(BuildContext context) {

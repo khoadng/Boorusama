@@ -39,7 +39,7 @@ class PostDetailPageDesktop extends StatefulWidget {
   });
 
   final int intitialIndex;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
 
   @override
   State<PostDetailPageDesktop> createState() => _PostDetailPageDesktopState();
@@ -262,7 +262,7 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.recommends,
   });
 
-  final PostData post;
+  final DanbooruPostData post;
   final ValueNotifier<String?> imagePath;
   final List<Recommend> recommends;
 

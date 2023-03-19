@@ -161,7 +161,8 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                             BlocProvider(
                               create: (context) => PoolBloc(
                                 poolRepository: context.read<PoolRepository>(),
-                                postRepository: context.read<PostRepository>(),
+                                postRepository:
+                                    context.read<DanbooruPostRepository>(),
                               )..add(const PoolRefreshed(
                                   category: PoolCategory.series,
                                   order: PoolOrder.latest,

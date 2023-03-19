@@ -5,8 +5,8 @@ import 'package:collection/collection.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
 
-List<PostData> filter(
-  List<PostData> posts,
+List<DanbooruPostData> filter(
+  List<DanbooruPostData> posts,
   List<String> blacklistedTags,
 ) {
   final groups = _parse(blacklistedTags);
@@ -17,8 +17,8 @@ List<PostData> filter(
 }
 
 //TODO: extract common method
-List<Post> filterRawPost(
-  List<Post> posts,
+List<DanbooruPost> filterRawPost(
+  List<DanbooruPost> posts,
   List<String> blacklistedTags,
 ) {
   final groups = _parse(blacklistedTags);
@@ -26,8 +26,8 @@ List<Post> filterRawPost(
   return posts.whereNot((post) => _hasBlacklistedTag(post, groups)).toList();
 }
 
-List<PostData> filterBlacklisted(
-  List<PostData> posts,
+List<DanbooruPostData> filterBlacklisted(
+  List<DanbooruPostData> posts,
   List<String> blacklistedTags,
 ) {
   final groups = _parse(blacklistedTags);
@@ -38,7 +38,7 @@ List<PostData> filterBlacklisted(
 List<FilterGroup> _parse(List<String> tags) =>
     tags.map(stringToFilterGroup).whereNotNull().toList();
 
-bool _hasBlacklistedTag(Post post, List<FilterGroup> fgs) {
+bool _hasBlacklistedTag(DanbooruPost post, List<FilterGroup> fgs) {
   final tagMap = Map<String, String>.fromIterable(post.tags);
   for (final fg in fgs) {
     if (fg.groupType == FilterGroupType.single) {

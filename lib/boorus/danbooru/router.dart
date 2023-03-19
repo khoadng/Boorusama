@@ -243,9 +243,9 @@ void goToBulkDownloadPage(
                     permissionChecker: () => Permission.storage.status,
                     permissionRequester: () => Permission.storage.request(),
                     bulkPostDownloadBloc: BulkPostDownloadBloc(
-                      downloader: dcontext.read<BulkDownloader<Post>>(),
+                      downloader: dcontext.read<BulkDownloader<DanbooruPost>>(),
                       postCountRepository: dcontext.read<PostCountRepository>(),
-                      postRepository: dcontext.read<PostRepository>(),
+                      postRepository: dcontext.read<DanbooruPostRepository>(),
                       errorTranslator: getErrorMessage,
                       onDownloadDone: (path) =>
                           MediaScanner.loadMedia(path: path),
@@ -350,7 +350,7 @@ void goToHomePage(
 
 void goToDetailPage({
   required BuildContext context,
-  required List<PostData> posts,
+  required List<DanbooruPostData> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
   PostBloc? postBloc,
@@ -401,7 +401,7 @@ void goToDetailPage({
                 final noteRepo = dContext.read<NoteRepository>();
                 final postVoteRepo = dContext.read<PostVoteRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
-                final postRepo = dContext.read<PostRepository>();
+                final postRepo = dContext.read<DanbooruPostRepository>();
                 final tagBloc = dContext.read<TagBloc>();
                 final themeBloc = dContext.read<ThemeBloc>();
                 final accountRepo = dContext.read<AccountRepository>();
@@ -447,7 +447,7 @@ void goToDetailPage({
                 final noteRepo = dContext.read<NoteRepository>();
                 final postVoteRepo = dContext.read<PostVoteRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
-                final postRepo = dContext.read<PostRepository>();
+                final postRepo = dContext.read<DanbooruPostRepository>();
                 final tagBloc = dContext.read<TagBloc>();
                 final themeBloc = dContext.read<ThemeBloc>();
                 final accountRepo = dContext.read<AccountRepository>();
@@ -497,7 +497,7 @@ void goToSearchPage(
                 final tagInfo = dContext.read<TagInfo>();
                 final autocompleteRepo =
                     dContext.read<AutocompleteRepository>();
-                final postRepo = dContext.read<PostRepository>();
+                final postRepo = dContext.read<DanbooruPostRepository>();
                 final blacklistRepo =
                     dContext.read<BlacklistedTagsRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
@@ -559,7 +559,7 @@ void goToSearchPage(
                 final tagInfo = dContext.read<TagInfo>();
                 final autocompleteRepo =
                     dContext.read<AutocompleteRepository>();
-                final postRepo = dContext.read<PostRepository>();
+                final postRepo = dContext.read<DanbooruPostRepository>();
                 final blacklistRepo =
                     dContext.read<BlacklistedTagsRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
@@ -951,7 +951,7 @@ void goToUserDetailsPage(
             builder: (dcontext) => BlocProvider(
               create: (_) => UserBloc(
                 userRepository: dcontext.read<UserRepository>(),
-                postRepository: dcontext.read<PostRepository>(),
+                postRepository: dcontext.read<DanbooruPostRepository>(),
               )..add(UserFetched(uid: uid)),
               child: const UserDetailsPage(),
             ),
@@ -977,7 +977,7 @@ void goToPoolSearchPage(BuildContext context) {
               BlocProvider(
                 create: (_) => PoolBloc(
                   poolRepository: dcontext.read<PoolRepository>(),
-                  postRepository: dcontext.read<PostRepository>(),
+                  postRepository: dcontext.read<DanbooruPostRepository>(),
                 ),
               ),
               BlocProvider(
@@ -1087,7 +1087,7 @@ void goToRelatedTagsPage(
   }
 }
 
-void goToPostFavoritesDetails(BuildContext context, Post post) {
+void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
   showAdaptiveBottomSheet(
     context,
     settings: const RouteSettings(
@@ -1117,7 +1117,7 @@ void goToPostFavoritesDetails(BuildContext context, Post post) {
   );
 }
 
-void goToPostVotesDetails(BuildContext context, Post post) {
+void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
   showAdaptiveBottomSheet(
     context,
     settings: const RouteSettings(
@@ -1410,7 +1410,7 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 
 Future<bool?> goToAddToBlacklistPage(
   BuildContext context,
-  Post post,
+  DanbooruPost post,
 ) {
   final bloc = context.read<BlacklistedTagsBloc>();
 

@@ -13,7 +13,7 @@ import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
-List<Post> parsePost(
+List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
   ImageSourceComposer<PostDto> urlComposer,
 ) =>
@@ -22,7 +22,7 @@ List<Post> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e, urlComposer)).where(isPostValid).toList();
 
-List<Post> Function(
+List<DanbooruPost> Function(
   HttpResponse<dynamic> value,
 ) parsePostWithOptions({
   required bool includeInvalid,
@@ -38,7 +38,7 @@ List<Post> Function(
 const String postParams =
     'id,created_at,uploader_id,score,source,md5,last_comment_bumped_at,rating,image_width,image_height,tag_string,fav_count,file_ext,last_noted_at,parent_id,has_children,approver_id,tag_count_general,tag_count_artist,tag_count_character,tag_count_copyright,file_size,up_score,down_score,is_pending,is_flagged,is_deleted,tag_count,updated_at,is_banned,pixiv_id,last_commented_at,has_active_children,bit_flags,tag_count_meta,has_large,has_visible_children,tag_string_general,tag_string_character,tag_string_copyright,tag_string_artist,tag_string_meta,file_url,large_file_url,preview_file_url,comments[is_deleted],artist_commentary';
 
-class PostRepositoryApi implements PostRepository {
+class PostRepositoryApi implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
     AccountRepository accountRepository,
@@ -53,7 +53,7 @@ class PostRepositoryApi implements PostRepository {
   static const int _limit = 60;
 
   @override
-  Future<List<Post>> getPosts(
+  Future<List<DanbooruPost>> getPosts(
     String tags,
     int page, {
     int? limit,
@@ -78,12 +78,12 @@ class PostRepositoryApi implements PostRepository {
         .catchError((e) {
       handleError(e);
 
-      return <Post>[];
+      return <DanbooruPost>[];
     });
   }
 
   @override
-  Future<List<Post>> getPostsFromIds(List<int> ids) => getPosts(
+  Future<List<DanbooruPost>> getPostsFromIds(List<int> ids) => getPosts(
         'id:${ids.join(',')}',
         1,
         limit: ids.length,
@@ -114,7 +114,7 @@ class PostRepositoryApi implements PostRepository {
 
 List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
 
-Post postDtoToPost(
+DanbooruPost postDtoToPost(
   PostDto dto,
   ImageSourceComposer<PostDto> urlComposer,
 ) {
@@ -131,7 +131,7 @@ Post postDtoToPost(
 
     final sources = urlComposer.compose(dto);
 
-    return Post(
+    return DanbooruPost(
       id: dto.id!,
       thumbnailImageUrl: sources.thumbnail,
       sampleImageUrl: sources.sample,
@@ -168,6 +168,6 @@ Post postDtoToPost(
           : null,
     );
   } catch (e) {
-    return Post.empty();
+    return DanbooruPost.empty();
   }
 }

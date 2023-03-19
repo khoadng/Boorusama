@@ -19,7 +19,7 @@ class PreviewPostGrid extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
@@ -61,7 +61,7 @@ class PreviewPostGrid extends StatelessWidget {
   }
 }
 
-String _getImageUrl(Post post, ImageQuality quality) {
+String _getImageUrl(DanbooruPost post, ImageQuality quality) {
   if (post.isAnimated) return post.thumbnailImageUrl;
   if (quality == ImageQuality.high) return post.sampleImageUrl;
 

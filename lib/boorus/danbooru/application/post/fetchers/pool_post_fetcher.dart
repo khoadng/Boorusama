@@ -10,8 +10,8 @@ class PoolPostFetcher implements PostFetcher {
   final List<int> postIds;
 
   @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
+  Future<List<DanbooruPost>> fetch(
+    DanbooruPostRepository repo,
     int page, {
     int? limit,
   }) async =>

@@ -14,8 +14,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
-class PostData extends Equatable {
-  const PostData({
+class DanbooruPostData extends Equatable {
+  const DanbooruPostData({
     required this.post,
     required this.isFavorited,
     this.voteState = VoteState.unvote,
@@ -23,20 +23,20 @@ class PostData extends Equatable {
     List<Note>? notes,
   }) : _notes = notes;
 
-  factory PostData.empty() => PostData(
-        post: Post.empty(),
+  factory DanbooruPostData.empty() => DanbooruPostData(
+        post: DanbooruPost.empty(),
         isFavorited: false,
         pools: const [],
       );
 
-  PostData copyWith({
-    Post? post,
+  DanbooruPostData copyWith({
+    DanbooruPost? post,
     bool? isFavorited,
     VoteState? voteState,
     List<Pool>? pools,
     List<Note>? notes,
   }) =>
-      PostData(
+      DanbooruPostData(
         post: post ?? this.post,
         isFavorited: isFavorited ?? this.isFavorited,
         voteState: voteState ?? this.voteState,
@@ -44,7 +44,7 @@ class PostData extends Equatable {
         notes: notes ?? _notes,
       );
 
-  final Post post;
+  final DanbooruPost post;
   final bool isFavorited;
   final VoteState voteState;
   final List<Pool> pools;
@@ -56,31 +56,39 @@ class PostData extends Equatable {
   List<Object?> get props => [post, isFavorited, voteState, pools, _notes];
 }
 
-Future<List<PostData>> Function(List<Post> posts) createPostDataWith(
+Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
+    createPostDataWith(
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
   AccountRepository accountRepository,
 ) =>
-    (posts) => createPostData(
-          favoritePostRepository,
-          voteRepository,
-          poolRepository,
-          posts,
-          accountRepository,
-        );
+        (posts) => createPostData(
+              favoritePostRepository,
+              voteRepository,
+              poolRepository,
+              posts,
+              accountRepository,
+            );
 
-Future<List<PostData>> Function(Account account) process(
-  List<Post> posts, {
-  required Future<List<PostData>> Function(List<Post> posts) forAnonymous,
-  required Future<List<PostData>> Function(List<Post> posts, Account account)
+Future<List<DanbooruPostData>> Function(Account account) process(
+  List<DanbooruPost> posts, {
+  required Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
+      forAnonymous,
+  required Future<List<DanbooruPostData>> Function(
+    List<DanbooruPost> posts,
+    Account account,
+  )
       forUser,
 }) =>
     (account) => account == Account.empty
         ? forAnonymous(posts)
         : forUser(posts, account);
 
-Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools, List<Post> posts) {
+Map<int, Set<Pool>> createPostPoolMap(
+  List<Pool> pools,
+  List<DanbooruPost> posts,
+) {
   final postMap = {for (final p in posts) p.id: <Pool>{}};
 
   for (final p in pools) {
@@ -95,11 +103,11 @@ Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools, List<Post> posts) {
   return postMap;
 }
 
-Future<List<PostData>> createPostData(
+Future<List<DanbooruPostData>> createPostData(
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
-  List<Post> posts,
+  List<DanbooruPost> posts,
   AccountRepository accountRepository,
 ) =>
     accountRepository.get().then(process(
@@ -110,7 +118,7 @@ Future<List<PostData>> createPostData(
             final postMap = createPostPoolMap(pools, posts);
 
             return posts
-                .map((post) => PostData(
+                .map((post) => DanbooruPostData(
                       post: post,
                       isFavorited: false,
                       pools: postMap[post.id]!.toList(),
@@ -143,7 +151,7 @@ Future<List<PostData>> createPostData(
             final postMap = createPostPoolMap(pools, posts);
 
             return posts
-                .map((post) => PostData(
+                .map((post) => DanbooruPostData(
                       post: post,
                       isFavorited: favSet.contains(post.id),
                       voteState: voteMap.containsKey(post.id)
@@ -155,37 +163,40 @@ Future<List<PostData>> createPostData(
           },
         ));
 
-Future<List<PostData>> Function(List<PostData> posts) filterWith(
+Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
+    filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
   AccountRepository accountRepository,
 ) =>
-    (posts) async {
-      final account = await accountRepository.get();
+        (posts) async {
+          final account = await accountRepository.get();
 
-      if (account == Account.empty) return posts;
+          if (account == Account.empty) return posts;
 
-      return blacklistedTagsRepository
-          .getBlacklistedTags(account.id)
-          .then((blacklistedTags) => filter(posts, blacklistedTags));
-    };
+          return blacklistedTagsRepository
+              .getBlacklistedTags(account.id)
+              .then((blacklistedTags) => filter(posts, blacklistedTags));
+        };
 
-Future<List<PostData>> Function(List<PostData> posts) filterUnsupportedFormat(
+Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
+    filterUnsupportedFormat(
   Set<String> fileExtensions,
 ) =>
-    (posts) async => posts
-        .where((e) => !fileExtensions.contains(e.post.format))
-        .where((e) => !e.post.metaTags.contains('flash'))
-        .toList();
+        (posts) async => posts
+            .where((e) => !fileExtensions.contains(e.post.format))
+            .where((e) => !e.post.metaTags.contains('flash'))
+            .toList();
 
-Future<List<PostData>> Function(List<PostData> posts) preloadPreviewImagesWith(
+Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
+    preloadPreviewImagesWith(
   PostPreviewPreloader? preloader,
 ) =>
-    (posts) async {
-      if (preloader != null) {
-        for (final post in posts) {
-          unawaited(preloader.preload(post.post));
-        }
-      }
+        (posts) async {
+          if (preloader != null) {
+            for (final post in posts) {
+              unawaited(preloader.preload(post.post));
+            }
+          }
 
-      return posts;
-    };
+          return posts;
+        };

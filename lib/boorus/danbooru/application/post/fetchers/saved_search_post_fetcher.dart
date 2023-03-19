@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/danbooru_post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/danbooru_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'fetcher.dart';
 
@@ -10,8 +10,8 @@ class SavedSearchPostFetcher implements PostFetcher {
   final SavedSearch savedSearch;
 
   @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
+  Future<List<DanbooruPost>> fetch(
+    DanbooruPostRepository repo,
     int page, {
     int? limit,
   }) async {

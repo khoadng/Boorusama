@@ -72,7 +72,8 @@ class _HomePageState extends State<DanbooruHomePage> {
                         BlocProvider(
                           create: (context) => PoolBloc(
                             poolRepository: context.read<PoolRepository>(),
-                            postRepository: context.read<PostRepository>(),
+                            postRepository:
+                                context.read<DanbooruPostRepository>(),
                           )..add(const PoolRefreshed(
                               category: PoolCategory.series,
                               order: PoolOrder.latest,

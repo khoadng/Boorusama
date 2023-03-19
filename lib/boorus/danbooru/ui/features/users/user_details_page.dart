@@ -236,7 +236,7 @@ class _PreviewList extends StatelessWidget {
   });
 
   final String title;
-  final List<Post> posts;
+  final List<DanbooruPost> posts;
   final void Function() onViewMore;
 
   @override
@@ -273,7 +273,7 @@ class _PreviewList extends StatelessWidget {
                     onTap: () => goToDetailPage(
                       context: context,
                       posts: posts
-                          .map((e) => PostData(
+                          .map((e) => DanbooruPostData(
                                 post: e,
                                 isFavorited: false,
                                 pools: const [],

@@ -31,7 +31,7 @@ class PostMediaItem extends StatefulWidget {
     this.previewCacheManager,
   });
 
-  final Post post;
+  final DanbooruPost post;
   final List<Note> notes;
   final void Function(String? path) onCached;
   final bool enableNotes;

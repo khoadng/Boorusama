@@ -18,7 +18,7 @@ class RecommendPostSection extends StatelessWidget {
     required this.onTap,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final Widget header;
   final void Function(int index) onTap;
 

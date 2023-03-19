@@ -20,7 +20,7 @@ class ModalShare extends StatelessWidget {
 
   final void Function(String value) onTap;
   final void Function(String filePath) onTapFile;
-  final Post post;
+  final DanbooruPost post;
   final String endpoint;
   final String? imagePath;
 
@@ -70,7 +70,7 @@ enum ShareMode {
   booru,
 }
 
-String getShareContent(ShareMode mode, Post post, String endpoint) {
+String getShareContent(ShareMode mode, DanbooruPost post, String endpoint) {
   final booruLink = '${endpoint}posts/${post.id}';
   if (mode == ShareMode.booru) return booruLink;
   if (post.source == null) return booruLink;

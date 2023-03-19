@@ -46,7 +46,7 @@ class PostDetailPage extends StatefulWidget {
   });
 
   final int intitialIndex;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -200,7 +200,7 @@ class _FloatingQuickActionBar extends StatelessWidget {
       bottom: 12,
       left: MediaQuery.of(context).size.width * 0.05,
       child: FloatingGlassyCard(
-        child: BlocSelector<PostDetailBloc, PostDetailState, PostData>(
+        child: BlocSelector<PostDetailBloc, PostDetailState, DanbooruPostData>(
           selector: (state) => state.currentPost,
           builder: (context, post) {
             return ActionBar(
@@ -379,7 +379,7 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.recommends,
   });
 
-  final PostData post;
+  final DanbooruPostData post;
   final ValueNotifier<String?> imagePath;
   final ScreenSize size;
   final List<Recommend> recommends;

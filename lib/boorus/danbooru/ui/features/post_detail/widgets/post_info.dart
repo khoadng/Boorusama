@@ -23,7 +23,7 @@ class ArtistSection extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<ArtistSection> createState() => _ArtistSectionState();

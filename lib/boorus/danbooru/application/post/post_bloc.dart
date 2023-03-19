@@ -25,17 +25,17 @@ import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
     with
-        InfiniteLoadMixin<PostData, PostState>,
-        PaginationMixin<PostData, PostState> {
+        InfiniteLoadMixin<DanbooruPostData, PostState>,
+        PaginationMixin<DanbooruPostData, PostState> {
   PostBloc({
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
     required PostVoteRepository postVoteRepository,
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
-    List<PostData>? initialData,
+    List<DanbooruPostData>? initialData,
     PostPreviewPreloader? previewPreloader,
     bool? pagination,
     int? postsPerPage,
@@ -219,7 +219,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     bool? pagination,
   }) =>
       PostBloc(
-        postRepository: context.read<PostRepository>(),
+        postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
         accountRepository: context.read<AccountRepository>(),
@@ -328,5 +328,5 @@ String? getErrorMessage(BooruError error) {
   return message;
 }
 
-Future<List<PostData>> Function(List<PostData> posts) filterFlashFiles() =>
-    filterUnsupportedFormat({'swf'});
+Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
+    filterFlashFiles() => filterUnsupportedFormat({'swf'});

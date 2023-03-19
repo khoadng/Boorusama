@@ -137,7 +137,7 @@ class _ExploreList extends StatefulWidget {
     required this.onTap,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final void Function(int index) onTap;
 
   @override

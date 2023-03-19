@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                                   poolRepository:
                                       context.read<PoolRepository>(),
                                   postRepository:
-                                      context.read<PostRepository>(),
+                                      context.read<DanbooruPostRepository>(),
                                 )..add(const PoolRefreshed(
                                     category: PoolCategory.series,
                                     order: PoolOrder.latest,

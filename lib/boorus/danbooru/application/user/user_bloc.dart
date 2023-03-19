@@ -23,15 +23,15 @@ class UserState extends Equatable {
       );
 
   final User user;
-  final List<Post>? favorites;
-  final List<Post>? uploads;
+  final List<DanbooruPost>? favorites;
+  final List<DanbooruPost>? uploads;
   final LoadStatus status;
 
   UserState copyWith({
     User? user,
     LoadStatus? status,
-    List<Post>? Function()? favorites,
-    List<Post>? Function()? uploads,
+    List<DanbooruPost>? Function()? favorites,
+    List<DanbooruPost>? Function()? uploads,
   }) =>
       UserState(
         user: user ?? this.user,
@@ -84,7 +84,7 @@ class _FetchedUploads extends UserEvent {
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc({
     required UserRepository userRepository,
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
   }) : super(UserState.initial()) {
     on<UserFetched>((event, emit) async {
       await tryAsync<User>(

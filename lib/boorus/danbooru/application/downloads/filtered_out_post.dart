@@ -10,7 +10,7 @@ class FilteredOutPost extends Equatable {
     required this.reason,
   });
 
-  factory FilteredOutPost.from(Post post) {
+  factory FilteredOutPost.from(DanbooruPost post) {
     return FilteredOutPost(
       postId: post.id,
       reason: post.isBanned

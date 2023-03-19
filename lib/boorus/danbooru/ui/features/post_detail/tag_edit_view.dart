@@ -7,7 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
@@ -24,7 +24,7 @@ class TagEditView extends StatelessWidget {
     this.recommendedTotalOfTag = 20,
   });
 
-  final Post post;
+  final DanbooruPost post;
   final List<PostDetailTag> tags;
   final int recommendedTotalOfTag;
 

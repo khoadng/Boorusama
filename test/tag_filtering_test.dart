@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
 
-Post _createPost(int id, List<String> tags) => Post(
+DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       id: id,
       thumbnailImageUrl: '',
       sampleImageUrl: '',

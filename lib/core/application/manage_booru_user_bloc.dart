@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus.dart';
 
 class ManageBooruUserState extends Equatable {
   const ManageBooruUserState({

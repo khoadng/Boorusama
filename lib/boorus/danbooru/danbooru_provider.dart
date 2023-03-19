@@ -236,7 +236,7 @@ class DanbooruProvider extends StatelessWidget {
     final popularSearchRepo = context.read<PopularSearchRepository>();
     final tagRepo = context.read<TagRepository>();
     final profileRepo = context.read<ProfileRepository>();
-    final postRepo = context.read<PostRepository>();
+    final postRepo = context.read<DanbooruPostRepository>();
     final exploreRepo = context.read<ExploreRepository>();
     final commentRepo = context.read<CommentRepository>();
     final userRepo = context.read<UserRepository>();
@@ -302,7 +302,7 @@ class DanbooruProvider extends StatelessWidget {
   final AccountRepository accountRepo;
   final SettingsRepository settingRepository;
   final NoteRepository noteRepo;
-  final PostRepository postRepo;
+  final DanbooruPostRepository postRepo;
   final SearchHistoryRepository searchHistoryRepo;
   final PoolRepository poolRepo;
   final UserRepository userRepo;

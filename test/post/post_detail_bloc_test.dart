@@ -13,7 +13,7 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 
-class MockPostRepository extends Mock implements PostRepository {}
+class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
 class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
@@ -58,7 +58,8 @@ void main() {
           ),
         ],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -71,8 +72,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'foo',
@@ -84,8 +85,8 @@ void main() {
         PostDetailState.initial().copyWith(
           id: 1,
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'bar',
@@ -123,8 +124,10 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -133,17 +136,17 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          nextPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -171,12 +174,13 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2, tags: ['translated']),
           ),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
         ],
         idGenerator: () => 1,
@@ -188,31 +192,31 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2, tags: ['translated']),
           ),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2),
             notes: [
               Note.empty(),
               Note.empty(),
@@ -230,9 +234,13 @@ void main() {
         when(() => accountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
         when(() => postRepo.getPosts('foo', any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 3)]);
+            .thenAnswer(
+          (invocation) async => [DanbooruPost.empty().copyWith(id: 3)],
+        );
         when(() => postRepo.getPosts('bar', any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 4)]);
+            .thenAnswer(
+          (invocation) async => [DanbooruPost.empty().copyWith(id: 4)],
+        );
       },
       tearDown: () {
         reset(favRepo);
@@ -248,9 +256,10 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 2,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -266,29 +275,30 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          nextPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
@@ -296,22 +306,24 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
             Recommend(
               title: 'bar',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 4)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 4)),
               ],
               type: RecommendType.character,
             ),
@@ -338,7 +350,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -348,14 +361,14 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           enableSlideShow: true,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -378,7 +391,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -389,16 +403,16 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           slideShowConfig: PostDetailState.initial()
               .slideShowConfig
               .copyWith(skipAnimation: true),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -429,7 +443,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -439,8 +454,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
           ),
@@ -471,7 +486,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -480,8 +496,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -519,7 +535,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -529,16 +546,16 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -576,7 +593,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -587,8 +605,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -626,8 +644,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ],
@@ -639,22 +657,22 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ),
@@ -692,8 +710,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -707,9 +725,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.upvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 1,
               downScore: 0,
@@ -750,8 +768,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -765,9 +783,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.upvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 1,
               downScore: 0,
@@ -775,9 +793,9 @@ void main() {
           ),
         ),
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.unvote,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -818,8 +836,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -833,9 +851,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.downvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: -1,
@@ -876,8 +894,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -891,9 +909,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.downvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: -1,
@@ -901,9 +919,9 @@ void main() {
           ),
         ),
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.unvote,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -934,8 +952,8 @@ void main() {
         tags: [],
         defaultDetailsStyle: DetailsDisplay.imageFocus,
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -951,8 +969,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -961,8 +979,8 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -978,8 +996,8 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -1012,7 +1030,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty(),
+          DanbooruPostData.empty(),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,

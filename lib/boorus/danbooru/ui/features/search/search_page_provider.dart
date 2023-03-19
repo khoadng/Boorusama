@@ -56,7 +56,7 @@ class SearchPageProvider extends StatelessWidget {
 
   final TagInfo tagInfo;
   final AutocompleteRepository autocompleteRepo;
-  final PostRepository postRepo;
+  final DanbooruPostRepository postRepo;
   final BlacklistedTagsRepository blacklistRepo;
   final FavoritePostRepository favRepo;
   final AccountRepository accountRepo;

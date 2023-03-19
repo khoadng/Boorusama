@@ -18,7 +18,7 @@ class PreviewPostList extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<Post> posts;
+  final List<DanbooruPost> posts;
   final ScrollPhysics? physics;
   final CacheManager? cacheManager;
 

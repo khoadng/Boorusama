@@ -108,7 +108,7 @@ class PoolItem {
 class PoolBloc extends Bloc<PoolEvent, PoolState> {
   PoolBloc({
     required PoolRepository poolRepository,
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
   }) : super(PoolState.initial()) {
     on<PoolRefreshed>(
       (event, emit) async {
@@ -167,14 +167,16 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
 
   Future<List<PoolItem>> poolsToPoolItems(
     List<Pool> pools,
-    PostRepository postRepository,
+    DanbooruPostRepository postRepository,
   ) async {
     final poolFiltered =
         pools.where((element) => element.postIds.isNotEmpty).toList();
 
     final poolCoverIds = poolFiltered.map((e) => e.postIds.last).toList();
 
-    final poolCoveridsMap = {for (var e in poolCoverIds) e: Post.empty()};
+    final poolCoveridsMap = {
+      for (var e in poolCoverIds) e: DanbooruPost.empty(),
+    };
 
     final posts = await postRepository.getPostsFromIds(poolCoverIds);
 
@@ -189,12 +191,12 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
   }
 }
 
-String? postToCoverUrl(Post post) {
+String? postToCoverUrl(DanbooruPost post) {
   if (post.id == 0) return null;
   if (post.isAnimated) return post.thumbnailImageUrl;
 
   return post.sampleImageUrl;
 }
 
-Tuple2<Post, Pool> _(List<Object> pair) =>
-    Tuple2(pair.first as Post, pair[1] as Pool);
+Tuple2<DanbooruPost, Pool> _(List<Object> pair) =>
+    Tuple2(pair.first as DanbooruPost, pair[1] as Pool);

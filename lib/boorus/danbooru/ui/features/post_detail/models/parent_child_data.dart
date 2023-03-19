@@ -13,7 +13,7 @@ class ParentChildData {
   final int parentId;
 }
 
-ParentChildData getParentChildData(Post post) => post.hasParent
+ParentChildData getParentChildData(DanbooruPost post) => post.hasParent
     ? ParentChildData(
         description: 'post.detail.has_parent_notice',
         tagQueryForDataFetching: 'parent:${post.parentId}',

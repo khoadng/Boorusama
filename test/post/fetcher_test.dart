@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class MockExploreRepository extends Mock implements ExploreRepository {}
 
-class MockPostRepository extends Mock implements PostRepository {}
+class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
 void main() {
   group('[explore fetcher test]', () {
@@ -28,12 +28,12 @@ void main() {
 
       when(() => exploreRepo.getMostViewedPosts(any()))
           .thenAnswer((invocation) async => [
-                Post.empty(),
+                DanbooruPost.empty(),
               ]);
 
       expect(
         await fetcher.fetch(postRepo, 1),
-        [Post.empty()],
+        [DanbooruPost.empty()],
       );
     });
 
@@ -45,12 +45,12 @@ void main() {
 
       when(() => exploreRepo.getPopularPosts(any(), any(), TimeScale.day))
           .thenAnswer((invocation) async => [
-                Post.empty(),
+                DanbooruPost.empty(),
               ]);
 
       expect(
         await fetcher.fetch(postRepo, 1),
-        [Post.empty()],
+        [DanbooruPost.empty()],
       );
     });
 
@@ -62,12 +62,12 @@ void main() {
 
       when(() => exploreRepo.getHotPosts(any()))
           .thenAnswer((invocation) async => [
-                Post.empty(),
+                DanbooruPost.empty(),
               ]);
 
       expect(
         await fetcher.fetch(postRepo, 1),
-        [Post.empty()],
+        [DanbooruPost.empty()],
       );
     });
 
@@ -90,12 +90,12 @@ void main() {
             any(),
             TimeScale.day,
           )).thenAnswer((invocation) async => [
-            Post.empty(),
+            DanbooruPost.empty(),
           ]);
 
       expect(
         await fetcher.fetch(postRepo, 1),
-        [Post.empty()],
+        [DanbooruPost.empty()],
       );
     });
   });

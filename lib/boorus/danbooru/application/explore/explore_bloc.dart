@@ -235,7 +235,7 @@ class ExploreData extends Equatable {
 
   ExploreData copyWith({
     ExploreCategory? category,
-    List<PostData>? data,
+    List<DanbooruPostData>? data,
     DateTime? date,
     TimeScale? scale,
   }) =>
@@ -248,7 +248,7 @@ class ExploreData extends Equatable {
       );
 
   final ExploreCategory category;
-  final List<PostData> data;
+  final List<DanbooruPostData> data;
   final DateTime date;
   final TimeScale scale;
   final PostBloc? bloc;

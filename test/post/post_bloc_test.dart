@@ -14,7 +14,7 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
-class MockPostRepository extends Mock implements PostRepository {}
+class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
 class MockAccountRepository extends Mock implements AccountRepository {}
 
@@ -188,8 +188,8 @@ void main() {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
-                  Post.empty(),
-                  Post.empty(),
+                  DanbooruPost.empty(),
+                  DanbooruPost.empty(),
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => const Account(
@@ -271,8 +271,8 @@ void main() {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
-                  Post.empty(),
-                  Post.empty(),
+                  DanbooruPost.empty(),
+                  DanbooruPost.empty(),
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
@@ -305,8 +305,8 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
-            PostData.empty(),
-            PostData.empty(),
+            DanbooruPostData.empty(),
+            DanbooruPostData.empty(),
           ],
         ),
       ],
@@ -318,8 +318,8 @@ void main() {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
-                  Post.empty(),
-                  Post.empty(),
+                  DanbooruPost.empty(),
+                  DanbooruPost.empty(),
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => const Account(
@@ -360,8 +360,8 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
-            PostData.empty(),
-            PostData.empty(),
+            DanbooruPostData.empty(),
+            DanbooruPostData.empty(),
           ],
         ),
       ],
@@ -373,8 +373,8 @@ void main() {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
-                  Post.empty().copyWith(id: 1),
-                  Post.empty().copyWith(id: 2),
+                  DanbooruPost.empty().copyWith(id: 1),
+                  DanbooruPost.empty().copyWith(id: 2),
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
@@ -412,14 +412,14 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
-            PostData.empty().copyWith(
-              post: Post.empty().copyWith(id: 1),
+            DanbooruPostData.empty().copyWith(
+              post: DanbooruPost.empty().copyWith(id: 1),
               pools: [
                 Pool.empty().copyWith(id: 11, postIds: [1, 100]),
               ],
             ),
-            PostData.empty().copyWith(
-              post: Post.empty().copyWith(id: 2),
+            DanbooruPostData.empty().copyWith(
+              post: DanbooruPost.empty().copyWith(id: 2),
               pools: [
                 Pool.empty().copyWith(id: 22, postIds: [2, 200]),
                 Pool.empty().copyWith(id: 33, postIds: [2, 201]),
@@ -437,7 +437,7 @@ void main() {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
-                  Post.empty(),
+                  DanbooruPost.empty(),
                 ]);
         when(() => mockAccountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
@@ -463,8 +463,8 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         initialData: [
-          PostData.empty(),
-          PostData.empty(),
+          DanbooruPostData.empty(),
+          DanbooruPostData.empty(),
         ],
       ),
       act: (bloc) =>
@@ -473,17 +473,17 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.loading,
           posts: [
-            PostData.empty(),
-            PostData.empty(),
+            DanbooruPostData.empty(),
+            DanbooruPostData.empty(),
           ],
         ),
         PostState.initial().copyWith(
           page: 2,
           status: LoadStatus.success,
           posts: [
-            PostData.empty(),
-            PostData.empty(),
-            PostData.empty(),
+            DanbooruPostData.empty(),
+            DanbooruPostData.empty(),
+            DanbooruPostData.empty(),
           ],
         ),
       ],
@@ -496,9 +496,12 @@ void main() {
       seed: () => PostState.initial().copyWith(
         page: 1,
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
         ],
       ),
       build: () => PostBloc(
@@ -511,8 +514,8 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: PostData.empty().copyWith(
-          post: Post.empty().copyWith(
+        post: DanbooruPostData.empty().copyWith(
+          post: DanbooruPost.empty().copyWith(
             id: 2,
             tags: ['foo'],
           ),
@@ -522,11 +525,13 @@ void main() {
         PostState.initial().copyWith(
           id: 123,
           posts: [
-            PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-            PostData.empty().copyWith(
-              post: Post.empty().copyWith(id: 2, tags: ['foo']),
+            DanbooruPostData.empty()
+                .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+            DanbooruPostData.empty().copyWith(
+              post: DanbooruPost.empty().copyWith(id: 2, tags: ['foo']),
             ),
-            PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+            DanbooruPostData.empty()
+                .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
           ],
         ),
       ],
@@ -537,9 +542,12 @@ void main() {
       seed: () => PostState.initial().copyWith(
         page: 1,
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
         ],
       ),
       build: () => PostBloc(
@@ -552,8 +560,8 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: PostData.empty().copyWith(
-          post: Post.empty().copyWith(
+        post: DanbooruPostData.empty().copyWith(
+          post: DanbooruPost.empty().copyWith(
             id: 4,
             tags: ['foo'],
           ),

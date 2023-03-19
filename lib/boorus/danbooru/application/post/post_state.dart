@@ -10,8 +10,8 @@ import 'package:boorusama/core/domain/error.dart';
 
 class PostState extends Equatable
     implements
-        InfiniteLoadState<PostData, PostState>,
-        PaginationLoadState<PostData, PostState> {
+        InfiniteLoadState<DanbooruPostData, PostState>,
+        PaginationLoadState<DanbooruPostData, PostState> {
   const PostState({
     required this.status,
     required this.posts,
@@ -37,11 +37,11 @@ class PostState extends Equatable
         pagination: pagination ?? false,
       );
 
-  final List<PostData> posts;
-  final List<PostData> filteredPosts;
+  final List<DanbooruPostData> posts;
+  final List<DanbooruPostData> filteredPosts;
   final LoadStatus status;
   @override
-  List<PostData> get data => posts;
+  List<DanbooruPostData> get data => posts;
   @override
   final int page;
   @override
@@ -61,8 +61,8 @@ class PostState extends Equatable
 
   PostState copyWith({
     LoadStatus? status,
-    List<PostData>? posts,
-    List<PostData>? filteredPosts,
+    List<DanbooruPostData>? posts,
+    List<DanbooruPostData>? filteredPosts,
     int? page,
     bool? hasMore,
     String? exceptionMessage,
@@ -100,7 +100,7 @@ class PostState extends Equatable
     required bool hasMore,
     required bool refreshing,
     required bool loading,
-    required List<PostData> data,
+    required List<DanbooruPostData> data,
   }) =>
       copyWith(
         page: page,
@@ -117,7 +117,7 @@ class PostState extends Equatable
   PostState copyPaginationState({
     required int page,
     required bool loading,
-    required List<PostData> data,
+    required List<DanbooruPostData> data,
   }) =>
       copyWith(
         page: page,

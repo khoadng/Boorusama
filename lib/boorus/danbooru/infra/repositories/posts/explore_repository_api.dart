@@ -16,14 +16,14 @@ class ExploreRepositoryApi implements ExploreRepository {
   });
 
   final AccountRepository accountRepository;
-  final PostRepository postRepository;
+  final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   final ImageSourceComposer<PostDto> urlComposer;
 
   static const int _limit = 60;
 
   @override
-  Future<List<Post>> getHotPosts(
+  Future<List<DanbooruPost>> getHotPosts(
     int page, {
     int? limit,
   }) =>
@@ -34,7 +34,7 @@ class ExploreRepositoryApi implements ExploreRepository {
       );
 
   @override
-  Future<List<Post>> getMostViewedPosts(
+  Future<List<DanbooruPost>> getMostViewedPosts(
     DateTime date,
   ) =>
       accountRepository
@@ -51,11 +51,11 @@ class ExploreRepositoryApi implements ExploreRepository {
           .catchError((e) {
         handleError(e);
 
-        return <Post>[];
+        return <DanbooruPost>[];
       });
 
   @override
-  Future<List<Post>> getPopularPosts(
+  Future<List<DanbooruPost>> getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale, {
@@ -78,6 +78,6 @@ class ExploreRepositoryApi implements ExploreRepository {
           .catchError((e) {
         handleError(e);
 
-        return <Post>[];
+        return <DanbooruPost>[];
       });
 }

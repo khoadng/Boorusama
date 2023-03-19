@@ -21,7 +21,7 @@ class PostStatsTile extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
   });
 
-  final Post post;
+  final DanbooruPost post;
   final EdgeInsets padding;
 
   @override
@@ -132,7 +132,7 @@ class _StatButton extends StatelessWidget {
   }
 }
 
-String _generatePercentText(Post post) {
+String _generatePercentText(DanbooruPost post) {
   return post.totalVote > 0
       ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
       : '';
@@ -145,7 +145,7 @@ class VoterDetailsView extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<VoterDetailsView> createState() => _VoterDetailsViewState();
@@ -258,7 +258,7 @@ class FavoriterDetailsView extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<FavoriterDetailsView> createState() => _FavoriterDetailsViewState();

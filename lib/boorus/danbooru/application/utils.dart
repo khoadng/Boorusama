@@ -1,10 +1,10 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-String generateFullReadableName(Post post) =>
+String generateFullReadableName(DanbooruPost post) =>
     '${generateCharacterOnlyReadableName(post)} (${generateCopyrightOnlyReadableName(post)}) drawn by ${post.artistTags.join(' ')}';
 
-String generateCopyrightOnlyReadableName(Post post) {
+String generateCopyrightOnlyReadableName(DanbooruPost post) {
   final copyrights = post.copyrightTags;
   final copyright = copyrights.isEmpty ? 'original' : copyrights.first;
 
@@ -15,7 +15,7 @@ String generateCopyrightOnlyReadableName(Post post) {
   return '$copyright$remainedCopyrightString';
 }
 
-String generateCharacterOnlyReadableName(Post post) {
+String generateCharacterOnlyReadableName(DanbooruPost post) {
   final charaters = post.characterTags;
   final cleanedCharacterList = [];
 

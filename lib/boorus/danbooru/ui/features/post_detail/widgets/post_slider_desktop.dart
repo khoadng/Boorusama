@@ -19,7 +19,7 @@ class PostSliderDesktop extends StatelessWidget {
     required this.controller,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final ValueNotifier<String?> imagePath;
   final CarouselController controller;
 

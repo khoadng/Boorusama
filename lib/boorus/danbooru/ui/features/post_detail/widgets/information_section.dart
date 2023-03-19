@@ -16,7 +16,7 @@ class InformationSection extends StatelessWidget {
     this.padding,
   });
 
-  final Post post;
+  final DanbooruPost post;
   final EdgeInsetsGeometry? padding;
 
   @override

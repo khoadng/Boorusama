@@ -26,10 +26,10 @@ class PostActionToolbar extends StatelessWidget {
     required this.imagePath,
   });
 
-  final PostData postData;
+  final DanbooruPostData postData;
   final String? imagePath;
 
-  Post get post => postData.post;
+  DanbooruPost get post => postData.post;
 
   @override
   Widget build(BuildContext context) {

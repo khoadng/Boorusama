@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'download_bloc.dart';
 
-class BulkPostDownloadBloc extends DownloadBloc<String, Post> {
+class BulkPostDownloadBloc extends DownloadBloc<String, DanbooruPost> {
   BulkPostDownloadBloc({
     required super.downloader,
-    required PostRepository postRepository,
+    required DanbooruPostRepository postRepository,
     required PostCountRepository postCountRepository,
     required String? Function(BooruError e) errorTranslator,
     super.onDownloadDone,

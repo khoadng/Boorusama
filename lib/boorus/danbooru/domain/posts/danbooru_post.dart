@@ -13,10 +13,10 @@ import 'package:boorusama/core/domain/tags/tags.dart';
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];
 
-class Post extends Equatable
+class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin
     implements base.Post {
-  const Post({
+  const DanbooruPost({
     required this.id,
     required String thumbnailImageUrl,
     required String sampleImageUrl,
@@ -53,7 +53,7 @@ class Post extends Equatable
         _sampleImageUrl = sampleImageUrl,
         _thumbnailImageUrl = thumbnailImageUrl;
 
-  factory Post.empty() => Post(
+  factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
         thumbnailImageUrl: '',
         sampleImageUrl: '',
@@ -142,7 +142,7 @@ class Post extends Equatable
   final int totalComments;
   final ArtistCommentary? artistCommentary;
 
-  Post copyWith({
+  DanbooruPost copyWith({
     int? id,
     List<String>? copyrightTags,
     List<String>? characterTags,
@@ -164,7 +164,7 @@ class Post extends Equatable
     String? source,
     int? parentId,
   }) =>
-      Post(
+      DanbooruPost(
         id: id ?? this.id,
         thumbnailImageUrl: _thumbnailImageUrl,
         sampleImageUrl: sampleImageUrl ?? _sampleImageUrl,
@@ -242,9 +242,9 @@ class Post extends Equatable
   List<Object?> get props => [id];
 }
 
-bool isPostValid(Post post) => post.id != 0 && post.viewable;
+bool isPostValid(DanbooruPost post) => post.id != 0 && post.viewable;
 
-extension PostX on Post {
+extension PostX on DanbooruPost {
   List<Tag> extractTags() {
     final tags = <Tag>[];
 
