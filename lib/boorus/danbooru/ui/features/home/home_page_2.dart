@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
@@ -43,12 +44,14 @@ class HomePage2 extends StatelessWidget {
               return const Center(
                 child: Text('Unknown booru'),
               );
+            case BooruType.aibooru:
             case BooruType.danbooru:
             case BooruType.safebooru:
             case BooruType.testbooru:
               return DanbooruProvider.create(
                 context,
                 booru: booru,
+                sourceComposer: DanbooruImageSourceComposer(booru),
                 builder: (context) => const CustomContextMenuOverlay(
                   child: DanbooruHomePage(),
                 ),

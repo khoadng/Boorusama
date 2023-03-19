@@ -93,17 +93,12 @@ class Post extends Equatable
   @override
   final int id;
   @override
-  String get thumbnailImageUrl =>
-      _thumbnailImageUrl.replaceAll('preview', '360x360');
+  String get thumbnailImageUrl => _thumbnailImageUrl;
   @override
   String get sampleImageUrl {
     if (isAnimated) return _sampleImageUrl;
 
-    return _thumbnailImageUrl.isNotEmpty
-        ? _thumbnailImageUrl
-            .replaceAll('preview', '720x720')
-            .replaceAll('.jpg', '.webp')
-        : _sampleImageUrl;
+    return _thumbnailImageUrl.isNotEmpty ? _thumbnailImageUrl : _sampleImageUrl;
   }
 
   @override

@@ -2,7 +2,9 @@
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
+import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'post_repository_api.dart';
 
 class ExploreRepositoryApi implements ExploreRepository {
@@ -10,11 +12,13 @@ class ExploreRepositoryApi implements ExploreRepository {
     required this.api,
     required this.accountRepository,
     required this.postRepository,
+    required this.urlComposer,
   });
 
   final AccountRepository accountRepository;
   final PostRepository postRepository;
   final DanbooruApi api;
+  final ImageSourceComposer<PostDto> urlComposer;
 
   static const int _limit = 60;
 
@@ -43,7 +47,7 @@ class ExploreRepositoryApi implements ExploreRepository {
               postParams,
             ),
           )
-          .then(parsePost)
+          .then((e) => parsePost(e, urlComposer))
           .catchError((e) {
         handleError(e);
 
@@ -70,7 +74,7 @@ class ExploreRepositoryApi implements ExploreRepository {
               limit ?? _limit,
             ),
           )
-          .then(parsePost)
+          .then((e) => parsePost(e, urlComposer))
           .catchError((e) {
         handleError(e);
 

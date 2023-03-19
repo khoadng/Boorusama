@@ -95,7 +95,29 @@ class ManageBooruUserBloc
       try {
         final booru = booruFactory.from(type: event.booru);
 
-        if (event.booru != BooruType.gelbooru) {
+        if (event.booru == BooruType.gelbooru ||
+            (event.login.isEmpty && event.apiKey.isEmpty)) {
+          final credential = UserBooruCredential.anonymous(
+            booru: event.booru,
+          );
+
+          final user = await userBooruRepository.add(credential);
+          final users = state.users ?? [];
+
+          if (user == null) {
+            event.onFailure
+                ?.call('Fail to add account. Account might be incorrect');
+
+            return;
+          }
+
+          emit(state.copyWith(
+            users: () => [
+              ...users,
+              user,
+            ],
+          ));
+        } else {
           final id = await booruUserIdentityProvider.getAccountId(
             login: event.login,
             apiKey: event.apiKey,
@@ -125,27 +147,6 @@ class ManageBooruUserBloc
           }
 
           final users = state.users ?? [];
-
-          emit(state.copyWith(
-            users: () => [
-              ...users,
-              user,
-            ],
-          ));
-        } else {
-          final credential = UserBooruCredential.anonymous(
-            booru: event.booru,
-          );
-
-          final user = await userBooruRepository.add(credential);
-          final users = state.users ?? [];
-
-          if (user == null) {
-            event.onFailure
-                ?.call('Fail to add account. Account might be incorrect');
-
-            return;
-          }
 
           emit(state.copyWith(
             users: () => [

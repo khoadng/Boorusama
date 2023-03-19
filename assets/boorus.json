@@ -14,5 +14,9 @@
     {
         "name" : "gelbooru",
         "url" : "https://gelbooru.com/"
+    },
+    {
+        "name" : "aibooru",
+        "url" : "https://aibooru.online/"
     }
 ]

@@ -98,14 +98,8 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepositoryDev(
-    account: Account.create(
-      'tokuji',
-      'ZmpanuR9qcvMZoQvP5MzNpz9',
-      523252,
-      BooruType.danbooru,
-    ),
+    account: Account.empty,
   );
 
   final booruUserBox = await Hive.openBox<String>('booru_users');

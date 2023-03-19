@@ -59,6 +59,6 @@ class TagRepositoryApi implements TagRepository {
 
 Tag tagDtoToTag(TagDto d) => Tag(
       name: d.name ?? '',
-      category: TagCategory.values[d.category ?? 0],
+      category: intToTagCategory(d.category ?? 0),
       postCount: d.postCount ?? 0,
     );

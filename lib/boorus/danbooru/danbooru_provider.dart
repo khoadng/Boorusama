@@ -42,12 +42,14 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/main.dart';
+import 'infra/dtos/post_dto.dart';
 
 class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
@@ -87,6 +89,7 @@ class DanbooruProvider extends StatelessWidget {
   factory DanbooruProvider.create(
     BuildContext context, {
     required Booru booru,
+    required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
     final dio = context.read<DioProvider>().getDio(booru.url);
@@ -111,12 +114,13 @@ class DanbooruProvider extends StatelessWidget {
       api: api,
     );
 
-    final postRepo = PostRepositoryApi(api, accountRepo);
+    final postRepo = PostRepositoryApi(api, accountRepo, sourceComposer);
 
     final exploreRepo = ExploreRepositoryApi(
       api: api,
       accountRepository: accountRepo,
       postRepository: postRepo,
+      urlComposer: sourceComposer,
     );
 
     final commentRepo = CommentRepositoryApi(api, accountRepo);

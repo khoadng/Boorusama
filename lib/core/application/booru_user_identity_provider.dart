@@ -30,6 +30,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.danbooru:
       case BooruType.safebooru:
       case BooruType.testbooru:
+      case BooruType.aibooru:
         final id = await api
             .getProfile(
               login,
