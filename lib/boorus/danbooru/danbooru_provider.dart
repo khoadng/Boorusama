@@ -377,9 +377,6 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepository: savedSearchRepo,
     );
 
-    final favoriteTagBloc =
-        FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
-
     PostBloc create() => PostBloc(
           postRepository: postRepo,
           blacklistedTagsRepository: blacklistedTagRepo,
@@ -444,7 +441,6 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: artistBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
-          BlocProvider.value(value: favoriteTagBloc),
           BlocProvider.value(value: exploreBloc),
           BlocProvider.value(value: currentUserBloc),
         ],

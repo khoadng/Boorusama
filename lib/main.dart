@@ -37,6 +37,7 @@ import 'package:boorusama/core/application/device_storage_permission/device_stor
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
@@ -208,6 +209,9 @@ void main() async {
     ),
   );
 
+  final favoriteTagBloc =
+      FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
+
   await ensureI18nInitialized();
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
@@ -275,6 +279,9 @@ void main() async {
               ),
               BlocProvider(
                 create: (_) => settingsCubit,
+              ),
+              BlocProvider.value(
+                value: favoriteTagBloc..add(const FavoriteTagFetched()),
               ),
               BlocProvider(
                 create: (context) =>

@@ -81,10 +81,8 @@ void goToGelbooruSearchPage(
                     searchHistoryRepository:
                         gcontext.read<SearchHistoryRepository>(),
                   )..add(const SearchHistoryFetched());
-                  final favoriteTagBloc = FavoriteTagBloc(
-                    favoriteTagRepository:
-                        gcontext.read<FavoriteTagRepository>(),
-                  );
+                  final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
+                    ..add(const FavoriteTagFetched());
 
                   return MultiBlocProvider(
                     providers: [
