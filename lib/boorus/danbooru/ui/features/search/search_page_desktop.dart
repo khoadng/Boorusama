@@ -14,15 +14,17 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
+import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
+import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 import 'selected_tag_list.dart';
 
@@ -359,16 +361,12 @@ class _LandingViewState extends State<_LandingView> {
               );
             },
           )
-        : LandingView(
-            onOptionTap: (value) {
-              context.read<SearchBloc>().add(
-                    SearchRawMetatagSelected(
-                      tag: value,
-                    ),
-                  );
-              widget.onFocusRequest?.call();
-              widget.onTextChanged.call('$value:');
-            },
+        : SearchLandingView(
+            trendingBuilder: (context) => TrendingSection(
+              onTagTap: (value) {
+                _onHistoryTap(context, value);
+              },
+            ),
             onHistoryTap: (value) {
               FocusManager.instance.primaryFocus?.unfocus();
               context.read<SearchBloc>().add(
@@ -381,6 +379,17 @@ class _LandingViewState extends State<_LandingView> {
             onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
             onHistoryCleared: () => _onHistoryCleared(context),
             onFullHistoryRequested: () => setState(() => inHistoryMode = true),
+            metatagsBuilder: (context) => DanbooruMetatagsSection(
+              onOptionTap: (value) {
+                context.read<SearchBloc>().add(
+                      SearchRawMetatagSelected(
+                        tag: value,
+                      ),
+                    );
+                widget.onFocusRequest?.call();
+                widget.onTextChanged.call('$value:');
+              },
+            ),
           );
   }
 

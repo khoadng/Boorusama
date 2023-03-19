@@ -11,15 +11,17 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
+import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
@@ -221,16 +223,12 @@ class _LandingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LandingView(
-      onOptionTap: (value) {
-        context.read<SearchBloc>().add(
-              SearchRawMetatagSelected(
-                tag: value,
-              ),
-            );
-        onFocusRequest?.call();
-        onTextChanged.call('$value:');
-      },
+    return SearchLandingView(
+      trendingBuilder: (context) => TrendingSection(
+        onTagTap: (value) {
+          _onTagTap(context, value);
+        },
+      ),
       onHistoryTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(
@@ -240,7 +238,6 @@ class _LandingView extends StatelessWidget {
             );
       },
       onTagTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
         _onTagTap(context, value);
       },
       onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
@@ -255,11 +252,25 @@ class _LandingView extends StatelessWidget {
           onTap: (value) => _onHistoryTap(context, value, searchBloc),
         );
       },
+      metatagsBuilder: (context) => DanbooruMetatagsSection(
+        onOptionTap: (value) {
+          context.read<SearchBloc>().add(
+                SearchRawMetatagSelected(
+                  tag: value,
+                ),
+              );
+          onFocusRequest?.call();
+          onTextChanged.call('$value:');
+        },
+      ),
     );
   }
 
-  void _onTagTap(BuildContext context, String value) =>
-      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  void _onTagTap(BuildContext context, String value) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  }
 
   void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
     Navigator.of(context).pop();

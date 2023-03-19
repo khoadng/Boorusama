@@ -10,10 +10,12 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/search_history/search_history.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
@@ -71,25 +73,28 @@ void goToGelbooruSearchPage(
                 booru: state.booru!,
                 builder: (gcontext) {
                   final tagInfo = gcontext.read<TagInfo>();
-                  // final autocompleteRepo =
-                  //     gcontext.read<AutocompleteRepository>();
-                  // final postRepo = gcontext.read<PostRepository>();
-                  // final blacklistRepo =
-                  //     gcontext.read<BlacklistedTagsRepository>();
-                  // final previewPreloader =
-                  //     gcontext.read<PostPreviewPreloader>();
-                  // final searchHistoryRepo =
-                  //     gcontext.read<SearchHistoryRepository>();
-                  // final favTagBloc = gcontext.read<FavoriteTagBloc>();
-                  // final themeBloc = gcontext.read<ThemeBloc>();
+                  final searchHistoryCubit = SearchHistoryBloc(
+                    searchHistoryRepository:
+                        gcontext.read<SearchHistoryRepository>(),
+                  )..add(const SearchHistoryFetched());
+                  final favoriteTagBloc = FavoriteTagBloc(
+                    favoriteTagRepository:
+                        gcontext.read<FavoriteTagRepository>(),
+                  );
 
-                  return GelbooruSearchPage(
-                    autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
-                    metatags: tagInfo.metatags,
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                    userMetatagRepository:
-                        gcontext.read<UserMetatagRepository>(),
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: searchHistoryCubit),
+                      BlocProvider.value(value: favoriteTagBloc),
+                    ],
+                    child: GelbooruSearchPage(
+                      autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
+                      metatags: tagInfo.metatags,
+                      metatagHighlightColor:
+                          Theme.of(context).colorScheme.primary,
+                      userMetatagRepository:
+                          gcontext.read<UserMetatagRepository>(),
+                    ),
                   );
                 },
               );

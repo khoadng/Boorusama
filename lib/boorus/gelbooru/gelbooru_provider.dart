@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
+import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/main.dart';
 import 'infra/gelbooru_post_repository_api.dart';
@@ -24,6 +25,8 @@ class GelbooruProvider extends StatelessWidget {
     required this.builder,
     required this.autocompleteRepository,
     required this.userMetatagRepository,
+    required this.searchHistoryRepository,
+    required this.favoriteTagRepository,
   });
 
   factory GelbooruProvider.create(
@@ -37,7 +40,10 @@ class GelbooruProvider extends StatelessWidget {
     final postRepo = GelbooruPostRepositoryApi(api: api);
     final tagRepo = GelbooruTagRepositoryApi(api);
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
+
     final userMetatagsRepo = context.read<UserMetatagRepository>();
+    final searchHistoryRepo = context.read<SearchHistoryRepository>();
+    final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,
@@ -45,6 +51,8 @@ class GelbooruProvider extends StatelessWidget {
       builder: builder,
       autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
+      searchHistoryRepository: searchHistoryRepo,
+      favoriteTagRepository: favoriteTagRepo,
     );
   }
 
@@ -58,6 +66,8 @@ class GelbooruProvider extends StatelessWidget {
     final tagRepo = context.read<TagRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
+    final searchHistoryRepo = context.read<SearchHistoryRepository>();
+    final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
     return GelbooruProvider(
       postRepository: postRepo,
@@ -65,6 +75,8 @@ class GelbooruProvider extends StatelessWidget {
       builder: builder,
       autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
+      searchHistoryRepository: searchHistoryRepo,
+      favoriteTagRepository: favoriteTagRepo,
     );
   }
 
@@ -72,6 +84,8 @@ class GelbooruProvider extends StatelessWidget {
   final TagRepository tagRepository;
   final AutocompleteRepository autocompleteRepository;
   final UserMetatagRepository userMetatagRepository;
+  final SearchHistoryRepository searchHistoryRepository;
+  final FavoriteTagRepository favoriteTagRepository;
   final Widget Function(BuildContext context) builder;
 
   @override
@@ -82,6 +96,8 @@ class GelbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: tagRepository),
         RepositoryProvider.value(value: autocompleteRepository),
         RepositoryProvider.value(value: userMetatagRepository),
+        RepositoryProvider.value(value: searchHistoryRepository),
+        RepositoryProvider.value(value: favoriteTagRepository),
       ],
       child: Builder(
         builder: builder,
