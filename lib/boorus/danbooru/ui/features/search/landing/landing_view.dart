@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/core/application/search_history/search_history.dart';
+import 'package:boorusama/core/ui/search/search_history_section.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,7 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
-import 'search_history/search_history_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'trending/trending_section.dart';
 
 class LandingView extends StatefulWidget {
@@ -91,12 +93,18 @@ class _LandingViewState extends State<LandingView>
                 ),
               ),
               TrendingSection(onTagTap: widget.onTagTap),
-              SearchHistorySection(
-                onHistoryTap: (history) => widget.onHistoryTap.call(history),
-                onHistoryRemoved: (history) =>
-                    widget.onHistoryRemoved.call(history),
-                onHistoryCleared: () => widget.onHistoryCleared.call(),
-                onFullHistoryRequested: widget.onFullHistoryRequested,
+              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+                builder: (context, state) {
+                  return SearchHistorySection(
+                    histories: state.histories,
+                    onHistoryTap: (history) =>
+                        widget.onHistoryTap.call(history),
+                    onHistoryRemoved: (history) =>
+                        widget.onHistoryRemoved.call(history),
+                    onHistoryCleared: () => widget.onHistoryCleared.call(),
+                    onFullHistoryRequested: widget.onFullHistoryRequested,
+                  );
+                },
               ),
             ],
           ),

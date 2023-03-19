@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/searches/searches.dart';
-
-import 'package:boorusama/core/application/search_history/search_history.dart'
-    show SearchHistoryBloc;
 
 class HistoryList extends StatelessWidget {
   const HistoryList({
@@ -18,18 +14,17 @@ class HistoryList extends StatelessWidget {
     required this.onHistoryTap,
     required this.onHistoryCleared,
     required this.onFullHistoryRequested,
+    required this.histories,
   });
 
   final void Function(SearchHistory item) onHistoryRemoved;
   final void Function() onHistoryCleared;
   final void Function() onFullHistoryRequested;
   final ValueChanged<String> onHistoryTap;
+  final List<SearchHistory> histories;
 
   @override
   Widget build(BuildContext context) {
-    final histories =
-        context.select((SearchHistoryBloc bloc) => bloc.state.histories);
-
     if (histories.isEmpty) return const SizedBox.shrink();
 
     return Column(
