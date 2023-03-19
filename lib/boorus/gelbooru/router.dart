@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_search_page.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -56,4 +58,42 @@ void goToGelbooruPostDetailsPage({
 void goToGelbooruSearchPage(
   BuildContext context, {
   String? tag,
-}) {}
+}) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) {
+      return BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (_, sstate) {
+          return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+            builder: (_, state) {
+              return GelbooruProvider.of(
+                context,
+                booru: state.booru!,
+                builder: (gcontext) {
+                  final tagInfo = gcontext.read<TagInfo>();
+                  // final autocompleteRepo =
+                  //     gcontext.read<AutocompleteRepository>();
+                  // final postRepo = gcontext.read<PostRepository>();
+                  // final blacklistRepo =
+                  //     gcontext.read<BlacklistedTagsRepository>();
+                  // final previewPreloader =
+                  //     gcontext.read<PostPreviewPreloader>();
+                  // final searchHistoryRepo =
+                  //     gcontext.read<SearchHistoryRepository>();
+                  // final favTagBloc = gcontext.read<FavoriteTagBloc>();
+                  // final themeBloc = gcontext.read<ThemeBloc>();
+
+                  return GelbooruSearchPage(
+                    autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
+                    metatags: tagInfo.metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  );
+                },
+              );
+            },
+          );
+        },
+      );
+    },
+  ));
+}
