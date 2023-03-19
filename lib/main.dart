@@ -43,6 +43,7 @@ import 'package:boorusama/core/domain/settings/settings_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/boorus/user_booru_repository_hive.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
@@ -193,6 +194,11 @@ void main() async {
     settings: settings,
   );
 
+  final currentBooruRepo = CurrentBooruRepositorySettings(
+    settingRepository,
+    booruFactory,
+  );
+
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
 
   final booruUserIdProvider = BooruUserIdentityProviderImpl(
@@ -254,6 +260,9 @@ void main() async {
             ),
             RepositoryProvider<BooruUserIdentityProvider>.value(
               value: booruUserIdProvider,
+            ),
+            RepositoryProvider<CurrentBooruRepository>.value(
+              value: currentBooruRepo,
             ),
           ],
           child: MultiBlocProvider(
