@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';

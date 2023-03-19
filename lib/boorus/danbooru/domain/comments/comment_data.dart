@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/application/application.dart';
 
 enum CommentVoteState {

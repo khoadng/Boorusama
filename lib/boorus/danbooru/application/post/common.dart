@@ -2,7 +2,7 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
 
 List<DanbooruPostData> filter(

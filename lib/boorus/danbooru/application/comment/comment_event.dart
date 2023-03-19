@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 
 abstract class CommentEvent extends Equatable {
   const CommentEvent();

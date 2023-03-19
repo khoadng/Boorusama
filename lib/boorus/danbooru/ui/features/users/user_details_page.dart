@@ -8,7 +8,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';

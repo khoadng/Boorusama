@@ -11,7 +11,7 @@ import 'package:tuple/tuple.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/search/tag_search_bloc.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';

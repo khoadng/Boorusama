@@ -10,7 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
 
@@ -261,7 +261,8 @@ InputDecoration _getDecoration({
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
       ),
       contentPadding: const EdgeInsets.all(12),
     );

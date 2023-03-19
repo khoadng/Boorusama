@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'download_bloc.dart';
 

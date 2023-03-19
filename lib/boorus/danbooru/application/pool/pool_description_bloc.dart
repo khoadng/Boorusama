@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart' show parse;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/application/common.dart';
 
 @immutable

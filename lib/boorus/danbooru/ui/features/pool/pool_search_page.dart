@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';

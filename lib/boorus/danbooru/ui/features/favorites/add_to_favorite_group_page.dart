@@ -11,7 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post.dart';

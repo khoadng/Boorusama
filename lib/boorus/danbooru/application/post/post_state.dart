@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/application/common.dart';

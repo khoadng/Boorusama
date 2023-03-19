@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/dtext_parser.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/youtube_preview_box.dart';

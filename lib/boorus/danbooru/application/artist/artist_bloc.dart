@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/core/application/common.dart';
 
 class ArtistState extends Equatable {

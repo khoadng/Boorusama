@@ -11,8 +11,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';

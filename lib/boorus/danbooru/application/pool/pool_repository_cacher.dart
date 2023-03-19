@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class PoolDescriptionCacher implements PoolDescriptionRepository {

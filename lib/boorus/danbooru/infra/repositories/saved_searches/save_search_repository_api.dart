@@ -4,7 +4,7 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/infra.dart';
 

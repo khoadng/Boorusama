@@ -4,8 +4,8 @@ import 'package:mocktail/mocktail.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 

@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'download_bloc.dart';
 import 'download_options.dart';
 import 'download_state.dart';

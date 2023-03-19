@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
 class EditFavoriteGroupDialog extends StatefulWidget {
   const EditFavoriteGroupDialog({

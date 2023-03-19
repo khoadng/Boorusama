@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import '../../../../core/application/common.dart';
 
 class TrendingTagState extends Equatable {

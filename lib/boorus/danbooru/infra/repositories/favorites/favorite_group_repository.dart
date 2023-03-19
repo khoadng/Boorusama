@@ -5,7 +5,7 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 const favoriteGroupApiParams =

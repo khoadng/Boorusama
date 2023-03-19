@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';

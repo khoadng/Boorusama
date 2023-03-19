@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/users.dart';
 
 class CommentHeader extends StatelessWidget {

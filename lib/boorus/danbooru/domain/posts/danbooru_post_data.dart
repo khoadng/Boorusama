@@ -7,10 +7,10 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 

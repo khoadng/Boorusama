@@ -6,7 +6,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/utils.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/core.dart';
 
 class InformationSection extends StatelessWidget {

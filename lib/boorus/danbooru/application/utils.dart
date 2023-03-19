@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 String generateFullReadableName(DanbooruPost post) =>
     '${generateCharacterOnlyReadableName(post)} (${generateCopyrightOnlyReadableName(post)}) drawn by ${post.artistTags.join(' ')}';

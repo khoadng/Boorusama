@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class ViewMoreTagButton extends StatelessWidget {
