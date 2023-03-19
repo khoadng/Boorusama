@@ -21,6 +21,7 @@ class SearchLandingView extends StatefulWidget {
     required this.onFullHistoryRequested,
     required this.metatagsBuilder,
     this.trendingBuilder,
+    required this.onAddTagRequest,
   });
 
   final ValueChanged<String> onHistoryTap;
@@ -30,6 +31,7 @@ class SearchLandingView extends StatefulWidget {
   final ValueChanged<String> onTagTap;
   final Widget Function(BuildContext context) metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
+  final VoidCallback onAddTagRequest;
 
   @override
   State<SearchLandingView> createState() => _SearchLandingViewState();
@@ -78,6 +80,7 @@ class _SearchLandingViewState extends State<SearchLandingView>
               ),
               const Divider(thickness: 1),
               FavoriteTagsSection(
+                onAddTagRequest: () => widget.onAddTagRequest(),
                 onTagTap: widget.onTagTap,
               ),
               if (widget.trendingBuilder != null) ...[

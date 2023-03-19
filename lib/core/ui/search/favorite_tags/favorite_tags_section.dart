@@ -20,9 +20,11 @@ class FavoriteTagsSection extends StatelessWidget {
   const FavoriteTagsSection({
     super.key,
     required this.onTagTap,
+    required this.onAddTagRequest,
   });
 
   final ValueChanged<String>? onTagTap;
+  final VoidCallback onAddTagRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,7 @@ class FavoriteTagsSection extends StatelessWidget {
                 : null,
           )),
       if (tags.isEmpty) ...[
-        const AddTagButton(),
+        AddTagButton(onPressed: onAddTagRequest),
         Padding(
           padding: const EdgeInsets.only(top: 12, right: 8),
           child: Text(
@@ -102,7 +104,10 @@ class FavoriteTagsSection extends StatelessWidget {
         ),
         const ImportTagButton(),
       ],
-      if (editMode && tags.isNotEmpty) const AddTagButton(),
+      if (editMode && tags.isNotEmpty)
+        AddTagButton(
+          onPressed: onAddTagRequest,
+        ),
     ];
   }
 }

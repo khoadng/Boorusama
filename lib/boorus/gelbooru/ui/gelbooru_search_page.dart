@@ -69,6 +69,7 @@ class _SearchPageState extends State<GelbooruSearchPage> {
         child: Column(
           children: [
             SearchLandingView(
+              onAddTagRequest: () => print('object'),
               onHistoryTap: (value) => queryEditingController.text = value,
               onTagTap: (value) => queryEditingController.text = value,
               onHistoryRemoved: (value) => context

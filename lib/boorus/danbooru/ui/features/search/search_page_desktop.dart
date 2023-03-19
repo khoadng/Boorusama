@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
@@ -362,6 +363,17 @@ class _LandingViewState extends State<_LandingView> {
             },
           )
         : SearchLandingView(
+            onAddTagRequest: () {
+              final bloc = context.read<FavoriteTagBloc>();
+              goToQuickSearchPage(
+                context,
+                onSubmitted: (context, text) {
+                  Navigator.of(context).pop();
+                  bloc.add(FavoriteTagAdded(tag: text));
+                },
+                onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
+              );
+            },
             trendingBuilder: (context) => TrendingSection(
               onTagTap: (value) {
                 _onHistoryTap(context, value);
