@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 

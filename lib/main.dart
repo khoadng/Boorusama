@@ -20,8 +20,6 @@ import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository_hive.dart';
@@ -39,6 +37,7 @@ import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';

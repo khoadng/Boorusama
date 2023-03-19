@@ -2,9 +2,9 @@
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/core/boorus.dart';
 
 class MockAccountRepo extends Mock implements AccountRepository {}
 

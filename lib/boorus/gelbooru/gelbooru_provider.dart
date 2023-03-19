@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_repository.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';

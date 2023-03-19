@@ -16,7 +16,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -77,6 +76,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;

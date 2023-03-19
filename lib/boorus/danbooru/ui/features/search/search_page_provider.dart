@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
@@ -23,6 +22,7 @@ import 'package:boorusama/core/application/search_history/search_history.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';

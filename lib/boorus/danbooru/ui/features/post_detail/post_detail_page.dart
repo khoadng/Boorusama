@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';

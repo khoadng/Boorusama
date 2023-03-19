@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_cacher.dart';
@@ -41,6 +40,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';

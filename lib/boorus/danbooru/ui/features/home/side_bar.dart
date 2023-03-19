@@ -7,12 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/user_booru_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 

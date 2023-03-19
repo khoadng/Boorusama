@@ -4,12 +4,12 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 

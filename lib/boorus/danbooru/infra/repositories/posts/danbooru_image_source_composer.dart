@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 
 class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
