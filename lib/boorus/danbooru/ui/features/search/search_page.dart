@@ -12,7 +12,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
@@ -506,6 +508,7 @@ class _TagSuggestionItems extends StatelessWidget {
         context.select((SearchBloc bloc) => bloc.state.currentQuery);
     final histories = context
         .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
 
     return SliverTagSuggestionItemsWithHistory(
       tags: suggestionTags,
@@ -526,6 +529,7 @@ class _TagSuggestionItems extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
+      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
     );
   }
 }
