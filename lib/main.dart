@@ -19,7 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -201,11 +200,7 @@ void main() async {
 
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
 
-  final booruUserIdProvider = BooruUserIdentityProviderImpl(
-    DanbooruApi(
-      dioProvider.getDio(booruFactory.from(type: BooruType.danbooru).url),
-    ),
-  );
+  final booruUserIdProvider = BooruUserIdentityProviderImpl(dioProvider);
 
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);

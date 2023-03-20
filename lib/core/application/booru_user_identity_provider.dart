@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/main.dart';
 
 abstract class BooruUserIdentityProvider {
   Future<int> getAccountId({
@@ -11,11 +12,9 @@ abstract class BooruUserIdentityProvider {
 }
 
 class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
-  BooruUserIdentityProviderImpl(
-    this.api,
-  );
+  BooruUserIdentityProviderImpl(this.dioProvider);
 
-  final DanbooruApi api;
+  final DioProvider dioProvider;
 
   @override
   Future<int> getAccountId({
@@ -31,14 +30,16 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.safebooru:
       case BooruType.testbooru:
       case BooruType.aibooru:
-        final id = await api
+        final id = await DanbooruApi(dioProvider.getDio(booru.url))
             .getProfile(
-              login,
-              apiKey,
-            )
-            .then((value) => value.data)
-            .then((value) => value['id'])
-            .catchError((_) => null);
+          login,
+          apiKey,
+        )
+            .then((value) {
+          return value.data;
+        }).then((value) {
+          return value['id'];
+        }).catchError((_) => null);
 
         if (id == null) throw Exception('Profile is null');
 

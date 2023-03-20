@@ -3,10 +3,10 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 enum CommentVoteState {
   unvote,
@@ -92,24 +92,24 @@ List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
     (comments) => comments..sort((a, b) => a.id.compareTo(b.id));
 
 CommentData Function(Comment comment) createCommentData({
-  required Account account,
+  required UserBooru? userBooru,
   required List<CommentVote> votes,
 }) =>
-    (comment) => commentDataFrom(comment, comment.creator, account, votes);
+    (comment) => commentDataFrom(comment, comment.creator, userBooru, votes);
 
 Future<List<CommentData>> Function(List<Comment> comments)
     createCommentDataWith(
-  AccountRepository accountRepository,
+  CurrentUserBooruRepository currentUserBooruRepository,
   CommentVoteRepository commentVoteRepository,
 ) =>
         (comments) async {
           final votes = await commentVoteRepository
               .getCommentVotes(comments.map((e) => e.id).toList());
-          final account = await accountRepository.get();
+          final userBooru = await currentUserBooruRepository.get();
 
           return comments
               .map(createCommentData(
-                account: account,
+                userBooru: userBooru,
                 votes: votes,
               ))
               .toList();
@@ -118,7 +118,7 @@ Future<List<CommentData>> Function(List<Comment> comments)
 CommentData commentDataFrom(
   Comment comment,
   User? user,
-  Account account,
+  UserBooru? userBooru,
   List<CommentVote> votes,
 ) =>
     CommentData(
@@ -130,7 +130,7 @@ CommentData commentDataFrom(
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
       score: comment.score,
-      isSelf: comment.creator?.id == account.id,
+      isSelf: comment.creator?.id == userBooru?.booruUserId,
       recentlyUpdated: comment.createdAt != comment.updatedAt,
       voteState: _getVoteState(comment, votes),
       voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,

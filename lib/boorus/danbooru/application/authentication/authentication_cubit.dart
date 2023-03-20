@@ -3,24 +3,24 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 part 'authentication_state.dart';
 
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   AuthenticationCubit({
-    required this.accountRepository,
+    required this.currentUserBooruRepository,
     required this.profileRepository,
   }) : super(Unauthenticated());
 
-  final AccountRepository accountRepository;
+  final CurrentUserBooruRepository currentUserBooruRepository;
   final ProfileRepository profileRepository;
 
   Future<void> logIn([String username = '', String password = '']) async {
-    final account = await accountRepository.get();
-    if (account != Account.empty) {
-      emit(Authenticated(account: account));
+    final userBooru = await currentUserBooruRepository.get();
+    if (userBooru.hasLoginDetails()) {
+      emit(Authenticated(userBooru: userBooru!));
     } else {
       emit(Unauthenticated());
     }

@@ -342,7 +342,7 @@ class DanbooruProvider extends StatelessWidget {
     final commentBloc = CommentBloc(
       commentVoteRepository: commentVoteRepo,
       commentRepository: commentRepo,
-      accountRepository: accountRepo,
+      currentUserBooruRepository: currentUserBooruRepository,
     );
     final artistCommentaryBloc = ArtistCommentaryBloc(
       artistCommentaryRepository: artistCommentaryRepo,
@@ -350,7 +350,7 @@ class DanbooruProvider extends StatelessWidget {
     final accountCubit = AccountCubit(accountRepository: accountRepo)
       ..getCurrentAccount();
     final authenticationCubit = AuthenticationCubit(
-      accountRepository: accountRepo,
+      currentUserBooruRepository: currentUserBooruRepository,
       profileRepository: profileRepo,
     )..logIn();
     final blacklistedTagsBloc = BlacklistedTagsBloc(

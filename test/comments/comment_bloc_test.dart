@@ -5,18 +5,19 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class MockCommentRepository extends Mock implements CommentRepository {}
 
 class MockCommentVoteRepository extends Mock implements CommentVoteRepository {}
 
-class MockAccountRepository extends Mock implements AccountRepository {}
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentUserBooruRepository {}
 
 void main() {
-  final accountRepo = MockAccountRepository();
+  final currentUserBooruRepository = MockCurrentUserBooruRepository();
   final commentRepo = MockCommentRepository();
   final commentVoteRepo = MockCommentVoteRepository();
 
@@ -24,8 +25,8 @@ void main() {
     blocTest<CommentBloc, CommentState>(
       'fetchet 2 comments',
       setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => currentUserBooruRepository.get())
+            .thenAnswer((invocation) async => UserBooru.empty);
         when(() => commentRepo.getCommentsFromPostId(any()))
             .thenAnswer((invocation) async => [
                   Comment.emty(),
@@ -35,12 +36,12 @@ void main() {
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(accountRepo);
+        reset(currentUserBooruRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -50,8 +51,8 @@ void main() {
         CommentState.initial().copyWith(
           status: LoadStatus.success,
           comments: [
-            commentDataFrom(Comment.emty(), null, Account.empty, []),
-            commentDataFrom(Comment.emty(), null, Account.empty, []),
+            commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
+            commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
           ],
         ),
       ],
@@ -66,18 +67,18 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'a'),
                 ]);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => currentUserBooruRepository.get())
+            .thenAnswer((invocation) async => UserBooru.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(accountRepo);
+        reset(currentUserBooruRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -90,7 +91,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'a'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [],
             ),
           ],
@@ -103,7 +104,7 @@ void main() {
       final event = CommentSent(
         postId: 1,
         content: content,
-        replyTo: commentDataFrom(Comment.emty(), null, Account.empty, []),
+        replyTo: commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
       );
 
       expect(
@@ -121,13 +122,13 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'bar'),
                 ]);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => currentUserBooruRepository.get())
+            .thenAnswer((invocation) async => UserBooru.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(accountRepo);
+        reset(currentUserBooruRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
@@ -135,12 +136,12 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo'),
           null,
-          Account.empty,
+          UserBooru.empty,
           [],
         ),
       ]),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -153,7 +154,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'bar'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [],
             ),
           ],
@@ -170,13 +171,13 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'foo2'),
                 ]);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => currentUserBooruRepository.get())
+            .thenAnswer((invocation) async => UserBooru.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(accountRepo);
+        reset(currentUserBooruRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
@@ -184,18 +185,18 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo1'),
           null,
-          Account.empty,
+          UserBooru.empty,
           [],
         ),
         commentDataFrom(
           Comment.emty().copyWith(id: 2, body: 'foo2'),
           null,
-          Account.empty,
+          UserBooru.empty,
           [],
         ),
       ]),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -207,7 +208,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'foo2'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [],
             ),
           ],
@@ -232,7 +233,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            Account.empty,
+            UserBooru.empty,
             [
               CommentVote.empty().copyWith(id: 1, score: 1),
             ],
@@ -240,7 +241,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -252,7 +253,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 2, body: 'foo1'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [
                 CommentVote.empty().copyWith(id: 1, commentId: 1, score: 1),
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
@@ -280,13 +281,13 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
             null,
-            Account.empty,
+            UserBooru.empty,
             [],
           ),
         ],
       ),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -298,7 +299,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
               ],
@@ -323,7 +324,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            Account.empty,
+            UserBooru.empty,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
             ],
@@ -331,7 +332,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -347,7 +348,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [],
             ),
           ],
@@ -370,7 +371,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
             null,
-            Account.empty,
+            UserBooru.empty,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
             ],
@@ -378,7 +379,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -394,7 +395,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              Account.empty,
+              UserBooru.empty,
               [],
             ),
           ],

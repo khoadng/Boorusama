@@ -20,6 +20,14 @@ class UserBooru extends Equatable {
     );
   }
 
+  static const UserBooru empty = UserBooru(
+    id: -1,
+    booruId: -1,
+    apiKey: '',
+    login: '',
+    booruUserId: -1,
+  );
+
   final int id;
   final int booruId;
   final String apiKey;
