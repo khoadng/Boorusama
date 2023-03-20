@@ -8,6 +8,9 @@ import 'package:boorusama/core/domain/boorus.dart';
 
 class MockAccountRepo extends Mock implements AccountRepository {}
 
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentUserBooruRepository {}
+
 AccountRepository mockAccountRepo({
   Account? account,
 }) {
@@ -17,9 +20,36 @@ AccountRepository mockAccountRepo({
   return repo;
 }
 
+CurrentUserBooruRepository mockUserBooruRepo({
+  UserBooru? userBooru,
+}) {
+  final repo = MockCurrentUserBooruRepository();
+  when(() => repo.get()).thenAnswer((_) async =>
+      userBooru ??
+      const UserBooru(
+        id: 0,
+        booruId: 0,
+        apiKey: '',
+        login: '',
+        booruUserId: 0,
+      ));
+
+  return repo;
+}
+
 AccountRepository emptyAccountRepo() => mockAccountRepo();
 AccountRepository fakeAccountRepo() => mockAccountRepo(
       account: Account.create('foo', 'bar', 0, BooruType.unknown),
+    );
+
+CurrentUserBooruRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
+      userBooru: const UserBooru(
+        id: 1,
+        booruId: 1,
+        apiKey: 'apiKey',
+        login: 'login',
+        booruUserId: 1,
+      ),
     );
 
 class MockUserRepo extends Mock implements UserRepository {}

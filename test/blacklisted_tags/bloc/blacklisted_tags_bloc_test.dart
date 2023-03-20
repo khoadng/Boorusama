@@ -34,7 +34,7 @@ void main() {
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
     'when blacklisted tags requested, emit current blacklisted tags',
     build: () => BlacklistedTagsBloc(
-      accountRepository: fakeAccountRepo(),
+      currentUserBooruRepository: fakeCurrentUserBooruRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
     act: (bloc) => bloc.add(const BlacklistedTagRequested()),
@@ -52,7 +52,7 @@ void main() {
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
     'when add a tag to blacklist, emit current blacklisted tags with that tag',
     build: () => BlacklistedTagsBloc(
-      accountRepository: fakeAccountRepo(),
+      currentUserBooruRepository: fakeCurrentUserBooruRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
     seed: () =>
@@ -67,7 +67,7 @@ void main() {
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
     'when replace a tag to blacklist with a new tag, emit current blacklisted tags with that tag',
     build: () => BlacklistedTagsBloc(
-      accountRepository: fakeAccountRepo(),
+      currentUserBooruRepository: fakeCurrentUserBooruRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
     seed: () =>
@@ -87,7 +87,7 @@ void main() {
   blocTest<BlacklistedTagsBloc, BlacklistedTagsState>(
     'when remove a tag from blacklist, emit current blacklisted tags without that tag',
     build: () => BlacklistedTagsBloc(
-      accountRepository: fakeAccountRepo(),
+      currentUserBooruRepository: fakeCurrentUserBooruRepo(),
       blacklistedTagsRepository: createBlacklistedTagRepo(),
     ),
     seed: () => BlacklistedTagsState.initial()

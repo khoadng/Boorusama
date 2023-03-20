@@ -84,6 +84,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.booru,
     required this.tagInfo,
     required this.trendingTagCubit,
+    required this.currentUserBooruRepository,
   });
 
   factory DanbooruProvider.create(
@@ -99,6 +100,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
+    final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
 
     final popularSearchRepo = PopularSearchRepositoryApi(
       accountRepository: accountRepo,
@@ -127,7 +129,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final userRepo = UserRepositoryApi(
       api,
-      accountRepo,
+      currentUserBooruRepo,
       tagInfo.defaultBlacklistedTags,
     );
 
@@ -219,6 +221,7 @@ class DanbooruProvider extends StatelessWidget {
       commentVoteRepo: commentVoteRepo,
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
+      currentUserBooruRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
@@ -256,6 +259,8 @@ class DanbooruProvider extends StatelessWidget {
     final favoriteGroupRepo = context.read<FavoriteGroupRepository>();
     final accountRepo = context.read<AccountRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
+
     final tagInfo = context.read<TagInfo>();
 
     final trendingTagCubit = context.read<TrendingTagCubit>();
@@ -288,6 +293,7 @@ class DanbooruProvider extends StatelessWidget {
       commentVoteRepo: commentVoteRepo,
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
+      currentUserBooruRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
@@ -322,6 +328,7 @@ class DanbooruProvider extends StatelessWidget {
   final CommentRepository commentRepo;
   final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
+  final CurrentUserBooruRepository currentUserBooruRepository;
 
   final TrendingTagCubit trendingTagCubit;
 
@@ -347,7 +354,7 @@ class DanbooruProvider extends StatelessWidget {
       profileRepository: profileRepo,
     )..logIn();
     final blacklistedTagsBloc = BlacklistedTagsBloc(
-      accountRepository: accountRepo,
+      currentUserBooruRepository: currentUserBooruRepository,
       blacklistedTagsRepository: blacklistedTagRepo,
     )..add(const BlacklistedTagRequested());
     final poolOverviewBloc = PoolOverviewBloc()
@@ -380,9 +387,6 @@ class DanbooruProvider extends StatelessWidget {
     final savedSearchBloc = SavedSearchBloc(
       savedSearchRepository: savedSearchRepo,
     );
-
-    final currentUserBooruRepository =
-        context.read<CurrentUserBooruRepository>();
 
     PostBloc create() => PostBloc(
           postRepository: postRepo,
