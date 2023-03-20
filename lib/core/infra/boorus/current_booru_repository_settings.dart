@@ -17,9 +17,9 @@ class CurrentBooruRepositorySettings implements CurrentUserBooruRepository {
   @override
   Future<UserBooru?> get() async {
     final settings = await settingsRepository.load();
-    final currentBooru = settings.currentBooru;
     final userBoorus = await userBooruRepository.getAll();
 
-    return userBoorus.firstWhereOrNull((e) => e.booruId == currentBooru.index);
+    return userBoorus
+        .firstWhereOrNull((e) => e.id == settings.currentUserBooruId);
   }
 }

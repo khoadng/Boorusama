@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 
 enum DataCollectingStatus {
   allow,
@@ -51,7 +50,7 @@ class Settings extends Equatable {
     required this.contentOrganizationCategory,
     required this.autoFocusSearchBar,
     required this.postsPerPage,
-    required this.currentBooru,
+    required this.currentUserBooruId,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -93,9 +92,7 @@ class Settings extends Equatable {
                 : ContentOrganizationCategory.infiniteScroll,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
-        currentBooru = json['currentBooru'] != null
-            ? BooruType.values[json['currentBooru']]
-            : BooruType.unknown,
+        currentUserBooruId = json['currentUserBooruId'],
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -118,7 +115,7 @@ class Settings extends Equatable {
     contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
     autoFocusSearchBar: true,
     postsPerPage: 60,
-    currentBooru: BooruType.unknown,
+    currentUserBooruId: -1,
   );
 
   final String blacklistedTags;
@@ -150,7 +147,7 @@ class Settings extends Equatable {
 
   final int postsPerPage;
 
-  final BooruType currentBooru;
+  final int currentUserBooruId;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -171,7 +168,7 @@ class Settings extends Equatable {
     ContentOrganizationCategory? contentOrganizationCategory,
     bool? autoFocusSearchBar,
     int? postsPerPage,
-    BooruType? currentBooru,
+    int? currentUserBooruId,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -195,7 +192,7 @@ class Settings extends Equatable {
             contentOrganizationCategory ?? this.contentOrganizationCategory,
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
-        currentBooru: currentBooru ?? this.currentBooru,
+        currentUserBooruId: currentUserBooruId ?? this.currentUserBooruId,
       );
 
   Map<String, dynamic> toJson() => {
@@ -217,7 +214,7 @@ class Settings extends Equatable {
         'contentOrganizationCategory': contentOrganizationCategory.index,
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
-        'currentBooru': currentBooru.index,
+        'currentUserBooruId': currentUserBooruId,
       };
 
   @override
@@ -240,6 +237,10 @@ class Settings extends Equatable {
         contentOrganizationCategory,
         autoFocusSearchBar,
         postsPerPage,
-        currentBooru,
+        currentUserBooruId,
       ];
+}
+
+extension SettingsX on Settings {
+  bool get hasSelectedBooru => currentUserBooruId != -1;
 }

@@ -47,15 +47,15 @@ class CurrentBooruFetched extends CurrentBooruEvent {
 
 class CurrentBooruChanged extends CurrentBooruEvent {
   const CurrentBooruChanged({
-    required this.booru,
+    required this.userBooru,
     required this.settings,
   });
 
-  final BooruType booru;
+  final UserBooru userBooru;
   final Settings settings;
 
   @override
-  List<Object?> get props => [booru, settings];
+  List<Object?> get props => [userBooru, settings];
 }
 
 class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
@@ -65,11 +65,14 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     required UserBooruRepository userBooruRepository,
   }) : super(CurrentBooruState.initial()) {
     on<CurrentBooruFetched>((event, emit) async {
-      if (event.settings.currentBooru != BooruType.unknown) {
-        final booru = booruFactory.from(type: event.settings.currentBooru);
+      if (event.settings.hasSelectedBooru) {
         final users = await userBooruRepository.getAll();
-        final userBooru =
-            users.firstWhereOrNull((x) => x.booruId == booru.booruType.index);
+        final userBooru = users
+            .firstWhereOrNull((x) => x.id == event.settings.currentUserBooruId);
+
+        final booru = userBooru != null
+            ? booruFactory.from(type: intToBooruType(userBooru.booruId))
+            : null;
 
         emit(state.copyWith(
           booru: () => booru,
@@ -79,19 +82,16 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     });
 
     on<CurrentBooruChanged>((event, emit) async {
-      final booru = booruFactory.from(type: event.booru);
-      final users = await userBooruRepository.getAll();
-
-      final userBooru =
-          users.firstWhereOrNull((x) => x.booruId == booru.booruType.index);
-
       await settingsCubit.update(event.settings.copyWith(
-        currentBooru: booru.booruType,
+        currentUserBooruId: event.userBooru.id,
       ));
+
+      final booru =
+          booruFactory.from(type: intToBooruType(event.userBooru.booruId));
 
       emit(state.copyWith(
         booru: () => booru,
-        userBooru: () => userBooru,
+        userBooru: () => event.userBooru,
       ));
     });
   }

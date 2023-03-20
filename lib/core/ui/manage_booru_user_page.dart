@@ -66,7 +66,7 @@ class ManageBooruUserPage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                     context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
-                          booru: BooruType.values[user.booruId],
+                          userBooru: user,
                           settings: settings,
                         ));
                   },

@@ -66,6 +66,23 @@ Booru booruDataToBooru(BooruData d) {
   );
 }
 
+BooruType intToBooruType(int value) {
+  switch (value) {
+    case 1:
+      return BooruType.danbooru;
+    case 2:
+      return BooruType.safebooru;
+    case 3:
+      return BooruType.testbooru;
+    case 4:
+      return BooruType.gelbooru;
+    case 5:
+      return BooruType.aibooru;
+    default:
+      return BooruType.unknown;
+  }
+}
+
 BooruType _stringToBooruType(String value) {
   switch (value) {
     case 'danbooru':
