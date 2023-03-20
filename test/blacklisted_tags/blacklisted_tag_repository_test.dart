@@ -19,7 +19,7 @@ void main() {
     final tags = ['foo', 'bar'];
     final repo = BlacklistedTagsRepositoryImpl(
       mockUserRepo(tags),
-      emptyAccountRepo(),
+      mockUserBooruRepo(),
       MockApi(),
     );
 
@@ -43,7 +43,7 @@ void main() {
 
     final repo = BlacklistedTagsRepositoryImpl(
       mockUserRepo(tags),
-      emptyAccountRepo(),
+      mockUserBooruRepo(),
       mockApi,
     );
 

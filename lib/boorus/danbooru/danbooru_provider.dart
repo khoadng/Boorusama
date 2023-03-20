@@ -149,7 +149,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final blacklistedTagRepo = BlacklistedTagsRepositoryImpl(
       userRepo,
-      accountRepo,
+      currentUserBooruRepo,
       api,
     );
 
