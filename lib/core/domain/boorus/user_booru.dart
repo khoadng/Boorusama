@@ -52,6 +52,12 @@ class UserBooru extends Equatable {
       ];
 }
 
-extension UserBooruX on UserBooru {
-  bool isAnonymous() => login.isEmpty && apiKey.isEmpty;
+extension UserBooruX on UserBooru? {
+  bool hasLoginDetails() {
+    if (this == null) return false;
+    if (this!.login.isEmpty && this!.apiKey.isEmpty) return false;
+    if (this!.booruUserId == null) return false;
+
+    return true;
+  }
 }

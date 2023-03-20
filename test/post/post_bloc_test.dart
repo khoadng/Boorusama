@@ -24,6 +24,9 @@ class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
 class MockPoolRepository extends Mock implements PoolRepository {}
 
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentUserBooruRepository {}
+
 class MockBlacklistedTagsRepository extends Mock
     implements BlacklistedTagsRepository {}
 
@@ -34,6 +37,7 @@ void main() {
   final mockFavRepo = MockFavoritesRepository();
   final mockPostVoteRepo = MockPostVoteRepository();
   final mockPoolRepo = MockPoolRepository();
+  final mockCurrentUserBooruRepo = MockCurrentUserBooruRepository();
   group('[post bloc failure test]', () {
     blocTest<PostBloc, PostState>(
       'tag limit',
@@ -45,11 +49,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -75,11 +79,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -106,11 +110,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -136,11 +140,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -164,11 +168,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -217,11 +221,11 @@ void main() {
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -245,11 +249,11 @@ void main() {
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -292,11 +296,11 @@ void main() {
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -347,11 +351,11 @@ void main() {
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -399,11 +403,11 @@ void main() {
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -457,11 +461,11 @@ void main() {
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
         initialData: [
           DanbooruPostData.empty(),
           DanbooruPostData.empty(),
@@ -506,11 +510,11 @@ void main() {
       ),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
@@ -552,11 +556,11 @@ void main() {
       ),
       build: () => PostBloc(
         postRepository: mockPostRepo,
-        accountRepository: mockAccountRepo,
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        currentUserBooruRepository: mockCurrentUserBooruRepo,
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(

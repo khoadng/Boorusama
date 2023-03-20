@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
@@ -31,7 +31,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     required DanbooruPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
-    required AccountRepository accountRepository,
+    required CurrentUserBooruRepository currentUserBooruRepository,
     required PostVoteRepository postVoteRepository,
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
@@ -54,9 +54,12 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  accountRepository,
+                  currentUserBooruRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository, accountRepository))
+                .then(filterWith(
+                  blacklistedTagsRepository,
+                  currentUserBooruRepository,
+                ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -74,9 +77,12 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  accountRepository,
+                  currentUserBooruRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository, accountRepository))
+                .then(filterWith(
+                  blacklistedTagsRepository,
+                  currentUserBooruRepository,
+                ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -100,9 +106,12 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  accountRepository,
+                  currentUserBooruRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository, accountRepository))
+                .then(filterWith(
+                  blacklistedTagsRepository,
+                  currentUserBooruRepository,
+                ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -122,9 +131,12 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  accountRepository,
+                  currentUserBooruRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository, accountRepository))
+                .then(filterWith(
+                  blacklistedTagsRepository,
+                  currentUserBooruRepository,
+                ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
@@ -222,12 +234,12 @@ class PostBloc extends Bloc<PostEvent, PostState>
         postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
-        accountRepository: context.read<AccountRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
         postsPerPage: context.read<SettingsCubit>().state.settings.postsPerPage,
+        currentUserBooruRepository: context.read<CurrentUserBooruRepository>(),
       );
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(

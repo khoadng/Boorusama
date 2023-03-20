@@ -6,11 +6,11 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
@@ -61,29 +61,31 @@ Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
-  AccountRepository accountRepository,
+  CurrentUserBooruRepository currentUserBooruRepository,
 ) =>
         (posts) => createPostData(
               favoritePostRepository,
               voteRepository,
               poolRepository,
               posts,
-              accountRepository,
+              currentUserBooruRepository,
             );
 
-Future<List<DanbooruPostData>> Function(Account account) process(
+Future<List<DanbooruPostData>> Function(UserBooru? userBooru) process(
   List<DanbooruPost> posts, {
   required Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
       forAnonymous,
   required Future<List<DanbooruPostData>> Function(
     List<DanbooruPost> posts,
-    Account account,
+    UserBooru userBooru,
   )
       forUser,
 }) =>
-    (account) => account == Account.empty
-        ? forAnonymous(posts)
-        : forUser(posts, account);
+    (userBooru) {
+      return userBooru.hasLoginDetails()
+          ? forUser(posts, userBooru!)
+          : forAnonymous(posts);
+    };
 
 Map<int, Set<Pool>> createPostPoolMap(
   List<Pool> pools,
@@ -108,9 +110,9 @@ Future<List<DanbooruPostData>> createPostData(
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
   List<DanbooruPost> posts,
-  AccountRepository accountRepository,
+  CurrentUserBooruRepository currentUserBooruRepository,
 ) =>
-    accountRepository.get().then(process(
+    currentUserBooruRepository.get().then(process(
           posts,
           forAnonymous: (posts) async {
             final ids = posts.map((e) => e.id).toList();
@@ -125,7 +127,7 @@ Future<List<DanbooruPostData>> createPostData(
                     ))
                 .toList();
           },
-          forUser: (posts, account) async {
+          forUser: (posts, userBooru) async {
             List<Favorite> favs = [];
             List<PostVote> votes = [];
             List<Pool> pools = [];
@@ -136,7 +138,7 @@ Future<List<DanbooruPostData>> createPostData(
               favoritePostRepository
                   .filterFavoritesFromUserId(
                     ids,
-                    account.id,
+                    userBooru.booruUserId!,
                     200,
                   )
                   .then((value) => favs = value),
@@ -166,15 +168,15 @@ Future<List<DanbooruPostData>> createPostData(
 Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
     filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
-  AccountRepository accountRepository,
+  CurrentUserBooruRepository currentUserBooruRepository,
 ) =>
         (posts) async {
-          final account = await accountRepository.get();
+          final userBooru = await currentUserBooruRepository.get();
 
-          if (account == Account.empty) return posts;
+          if (!userBooru.hasLoginDetails()) return posts;
 
           return blacklistedTagsRepository
-              .getBlacklistedTags(account.id)
+              .getBlacklistedTags(userBooru!.booruUserId!)
               .then((blacklistedTags) => filter(posts, blacklistedTags));
         };
 

@@ -85,17 +85,20 @@ class SearchPageProvider extends StatelessWidget {
       autocompleteRepository: autocompleteRepo,
     );
 
+    final currentUserBooruRepository =
+        context.read<CurrentUserBooruRepository>();
+
     final postBloc = PostBloc(
       postRepository: postRepo,
       blacklistedTagsRepository: blacklistRepo,
       favoritePostRepository: favRepo,
-      accountRepository: accountRepo,
       postVoteRepository: postVoteRepo,
       poolRepository: poolRepo,
       previewPreloader: previewPreloader,
       pagination: settings.contentOrganizationCategory ==
           ContentOrganizationCategory.pagination,
       postsPerPage: settings.postsPerPage,
+      currentUserBooruRepository: currentUserBooruRepository,
     );
 
     final searchHistoryCubit = SearchHistoryBloc(

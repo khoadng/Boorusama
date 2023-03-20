@@ -381,13 +381,16 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepository: savedSearchRepo,
     );
 
+    final currentUserBooruRepository =
+        context.read<CurrentUserBooruRepository>();
+
     PostBloc create() => PostBloc(
           postRepository: postRepo,
           blacklistedTagsRepository: blacklistedTagRepo,
           favoritePostRepository: favoriteRepo,
-          accountRepository: accountRepo,
           postVoteRepository: postVoteRepo,
           poolRepository: poolRepo,
+          currentUserBooruRepository: currentUserBooruRepository,
         );
 
     final exploreBloc = ExploreBloc(

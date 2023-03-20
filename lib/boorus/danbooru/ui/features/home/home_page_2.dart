@@ -52,8 +52,10 @@ class HomePage2 extends StatelessWidget {
                 context,
                 booru: booru,
                 sourceComposer: DanbooruImageSourceComposer(booru),
-                builder: (context) => const CustomContextMenuOverlay(
-                  child: DanbooruHomePage(),
+                builder: (context) => CustomContextMenuOverlay(
+                  child: DanbooruHomePage(
+                    key: ValueKey(booru.booruType),
+                  ),
                 ),
               );
             case BooruType.gelbooru:
