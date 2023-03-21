@@ -886,9 +886,17 @@ void goToCommentCreatePage(
   String? initialContent,
 }) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (context) => CommentCreatePage(
-      postId: postId,
-      initialContent: initialContent,
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (context) => CommentCreatePage(
+            postId: postId,
+            initialContent: initialContent,
+          ),
+        );
+      },
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.commentCreate,
@@ -905,10 +913,18 @@ void goToCommentUpdatePage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (context) => CommentUpdatePage(
-        postId: postId,
-        commentId: commentId,
-        initialContent: commentBody,
+      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return DanbooruProvider.of(
+            context,
+            booru: state.booru!,
+            builder: (context) => CommentUpdatePage(
+              postId: postId,
+              commentId: commentId,
+              initialContent: commentBody,
+            ),
+          );
+        },
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
