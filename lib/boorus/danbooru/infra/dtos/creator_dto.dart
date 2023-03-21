@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
 class CreatorDto {
   CreatorDto({

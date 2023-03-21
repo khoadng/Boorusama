@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
