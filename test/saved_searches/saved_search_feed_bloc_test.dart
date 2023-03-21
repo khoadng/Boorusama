@@ -3,8 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/core/application/common.dart';
 
