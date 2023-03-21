@@ -12,7 +12,7 @@ import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/main.dart';
 import 'infra/gelbooru_post_repository_api.dart';
 import 'infra/gelbooru_tag_repository_api.dart';

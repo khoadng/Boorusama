@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/ui/tags/tags.dart';
 
 class AddToBlacklistPage extends StatelessWidget {

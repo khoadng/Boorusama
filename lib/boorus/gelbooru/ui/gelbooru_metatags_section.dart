@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/ui/search/user_data_metatags_section.dart';
 import 'package:boorusama/core/utils.dart';
 

@@ -16,7 +16,7 @@ import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 
 class _PostDetailFavoriteFetch extends PostDetailEvent {
   const _PostDetailFavoriteFetch(this.accountId);

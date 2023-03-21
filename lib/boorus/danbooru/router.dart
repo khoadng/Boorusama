@@ -2,11 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_desktop.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -62,8 +57,11 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.d
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
@@ -71,6 +69,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -81,9 +80,10 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';

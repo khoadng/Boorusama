@@ -11,17 +11,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/settings/settings_cubit.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/tags.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
     with
