@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';

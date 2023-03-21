@@ -3,7 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search_history/search_history.dart';
+import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 
 class MockSearchHistoryRepository extends Mock

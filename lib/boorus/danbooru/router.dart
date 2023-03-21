@@ -71,11 +71,11 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/search/search.dart';
-import 'package:boorusama/core/application/search_history/search_history.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/search_history.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';

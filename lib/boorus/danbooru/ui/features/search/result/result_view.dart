@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.da
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/pagination.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';

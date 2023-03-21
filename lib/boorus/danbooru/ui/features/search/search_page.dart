@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
@@ -29,7 +29,7 @@ import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
 
-import 'package:boorusama/core/application/search_history/search_history.dart'
+import 'package:boorusama/core/application/search_history.dart'
     hide SearchHistoryCleared;
 
 class SearchPage extends StatefulWidget {

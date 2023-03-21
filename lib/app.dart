@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_2.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_desktop.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/app_rating.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';

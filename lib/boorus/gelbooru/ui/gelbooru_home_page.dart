@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/core/application/networking/networking.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/networking.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';

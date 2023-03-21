@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
-import 'package:boorusama/core/application/networking/networking.dart';
+import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';

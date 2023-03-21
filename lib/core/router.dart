@@ -11,8 +11,8 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'application/search_history/search_history.dart';
-import 'application/tags/tags.dart';
+import 'application/search_history.dart';
+import 'application/tags.dart';
 import 'domain/posts/post.dart';
 import 'domain/searches/searches.dart';
 import 'domain/tags/metatag.dart';

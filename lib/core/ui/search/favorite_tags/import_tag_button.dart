@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/tags/tags.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
 
 class ImportTagButton extends StatelessWidget {

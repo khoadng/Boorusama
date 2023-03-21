@@ -20,8 +20,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 
-import 'package:boorusama/core/application/search_history/search_history.dart'
-    as sh;
+import 'package:boorusama/core/application/search_history.dart' as sh;
 
 part 'search_event.dart';
 part 'search_state.dart';

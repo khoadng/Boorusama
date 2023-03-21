@@ -37,7 +37,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_re
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';

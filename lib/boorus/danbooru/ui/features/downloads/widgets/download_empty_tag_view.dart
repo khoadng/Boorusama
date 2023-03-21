@@ -8,7 +8,7 @@ import 'package:readmore/readmore.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/warning_container.dart';

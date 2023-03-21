@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'selected_tag_chip.dart';
 
 class SelectedTagList extends StatelessWidget {

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/tags/tags.dart';
 import 'related_tag_chip.dart';

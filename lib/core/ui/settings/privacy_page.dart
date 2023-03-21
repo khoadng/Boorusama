@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 

@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search_history/search_history_suggestions.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 

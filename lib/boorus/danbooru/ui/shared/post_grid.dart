@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;

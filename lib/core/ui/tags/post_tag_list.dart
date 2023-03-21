@@ -8,8 +8,8 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/ui/tags/tags.dart';

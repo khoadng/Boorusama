@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_error_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_progress_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_tag_selection_view.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/core.dart';
 
 class BulkDownloadPage extends StatefulWidget {

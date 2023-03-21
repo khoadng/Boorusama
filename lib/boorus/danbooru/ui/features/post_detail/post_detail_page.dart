@@ -18,9 +18,9 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_s
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
