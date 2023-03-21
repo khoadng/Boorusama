@@ -16,7 +16,7 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 
 class PostDetailPageProvider extends StatelessWidget {

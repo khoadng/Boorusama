@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 class CurrentBooruState extends Equatable {
   const CurrentBooruState({

@@ -18,7 +18,7 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';

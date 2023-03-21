@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 class SettingsState extends Equatable {
   const SettingsState({

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 

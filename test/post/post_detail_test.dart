@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 void main() {
   group('action bar visibility tests', () {
