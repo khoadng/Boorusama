@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';

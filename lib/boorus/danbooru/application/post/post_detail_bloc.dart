@@ -7,7 +7,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';

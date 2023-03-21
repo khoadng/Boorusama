@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';

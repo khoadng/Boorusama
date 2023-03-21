@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';

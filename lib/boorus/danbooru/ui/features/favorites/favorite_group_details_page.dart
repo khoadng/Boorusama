@@ -14,7 +14,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';

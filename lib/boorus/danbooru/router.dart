@@ -23,7 +23,7 @@ import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';

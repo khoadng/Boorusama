@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';

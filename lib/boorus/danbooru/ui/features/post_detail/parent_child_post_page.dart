@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 
 class ParentChildPostPage extends StatelessWidget {

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 class SearchedPostFetcher implements PostFetcher {

@@ -7,7 +7,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
