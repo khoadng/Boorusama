@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
