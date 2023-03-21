@@ -59,7 +59,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.d
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_provider.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
@@ -68,6 +67,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -388,98 +388,110 @@ void goToDetailPage({
 
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dContext) {
-                final authCubit = dContext.read<AuthenticationCubit>();
-                final tagRepo = dContext.read<TagRepository>();
-                final noteRepo = dContext.read<NoteRepository>();
-                final postVoteRepo = dContext.read<PostVoteRepository>();
-                final favRepo = dContext.read<FavoritePostRepository>();
-                final postRepo = dContext.read<DanbooruPostRepository>();
-                final tagBloc = dContext.read<TagBloc>();
-                final themeBloc = dContext.read<ThemeBloc>();
-                final currentUserBooruRepo =
-                    dContext.read<CurrentUserBooruRepository>();
-
-                return PostDetailPageProvider(
-                  authCubit: authCubit,
-                  tagBloc: tagBloc,
-                  themeBloc: themeBloc,
-                  noteRepo: noteRepo,
-                  postRepo: postRepo,
-                  favRepo: favRepo,
-                  currentUserBooruRepo: currentUserBooruRepo,
-                  postVoteRepo: postVoteRepo,
-                  tags: tags,
-                  tagRepo: tagRepo,
-                  initialIndex: initialIndex,
-                  postBloc: postBloc,
-                  posts: posts,
-                  scrollController: scrollController,
-                  builder: (_, __) => PostDetailPage(
-                    intitialIndex: initialIndex,
-                    posts: posts,
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+      builder: (_) => providePostDetailPageDependencies(
+        context,
+        posts,
+        initialIndex,
+        tags,
+        postBloc,
+        scrollController,
+        PostDetailPage(
+          intitialIndex: initialIndex,
+          posts: posts,
+        ),
+      ),
     ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dContext) {
-                final authCubit = dContext.read<AuthenticationCubit>();
-                final tagRepo = dContext.read<TagRepository>();
-                final noteRepo = dContext.read<NoteRepository>();
-                final postVoteRepo = dContext.read<PostVoteRepository>();
-                final favRepo = dContext.read<FavoritePostRepository>();
-                final postRepo = dContext.read<DanbooruPostRepository>();
-                final tagBloc = dContext.read<TagBloc>();
-                final themeBloc = dContext.read<ThemeBloc>();
-                final currentUserBooruRepo =
-                    dContext.read<CurrentUserBooruRepository>();
-
-                return PostDetailPageProvider(
-                  authCubit: authCubit,
-                  tagBloc: tagBloc,
-                  themeBloc: themeBloc,
-                  noteRepo: noteRepo,
-                  postRepo: postRepo,
-                  favRepo: favRepo,
-                  currentUserBooruRepo: currentUserBooruRepo,
-                  postVoteRepo: postVoteRepo,
-                  tags: tags,
-                  tagRepo: tagRepo,
-                  initialIndex: initialIndex,
-                  postBloc: postBloc,
-                  posts: posts,
-                  scrollController: scrollController,
-                  builder: (_, __) => PostDetailPageDesktop(
-                    intitialIndex: initialIndex,
-                    posts: posts,
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+      builder: (_) => providePostDetailPageDependencies(
+        context,
+        posts,
+        initialIndex,
+        tags,
+        postBloc,
+        scrollController,
+        PostDetailPageDesktop(
+          intitialIndex: initialIndex,
+          posts: posts,
+        ),
+      ),
     );
   }
+}
+
+Widget providePostDetailPageDependencies(
+  BuildContext context,
+  List<DanbooruPostData> posts,
+  int initialIndex,
+  List<PostDetailTag> tags,
+  PostBloc? postBloc,
+  AutoScrollController? scrollController,
+  Widget child,
+) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (context) {
+          return BlocSelector<SettingsCubit, SettingsState, Settings>(
+            selector: (state) => state.settings,
+            builder: (_, settings) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => SliverPostGridBloc()),
+                  BlocProvider.value(
+                    value: context.read<AuthenticationCubit>(),
+                  ),
+                  BlocProvider.value(value: context.read<ThemeBloc>()),
+                  BlocProvider(
+                    create: (context) => PostDetailBloc(
+                      noteRepository: context.read<NoteRepository>(),
+                      defaultDetailsStyle: settings.detailsDisplay,
+                      posts: posts,
+                      initialIndex: initialIndex,
+                      postRepository: context.read<DanbooruPostRepository>(),
+                      favoritePostRepository:
+                          context.read<FavoritePostRepository>(),
+                      currentUserBooruRepository:
+                          context.read<CurrentUserBooruRepository>(),
+                      postVoteRepository: context.read<PostVoteRepository>(),
+                      tags: tags,
+                      onPostChanged: (post) {
+                        if (postBloc != null && !postBloc.isClosed) {
+                          postBloc.add(PostUpdated(post: post));
+                        }
+                      },
+                      tagCache: {},
+                    ),
+                  ),
+                ],
+                child: RepositoryProvider.value(
+                  value: context.read<TagRepository>(),
+                  child: Builder(
+                    builder: (context) =>
+                        BlocListener<SliverPostGridBloc, SliverPostGridState>(
+                      listenWhen: (previous, current) =>
+                          previous.nextIndex != current.nextIndex,
+                      listener: (context, state) {
+                        if (scrollController == null) return;
+                        scrollController.scrollToIndex(
+                          state.nextIndex,
+                          duration: const Duration(milliseconds: 200),
+                        );
+                      },
+                      child: child,
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      );
+    },
+  );
 }
 
 void goToSearchPage(
