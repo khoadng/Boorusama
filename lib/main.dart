@@ -19,7 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
@@ -54,7 +53,6 @@ import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
-import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
 import 'core/infra/preloader/preloader.dart';
 
@@ -95,10 +93,6 @@ void main() async {
   );
 
   final settings = await settingRepository.load();
-
-  final accountRepo = AccountRepositoryDev(
-    account: Account.empty,
-  );
 
   final booruUserBox = await Hive.openBox<String>('booru_users');
   final booruUserRepo = HiveUserBooruRepository(box: booruUserBox);
@@ -240,9 +234,6 @@ void main() async {
             ),
             RepositoryProvider<UserBooruRepository>.value(
               value: booruUserRepo,
-            ),
-            RepositoryProvider<AccountRepository>.value(
-              value: accountRepo,
             ),
             RepositoryProvider<SearchHistoryRepository>.value(
               value: searchHistoryRepo,

@@ -4,8 +4,8 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 const favoriteGroupApiParams =
@@ -21,23 +21,23 @@ List<FavoriteGroup> parseFavoriteGroups(HttpResponse<dynamic> value) => parse(
 class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   const FavoriteGroupRepositoryApi({
     required this.api,
-    required this.accountRepository,
+    required this.currentUserBooruRepository,
   });
 
   final DanbooruApi api;
-  final AccountRepository accountRepository;
+  final CurrentUserBooruRepository currentUserBooruRepository;
 
   @override
   Future<List<FavoriteGroup>> getFavoriteGroups({
     String? name,
     int? page,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
           .then(
-            (account) => api.getFavoriteGroups(
-              account.username,
-              account.apiKey,
+            (userBooru) => api.getFavoriteGroups(
+              userBooru?.login,
+              userBooru?.apiKey,
               namePattern: name,
               page: page,
               only: favoriteGroupApiParams,
@@ -51,11 +51,11 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required String name,
     int? page,
   }) =>
-      accountRepository.get().then(
-        (account) {
+      currentUserBooruRepository.get().then(
+        (userBooru) {
           return api.getFavoriteGroups(
-            account.username,
-            account.apiKey,
+            userBooru?.login,
+            userBooru?.apiKey,
             page: page,
             creatorName: name,
             only: favoriteGroupApiParams,
@@ -70,11 +70,11 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     List<int>? initialItems,
     bool isPrivate = false,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
-          .then((account) => api.postFavoriteGroups(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.postFavoriteGroups(
+                userBooru?.login,
+                userBooru?.apiKey,
                 name: name,
                 postIdsString: initialItems?.join(' '),
                 isPrivate: isPrivate,
@@ -84,11 +84,12 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
       });
 
   @override
-  Future<bool> deleteFavoriteGroup({required int id}) => accountRepository
+  Future<bool> deleteFavoriteGroup({required int id}) =>
+      currentUserBooruRepository
           .get()
-          .then((account) => api.deleteFavoriteGroup(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.deleteFavoriteGroup(
+                userBooru?.login,
+                userBooru?.apiKey,
                 id,
               ))
           .then((value) {
@@ -100,11 +101,11 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required int id,
     required List<int> itemIds,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
-          .then((account) => api.patchFavoriteGroups(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.patchFavoriteGroups(
+                userBooru?.login,
+                userBooru?.apiKey,
                 id,
                 postIdsString: itemIds.join(' '),
               ))
@@ -117,11 +118,11 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required int id,
     required List<int> itemIds,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
-          .then((account) => api.patchFavoriteGroups(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.patchFavoriteGroups(
+                userBooru?.login,
+                userBooru?.apiKey,
                 id,
                 postIdsString: itemIds.join(' '),
               ))
@@ -137,11 +138,11 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     bool isPrivate = false,
   }) async {
     try {
-      return await accountRepository
+      return await currentUserBooruRepository
           .get()
-          .then((account) => api.patchFavoriteGroups(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.patchFavoriteGroups(
+                userBooru?.login,
+                userBooru?.apiKey,
                 id,
                 name: name,
                 isPrivate: isPrivate,

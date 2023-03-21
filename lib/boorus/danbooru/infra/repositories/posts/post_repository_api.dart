@@ -3,11 +3,11 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
@@ -41,12 +41,12 @@ const String postParams =
 class PostRepositoryApi implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
-    AccountRepository accountRepository,
+    CurrentUserBooruRepository currentUserBooruRepository,
     this.urlComposer,
   )   : _api = api,
-        _accountRepository = accountRepository;
+        _currentUserBooruRepository = currentUserBooruRepository;
 
-  final AccountRepository _accountRepository;
+  final CurrentUserBooruRepository _currentUserBooruRepository;
   final DanbooruApi _api;
   final ImageSourceComposer<PostDto> urlComposer;
 
@@ -59,12 +59,12 @@ class PostRepositoryApi implements DanbooruPostRepository {
     int? limit,
     bool? includeInvalid,
   }) {
-    return _accountRepository
+    return _currentUserBooruRepository
         .get()
         .then(
-          (account) => _api.getPosts(
-            account.username,
-            account.apiKey,
+          (userBooru) => _api.getPosts(
+            userBooru?.login,
+            userBooru?.apiKey,
             page,
             tags,
             postParams,
@@ -90,13 +90,19 @@ class PostRepositoryApi implements DanbooruPostRepository {
       );
 
   @override
-  Future<bool> putTag(int postId, String tagString) => _accountRepository
-      .get()
-      .then((account) => _api.putTag(account.username, account.apiKey, postId, {
-            'post[tag_string]': tagString,
-            'post[old_tag_string]': '',
-          }))
-      .then((value) => value.response.statusCode == 200);
+  Future<bool> putTag(int postId, String tagString) =>
+      _currentUserBooruRepository
+          .get()
+          .then((userBooru) => _api.putTag(
+                userBooru?.login,
+                userBooru?.apiKey,
+                postId,
+                {
+                  'post[tag_string]': tagString,
+                  'post[old_tag_string]': '',
+                },
+              ))
+          .then((value) => value.response.statusCode == 200);
 
   @override
   Future<List<core.Post>> getPostsFromTags(

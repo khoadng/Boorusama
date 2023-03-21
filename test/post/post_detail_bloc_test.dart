@@ -5,7 +5,6 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -17,18 +16,19 @@ class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
 class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
-class MockAccountRepository extends Mock implements AccountRepository {}
-
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
 class MockNoteRepository extends Mock implements NoteRepository {}
 
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentUserBooruRepository {}
+
 void main() {
   final postRepo = MockPostRepository();
   final favRepo = MockFavoritesRepository();
-  final accountRepo = MockAccountRepository();
   final postVoteRepo = MockPostVoteRepository();
   final noteRepo = MockNoteRepository();
+  final currentUserBooruRepo = MockCurrentUserBooruRepository();
 
   group('[post detail test]', () {
     blocTest<PostDetailBloc, PostDetailState>(
@@ -36,20 +36,17 @@ void main() {
       setUp: () {
         when(() => postRepo.putTag(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(postRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
         postVoteRepository: postVoteRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -108,20 +105,17 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
         postVoteRepository: postVoteRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         tags: [],
         posts: [
           DanbooruPostData.empty()
@@ -154,15 +148,12 @@ void main() {
     blocTest<PostDetailBloc, PostDetailState>(
       'index changed with notes load',
       setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => noteRepo.getNotesFrom(any())).thenAnswer((_) async => [
               Note.empty(),
               Note.empty(),
             ]);
       },
       tearDown: () {
-        reset(accountRepo);
         reset(noteRepo);
       },
       build: () => PostDetailBloc(
@@ -170,7 +161,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -231,8 +222,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => postRepo.getPosts('foo', any(), limit: any(named: 'limit')))
             .thenAnswer(
           (invocation) async => [DanbooruPost.empty().copyWith(id: 3)],
@@ -245,14 +234,14 @@ void main() {
       tearDown: () {
         reset(favRepo);
         reset(postRepo);
-        reset(accountRepo);
+        reset(currentUserBooruRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -334,19 +323,14 @@ void main() {
 
     blocTest<PostDetailBloc, PostDetailState>(
       'mode changed',
-      setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
-      },
-      tearDown: () {
-        reset(accountRepo);
-      },
+      // setUp: () {},
+      // tearDown: () {},
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -375,19 +359,19 @@ void main() {
 
     blocTest<PostDetailBloc, PostDetailState>(
       'slide show config changed',
-      setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
-      },
-      tearDown: () {
-        reset(accountRepo);
-      },
+      // setUp: () {
+      //   when(() => accountRepo.get())
+      //       .thenAnswer((invocation) async => Account.empty);
+      // },
+      // tearDown: () {
+      //   reset(accountRepo);
+      // },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -422,24 +406,16 @@ void main() {
       setUp: () {
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  id: 1,
-                  apiKey: '',
-                  username: '',
-                  booru: BooruType.unknown,
-                ));
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -470,19 +446,16 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -511,19 +484,11 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  id: 1,
-                  apiKey: '',
-                  username: '',
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -531,7 +496,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -569,19 +534,12 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  apiKey: '',
-                  username: '',
-                  id: 100,
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
+
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -589,7 +547,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -620,19 +578,11 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  id: 1,
-                  apiKey: '',
-                  username: '',
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -640,7 +590,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -684,13 +634,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  apiKey: '',
-                  username: '',
-                  id: 100,
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -698,7 +641,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -706,7 +648,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -742,13 +684,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  apiKey: '',
-                  username: '',
-                  id: 100,
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))
@@ -756,7 +691,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -764,7 +698,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -810,13 +744,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  apiKey: '',
-                  username: '',
-                  id: 100,
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -824,7 +751,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -832,7 +758,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -868,13 +794,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  apiKey: '',
-                  username: '',
-                  id: 100,
-                  booru: BooruType.unknown,
-                ));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))
@@ -882,7 +801,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -890,7 +808,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -947,7 +865,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         defaultDetailsStyle: DetailsDisplay.imageFocus,
@@ -1026,7 +944,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentUserBooruRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [

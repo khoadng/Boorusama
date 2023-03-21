@@ -32,7 +32,6 @@ import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dar
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -404,7 +403,8 @@ void goToDetailPage({
                 final postRepo = dContext.read<DanbooruPostRepository>();
                 final tagBloc = dContext.read<TagBloc>();
                 final themeBloc = dContext.read<ThemeBloc>();
-                final accountRepo = dContext.read<AccountRepository>();
+                final currentUserBooruRepo =
+                    dContext.read<CurrentUserBooruRepository>();
 
                 return PostDetailPageProvider(
                   authCubit: authCubit,
@@ -413,7 +413,7 @@ void goToDetailPage({
                   noteRepo: noteRepo,
                   postRepo: postRepo,
                   favRepo: favRepo,
-                  accountRepo: accountRepo,
+                  currentUserBooruRepo: currentUserBooruRepo,
                   postVoteRepo: postVoteRepo,
                   tags: tags,
                   tagRepo: tagRepo,
@@ -450,7 +450,8 @@ void goToDetailPage({
                 final postRepo = dContext.read<DanbooruPostRepository>();
                 final tagBloc = dContext.read<TagBloc>();
                 final themeBloc = dContext.read<ThemeBloc>();
-                final accountRepo = dContext.read<AccountRepository>();
+                final currentUserBooruRepo =
+                    dContext.read<CurrentUserBooruRepository>();
 
                 return PostDetailPageProvider(
                   authCubit: authCubit,
@@ -459,7 +460,7 @@ void goToDetailPage({
                   noteRepo: noteRepo,
                   postRepo: postRepo,
                   favRepo: favRepo,
-                  accountRepo: accountRepo,
+                  currentUserBooruRepo: currentUserBooruRepo,
                   postVoteRepo: postVoteRepo,
                   tags: tags,
                   tagRepo: tagRepo,
@@ -501,7 +502,8 @@ void goToSearchPage(
                 final blacklistRepo =
                     dContext.read<BlacklistedTagsRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
-                final accountRepo = dContext.read<AccountRepository>();
+                final currentUserBooruRepo =
+                    dContext.read<CurrentUserBooruRepository>();
                 final postVoteRepo = dContext.read<PostVoteRepository>();
                 final poolRepo = dContext.read<PoolRepository>();
                 final previewPreloader = dContext.read<PostPreviewPreloader>();
@@ -523,7 +525,7 @@ void goToSearchPage(
                   postRepo: postRepo,
                   blacklistRepo: blacklistRepo,
                   favRepo: favRepo,
-                  accountRepo: accountRepo,
+                  currentUserBooruRepo: currentUserBooruRepo,
                   postVoteRepo: postVoteRepo,
                   poolRepo: poolRepo,
                   previewPreloader: previewPreloader,
@@ -563,7 +565,8 @@ void goToSearchPage(
                 final blacklistRepo =
                     dContext.read<BlacklistedTagsRepository>();
                 final favRepo = dContext.read<FavoritePostRepository>();
-                final accountRepo = dContext.read<AccountRepository>();
+                final currentUserBooruRepo =
+                    dContext.read<CurrentUserBooruRepository>();
                 final postVoteRepo = dContext.read<PostVoteRepository>();
                 final poolRepo = dContext.read<PoolRepository>();
                 final previewPreloader = dContext.read<PostPreviewPreloader>();
@@ -585,7 +588,7 @@ void goToSearchPage(
                   postRepo: postRepo,
                   blacklistRepo: blacklistRepo,
                   favRepo: favRepo,
-                  accountRepo: accountRepo,
+                  currentUserBooruRepo: currentUserBooruRepo,
                   postVoteRepo: postVoteRepo,
                   poolRepo: poolRepo,
                   previewPreloader: previewPreloader,

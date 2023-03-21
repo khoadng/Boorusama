@@ -5,7 +5,6 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -15,8 +14,6 @@ import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 class MockPostRepository extends Mock implements DanbooruPostRepository {}
-
-class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
@@ -32,7 +29,6 @@ class MockBlacklistedTagsRepository extends Mock
 
 void main() {
   final mockPostRepo = MockPostRepository();
-  final mockAccountRepo = MockAccountRepository();
   final mockBlacklistedRepo = MockBlacklistedTagsRepository();
   final mockFavRepo = MockFavoritesRepository();
   final mockPostVoteRepo = MockPostVoteRepository();
@@ -195,13 +191,6 @@ void main() {
                   DanbooruPost.empty(),
                   DanbooruPost.empty(),
                 ]);
-        when(() => mockAccountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  id: 1,
-                  apiKey: '',
-                  username: '',
-                  booru: BooruType.unknown,
-                ));
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
@@ -213,7 +202,6 @@ void main() {
       },
       tearDown: () {
         reset(mockPostRepo);
-        reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
         reset(mockPoolRepo);
@@ -278,8 +266,6 @@ void main() {
                   DanbooruPost.empty(),
                   DanbooruPost.empty(),
                 ]);
-        when(() => mockAccountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
@@ -289,7 +275,6 @@ void main() {
       },
       tearDown: () {
         reset(mockPostRepo);
-        reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
         reset(mockPoolRepo);
@@ -325,13 +310,6 @@ void main() {
                   DanbooruPost.empty(),
                   DanbooruPost.empty(),
                 ]);
-        when(() => mockAccountRepo.get())
-            .thenAnswer((invocation) async => const Account(
-                  id: 1,
-                  apiKey: '',
-                  username: '',
-                  booru: BooruType.unknown,
-                ));
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
@@ -343,7 +321,6 @@ void main() {
       },
       tearDown: () {
         reset(mockPostRepo);
-        reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
         reset(mockPoolRepo);
@@ -380,8 +357,6 @@ void main() {
                   DanbooruPost.empty().copyWith(id: 1),
                   DanbooruPost.empty().copyWith(id: 2),
                 ]);
-        when(() => mockAccountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
@@ -396,7 +371,6 @@ void main() {
       },
       tearDown: () {
         reset(mockPostRepo);
-        reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
         reset(mockPoolRepo);
@@ -443,8 +417,6 @@ void main() {
             .thenAnswer((invocation) async => [
                   DanbooruPost.empty(),
                 ]);
-        when(() => mockAccountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
@@ -454,7 +426,6 @@ void main() {
       },
       tearDown: () {
         reset(mockPostRepo);
-        reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
         reset(mockPoolRepo);

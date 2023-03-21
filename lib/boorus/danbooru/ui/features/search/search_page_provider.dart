@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -39,7 +38,7 @@ class SearchPageProvider extends StatelessWidget {
     required this.postRepo,
     required this.blacklistRepo,
     required this.favRepo,
-    required this.accountRepo,
+    required this.currentUserBooruRepo,
     required this.postVoteRepo,
     required this.poolRepo,
     required this.previewPreloader,
@@ -59,7 +58,7 @@ class SearchPageProvider extends StatelessWidget {
   final DanbooruPostRepository postRepo;
   final BlacklistedTagsRepository blacklistRepo;
   final FavoritePostRepository favRepo;
-  final AccountRepository accountRepo;
+  final CurrentUserBooruRepository currentUserBooruRepo;
   final PostVoteRepository postVoteRepo;
   final PoolRepository poolRepo;
   final PostPreviewPreloader previewPreloader;

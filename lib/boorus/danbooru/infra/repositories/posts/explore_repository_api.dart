@@ -1,21 +1,21 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'post_repository_api.dart';
 
 class ExploreRepositoryApi implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
-    required this.accountRepository,
+    required this.currentUserBooruRepository,
     required this.postRepository,
     required this.urlComposer,
   });
 
-  final AccountRepository accountRepository;
+  final CurrentUserBooruRepository currentUserBooruRepository;
   final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   final ImageSourceComposer<PostDto> urlComposer;
@@ -37,12 +37,12 @@ class ExploreRepositoryApi implements ExploreRepository {
   Future<List<DanbooruPost>> getMostViewedPosts(
     DateTime date,
   ) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
           .then(
-            (account) => api.getMostViewedPosts(
-              account.username,
-              account.apiKey,
+            (userBooru) => api.getMostViewedPosts(
+              userBooru?.login,
+              userBooru?.apiKey,
               '${date.year}-${date.month}-${date.day}',
               postParams,
             ),
@@ -61,12 +61,12 @@ class ExploreRepositoryApi implements ExploreRepository {
     TimeScale scale, {
     int? limit,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
           .then(
-            (account) => api.getPopularPosts(
-              account.username,
-              account.apiKey,
+            (userBooru) => api.getPopularPosts(
+              userBooru?.login,
+              userBooru?.apiKey,
               '${date.year}-${date.month}-${date.day}',
               scale.toString().split('.').last,
               page,

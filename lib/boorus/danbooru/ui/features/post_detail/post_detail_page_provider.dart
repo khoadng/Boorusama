@@ -8,7 +8,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 
@@ -28,7 +28,7 @@ class PostDetailPageProvider extends StatelessWidget {
     required this.noteRepo,
     required this.postRepo,
     required this.favRepo,
-    required this.accountRepo,
+    required this.currentUserBooruRepo,
     required this.postVoteRepo,
     required this.tags,
     required this.tagRepo,
@@ -46,7 +46,7 @@ class PostDetailPageProvider extends StatelessWidget {
   final NoteRepository noteRepo;
   final DanbooruPostRepository postRepo;
   final FavoritePostRepository favRepo;
-  final AccountRepository accountRepo;
+  final CurrentUserBooruRepository currentUserBooruRepo;
   final PostVoteRepository postVoteRepo;
   final List<PostDetailTag> tags;
   final TagRepository tagRepo;
@@ -74,7 +74,7 @@ class PostDetailPageProvider extends StatelessWidget {
                 initialIndex: initialIndex,
                 postRepository: postRepo,
                 favoritePostRepository: favRepo,
-                accountRepository: accountRepo,
+                currentUserBooruRepository: currentUserBooruRepo,
                 postVoteRepository: postVoteRepo,
                 tags: tags,
                 onPostChanged: (post) {

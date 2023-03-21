@@ -2,23 +2,11 @@
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
-class MockAccountRepo extends Mock implements AccountRepository {}
-
 class MockCurrentUserBooruRepository extends Mock
     implements CurrentUserBooruRepository {}
-
-AccountRepository mockAccountRepo({
-  Account? account,
-}) {
-  final repo = MockAccountRepo();
-  when(() => repo.get()).thenAnswer((_) async => account ?? Account.empty);
-
-  return repo;
-}
 
 CurrentUserBooruRepository mockUserBooruRepo({
   UserBooru? userBooru,
@@ -36,11 +24,6 @@ CurrentUserBooruRepository mockUserBooruRepo({
 
   return repo;
 }
-
-AccountRepository emptyAccountRepo() => mockAccountRepo();
-AccountRepository fakeAccountRepo() => mockAccountRepo(
-      account: Account.create('foo', 'bar', 0, BooruType.unknown),
-    );
 
 CurrentUserBooruRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
       userBooru: const UserBooru(

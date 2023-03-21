@@ -8,15 +8,12 @@ import 'package:mocktail/mocktail.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 import '../../common.dart';
 
 class MockBlacklistedTagsRepository extends Mock
     implements BlacklistedTagsRepository {}
-
-class MockAccountRepository extends Mock implements AccountRepository {}
 
 BlacklistedTagsRepository createBlacklistedTagRepo() {
   final MockBlacklistedTagsRepository mockBlacklistedTagsRepository =

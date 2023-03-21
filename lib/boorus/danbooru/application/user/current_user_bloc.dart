@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class CurrentUserState extends Equatable {
   const CurrentUserState({
@@ -41,17 +41,17 @@ class CurrentUserFetched extends CurrentUserEvent {
 class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   CurrentUserBloc({
     required UserRepository userRepository,
-    required AccountRepository accountRepository,
+    required CurrentUserBooruRepository currentUserBooruRepository,
   }) : super(CurrentUserState.initial()) {
     on<CurrentUserFetched>((event, emit) async {
-      final account = await accountRepository.get();
+      final userBooru = await currentUserBooruRepository.get();
 
-      if (account == Account.empty) {
+      if (!userBooru.hasLoginDetails()) {
         return;
       }
 
       await tryAsync<UserSelf?>(
-        action: () => userRepository.getUserSelfById(account.id),
+        action: () => userRepository.getUserSelfById(userBooru!.booruUserId!),
         onSuccess: (data) async {
           emit(state.copyWith(
             user: () => data,

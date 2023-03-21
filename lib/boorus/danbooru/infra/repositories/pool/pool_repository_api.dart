@@ -3,9 +3,9 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
@@ -16,11 +16,11 @@ List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
 class PoolRepositoryApi implements PoolRepository {
   PoolRepositoryApi(
     this._api,
-    this._accountRepository,
+    this._currentUserBooruRepository,
   );
 
   final DanbooruApi _api;
-  final AccountRepository _accountRepository;
+  final CurrentUserBooruRepository _currentUserBooruRepository;
   final _limit = 20;
 
   @override
@@ -31,10 +31,10 @@ class PoolRepositoryApi implements PoolRepository {
     String? name,
     String? description,
   }) =>
-      _accountRepository.get().then((account) => _api
+      _currentUserBooruRepository.get().then((userBooru) => _api
           .getPools(
-            account.username,
-            account.apiKey,
+            userBooru?.login,
+            userBooru?.apiKey,
             page,
             _limit,
             category: category?.toString(),
@@ -46,10 +46,10 @@ class PoolRepositoryApi implements PoolRepository {
 
   @override
   Future<List<Pool>> getPoolsByPostId(int postId) =>
-      _accountRepository.get().then((account) => _api
+      _currentUserBooruRepository.get().then((userBooru) => _api
           .getPoolsFromPostId(
-            account.username,
-            account.apiKey,
+            userBooru?.login,
+            userBooru?.apiKey,
             postId,
             _limit,
           )
@@ -59,10 +59,10 @@ class PoolRepositoryApi implements PoolRepository {
   Future<List<Pool>> getPoolsByPostIds(List<int> postIds) {
     if (postIds.isEmpty) return Future.value([]);
 
-    return _accountRepository.get().then((account) => _api
+    return _currentUserBooruRepository.get().then((userBooru) => _api
         .getPoolsFromPostIds(
-          account.username,
-          account.apiKey,
+          userBooru?.login,
+          userBooru?.apiKey,
           postIds.join(' '),
           _limit,
         )

@@ -3,10 +3,10 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
@@ -17,51 +17,53 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required DanbooruApi api,
-    required AccountRepository accountRepo,
+    required CurrentUserBooruRepository currentUserBooruRepository,
   })  : _api = api,
-        _accountRepository = accountRepo;
+        _currentUserBooruRepository = currentUserBooruRepository;
 
-  final AccountRepository _accountRepository;
+  final CurrentUserBooruRepository _currentUserBooruRepository;
   final DanbooruApi _api;
 
   @override
-  Future<List<PostVote>> getPostVotes(List<int> postIds) {
+  Future<List<PostVote>> getPostVotes(List<int> postIds) async {
     if (postIds.isEmpty) return Future.value([]);
+    final userBooru = await _currentUserBooruRepository.get();
+    if (userBooru?.booruUserId == null) return [];
 
-    return _accountRepository
-        .get()
-        .then((account) => _api.getPostVotes(
-              account.username,
-              account.apiKey,
-              1,
-              postIds.join(','),
-              account.id.toString(),
-              false,
-              100,
-            ))
+    return _api
+        .getPostVotes(
+          userBooru?.login,
+          userBooru?.apiKey,
+          1,
+          postIds.join(','),
+          userBooru?.booruUserId.toString(),
+          false,
+          100,
+        )
         .then(parsePostVote);
   }
 
   @override
-  Future<List<PostVote>> getAllVotes(int postId, int page) => _accountRepository
-      .get()
-      .then((account) => _api.getPostVotes(
-            account.username,
-            account.apiKey,
-            page,
-            postId.toString(),
-            null,
-            false,
-            100,
-          ))
-      .then(parsePostVote);
+  Future<List<PostVote>> getAllVotes(int postId, int page) =>
+      _currentUserBooruRepository
+          .get()
+          .then((userBooru) => _api.getPostVotes(
+                userBooru?.login,
+                userBooru?.apiKey,
+                page,
+                postId.toString(),
+                null,
+                false,
+                100,
+              ))
+          .then(parsePostVote);
 
-  Future<PostVote?> _vote(int postId, int score) => _accountRepository
+  Future<PostVote?> _vote(int postId, int score) => _currentUserBooruRepository
       .get()
       .then(
-        (account) => _api.votePost(
-          account.username,
-          account.apiKey,
+        (userBooru) => _api.votePost(
+          userBooru?.login,
+          userBooru?.apiKey,
           postId,
           score,
         ),

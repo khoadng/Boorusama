@@ -8,13 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 
@@ -58,7 +58,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required NoteRepository noteRepository,
     required DanbooruPostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
-    required AccountRepository accountRepository,
+    required CurrentUserBooruRepository currentUserBooruRepository,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
@@ -95,9 +95,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           previousPost: () => prevPost,
           recommends: [],
         ));
-        final account = await accountRepository.get();
-        if (account != Account.empty) {
-          add(_PostDetailFavoriteFetch(account.id));
+        final userBooru = await currentUserBooruRepository.get();
+        if (userBooru.hasLoginDetails()) {
+          add(_PostDetailFavoriteFetch(userBooru!.booruUserId!));
           add(const _PostDetailVoteFetch());
         }
 
@@ -226,8 +226,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<PostDetailFavoritesChanged>((event, emit) async {
-      final account = await accountRepository.get();
-      if (account == Account.empty) return;
+      final userBooru = await currentUserBooruRepository.get();
+      if (!userBooru.hasLoginDetails()) return;
 
       var success = false;
       final originalState = state;

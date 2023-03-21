@@ -3,9 +3,9 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/infra.dart';
 
 List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) => parse(
@@ -16,21 +16,21 @@ List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) => parse(
 class SavedSearchRepositoryApi implements SavedSearchRepository {
   const SavedSearchRepositoryApi(
     this.api,
-    this.accountRepository,
+    this.currentUserBooruRepository,
   );
 
   final DanbooruApi api;
-  final AccountRepository accountRepository;
+  final CurrentUserBooruRepository currentUserBooruRepository;
 
   @override
   Future<List<SavedSearch>> getSavedSearches({
     required int page,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
-          .then((account) => api.getSavedSearches(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.getSavedSearches(
+                userBooru?.login,
+                userBooru?.apiKey,
                 page,
                 //TODO: shouldn't hardcode it
                 1000,
@@ -42,11 +42,11 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
     required String query,
     String? label,
   }) =>
-      accountRepository
+      currentUserBooruRepository
           .get()
-          .then((account) => api.postSavedSearch(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => api.postSavedSearch(
+                userBooru?.login,
+                userBooru?.apiKey,
                 {
                   'saved_search[query]': query,
                   'saved_search[label_string]': label ?? '',
@@ -73,11 +73,11 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
       map['saved_search[label_string]'] = label;
     }
 
-    return accountRepository
+    return currentUserBooruRepository
         .get()
-        .then((account) => api.patchSavedSearch(
-              account.username,
-              account.apiKey,
+        .then((userBooru) => api.patchSavedSearch(
+              userBooru?.login,
+              userBooru?.apiKey,
               id,
               map,
             ))
@@ -85,11 +85,11 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
   }
 
   @override
-  Future<bool> deleteSavedSearch(int id) => accountRepository
+  Future<bool> deleteSavedSearch(int id) => currentUserBooruRepository
       .get()
-      .then((account) => api.deleteSavedSearch(
-            account.username,
-            account.apiKey,
+      .then((userBooru) => api.deleteSavedSearch(
+            userBooru?.login,
+            userBooru?.apiKey,
             id,
           ))
       .then((value) => value.response.statusCode == 204);

@@ -3,9 +3,9 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
@@ -16,20 +16,20 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
     DanbooruApi api,
-    AccountRepository accountRepository,
+    CurrentUserBooruRepository currentUserBooruRepository,
   )   : _api = api,
-        _accountRepository = accountRepository;
+        _currentUserBooruRepository = currentUserBooruRepository;
 
   final DanbooruApi _api;
-  final AccountRepository _accountRepository;
+  final CurrentUserBooruRepository _currentUserBooruRepository;
 
   @override
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds) =>
-      _accountRepository
+      _currentUserBooruRepository
           .get()
-          .then((account) => _api.getCommentVotes(
-                account.username,
-                account.apiKey,
+          .then((userBooru) => _api.getCommentVotes(
+                userBooru?.login,
+                userBooru?.apiKey,
                 commentIds.join(','),
                 false,
               ))
@@ -41,11 +41,11 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       });
 
   @override
-  Future<CommentVote> downvote(int commentId) => _accountRepository
+  Future<CommentVote> downvote(int commentId) => _currentUserBooruRepository
       .get()
-      .then((account) => _api.voteComment(
-            account.username,
-            account.apiKey,
+      .then((userBooru) => _api.voteComment(
+            userBooru?.login,
+            userBooru?.apiKey,
             commentId,
             -1,
           ))
@@ -57,11 +57,11 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       );
 
   @override
-  Future<CommentVote> upvote(int commentId) => _accountRepository
+  Future<CommentVote> upvote(int commentId) => _currentUserBooruRepository
           .get()
           .then((account) => _api.voteComment(
-                account.username,
-                account.apiKey,
+                account?.login,
+                account?.apiKey,
                 commentId,
                 1,
               ))
@@ -73,11 +73,11 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       });
 
   @override
-  Future<bool> removeVote(int commentId) => _accountRepository
+  Future<bool> removeVote(int commentId) => _currentUserBooruRepository
       .get()
       .then((account) => _api.removeVoteComment(
-            account.username,
-            account.apiKey,
+            account?.login,
+            account?.apiKey,
             commentId,
           ))
       .then((_) => true)
