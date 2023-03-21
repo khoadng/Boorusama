@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings/settings_repository.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 class CurrentBooruRepositorySettings implements CurrentUserBooruRepository {
   CurrentBooruRepositorySettings(

@@ -36,8 +36,8 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/searches/searches.dart';
-import 'package:boorusama/core/domain/settings/settings_repository.dart';
+import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
@@ -53,7 +53,6 @@ import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
-import 'core/domain/settings/settings.dart';
 import 'core/infra/preloader/preloader.dart';
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';

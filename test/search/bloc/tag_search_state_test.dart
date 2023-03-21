@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import '../common.dart';
 

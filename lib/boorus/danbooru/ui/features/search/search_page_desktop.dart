@@ -18,7 +18,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/da
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';

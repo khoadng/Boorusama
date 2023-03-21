@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/string_utils.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'filter_operator.dart';

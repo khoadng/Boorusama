@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/searches/searches.dart';
+import 'search_history.dart';
 
 abstract class SearchHistoryRepository {
   Future<List<SearchHistory>> getHistories();

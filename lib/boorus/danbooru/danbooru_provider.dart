@@ -38,11 +38,11 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
-import 'package:boorusama/core/domain/searches/searches.dart';
-import 'package:boorusama/core/domain/settings/settings_repository.dart';
+import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';

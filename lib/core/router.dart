@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'application/search_history.dart';
 import 'application/tags.dart';
 import 'domain/posts/post.dart';
-import 'domain/searches/searches.dart';
+import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/app_info_provider.dart';
 import 'infra/package_info_provider.dart';

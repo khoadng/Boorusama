@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'blacklisted_tags_search_page.dart';

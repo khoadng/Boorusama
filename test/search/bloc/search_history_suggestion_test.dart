@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search_history.dart';
-import 'package:boorusama/core/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches.dart';
 
 class MockSearchHistoryRepository extends Mock
     implements SearchHistoryRepository {}

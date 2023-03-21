@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/searches.dart';
 import 'history_list.dart';
 
 class SearchHistorySection extends StatelessWidget {
