@@ -27,7 +27,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
@@ -68,19 +68,20 @@ import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_provider.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/search_history/search_history.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches/searches.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/router.dart';
@@ -488,129 +489,105 @@ void goToSearchPage(
 }) {
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dContext) {
-                final tagInfo = dContext.read<TagInfo>();
-                final autocompleteRepo =
-                    dContext.read<AutocompleteRepository>();
-                final postRepo = dContext.read<DanbooruPostRepository>();
-                final blacklistRepo =
-                    dContext.read<BlacklistedTagsRepository>();
-                final favRepo = dContext.read<FavoritePostRepository>();
-                final currentUserBooruRepo =
-                    dContext.read<CurrentUserBooruRepository>();
-                final postVoteRepo = dContext.read<PostVoteRepository>();
-                final poolRepo = dContext.read<PoolRepository>();
-                final previewPreloader = dContext.read<PostPreviewPreloader>();
-                final searchHistoryRepo =
-                    dContext.read<SearchHistoryRepository>();
-                final relatedTagRepo = dContext.read<RelatedTagRepository>();
-                final favTagBloc = dContext.read<FavoriteTagBloc>();
-                final themeBloc = dContext.read<ThemeBloc>();
-                final postCountRepo = dContext.read<PostCountRepository>();
-                final trendingTagCubit = dContext.read<TrendingTagCubit>();
-                final authenticationCubit =
-                    dContext.read<AuthenticationCubit>();
-
-                return SearchPageProvider(
-                  authenticationCubit: authenticationCubit,
-                  trendingTagCubit: trendingTagCubit,
-                  tagInfo: tagInfo,
-                  autocompleteRepo: autocompleteRepo,
-                  postRepo: postRepo,
-                  blacklistRepo: blacklistRepo,
-                  favRepo: favRepo,
-                  currentUserBooruRepo: currentUserBooruRepo,
-                  postVoteRepo: postVoteRepo,
-                  poolRepo: poolRepo,
-                  previewPreloader: previewPreloader,
-                  searchHistoryRepo: searchHistoryRepo,
-                  relatedTagRepo: relatedTagRepo,
-                  favTagBloc: favTagBloc,
-                  themeBloc: themeBloc,
-                  postCountRepo: postCountRepo,
-                  initialQuery: tag,
-                  builder: (context, settings) => SearchPage(
-                    autoFocusSearchBar: settings.autoFocusSearchBar,
-                    metatags: tagInfo.metatags,
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+      builder: (_) => provideSearchPageDependencies(
+        context,
+        tag,
+        (context, settings) => SearchPage(
+          autoFocusSearchBar: settings.autoFocusSearchBar,
+          metatags: context.read<TagInfo>().metatags,
+          metatagHighlightColor: Theme.of(context).colorScheme.primary,
+        ),
+      ),
     ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (_) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (context, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dContext) {
-                final tagInfo = dContext.read<TagInfo>();
-                final autocompleteRepo =
-                    dContext.read<AutocompleteRepository>();
-                final postRepo = dContext.read<DanbooruPostRepository>();
-                final blacklistRepo =
-                    dContext.read<BlacklistedTagsRepository>();
-                final favRepo = dContext.read<FavoritePostRepository>();
-                final currentUserBooruRepo =
-                    dContext.read<CurrentUserBooruRepository>();
-                final postVoteRepo = dContext.read<PostVoteRepository>();
-                final poolRepo = dContext.read<PoolRepository>();
-                final previewPreloader = dContext.read<PostPreviewPreloader>();
-                final searchHistoryRepo =
-                    dContext.read<SearchHistoryRepository>();
-                final relatedTagRepo = dContext.read<RelatedTagRepository>();
-                final favTagBloc = dContext.read<FavoriteTagBloc>();
-                final themeBloc = dContext.read<ThemeBloc>();
-                final postCountRepo = dContext.read<PostCountRepository>();
-                final trendingTagCubit = dContext.read<TrendingTagCubit>();
-                final authenticationCubit =
-                    dContext.read<AuthenticationCubit>();
-
-                return SearchPageProvider(
-                  authenticationCubit: authenticationCubit,
-                  trendingTagCubit: trendingTagCubit,
-                  tagInfo: tagInfo,
-                  autocompleteRepo: autocompleteRepo,
-                  postRepo: postRepo,
-                  blacklistRepo: blacklistRepo,
-                  favRepo: favRepo,
-                  currentUserBooruRepo: currentUserBooruRepo,
-                  postVoteRepo: postVoteRepo,
-                  poolRepo: poolRepo,
-                  previewPreloader: previewPreloader,
-                  searchHistoryRepo: searchHistoryRepo,
-                  relatedTagRepo: relatedTagRepo,
-                  favTagBloc: favTagBloc,
-                  themeBloc: themeBloc,
-                  postCountRepo: postCountRepo,
-                  initialQuery: tag,
-                  builder: (context, settings) => SearchPageDesktop(
-                    metatags: tagInfo.metatags,
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+      builder: (_) => provideSearchPageDependencies(
+        context,
+        tag,
+        (context, settings) => SearchPageDesktop(
+          metatags: context.read<TagInfo>().metatags,
+          metatagHighlightColor: Theme.of(context).colorScheme.primary,
+        ),
+      ),
     );
   }
+}
+
+Widget provideSearchPageDependencies(
+  BuildContext context,
+  String? tag,
+  Widget Function(BuildContext context, Settings settings) childBuilder,
+) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (context) {
+          return BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (_, settingsState) {
+              final tagSearchBloc = TagSearchBloc(
+                tagInfo: context.read<TagInfo>(),
+                autocompleteRepository: context.read<AutocompleteRepository>(),
+              );
+
+              final postBloc = PostBloc.of(
+                context,
+                pagination:
+                    settingsState.settings.contentOrganizationCategory ==
+                        ContentOrganizationCategory.pagination,
+              );
+              final searchHistoryCubit = SearchHistoryBloc(
+                searchHistoryRepository:
+                    context.read<SearchHistoryRepository>(),
+              );
+              final relatedTagBloc = RelatedTagBloc(
+                relatedTagRepository: context.read<RelatedTagRepository>(),
+              );
+              final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+                searchHistoryRepository:
+                    context.read<SearchHistoryRepository>(),
+              );
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: searchHistoryCubit),
+                  BlocProvider.value(
+                    value: context.read<FavoriteTagBloc>()
+                      ..add(const FavoriteTagFetched()),
+                  ),
+                  BlocProvider.value(value: postBloc),
+                  BlocProvider.value(
+                    value: BlocProvider.of<ThemeBloc>(context),
+                  ),
+                  BlocProvider.value(value: searchHistorySuggestions),
+                  BlocProvider(
+                    create: (context) => SearchBloc(
+                      initial: DisplayState.options,
+                      metatags: context.read<TagInfo>().metatags,
+                      tagSearchBloc: tagSearchBloc,
+                      searchHistoryBloc: searchHistoryCubit,
+                      relatedTagBloc: relatedTagBloc,
+                      searchHistorySuggestionsBloc: searchHistorySuggestions,
+                      postBloc: postBloc,
+                      postCountRepository: context.read<PostCountRepository>(),
+                      initialQuery: tag,
+                      booruType: state.booru!.booruType,
+                    ),
+                  ),
+                  BlocProvider.value(value: relatedTagBloc),
+                ],
+                child: CustomContextMenuOverlay(
+                  child: childBuilder(context, settingsState.settings),
+                ),
+              );
+            },
+          );
+        },
+      );
+    },
+  );
 }
 
 void goToSettingPage(BuildContext context) {
