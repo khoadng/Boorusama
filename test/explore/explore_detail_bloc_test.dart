@@ -3,7 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explore/explore_detail_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/explores/explore_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 
 void main() {

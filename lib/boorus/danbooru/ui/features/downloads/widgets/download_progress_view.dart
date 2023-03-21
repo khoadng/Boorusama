@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 class DownloadProgressView extends StatelessWidget {

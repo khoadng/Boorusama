@@ -6,20 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist_cacher.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_cacher.dart';
+import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/explores/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/tags/trending_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';

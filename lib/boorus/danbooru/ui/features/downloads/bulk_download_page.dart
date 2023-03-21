@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_completed_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_empty_tag_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_error_view.dart';

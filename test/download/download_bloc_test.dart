@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 
 class MockBulkDownloader extends Mock implements BulkDownloader {}

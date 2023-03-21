@@ -9,7 +9,7 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/tags/tags.dart';
 import '../common.dart';
 
 class MockApi extends Mock implements DanbooruApi {}

@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explore/explore_detail_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/explores/explore_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 

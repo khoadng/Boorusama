@@ -3,7 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 class MockPostDownloadBloc extends MockBloc<DownloadEvent<String, DanbooruPost>,
