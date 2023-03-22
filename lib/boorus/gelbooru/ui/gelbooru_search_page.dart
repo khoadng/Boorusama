@@ -2,20 +2,41 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_metatags_section.dart';
-import 'package:boorusama/core/application/search_history.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/search/empty_view.dart';
+import 'package:boorusama/core/ui/search/error_view.dart';
+import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
+import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:boorusama/core/ui/sliver_post_grid.dart';
+import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/core/ui/tag_suggestion_items.dart';
+
+import 'package:boorusama/core/application/search_history.dart'
+    hide SearchHistoryCleared;
 
 class GelbooruSearchPage extends StatefulWidget {
   const GelbooruSearchPage({
@@ -23,13 +44,11 @@ class GelbooruSearchPage extends StatefulWidget {
     required this.metatags,
     required this.metatagHighlightColor,
     this.autoFocusSearchBar = true,
-    required this.userMetatagRepository,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
   final bool autoFocusSearchBar;
-  final UserMetatagRepository userMetatagRepository;
 
   @override
   State<GelbooruSearchPage> createState() => _SearchPageState();
@@ -60,84 +79,544 @@ class _SearchPageState extends State<GelbooruSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: _buildSearchBar(context),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SearchLandingView(
-              onAddTagRequest: () => goToGelbooruQuickSearchPage(
-                context,
-                onSubmitted: (context, text) {
-                  Navigator.of(context).pop();
-                  context
-                      .read<FavoriteTagBloc>()
-                      .add(FavoriteTagAdded(tag: text));
-                },
-                onSelected: (context, tag) => context
-                    .read<FavoriteTagBloc>()
-                    .add(FavoriteTagAdded(tag: tag.value)),
-              ),
-              onHistoryTap: (value) => queryEditingController.text = value,
-              onTagTap: (value) => queryEditingController.text = value,
-              onHistoryRemoved: (value) => context
-                  .read<SearchHistoryBloc>()
-                  .add(SearchHistoryRemoved(value.query)),
-              onHistoryCleared: () => context
-                  .read<SearchHistoryBloc>()
-                  .add(const SearchHistoryCleared()),
-              onFullHistoryRequested: () => goToSearchHistoryPage(
-                context,
-                onClear: () => context
-                    .read<SearchHistoryBloc>()
-                    .add(const SearchHistoryCleared()),
-                onRemove: (history) => context
-                    .read<SearchHistoryBloc>()
-                    .add(SearchHistoryRemoved(history.query)),
-                onTap: (value) => queryEditingController.text = value,
-              ),
-              metatagsBuilder: (context) => GelbooruMetatagsSection(
-                metatags: widget.metatags,
-                userMetatagRepository: widget.userMetatagRepository,
-                cheatsheetUrl:
-                    'https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263',
-              ),
-            ),
-          ],
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<SearchBloc, SearchState>(
+          listenWhen: (previous, current) =>
+              previous.currentQuery.isNotEmpty && current.currentQuery.isEmpty,
+          listener: (context, state) {
+            queryEditingController.clear();
+          },
+        ),
+      ],
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: _SmallLayout(
+          focus: focus,
+          autoFocus: widget.autoFocusSearchBar,
+          queryEditingController: queryEditingController,
         ),
       ),
     );
   }
+}
 
-  Widget _buildSearchBar(
-    BuildContext context,
-  ) {
-    return SearchBar(
-      leading: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(
-          Icons.arrow_back,
-        ),
+class _ErrorView extends StatelessWidget {
+  const _ErrorView();
+
+  @override
+  Widget build(BuildContext context) {
+    final error = context.select((SearchBloc bloc) => bloc.state.error);
+
+    return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
+  }
+}
+
+class _SelectedTagList extends StatelessWidget {
+  const _SelectedTagList();
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+
+    return SelectedTagList(
+      tags: tags,
+      onClear: () =>
+          context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
+      onDelete: (tag) =>
+          context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
+      onBulkDownload: (tags) => goToBulkDownloadPage(
+        context,
+        tags.map((e) => e.toString()).toList(),
       ),
-      queryEditingController: queryEditingController,
-      autofocus: true,
-      trailing: IconButton(
-        onPressed: () {
-          queryEditingController.clear();
-        },
-        icon: const Icon(Icons.close),
-      ),
-      onChanged: (value) => print(value),
-      onSubmitted: (value) {
-        print(value);
+    );
+  }
+}
+
+class _LandingView extends StatelessWidget {
+  const _LandingView({
+    this.onFocusRequest,
+    required this.onTextChanged,
+  });
+
+  final VoidCallback? onFocusRequest;
+  final void Function(String text) onTextChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchLandingView(
+      onAddTagRequest: () {
+        final bloc = context.read<FavoriteTagBloc>();
+        goToQuickSearchPage(
+          context,
+          onSubmitted: (context, text) {
+            Navigator.of(context).pop();
+            bloc.add(FavoriteTagAdded(tag: text));
+          },
+          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
+        );
       },
-      // hintText: 'pool.search.hint'.tr(),
-      // onTap: () => searchBloc.add(const PoolSearchResumed()),
+      onHistoryTap: (value) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.read<SearchBloc>().add(
+              SearchHistoryTagSelected(
+                tag: value,
+              ),
+            );
+      },
+      onTagTap: (value) {
+        _onTagTap(context, value);
+      },
+      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
+      onHistoryCleared: () => _onHistoryCleared(context),
+      onFullHistoryRequested: () {
+        final searchBloc = context.read<SearchBloc>();
+
+        goToSearchHistoryPage(
+          context,
+          onClear: () => _onHistoryCleared(context),
+          onRemove: (value) => _onHistoryRemoved(context, value),
+          onTap: (value) => _onHistoryTap(context, value, searchBloc),
+        );
+      },
+      metatagsBuilder: (context) => DanbooruMetatagsSection(
+        onOptionTap: (value) {
+          context.read<SearchBloc>().add(
+                SearchRawMetatagSelected(
+                  tag: value,
+                ),
+              );
+          onFocusRequest?.call();
+          onTextChanged.call('$value:');
+        },
+      ),
+    );
+  }
+
+  void _onTagTap(BuildContext context, String value) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  }
+
+  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
+    Navigator.of(context).pop();
+    bloc.add(SearchHistoryTagSelected(tag: value));
+  }
+
+  void _onHistoryCleared(BuildContext context) =>
+      context.read<SearchBloc>().add(const SearchHistoryCleared());
+
+  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
+      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
+}
+
+// ignore: prefer_mixin
+class _AppBar extends StatelessWidget with PreferredSizeWidget {
+  const _AppBar({
+    required this.queryEditingController,
+    this.focusNode,
+    this.autofocus = false,
+  });
+
+  final RichTextController queryEditingController;
+  final FocusNode? focusNode;
+  final bool autofocus;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shadowColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      toolbarHeight: kToolbarHeight * 1.2,
+      title: _SearchBar(
+        autofocus: autofocus,
+        focusNode: focusNode,
+        queryEditingController: queryEditingController,
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
+}
+
+class _SmallLayout extends StatefulWidget {
+  const _SmallLayout({
+    required this.focus,
+    required this.queryEditingController,
+    this.autoFocus = true,
+  });
+
+  final FocusNode focus;
+  final RichTextController queryEditingController;
+  final bool autoFocus;
+
+  @override
+  State<_SmallLayout> createState() => _SmallLayoutState();
+}
+
+class _SmallLayoutState extends State<_SmallLayout> {
+  final scrollController = AutoScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final displayState =
+        context.select((SearchBloc bloc) => bloc.state.displayState);
+
+    switch (displayState) {
+      case DisplayState.options:
+        return Scaffold(
+          floatingActionButton: const SearchButton(),
+          appBar: _AppBar(
+            autofocus: widget.autoFocus,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const _SelectedTagList(),
+                  const _Divider(),
+                  _LandingView(
+                    onFocusRequest: () => widget.focus.requestFocus(),
+                    onTextChanged: (text) =>
+                        _onTextChanged(widget.queryEditingController, text),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      case DisplayState.suggestion:
+        return Scaffold(
+          appBar: _AppBar(
+            autofocus: true,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                Expanded(
+                  child: _TagSuggestionItems(
+                    queryEditingController: widget.queryEditingController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.error:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: const [
+                _SelectedTagList(),
+                _Divider(),
+                Expanded(child: _ErrorView()),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.noResult:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                Expanded(child: EmptyView(text: 'search.no_result'.tr())),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.result:
+        return BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+          buildWhen: (previous, current) => !current.hasMore,
+          builder: (context, state) {
+            return InfiniteLoadList(
+              enableLoadMore: state.hasMore,
+              onLoadMore: () => context
+                  .read<GelbooruPostBloc>()
+                  .add(const GelbooruPostBlocFetched(
+                    tag: '',
+                  )),
+              onRefresh: (controller) {
+                context
+                    .read<GelbooruPostBloc>()
+                    .add(const GelbooruPostBlocRefreshed(
+                      tag: '',
+                    ));
+                Future.delayed(
+                  const Duration(seconds: 1),
+                  () => controller.refreshCompleted(),
+                );
+              },
+              builder: (context, controller) => CustomScrollView(
+                controller: controller,
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    toolbarHeight: kToolbarHeight * 1.2,
+                    title: SearchBar(
+                      enabled: false,
+                      onTap: () => goToGelbooruSearchPage(context),
+                    ),
+                    floating: true,
+                    snap: true,
+                    automaticallyImplyLeading: false,
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
+                    sliver:
+                        BlocSelector<SettingsCubit, SettingsState, GridSize>(
+                      selector: (state) => state.settings.gridSize,
+                      builder: (context, gridSize) {
+                        return BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+                          buildWhen: (previous, current) => !current.loading,
+                          builder: (context, state) {
+                            if (state.data.isEmpty && !state.refreshing) {
+                              return SliverPostGridPlaceHolder(
+                                gridSize: gridSize,
+                              );
+                            } else if (state.data.isNotEmpty) {
+                              return SliverPostGrid(
+                                posts: state.data.toList(),
+                                scrollController: controller,
+                                gridSize: gridSize,
+
+                                // ignore: no-empty-block
+                                onTap: (post, index) {
+                                  goToGelbooruPostDetailsPage(
+                                    context: context,
+                                    posts: state.data,
+                                    initialIndex: index,
+                                  );
+                                },
+                                contextMenuBuilder: (post) =>
+                                    GelbooruPostContextMenu(
+                                  post: post,
+                                ),
+                                enableFavorite: false,
+                              );
+                            } else if (state.loading) {
+                              return const SliverToBoxAdapter(
+                                child: SizedBox.shrink(),
+                              );
+                            } else {
+                              return const SliverToBoxAdapter(
+                                child: ErrorBox(),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+                    builder: (context, state) {
+                      return state.loading
+                          ? const SliverPadding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 20,
+                              ),
+                              sliver: SliverToBoxAdapter(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            )
+                          : const SliverToBoxAdapter(
+                              child: SizedBox.shrink(),
+                            );
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      // return ResultView(
+      //   scrollController: scrollController,
+      //   headerBuilder: () => [
+      //     SliverAppBar(
+      //       titleSpacing: 0,
+      //       toolbarHeight: kToolbarHeight * 1.9,
+      //       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //       elevation: 0,
+      //       shadowColor: Colors.transparent,
+      //       title: SizedBox(
+      //         height: kToolbarHeight * 1.85,
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             const SizedBox(height: 8),
+      //             Padding(
+      //               padding: const EdgeInsets.symmetric(horizontal: 16),
+      //               child: SearchBar(
+      //                 enabled: false,
+      //                 onTap: () => context
+      //                     .read<SearchBloc>()
+      //                     .add(const SearchGoToSuggestionsRequested()),
+      //                 leading: IconButton(
+      //                   icon: const Icon(Icons.arrow_back),
+      //                   onPressed: () => context.read<SearchBloc>().add(
+      //                         const SearchGoBackToSearchOptionsRequested(),
+      //                       ),
+      //                 ),
+      //               ),
+      //             ),
+      //             const SizedBox(height: 10),
+      //             const _SelectedTagList(),
+      //           ],
+      //         ),
+      //       ),
+      //       floating: true,
+      //       snap: true,
+      //       automaticallyImplyLeading: false,
+      //     ),
+      //     const SliverToBoxAdapter(child: _Divider(height: 7)),
+      //   ],
+      // );
+    }
+  }
+}
+
+void _onTextChanged(
+  TextEditingController controller,
+  String text,
+) {
+  controller
+    ..text = text
+    ..selection = TextSelection.collapsed(offset: controller.text.length);
+}
+
+class _TagSuggestionItems extends StatelessWidget {
+  const _TagSuggestionItems({
+    required this.queryEditingController,
+  });
+
+  final TextEditingController queryEditingController;
+
+  @override
+  Widget build(BuildContext context) {
+    final suggestionTags =
+        context.select((SearchBloc bloc) => bloc.state.suggestionTags);
+    final currentQuery =
+        context.select((SearchBloc bloc) => bloc.state.currentQuery);
+    final histories = context
+        .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
+    return SliverTagSuggestionItemsWithHistory(
+      tags: suggestionTags,
+      histories: histories,
+      currentQuery: currentQuery,
+      onHistoryDeleted: (history) {
+        context
+            .read<SearchBloc>()
+            .add(SearchHistoryDeleted(history: history.searchHistory));
+      },
+      onHistoryTap: (history) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context
+            .read<SearchBloc>()
+            .add(SearchHistoryTagSelected(tag: history.tag));
+      },
+      onItemTap: (tag) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
+      },
+      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider({
+    this.height,
+  });
+
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+
+    return tags.isNotEmpty
+        ? Divider(height: height ?? 15, thickness: 1)
+        : const SizedBox.shrink();
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({
+    required this.queryEditingController,
+    this.focusNode,
+    this.autofocus = false,
+  });
+
+  final RichTextController queryEditingController;
+  final FocusNode? focusNode;
+  final bool autofocus;
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchBar(
+      autofocus: autofocus,
+      focus: focusNode,
+      queryEditingController: queryEditingController,
+      leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
+        selector: (state) => state.displayState,
+        builder: (context, state) {
+          return IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => state != DisplayState.options
+                ? context
+                    .read<SearchBloc>()
+                    .add(const SearchGoBackToSearchOptionsRequested())
+                : Navigator.of(context).pop(),
+          );
+        },
+      ),
+      trailing: BlocSelector<SearchBloc, SearchState, String>(
+        selector: (state) => state.currentQuery,
+        builder: (context, query) => query.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => context
+                    .read<SearchBloc>()
+                    .add(const SearchQueryChanged(query: '')),
+              )
+            : const SizedBox.shrink(),
+      ),
+      onChanged: (value) {
+        context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+      },
+      onSubmitted: (value) =>
+          context.read<SearchBloc>().add(const SearchQuerySubmitted()),
     );
   }
 }
