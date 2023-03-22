@@ -21,7 +21,6 @@ import 'package:video_player_win/video_player_win.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/api.dart';
@@ -44,16 +43,17 @@ import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/boorus/user_booru_repository_hive.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
+import 'package:boorusama/core/infra/repositories/metatags.dart';
+import 'package:boorusama/core/infra/repositories/search_histories.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
-import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
-import 'core/infra/preloader/preloader.dart';
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 const savedSearchHelpUrl =

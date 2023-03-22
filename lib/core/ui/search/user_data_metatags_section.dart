@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/ui/search/metatags_section.dart';
 
 class UserDataMetatagsSection extends StatelessWidget {

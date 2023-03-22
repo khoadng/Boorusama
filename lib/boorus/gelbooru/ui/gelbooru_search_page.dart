@@ -7,12 +7,12 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_metatags_section.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search_bar.dart';

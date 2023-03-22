@@ -13,23 +13,23 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/landing/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/ui/search/empty_view.dart';
+import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
+import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
+import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tag_suggestion_items.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
-import 'empty_view.dart';
-import 'error_view.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
-import 'selected_tag_list.dart';
 
 import 'package:boorusama/core/application/search_history.dart'
     hide SearchHistoryCleared;
