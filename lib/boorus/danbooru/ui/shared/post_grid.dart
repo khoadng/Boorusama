@@ -7,15 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
@@ -37,9 +37,9 @@ class PostGrid extends StatelessWidget {
   final VoidCallback? onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
-  final Widget Function(core.Post post) contextMenuBuilder;
+  final Widget Function(Post post) contextMenuBuilder;
   final bool multiSelect;
-  final void Function(core.Post post, bool selected)? onPostSelectChanged;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +168,9 @@ class _SliverPostGrid extends StatelessWidget {
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
-  final Widget Function(core.Post post) contextMenuBuilder;
+  final Widget Function(Post post) contextMenuBuilder;
 
-  final void Function(core.Post post, bool selected)? onPostSelectChanged;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
 
   @override
