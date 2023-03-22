@@ -1,1 +1,1 @@
-export 'searches/search_bloc.dart';
+export 'searches/danbooru_search_bloc.dart';

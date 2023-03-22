@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart' as sh;
 import 'package:boorusama/core/domain/autocompletes.dart';
@@ -66,10 +65,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchRawTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchNewRawStringTagSelected(event.tag));
-    });
-
-    on<SearchRelatedTagSelected>((event, emit) {
-      add(SearchRawTagSelected(tag: event.tag.tag));
     });
 
     on<SearchRawMetatagSelected>((event, emit) {

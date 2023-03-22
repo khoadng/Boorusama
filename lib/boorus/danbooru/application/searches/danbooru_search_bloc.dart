@@ -4,11 +4,22 @@ import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/searches.dart';
-import 'package:boorusama/boorus/danbooru/application/searches/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/search.dart';
+
+class SearchRelatedTagSelected extends SearchEvent {
+  const SearchRelatedTagSelected({
+    required this.tag,
+  });
+
+  final RelatedTagItem tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
 
 class DanbooruSearchBloc extends SearchBloc {
   DanbooruSearchBloc({
@@ -22,7 +33,11 @@ class DanbooruSearchBloc extends SearchBloc {
     required super.metatags,
     required super.booruType,
     super.initialQuery,
-  });
+  }) {
+    on<SearchRelatedTagSelected>((event, emit) {
+      add(SearchRawTagSelected(tag: event.tag.tag));
+    });
+  }
 
   final PostBloc postBloc;
   final RelatedTagBloc relatedTagBloc;

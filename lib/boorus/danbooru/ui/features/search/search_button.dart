@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/searches.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {

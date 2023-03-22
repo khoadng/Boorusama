@@ -105,17 +105,6 @@ class SearchRawTagSelected extends SearchEvent {
   List<Object?> get props => [tag];
 }
 
-class SearchRelatedTagSelected extends SearchEvent {
-  const SearchRelatedTagSelected({
-    required this.tag,
-  });
-
-  final RelatedTagItem tag;
-
-  @override
-  List<Object?> get props => [tag];
-}
-
 class SearchRawMetatagSelected extends SearchEvent {
   const SearchRawMetatagSelected({
     required this.tag,

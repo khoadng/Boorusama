@@ -25,7 +25,6 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/searches.dart';
 import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
