@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 
 class EmptyFavoritePostRepository implements FavoritePostRepository {

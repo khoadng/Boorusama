@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 
 class EmptyPoolRepository implements PoolRepository {

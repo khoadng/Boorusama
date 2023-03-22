@@ -1,13 +1,16 @@
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/searches.dart';
-import 'package:boorusama/boorus/danbooru/application/searches/search_bloc_2.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/core/application/common.dart';
+// Package imports:
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
-class DanbooruSearchBloc extends SearchBloc2 {
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/searches.dart';
+import 'package:boorusama/boorus/danbooru/application/searches/search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/common.dart';
+
+class DanbooruSearchBloc extends SearchBloc {
   DanbooruSearchBloc({
     required super.initial,
     required this.postBloc,

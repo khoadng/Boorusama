@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -27,6 +26,7 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/searches.dart';
+import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
@@ -572,7 +572,7 @@ Widget provideSearchPageDependencies(
                     value: BlocProvider.of<ThemeBloc>(context),
                   ),
                   BlocProvider.value(value: searchHistorySuggestions),
-                  BlocProvider(
+                  BlocProvider<SearchBloc>(
                     create: (context) => DanbooruSearchBloc(
                       initial: DisplayState.options,
                       metatags: context.read<TagInfo>().metatags,

@@ -5,20 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/search/tag_search_bloc.dart';
-import 'package:boorusama/core/application/search/tag_search_item.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart' as sh;
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/searches/search_history.dart';
+import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 
 part 'search_event.dart';
@@ -28,11 +22,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required DisplayState initial,
     required TagSearchBloc tagSearchBloc,
-    required PostBloc postBloc,
     required sh.SearchHistoryBloc searchHistoryBloc,
-    required RelatedTagBloc relatedTagBloc,
     required sh.SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
-    required PostCountRepository postCountRepository,
     required List<Metatag> metatags,
     required BooruType booruType,
     String? initialQuery,
@@ -121,7 +112,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchGoBackToSearchOptionsRequested>((event, emit) {
-      postBloc.add(const PostReset());
       tagSearchBloc.add(const TagSearchCleared());
       emit(state.copyWith(
         displayState: DisplayState.options,
@@ -171,12 +161,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<_SearchRequested>((event, emit) async {
       searchHistoryBloc.add(sh.SearchHistoryAdded(event.query));
 
-      relatedTagBloc.add(RelatedTagRequested(query: event.query));
-
-      postBloc.add(PostRefreshed(
-        tag: event.query,
-        fetcher: SearchedPostFetcher.fromTags(event.query),
-      ));
+      onSearch(event.query);
 
       emit(state.copyWith(totalResults: () => -1));
 
@@ -185,7 +170,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         tags.add('rating:g');
       }
 
-      final totalResults = await postCountRepository.count(tags);
+      final totalResults = await fetchPostCount(tags);
 
       emit(state.copyWith(totalResults: () => totalResults));
     });
@@ -200,29 +185,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(tagSearchState: event.state));
     });
 
-    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-      stream,
-      postBloc.stream,
-      Tuple2.new,
-    )
-        .where((event) =>
-            event.item2.status == LoadStatus.success &&
-            event.item2.posts.isEmpty &&
-            event.item1.displayState == DisplayState.result)
-        .listen((state) => add(const SearchNoData()))
-        .addTo(compositeSubscription);
-
-    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-      stream,
-      postBloc.stream,
-      Tuple2.new,
-    )
-        .where((event) =>
-            event.item2.status == LoadStatus.failure &&
-            event.item1.displayState == DisplayState.result)
-        .listen((state) => add(SearchError(state.item2.exceptionMessage!)))
-        .addTo(compositeSubscription);
-
     tagSearchBloc.stream
         .distinct()
         .listen((event) => add(_CopyState(state: event)))
@@ -234,6 +196,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
 
     searchHistoryBloc.add(const sh.SearchHistoryFetched());
+
+    onInit();
   }
 
   final compositeSubscription = CompositeSubscription();
@@ -244,6 +208,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     return super.close();
   }
+
+  // ignore: no-empty-block
+  void onSearch(String query) {}
+  // ignore: no-empty-block
+  void onInit() {}
+  // ignore: no-empty-block
+  void onBackToOptions() {}
+
+  Future<int?> fetchPostCount(List<String> tags) async => null;
 }
 
 class _CopyState extends SearchEvent {

@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/core/domain/tags.dart';
 
 class EmptyBlacklistedTagsRepository implements BlacklistedTagsRepository {
