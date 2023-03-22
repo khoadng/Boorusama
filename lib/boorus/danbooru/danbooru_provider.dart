@@ -343,7 +343,7 @@ class DanbooruProvider extends StatelessWidget {
     );
     final authenticationCubit = AuthenticationCubit(
       currentUserBooruRepository: currentUserBooruRepository,
-      profileRepository: profileRepo,
+      booru: booru,
     )..logIn();
     final blacklistedTagsBloc = BlacklistedTagsBloc(
       currentUserBooruRepository: currentUserBooruRepository,
