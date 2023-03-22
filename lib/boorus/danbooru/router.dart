@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -572,7 +573,7 @@ Widget provideSearchPageDependencies(
                   ),
                   BlocProvider.value(value: searchHistorySuggestions),
                   BlocProvider(
-                    create: (context) => SearchBloc(
+                    create: (context) => DanbooruSearchBloc(
                       initial: DisplayState.options,
                       metatags: context.read<TagInfo>().metatags,
                       tagSearchBloc: tagSearchBloc,
