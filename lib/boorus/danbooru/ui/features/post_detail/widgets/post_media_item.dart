@@ -11,9 +11,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
@@ -24,20 +22,18 @@ class PostMediaItem extends StatefulWidget {
     super.key,
     required this.post,
     required this.onCached,
-    this.enableNotes = true,
     this.onTap,
     this.onZoomUpdated,
-    required this.notes,
     this.previewCacheManager,
+    this.imageOverlayBuilder,
   });
 
-  final DanbooruPost post;
-  final List<Note> notes;
+  final Post post;
   final void Function(String? path) onCached;
-  final bool enableNotes;
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
   final CacheManager? previewCacheManager;
+  final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
 
   @override
   State<PostMediaItem> createState() => _PostMediaItemState();
@@ -120,17 +116,8 @@ class _PostMediaItemState extends State<PostMediaItem> {
                             fit: BoxFit.contain,
                             image: imageProvider,
                           ),
-                          if (widget.enableNotes)
-                            ...widget.notes
-                                .map((e) => e.adjustNoteCoordFor(
-                                      widget.post,
-                                      widthConstraint: constraints.maxWidth,
-                                      heightConstraint: constraints.maxHeight,
-                                    ))
-                                .map((e) => PostNote(
-                                      coordinate: e.coordinate,
-                                      content: e.content,
-                                    )),
+                          ...widget.imageOverlayBuilder?.call(constraints) ??
+                              [],
                         ],
                       );
                     },

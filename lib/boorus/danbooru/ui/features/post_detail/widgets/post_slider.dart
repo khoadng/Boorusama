@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/parent_child_data.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -25,7 +26,6 @@ import 'parent_child_tile.dart';
 import 'pool_tiles.dart';
 import 'post_action_toolbar.dart';
 import 'post_info.dart';
-import 'post_media_item.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
 import 'recommend_artist_list.dart';
@@ -55,7 +55,7 @@ class _PostSliderState extends State<PostSlider> {
     return CarouselSlider.builder(
       itemCount: widget.posts.length,
       itemBuilder: (context, index, realIndex) {
-        final media = PostMediaItem(
+        final media = DanbooruPostMediaItem(
           //TODO: this is used to preload image between page
           post: widget.posts[index].post,
           onCached: (path) => widget.imagePath.value = path,
@@ -176,7 +176,7 @@ class _CarouselContent extends StatefulWidget {
     required this.pools,
   });
 
-  final PostMediaItem media;
+  final DanbooruPostMediaItem media;
   final ValueNotifier<String?> imagePath;
   final DanbooruPostData post;
   final DanbooruPost preloadPost;

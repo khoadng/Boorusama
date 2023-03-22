@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
-import 'post_media_item.dart';
 
 class PostSliderDesktop extends StatelessWidget {
   const PostSliderDesktop({
@@ -31,7 +31,7 @@ class PostSliderDesktop extends StatelessWidget {
       carouselController: controller,
       itemCount: posts.length,
       itemBuilder: (context, index, realIndex) {
-        final media = PostMediaItem(
+        final media = DanbooruPostMediaItem(
           //TODO: this is used to preload image between page
           post: posts[index].post,
           onCached: (path) => imagePath.value = path,
