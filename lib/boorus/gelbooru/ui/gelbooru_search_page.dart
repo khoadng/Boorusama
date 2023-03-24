@@ -12,18 +12,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
-import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/error_box.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
@@ -31,8 +26,6 @@ import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/sliver_post_grid.dart';
-import 'package:boorusama/core/ui/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/ui/tag_suggestion_items.dart';
 
 import 'package:boorusama/core/application/search_history.dart'
@@ -271,6 +264,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
   Widget build(BuildContext context) {
     final displayState =
         context.select((SearchBloc bloc) => bloc.state.displayState);
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
 
     switch (displayState) {
       case DisplayState.options:
@@ -354,152 +348,59 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
-            return InfiniteLoadList(
-              enableLoadMore: state.hasMore,
-              onLoadMore: () => context
+            return GelbooruInfinitePostList(
+              onLoadMore: () =>
+                  context.read<GelbooruPostBloc>().add(GelbooruPostBlocFetched(
+                        tag: tags.map((e) => e.toString()).join(' '),
+                      )),
+              onRefresh: (controller) => context
                   .read<GelbooruPostBloc>()
-                  .add(const GelbooruPostBlocFetched(
-                    tag: '',
+                  .add(GelbooruPostBlocRefreshed(
+                    tag: tags.map((e) => e.toString()).join(' '),
                   )),
-              onRefresh: (controller) {
-                context
-                    .read<GelbooruPostBloc>()
-                    .add(const GelbooruPostBlocRefreshed(
-                      tag: '',
-                    ));
-                Future.delayed(
-                  const Duration(seconds: 1),
-                  () => controller.refreshCompleted(),
-                );
-              },
-              builder: (context, controller) => CustomScrollView(
-                controller: controller,
-                slivers: [
-                  SliverAppBar(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    toolbarHeight: kToolbarHeight * 1.2,
-                    title: SearchBar(
-                      enabled: false,
-                      onTap: () => goToGelbooruSearchPage(context),
-                    ),
-                    floating: true,
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    sliver:
-                        BlocSelector<SettingsCubit, SettingsState, GridSize>(
-                      selector: (state) => state.settings.gridSize,
-                      builder: (context, gridSize) {
-                        return BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
-                          buildWhen: (previous, current) => !current.loading,
-                          builder: (context, state) {
-                            if (state.data.isEmpty && !state.refreshing) {
-                              return SliverPostGridPlaceHolder(
-                                gridSize: gridSize,
-                              );
-                            } else if (state.data.isNotEmpty) {
-                              return SliverPostGrid(
-                                posts: state.data.toList(),
-                                scrollController: controller,
-                                gridSize: gridSize,
-
-                                // ignore: no-empty-block
-                                onTap: (post, index) {
-                                  goToGelbooruPostDetailsPage(
-                                    context: context,
-                                    posts: state.data,
-                                    initialIndex: index,
-                                  );
-                                },
-                                contextMenuBuilder: (post) =>
-                                    GelbooruPostContextMenu(
-                                  post: post,
-                                ),
-                                enableFavorite: false,
-                              );
-                            } else if (state.loading) {
-                              return const SliverToBoxAdapter(
-                                child: SizedBox.shrink(),
-                              );
-                            } else {
-                              return const SliverToBoxAdapter(
-                                child: ErrorBox(),
-                              );
-                            }
-                          },
-                        );
-                      },
+              scrollController: scrollController,
+              sliverHeaderBuilder: (context) => [
+                SliverAppBar(
+                  titleSpacing: 0,
+                  toolbarHeight: kToolbarHeight * 1.9,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  title: SizedBox(
+                    height: kToolbarHeight * 1.85,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SearchBar(
+                            enabled: false,
+                            onTap: () => context
+                                .read<SearchBloc>()
+                                .add(const SearchGoToSuggestionsRequested()),
+                            leading: IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: () => context.read<SearchBloc>().add(
+                                    const SearchGoBackToSearchOptionsRequested(),
+                                  ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const _SelectedTagList(),
+                      ],
                     ),
                   ),
-                  BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
-                    builder: (context, state) {
-                      return state.loading
-                          ? const SliverPadding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 20,
-                              ),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            )
-                          : const SliverToBoxAdapter(
-                              child: SizedBox.shrink(),
-                            );
-                    },
-                  ),
-                ],
-              ),
+                  floating: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                ),
+                const SliverToBoxAdapter(child: _Divider(height: 7)),
+              ],
             );
           },
         );
-      // return ResultView(
-      //   scrollController: scrollController,
-      //   headerBuilder: () => [
-      //     SliverAppBar(
-      //       titleSpacing: 0,
-      //       toolbarHeight: kToolbarHeight * 1.9,
-      //       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //       elevation: 0,
-      //       shadowColor: Colors.transparent,
-      //       title: SizedBox(
-      //         height: kToolbarHeight * 1.85,
-      //         child: Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             const SizedBox(height: 8),
-      //             Padding(
-      //               padding: const EdgeInsets.symmetric(horizontal: 16),
-      //               child: SearchBar(
-      //                 enabled: false,
-      //                 onTap: () => context
-      //                     .read<SearchBloc>()
-      //                     .add(const SearchGoToSuggestionsRequested()),
-      //                 leading: IconButton(
-      //                   icon: const Icon(Icons.arrow_back),
-      //                   onPressed: () => context.read<SearchBloc>().add(
-      //                         const SearchGoBackToSearchOptionsRequested(),
-      //                       ),
-      //                 ),
-      //               ),
-      //             ),
-      //             const SizedBox(height: 10),
-      //             const _SelectedTagList(),
-      //           ],
-      //         ),
-      //       ),
-      //       floating: true,
-      //       snap: true,
-      //       automaticallyImplyLeading: false,
-      //     ),
-      //     const SliverToBoxAdapter(child: _Divider(height: 7)),
-      //   ],
-      // );
     }
   }
 }
