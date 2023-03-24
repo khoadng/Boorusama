@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -326,6 +328,21 @@ void goToSearchHistoryPage(
       },
     ),
   );
+}
+
+void goToSettingPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SettingsPage(),
+    ));
+  } else {
+    showDesktopDialogWindow(
+      context,
+      width: min(MediaQuery.of(context).size.width * 0.8, 900),
+      height: min(MediaQuery.of(context).size.height * 0.8, 650),
+      builder: (context) => const SettingsPageDesktop(),
+    );
+  }
 }
 
 Future<T?> showDesktopDialogWindow<T>(
