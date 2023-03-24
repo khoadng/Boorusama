@@ -3,21 +3,22 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/post_grid.dart';
 
-class InfinitePostList extends StatefulWidget {
-  const InfinitePostList({
+class GelbooruInfinitePostList extends StatefulWidget {
+  const GelbooruInfinitePostList({
     super.key,
     required this.onLoadMore,
     this.onRefresh,
@@ -42,10 +43,10 @@ class InfinitePostList extends StatefulWidget {
   )? multiSelectActions;
 
   @override
-  State<InfinitePostList> createState() => _InfinitePostListState();
+  State<GelbooruInfinitePostList> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState extends State<InfinitePostList> {
+class _InfinitePostListState extends State<GelbooruInfinitePostList> {
   var selectedPosts = <core.Post>[];
   var multiSelect = false;
   late final AutoScrollController _autoScrollController;
@@ -72,11 +73,10 @@ class _InfinitePostListState extends State<InfinitePostList> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocListener<PostBloc, PostState>(
+    return BlocListener<GelbooruPostBloc, GelbooruPostState>(
       listener: (context, state) {
         if (state.refreshing) {
           setState(() {
@@ -86,64 +86,86 @@ class _InfinitePostListState extends State<InfinitePostList> {
       },
       child: WillPopScope(
         onWillPop: _onWillPop,
-        child: InfiniteLoadListScrollView(
-          bottomBuilder: () =>
-              widget.multiSelectActions?.call(
-                selectedPosts,
-                _endMultiSelect,
-              ) ??
-              DefaultMultiSelectionActions(
-                selectedPosts: selectedPosts,
-                endMultiSelect: _endMultiSelect,
+        child: BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+          buildWhen: (previous, current) => !current.loading,
+          builder: (context, state) {
+            return InfiniteLoadListScrollView(
+              bottomBuilder: () =>
+                  widget.multiSelectActions?.call(
+                    selectedPosts,
+                    _endMultiSelect,
+                  ) ??
+                  DefaultMultiSelectionActions(
+                    selectedPosts: selectedPosts,
+                    endMultiSelect: _endMultiSelect,
+                  ),
+              topBuilder: () => AppBar(
+                leading: IconButton(
+                  onPressed: _endMultiSelect,
+                  icon: const Icon(Icons.close),
+                ),
+                title: selectedPosts.isEmpty
+                    ? const Text('Select items')
+                    : Text('${selectedPosts.length} Items selected'),
               ),
-          topBuilder: () => AppBar(
-            leading: IconButton(
-              onPressed: _endMultiSelect,
-              icon: const Icon(Icons.close),
-            ),
-            title: selectedPosts.isEmpty
-                ? const Text('Select items')
-                : Text('${selectedPosts.length} Items selected'),
-          ),
-          enableRefresh: widget.onRefresh != null,
-          multiSelect: multiSelect,
-          isLoading: state.loading,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => widget.onLoadMore.call(),
-          onRefresh: (controller) {
-            widget.onRefresh?.call(controller);
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => controller.refreshCompleted(),
+              enableRefresh: widget.onRefresh != null,
+              multiSelect: multiSelect,
+              isLoading: state.loading,
+              enableLoadMore: state.hasMore,
+              onLoadMore: () => widget.onLoadMore.call(),
+              onRefresh: (controller) {
+                widget.onRefresh?.call(controller);
+                Future.delayed(
+                  const Duration(seconds: 1),
+                  () => controller.refreshCompleted(),
+                );
+              },
+              scrollController: _autoScrollController,
+              refreshController: _refreshController,
+              sliverBuilder: (controller) => [
+                if (widget.sliverHeaderBuilder != null)
+                  ...widget.sliverHeaderBuilder!(context),
+                PostGrid(
+                  enableFavorite: false,
+                  controller: controller,
+                  posts: state.data,
+                  status: state.refreshing
+                      ? LoadStatus.initial
+                      : state.loading
+                          ? LoadStatus.loading
+                          : LoadStatus.success,
+                  onPostSelectChanged: (post, selected) {
+                    setState(() {
+                      if (selected) {
+                        selectedPosts.add(post);
+                      } else {
+                        selectedPosts.remove(post);
+                      }
+                    });
+                  },
+                  multiSelect: multiSelect,
+                  contextMenuBuilder: (post) =>
+                      widget.contextMenuBuilder
+                          ?.call(post, _enableMultiSelect) ??
+                      GelbooruPostContextMenu(
+                        hasAccount: authState is Authenticated,
+                        onMultiSelect: _enableMultiSelect,
+                        post: post,
+                      ),
+                  isFavorite: (post) => false,
+                  // ignore: no-empty-block
+                  onFavoriteTap: (post, isFav) {},
+                  onTap: (int index) {
+                    goToGelbooruPostDetailsPage(
+                      context: context,
+                      posts: state.data,
+                      initialIndex: index,
+                    );
+                  },
+                ),
+              ],
             );
           },
-          scrollController: _autoScrollController,
-          refreshController: _refreshController,
-          sliverBuilder: (controller) => [
-            if (widget.sliverHeaderBuilder != null)
-              ...widget.sliverHeaderBuilder!(context),
-            DanbooruPostGrid(
-              scrollController: controller,
-              usePlaceholder: true,
-              onPostSelectChanged: (post, selected) {
-                setState(() {
-                  if (selected) {
-                    selectedPosts.add(post);
-                  } else {
-                    selectedPosts.remove(post);
-                  }
-                });
-              },
-              multiSelect: multiSelect,
-              contextMenuBuilder: (post) =>
-                  widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
-                  DefaultPostContextMenu(
-                    hasAccount: authState is Authenticated,
-                    onMultiSelect: _enableMultiSelect,
-                    post: post,
-                  ),
-            ),
-          ],
         ),
       ),
     );
@@ -184,9 +206,6 @@ class DefaultMultiSelectionActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authenticationState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
-
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
@@ -205,21 +224,6 @@ class DefaultMultiSelectionActions extends StatelessWidget {
             icon: const Icon(Icons.download),
           ),
         ),
-        if (authenticationState is Authenticated)
-          IconButton(
-            onPressed: selectedPosts.isNotEmpty
-                ? () async {
-                    final shouldEnd = await goToAddToFavoriteGroupSelectionPage(
-                      context,
-                      selectedPosts,
-                    );
-                    if (shouldEnd != null && shouldEnd) {
-                      endMultiSelect();
-                    }
-                  }
-                : null,
-            icon: const Icon(Icons.add),
-          ),
       ],
     );
   }

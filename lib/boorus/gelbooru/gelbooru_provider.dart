@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -27,6 +28,7 @@ class GelbooruProvider extends StatelessWidget {
     required this.userMetatagRepository,
     required this.searchHistoryRepository,
     required this.favoriteTagRepository,
+    required this.authenticationCubit,
   });
 
   factory GelbooruProvider.create(
@@ -44,6 +46,12 @@ class GelbooruProvider extends StatelessWidget {
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final currentUserBooruRepository =
+        context.read<CurrentUserBooruRepository>();
+    final authenticationCubit = AuthenticationCubit(
+      currentUserBooruRepository: currentUserBooruRepository,
+      booru: booru,
+    );
 
     return GelbooruProvider(
       postRepository: postRepo,
@@ -53,6 +61,7 @@ class GelbooruProvider extends StatelessWidget {
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
+      authenticationCubit: authenticationCubit,
     );
   }
 
@@ -69,6 +78,8 @@ class GelbooruProvider extends StatelessWidget {
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
+    final authenticationCubit = context.read<AuthenticationCubit>();
+
     return GelbooruProvider(
       postRepository: postRepo,
       tagRepository: tagRepo,
@@ -77,6 +88,7 @@ class GelbooruProvider extends StatelessWidget {
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
+      authenticationCubit: authenticationCubit,
     );
   }
 
@@ -87,6 +99,8 @@ class GelbooruProvider extends StatelessWidget {
   final SearchHistoryRepository searchHistoryRepository;
   final FavoriteTagRepository favoriteTagRepository;
   final Widget Function(BuildContext context) builder;
+
+  final AuthenticationCubit authenticationCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +113,13 @@ class GelbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: searchHistoryRepository),
         RepositoryProvider.value(value: favoriteTagRepository),
       ],
-      child: Builder(
-        builder: builder,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: authenticationCubit),
+        ],
+        child: Builder(
+          builder: builder,
+        ),
       ),
     );
   }

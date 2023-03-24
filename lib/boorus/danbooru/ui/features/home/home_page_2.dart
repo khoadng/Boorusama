@@ -68,7 +68,7 @@ class HomePage2 extends StatelessWidget {
                       create: (_) => GelbooruPostBloc(
                         postRepository: gcontext.read<PostRepository>(),
                       )..add(const GelbooruPostBlocRefreshed(
-                          tag: 'belko',
+                          tag: 'rating:general',
                         )),
                     ),
                   ],

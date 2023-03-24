@@ -207,8 +207,6 @@ class _PaginationState extends State<_Pagination>
               hasAccount: authState is Authenticated,
             ),
             multiSelect: true,
-            posts: state.posts,
-            status: state.status,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
           if (totalResults != null && totalResults >= postsPerPage)
