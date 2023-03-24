@@ -47,9 +47,9 @@ class SideBarMenu extends StatelessWidget {
                     return state.booru != null
                         ? ListTile(
                             title: Text(state.booru!.name),
-                            subtitle: state.userBooru != null
+                            subtitle: state.userBooru.hasLoginDetails()
                                 ? Text(state.userBooru!.login)
-                                : null,
+                                : const Text('<Anonymous>'),
                           )
                         : const SizedBox.shrink();
                   },
@@ -58,6 +58,7 @@ class SideBarMenu extends StatelessWidget {
                   ...initialContentBuilder!(context)!,
                   const Divider(),
                 ],
+                const Divider(),
                 _SideMenuTile(
                   icon: const Icon(Icons.account_box_sharp),
                   title: const Text('Manage Accounts'),

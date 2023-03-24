@@ -497,8 +497,9 @@ void goToSearchPage(
   String? tag,
 }) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => provideSearchPageDependencies(
+    Navigator.of(context).push(PageTransition(
+      type: PageTransitionType.fade,
+      child: provideSearchPageDependencies(
         context,
         tag,
         (context, settings) => SearchPage(

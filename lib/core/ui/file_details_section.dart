@@ -43,10 +43,11 @@ class FileDetailsSection extends StatelessWidget {
               title: 'post.detail.rating'.tr(),
               value: post.rating.toString().split('.').last.pascalCase,
             ),
-            _FileDetailTile(
-              title: 'post.detail.size'.tr(),
-              value: filesize(post.fileSize, 1),
-            ),
+            if (post.fileSize > 0)
+              _FileDetailTile(
+                title: 'post.detail.size'.tr(),
+                value: filesize(post.fileSize, 1),
+              ),
             _FileDetailTile(
               title: 'post.detail.resolution'.tr(),
               value: '${post.width.toInt()}x${post.height.toInt()}',
