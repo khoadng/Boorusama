@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,19 +13,19 @@ class TrendingTags extends StatelessWidget {
   const TrendingTags({
     super.key,
     required this.onTagTap,
+    required this.tags,
   });
 
   final ValueChanged<String>? onTagTap;
+  final List<Search>? tags;
 
   @override
   Widget build(BuildContext context) {
-    final tags = context.select((TrendingTagCubit cubit) => cubit.state.tags);
-
-    return tags != null && tags.isNotEmpty
+    return tags != null && tags!.isNotEmpty
         ? Wrap(
             spacing: 4,
             runSpacing: isMobilePlatform() ? -4 : 8,
-            children: tags
+            children: tags!
                 .take(15)
                 .map((e) => RawChip(
                       onPressed: () => onTagTap?.call(e.keyword),

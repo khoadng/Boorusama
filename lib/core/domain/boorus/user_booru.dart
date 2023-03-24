@@ -23,15 +23,15 @@ class UserBooru extends Equatable {
   static const UserBooru empty = UserBooru(
     id: -1,
     booruId: -1,
-    apiKey: '',
-    login: '',
+    apiKey: null,
+    login: null,
     booruUserId: -1,
   );
 
   final int id;
   final int booruId;
-  final String apiKey;
-  final String login;
+  final String? apiKey;
+  final String? login;
   final int? booruUserId;
 
   Map<String, dynamic> toJson() {
@@ -63,7 +63,8 @@ class UserBooru extends Equatable {
 extension UserBooruX on UserBooru? {
   bool hasLoginDetails() {
     if (this == null) return false;
-    if (this!.login.isEmpty && this!.apiKey.isEmpty) return false;
+    if (this!.login == null || this!.apiKey == null) return false;
+    if (this!.login!.isEmpty && this!.apiKey!.isEmpty) return false;
     if (this!.booruUserId == null) return false;
 
     return true;

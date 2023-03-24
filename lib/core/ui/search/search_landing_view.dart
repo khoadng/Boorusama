@@ -84,16 +84,6 @@ class _SearchLandingViewState extends State<SearchLandingView>
                 onTagTap: widget.onTagTap,
               ),
               if (widget.trendingBuilder != null) ...[
-                const Divider(thickness: 1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    'search.trending'.tr().toUpperCase(),
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                ),
                 widget.trendingBuilder!.call(context),
               ],
               BlocBuilder<SearchHistoryBloc, SearchHistoryState>(

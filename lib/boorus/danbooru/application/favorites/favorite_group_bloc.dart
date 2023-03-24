@@ -253,7 +253,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
             ? favoriteGroupRepository
                 .getFavoriteGroupsByCreatorName(
                 page: page,
-                name: currentUser!.login,
+                name: currentUser!.login ?? '',
               )
                 .then((value) {
                 if (event.includePreviews) {

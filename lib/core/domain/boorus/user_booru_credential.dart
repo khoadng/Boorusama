@@ -76,8 +76,8 @@ UserBooru? convertToUserBooru({
   return UserBooru(
     id: id,
     booruId: credential.booruId,
-    apiKey: credential.apiKey,
-    login: credential.login,
+    apiKey: credential.apiKey.isEmpty ? null : credential.apiKey,
+    login: credential.login.isEmpty ? null : credential.login,
     booruUserId: booruUserId,
   );
 }

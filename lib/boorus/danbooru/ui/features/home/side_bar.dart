@@ -48,7 +48,7 @@ class SideBarMenu extends StatelessWidget {
                         ? ListTile(
                             title: Text(state.booru!.name),
                             subtitle: state.userBooru.hasLoginDetails()
-                                ? Text(state.userBooru!.login)
+                                ? Text(state.userBooru!.login ?? 'Unknown')
                                 : const Text('<Anonymous>'),
                           )
                         : const SizedBox.shrink();

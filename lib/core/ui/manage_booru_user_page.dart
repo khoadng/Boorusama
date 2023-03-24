@@ -52,8 +52,9 @@ class ManageBooruUserPage extends StatelessWidget {
 
                 return ListTile(
                   title: Text(BooruType.values[user.booruId].name),
-                  subtitle:
-                      Text(user.login.isEmpty ? '<Anonymous>' : user.login),
+                  subtitle: Text(user.login?.isEmpty ?? true
+                      ? '<Anonymous>'
+                      : user.login ?? 'Unknown'),
                   trailing: IconButton(
                     onPressed: () => context
                         .read<ManageBooruUserBloc>()
