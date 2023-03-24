@@ -1,22 +1,22 @@
 // Flutter imports:
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/download_provider_widget.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_slider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;

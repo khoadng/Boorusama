@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
@@ -24,7 +25,6 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
-import 'package:page_transition/page_transition.dart';
 import 'ui/gelbooru_post_detail_page.dart';
 import 'ui/utils.dart';
 

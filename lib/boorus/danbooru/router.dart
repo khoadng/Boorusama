@@ -88,8 +88,6 @@ import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
-import 'package:boorusama/core/ui/settings/settings_page.dart';
-import 'package:boorusama/core/ui/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
 
