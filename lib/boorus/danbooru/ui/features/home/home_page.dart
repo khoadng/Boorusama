@@ -19,8 +19,8 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
+import '../../../../../core/ui/side_bar_menu.dart';
 import 'bottom_bar_widget.dart';
-import 'side_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({

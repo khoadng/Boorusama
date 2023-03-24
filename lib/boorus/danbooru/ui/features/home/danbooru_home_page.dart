@@ -24,7 +24,10 @@ import 'other_features_page.dart';
 class DanbooruHomePage extends StatefulWidget {
   const DanbooruHomePage({
     super.key,
+    required this.onMenuTap,
   });
+
+  final VoidCallback? onMenuTap;
 
   @override
   State<DanbooruHomePage> createState() => _HomePageState();
@@ -60,7 +63,7 @@ class _HomePageState extends State<DanbooruHomePage> {
                           fetcher: LatestPostFetcher(),
                         )),
                       child: _LatestView(
-                        onMenuTap: () => {},
+                        onMenuTap: widget.onMenuTap,
                       ),
                     ),
                     BlocProvider.value(
@@ -129,7 +132,7 @@ class _LatestView extends StatelessWidget {
     required this.onMenuTap,
   });
 
-  final void Function() onMenuTap;
+  final void Function()? onMenuTap;
 
   @override
   Widget build(BuildContext context) {

@@ -16,8 +16,8 @@ import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
+import '../../../../../core/ui/side_bar_menu.dart';
 import 'latest_posts_view_desktop.dart';
-import 'side_bar.dart';
 
 class HomePageDesktop extends StatefulWidget {
   const HomePageDesktop({

@@ -19,7 +19,10 @@ import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 class GelbooruHomePage extends StatefulWidget {
   const GelbooruHomePage({
     super.key,
+    required this.onMenuTap,
   });
+
+  final VoidCallback? onMenuTap;
 
   @override
   State<GelbooruHomePage> createState() => _GelbooruHomePageState();
@@ -77,6 +80,13 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                               toolbarHeight: kToolbarHeight * 1.2,
                               title: SearchBar(
                                 enabled: false,
+                                leading: widget.onMenuTap != null
+                                    ? IconButton(
+                                        icon: const Icon(Icons.menu),
+                                        onPressed: () =>
+                                            widget.onMenuTap?.call(),
+                                      )
+                                    : null,
                                 onTap: () => goToGelbooruSearchPage(context),
                               ),
                               floating: true,

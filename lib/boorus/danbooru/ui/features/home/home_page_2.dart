@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/side_bar.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
@@ -15,16 +14,25 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/core/ui/side_bar_menu.dart';
 import 'danbooru_home_page.dart';
 
-class HomePage2 extends StatelessWidget {
+class HomePage2 extends StatefulWidget {
   const HomePage2({
     super.key,
   });
 
   @override
+  State<HomePage2> createState() => _HomePage2State();
+}
+
+class _HomePage2State extends State<HomePage2> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       drawer: const SideBarMenu(
         width: 300,
         popOnSelect: true,
@@ -54,6 +62,7 @@ class HomePage2 extends StatelessWidget {
                 sourceComposer: DanbooruImageSourceComposer(booru),
                 builder: (context) => CustomContextMenuOverlay(
                   child: DanbooruHomePage(
+                    onMenuTap: _onMenuTap,
                     key: ValueKey(booru.booruType),
                   ),
                 ),
@@ -72,8 +81,10 @@ class HomePage2 extends StatelessWidget {
                         )),
                     ),
                   ],
-                  child: const CustomContextMenuOverlay(
-                    child: GelbooruHomePage(),
+                  child: CustomContextMenuOverlay(
+                    child: GelbooruHomePage(
+                      onMenuTap: _onMenuTap,
+                    ),
                   ),
                 ),
               );
@@ -81,5 +92,9 @@ class HomePage2 extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _onMenuTap() {
+    scaffoldKey.currentState!.openDrawer();
   }
 }
