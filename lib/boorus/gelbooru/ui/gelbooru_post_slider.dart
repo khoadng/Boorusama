@@ -158,8 +158,6 @@ class _CarouselContentState extends State<_CarouselContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // InformationSection(post: widget.preloadPost),
-                  // const Divider(height: 8, thickness: 1),
                   // if (widget.actionBarDisplayBehavior ==
                   //     ActionBarDisplayBehavior.scrolling) ...[
                   //   RepaintBoundary(
@@ -189,19 +187,6 @@ class _CarouselContentState extends State<_CarouselContent> {
                   FileDetailsSection(
                     post: post,
                   ),
-                  // const Divider(height: 8, thickness: 1),
-                  // RecommendArtistList(
-                  //   recommends: widget.recommends
-                  //       .where(
-                  //           (element) => element.type == RecommendType.artist)
-                  //       .toList(),
-                  // ),
-                  // RecommendCharacterList(
-                  //   recommends: widget.recommends
-                  //       .where((element) =>
-                  //           element.type == RecommendType.character)
-                  //       .toList(),
-                  // ),
                 ],
               ),
             ],
@@ -211,80 +196,3 @@ class _CarouselContentState extends State<_CarouselContent> {
     );
   }
 }
-
-// // ignore: prefer-single-widget-per-file
-// class TagsTile extends StatelessWidget {
-//   const TagsTile({
-//     super.key,
-//     required this.post,
-//   });
-
-//   final Post post;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final tags = context.select((PostDetailBloc bloc) =>
-//         bloc.state.tags.where((e) => e.postId == post.id).toList());
-
-//     return Theme(
-//       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-//       child: ExpansionTile(
-//         title: Text('${tags.length} tags'),
-//         controlAffinity: ListTileControlAffinity.leading,
-//         onExpansionChanged: (value) => value
-//             ? context.read<TagBloc>().add(TagFetched(tags: post.tags))
-//             : null,
-//         children: const [
-//           Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 12),
-//             child: PostTagList(),
-//           ),
-//           SizedBox(height: 8),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _ParentChildTile extends StatelessWidget {
-//   const _ParentChildTile({
-//     required this.post,
-//   });
-
-//   final Post post;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ParentChildTile(
-//       data: getParentChildData(post),
-//       onTap: (data) => goToParentChildPage(
-//         context,
-//         data.parentId,
-//         data.tagQueryForDataFetching,
-//       ),
-//     );
-//   }
-// }
-
-// ignore: prefer-single-widget-per-file
-// class ActionBar extends StatelessWidget {
-//   const ActionBar({
-//     super.key,
-//     required this.imagePath,
-//     required this.postData,
-//   });
-
-//   final ValueNotifier<String?> imagePath;
-//   final PostData postData;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ValueListenableBuilder<String?>(
-//       valueListenable: imagePath,
-//       builder: (context, value, child) => PostActionToolbar(
-//         postData: postData,
-//         imagePath: value,
-//       ),
-//     );
-//   }
-// }
