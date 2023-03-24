@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -122,8 +122,11 @@ class _InfinitePostListState extends State<InfinitePostList> {
           sliverBuilder: (controller) => [
             if (widget.sliverHeaderBuilder != null)
               ...widget.sliverHeaderBuilder!(context),
-            PostGrid(
-              controller: controller,
+            DanbooruPostGrid(
+              scrollController: controller,
+              usePlaceholder: true,
+              posts: state.posts,
+              status: state.status,
               onPostSelectChanged: (post, selected) {
                 setState(() {
                   if (selected) {

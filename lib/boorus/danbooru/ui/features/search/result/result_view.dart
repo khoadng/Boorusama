@@ -10,9 +10,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -194,15 +194,21 @@ class _PaginationState extends State<_Pagination>
           ...widget.headerBuilder?.call() ?? [],
           const SliverToBoxAdapter(child: RelatedTagSection()),
           const SliverToBoxAdapter(child: ResultHeader()),
-          PostGrid(
-            controller: widget.scrollController,
-            onTap: () => FocusScope.of(context).unfocus(),
+          DanbooruPostGrid(
+            scrollController: widget.scrollController,
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            usePlaceholder: true,
             contextMenuBuilder: (post) => DefaultPostContextMenu(
               post: post,
               // ignore: no-empty-block
               onMultiSelect: () {},
               hasAccount: authState is Authenticated,
             ),
+            multiSelect: true,
+            posts: state.posts,
+            status: state.status,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
           if (totalResults != null && totalResults >= postsPerPage)

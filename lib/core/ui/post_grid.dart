@@ -7,10 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/core.dart';
@@ -25,47 +21,75 @@ class PostGrid extends StatelessWidget {
   const PostGrid({
     super.key,
     required this.controller,
-    this.onTap,
+    required this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
     required this.contextMenuBuilder,
     this.multiSelect = false,
     this.onPostSelectChanged,
+    required this.posts,
+    required this.status,
+    this.error,
+    this.exceptionMessage,
+    required this.enableFavorite,
+    required this.onFavoriteTap,
+    required this.isFavorite,
   });
 
   final AutoScrollController controller;
-  final VoidCallback? onTap;
+  final void Function(int index) onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
   final Widget Function(Post post) contextMenuBuilder;
   final bool multiSelect;
   final void Function(Post post, bool selected)? onPostSelectChanged;
+  final List<Post> posts;
+  final LoadStatus status;
+  final BooruError? error;
+  final String? exceptionMessage;
+  final bool enableFavorite;
+  final void Function(Post post, bool isFav) onFavoriteTap;
+  final bool Function(Post post) isFavorite;
 
   @override
   Widget build(BuildContext context) {
+    final gridSize =
+        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
       ),
-      sliver: BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => current.status != LoadStatus.loading,
-        builder: (context, state) {
-          switch (state.status) {
+      sliver: Builder(
+        builder: (context) {
+          switch (status) {
             case LoadStatus.initial:
               return _Placeholder(usePlaceholder: usePlaceholder);
             case LoadStatus.loading:
               return const SliverToBoxAdapter(child: SizedBox.shrink());
             case LoadStatus.success:
-              return _SliverPostGrid(
-                controller: controller,
-                onTap: onTap,
-                contextMenuBuilder: contextMenuBuilder,
-                multiSelect: multiSelect,
-                onPostSelectChanged: onPostSelectChanged,
-              );
+              return posts.isNotEmpty
+                  ? SliverPostGrid(
+                      isFavorite: isFavorite,
+                      posts: posts,
+                      enableFavorite: enableFavorite,
+                      scrollController: controller,
+                      gridSize: gridSize,
+                      borderRadius: _gridSizeToBorderRadius(gridSize),
+                      contextMenuBuilder: contextMenuBuilder,
+                      multiSelect: multiSelect,
+                      onPostSelectChanged: onPostSelectChanged,
+                      onTap: (post, index) {
+                        onTap.call(index);
+                      },
+                      onFavoriteUpdated: (post, isFaved) async {
+                        onFavoriteTap(post, isFaved);
+                      },
+                    )
+                  : const SliverToBoxAdapter(child: NoDataBox());
             case LoadStatus.failure:
               return SliverToBoxAdapter(
-                child: state.error!.buildWhen(
+                child: error!.buildWhen(
                   appError: (err) {
                     switch (err.type) {
                       case AppErrorType.cannotReachServer:
@@ -104,7 +128,7 @@ class PostGrid extends StatelessWidget {
                         );
                       case AppErrorType.unknown:
                         return ErrorBox(
-                          errorMessage: state.error!.error.toString(),
+                          errorMessage: error!.error.toString(),
                         );
                     }
                   },
@@ -120,13 +144,13 @@ class PostGrid extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          state.exceptionMessage ?? 'generic.errors.unknown',
+                          exceptionMessage ?? 'generic.errors.unknown',
                         ).tr(),
                       ],
                     ),
                   ),
                   unknownError: (context) => ErrorBox(
-                    errorMessage: state.error!.error.toString(),
+                    errorMessage: error!.error.toString(),
                   ),
                 ),
               );
@@ -154,69 +178,6 @@ class _Placeholder extends StatelessWidget {
         : const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           );
-  }
-}
-
-class _SliverPostGrid extends StatelessWidget {
-  const _SliverPostGrid({
-    required this.controller,
-    required this.onTap,
-    required this.contextMenuBuilder,
-    this.onPostSelectChanged,
-    this.multiSelect = false,
-  });
-
-  final AutoScrollController controller;
-  final VoidCallback? onTap;
-  final Widget Function(Post post) contextMenuBuilder;
-
-  final void Function(Post post, bool selected)? onPostSelectChanged;
-  final bool multiSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    final gridSize =
-        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
-    final posts = context.select((PostBloc bloc) => bloc.state.posts);
-    final auth = context.select((AuthenticationCubit cubit) => cubit.state);
-
-    return posts.isNotEmpty
-        ? SliverPostGrid(
-            isFavorite: (post) =>
-                posts.firstWhere((e) => e.post.id == post.id).isFavorited,
-            posts: posts.map((e) => e.post).toList(),
-            enableFavorite: auth is Authenticated,
-            scrollController: controller,
-            gridSize: gridSize,
-            borderRadius: _gridSizeToBorderRadius(gridSize),
-            contextMenuBuilder: contextMenuBuilder,
-            multiSelect: multiSelect,
-            onPostSelectChanged: onPostSelectChanged,
-            onTap: (post, index) {
-              onTap?.call();
-              goToDetailPage(
-                context: context,
-                posts: posts,
-                initialIndex: index,
-                scrollController: controller,
-                postBloc: context.read<PostBloc>(),
-              );
-            },
-            onFavoriteUpdated: (post, isFaved) async {
-              final bloc = context.read<PostBloc>();
-              final favRepo = context.read<FavoritePostRepository>();
-              final success = await (isFaved
-                  ? favRepo.removeFromFavorites(post.id)
-                  : favRepo.addToFavorites(post.id));
-
-              if (success) {
-                bloc.add(
-                  PostFavoriteUpdated(postId: post.id, favorite: isFaved),
-                );
-              }
-            },
-          )
-        : const SliverToBoxAdapter(child: NoDataBox());
   }
 }
 
