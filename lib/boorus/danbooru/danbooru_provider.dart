@@ -83,6 +83,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.trendingTagCubit,
     required this.currentUserBooruRepository,
     required this.fileNameGenerator,
+    required this.blacklistedTagsBloc,
   });
 
   factory DanbooruProvider.create(
@@ -193,6 +194,11 @@ class DanbooruProvider extends StatelessWidget {
       booru.booruType == BooruType.safebooru ? tagInfo.r18Tags.toSet() : {},
     )..getTags();
 
+    final blacklistedTagsBloc = BlacklistedTagsBloc(
+      currentUserBooruRepository: currentUserBooruRepo,
+      blacklistedTagsRepository: blacklistedTagRepo,
+    )..add(const BlacklistedTagRequested());
+
     return DanbooruProvider(
       builder: builder,
       currentUserBooruRepo: currentUserBooruRepo,
@@ -225,6 +231,7 @@ class DanbooruProvider extends StatelessWidget {
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
+      blacklistedTagsBloc: blacklistedTagsBloc,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -265,6 +272,7 @@ class DanbooruProvider extends StatelessWidget {
     final tagInfo = context.read<TagInfo>();
 
     final trendingTagCubit = context.read<TrendingTagCubit>();
+    final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
 
     return DanbooruProvider(
       builder: builder,
@@ -298,6 +306,7 @@ class DanbooruProvider extends StatelessWidget {
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
+      blacklistedTagsBloc: blacklistedTagsBloc,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -334,6 +343,7 @@ class DanbooruProvider extends StatelessWidget {
   final FileNameGenerator fileNameGenerator;
 
   final TrendingTagCubit trendingTagCubit;
+  final BlacklistedTagsBloc blacklistedTagsBloc;
 
   final Booru booru;
   final TagInfo tagInfo;
@@ -354,10 +364,7 @@ class DanbooruProvider extends StatelessWidget {
       currentUserBooruRepository: currentUserBooruRepository,
       booru: booru,
     )..logIn();
-    final blacklistedTagsBloc = BlacklistedTagsBloc(
-      currentUserBooruRepository: currentUserBooruRepository,
-      blacklistedTagsRepository: blacklistedTagRepo,
-    )..add(const BlacklistedTagRequested());
+
     final poolOverviewBloc = PoolOverviewBloc()
       ..add(const PoolOverviewChanged(
         category: PoolCategory.series,
