@@ -9,8 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_2.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_page_desktop.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -20,6 +18,7 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/home_page.dart';
 import 'boorus/danbooru/router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -92,12 +91,10 @@ class _AppState extends State<App> {
                     control: true,
                   ): () => goToSearchPage(context),
                 },
-                child: CustomContextMenuOverlay(
+                child: const CustomContextMenuOverlay(
                   child: Focus(
                     autofocus: true,
-                    child: isMobilePlatform()
-                        ? const HomePage2()
-                        : const HomePageDesktop(),
+                    child: HomePage(),
                   ),
                 ),
               ),

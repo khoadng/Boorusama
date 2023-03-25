@@ -7,26 +7,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page_desktop.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/side_bar_menu.dart';
-import 'danbooru_home_page.dart';
 
-class HomePage2 extends StatefulWidget {
-  const HomePage2({
+class HomePage extends StatefulWidget {
+  const HomePage({
     super.key,
   });
 
   @override
-  State<HomePage2> createState() => _HomePage2State();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePage2State extends State<HomePage2> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -61,10 +63,12 @@ class _HomePage2State extends State<HomePage2> {
                 booru: booru,
                 sourceComposer: DanbooruImageSourceComposer(booru),
                 builder: (context) => CustomContextMenuOverlay(
-                  child: DanbooruHomePage(
-                    onMenuTap: _onMenuTap,
-                    key: ValueKey(booru.booruType),
-                  ),
+                  child: isMobilePlatform()
+                      ? DanbooruHomePage(
+                          onMenuTap: _onMenuTap,
+                          key: ValueKey(booru.booruType),
+                        )
+                      : const DanbooruHomePageDesktop(),
                 ),
               );
             case BooruType.gelbooru:

@@ -19,16 +19,17 @@ import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 import '../../../../../core/ui/side_bar_menu.dart';
 import 'latest_posts_view_desktop.dart';
 
-class HomePageDesktop extends StatefulWidget {
-  const HomePageDesktop({
+class DanbooruHomePageDesktop extends StatefulWidget {
+  const DanbooruHomePageDesktop({
     super.key,
   });
 
   @override
-  State<HomePageDesktop> createState() => _HomePageDesktopState();
+  State<DanbooruHomePageDesktop> createState() =>
+      _DanbooruHomePageDesktopState();
 }
 
-class _HomePageDesktopState extends State<HomePageDesktop> {
+class _DanbooruHomePageDesktopState extends State<DanbooruHomePageDesktop> {
   final viewIndex = ValueNotifier(0);
   final expanded = ValueNotifier(true);
 
