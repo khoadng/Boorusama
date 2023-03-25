@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru.dart';
+import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/domain/boorus.dart';

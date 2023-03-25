@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru.dart';
+import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/main.dart';
 

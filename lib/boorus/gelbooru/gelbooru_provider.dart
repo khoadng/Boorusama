@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
+import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';

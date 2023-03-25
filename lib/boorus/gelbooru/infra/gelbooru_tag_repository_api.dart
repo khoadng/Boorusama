@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
+import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/infra/tag_dto.dart';
 import 'package:boorusama/core/domain/tags.dart';
 

@@ -8,7 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
+import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/tags.dart';
 import '../common.dart';
 

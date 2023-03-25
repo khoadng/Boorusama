@@ -3,7 +3,7 @@ import 'package:path/path.dart' as path;
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
+import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/domain/gelbooru_post.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'post_dto.dart';
