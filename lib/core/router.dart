@@ -354,10 +354,12 @@ void goToSettingPage(BuildContext context) {
 void goToManageBooruPage(BuildContext context) {
   context.read<ManageBooruUserBloc>().add(const ManageBooruUserFetched());
 
-  showMaterialModalBottomSheet(
-    context: context,
-    builder: (_) => const ManageBooruUserPage(),
-  );
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.rightToLeft,
+    child: BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (_, state) => const ManageBooruUserPage(),
+    ),
+  ));
 }
 
 void goToAddBooruPage(

@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 
@@ -20,9 +18,6 @@ class ManageBooruUserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final users =
         context.select((ManageBooruUserBloc bloc) => bloc.state.users);
-
-    final settings =
-        context.select((SettingsCubit bloc) => bloc.state.settings);
 
     return users != null
         ? Scaffold(
@@ -50,13 +45,6 @@ class ManageBooruUserPage extends StatelessWidget {
                         )),
                     icon: const Icon(Icons.close),
                   ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
-                          userBooru: user,
-                          settings: settings,
-                        ));
-                  },
                 );
               },
             ),

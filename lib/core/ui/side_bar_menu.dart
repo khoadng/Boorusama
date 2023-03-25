@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
@@ -47,7 +50,11 @@ class SideBarMenu extends StatelessWidget {
                                 ? Text(state.userBooru!.login ?? 'Unknown')
                                 : const Text('<Anonymous>'),
                             trailing: IconButton(
-                              onPressed: () => goToManageBooruPage(context),
+                              onPressed: () => showMaterialModalBottomSheet(
+                                context: context,
+                                builder: (context) =>
+                                    const CurrentBooruActionSheet(),
+                              ),
                               icon: const Icon(Icons.more_vert),
                             ),
                           )
@@ -79,6 +86,93 @@ class SideBarMenu extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class CurrentBooruActionSheet extends StatelessWidget {
+  const CurrentBooruActionSheet({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('Switch booru'),
+            onTap: () {
+              Navigator.of(context).pop();
+              context
+                  .read<ManageBooruUserBloc>()
+                  .add(const ManageBooruUserFetched());
+              showMaterialModalBottomSheet(
+                context: context,
+                builder: (_) => const SwitchBooruModal(),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class SwitchBooruModal extends StatelessWidget {
+  const SwitchBooruModal({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final users =
+        context.select((ManageBooruUserBloc bloc) => bloc.state.users);
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: Material(
+        color: Colors.transparent,
+        child: users != null
+            ? MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  controller: ModalScrollController.of(context),
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+
+                    return ListTile(
+                      title: Text(
+                        BooruType.values[user.booruId].name,
+                      ),
+                      subtitle: Text(
+                        user.login?.isEmpty ?? true
+                            ? '<Anonymous>'
+                            : user.login ?? 'Unknown',
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        context
+                            .read<CurrentBooruBloc>()
+                            .add(CurrentBooruChanged(
+                              userBooru: user,
+                              settings: settings,
+                            ));
+                      },
+                    );
+                  },
+                ),
+              )
+            : const SizedBox.shrink(),
       ),
     );
   }
