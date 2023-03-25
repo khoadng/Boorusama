@@ -14,6 +14,10 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'application/search_history.dart';
 import 'application/tags.dart';
 import 'domain/posts/post.dart';
@@ -344,6 +348,27 @@ void goToSettingPage(BuildContext context) {
       builder: (context) => const SettingsPageDesktop(),
     );
   }
+}
+
+void goToManageBooruPage(BuildContext context) {
+  final bloc = ManageBooruUserBloc(
+    userBooruRepository: context.read<UserBooruRepository>(),
+    booruFactory: context.read<BooruFactory>(),
+    booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+  );
+  showMaterialModalBottomSheet(
+    context: context,
+    builder: (context) => MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => bloc..add(const ManageBooruUserFetched()),
+        ),
+      ],
+      child: Builder(builder: (context) {
+        return const ManageBooruUserPage();
+      }),
+    ),
+  );
 }
 
 Future<T?> showDesktopDialogWindow<T>(

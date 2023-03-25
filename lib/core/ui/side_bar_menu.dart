@@ -4,15 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -50,6 +46,10 @@ class SideBarMenu extends StatelessWidget {
                             subtitle: state.userBooru.hasLoginDetails()
                                 ? Text(state.userBooru!.login ?? 'Unknown')
                                 : const Text('<Anonymous>'),
+                            trailing: IconButton(
+                              onPressed: () => goToManageBooruPage(context),
+                              icon: const Icon(Icons.more_vert),
+                            ),
                           )
                         : const SizedBox.shrink();
                   },
@@ -59,33 +59,6 @@ class SideBarMenu extends StatelessWidget {
                   const Divider(),
                 ],
                 const Divider(),
-                _SideMenuTile(
-                  icon: const Icon(Icons.account_box_sharp),
-                  title: const Text('Manage Accounts'),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    final bloc = ManageBooruUserBloc(
-                      userBooruRepository: context.read<UserBooruRepository>(),
-                      booruFactory: context.read<BooruFactory>(),
-                      booruUserIdentityProvider:
-                          context.read<BooruUserIdentityProvider>(),
-                    );
-                    showMaterialModalBottomSheet(
-                      context: context,
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) =>
-                                bloc..add(const ManageBooruUserFetched()),
-                          ),
-                        ],
-                        child: Builder(builder: (context) {
-                          return const ManageBooruUserPage();
-                        }),
-                      ),
-                    );
-                  },
-                ),
                 _SideMenuTile(
                   icon: const Icon(Icons.settings_outlined),
                   title: Text('sideMenu.settings'.tr()),
