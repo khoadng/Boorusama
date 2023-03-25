@@ -86,6 +86,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.blacklistedTagsBloc,
     required this.exploreBloc,
     required this.currentUserBloc,
+    required this.authenticationCubit,
   });
 
   factory DanbooruProvider.create(
@@ -222,6 +223,11 @@ class DanbooruProvider extends StatelessWidget {
       currentUserBooruRepository: currentUserBooruRepo,
     )..add(const CurrentUserFetched());
 
+    final authenticationCubit = AuthenticationCubit(
+      currentUserBooruRepository: currentUserBooruRepo,
+      booru: booru,
+    )..logIn();
+
     return DanbooruProvider(
       builder: builder,
       currentUserBooruRepo: currentUserBooruRepo,
@@ -257,6 +263,7 @@ class DanbooruProvider extends StatelessWidget {
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
+      authenticationCubit: authenticationCubit,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -300,6 +307,7 @@ class DanbooruProvider extends StatelessWidget {
     final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
     final exploreBloc = context.read<ExploreBloc>();
     final currentUserBloc = context.read<CurrentUserBloc>();
+    final authenticationCubit = context.read<AuthenticationCubit>();
 
     return DanbooruProvider(
       builder: builder,
@@ -336,6 +344,7 @@ class DanbooruProvider extends StatelessWidget {
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
+      authenticationCubit: authenticationCubit,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -375,6 +384,7 @@ class DanbooruProvider extends StatelessWidget {
   final BlacklistedTagsBloc blacklistedTagsBloc;
   final ExploreBloc exploreBloc;
   final CurrentUserBloc currentUserBloc;
+  final AuthenticationCubit authenticationCubit;
 
   final Booru booru;
   final TagInfo tagInfo;
@@ -391,10 +401,6 @@ class DanbooruProvider extends StatelessWidget {
     final artistCommentaryBloc = ArtistCommentaryBloc(
       artistCommentaryRepository: artistCommentaryRepo,
     );
-    final authenticationCubit = AuthenticationCubit(
-      currentUserBooruRepository: currentUserBooruRepository,
-      booru: booru,
-    )..logIn();
 
     final poolOverviewBloc = PoolOverviewBloc()
       ..add(const PoolOverviewChanged(
