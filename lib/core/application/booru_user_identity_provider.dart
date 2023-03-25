@@ -24,6 +24,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
   }) async {
     switch (booru.booruType) {
       case BooruType.gelbooru:
+        return int.parse(login);
       case BooruType.unknown:
         throw UnimplementedError();
       case BooruType.danbooru:

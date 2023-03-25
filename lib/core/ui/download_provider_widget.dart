@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
 void _download(
@@ -18,7 +19,11 @@ void _download(
   PermissionStatus? permission,
 }) {
   final service = context.read<DownloadService>();
-  void download() => service.download(downloadable);
+  final fileNameGenerator = context.read<FileNameGenerator>();
+  void download() => service.download(
+        downloadable,
+        fileNameGenerator: fileNameGenerator,
+      );
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {

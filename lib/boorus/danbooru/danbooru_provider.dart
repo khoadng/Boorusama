@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -37,6 +38,7 @@ import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -80,6 +82,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.tagInfo,
     required this.trendingTagCubit,
     required this.currentUserBooruRepository,
+    required this.fileNameGenerator,
   });
 
   factory DanbooruProvider.create(
@@ -95,6 +98,8 @@ class DanbooruProvider extends StatelessWidget {
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
+
+    final fileNameGenerator = BoorusamaStyledFileNameGenerator();
 
     final popularSearchRepo = PopularSearchRepositoryApi(
       currentUserBooruRepository: currentUserBooruRepo,
@@ -220,6 +225,7 @@ class DanbooruProvider extends StatelessWidget {
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
+      fileNameGenerator: fileNameGenerator,
     );
   }
 
@@ -254,6 +260,7 @@ class DanbooruProvider extends StatelessWidget {
     final favoriteGroupRepo = context.read<FavoriteGroupRepository>();
     final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final fileNameGenerator = context.read<FileNameGenerator>();
 
     final tagInfo = context.read<TagInfo>();
 
@@ -291,6 +298,7 @@ class DanbooruProvider extends StatelessWidget {
       booru: booru,
       tagInfo: tagInfo,
       trendingTagCubit: trendingTagCubit,
+      fileNameGenerator: fileNameGenerator,
     );
   }
 
@@ -323,6 +331,7 @@ class DanbooruProvider extends StatelessWidget {
   final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
   final CurrentUserBooruRepository currentUserBooruRepository;
+  final FileNameGenerator fileNameGenerator;
 
   final TrendingTagCubit trendingTagCubit;
 
@@ -428,6 +437,7 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: postCountRepo),
         RepositoryProvider.value(value: savedSearchRepo),
         RepositoryProvider.value(value: favoriteGroupRepo),
+        RepositoryProvider.value(value: fileNameGenerator),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -35,7 +35,6 @@ Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
 
 Future<DownloadService<Post>> createDownloader(
   DownloadMethod method,
-  FileNameGenerator fileNameGenerator,
   DeviceInfo deviceInfo,
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
   UserAgentGenerator agentGenerator,
@@ -43,7 +42,6 @@ Future<DownloadService<Post>> createDownloader(
   if (isMobilePlatform()) {
     if (method == DownloadMethod.imageGallerySaver) {
       final d = AlternativeDownloadService(
-        fileNameGenerator: fileNameGenerator,
         flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
         agentGenerator: agentGenerator,
       );
@@ -53,7 +51,6 @@ Future<DownloadService<Post>> createDownloader(
     }
 
     final d = DownloadServiceFlutterDownloader(
-      fileNameGenerator: fileNameGenerator,
       deviceInfo: deviceInfo,
     );
 
@@ -66,8 +63,8 @@ Future<DownloadService<Post>> createDownloader(
     return d;
   } else {
     final d = isMacOS()
-        ? MacOSDownloader(fileNameGenerator, agentGenerator)
-        : WindowDownloader(fileNameGenerator, agentGenerator);
+        ? MacOSDownloader(agentGenerator)
+        : WindowDownloader(agentGenerator);
 
     await d.init();
 
@@ -78,11 +75,9 @@ Future<DownloadService<Post>> createDownloader(
 @pragma('vm:entry-point')
 class DownloadServiceFlutterDownloader implements DownloadService<Post> {
   DownloadServiceFlutterDownloader({
-    required FileNameGenerator fileNameGenerator,
     required this.deviceInfo,
-  }) : _fileNameGenerator = fileNameGenerator;
+  });
 
-  final FileNameGenerator _fileNameGenerator;
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   String _savedDir = '';
@@ -92,8 +87,9 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     downloadable, {
     String? path,
     String? folderName,
+    required FileNameGenerator fileNameGenerator,
   }) async {
-    final fileName = _fileNameGenerator.generateFor(downloadable);
+    final fileName = fileNameGenerator.generateFor(downloadable);
     await FlutterDownloader.enqueue(
       saveInPublicStorage: _shouldUsePublicStorage(deviceInfo),
       url: downloadable.downloadUrl,

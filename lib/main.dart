@@ -62,8 +62,6 @@ const savedSearchHelpUrl =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final fileNameGenerator = PostFileNameGenerator();
-
   if (!isWeb()) {
     final dbDirectory = isAndroid()
         ? await getApplicationDocumentsDirectory()
@@ -155,7 +153,6 @@ void main() async {
 
   final downloader = await createDownloader(
     settings.downloadMethod,
-    fileNameGenerator,
     deviceInfo,
     flutterLocalNotificationsPlugin,
     userAgentGenerator,

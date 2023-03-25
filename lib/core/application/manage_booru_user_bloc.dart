@@ -91,8 +91,7 @@ class ManageBooruUserBloc
       try {
         final booru = booruFactory.from(type: event.booru);
 
-        if (event.booru == BooruType.gelbooru ||
-            (event.login.isEmpty && event.apiKey.isEmpty)) {
+        if (event.login.isEmpty && event.apiKey.isEmpty) {
           final credential = UserBooruCredential.anonymous(
             booru: event.booru,
           );

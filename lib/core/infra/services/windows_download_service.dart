@@ -12,10 +12,9 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class WindowDownloader implements DownloadService<Post> {
-  WindowDownloader(this._fileNameGenerator, this._agentGenerator);
+  WindowDownloader(this._agentGenerator);
   late String? _localPath;
   late String? _savedDir;
-  final FileNameGenerator _fileNameGenerator;
   final UserAgentGenerator _agentGenerator;
 
   @override
@@ -34,6 +33,7 @@ class WindowDownloader implements DownloadService<Post> {
     item, {
     String? path,
     String? folderName,
+    required FileNameGenerator fileNameGenerator,
   }) async {
     if (_localPath == null || _savedDir == null) {
       throw Exception('Uninitialzed');
@@ -44,7 +44,7 @@ class WindowDownloader implements DownloadService<Post> {
         'User-Agent': _agentGenerator.generate(),
       },
     ));
-    final fileName = _fileNameGenerator.generateFor(item);
+    final fileName = fileNameGenerator.generateFor(item);
     try {
       final file = File('$_savedDir${Platform.pathSeparator}$fileName');
 

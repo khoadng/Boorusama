@@ -14,15 +14,12 @@ import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class AlternativeDownloadService implements DownloadService<Post> {
   AlternativeDownloadService({
-    required FileNameGenerator fileNameGenerator,
     required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
     required UserAgentGenerator agentGenerator,
     this.enableNotification = true,
-  })  : _fileNameGenerator = fileNameGenerator,
-        _agentGenerator = agentGenerator,
+  })  : _agentGenerator = agentGenerator,
         _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin;
 
-  final FileNameGenerator _fileNameGenerator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   final bool enableNotification;
   final UserAgentGenerator _agentGenerator;
@@ -36,6 +33,7 @@ class AlternativeDownloadService implements DownloadService<Post> {
     item, {
     String? path,
     String? folderName,
+    required FileNameGenerator fileNameGenerator,
   }) async {
     final dio = Dio();
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -50,7 +48,7 @@ class AlternativeDownloadService implements DownloadService<Post> {
         presentSound: false,
       ),
     );
-    final fileName = _fileNameGenerator.generateFor(item);
+    final fileName = fileNameGenerator.generateFor(item);
 
     try {
       if (enableNotification) {

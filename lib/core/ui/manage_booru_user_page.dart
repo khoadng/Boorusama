@@ -100,14 +100,12 @@ class _AddAccountSheetState extends State<_AddAccountSheet> {
     return Scaffold(
       body: Column(
         children: [
-          if (selectedBooru != BooruType.gelbooru)
-            TextField(
-              controller: loginController,
-            ),
-          if (selectedBooru != BooruType.gelbooru)
-            TextField(
-              controller: apiKeyController,
-            ),
+          TextField(
+            controller: loginController,
+          ),
+          TextField(
+            controller: apiKeyController,
+          ),
           DropdownButton<BooruType>(
             value: selectedBooru,
             onChanged: (value) {

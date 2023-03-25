@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags.dart';
@@ -29,6 +31,7 @@ class GelbooruProvider extends StatelessWidget {
     required this.searchHistoryRepository,
     required this.favoriteTagRepository,
     required this.authenticationCubit,
+    required this.fileNameGenerator,
   });
 
   factory GelbooruProvider.create(
@@ -52,6 +55,7 @@ class GelbooruProvider extends StatelessWidget {
       currentUserBooruRepository: currentUserBooruRepository,
       booru: booru,
     );
+    final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 
     return GelbooruProvider(
       postRepository: postRepo,
@@ -62,6 +66,7 @@ class GelbooruProvider extends StatelessWidget {
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
       authenticationCubit: authenticationCubit,
+      fileNameGenerator: fileNameGenerator,
     );
   }
 
@@ -77,6 +82,7 @@ class GelbooruProvider extends StatelessWidget {
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final fileNameGenerator = context.read<FileNameGenerator>();
 
     final authenticationCubit = context.read<AuthenticationCubit>();
 
@@ -89,6 +95,7 @@ class GelbooruProvider extends StatelessWidget {
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
       authenticationCubit: authenticationCubit,
+      fileNameGenerator: fileNameGenerator,
     );
   }
 
@@ -98,6 +105,7 @@ class GelbooruProvider extends StatelessWidget {
   final UserMetatagRepository userMetatagRepository;
   final SearchHistoryRepository searchHistoryRepository;
   final FavoriteTagRepository favoriteTagRepository;
+  final FileNameGenerator fileNameGenerator;
   final Widget Function(BuildContext context) builder;
 
   final AuthenticationCubit authenticationCubit;
@@ -112,6 +120,7 @@ class GelbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: userMetatagRepository),
         RepositoryProvider.value(value: searchHistoryRepository),
         RepositoryProvider.value(value: favoriteTagRepository),
+        RepositoryProvider.value(value: fileNameGenerator),
       ],
       child: MultiBlocProvider(
         providers: [
