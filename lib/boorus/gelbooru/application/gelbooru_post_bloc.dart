@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/utils/bloc/infinite_load_mixin.dart';
 
 class GelbooruPostState extends Equatable
     implements InfiniteLoadState<Post, GelbooruPostState> {

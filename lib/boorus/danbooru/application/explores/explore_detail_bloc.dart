@@ -8,7 +8,7 @@ import 'package:jiffy/jiffy.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
 
 enum ExploreCategory {
   popular,

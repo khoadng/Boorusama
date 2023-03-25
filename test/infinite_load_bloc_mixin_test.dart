@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/common/bloc/infinite_load_mixin.dart';
+import 'package:boorusama/utils/bloc/infinite_load_mixin.dart';
 
 class _Dummy with InfiniteLoadMixin {
   _Dummy({

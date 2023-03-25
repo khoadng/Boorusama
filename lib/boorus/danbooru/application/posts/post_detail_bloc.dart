@@ -11,12 +11,12 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
-import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
+import 'package:boorusama/utils/collection_utils.dart';
 
 class _PostDetailFavoriteFetch extends PostDetailEvent {
   const _PostDetailFavoriteFetch(this.accountId);

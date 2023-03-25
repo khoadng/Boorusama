@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
-import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -25,6 +24,7 @@ import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/utils/collection_utils.dart';
 
 class FavoriteGroupDetailsPage extends StatefulWidget {
   const FavoriteGroupDetailsPage({

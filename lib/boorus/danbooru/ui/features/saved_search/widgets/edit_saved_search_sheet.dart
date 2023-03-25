@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
+import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends StatefulWidget {
   const EditSavedSearchSheet({

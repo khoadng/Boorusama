@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
+import 'package:boorusama/utils/string_utils.dart';
 
 enum FilterGroupType {
   single,

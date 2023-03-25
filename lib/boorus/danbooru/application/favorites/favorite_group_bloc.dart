@@ -10,10 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
-import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
+import 'package:boorusama/utils/bloc/pagination_mixin.dart';
 
 class FavoriteGroupsState extends Equatable
     implements PaginationLoadState<FavoriteGroup, FavoriteGroupsState> {

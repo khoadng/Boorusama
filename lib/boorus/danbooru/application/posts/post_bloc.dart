@@ -13,14 +13,14 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
-import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
+import 'package:boorusama/utils/bloc/pagination_mixin.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
     with

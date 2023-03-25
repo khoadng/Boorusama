@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
 
 @immutable
 abstract class PoolFromPostIdEvent extends Equatable {

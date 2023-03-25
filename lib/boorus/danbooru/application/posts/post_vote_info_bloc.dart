@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
 
 class PostVoteInfoState extends Equatable
     implements InfiniteLoadState<Voter, PostVoteInfoState> {
