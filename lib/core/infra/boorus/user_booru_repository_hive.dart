@@ -15,6 +15,9 @@ class HiveUserBooruRepository implements UserBooruRepository {
   });
   final Box<String> box;
 
+  static String defaultValue() =>
+      jsonEncode(UserBooruCredential.anonymous(booru: BooruType.safebooru));
+
   @override
   Future<UserBooru?> add(UserBooruCredential credential) async {
     final json = credential.toJson();
