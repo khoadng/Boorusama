@@ -85,6 +85,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
     required this.exploreBloc,
+    required this.currentUserBloc,
   });
 
   factory DanbooruProvider.create(
@@ -216,6 +217,11 @@ class DanbooruProvider extends StatelessWidget {
       mostViewed: create(),
     )..add(const ExploreFetched());
 
+    final currentUserBloc = CurrentUserBloc(
+      userRepository: userRepo,
+      currentUserBooruRepository: currentUserBooruRepo,
+    )..add(const CurrentUserFetched());
+
     return DanbooruProvider(
       builder: builder,
       currentUserBooruRepo: currentUserBooruRepo,
@@ -250,6 +256,7 @@ class DanbooruProvider extends StatelessWidget {
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
+      currentUserBloc: currentUserBloc,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -292,6 +299,7 @@ class DanbooruProvider extends StatelessWidget {
     final trendingTagCubit = context.read<TrendingTagCubit>();
     final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
     final exploreBloc = context.read<ExploreBloc>();
+    final currentUserBloc = context.read<CurrentUserBloc>();
 
     return DanbooruProvider(
       builder: builder,
@@ -327,6 +335,7 @@ class DanbooruProvider extends StatelessWidget {
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
+      currentUserBloc: currentUserBloc,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -365,6 +374,7 @@ class DanbooruProvider extends StatelessWidget {
   final TrendingTagCubit trendingTagCubit;
   final BlacklistedTagsBloc blacklistedTagsBloc;
   final ExploreBloc exploreBloc;
+  final CurrentUserBloc currentUserBloc;
 
   final Booru booru;
   final TagInfo tagInfo;
@@ -416,11 +426,6 @@ class DanbooruProvider extends StatelessWidget {
     final savedSearchBloc = SavedSearchBloc(
       savedSearchRepository: savedSearchRepo,
     );
-
-    final currentUserBloc = CurrentUserBloc(
-      userRepository: userRepo,
-      currentUserBooruRepository: currentUserBooruRepo,
-    )..add(const CurrentUserFetched());
 
     return MultiRepositoryProvider(
       providers: [
