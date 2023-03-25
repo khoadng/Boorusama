@@ -87,6 +87,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.exploreBloc,
     required this.currentUserBloc,
     required this.authenticationCubit,
+    required this.poolOverviewBloc,
   });
 
   factory DanbooruProvider.create(
@@ -228,6 +229,12 @@ class DanbooruProvider extends StatelessWidget {
       booru: booru,
     )..logIn();
 
+    final poolOverviewBloc = PoolOverviewBloc()
+      ..add(const PoolOverviewChanged(
+        category: PoolCategory.series,
+        order: PoolOrder.latest,
+      ));
+
     return DanbooruProvider(
       builder: builder,
       currentUserBooruRepo: currentUserBooruRepo,
@@ -259,12 +266,13 @@ class DanbooruProvider extends StatelessWidget {
       currentUserBooruRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
+      fileNameGenerator: fileNameGenerator,
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
       authenticationCubit: authenticationCubit,
-      fileNameGenerator: fileNameGenerator,
+      poolOverviewBloc: poolOverviewBloc,
     );
   }
 
@@ -308,6 +316,7 @@ class DanbooruProvider extends StatelessWidget {
     final exploreBloc = context.read<ExploreBloc>();
     final currentUserBloc = context.read<CurrentUserBloc>();
     final authenticationCubit = context.read<AuthenticationCubit>();
+    final poolOverviewBloc = context.read<PoolOverviewBloc>();
 
     return DanbooruProvider(
       builder: builder,
@@ -340,12 +349,13 @@ class DanbooruProvider extends StatelessWidget {
       currentUserBooruRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
+      fileNameGenerator: fileNameGenerator,
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
       authenticationCubit: authenticationCubit,
-      fileNameGenerator: fileNameGenerator,
+      poolOverviewBloc: poolOverviewBloc,
     );
   }
 
@@ -385,6 +395,7 @@ class DanbooruProvider extends StatelessWidget {
   final ExploreBloc exploreBloc;
   final CurrentUserBloc currentUserBloc;
   final AuthenticationCubit authenticationCubit;
+  final PoolOverviewBloc poolOverviewBloc;
 
   final Booru booru;
   final TagInfo tagInfo;
@@ -401,12 +412,6 @@ class DanbooruProvider extends StatelessWidget {
     final artistCommentaryBloc = ArtistCommentaryBloc(
       artistCommentaryRepository: artistCommentaryRepo,
     );
-
-    final poolOverviewBloc = PoolOverviewBloc()
-      ..add(const PoolOverviewChanged(
-        category: PoolCategory.series,
-        order: PoolOrder.latest,
-      ));
 
     final tagBloc = TagBloc(
       tagRepository: TagCacher(
