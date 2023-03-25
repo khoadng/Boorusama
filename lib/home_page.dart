@@ -16,6 +16,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/side_bar_menu.dart';
 
@@ -44,8 +45,22 @@ class _HomePageState extends State<HomePage> {
         builder: (context, state) {
           final booru = state.booru;
           if (booru == null) {
-            return const Center(
-              child: Text('You havent set any booru yet'),
+            return Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("You haven't add any booru yet"),
+                      ElevatedButton.icon(
+                        onPressed: () => goToManageBooruPage(context),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           }
 
