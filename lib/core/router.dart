@@ -14,9 +14,10 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/ui/add_booru_page.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'application/search_history.dart';
 import 'application/tags.dart';
@@ -351,24 +352,44 @@ void goToSettingPage(BuildContext context) {
 }
 
 void goToManageBooruPage(BuildContext context) {
-  final bloc = ManageBooruUserBloc(
-    userBooruRepository: context.read<UserBooruRepository>(),
-    booruFactory: context.read<BooruFactory>(),
-    booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
-  );
+  context.read<ManageBooruUserBloc>().add(const ManageBooruUserFetched());
+
   showMaterialModalBottomSheet(
     context: context,
-    builder: (context) => MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => bloc..add(const ManageBooruUserFetched()),
-        ),
-      ],
-      child: Builder(builder: (context) {
-        return const ManageBooruUserPage();
-      }),
-    ),
+    builder: (_) => const ManageBooruUserPage(),
   );
+}
+
+void goToAddBooruPage(
+  BuildContext context, {
+  bool setCurrentBooruOnSubmit = false,
+}) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.rightToLeft,
+    child: BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (_, state) {
+        return AddBooruPage(
+          onSubmit: (login, apiKey, booru) => context
+              .read<ManageBooruUserBloc>()
+              .add(
+                ManageBooruUserAdded(
+                  login: login,
+                  apiKey: apiKey,
+                  booru: booru,
+                  onSuccess: (userBooru) {
+                    if (setCurrentBooruOnSubmit) {
+                      context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
+                            userBooru: userBooru,
+                            settings: state.settings,
+                          ));
+                    }
+                  },
+                ),
+              ),
+        );
+      },
+    ),
+  ));
 }
 
 Future<T?> showDesktopDialogWindow<T>(

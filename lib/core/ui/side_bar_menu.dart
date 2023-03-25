@@ -60,6 +60,14 @@ class SideBarMenu extends StatelessWidget {
                 ],
                 const Divider(),
                 _SideMenuTile(
+                  icon: const Icon(Icons.manage_accounts),
+                  title: const Text('Manage Boorus'),
+                  onTap: () {
+                    if (popOnSelect) Navigator.of(context).pop();
+                    goToManageBooruPage(context);
+                  },
+                ),
+                _SideMenuTile(
                   icon: const Icon(Icons.settings_outlined),
                   title: Text('sideMenu.settings'.tr()),
                   onTap: () {

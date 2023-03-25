@@ -53,7 +53,10 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const Text("You haven't add any booru yet"),
                       ElevatedButton.icon(
-                        onPressed: () => goToManageBooruPage(context),
+                        onPressed: () => goToAddBooruPage(
+                          context,
+                          setCurrentBooruOnSubmit: true,
+                        ),
                         icon: const Icon(Icons.add),
                         label: const Text('Add'),
                       ),

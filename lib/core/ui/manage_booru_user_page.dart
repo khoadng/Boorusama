@@ -9,6 +9,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/router.dart';
 
 class ManageBooruUserPage extends StatelessWidget {
   const ManageBooruUserPage({
@@ -27,22 +28,7 @@ class ManageBooruUserPage extends StatelessWidget {
         ? Scaffold(
             appBar: AppBar(),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                final bloc = context.read<ManageBooruUserBloc>();
-
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => _AddAccountSheet(
-                    onSubmit: (login, apiKey, booru) =>
-                        bloc.add(ManageBooruUserAdded(
-                      login: login,
-                      apiKey: apiKey,
-                      booru: booru,
-                      onFailure: (message) => print(message),
-                    )),
-                  ),
-                );
-              },
+              onPressed: () => goToAddBooruPage(context),
               child: const Icon(Icons.add),
             ),
             body: ListView.builder(

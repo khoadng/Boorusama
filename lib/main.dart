@@ -28,6 +28,7 @@ import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -199,6 +200,12 @@ void main() async {
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
+  final manageBooruUserBloc = ManageBooruUserBloc(
+    userBooruRepository: booruUserRepo,
+    booruFactory: booruFactory,
+    booruUserIdentityProvider: booruUserIdProvider,
+  );
+
   void run() {
     runApp(
       BooruLocalization(
@@ -270,6 +277,7 @@ void main() async {
                 create: (context) =>
                     ThemeBloc(initialTheme: settings.themeMode),
               ),
+              BlocProvider.value(value: manageBooruUserBloc),
               if (isAndroid() || isIOS())
                 BlocProvider(
                   create: (context) => DeviceStoragePermissionBloc(

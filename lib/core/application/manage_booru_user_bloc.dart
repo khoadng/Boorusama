@@ -45,15 +45,17 @@ class ManageBooruUserAdded extends ManageBooruUserEvent {
     required this.apiKey,
     required this.booru,
     this.onFailure,
+    this.onSuccess,
   });
 
   final String login;
   final String apiKey;
   final BooruType booru;
   final void Function(String message)? onFailure;
+  final void Function(UserBooru userBooru)? onSuccess;
 
   @override
-  List<Object?> get props => [login, apiKey, booru, onFailure];
+  List<Object?> get props => [login, apiKey, booru, onFailure, onSuccess];
 }
 
 class ManageBooruUserRemoved extends ManageBooruUserEvent {
@@ -106,6 +108,8 @@ class ManageBooruUserBloc
             return;
           }
 
+          event.onSuccess?.call(user);
+
           emit(state.copyWith(
             users: () => [
               ...users,
@@ -142,6 +146,8 @@ class ManageBooruUserBloc
           }
 
           final users = state.users ?? [];
+
+          event.onSuccess?.call(user);
 
           emit(state.copyWith(
             users: () => [
