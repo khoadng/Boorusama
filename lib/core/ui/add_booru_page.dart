@@ -24,6 +24,7 @@ class AddBooruPage extends StatefulWidget {
 class _AddBooruPageState extends State<AddBooruPage> {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
+  final nameController = TextEditingController();
   var selectedBooru = BooruType.safebooru;
   var allowSubmit = true;
 
@@ -46,6 +47,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
   void dispose() {
     loginController.dispose();
     apiKeyController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -64,30 +66,6 @@ class _AddBooruPageState extends State<AddBooruPage> {
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.close),
-        ),
-      ),
-      bottomSheet: ColoredBox(
-        color: Theme.of(context).colorScheme.background,
-        child: Row(
-          children: [
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              child: ElevatedButton(
-                onPressed: allowSubmit
-                    ? () {
-                        Navigator.of(context).pop();
-                        widget.onSubmit.call(
-                          loginController.text,
-                          apiKeyController.text,
-                          selectedBooru,
-                        );
-                      }
-                    : null,
-                child: const Text('Submit'),
-              ),
-            ),
-          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -130,7 +108,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                           });
                         }
                       },
-                      items: BooruType.values
+                      items: getSelectableBoorus()
                           .map((value) => DropdownMenuItem<BooruType>(
                                 value: value,
                                 child: Text(value.name.sentenceCase),
@@ -150,7 +128,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Login details'.toUpperCase(),
+                'Name'.toUpperCase(),
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontWeight: FontWeight.w800,
@@ -164,8 +142,19 @@ class _AddBooruPageState extends State<AddBooruPage> {
               ),
               child: LoginField(
                 validator: (p0) => null,
-                controller: loginController,
-                labelText: 'Login',
+                controller: nameController,
+                labelText: 'Name',
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Login details'.toUpperCase(),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).hintColor,
+                      fontWeight: FontWeight.w800,
+                    ),
               ),
             ),
             Padding(
@@ -173,10 +162,45 @@ class _AddBooruPageState extends State<AddBooruPage> {
                 horizontal: 16,
                 vertical: 8,
               ),
-              child: LoginField(
-                validator: (p0) => null,
-                controller: apiKeyController,
-                labelText: 'API key',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  LoginField(
+                    validator: (p0) => null,
+                    controller: loginController,
+                    labelText: 'Login',
+                  ),
+                  const SizedBox(height: 16),
+                  LoginField(
+                    validator: (p0) => null,
+                    controller: apiKeyController,
+                    labelText: 'API key',
+                  ),
+                  const SizedBox(height: 16),
+                  const SwitchListTile.adaptive(
+                    title: Text('Rating filter'),
+                    value: true,
+                    onChanged: print,
+                  ),
+                  const SwitchListTile.adaptive(
+                    title: Text('Hide deleted posts'),
+                    value: false,
+                    onChanged: print,
+                  ),
+                  ElevatedButton(
+                    onPressed: allowSubmit
+                        ? () {
+                            Navigator.of(context).pop();
+                            widget.onSubmit.call(
+                              loginController.text,
+                              apiKeyController.text,
+                              selectedBooru,
+                            );
+                          }
+                        : null,
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
             ),
           ],

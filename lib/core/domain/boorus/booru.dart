@@ -58,6 +58,13 @@ Booru safebooru() => booruDataToBooru(
       ),
     );
 
+List<BooruType> getSelectableBoorus() => [
+      BooruType.danbooru,
+      BooruType.gelbooru,
+      BooruType.aibooru,
+      BooruType.safebooru,
+    ];
+
 Booru booruDataToBooru(BooruData d) {
   return Booru(
     url: d.url,
