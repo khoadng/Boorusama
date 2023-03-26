@@ -9,7 +9,7 @@ class Authenticated extends AuthenticationState {
     required this.userBooru,
   });
 
-  final UserBooru userBooru;
+  final BooruConfig userBooru;
 
   @override
   List<Object?> get props => [userBooru];

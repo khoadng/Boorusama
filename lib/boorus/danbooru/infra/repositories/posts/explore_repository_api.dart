@@ -15,7 +15,7 @@ class ExploreRepositoryApi implements ExploreRepository {
     required this.urlComposer,
   });
 
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
   final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   final ImageSourceComposer<PostDto> urlComposer;

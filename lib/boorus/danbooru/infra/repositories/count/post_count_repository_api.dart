@@ -10,7 +10,7 @@ class PostCountRepositoryApi implements PostCountRepository {
   });
 
   final DanbooruApi api;
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
 
   @override
   Future<int?> count(List<String> tags) => currentUserBooruRepository

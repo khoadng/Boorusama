@@ -10,7 +10,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
     required CommentRepository commentRepository,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {

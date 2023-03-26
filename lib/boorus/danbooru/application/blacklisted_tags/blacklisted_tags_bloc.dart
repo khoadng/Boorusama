@@ -100,7 +100,7 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {

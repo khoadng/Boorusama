@@ -13,7 +13,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required this.booru,
   }) : super(Unauthenticated());
 
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
   final Booru booru;
 
   Future<void> logIn() async {

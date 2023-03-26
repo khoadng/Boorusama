@@ -5,17 +5,17 @@ import 'package:collection/collection.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 
-class CurrentBooruRepositorySettings implements CurrentUserBooruRepository {
+class CurrentBooruRepositorySettings implements CurrentBooruConfigRepository {
   CurrentBooruRepositorySettings(
     this.settingsRepository,
     this.userBooruRepository,
   );
 
   final SettingsRepository settingsRepository;
-  final UserBooruRepository userBooruRepository;
+  final BooruConfigRepository userBooruRepository;
 
   @override
-  Future<UserBooru?> get() async {
+  Future<BooruConfig?> get() async {
     final settings = await settingsRepository.load();
     final userBoorus = await userBooruRepository.getAll();
 

@@ -58,7 +58,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required NoteRepository noteRepository,
     required DanbooruPostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,

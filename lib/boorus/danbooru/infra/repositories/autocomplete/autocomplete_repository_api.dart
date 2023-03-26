@@ -54,12 +54,12 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
     required DanbooruApi api,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
   })  : _currentUserBooruRepository = currentUserBooruRepository,
         _api = api;
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<List<AutocompleteData>> getAutocomplete(String query) async =>

@@ -21,7 +21,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   );
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<bool> addToFavorites(int postId) => _currentUserBooruRepository

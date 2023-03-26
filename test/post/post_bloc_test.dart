@@ -22,7 +22,7 @@ class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 class MockPoolRepository extends Mock implements PoolRepository {}
 
 class MockCurrentUserBooruRepository extends Mock
-    implements CurrentUserBooruRepository {}
+    implements CurrentBooruConfigRepository {}
 
 class MockBlacklistedTagsRepository extends Mock
     implements BlacklistedTagsRepository {}

@@ -41,7 +41,7 @@ class CurrentUserFetched extends CurrentUserEvent {
 class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   CurrentUserBloc({
     required UserRepository userRepository,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
   }) : super(CurrentUserState.initial()) {
     on<CurrentUserFetched>((event, emit) async {
       final userBooru = await currentUserBooruRepository.get();

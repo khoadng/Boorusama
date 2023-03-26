@@ -17,11 +17,11 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required DanbooruApi api,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
   })  : _api = api,
         _currentUserBooruRepository = currentUserBooruRepository;
 
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
 
   @override

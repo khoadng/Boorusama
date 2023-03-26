@@ -65,7 +65,7 @@ class UserBooruCredential {
   final int? booruUserId;
 }
 
-UserBooru? convertToUserBooru({
+BooruConfig? convertToUserBooru({
   required int? id,
   required UserBooruCredential? credential,
 }) {
@@ -73,7 +73,7 @@ UserBooru? convertToUserBooru({
 
   final booruUserId = credential.booruUserId;
 
-  return UserBooru(
+  return BooruConfig(
     id: id,
     booruId: credential.booruId,
     apiKey: credential.apiKey.isEmpty ? null : credential.apiKey,

@@ -41,12 +41,12 @@ const String postParams =
 class PostRepositoryApi implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
-    CurrentUserBooruRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentUserBooruRepository,
     this.urlComposer,
   )   : _api = api,
         _currentUserBooruRepository = currentUserBooruRepository;
 
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
   final ImageSourceComposer<PostDto> urlComposer;
 

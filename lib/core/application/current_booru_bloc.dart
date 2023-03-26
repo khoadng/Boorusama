@@ -18,11 +18,11 @@ class CurrentBooruState extends Equatable {
       const CurrentBooruState(booru: null, userBooru: null);
 
   final Booru? booru;
-  final UserBooru? userBooru;
+  final BooruConfig? userBooru;
 
   CurrentBooruState copyWith({
     Booru? Function()? booru,
-    UserBooru? Function()? userBooru,
+    BooruConfig? Function()? userBooru,
   }) =>
       CurrentBooruState(
         booru: booru != null ? booru() : this.booru,
@@ -51,7 +51,7 @@ class CurrentBooruChanged extends CurrentBooruEvent {
     required this.settings,
   });
 
-  final UserBooru userBooru;
+  final BooruConfig userBooru;
   final Settings settings;
 
   @override
@@ -62,7 +62,7 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
   CurrentBooruBloc({
     required SettingsCubit settingsCubit,
     required BooruFactory booruFactory,
-    required UserBooruRepository userBooruRepository,
+    required BooruConfigRepository userBooruRepository,
   }) : super(CurrentBooruState.initial()) {
     on<CurrentBooruFetched>((event, emit) async {
       if (event.settings.hasSelectedBooru) {

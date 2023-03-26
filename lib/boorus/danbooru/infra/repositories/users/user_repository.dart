@@ -33,7 +33,7 @@ class UserRepositoryApi implements UserRepository {
     this.defaultBlacklistedTags,
   );
 
-  final CurrentUserBooruRepository _currentBooruRepository;
+  final CurrentBooruConfigRepository _currentBooruRepository;
   final DanbooruApi _api;
   final List<String> defaultBlacklistedTags;
 

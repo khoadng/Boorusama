@@ -14,7 +14,7 @@ class MockCommentRepository extends Mock implements CommentRepository {}
 class MockCommentVoteRepository extends Mock implements CommentVoteRepository {}
 
 class MockCurrentUserBooruRepository extends Mock
-    implements CurrentUserBooruRepository {}
+    implements CurrentBooruConfigRepository {}
 
 void main() {
   final currentUserBooruRepository = MockCurrentUserBooruRepository();
@@ -26,7 +26,7 @@ void main() {
       'fetchet 2 comments',
       setUp: () {
         when(() => currentUserBooruRepository.get())
-            .thenAnswer((invocation) async => UserBooru.empty);
+            .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentRepo.getCommentsFromPostId(any()))
             .thenAnswer((invocation) async => [
                   Comment.emty(),
@@ -51,8 +51,8 @@ void main() {
         CommentState.initial().copyWith(
           status: LoadStatus.success,
           comments: [
-            commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
-            commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
+            commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
+            commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
           ],
         ),
       ],
@@ -68,7 +68,7 @@ void main() {
                   Comment.emty().copyWith(id: 1, body: 'a'),
                 ]);
         when(() => currentUserBooruRepository.get())
-            .thenAnswer((invocation) async => UserBooru.empty);
+            .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -91,7 +91,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'a'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [],
             ),
           ],
@@ -104,7 +104,7 @@ void main() {
       final event = CommentSent(
         postId: 1,
         content: content,
-        replyTo: commentDataFrom(Comment.emty(), null, UserBooru.empty, []),
+        replyTo: commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
       );
 
       expect(
@@ -123,7 +123,7 @@ void main() {
                   Comment.emty().copyWith(id: 1, body: 'bar'),
                 ]);
         when(() => currentUserBooruRepository.get())
-            .thenAnswer((invocation) async => UserBooru.empty);
+            .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -136,7 +136,7 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo'),
           null,
-          UserBooru.empty,
+          BooruConfig.empty,
           [],
         ),
       ]),
@@ -154,7 +154,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'bar'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [],
             ),
           ],
@@ -172,7 +172,7 @@ void main() {
                   Comment.emty().copyWith(id: 1, body: 'foo2'),
                 ]);
         when(() => currentUserBooruRepository.get())
-            .thenAnswer((invocation) async => UserBooru.empty);
+            .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
@@ -185,13 +185,13 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo1'),
           null,
-          UserBooru.empty,
+          BooruConfig.empty,
           [],
         ),
         commentDataFrom(
           Comment.emty().copyWith(id: 2, body: 'foo2'),
           null,
-          UserBooru.empty,
+          BooruConfig.empty,
           [],
         ),
       ]),
@@ -208,7 +208,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'foo2'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [],
             ),
           ],
@@ -233,7 +233,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            UserBooru.empty,
+            BooruConfig.empty,
             [
               CommentVote.empty().copyWith(id: 1, score: 1),
             ],
@@ -253,7 +253,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 2, body: 'foo1'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [
                 CommentVote.empty().copyWith(id: 1, commentId: 1, score: 1),
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
@@ -281,7 +281,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
             null,
-            UserBooru.empty,
+            BooruConfig.empty,
             [],
           ),
         ],
@@ -299,7 +299,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
               ],
@@ -324,7 +324,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            UserBooru.empty,
+            BooruConfig.empty,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
             ],
@@ -348,7 +348,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [],
             ),
           ],
@@ -371,7 +371,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
             null,
-            UserBooru.empty,
+            BooruConfig.empty,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
             ],
@@ -395,7 +395,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              UserBooru.empty,
+              BooruConfig.empty,
               [],
             ),
           ],

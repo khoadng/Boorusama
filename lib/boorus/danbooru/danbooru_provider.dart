@@ -110,7 +110,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
-    final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
+    final currentUserBooruRepo = context.read<CurrentBooruConfigRepository>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
 
@@ -358,7 +358,7 @@ class DanbooruProvider extends StatelessWidget {
     final postCountRepo = context.read<PostCountRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
     final favoriteGroupRepo = context.read<FavoriteGroupRepository>();
-    final currentUserBooruRepo = context.read<CurrentUserBooruRepository>();
+    final currentUserBooruRepo = context.read<CurrentBooruConfigRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
 
@@ -433,7 +433,7 @@ class DanbooruProvider extends StatelessWidget {
   final TagRepository tagRepo;
   final ProfileRepository profileRepo;
   final FavoritePostRepository favoriteRepo;
-  final CurrentUserBooruRepository currentUserBooruRepo;
+  final CurrentBooruConfigRepository currentUserBooruRepo;
   final SettingsRepository settingRepository;
   final NoteRepository noteRepo;
   final DanbooruPostRepository postRepo;
@@ -456,7 +456,7 @@ class DanbooruProvider extends StatelessWidget {
   final CommentRepository commentRepo;
   final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
   final FileNameGenerator fileNameGenerator;
 
   final TrendingTagCubit trendingTagCubit;

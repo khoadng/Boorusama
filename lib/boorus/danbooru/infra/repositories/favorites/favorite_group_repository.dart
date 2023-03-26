@@ -26,7 +26,7 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   });
 
   final DanbooruApi api;
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
 
   @override
   Future<List<FavoriteGroup>> getFavoriteGroups({

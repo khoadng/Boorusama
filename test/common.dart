@@ -6,15 +6,15 @@ import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
 class MockCurrentUserBooruRepository extends Mock
-    implements CurrentUserBooruRepository {}
+    implements CurrentBooruConfigRepository {}
 
-CurrentUserBooruRepository mockUserBooruRepo({
-  UserBooru? userBooru,
+CurrentBooruConfigRepository mockUserBooruRepo({
+  BooruConfig? userBooru,
 }) {
   final repo = MockCurrentUserBooruRepository();
   when(() => repo.get()).thenAnswer((_) async =>
       userBooru ??
-      const UserBooru(
+      const BooruConfig(
         id: 0,
         booruId: 0,
         apiKey: '',
@@ -25,8 +25,8 @@ CurrentUserBooruRepository mockUserBooruRepo({
   return repo;
 }
 
-CurrentUserBooruRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
-      userBooru: const UserBooru(
+CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
+      userBooru: const BooruConfig(
         id: 1,
         booruId: 1,
         apiKey: 'apiKey',

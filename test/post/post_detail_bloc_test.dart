@@ -21,7 +21,7 @@ class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 class MockNoteRepository extends Mock implements NoteRepository {}
 
 class MockCurrentUserBooruRepository extends Mock
-    implements CurrentUserBooruRepository {}
+    implements CurrentBooruConfigRepository {}
 
 void main() {
   final postRepo = MockPostRepository();

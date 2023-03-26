@@ -20,7 +20,7 @@ class PoolRepositoryApi implements PoolRepository {
   );
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
   final _limit = 20;
 
   @override

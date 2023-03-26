@@ -22,12 +22,12 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
     DanbooruApi api,
-    CurrentUserBooruRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentUserBooruRepository,
   )   : _api = api,
         _currentUserBooruRepository = currentUserBooruRepository;
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<List<Comment>> getCommentsFromPostId(

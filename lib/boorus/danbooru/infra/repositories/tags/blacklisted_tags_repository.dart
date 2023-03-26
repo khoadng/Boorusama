@@ -13,7 +13,7 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   );
 
   final UserRepository userRepository;
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
   final DanbooruApi api;
 
   @override

@@ -50,7 +50,7 @@ class GelbooruProvider extends StatelessWidget {
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final currentUserBooruRepository =
-        context.read<CurrentUserBooruRepository>();
+        context.read<CurrentBooruConfigRepository>();
     final authenticationCubit = AuthenticationCubit(
       currentUserBooruRepository: currentUserBooruRepository,
       booru: booru,

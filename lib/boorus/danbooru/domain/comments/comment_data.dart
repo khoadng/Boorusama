@@ -92,14 +92,14 @@ List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
     (comments) => comments..sort((a, b) => a.id.compareTo(b.id));
 
 CommentData Function(Comment comment) createCommentData({
-  required UserBooru? userBooru,
+  required BooruConfig? userBooru,
   required List<CommentVote> votes,
 }) =>
     (comment) => commentDataFrom(comment, comment.creator, userBooru, votes);
 
 Future<List<CommentData>> Function(List<Comment> comments)
     createCommentDataWith(
-  CurrentUserBooruRepository currentUserBooruRepository,
+  CurrentBooruConfigRepository currentUserBooruRepository,
   CommentVoteRepository commentVoteRepository,
 ) =>
         (comments) async {
@@ -118,7 +118,7 @@ Future<List<CommentData>> Function(List<Comment> comments)
 CommentData commentDataFrom(
   Comment comment,
   User? user,
-  UserBooru? userBooru,
+  BooruConfig? userBooru,
   List<CommentVote> votes,
 ) =>
     CommentData(

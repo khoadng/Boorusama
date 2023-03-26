@@ -21,7 +21,7 @@ class TagRepositoryApi implements TagRepository {
   );
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<List<Tag>> getTagsByNameComma(

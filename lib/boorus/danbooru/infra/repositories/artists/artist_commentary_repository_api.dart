@@ -10,7 +10,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
   ArtistCommentaryRepositoryApi(this._api, this._currentUserBooruRepository);
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<ArtistCommentary> getCommentary(

@@ -15,10 +15,10 @@ class ManageBooruUserState extends Equatable {
   factory ManageBooruUserState.initial() =>
       const ManageBooruUserState(users: []);
 
-  final List<UserBooru>? users;
+  final List<BooruConfig>? users;
 
   ManageBooruUserState copyWith({
-    List<UserBooru>? Function()? users,
+    List<BooruConfig>? Function()? users,
   }) =>
       ManageBooruUserState(
         users: users != null ? users() : this.users,
@@ -52,7 +52,7 @@ class ManageBooruUserAdded extends ManageBooruUserEvent {
   final String apiKey;
   final BooruType booru;
   final void Function(String message)? onFailure;
-  final void Function(UserBooru userBooru)? onSuccess;
+  final void Function(BooruConfig userBooru)? onSuccess;
 
   @override
   List<Object?> get props => [login, apiKey, booru, onFailure, onSuccess];
@@ -64,7 +64,7 @@ class ManageBooruUserRemoved extends ManageBooruUserEvent {
     required this.onFailure,
   });
 
-  final UserBooru user;
+  final BooruConfig user;
   final void Function(String message)? onFailure;
 
   @override
@@ -74,12 +74,12 @@ class ManageBooruUserRemoved extends ManageBooruUserEvent {
 class ManageBooruUserBloc
     extends Bloc<ManageBooruUserEvent, ManageBooruUserState> {
   ManageBooruUserBloc({
-    required UserBooruRepository userBooruRepository,
+    required BooruConfigRepository userBooruRepository,
     required BooruUserIdentityProvider booruUserIdentityProvider,
     required BooruFactory booruFactory,
   }) : super(ManageBooruUserState.initial()) {
     on<ManageBooruUserFetched>((event, emit) async {
-      await tryAsync<List<UserBooru>>(
+      await tryAsync<List<BooruConfig>>(
         action: () => userBooruRepository.getAll(),
         onSuccess: (data) async {
           emit(state.copyWith(

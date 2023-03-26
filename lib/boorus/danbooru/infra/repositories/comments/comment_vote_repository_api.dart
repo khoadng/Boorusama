@@ -16,12 +16,12 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
     DanbooruApi api,
-    CurrentUserBooruRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentUserBooruRepository,
   )   : _api = api,
         _currentUserBooruRepository = currentUserBooruRepository;
 
   final DanbooruApi _api;
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds) =>

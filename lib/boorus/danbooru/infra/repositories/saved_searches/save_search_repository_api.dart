@@ -20,7 +20,7 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
   );
 
   final DanbooruApi api;
-  final CurrentUserBooruRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentUserBooruRepository;
 
   @override
   Future<List<SavedSearch>> getSavedSearches({

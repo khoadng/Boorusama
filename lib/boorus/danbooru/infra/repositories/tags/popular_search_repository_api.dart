@@ -18,12 +18,12 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required DanbooruApi api,
   })  : _currentUserBooruRepository = currentUserBooruRepository,
         _api = api;
 
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
 
   @override

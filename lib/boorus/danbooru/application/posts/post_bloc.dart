@@ -30,7 +30,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     required DanbooruPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required PostVoteRepository postVoteRepository,
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
@@ -238,7 +238,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
         postsPerPage: context.read<SettingsCubit>().state.settings.postsPerPage,
-        currentUserBooruRepository: context.read<CurrentUserBooruRepository>(),
+        currentUserBooruRepository:
+            context.read<CurrentBooruConfigRepository>(),
       );
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(

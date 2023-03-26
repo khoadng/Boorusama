@@ -41,8 +41,8 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
-import 'package:boorusama/core/infra/boorus/user_booru_repository_hive.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
@@ -90,16 +90,17 @@ void main() async {
     Settings.defaultSettings,
   );
 
-  Box<String> booruUserBox;
-  if (await Hive.boxExists('user_metatags')) {
-    booruUserBox = await Hive.openBox<String>('booru_users');
+  Box<String> booruConfigBox;
+  if (await Hive.boxExists('booru_configs')) {
+    booruConfigBox = await Hive.openBox<String>('booru_configs');
   } else {
-    booruUserBox = await Hive.openBox<String>('booru_users');
-    final id = await booruUserBox.add(HiveUserBooruRepository.defaultValue());
+    booruConfigBox = await Hive.openBox<String>('booru_configs');
+    final id =
+        await booruConfigBox.add(HiveBooruConfigRepository.defaultValue());
     final settings = await settingRepository.load();
     await settingRepository.save(settings.copyWith(currentUserBooruId: id));
   }
-  final booruUserRepo = HiveUserBooruRepository(box: booruUserBox);
+  final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
   final settings = await settingRepository.load();
 
@@ -243,7 +244,7 @@ void main() async {
             RepositoryProvider<BooruFactory>.value(
               value: booruFactory,
             ),
-            RepositoryProvider<UserBooruRepository>.value(
+            RepositoryProvider<BooruConfigRepository>.value(
               value: booruUserRepo,
             ),
             RepositoryProvider<SearchHistoryRepository>.value(
@@ -258,7 +259,7 @@ void main() async {
             RepositoryProvider<BooruUserIdentityProvider>.value(
               value: booruUserIdProvider,
             ),
-            RepositoryProvider<CurrentUserBooruRepository>.value(
+            RepositoryProvider<CurrentBooruConfigRepository>.value(
               value: currentBooruRepo,
             ),
           ],

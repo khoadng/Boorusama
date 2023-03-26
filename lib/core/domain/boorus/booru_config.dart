@@ -1,8 +1,8 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-class UserBooru extends Equatable {
-  const UserBooru({
+class BooruConfig extends Equatable {
+  const BooruConfig({
     required this.id,
     required this.booruId,
     required this.apiKey,
@@ -10,8 +10,8 @@ class UserBooru extends Equatable {
     required this.booruUserId,
   });
 
-  factory UserBooru.fromJson(Map<String, dynamic> json) {
-    return UserBooru(
+  factory BooruConfig.fromJson(Map<String, dynamic> json) {
+    return BooruConfig(
       id: json['id'],
       booruId: json['booru_id'],
       apiKey: json['api_key'],
@@ -20,7 +20,7 @@ class UserBooru extends Equatable {
     );
   }
 
-  static const UserBooru empty = UserBooru(
+  static const BooruConfig empty = BooruConfig(
     id: -1,
     booruId: -1,
     apiKey: null,
@@ -60,7 +60,7 @@ class UserBooru extends Equatable {
       ];
 }
 
-extension UserBooruX on UserBooru? {
+extension BooruConfigX on BooruConfig? {
   bool hasLoginDetails() {
     if (this == null) return false;
     if (this!.login == null || this!.apiKey == null) return false;

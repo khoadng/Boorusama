@@ -451,7 +451,7 @@ Widget providePostDetailPageDependencies(
                       favoritePostRepository:
                           context.read<FavoritePostRepository>(),
                       currentUserBooruRepository:
-                          context.read<CurrentUserBooruRepository>(),
+                          context.read<CurrentBooruConfigRepository>(),
                       postVoteRepository: context.read<PostVoteRepository>(),
                       tags: tags,
                       onPostChanged: (post) {

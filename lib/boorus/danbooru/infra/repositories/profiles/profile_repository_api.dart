@@ -10,12 +10,12 @@ import 'package:boorusama/core/domain/boorus.dart';
 
 class ProfileRepositoryApi implements ProfileRepository {
   ProfileRepositoryApi({
-    required CurrentUserBooruRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentUserBooruRepository,
     required DanbooruApi api,
   })  : _api = api,
         _currentUserBooruRepository = currentUserBooruRepository;
 
-  final CurrentUserBooruRepository _currentUserBooruRepository;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
 
   @override
