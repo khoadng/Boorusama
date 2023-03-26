@@ -186,6 +186,7 @@ class SwitchBooruModal extends StatelessWidget {
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                         context
                             .read<CurrentBooruBloc>()
                             .add(CurrentBooruChanged(
