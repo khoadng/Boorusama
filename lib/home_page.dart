@@ -92,8 +92,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             case BooruType.gelbooru:
+              final gkey = ValueKey(config?.id);
+
               return GelbooruProvider.create(
                 context,
+                key: gkey,
                 booru: booru,
                 builder: (gcontext) => MultiBlocProvider(
                   providers: [
@@ -107,6 +110,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                   child: CustomContextMenuOverlay(
                     child: GelbooruHomePage(
+                      key: gkey,
                       onMenuTap: _onMenuTap,
                     ),
                   ),

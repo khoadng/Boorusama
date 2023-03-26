@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -45,10 +46,35 @@ class SideBarMenu extends StatelessWidget {
                   builder: (context, state) {
                     return state.booru != null
                         ? ListTile(
-                            title: Text(state.booru!.name),
+                            title: Row(
+                              children: [
+                                Text(
+                                  state.booru!.name.sentenceCase,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                if (state.booruConfig != null &&
+                                    state.booruConfig!.ratingFilter ==
+                                        BooruConfigRatingFilter.none) ...[
+                                  Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Text(
+                                      '18+',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
                             subtitle: state.booruConfig.hasLoginDetails()
                                 ? Text(state.booruConfig!.login ?? 'Unknown')
-                                : const Text('<Anonymous>'),
+                                : null,
                             trailing: IconButton(
                               onPressed: () => showMaterialModalBottomSheet(
                                 context: context,
@@ -152,6 +178,7 @@ class SwitchBooruModal extends StatelessWidget {
                       title: Text(
                         '${config.name} (${BooruType.values[config.booruId].name})',
                       ),
+                      selected: settings.currentBooruConfigId == config.id,
                       subtitle: Text(
                         config.login?.isEmpty ?? true
                             ? '<Anonymous>'

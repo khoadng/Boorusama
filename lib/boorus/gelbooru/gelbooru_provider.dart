@@ -38,6 +38,7 @@ class GelbooruProvider extends StatelessWidget {
     BuildContext context, {
     required Booru booru,
     required Widget Function(BuildContext context) builder,
+    Key? key,
   }) {
     final dio = context.read<DioProvider>().getDio(booru.url);
     final api = GelbooruApi(dio);
@@ -62,6 +63,7 @@ class GelbooruProvider extends StatelessWidget {
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 
     return GelbooruProvider(
+      key: key,
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
@@ -79,6 +81,7 @@ class GelbooruProvider extends StatelessWidget {
     // ignore: avoid_unused_constructor_parameters
     required Booru booru,
     required Widget Function(BuildContext context) builder,
+    Key? key,
   }) {
     final postRepo = context.read<PostRepository>();
     final tagRepo = context.read<TagRepository>();
@@ -91,6 +94,7 @@ class GelbooruProvider extends StatelessWidget {
     final authenticationCubit = context.read<AuthenticationCubit>();
 
     return GelbooruProvider(
+      key: key,
       postRepository: postRepo,
       tagRepository: tagRepo,
       builder: builder,
