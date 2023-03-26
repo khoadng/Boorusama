@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/core/domain/boorus.dart';
+
 class BooruConfig extends Equatable {
   const BooruConfig({
     required this.id,
@@ -57,7 +60,7 @@ enum BooruConfigRatingFilter {
   hideNSFW,
 }
 
-extension BooruConfigX on BooruConfig? {
+extension BooruConfigNullX on BooruConfig? {
   bool hasLoginDetails() {
     if (this == null) return false;
     if (this!.login == null || this!.apiKey == null) return false;
@@ -66,4 +69,9 @@ extension BooruConfigX on BooruConfig? {
 
     return true;
   }
+}
+
+extension BooruConfigX on BooruConfig {
+  Booru createBooruFrom(BooruFactory factory) =>
+      factory.from(type: intToBooruType(booruId));
 }

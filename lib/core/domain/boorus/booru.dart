@@ -51,6 +51,32 @@ enum BooruType {
   aibooru,
 }
 
+extension BooruX on Booru {
+  String getIconUrl({
+    int? size,
+  }) =>
+      'https://www.google.com/s2/favicons?domain=${url}&sz=${size ?? 64}';
+}
+
+extension BooruTypeX on BooruType {
+  String stringify() {
+    switch (this) {
+      case BooruType.unknown:
+        return '';
+      case BooruType.danbooru:
+        return 'Danbooru';
+      case BooruType.safebooru:
+        return 'Danbooru (G)';
+      case BooruType.testbooru:
+        return 'Testbooru';
+      case BooruType.gelbooru:
+        return 'Gelbooru';
+      case BooruType.aibooru:
+        return 'AIBooru';
+    }
+  }
+}
+
 Booru safebooru() => booruDataToBooru(
       BooruData(
         name: 'safebooru',

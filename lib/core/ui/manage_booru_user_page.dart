@@ -7,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/booru_logo.dart';
 
 class ManageBooruPage extends StatelessWidget {
   const ManageBooruPage({
@@ -18,6 +21,8 @@ class ManageBooruPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final configs =
         context.select((ManageBooruBloc bloc) => bloc.state.configs);
+
+    final booruFactory = context.read<BooruFactory>();
 
     return configs != null
         ? Scaffold(
@@ -30,9 +35,12 @@ class ManageBooruPage extends StatelessWidget {
               itemCount: configs.length,
               itemBuilder: (context, index) {
                 final config = configs[index];
+                final booru = config.createBooruFrom(booruFactory);
 
                 return ListTile(
-                  title: Text(BooruType.values[config.booruId].name),
+                  horizontalTitleGap: 0,
+                  leading: BooruLogo(booru: booru),
+                  title: Text(config.name),
                   subtitle: Text(config.login?.isEmpty ?? true
                       ? '<Anonymous>'
                       : config.login ?? 'Unknown'),

@@ -13,6 +13,7 @@ import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/booru_logo.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -46,10 +47,12 @@ class SideBarMenu extends StatelessWidget {
                   builder: (context, state) {
                     return state.booru != null
                         ? ListTile(
+                            horizontalTitleGap: 0,
+                            leading: BooruLogo(booru: state.booru!),
                             title: Row(
                               children: [
                                 Text(
-                                  state.booru!.name.sentenceCase,
+                                  state.booru!.booruType.stringify(),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 18,
@@ -160,6 +163,8 @@ class SwitchBooruModal extends StatelessWidget {
     final settings =
         context.select((SettingsCubit cubit) => cubit.state.settings);
 
+    final booruFactory = context.read<BooruFactory>();
+
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.6,
       child: Material(
@@ -173,10 +178,13 @@ class SwitchBooruModal extends StatelessWidget {
                   itemCount: configs.length,
                   itemBuilder: (context, index) {
                     final config = configs[index];
+                    final booru = config.createBooruFrom(booruFactory);
 
                     return ListTile(
+                      horizontalTitleGap: 0,
+                      leading: BooruLogo(booru: booru),
                       title: Text(
-                        '${config.name} (${BooruType.values[config.booruId].name})',
+                        config.name,
                       ),
                       selected: settings.currentBooruConfigId == config.id,
                       subtitle: Text(

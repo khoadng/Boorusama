@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
@@ -33,7 +34,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
   var hideDeleted = false;
   var ratingFilter = true;
 
-  var allowSubmit = true;
+  var allowSubmit = false;
 
   @override
   void initState() {
@@ -63,11 +64,13 @@ class _AddBooruPageState extends State<AddBooruPage> {
     super.dispose();
   }
 
-  bool isValid() =>
-      nameController.text.isNotEmpty &&
-          (loginController.text.isNotEmpty &&
-              apiKeyController.text.isNotEmpty) ||
-      (loginController.text.isEmpty && apiKeyController.text.isEmpty);
+  bool isValid() {
+    if (nameController.text.isEmpty) return false;
+
+    return (loginController.text.isNotEmpty &&
+            apiKeyController.text.isNotEmpty) ||
+        (loginController.text.isEmpty && apiKeyController.text.isEmpty);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +110,6 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   padding: const EdgeInsets.all(8),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<BooruType>(
-                      alignment: AlignmentDirectional.centerEnd,
                       isDense: true,
                       value: selectedBooru,
                       focusColor: Colors.transparent,
@@ -123,9 +125,10 @@ class _AddBooruPageState extends State<AddBooruPage> {
                         }
                       },
                       items: getSelectableBoorus()
+                          .sortedBy((e) => e.stringify())
                           .map((value) => DropdownMenuItem<BooruType>(
                                 value: value,
-                                child: Text(value.name.sentenceCase),
+                                child: Text(value.stringify()),
                               ))
                           .toList(),
                     ),
