@@ -4,6 +4,7 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -58,18 +59,21 @@ class PostRepositoryApi implements DanbooruPostRepository {
     int page, {
     int? limit,
     bool? includeInvalid,
-  }) {
-    return _currentUserBooruRepository
-        .get()
-        .then(
-          (booruConfig) => _api.getPosts(
-            booruConfig?.login,
-            booruConfig?.apiKey,
-            page,
-            tags,
-            postParams,
-            limit ?? _limit,
-          ),
+  }) async {
+    final booruConfig = await _currentUserBooruRepository.get();
+    final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
+
+    return _api
+        .getPosts(
+          booruConfig?.login,
+          booruConfig?.apiKey,
+          page,
+          [
+            ...tags.split(' '),
+            if (tag != null) tag,
+          ].join(' '),
+          postParams,
+          limit ?? _limit,
         )
         .then(parsePostWithOptions(
           includeInvalid: includeInvalid ?? false,

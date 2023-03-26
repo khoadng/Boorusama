@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -26,12 +27,20 @@ class ExploreRepositoryApi implements ExploreRepository {
   Future<List<DanbooruPost>> getHotPosts(
     int page, {
     int? limit,
-  }) =>
-      postRepository.getPosts(
-        'order:rank',
-        page,
-        limit: limit,
-      );
+  }) async {
+    final booruConfig = await currentBooruConfigRepository.get();
+    final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
+    final tags = [
+      'order:rank',
+      if (tag != null) tag,
+    ];
+
+    return postRepository.getPosts(
+      tags.join(' '),
+      page,
+      limit: limit,
+    );
+  }
 
   @override
   Future<List<DanbooruPost>> getMostViewedPosts(

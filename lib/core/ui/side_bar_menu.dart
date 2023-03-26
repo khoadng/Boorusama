@@ -129,7 +129,8 @@ class SwitchBooruModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final users = context.select((ManageBooruBloc bloc) => bloc.state.configs);
+    final configs =
+        context.select((ManageBooruBloc bloc) => bloc.state.configs);
     final settings =
         context.select((SettingsCubit cubit) => cubit.state.settings);
 
@@ -137,31 +138,31 @@ class SwitchBooruModal extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.6,
       child: Material(
         color: Colors.transparent,
-        child: users != null
+        child: configs != null
             ? MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
                 child: ListView.builder(
                   controller: ModalScrollController.of(context),
-                  itemCount: users.length,
+                  itemCount: configs.length,
                   itemBuilder: (context, index) {
-                    final user = users[index];
+                    final config = configs[index];
 
                     return ListTile(
                       title: Text(
-                        BooruType.values[user.booruId].name,
+                        '${config.name} (${BooruType.values[config.booruId].name})',
                       ),
                       subtitle: Text(
-                        user.login?.isEmpty ?? true
+                        config.login?.isEmpty ?? true
                             ? '<Anonymous>'
-                            : user.login ?? 'Unknown',
+                            : config.login ?? 'Unknown',
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
                         context
                             .read<CurrentBooruBloc>()
                             .add(CurrentBooruChanged(
-                              booruConfig: user,
+                              booruConfig: config,
                               settings: settings,
                             ));
                       },

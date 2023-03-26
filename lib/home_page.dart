@@ -44,6 +44,8 @@ class _HomePageState extends State<HomePage> {
       body: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (context, state) {
           final booru = state.booru;
+          final config = state.booruConfig;
+
           if (booru == null) {
             return Scaffold(
               body: SafeArea(
@@ -84,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                   child: isMobilePlatform()
                       ? DanbooruHomePage(
                           onMenuTap: _onMenuTap,
-                          key: ValueKey(booru.booruType),
+                          key: ValueKey(config?.id),
                         )
                       : const DanbooruHomePageDesktop(),
                 ),
