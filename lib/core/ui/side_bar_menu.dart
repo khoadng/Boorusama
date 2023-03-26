@@ -108,9 +108,7 @@ class CurrentBooruActionSheet extends StatelessWidget {
             title: const Text('Switch booru'),
             onTap: () {
               Navigator.of(context).pop();
-              context
-                  .read<ManageBooruUserBloc>()
-                  .add(const ManageBooruUserFetched());
+              context.read<ManageBooruBloc>().add(const ManageBooruFetched());
               showMaterialModalBottomSheet(
                 context: context,
                 builder: (_) => const SwitchBooruModal(),
@@ -131,8 +129,7 @@ class SwitchBooruModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final users =
-        context.select((ManageBooruUserBloc bloc) => bloc.state.users);
+    final users = context.select((ManageBooruBloc bloc) => bloc.state.configs);
     final settings =
         context.select((SettingsCubit cubit) => cubit.state.settings);
 

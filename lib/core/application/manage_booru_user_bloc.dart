@@ -7,40 +7,39 @@ import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
-class ManageBooruUserState extends Equatable {
-  const ManageBooruUserState({
-    required this.users,
+class ManageBooruState extends Equatable {
+  const ManageBooruState({
+    required this.configs,
   });
 
-  factory ManageBooruUserState.initial() =>
-      const ManageBooruUserState(users: []);
+  factory ManageBooruState.initial() => const ManageBooruState(configs: []);
 
-  final List<BooruConfig>? users;
+  final List<BooruConfig>? configs;
 
-  ManageBooruUserState copyWith({
-    List<BooruConfig>? Function()? users,
+  ManageBooruState copyWith({
+    List<BooruConfig>? Function()? configs,
   }) =>
-      ManageBooruUserState(
-        users: users != null ? users() : this.users,
+      ManageBooruState(
+        configs: configs != null ? configs() : this.configs,
       );
 
   @override
-  List<Object?> get props => [users];
+  List<Object?> get props => [configs];
 }
 
-abstract class ManageBooruUserEvent extends Equatable {
-  const ManageBooruUserEvent();
+abstract class ManageBooruEvent extends Equatable {
+  const ManageBooruEvent();
 }
 
-class ManageBooruUserFetched extends ManageBooruUserEvent {
-  const ManageBooruUserFetched();
+class ManageBooruFetched extends ManageBooruEvent {
+  const ManageBooruFetched();
 
   @override
   List<Object?> get props => [];
 }
 
-class ManageBooruUserAdded extends ManageBooruUserEvent {
-  const ManageBooruUserAdded({
+class ManageBooruAdded extends ManageBooruEvent {
+  const ManageBooruAdded({
     required this.config,
     this.onFailure,
     this.onSuccess,
@@ -76,8 +75,8 @@ class AddNewBooruConfig {
   final bool ratingFilter;
 }
 
-class ManageBooruUserRemoved extends ManageBooruUserEvent {
-  const ManageBooruUserRemoved({
+class ManageBooruRemoved extends ManageBooruEvent {
+  const ManageBooruRemoved({
     required this.user,
     required this.onFailure,
   });
@@ -89,25 +88,24 @@ class ManageBooruUserRemoved extends ManageBooruUserEvent {
   List<Object?> get props => [user, onFailure];
 }
 
-class ManageBooruUserBloc
-    extends Bloc<ManageBooruUserEvent, ManageBooruUserState> {
-  ManageBooruUserBloc({
+class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
+  ManageBooruBloc({
     required BooruConfigRepository userBooruRepository,
     required BooruUserIdentityProvider booruUserIdentityProvider,
     required BooruFactory booruFactory,
-  }) : super(ManageBooruUserState.initial()) {
-    on<ManageBooruUserFetched>((event, emit) async {
+  }) : super(ManageBooruState.initial()) {
+    on<ManageBooruFetched>((event, emit) async {
       await tryAsync<List<BooruConfig>>(
         action: () => userBooruRepository.getAll(),
         onSuccess: (data) async {
           emit(state.copyWith(
-            users: () => data,
+            configs: () => data,
           ));
         },
       );
     });
 
-    on<ManageBooruUserAdded>((event, emit) async {
+    on<ManageBooruAdded>((event, emit) async {
       try {
         final booru = booruFactory.from(type: event.config.booru);
 
@@ -121,7 +119,7 @@ class ManageBooruUserBloc
           );
 
           final user = await userBooruRepository.add(booruConfigData);
-          final users = state.users ?? [];
+          final users = state.configs ?? [];
 
           if (user == null) {
             event.onFailure
@@ -133,7 +131,7 @@ class ManageBooruUserBloc
           event.onSuccess?.call(user);
 
           emit(state.copyWith(
-            users: () => [
+            configs: () => [
               ...users,
               user,
             ],
@@ -174,12 +172,12 @@ class ManageBooruUserBloc
             return;
           }
 
-          final users = state.users ?? [];
+          final users = state.configs ?? [];
 
           event.onSuccess?.call(user);
 
           emit(state.copyWith(
-            users: () => [
+            configs: () => [
               ...users,
               user,
             ],
@@ -190,14 +188,14 @@ class ManageBooruUserBloc
       }
     });
 
-    on<ManageBooruUserRemoved>((event, emit) async {
-      if (state.users == null) {
+    on<ManageBooruRemoved>((event, emit) async {
+      if (state.configs == null) {
         event.onFailure?.call('User does not exists');
 
         return;
       }
 
-      final users = [...state.users!];
+      final users = [...state.configs!];
 
       await tryAsync<void>(
         action: () => userBooruRepository.remove(event.user),
@@ -208,7 +206,7 @@ class ManageBooruUserBloc
         onSuccess: (_) async {
           users.remove(event.user);
           emit(state.copyWith(
-            users: () => users,
+            configs: () => users,
           ));
         },
       );

@@ -9,17 +9,17 @@ import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 
-class ManageBooruUserPage extends StatelessWidget {
-  const ManageBooruUserPage({
+class ManageBooruPage extends StatelessWidget {
+  const ManageBooruPage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final users =
-        context.select((ManageBooruUserBloc bloc) => bloc.state.users);
+    final configs =
+        context.select((ManageBooruBloc bloc) => bloc.state.configs);
 
-    return users != null
+    return configs != null
         ? Scaffold(
             appBar: AppBar(),
             floatingActionButton: FloatingActionButton(
@@ -27,22 +27,21 @@ class ManageBooruUserPage extends StatelessWidget {
               child: const Icon(Icons.add),
             ),
             body: ListView.builder(
-              itemCount: users.length,
+              itemCount: configs.length,
               itemBuilder: (context, index) {
-                final user = users[index];
+                final config = configs[index];
 
                 return ListTile(
-                  title: Text(BooruType.values[user.booruId].name),
-                  subtitle: Text(user.login?.isEmpty ?? true
+                  title: Text(BooruType.values[config.booruId].name),
+                  subtitle: Text(config.login?.isEmpty ?? true
                       ? '<Anonymous>'
-                      : user.login ?? 'Unknown'),
+                      : config.login ?? 'Unknown'),
                   trailing: IconButton(
-                    onPressed: () => context
-                        .read<ManageBooruUserBloc>()
-                        .add(ManageBooruUserRemoved(
-                          user: user,
-                          onFailure: print,
-                        )),
+                    onPressed: () =>
+                        context.read<ManageBooruBloc>().add(ManageBooruRemoved(
+                              user: config,
+                              onFailure: print,
+                            )),
                     icon: const Icon(Icons.close),
                   ),
                 );

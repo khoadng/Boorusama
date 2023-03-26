@@ -352,12 +352,12 @@ void goToSettingPage(BuildContext context) {
 }
 
 void goToManageBooruPage(BuildContext context) {
-  context.read<ManageBooruUserBloc>().add(const ManageBooruUserFetched());
+  context.read<ManageBooruBloc>().add(const ManageBooruFetched());
 
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
     child: BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (_, state) => const ManageBooruUserPage(),
+      builder: (_, state) => const ManageBooruPage(),
     ),
   ));
 }
@@ -371,8 +371,8 @@ void goToAddBooruPage(
     child: BlocBuilder<SettingsCubit, SettingsState>(
       builder: (_, state) {
         return AddBooruPage(
-          onSubmit: (config) => context.read<ManageBooruUserBloc>().add(
-                ManageBooruUserAdded(
+          onSubmit: (config) => context.read<ManageBooruBloc>().add(
+                ManageBooruAdded(
                   config: config,
                   onSuccess: (booruConfig) {
                     if (setCurrentBooruOnSubmit) {

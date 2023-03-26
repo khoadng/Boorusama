@@ -209,7 +209,7 @@ void main() async {
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
-  final manageBooruUserBloc = ManageBooruUserBloc(
+  final manageBooruBloc = ManageBooruBloc(
     userBooruRepository: booruUserRepo,
     booruFactory: booruFactory,
     booruUserIdentityProvider: booruUserIdProvider,
@@ -286,7 +286,7 @@ void main() async {
                 create: (context) =>
                     ThemeBloc(initialTheme: settings.themeMode),
               ),
-              BlocProvider.value(value: manageBooruUserBloc),
+              BlocProvider.value(value: manageBooruBloc),
               if (isAndroid() || isIOS())
                 BlocProvider(
                   create: (context) => DeviceStoragePermissionBloc(
