@@ -31,9 +31,9 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
     try {
       await currentBooruConfigRepository
           .get()
-          .then((booruUser) => api.setBlacklistedTags(
-                booruUser?.login,
-                booruUser?.apiKey,
+          .then((booruConfig) => api.setBlacklistedTags(
+                booruConfig?.login,
+                booruConfig?.apiKey,
                 userId,
                 tagsToTagString(tags),
               ));
