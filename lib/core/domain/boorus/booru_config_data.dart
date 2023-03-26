@@ -1,27 +1,27 @@
 // Project imports:
 import 'package:boorusama/core/domain/boorus.dart';
 
-class UserBooruCredential {
-  const UserBooruCredential._({
+class BooruConfigData {
+  const BooruConfigData._({
     required this.booruId,
     required this.apiKey,
     required this.login,
     required this.booruUserId,
   });
 
-  factory UserBooruCredential.anonymous({
+  factory BooruConfigData.anonymous({
     required BooruType booru,
   }) =>
-      UserBooruCredential._(
+      BooruConfigData._(
         booruId: booru.index,
         apiKey: '',
         login: '',
         booruUserId: null,
       );
 
-  static UserBooruCredential? fromJson(Map<String, dynamic> json) {
+  static BooruConfigData? fromJson(Map<String, dynamic> json) {
     try {
-      return UserBooruCredential._(
+      return BooruConfigData._(
         booruId: json['booruId'] as int,
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
@@ -32,7 +32,7 @@ class UserBooruCredential {
     }
   }
 
-  static UserBooruCredential? withAccount({
+  static BooruConfigData? withAccount({
     required BooruType booru,
     required String login,
     required String apiKey,
@@ -42,7 +42,7 @@ class UserBooruCredential {
     if (apiKey == '') return null;
     if (booruUserId <= 0) return null;
 
-    return UserBooruCredential._(
+    return BooruConfigData._(
       booruId: booru.index,
       apiKey: apiKey,
       login: login,
@@ -67,17 +67,17 @@ class UserBooruCredential {
 
 BooruConfig? convertToUserBooru({
   required int? id,
-  required UserBooruCredential? credential,
+  required BooruConfigData? booruConfigData,
 }) {
-  if (credential == null || id == null) return null;
+  if (booruConfigData == null || id == null) return null;
 
-  final booruUserId = credential.booruUserId;
+  final booruUserId = booruConfigData.booruUserId;
 
   return BooruConfig(
     id: id,
-    booruId: credential.booruId,
-    apiKey: credential.apiKey.isEmpty ? null : credential.apiKey,
-    login: credential.login.isEmpty ? null : credential.login,
+    booruId: booruConfigData.booruId,
+    apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
+    login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
     booruUserId: booruUserId,
   );
 }

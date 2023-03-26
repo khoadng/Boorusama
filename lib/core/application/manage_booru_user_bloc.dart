@@ -94,11 +94,11 @@ class ManageBooruUserBloc
         final booru = booruFactory.from(type: event.booru);
 
         if (event.login.isEmpty && event.apiKey.isEmpty) {
-          final credential = UserBooruCredential.anonymous(
+          final booruConfigData = BooruConfigData.anonymous(
             booru: event.booru,
           );
 
-          final user = await userBooruRepository.add(credential);
+          final user = await userBooruRepository.add(booruConfigData);
           final users = state.users ?? [];
 
           if (user == null) {
@@ -122,21 +122,21 @@ class ManageBooruUserBloc
             apiKey: event.apiKey,
             booru: booru,
           );
-          final credential = UserBooruCredential.withAccount(
+          final booruConfigData = BooruConfigData.withAccount(
             login: event.login,
             apiKey: event.apiKey,
             booruUserId: id,
             booru: event.booru,
           );
 
-          if (credential == null) {
+          if (booruConfigData == null) {
             event.onFailure
                 ?.call('Fail to add account. Account might be incorrect');
 
             return;
           }
 
-          final user = await userBooruRepository.add(credential);
+          final user = await userBooruRepository.add(booruConfigData);
 
           if (user == null) {
             event.onFailure
