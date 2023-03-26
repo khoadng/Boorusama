@@ -8,12 +8,12 @@ import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   BlacklistedTagsRepositoryImpl(
     this.userRepository,
-    this.currentUserBooruRepository,
+    this.currentBooruConfigRepository,
     this.api,
   );
 
   final UserRepository userRepository;
-  final CurrentBooruConfigRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
   final DanbooruApi api;
 
   @override
@@ -29,7 +29,7 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
     List<String> tags,
   ) async {
     try {
-      await currentUserBooruRepository
+      await currentBooruConfigRepository
           .get()
           .then((booruUser) => api.setBlacklistedTags(
                 booruUser?.login,

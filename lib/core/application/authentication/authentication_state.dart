@@ -6,13 +6,13 @@ abstract class AuthenticationState extends Equatable {
 
 class Authenticated extends AuthenticationState {
   const Authenticated({
-    required this.userBooru,
+    required this.booruConfig,
   });
 
-  final BooruConfig userBooru;
+  final BooruConfig booruConfig;
 
   @override
-  List<Object?> get props => [userBooru];
+  List<Object?> get props => [booruConfig];
 }
 
 class Unauthenticated extends AuthenticationState {

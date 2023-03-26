@@ -41,10 +41,10 @@ const String postParams =
 class PostRepositoryApi implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentBooruConfigRepository,
     this.urlComposer,
   )   : _api = api,
-        _currentUserBooruRepository = currentUserBooruRepository;
+        _currentUserBooruRepository = currentBooruConfigRepository;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
@@ -62,9 +62,9 @@ class PostRepositoryApi implements DanbooruPostRepository {
     return _currentUserBooruRepository
         .get()
         .then(
-          (userBooru) => _api.getPosts(
-            userBooru?.login,
-            userBooru?.apiKey,
+          (booruConfig) => _api.getPosts(
+            booruConfig?.login,
+            booruConfig?.apiKey,
             page,
             tags,
             postParams,
@@ -93,9 +93,9 @@ class PostRepositoryApi implements DanbooruPostRepository {
   Future<bool> putTag(int postId, String tagString) =>
       _currentUserBooruRepository
           .get()
-          .then((userBooru) => _api.putTag(
-                userBooru?.login,
-                userBooru?.apiKey,
+          .then((booruConfig) => _api.putTag(
+                booruConfig?.login,
+                booruConfig?.apiKey,
                 postId,
                 {
                   'post[tag_string]': tagString,

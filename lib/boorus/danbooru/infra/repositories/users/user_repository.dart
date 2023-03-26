@@ -67,9 +67,9 @@ class UserRepositoryApi implements UserRepository {
   Future<User> getUserById(int id) => _currentBooruRepository
       .get()
       .then(
-        (userBooru) => _api.getUserById(
-          userBooru?.login,
-          userBooru?.apiKey,
+        (booruConfig) => _api.getUserById(
+          booruConfig?.login,
+          booruConfig?.apiKey,
           id,
         ),
       )
@@ -81,9 +81,9 @@ class UserRepositoryApi implements UserRepository {
   Future<UserSelf?> getUserSelfById(int id) => _currentBooruRepository
       .get()
       .then(
-        (userBooru) => _api.getUserById(
-          userBooru?.login,
-          userBooru?.apiKey,
+        (booruConfig) => _api.getUserById(
+          booruConfig?.login,
+          booruConfig?.apiKey,
           id,
         ),
       )

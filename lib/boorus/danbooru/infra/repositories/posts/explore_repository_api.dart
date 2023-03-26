@@ -10,12 +10,12 @@ import 'post_repository_api.dart';
 class ExploreRepositoryApi implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
-    required this.currentUserBooruRepository,
+    required this.currentBooruConfigRepository,
     required this.postRepository,
     required this.urlComposer,
   });
 
-  final CurrentBooruConfigRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
   final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   final ImageSourceComposer<PostDto> urlComposer;
@@ -37,12 +37,12 @@ class ExploreRepositoryApi implements ExploreRepository {
   Future<List<DanbooruPost>> getMostViewedPosts(
     DateTime date,
   ) =>
-      currentUserBooruRepository
+      currentBooruConfigRepository
           .get()
           .then(
-            (userBooru) => api.getMostViewedPosts(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => api.getMostViewedPosts(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               '${date.year}-${date.month}-${date.day}',
               postParams,
             ),
@@ -61,12 +61,12 @@ class ExploreRepositoryApi implements ExploreRepository {
     TimeScale scale, {
     int? limit,
   }) =>
-      currentUserBooruRepository
+      currentBooruConfigRepository
           .get()
           .then(
-            (userBooru) => api.getPopularPosts(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => api.getPopularPosts(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               '${date.year}-${date.month}-${date.day}',
               scale.toString().split('.').last,
               page,

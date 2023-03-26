@@ -22,9 +22,9 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentBooruConfigRepository,
   )   : _api = api,
-        _currentUserBooruRepository = currentUserBooruRepository;
+        _currentUserBooruRepository = currentBooruConfigRepository;
 
   final DanbooruApi _api;
   final CurrentBooruConfigRepository _currentUserBooruRepository;

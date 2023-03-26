@@ -100,16 +100,16 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {
-      final userBooru = await currentUserBooruRepository.get();
-      if (!userBooru.hasLoginDetails()) return;
+      final booruConfig = await currentBooruConfigRepository.get();
+      if (!booruConfig.hasLoginDetails()) return;
 
       await tryAsync<List<String>>(
         action: () => blacklistedTagsRepository
-            .getBlacklistedTags(userBooru!.booruUserId!),
+            .getBlacklistedTags(booruConfig!.booruUserId!),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
@@ -121,9 +121,9 @@ class BlacklistedTagsBloc
     });
 
     on<BlacklistedTagAdded>((event, emit) async {
-      final userBooru = await currentUserBooruRepository.get();
+      final booruConfig = await currentBooruConfigRepository.get();
 
-      if (state.blacklistedTags == null || !userBooru.hasLoginDetails()) {
+      if (state.blacklistedTags == null || !booruConfig.hasLoginDetails()) {
         event.onFailure?.call('Fail to add tag');
 
         return;
@@ -132,7 +132,7 @@ class BlacklistedTagsBloc
       final tags = [...state.blacklistedTags!, event.tag];
       await tryAsync<bool>(
         action: () => blacklistedTagsRepository.setBlacklistedTags(
-          userBooru!.booruUserId!,
+          booruConfig!.booruUserId!,
           tags,
         ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
@@ -150,9 +150,9 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagRemoved>(
       (event, emit) async {
-        final userBooru = await currentUserBooruRepository.get();
+        final booruConfig = await currentBooruConfigRepository.get();
 
-        if (state.blacklistedTags == null || !userBooru.hasLoginDetails()) {
+        if (state.blacklistedTags == null || !booruConfig.hasLoginDetails()) {
           event.onFailure?.call('Fail to remove tag');
 
           return;
@@ -161,7 +161,7 @@ class BlacklistedTagsBloc
         final tags = [...state.blacklistedTags!]..remove(event.tag);
         await tryAsync<bool>(
           action: () => blacklistedTagsRepository.setBlacklistedTags(
-            userBooru!.booruUserId!,
+            booruConfig!.booruUserId!,
             tags,
           ),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
@@ -181,9 +181,9 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagReplaced>(
       (event, emit) async {
-        final userBooru = await currentUserBooruRepository.get();
+        final booruConfig = await currentBooruConfigRepository.get();
 
-        if (state.blacklistedTags == null || !userBooru.hasLoginDetails()) {
+        if (state.blacklistedTags == null || !booruConfig.hasLoginDetails()) {
           event.onFailure?.call('Fail to replace tag');
 
           return;
@@ -195,7 +195,7 @@ class BlacklistedTagsBloc
         ];
         await tryAsync<bool>(
           action: () => blacklistedTagsRepository.setBlacklistedTags(
-            userBooru!.booruUserId!,
+            booruConfig!.booruUserId!,
             tags,
           ),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),

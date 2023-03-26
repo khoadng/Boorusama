@@ -6,18 +6,18 @@ import 'package:boorusama/core/domain/boorus.dart';
 class PostCountRepositoryApi implements PostCountRepository {
   const PostCountRepositoryApi({
     required this.api,
-    required this.currentUserBooruRepository,
+    required this.currentBooruConfigRepository,
   });
 
   final DanbooruApi api;
-  final CurrentBooruConfigRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
 
   @override
-  Future<int?> count(List<String> tags) => currentUserBooruRepository
+  Future<int?> count(List<String> tags) => currentBooruConfigRepository
       .get()
-      .then((userBooru) => api.countPosts(
-            userBooru?.login,
-            userBooru?.apiKey,
+      .then((booruConfig) => api.countPosts(
+            booruConfig?.login,
+            booruConfig?.apiKey,
             tags.join(' '),
           ))
       .then((value) => value.data['counts']['posts'])

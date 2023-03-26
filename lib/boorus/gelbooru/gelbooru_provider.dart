@@ -49,10 +49,10 @@ class GelbooruProvider extends StatelessWidget {
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
-    final currentUserBooruRepository =
+    final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
     final authenticationCubit = AuthenticationCubit(
-      currentUserBooruRepository: currentUserBooruRepository,
+      currentBooruConfigRepository: currentBooruConfigRepository,
       booru: booru,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();

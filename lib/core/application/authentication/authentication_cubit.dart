@@ -9,18 +9,18 @@ part 'authentication_state.dart';
 
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   AuthenticationCubit({
-    required this.currentUserBooruRepository,
+    required this.currentBooruConfigRepository,
     required this.booru,
   }) : super(Unauthenticated());
 
-  final CurrentBooruConfigRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
   final Booru booru;
 
   Future<void> logIn() async {
-    final userBooru = await currentUserBooruRepository.get();
-    if (userBooru.hasLoginDetails() &&
-        userBooru!.booruId == booru.booruType.index) {
-      emit(Authenticated(userBooru: userBooru));
+    final booruConfig = await currentBooruConfigRepository.get();
+    if (booruConfig.hasLoginDetails() &&
+        booruConfig!.booruId == booru.booruType.index) {
+      emit(Authenticated(booruConfig: booruConfig));
     } else {
       emit(Unauthenticated());
     }

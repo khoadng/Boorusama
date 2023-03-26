@@ -17,9 +17,9 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required DanbooruApi api,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
   })  : _api = api,
-        _currentUserBooruRepository = currentUserBooruRepository;
+        _currentUserBooruRepository = currentBooruConfigRepository;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
@@ -27,16 +27,16 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   @override
   Future<List<PostVote>> getPostVotes(List<int> postIds) async {
     if (postIds.isEmpty) return Future.value([]);
-    final userBooru = await _currentUserBooruRepository.get();
-    if (userBooru?.booruUserId == null) return [];
+    final booruConfig = await _currentUserBooruRepository.get();
+    if (booruConfig?.booruUserId == null) return [];
 
     return _api
         .getPostVotes(
-          userBooru?.login,
-          userBooru?.apiKey,
+          booruConfig?.login,
+          booruConfig?.apiKey,
           1,
           postIds.join(','),
-          userBooru?.booruUserId.toString(),
+          booruConfig?.booruUserId.toString(),
           false,
           100,
         )
@@ -47,9 +47,9 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   Future<List<PostVote>> getAllVotes(int postId, int page) =>
       _currentUserBooruRepository
           .get()
-          .then((userBooru) => _api.getPostVotes(
-                userBooru?.login,
-                userBooru?.apiKey,
+          .then((booruConfig) => _api.getPostVotes(
+                booruConfig?.login,
+                booruConfig?.apiKey,
                 page,
                 postId.toString(),
                 null,
@@ -61,9 +61,9 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   Future<PostVote?> _vote(int postId, int score) => _currentUserBooruRepository
       .get()
       .then(
-        (userBooru) => _api.votePost(
-          userBooru?.login,
-          userBooru?.apiKey,
+        (booruConfig) => _api.votePost(
+          booruConfig?.login,
+          booruConfig?.apiKey,
           postId,
           score,
         ),

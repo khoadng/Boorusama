@@ -58,7 +58,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required NoteRepository noteRepository,
     required DanbooruPostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
@@ -95,9 +95,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           previousPost: () => prevPost,
           recommends: [],
         ));
-        final userBooru = await currentUserBooruRepository.get();
-        if (userBooru.hasLoginDetails()) {
-          add(_PostDetailFavoriteFetch(userBooru!.booruUserId!));
+        final booruConfig = await currentBooruConfigRepository.get();
+        if (booruConfig.hasLoginDetails()) {
+          add(_PostDetailFavoriteFetch(booruConfig!.booruUserId!));
           add(const _PostDetailVoteFetch());
         }
 
@@ -226,8 +226,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<PostDetailFavoritesChanged>((event, emit) async {
-      final userBooru = await currentUserBooruRepository.get();
-      if (!userBooru.hasLoginDetails()) return;
+      final booruConfig = await currentBooruConfigRepository.get();
+      if (!booruConfig.hasLoginDetails()) return;
 
       var success = false;
       final originalState = state;

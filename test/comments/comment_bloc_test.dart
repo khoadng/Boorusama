@@ -17,7 +17,7 @@ class MockCurrentUserBooruRepository extends Mock
     implements CurrentBooruConfigRepository {}
 
 void main() {
-  final currentUserBooruRepository = MockCurrentUserBooruRepository();
+  final currentBooruConfigRepository = MockCurrentUserBooruRepository();
   final commentRepo = MockCommentRepository();
   final commentVoteRepo = MockCommentVoteRepository();
 
@@ -25,7 +25,7 @@ void main() {
     blocTest<CommentBloc, CommentState>(
       'fetchet 2 comments',
       setUp: () {
-        when(() => currentUserBooruRepository.get())
+        when(() => currentBooruConfigRepository.get())
             .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentRepo.getCommentsFromPostId(any()))
             .thenAnswer((invocation) async => [
@@ -36,12 +36,12 @@ void main() {
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(currentUserBooruRepository);
+        reset(currentBooruConfigRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -67,18 +67,18 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'a'),
                 ]);
-        when(() => currentUserBooruRepository.get())
+        when(() => currentBooruConfigRepository.get())
             .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(currentUserBooruRepository);
+        reset(currentBooruConfigRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -122,13 +122,13 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'bar'),
                 ]);
-        when(() => currentUserBooruRepository.get())
+        when(() => currentBooruConfigRepository.get())
             .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(currentUserBooruRepository);
+        reset(currentBooruConfigRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
@@ -141,7 +141,7 @@ void main() {
         ),
       ]),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -171,13 +171,13 @@ void main() {
             .thenAnswer((invocation) async => [
                   Comment.emty().copyWith(id: 1, body: 'foo2'),
                 ]);
-        when(() => currentUserBooruRepository.get())
+        when(() => currentBooruConfigRepository.get())
             .thenAnswer((invocation) async => BooruConfig.empty);
         when(() => commentVoteRepo.getCommentVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
-        reset(currentUserBooruRepository);
+        reset(currentBooruConfigRepository);
         reset(commentRepo);
         reset(commentVoteRepo);
       },
@@ -196,7 +196,7 @@ void main() {
         ),
       ]),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -241,7 +241,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -287,7 +287,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -332,7 +332,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),
@@ -379,7 +379,7 @@ void main() {
         ],
       ),
       build: () => CommentBloc(
-        currentUserBooruRepository: currentUserBooruRepository,
+        currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
       ),

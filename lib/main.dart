@@ -98,7 +98,7 @@ void main() async {
     final id =
         await booruConfigBox.add(HiveBooruConfigRepository.defaultValue());
     final settings = await settingRepository.load();
-    await settingRepository.save(settings.copyWith(currentUserBooruId: id));
+    await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
   }
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 

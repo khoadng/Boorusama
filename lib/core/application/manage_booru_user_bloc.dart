@@ -52,7 +52,7 @@ class ManageBooruUserAdded extends ManageBooruUserEvent {
   final String apiKey;
   final BooruType booru;
   final void Function(String message)? onFailure;
-  final void Function(BooruConfig userBooru)? onSuccess;
+  final void Function(BooruConfig booruConfig)? onSuccess;
 
   @override
   List<Object?> get props => [login, apiKey, booru, onFailure, onSuccess];

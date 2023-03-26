@@ -92,24 +92,24 @@ List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
     (comments) => comments..sort((a, b) => a.id.compareTo(b.id));
 
 CommentData Function(Comment comment) createCommentData({
-  required BooruConfig? userBooru,
+  required BooruConfig? booruConfig,
   required List<CommentVote> votes,
 }) =>
-    (comment) => commentDataFrom(comment, comment.creator, userBooru, votes);
+    (comment) => commentDataFrom(comment, comment.creator, booruConfig, votes);
 
 Future<List<CommentData>> Function(List<Comment> comments)
     createCommentDataWith(
-  CurrentBooruConfigRepository currentUserBooruRepository,
+  CurrentBooruConfigRepository currentBooruConfigRepository,
   CommentVoteRepository commentVoteRepository,
 ) =>
         (comments) async {
           final votes = await commentVoteRepository
               .getCommentVotes(comments.map((e) => e.id).toList());
-          final userBooru = await currentUserBooruRepository.get();
+          final booruConfig = await currentBooruConfigRepository.get();
 
           return comments
               .map(createCommentData(
-                userBooru: userBooru,
+                booruConfig: booruConfig,
                 votes: votes,
               ))
               .toList();
@@ -118,7 +118,7 @@ Future<List<CommentData>> Function(List<Comment> comments)
 CommentData commentDataFrom(
   Comment comment,
   User? user,
-  BooruConfig? userBooru,
+  BooruConfig? booruConfig,
   List<CommentVote> votes,
 ) =>
     CommentData(
@@ -130,7 +130,7 @@ CommentData commentDataFrom(
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
       score: comment.score,
-      isSelf: comment.creator?.id == userBooru?.booruUserId,
+      isSelf: comment.creator?.id == booruConfig?.booruUserId,
       recentlyUpdated: comment.createdAt != comment.updatedAt,
       voteState: _getVoteState(comment, votes),
       voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,

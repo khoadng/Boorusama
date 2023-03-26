@@ -11,26 +11,26 @@ import 'package:boorusama/core/domain/settings.dart';
 class CurrentBooruState extends Equatable {
   const CurrentBooruState({
     required this.booru,
-    required this.userBooru,
+    required this.booruConfig,
   });
 
   factory CurrentBooruState.initial() =>
-      const CurrentBooruState(booru: null, userBooru: null);
+      const CurrentBooruState(booru: null, booruConfig: null);
 
   final Booru? booru;
-  final BooruConfig? userBooru;
+  final BooruConfig? booruConfig;
 
   CurrentBooruState copyWith({
     Booru? Function()? booru,
-    BooruConfig? Function()? userBooru,
+    BooruConfig? Function()? booruConfig,
   }) =>
       CurrentBooruState(
         booru: booru != null ? booru() : this.booru,
-        userBooru: userBooru != null ? userBooru() : this.userBooru,
+        booruConfig: booruConfig != null ? booruConfig() : this.booruConfig,
       );
 
   @override
-  List<Object?> get props => [booru, userBooru];
+  List<Object?> get props => [booru, booruConfig];
 }
 
 abstract class CurrentBooruEvent extends Equatable {
@@ -47,15 +47,15 @@ class CurrentBooruFetched extends CurrentBooruEvent {
 
 class CurrentBooruChanged extends CurrentBooruEvent {
   const CurrentBooruChanged({
-    required this.userBooru,
+    required this.booruConfig,
     required this.settings,
   });
 
-  final BooruConfig userBooru;
+  final BooruConfig booruConfig;
   final Settings settings;
 
   @override
-  List<Object?> get props => [userBooru, settings];
+  List<Object?> get props => [booruConfig, settings];
 }
 
 class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
@@ -67,31 +67,31 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     on<CurrentBooruFetched>((event, emit) async {
       if (event.settings.hasSelectedBooru) {
         final users = await userBooruRepository.getAll();
-        final userBooru = users
-            .firstWhereOrNull((x) => x.id == event.settings.currentUserBooruId);
+        final booruConfig = users.firstWhereOrNull(
+            (x) => x.id == event.settings.currentBooruConfigId);
 
-        final booru = userBooru != null
-            ? booruFactory.from(type: intToBooruType(userBooru.booruId))
+        final booru = booruConfig != null
+            ? booruFactory.from(type: intToBooruType(booruConfig.booruId))
             : null;
 
         emit(state.copyWith(
           booru: () => booru,
-          userBooru: () => userBooru,
+          booruConfig: () => booruConfig,
         ));
       }
     });
 
     on<CurrentBooruChanged>((event, emit) async {
       await settingsCubit.update(event.settings.copyWith(
-        currentUserBooruId: event.userBooru.id,
+        currentBooruConfigId: event.booruConfig.id,
       ));
 
       final booru =
-          booruFactory.from(type: intToBooruType(event.userBooru.booruId));
+          booruFactory.from(type: intToBooruType(event.booruConfig.booruId));
 
       emit(state.copyWith(
         booru: () => booru,
-        userBooru: () => event.userBooru,
+        booruConfig: () => event.booruConfig,
       ));
     });
   }

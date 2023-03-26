@@ -235,12 +235,12 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required DanbooruPostRepository postRepository,
     required UserSelf? currentUser,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
-      final currentUser = await currentUserBooruRepository.get();
+      final currentUser = await currentBooruConfigRepository.get();
       await load(
         emit: EmitConfig(
           stateGetter: () => state,
@@ -445,7 +445,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
   }) =>
       FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
-        currentUserBooruRepository:
+        currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
         postRepository: context.read<DanbooruPostRepository>(),
         currentUser: currentUser,

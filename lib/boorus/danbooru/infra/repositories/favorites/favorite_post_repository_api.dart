@@ -27,9 +27,9 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   Future<bool> addToFavorites(int postId) => _currentUserBooruRepository
           .get()
           .then(
-            (userBooru) => _api.addToFavorites(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => _api.addToFavorites(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postId,
             ),
           )
@@ -51,10 +51,10 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
     return _currentUserBooruRepository
         .get()
         .then(
-          (userBooru) => _api.removeFromFavorites(
+          (booruConfig) => _api.removeFromFavorites(
             postId,
-            userBooru?.login,
-            userBooru?.apiKey,
+            booruConfig?.login,
+            booruConfig?.apiKey,
             'delete',
           ),
         )
@@ -81,9 +81,9 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
       _currentUserBooruRepository
           .get()
           .then(
-            (userBooru) => _api.filterFavoritesFromUserId(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => _api.filterFavoritesFromUserId(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postIds.join(','),
               userId,
               limit,
@@ -100,9 +100,9 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
       _currentUserBooruRepository
           .get()
           .then(
-            (userBooru) => _api.filterFavoritesFromUserId(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => _api.filterFavoritesFromUserId(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postId.toString(),
               userId,
               20,

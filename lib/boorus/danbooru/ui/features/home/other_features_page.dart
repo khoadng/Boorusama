@@ -15,8 +15,8 @@ class OtherFeaturesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userBooru =
-        context.select((CurrentBooruBloc bloc) => bloc.state.userBooru);
+    final booruConfig =
+        context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
 
     return Scaffold(
       body: SafeArea(
@@ -27,7 +27,7 @@ class OtherFeaturesPage extends StatelessWidget {
                 leading: const Icon(Icons.favorite_outline),
                 title: Text('profile.favorites'.tr()),
                 onTap: () {
-                  goToFavoritesPage(context, userBooru!.login);
+                  goToFavoritesPage(context, booruConfig!.login);
                 },
               ),
               ListTile(
@@ -41,7 +41,7 @@ class OtherFeaturesPage extends StatelessWidget {
                 leading: const Icon(Icons.search),
                 title: const Text('Saved search'),
                 onTap: () {
-                  goToSavedSearchPage(context, userBooru!.login);
+                  goToSavedSearchPage(context, booruConfig!.login);
                 },
               ),
               ListTile(

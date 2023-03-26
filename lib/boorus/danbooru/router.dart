@@ -450,7 +450,7 @@ Widget providePostDetailPageDependencies(
                       postRepository: context.read<DanbooruPostRepository>(),
                       favoritePostRepository:
                           context.read<FavoritePostRepository>(),
-                      currentUserBooruRepository:
+                      currentBooruConfigRepository:
                           context.read<CurrentBooruConfigRepository>(),
                       postVoteRepository: context.read<PostVoteRepository>(),
                       tags: tags,

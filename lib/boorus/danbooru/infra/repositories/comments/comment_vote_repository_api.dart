@@ -16,9 +16,9 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentUserBooruRepository,
+    CurrentBooruConfigRepository currentBooruConfigRepository,
   )   : _api = api,
-        _currentUserBooruRepository = currentUserBooruRepository;
+        _currentUserBooruRepository = currentBooruConfigRepository;
 
   final DanbooruApi _api;
   final CurrentBooruConfigRepository _currentUserBooruRepository;
@@ -27,9 +27,9 @@ class CommentVoteApiRepository implements CommentVoteRepository {
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds) =>
       _currentUserBooruRepository
           .get()
-          .then((userBooru) => _api.getCommentVotes(
-                userBooru?.login,
-                userBooru?.apiKey,
+          .then((booruConfig) => _api.getCommentVotes(
+                booruConfig?.login,
+                booruConfig?.apiKey,
                 commentIds.join(','),
                 false,
               ))
@@ -43,9 +43,9 @@ class CommentVoteApiRepository implements CommentVoteRepository {
   @override
   Future<CommentVote> downvote(int commentId) => _currentUserBooruRepository
       .get()
-      .then((userBooru) => _api.voteComment(
-            userBooru?.login,
-            userBooru?.apiKey,
+      .then((booruConfig) => _api.voteComment(
+            booruConfig?.login,
+            booruConfig?.apiKey,
             commentId,
             -1,
           ))

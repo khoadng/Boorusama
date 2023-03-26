@@ -31,10 +31,10 @@ class PoolRepositoryApi implements PoolRepository {
     String? name,
     String? description,
   }) =>
-      _currentUserBooruRepository.get().then((userBooru) => _api
+      _currentUserBooruRepository.get().then((booruConfig) => _api
           .getPools(
-            userBooru?.login,
-            userBooru?.apiKey,
+            booruConfig?.login,
+            booruConfig?.apiKey,
             page,
             _limit,
             category: category?.toString(),
@@ -46,10 +46,10 @@ class PoolRepositoryApi implements PoolRepository {
 
   @override
   Future<List<Pool>> getPoolsByPostId(int postId) =>
-      _currentUserBooruRepository.get().then((userBooru) => _api
+      _currentUserBooruRepository.get().then((booruConfig) => _api
           .getPoolsFromPostId(
-            userBooru?.login,
-            userBooru?.apiKey,
+            booruConfig?.login,
+            booruConfig?.apiKey,
             postId,
             _limit,
           )
@@ -59,10 +59,10 @@ class PoolRepositoryApi implements PoolRepository {
   Future<List<Pool>> getPoolsByPostIds(List<int> postIds) {
     if (postIds.isEmpty) return Future.value([]);
 
-    return _currentUserBooruRepository.get().then((userBooru) => _api
+    return _currentUserBooruRepository.get().then((booruConfig) => _api
         .getPoolsFromPostIds(
-          userBooru?.login,
-          userBooru?.apiKey,
+          booruConfig?.login,
+          booruConfig?.apiKey,
           postIds.join(' '),
           _limit,
         )

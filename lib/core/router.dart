@@ -378,10 +378,10 @@ void goToAddBooruPage(
                   login: login,
                   apiKey: apiKey,
                   booru: booru,
-                  onSuccess: (userBooru) {
+                  onSuccess: (booruConfig) {
                     if (setCurrentBooruOnSubmit) {
                       context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
-                            userBooru: userBooru,
+                            booruConfig: booruConfig,
                             settings: state.settings,
                           ));
                     }

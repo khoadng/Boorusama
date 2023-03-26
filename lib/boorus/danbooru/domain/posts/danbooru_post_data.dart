@@ -61,29 +61,29 @@ Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
-  CurrentBooruConfigRepository currentUserBooruRepository,
+  CurrentBooruConfigRepository currentBooruConfigRepository,
 ) =>
         (posts) => createPostData(
               favoritePostRepository,
               voteRepository,
               poolRepository,
               posts,
-              currentUserBooruRepository,
+              currentBooruConfigRepository,
             );
 
-Future<List<DanbooruPostData>> Function(BooruConfig? userBooru) process(
+Future<List<DanbooruPostData>> Function(BooruConfig? booruConfig) process(
   List<DanbooruPost> posts, {
   required Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
       forAnonymous,
   required Future<List<DanbooruPostData>> Function(
     List<DanbooruPost> posts,
-    BooruConfig userBooru,
+    BooruConfig booruConfig,
   )
       forUser,
 }) =>
-    (userBooru) {
-      return userBooru.hasLoginDetails()
-          ? forUser(posts, userBooru!)
+    (booruConfig) {
+      return booruConfig.hasLoginDetails()
+          ? forUser(posts, booruConfig!)
           : forAnonymous(posts);
     };
 
@@ -110,9 +110,9 @@ Future<List<DanbooruPostData>> createPostData(
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
   List<DanbooruPost> posts,
-  CurrentBooruConfigRepository currentUserBooruRepository,
+  CurrentBooruConfigRepository currentBooruConfigRepository,
 ) =>
-    currentUserBooruRepository.get().then(process(
+    currentBooruConfigRepository.get().then(process(
           posts,
           forAnonymous: (posts) async {
             final ids = posts.map((e) => e.id).toList();
@@ -127,7 +127,7 @@ Future<List<DanbooruPostData>> createPostData(
                     ))
                 .toList();
           },
-          forUser: (posts, userBooru) async {
+          forUser: (posts, booruConfig) async {
             List<Favorite> favs = [];
             List<PostVote> votes = [];
             List<Pool> pools = [];
@@ -138,7 +138,7 @@ Future<List<DanbooruPostData>> createPostData(
               favoritePostRepository
                   .filterFavoritesFromUserId(
                     ids,
-                    userBooru.booruUserId!,
+                    booruConfig.booruUserId!,
                     200,
                   )
                   .then((value) => favs = value),
@@ -168,15 +168,15 @@ Future<List<DanbooruPostData>> createPostData(
 Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
     filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
-  CurrentBooruConfigRepository currentUserBooruRepository,
+  CurrentBooruConfigRepository currentBooruConfigRepository,
 ) =>
         (posts) async {
-          final userBooru = await currentUserBooruRepository.get();
+          final booruConfig = await currentBooruConfigRepository.get();
 
-          if (!userBooru.hasLoginDetails()) return posts;
+          if (!booruConfig.hasLoginDetails()) return posts;
 
           return blacklistedTagsRepository
-              .getBlacklistedTags(userBooru!.booruUserId!)
+              .getBlacklistedTags(booruConfig!.booruUserId!)
               .then((blacklistedTags) => filter(posts, blacklistedTags));
         };
 

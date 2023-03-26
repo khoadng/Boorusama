@@ -18,9 +18,9 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required DanbooruApi api,
-  })  : _currentUserBooruRepository = currentUserBooruRepository,
+  })  : _currentUserBooruRepository = currentBooruConfigRepository,
         _api = api;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
@@ -32,9 +32,9 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
       return _currentUserBooruRepository
           .get()
           .then(
-            (userBooru) => _api.getPopularSearchByDate(
-              userBooru?.login,
-              userBooru?.apiKey,
+            (booruConfig) => _api.getPopularSearchByDate(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               '${date.year}-${date.month}-${date.day}',
             ),
           )

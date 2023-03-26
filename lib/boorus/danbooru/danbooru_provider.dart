@@ -81,7 +81,7 @@ class DanbooruProvider extends StatelessWidget {
     required this.booru,
     required this.tagInfo,
     required this.trendingTagCubit,
-    required this.currentUserBooruRepository,
+    required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
     required this.exploreBloc,
@@ -115,7 +115,7 @@ class DanbooruProvider extends StatelessWidget {
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
 
     final popularSearchRepo = PopularSearchRepositoryApi(
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       api: api,
     );
 
@@ -124,7 +124,7 @@ class DanbooruProvider extends StatelessWidget {
     final artistRepo = ArtistRepositoryApi(api: api);
 
     final profileRepo = ProfileRepositoryApi(
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       api: api,
     );
 
@@ -133,7 +133,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final exploreRepo = ExploreRepositoryApi(
       api: api,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       postRepository: postRepo,
       urlComposer: sourceComposer,
     );
@@ -168,7 +168,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final autocompleteRepo = AutocompleteRepositoryApi(
       api: api,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     );
 
     final relatedTagRepo = RelatedTagRepositoryApi(api);
@@ -184,19 +184,19 @@ class DanbooruProvider extends StatelessWidget {
 
     final postVoteRepo = PostVoteApiRepositoryApi(
       api: api,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     );
 
     final postCountRepo = PostCountRepositoryApi(
       api: api,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     );
 
     final savedSearchRepo = SavedSearchRepositoryApi(api, currentUserBooruRepo);
 
     final favoriteGroupRepo = FavoriteGroupRepositoryApi(
       api: api,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     );
 
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -207,7 +207,7 @@ class DanbooruProvider extends StatelessWidget {
     )..getTags();
 
     final blacklistedTagsBloc = BlacklistedTagsBloc(
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       blacklistedTagsRepository: blacklistedTagRepo,
     )..add(const BlacklistedTagRequested());
 
@@ -217,7 +217,7 @@ class DanbooruProvider extends StatelessWidget {
           favoritePostRepository: favoriteRepo,
           postVoteRepository: postVoteRepo,
           poolRepository: poolRepo,
-          currentUserBooruRepository: currentUserBooruRepo,
+          currentBooruConfigRepository: currentUserBooruRepo,
         );
 
     final exploreBloc = ExploreBloc(
@@ -229,11 +229,11 @@ class DanbooruProvider extends StatelessWidget {
 
     final currentUserBloc = CurrentUserBloc(
       userRepository: userRepo,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     )..add(const CurrentUserFetched());
 
     final authenticationCubit = AuthenticationCubit(
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       booru: booru,
     )..logIn();
 
@@ -271,7 +271,7 @@ class DanbooruProvider extends StatelessWidget {
     final commentBloc = CommentBloc(
       commentVoteRepository: commentVoteRepo,
       commentRepository: commentRepo,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
     );
     final artistCommentaryBloc = ArtistCommentaryBloc(
       artistCommentaryRepository: artistCommentaryRepo,
@@ -308,7 +308,7 @@ class DanbooruProvider extends StatelessWidget {
       commentVoteRepo: commentVoteRepo,
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
@@ -407,7 +407,7 @@ class DanbooruProvider extends StatelessWidget {
       commentVoteRepo: commentVoteRepo,
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
-      currentUserBooruRepository: currentUserBooruRepo,
+      currentBooruConfigRepository: currentUserBooruRepo,
       booru: booru,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
@@ -456,7 +456,7 @@ class DanbooruProvider extends StatelessWidget {
   final CommentRepository commentRepo;
   final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
-  final CurrentBooruConfigRepository currentUserBooruRepository;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
   final FileNameGenerator fileNameGenerator;
 
   final TrendingTagCubit trendingTagCubit;

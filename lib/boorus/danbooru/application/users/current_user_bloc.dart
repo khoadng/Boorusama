@@ -41,17 +41,17 @@ class CurrentUserFetched extends CurrentUserEvent {
 class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   CurrentUserBloc({
     required UserRepository userRepository,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
   }) : super(CurrentUserState.initial()) {
     on<CurrentUserFetched>((event, emit) async {
-      final userBooru = await currentUserBooruRepository.get();
+      final booruConfig = await currentBooruConfigRepository.get();
 
-      if (!userBooru.hasLoginDetails()) {
+      if (!booruConfig.hasLoginDetails()) {
         return;
       }
 
       await tryAsync<UserSelf?>(
-        action: () => userRepository.getUserSelfById(userBooru!.booruUserId!),
+        action: () => userRepository.getUserSelfById(booruConfig!.booruUserId!),
         onSuccess: (data) async {
           emit(state.copyWith(
             user: () => data,

@@ -46,7 +46,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         postVoteRepository: postVoteRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -115,7 +115,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         postVoteRepository: postVoteRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         tags: [],
         posts: [
           DanbooruPostData.empty()
@@ -161,7 +161,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -241,7 +241,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -330,7 +330,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -371,7 +371,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -415,7 +415,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -455,7 +455,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -496,7 +496,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -547,7 +547,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -590,7 +590,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -648,7 +648,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -698,7 +698,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -758,7 +758,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -808,7 +808,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -865,7 +865,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         defaultDetailsStyle: DetailsDisplay.imageFocus,
@@ -944,7 +944,7 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        currentUserBooruRepository: currentUserBooruRepo,
+        currentBooruConfigRepository: currentUserBooruRepo,
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [

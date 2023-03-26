@@ -46,8 +46,8 @@ class SideBarMenu extends StatelessWidget {
                     return state.booru != null
                         ? ListTile(
                             title: Text(state.booru!.name),
-                            subtitle: state.userBooru.hasLoginDetails()
-                                ? Text(state.userBooru!.login ?? 'Unknown')
+                            subtitle: state.booruConfig.hasLoginDetails()
+                                ? Text(state.booruConfig!.login ?? 'Unknown')
                                 : const Text('<Anonymous>'),
                             trailing: IconButton(
                               onPressed: () => showMaterialModalBottomSheet(
@@ -164,7 +164,7 @@ class SwitchBooruModal extends StatelessWidget {
                         context
                             .read<CurrentBooruBloc>()
                             .add(CurrentBooruChanged(
-                              userBooru: user,
+                              booruConfig: user,
                               settings: settings,
                             ));
                       },

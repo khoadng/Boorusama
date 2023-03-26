@@ -10,7 +10,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
     required CommentRepository commentRepository,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
@@ -19,7 +19,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             .getCommentsFromPostId(event.postId)
             .then(filterDeleted())
             .then(createCommentDataWith(
-              currentUserBooruRepository,
+              currentBooruConfigRepository,
               commentVoteRepository,
             ))
             .then(sortDescendedById()),

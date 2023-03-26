@@ -17,12 +17,12 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
     int postId, {
     CancelToken? cancelToken,
   }) async {
-    final userBooru = await _currentUserBooruRepository.get();
+    final booruConfig = await _currentUserBooruRepository.get();
 
     try {
       final value = await _api.getArtistCommentary(
-        userBooru?.login,
-        userBooru?.apiKey,
+        booruConfig?.login,
+        booruConfig?.apiKey,
         postId,
         cancelToken: cancelToken,
       );

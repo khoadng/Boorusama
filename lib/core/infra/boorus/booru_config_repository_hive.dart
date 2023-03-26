@@ -31,8 +31,8 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   }
 
   @override
-  Future<void> remove(BooruConfig userBooru) async {
-    await box.delete(userBooru.id);
+  Future<void> remove(BooruConfig booruConfig) async {
+    await box.delete(booruConfig.id);
   }
 
   @override

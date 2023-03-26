@@ -32,9 +32,9 @@ class TagRepositoryApi implements TagRepository {
     try {
       return _currentUserBooruRepository
           .get()
-          .then((userBooru) => _api.getTagsByNameComma(
-                userBooru?.login,
-                userBooru?.apiKey,
+          .then((booruConfig) => _api.getTagsByNameComma(
+                booruConfig?.login,
+                booruConfig?.apiKey,
                 page,
                 'yes',
                 stringComma,

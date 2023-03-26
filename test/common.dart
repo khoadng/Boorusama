@@ -9,11 +9,11 @@ class MockCurrentUserBooruRepository extends Mock
     implements CurrentBooruConfigRepository {}
 
 CurrentBooruConfigRepository mockUserBooruRepo({
-  BooruConfig? userBooru,
+  BooruConfig? booruConfig,
 }) {
   final repo = MockCurrentUserBooruRepository();
   when(() => repo.get()).thenAnswer((_) async =>
-      userBooru ??
+      booruConfig ??
       const BooruConfig(
         id: 0,
         booruId: 0,
@@ -26,7 +26,7 @@ CurrentBooruConfigRepository mockUserBooruRepo({
 }
 
 CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
-      userBooru: const BooruConfig(
+      booruConfig: const BooruConfig(
         id: 1,
         booruId: 1,
         apiKey: 'apiKey',

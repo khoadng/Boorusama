@@ -20,6 +20,6 @@ class CurrentBooruRepositorySettings implements CurrentBooruConfigRepository {
     final userBoorus = await userBooruRepository.getAll();
 
     return userBoorus
-        .firstWhereOrNull((e) => e.id == settings.currentUserBooruId);
+        .firstWhereOrNull((e) => e.id == settings.currentBooruConfigId);
   }
 }

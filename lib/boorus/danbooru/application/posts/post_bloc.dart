@@ -30,7 +30,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     required DanbooruPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
-    required CurrentBooruConfigRepository currentUserBooruRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required PostVoteRepository postVoteRepository,
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
@@ -53,11 +53,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterWith(
                   blacklistedTagsRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
@@ -76,11 +76,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterWith(
                   blacklistedTagsRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
@@ -105,11 +105,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterWith(
                   blacklistedTagsRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
@@ -130,11 +130,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   favoritePostRepository,
                   postVoteRepository,
                   poolRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterWith(
                   blacklistedTagsRepository,
-                  currentUserBooruRepository,
+                  currentBooruConfigRepository,
                 ))
                 .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
@@ -238,7 +238,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
         postsPerPage: context.read<SettingsCubit>().state.settings.postsPerPage,
-        currentUserBooruRepository:
+        currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
       );
 
