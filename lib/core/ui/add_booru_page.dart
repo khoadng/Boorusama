@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 
@@ -15,7 +16,9 @@ class AddBooruPage extends StatefulWidget {
     required this.onSubmit,
   });
 
-  final void Function(String login, String apiKey, BooruType booru) onSubmit;
+  final void Function(
+    AddNewBooruConfig config,
+  ) onSubmit;
 
   @override
   State<AddBooruPage> createState() => _AddBooruPageState();
@@ -25,7 +28,11 @@ class _AddBooruPageState extends State<AddBooruPage> {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
   final nameController = TextEditingController();
+
   var selectedBooru = BooruType.safebooru;
+  var hideDeleted = false;
+  var ratingFilter = true;
+
   var allowSubmit = true;
 
   @override
@@ -41,6 +48,11 @@ class _AddBooruPageState extends State<AddBooruPage> {
         allowSubmit = isValid();
       });
     });
+    nameController.addListener(() {
+      setState(() {
+        allowSubmit = isValid();
+      });
+    });
   }
 
   @override
@@ -52,7 +64,9 @@ class _AddBooruPageState extends State<AddBooruPage> {
   }
 
   bool isValid() =>
-      (loginController.text.isNotEmpty && apiKeyController.text.isNotEmpty) ||
+      nameController.text.isNotEmpty &&
+          (loginController.text.isNotEmpty &&
+              apiKeyController.text.isNotEmpty) ||
       (loginController.text.isEmpty && apiKeyController.text.isEmpty);
 
   @override
@@ -177,25 +191,32 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     labelText: 'API key',
                   ),
                   const SizedBox(height: 16),
-                  const SwitchListTile.adaptive(
-                    title: Text('Rating filter'),
-                    value: true,
-                    onChanged: print,
+                  SwitchListTile.adaptive(
+                    title: const Text('Rating filter'),
+                    value: ratingFilter,
+                    onChanged: (value) => setState(() {
+                      ratingFilter = value;
+                    }),
                   ),
-                  const SwitchListTile.adaptive(
-                    title: Text('Hide deleted posts'),
-                    value: false,
-                    onChanged: print,
+                  SwitchListTile.adaptive(
+                    title: const Text('Hide deleted posts'),
+                    value: hideDeleted,
+                    onChanged: (value) => setState(() {
+                      hideDeleted = value;
+                    }),
                   ),
                   ElevatedButton(
                     onPressed: allowSubmit
                         ? () {
                             Navigator.of(context).pop();
-                            widget.onSubmit.call(
-                              loginController.text,
-                              apiKeyController.text,
-                              selectedBooru,
-                            );
+                            widget.onSubmit.call(AddNewBooruConfig(
+                              login: loginController.text,
+                              apiKey: apiKeyController.text,
+                              booru: selectedBooru,
+                              configName: nameController.text,
+                              hideDeleted: hideDeleted,
+                              ratingFilter: ratingFilter,
+                            ));
                           }
                         : null,
                     child: const Text('OK'),

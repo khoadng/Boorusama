@@ -20,6 +20,9 @@ CurrentBooruConfigRepository mockUserBooruRepo({
         apiKey: '',
         login: '',
         booruUserId: 0,
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
+        name: '',
+        ratingFilter: BooruConfigRatingFilter.none,
       ));
 
   return repo;
@@ -32,6 +35,9 @@ CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
         apiKey: 'apiKey',
         login: 'login',
         booruUserId: 1,
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
+        name: 'foo',
+        ratingFilter: BooruConfigRatingFilter.none,
       ),
     );
 

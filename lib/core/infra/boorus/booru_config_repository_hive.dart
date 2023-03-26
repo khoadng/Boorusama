@@ -15,8 +15,11 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   });
   final Box<String> box;
 
-  static String defaultValue() =>
-      jsonEncode(BooruConfigData.anonymous(booru: BooruType.safebooru));
+  static String defaultValue() => jsonEncode(BooruConfigData.anonymous(
+        booru: BooruType.safebooru,
+        name: 'My config',
+        filter: BooruConfigRatingFilter.none,
+      ));
 
   @override
   Future<BooruConfig?> add(BooruConfigData booruConfigData) async {
@@ -24,7 +27,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
     final jsonString = jsonEncode(json);
     final id = await box.add(jsonString);
 
-    return convertToUserBooru(
+    return convertToBooruConfig(
       id: id,
       booruConfigData: booruConfigData,
     );
@@ -44,7 +47,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
           final json = jsonDecode(jsonString);
           final booruConfigData = BooruConfigData.fromJson(json);
 
-          return convertToUserBooru(
+          return convertToBooruConfig(
             id: castOrNull<int>(e),
             booruConfigData: booruConfigData,
           );

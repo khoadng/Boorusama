@@ -89,6 +89,8 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
       final booru =
           booruFactory.from(type: intToBooruType(event.booruConfig.booruId));
 
+      print(event.booruConfig);
+
       emit(state.copyWith(
         booru: () => booru,
         booruConfig: () => event.booruConfig,

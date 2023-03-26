@@ -8,17 +8,10 @@ class BooruConfig extends Equatable {
     required this.apiKey,
     required this.login,
     required this.booruUserId,
+    required this.name,
+    required this.ratingFilter,
+    required this.deletedItemBehavior,
   });
-
-  factory BooruConfig.fromJson(Map<String, dynamic> json) {
-    return BooruConfig(
-      id: json['id'],
-      booruId: json['booru_id'],
-      apiKey: json['api_key'],
-      login: json['login'],
-      booruUserId: json['booru_user_id'],
-    );
-  }
 
   static const BooruConfig empty = BooruConfig(
     id: -1,
@@ -26,6 +19,9 @@ class BooruConfig extends Equatable {
     apiKey: null,
     login: null,
     booruUserId: -1,
+    name: '',
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
+    ratingFilter: BooruConfigRatingFilter.none,
   );
 
   final int id;
@@ -33,22 +29,9 @@ class BooruConfig extends Equatable {
   final String? apiKey;
   final String? login;
   final int? booruUserId;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'booru_id': booruId,
-      'api_key': apiKey,
-      'login': login,
-      'booru_user_id': booruUserId,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'UserBooru{id: $id, booruId: $booruId, '
-        'apiKey: $apiKey, login: $login, booruUserId: $booruUserId}';
-  }
+  final String name;
+  final BooruConfigDeletedItemBehavior deletedItemBehavior;
+  final BooruConfigRatingFilter ratingFilter;
 
   @override
   List<Object?> get props => [
@@ -57,7 +40,21 @@ class BooruConfig extends Equatable {
         apiKey,
         login,
         booruUserId,
+        name,
+        deletedItemBehavior,
+        ratingFilter,
       ];
+}
+
+enum BooruConfigDeletedItemBehavior {
+  show,
+  hide,
+}
+
+enum BooruConfigRatingFilter {
+  none,
+  hideExplicit,
+  hideNSFW,
 }
 
 extension BooruConfigX on BooruConfig? {

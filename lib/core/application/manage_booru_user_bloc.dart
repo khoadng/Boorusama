@@ -41,21 +41,39 @@ class ManageBooruUserFetched extends ManageBooruUserEvent {
 
 class ManageBooruUserAdded extends ManageBooruUserEvent {
   const ManageBooruUserAdded({
+    required this.config,
+    this.onFailure,
+    this.onSuccess,
+  });
+
+  final AddNewBooruConfig config;
+  final void Function(String message)? onFailure;
+  final void Function(BooruConfig booruConfig)? onSuccess;
+
+  @override
+  List<Object?> get props => [
+        config,
+        onFailure,
+        onSuccess,
+      ];
+}
+
+class AddNewBooruConfig {
+  AddNewBooruConfig({
     required this.login,
     required this.apiKey,
     required this.booru,
-    this.onFailure,
-    this.onSuccess,
+    required this.configName,
+    required this.hideDeleted,
+    required this.ratingFilter,
   });
 
   final String login;
   final String apiKey;
   final BooruType booru;
-  final void Function(String message)? onFailure;
-  final void Function(BooruConfig booruConfig)? onSuccess;
-
-  @override
-  List<Object?> get props => [login, apiKey, booru, onFailure, onSuccess];
+  final String configName;
+  final bool hideDeleted;
+  final bool ratingFilter;
 }
 
 class ManageBooruUserRemoved extends ManageBooruUserEvent {
@@ -91,11 +109,15 @@ class ManageBooruUserBloc
 
     on<ManageBooruUserAdded>((event, emit) async {
       try {
-        final booru = booruFactory.from(type: event.booru);
+        final booru = booruFactory.from(type: event.config.booru);
 
-        if (event.login.isEmpty && event.apiKey.isEmpty) {
+        if (event.config.login.isEmpty && event.config.apiKey.isEmpty) {
           final booruConfigData = BooruConfigData.anonymous(
-            booru: event.booru,
+            booru: event.config.booru,
+            filter: event.config.ratingFilter
+                ? BooruConfigRatingFilter.hideNSFW
+                : BooruConfigRatingFilter.none,
+            name: event.config.configName,
           );
 
           final user = await userBooruRepository.add(booruConfigData);
@@ -118,15 +140,22 @@ class ManageBooruUserBloc
           ));
         } else {
           final id = await booruUserIdentityProvider.getAccountId(
-            login: event.login,
-            apiKey: event.apiKey,
+            login: event.config.login,
+            apiKey: event.config.apiKey,
             booru: booru,
           );
           final booruConfigData = BooruConfigData.withAccount(
-            login: event.login,
-            apiKey: event.apiKey,
+            login: event.config.login,
+            apiKey: event.config.apiKey,
             booruUserId: id,
-            booru: event.booru,
+            booru: event.config.booru,
+            deletedItemBehavior: event.config.hideDeleted
+                ? BooruConfigDeletedItemBehavior.hide
+                : BooruConfigDeletedItemBehavior.show,
+            filter: event.config.ratingFilter
+                ? BooruConfigRatingFilter.hideNSFW
+                : BooruConfigRatingFilter.none,
+            name: event.config.configName,
           );
 
           if (booruConfigData == null) {

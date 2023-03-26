@@ -371,13 +371,9 @@ void goToAddBooruPage(
     child: BlocBuilder<SettingsCubit, SettingsState>(
       builder: (_, state) {
         return AddBooruPage(
-          onSubmit: (login, apiKey, booru) => context
-              .read<ManageBooruUserBloc>()
-              .add(
+          onSubmit: (config) => context.read<ManageBooruUserBloc>().add(
                 ManageBooruUserAdded(
-                  login: login,
-                  apiKey: apiKey,
-                  booru: booru,
+                  config: config,
                   onSuccess: (booruConfig) {
                     if (setCurrentBooruOnSubmit) {
                       context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
