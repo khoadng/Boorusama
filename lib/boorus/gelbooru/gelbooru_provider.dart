@@ -42,7 +42,6 @@ class GelbooruProvider extends StatelessWidget {
     final dio = context.read<DioProvider>().getDio(booru.url);
     final api = GelbooruApi(dio);
 
-    final postRepo = GelbooruPostRepositoryApi(api: api);
     final tagRepo = GelbooruTagRepositoryApi(api);
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
@@ -54,6 +53,11 @@ class GelbooruProvider extends StatelessWidget {
     final authenticationCubit = AuthenticationCubit(
       currentBooruConfigRepository: currentBooruConfigRepository,
       booru: booru,
+    );
+
+    final postRepo = GelbooruPostRepositoryApi(
+      currentBooruConfigRepository: currentBooruConfigRepository,
+      api: api,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 

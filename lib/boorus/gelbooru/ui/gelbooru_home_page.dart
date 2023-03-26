@@ -65,12 +65,12 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                           onLoadMore: () => context
                               .read<GelbooruPostBloc>()
                               .add(const GelbooruPostBlocFetched(
-                                tag: 'rating:general',
+                                tag: '',
                               )),
                           onRefresh: (controller) => context
                               .read<GelbooruPostBloc>()
                               .add(const GelbooruPostBlocRefreshed(
-                                tag: 'rating:general',
+                                tag: '',
                               )),
                           scrollController: _autoScrollController,
                           sliverHeaderBuilder: (context) => [

@@ -68,7 +68,8 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
       if (event.settings.hasSelectedBooru) {
         final users = await userBooruRepository.getAll();
         final booruConfig = users.firstWhereOrNull(
-            (x) => x.id == event.settings.currentBooruConfigId);
+          (x) => x.id == event.settings.currentBooruConfigId,
+        );
 
         final booru = booruConfig != null
             ? booruFactory.from(type: intToBooruType(booruConfig.booruId))
@@ -88,8 +89,6 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
 
       final booru =
           booruFactory.from(type: intToBooruType(event.booruConfig.booruId));
-
-      print(event.booruConfig);
 
       emit(state.copyWith(
         booru: () => booru,

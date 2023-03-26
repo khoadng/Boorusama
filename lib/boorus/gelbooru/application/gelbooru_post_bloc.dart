@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -105,18 +106,24 @@ class GelbooruPostBloc extends Bloc<GelbooruPostEvent, GelbooruPostState>
   GelbooruPostBloc({
     required PostRepository postRepository,
   }) : super(GelbooruPostState.initial()) {
-    on<GelbooruPostBlocRefreshed>((event, emit) async {
-      await refresh(
-        emit: EmitConfig(stateGetter: () => state, emitter: emit),
-        refresh: (page) => postRepository.getPostsFromTags(event.tag, page),
-      );
-    });
+    on<GelbooruPostBlocRefreshed>(
+      (event, emit) async {
+        await refresh(
+          emit: EmitConfig(stateGetter: () => state, emitter: emit),
+          refresh: (page) => postRepository.getPostsFromTags(event.tag, page),
+        );
+      },
+      transformer: restartable(),
+    );
 
-    on<GelbooruPostBlocFetched>((event, emit) async {
-      await fetch(
-        emit: EmitConfig(stateGetter: () => state, emitter: emit),
-        fetch: (page) => postRepository.getPostsFromTags(event.tag, page),
-      );
-    });
+    on<GelbooruPostBlocFetched>(
+      (event, emit) async {
+        await fetch(
+          emit: EmitConfig(stateGetter: () => state, emitter: emit),
+          fetch: (page) => postRepository.getPostsFromTags(event.tag, page),
+        );
+      },
+      transformer: droppable(),
+    );
   }
 }
