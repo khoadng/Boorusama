@@ -18,7 +18,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/side_bar_menu.dart';
+import 'package:boorusama/core/ui/home/side_bar_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
