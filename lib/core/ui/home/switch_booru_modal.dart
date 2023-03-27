@@ -40,14 +40,25 @@ class SwitchBooruModal extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final config = configs[index];
                     final booru = config.createBooruFrom(booruFactory);
+                    final isSelected =
+                        settings.currentBooruConfigId == config.id;
 
                     return ListTile(
                       horizontalTitleGap: 0,
                       leading: BooruLogo(booru: booru),
+                      trailing: isSelected ? const Icon(Icons.check) : null,
+                      selectedTileColor: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.15),
                       title: Text(
                         config.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      selected: settings.currentBooruConfigId == config.id,
+                      selected: isSelected,
                       subtitle: Text(
                         config.login?.isEmpty ?? true
                             ? '<Anonymous>'
