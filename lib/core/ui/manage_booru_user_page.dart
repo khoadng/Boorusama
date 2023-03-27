@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
 import 'package:boorusama/core/ui/booru_logo.dart';
+import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
 class ManageBooruPage extends StatelessWidget {
   const ManageBooruPage({
@@ -21,6 +23,9 @@ class ManageBooruPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final configs =
         context.select((ManageBooruBloc bloc) => bloc.state.configs);
+
+    final currentConfig =
+        context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
 
     final booruFactory = context.read<BooruFactory>();
 
@@ -36,11 +41,37 @@ class ManageBooruPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final config = configs[index];
                 final booru = config.createBooruFrom(booruFactory);
+                final isCurrent = currentConfig?.id == config.id;
 
                 return ListTile(
                   horizontalTitleGap: 0,
                   leading: BooruLogo(booru: booru),
-                  title: Text(config.name),
+                  title: Row(
+                    children: [
+                      Text(
+                        config.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (isCurrent) ...[
+                        const SizedBox(width: 4),
+                        SquareChip(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          label: Text(
+                            'Current'.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          color: Theme.of(context).chipTheme.backgroundColor,
+                        ),
+                      ],
+                    ],
+                  ),
                   subtitle: Text(config.login?.isEmpty ?? true
                       ? '<Anonymous>'
                       : config.login ?? 'Unknown'),
@@ -66,14 +97,17 @@ class ManageBooruPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  trailing: IconButton(
-                    onPressed: () =>
-                        context.read<ManageBooruBloc>().add(ManageBooruRemoved(
-                              user: config,
-                              onFailure: print,
-                            )),
-                    icon: const Icon(Icons.close),
-                  ),
+                  trailing: !isCurrent
+                      ? IconButton(
+                          onPressed: () => context
+                              .read<ManageBooruBloc>()
+                              .add(ManageBooruRemoved(
+                                user: config,
+                                onFailure: print,
+                              )),
+                          icon: const Icon(Icons.close),
+                        )
+                      : null,
                 );
               },
             ),

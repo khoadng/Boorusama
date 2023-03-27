@@ -13,6 +13,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_logo.dart';
 import 'package:boorusama/core/ui/home/current_booru_action_sheet.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
+import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
@@ -60,14 +61,9 @@ class SideBarMenu extends StatelessWidget {
                                     state.booruConfig!.ratingFilter !=
                                         BooruConfigRatingFilter.none) ...[
                                   const SizedBox(width: 4),
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),
-                                    ),
-                                    child: const Text(
+                                  const SquareChip(
+                                    color: Colors.green,
+                                    label: Text(
                                       'Safe',
                                       style: TextStyle(fontSize: 12),
                                     ),
