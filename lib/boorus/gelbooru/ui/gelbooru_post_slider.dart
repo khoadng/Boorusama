@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
 import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -182,6 +183,8 @@ class _CarouselContentState extends State<_CarouselContent> {
                     onExpand: () => context
                         .read<TagBloc>()
                         .add(TagFetched(tags: post.tags)),
+                    onTagTap: (tag) =>
+                        goToGelbooruSearchPage(context, tag: tag.rawName),
                   ),
                   const Divider(height: 8, thickness: 1),
                   FileDetailsSection(

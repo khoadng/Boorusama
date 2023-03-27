@@ -110,6 +110,7 @@ void goToGelbooruSearchPage(
                   metatags: gcontext.read<TagInfo>().metatags,
                   booruType: state.booru!.booruType,
                   postBloc: postBloc,
+                  initialQuery: tag,
                 );
 
                 return MultiBlocProvider(
