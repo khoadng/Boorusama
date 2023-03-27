@@ -57,16 +57,18 @@ class SideBarMenu extends StatelessWidget {
                                   ),
                                 ),
                                 if (state.booruConfig != null &&
-                                    state.booruConfig!.ratingFilter ==
+                                    state.booruConfig!.ratingFilter !=
                                         BooruConfigRatingFilter.none) ...[
+                                  const SizedBox(width: 4),
                                   Container(
-                                    padding: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(4),
                                     decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
+                                      color: Colors.green,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(2)),
                                     ),
                                     child: const Text(
-                                      '18+',
+                                      'Safe',
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ),
