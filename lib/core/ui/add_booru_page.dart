@@ -37,6 +37,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
   var ratingFilter = true;
 
   var allowSubmit = false;
+  var showKey = false;
 
   @override
   void initState() {
@@ -201,8 +202,22 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   const SizedBox(height: 16),
                   LoginField(
                     validator: (p0) => null,
+                    obscureText: !showKey,
                     controller: apiKeyController,
                     labelText: 'API key',
+                    suffixIcon: IconButton(
+                      splashColor: Colors.transparent,
+                      icon: showKey
+                          ? const FaIcon(
+                              FontAwesomeIcons.solidEyeSlash,
+                              size: 18,
+                            )
+                          : const FaIcon(
+                              FontAwesomeIcons.solidEye,
+                              size: 18,
+                            ),
+                      onPressed: () => setState(() => showKey = !showKey),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   if (selectedBooru != BooruType.safebooru)
