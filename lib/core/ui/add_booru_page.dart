@@ -15,11 +15,14 @@ class AddBooruPage extends StatefulWidget {
   const AddBooruPage({
     super.key,
     required this.onSubmit,
+    this.initial,
   });
 
   final void Function(
     AddNewBooruConfig config,
   ) onSubmit;
+
+  final AddNewBooruConfig? initial;
 
   @override
   State<AddBooruPage> createState() => _AddBooruPageState();
@@ -54,6 +57,15 @@ class _AddBooruPageState extends State<AddBooruPage> {
         allowSubmit = isValid();
       });
     });
+
+    if (widget.initial != null) {
+      loginController.text = widget.initial!.login;
+      apiKeyController.text = widget.initial!.apiKey;
+      nameController.text = widget.initial!.configName;
+      hideDeleted = widget.initial!.hideDeleted;
+      ratingFilter = widget.initial!.ratingFilter;
+      selectedBooru = widget.initial!.booru;
+    }
   }
 
   @override

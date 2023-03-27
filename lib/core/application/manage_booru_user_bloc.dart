@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/utils/collection_utils.dart';
 
 class ManageBooruState extends Equatable {
   const ManageBooruState({
@@ -88,6 +89,31 @@ class ManageBooruRemoved extends ManageBooruEvent {
   List<Object?> get props => [user, onFailure];
 }
 
+class ManageBooruUpdated extends ManageBooruEvent {
+  const ManageBooruUpdated({
+    required this.config,
+    required this.oldConfig,
+    required this.id,
+    this.onFailure,
+    this.onSuccess,
+  });
+
+  final AddNewBooruConfig config;
+  final BooruConfig oldConfig;
+  final int id;
+  final void Function(String message)? onFailure;
+  final void Function(BooruConfig booruConfig)? onSuccess;
+
+  @override
+  List<Object?> get props => [
+        id,
+        config,
+        oldConfig,
+        onFailure,
+        onSuccess,
+      ];
+}
+
 class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
   ManageBooruBloc({
     required BooruConfigRepository userBooruRepository,
@@ -118,22 +144,22 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
             name: event.config.configName,
           );
 
-          final user = await userBooruRepository.add(booruConfigData);
-          final users = state.configs ?? [];
+          final config = await userBooruRepository.add(booruConfigData);
+          final configs = state.configs ?? [];
 
-          if (user == null) {
+          if (config == null) {
             event.onFailure
                 ?.call('Fail to add account. Account might be incorrect');
 
             return;
           }
 
-          event.onSuccess?.call(user);
+          event.onSuccess?.call(config);
 
           emit(state.copyWith(
             configs: () => [
-              ...users,
-              user,
+              ...configs,
+              config,
             ],
           ));
         } else {
@@ -163,29 +189,91 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
             return;
           }
 
-          final user = await userBooruRepository.add(booruConfigData);
+          final config = await userBooruRepository.add(booruConfigData);
 
-          if (user == null) {
+          if (config == null) {
             event.onFailure
                 ?.call('Fail to add account. Account might be incorrect');
 
             return;
           }
 
-          final users = state.configs ?? [];
+          final configs = state.configs ?? [];
 
-          event.onSuccess?.call(user);
+          event.onSuccess?.call(config);
 
           emit(state.copyWith(
             configs: () => [
-              ...users,
-              user,
+              ...configs,
+              config,
             ],
           ));
         }
       } catch (e) {
         event.onFailure?.call('Failed to add account');
       }
+    });
+
+    on<ManageBooruUpdated>((event, emit) async {
+      final booruConfigData = event.oldConfig.hasLoginDetails()
+          ? BooruConfigData.withAccount(
+              login: event.config.login,
+              apiKey: event.config.apiKey,
+              booruUserId: event.oldConfig.booruUserId!,
+              booru: event.config.booru,
+              deletedItemBehavior: event.config.hideDeleted
+                  ? BooruConfigDeletedItemBehavior.hide
+                  : BooruConfigDeletedItemBehavior.show,
+              filter: event.config.ratingFilter
+                  ? BooruConfigRatingFilter.hideNSFW
+                  : BooruConfigRatingFilter.none,
+              name: event.config.configName,
+            )
+          : BooruConfigData(
+              login: event.config.login,
+              apiKey: event.config.apiKey,
+              booruUserId: event.oldConfig.booruUserId,
+              booruId: event.config.booru.index,
+              deletedItemBehavior: event.config.hideDeleted
+                  ? BooruConfigDeletedItemBehavior.hide.index
+                  : BooruConfigDeletedItemBehavior.show.index,
+              ratingFilter: event.config.ratingFilter
+                  ? BooruConfigRatingFilter.hideNSFW.index
+                  : BooruConfigRatingFilter.none.index,
+              name: event.config.configName,
+            );
+
+      if (booruConfigData == null) {
+        event.onFailure?.call('Failed to update account');
+
+        return;
+      }
+
+      final configs = state.configs;
+
+      if (configs == null) {
+        event.onFailure?.call('Failed to update account');
+
+        return;
+      }
+
+      final config =
+          await userBooruRepository.update(event.id, booruConfigData);
+
+      if (config == null) {
+        event.onFailure?.call('Failed to update account');
+
+        return;
+      }
+
+      final newConfigs =
+          configs.replaceFirst(config, (item) => item.id == event.id);
+
+      event.onSuccess?.call(config);
+
+      emit(state.copyWith(
+        configs: () => newConfigs,
+      ));
     });
 
     on<ManageBooruRemoved>((event, emit) async {
@@ -195,7 +283,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
         return;
       }
 
-      final users = [...state.configs!];
+      final configs = [...state.configs!];
 
       await tryAsync<void>(
         action: () => userBooruRepository.remove(event.user),
@@ -204,9 +292,9 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
         onUnknownFailure: (stackTrace, error) =>
             event.onFailure?.call(error.toString()),
         onSuccess: (_) async {
-          users.remove(event.user);
+          configs.remove(event.user);
           emit(state.copyWith(
-            configs: () => users,
+            configs: () => configs,
           ));
         },
       );

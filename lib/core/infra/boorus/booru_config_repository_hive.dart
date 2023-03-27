@@ -55,4 +55,21 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         .whereNotNull()
         .toList();
   }
+
+  @override
+  Future<BooruConfig?> update(int id, BooruConfigData booruConfigData) async {
+    final json = booruConfigData.toJson();
+    final jsonString = jsonEncode(json);
+
+    try {
+      await box.put(id, jsonString);
+
+      return convertToBooruConfig(
+        id: id,
+        booruConfigData: booruConfigData,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
 }

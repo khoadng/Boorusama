@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/add_booru_page.dart';
 import 'package:boorusama/core/ui/booru_logo.dart';
 
 class ManageBooruPage extends StatelessWidget {
@@ -44,6 +44,28 @@ class ManageBooruPage extends StatelessWidget {
                   subtitle: Text(config.login?.isEmpty ?? true
                       ? '<Anonymous>'
                       : config.login ?? 'Unknown'),
+                  onTap: () => showMaterialModalBottomSheet(
+                    context: context,
+                    builder: (_) => AddBooruPage(
+                      initial: AddNewBooruConfig(
+                        login: config.login ?? '',
+                        apiKey: config.apiKey ?? '',
+                        booru: booru.booruType,
+                        configName: config.name,
+                        hideDeleted: config.deletedItemBehavior ==
+                            BooruConfigDeletedItemBehavior.hide,
+                        ratingFilter:
+                            config.ratingFilter != BooruConfigRatingFilter.none,
+                      ),
+                      onSubmit: (newConfig) {
+                        context.read<ManageBooruBloc>().add(ManageBooruUpdated(
+                              config: newConfig,
+                              oldConfig: config,
+                              id: config.id,
+                            ));
+                      },
+                    ),
+                  ),
                   trailing: IconButton(
                     onPressed: () =>
                         context.read<ManageBooruBloc>().add(ManageBooruRemoved(

@@ -2,7 +2,7 @@
 import 'package:boorusama/core/domain/boorus.dart';
 
 class BooruConfigData {
-  const BooruConfigData._({
+  const BooruConfigData({
     required this.booruId,
     required this.apiKey,
     required this.login,
@@ -17,7 +17,7 @@ class BooruConfigData {
     required String name,
     required BooruConfigRatingFilter filter,
   }) =>
-      BooruConfigData._(
+      BooruConfigData(
         booruId: booru.index,
         apiKey: '',
         login: '',
@@ -29,7 +29,7 @@ class BooruConfigData {
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
     try {
-      return BooruConfigData._(
+      return BooruConfigData(
         booruId: json['booruId'] as int,
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
@@ -56,7 +56,7 @@ class BooruConfigData {
     if (apiKey == '') return null;
     if (booruUserId <= 0) return null;
 
-    return BooruConfigData._(
+    return BooruConfigData(
       booruId: booru.index,
       apiKey: apiKey,
       login: login,
