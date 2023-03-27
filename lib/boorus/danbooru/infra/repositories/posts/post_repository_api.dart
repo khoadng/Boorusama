@@ -62,6 +62,9 @@ class PostRepositoryApi implements DanbooruPostRepository {
   }) async {
     final booruConfig = await _currentUserBooruRepository.get();
     final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
+    final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
+      booruConfig?.deletedItemBehavior,
+    );
 
     return _api
         .getPosts(
@@ -71,6 +74,7 @@ class PostRepositoryApi implements DanbooruPostRepository {
           [
             ...tags.split(' '),
             if (tag != null) tag,
+            if (deletedStatusTag != null) deletedStatusTag,
           ].join(' '),
           postParams,
           limit ?? _limit,

@@ -13,3 +13,16 @@ String? booruFilterConfigToDanbooruTag(BooruConfigRatingFilter? filter) {
       return 'rating:g';
   }
 }
+
+String? booruConfigDeletedBehaviorToDanbooruTag(
+  BooruConfigDeletedItemBehavior? behavior,
+) {
+  if (behavior == null) return null;
+
+  switch (behavior) {
+    case BooruConfigDeletedItemBehavior.show:
+      return null;
+    case BooruConfigDeletedItemBehavior.hide:
+      return '-status:deleted';
+  }
+}

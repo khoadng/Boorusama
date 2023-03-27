@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
@@ -34,7 +33,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
   final nameController = TextEditingController();
 
   var selectedBooru = BooruType.safebooru;
-  var hideDeleted = false;
+  var hideDeleted = true;
   var ratingFilter = true;
 
   var allowSubmit = false;
@@ -206,20 +205,22 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     labelText: 'API key',
                   ),
                   const SizedBox(height: 16),
-                  SwitchListTile.adaptive(
-                    title: const Text('Rating filter'),
-                    value: ratingFilter,
-                    onChanged: (value) => setState(() {
-                      ratingFilter = value;
-                    }),
-                  ),
-                  SwitchListTile.adaptive(
-                    title: const Text('Hide deleted posts'),
-                    value: hideDeleted,
-                    onChanged: (value) => setState(() {
-                      hideDeleted = value;
-                    }),
-                  ),
+                  if (selectedBooru != BooruType.safebooru)
+                    SwitchListTile.adaptive(
+                      title: const Text('Rating filter'),
+                      value: ratingFilter,
+                      onChanged: (value) => setState(() {
+                        ratingFilter = value;
+                      }),
+                    ),
+                  if (selectedBooru != BooruType.gelbooru)
+                    SwitchListTile.adaptive(
+                      title: const Text('Hide deleted posts'),
+                      value: hideDeleted,
+                      onChanged: (value) => setState(() {
+                        hideDeleted = value;
+                      }),
+                    ),
                   ElevatedButton(
                     onPressed: allowSubmit
                         ? () {
