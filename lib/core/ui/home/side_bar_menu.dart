@@ -47,8 +47,9 @@ class SideBarMenu extends StatelessWidget {
                     return state.booru != null
                         ? ListTile(
                             horizontalTitleGap: 0,
+                            minLeadingWidth: 28,
                             leading: BooruLogo(booru: state.booru!),
-                            title: Row(
+                            title: Wrap(
                               children: [
                                 Text(
                                   state.booru!.booruType.stringify(),
@@ -65,13 +66,19 @@ class SideBarMenu extends StatelessWidget {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(4)),
                                     label: Text(
-                                      'Safe'.toUpperCase(),
+                                      state.booruConfig!.ratingFilter
+                                          .getRatingTerm()
+                                          .toUpperCase(),
+                                      softWrap: true,
                                       style: const TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
-                                    color: Colors.green,
+                                    color: state.booruConfig!.ratingFilter ==
+                                            BooruConfigRatingFilter.hideNSFW
+                                        ? Colors.green
+                                        : Color.fromARGB(255, 154, 138, 0),
                                   ),
                                 ],
                               ],

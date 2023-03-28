@@ -34,7 +34,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
 
   var selectedBooru = BooruType.safebooru;
   var hideDeleted = true;
-  var ratingFilter = true;
+  var ratingFilter = BooruConfigRatingFilter.hideNSFW;
 
   var allowSubmit = false;
   var showKey = false;
@@ -223,12 +223,38 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     ),
                     const SizedBox(height: 16),
                     if (selectedBooru != BooruType.safebooru)
-                      SwitchListTile.adaptive(
-                        title: const Text('Rating filter'),
-                        value: ratingFilter,
-                        onChanged: (value) => setState(() {
-                          ratingFilter = value;
-                        }),
+                      ListTile(
+                        title: Text('Rating'),
+                        trailing: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<BooruConfigRatingFilter>(
+                                isDense: true,
+                                value: ratingFilter,
+                                icon: const Padding(
+                                  padding: EdgeInsets.only(left: 5, top: 2),
+                                  child: FaIcon(FontAwesomeIcons.angleDown,
+                                      size: 16),
+                                ),
+                                onChanged: (newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      ratingFilter = newValue;
+                                    });
+                                  }
+                                },
+                                items: BooruConfigRatingFilter.values
+                                    .map((value) => DropdownMenuItem<
+                                            BooruConfigRatingFilter>(
+                                          value: value,
+                                          child: Text(value.getRatingTerm()),
+                                        ))
+                                    .toList(),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     if (selectedBooru != BooruType.gelbooru)
                       SwitchListTile.adaptive(

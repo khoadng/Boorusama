@@ -73,7 +73,7 @@ class AddNewBooruConfig {
   final BooruType booru;
   final String configName;
   final bool hideDeleted;
-  final bool ratingFilter;
+  final BooruConfigRatingFilter ratingFilter;
 }
 
 class ManageBooruRemoved extends ManageBooruEvent {
@@ -138,9 +138,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
         if (event.config.login.isEmpty && event.config.apiKey.isEmpty) {
           final booruConfigData = BooruConfigData.anonymous(
             booru: event.config.booru,
-            filter: event.config.ratingFilter
-                ? BooruConfigRatingFilter.hideNSFW
-                : BooruConfigRatingFilter.none,
+            filter: event.config.ratingFilter,
             name: event.config.configName,
           );
 
@@ -176,9 +174,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
             deletedItemBehavior: event.config.hideDeleted
                 ? BooruConfigDeletedItemBehavior.hide
                 : BooruConfigDeletedItemBehavior.show,
-            filter: event.config.ratingFilter
-                ? BooruConfigRatingFilter.hideNSFW
-                : BooruConfigRatingFilter.none,
+            filter: event.config.ratingFilter,
             name: event.config.configName,
           );
 
@@ -224,9 +220,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
               deletedItemBehavior: event.config.hideDeleted
                   ? BooruConfigDeletedItemBehavior.hide
                   : BooruConfigDeletedItemBehavior.show,
-              filter: event.config.ratingFilter
-                  ? BooruConfigRatingFilter.hideNSFW
-                  : BooruConfigRatingFilter.none,
+              filter: event.config.ratingFilter,
               name: event.config.configName,
             )
           : BooruConfigData(
@@ -237,9 +231,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
               deletedItemBehavior: event.config.hideDeleted
                   ? BooruConfigDeletedItemBehavior.hide.index
                   : BooruConfigDeletedItemBehavior.show.index,
-              ratingFilter: event.config.ratingFilter
-                  ? BooruConfigRatingFilter.hideNSFW.index
-                  : BooruConfigRatingFilter.none.index,
+              ratingFilter: event.config.ratingFilter.index,
               name: event.config.configName,
             );
 

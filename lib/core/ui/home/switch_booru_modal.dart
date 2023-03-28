@@ -19,12 +19,14 @@ class SwitchBooruModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final configs =
-        context.select((ManageBooruBloc bloc) => bloc.state.configs);
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
     final currentConfig =
         context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
+    final configs = context
+        .select((ManageBooruBloc bloc) => bloc.state.configs)
+        ?.where((c) => c.id != currentConfig?.id)
+        .toList();
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
 
     final booruFactory = context.read<BooruFactory>();
 

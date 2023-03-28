@@ -60,6 +60,19 @@ enum BooruConfigRatingFilter {
   hideNSFW,
 }
 
+extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
+  String getRatingTerm() {
+    switch (this) {
+      case BooruConfigRatingFilter.none:
+        return 'None';
+      case BooruConfigRatingFilter.hideExplicit:
+        return 'Safeish';
+      case BooruConfigRatingFilter.hideNSFW:
+        return 'Safe';
+    }
+  }
+}
+
 extension BooruConfigNullX on BooruConfig? {
   bool hasLoginDetails() {
     if (this == null) return false;

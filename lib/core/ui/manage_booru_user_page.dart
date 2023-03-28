@@ -12,8 +12,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
 import 'package:boorusama/core/ui/booru_config_info_tile.dart';
-import 'package:boorusama/core/ui/booru_logo.dart';
-import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
 class ManageBooruPage extends StatelessWidget {
   const ManageBooruPage({
@@ -69,8 +67,7 @@ class ManageBooruPage extends StatelessWidget {
                         configName: config.name,
                         hideDeleted: config.deletedItemBehavior ==
                             BooruConfigDeletedItemBehavior.hide,
-                        ratingFilter:
-                            config.ratingFilter != BooruConfigRatingFilter.none,
+                        ratingFilter: config.ratingFilter,
                       ),
                       onSubmit: (newConfig) {
                         context.read<ManageBooruBloc>().add(ManageBooruUpdated(

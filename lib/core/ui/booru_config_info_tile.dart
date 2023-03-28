@@ -61,7 +61,7 @@ class BooruConfigInfoTile extends StatelessWidget {
             SquareChip(
               borderRadius: const BorderRadius.all(Radius.circular(4)),
               label: Text(
-                'Safe'.toUpperCase(),
+                config.ratingFilter.getRatingTerm().toUpperCase(),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
@@ -75,13 +75,13 @@ class BooruConfigInfoTile extends StatelessWidget {
             SquareChip(
               borderRadius: const BorderRadius.all(Radius.circular(4)),
               label: Text(
-                'Safeism'.toUpperCase(),
+                config.ratingFilter.getRatingTerm().toUpperCase(),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              color: Colors.yellow,
+              color: Color.fromARGB(255, 154, 138, 0),
             ),
           ]
         ],
