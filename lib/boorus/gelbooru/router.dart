@@ -24,6 +24,7 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'ui/gelbooru_post_detail_page.dart';
 import 'ui/utils.dart';
@@ -121,11 +122,13 @@ void goToGelbooruSearchPage(
                     BlocProvider.value(value: searchHistorySuggestions),
                     BlocProvider.value(value: postBloc),
                   ],
-                  child: GelbooruSearchPage(
-                    autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
-                    metatags: tagInfo.metatags,
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
+                  child: CustomContextMenuOverlay(
+                    child: GelbooruSearchPage(
+                      autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
+                      metatags: tagInfo.metatags,
+                      metatagHighlightColor:
+                          Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 );
               },
