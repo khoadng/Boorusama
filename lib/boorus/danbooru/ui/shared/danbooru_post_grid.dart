@@ -42,6 +42,7 @@ class DanbooruPostGrid extends StatelessWidget {
       buildWhen: (previous, current) => !current.loading,
       builder: (context, state) {
         return PostGrid(
+          multiSelect: multiSelect,
           isFavorite: (post) =>
               state.posts.firstWhere((e) => e.post.id == post.id).isFavorited,
           controller: scrollController,
