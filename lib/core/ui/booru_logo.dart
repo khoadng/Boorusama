@@ -19,10 +19,10 @@ class BooruLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        minWidth: 28,
-        minHeight: 28,
-        maxWidth: 28,
-        maxHeight: 28,
+        minWidth: 20,
+        minHeight: 20,
+        maxWidth: 20,
+        maxHeight: 20,
       ),
       child: AspectRatio(
         aspectRatio: 1,

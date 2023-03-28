@@ -16,7 +16,7 @@ class SquareChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
       decoration: BoxDecoration(
         color: color,
         borderRadius:

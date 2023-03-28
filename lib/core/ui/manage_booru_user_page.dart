@@ -11,6 +11,7 @@ import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
+import 'package:boorusama/core/ui/booru_config_info_tile.dart';
 import 'package:boorusama/core/ui/booru_logo.dart';
 import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
@@ -43,38 +44,21 @@ class ManageBooruPage extends StatelessWidget {
                 final booru = config.createBooruFrom(booruFactory);
                 final isCurrent = currentConfig?.id == config.id;
 
-                return ListTile(
-                  horizontalTitleGap: 0,
-                  leading: BooruLogo(booru: booru),
-                  title: Row(
-                    children: [
-                      Text(
-                        config.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (isCurrent) ...[
-                        const SizedBox(width: 4),
-                        SquareChip(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                          label: Text(
-                            'Current'.toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          color: Theme.of(context).chipTheme.backgroundColor,
-                        ),
-                      ],
-                    ],
-                  ),
-                  subtitle: Text(config.login?.isEmpty ?? true
-                      ? '<Anonymous>'
-                      : config.login ?? 'Unknown'),
+                return BooruConfigInfoTile(
+                  booru: booru,
+                  config: config,
+                  isCurrent: isCurrent,
+                  trailing: !isCurrent
+                      ? IconButton(
+                          onPressed: () => context
+                              .read<ManageBooruBloc>()
+                              .add(ManageBooruRemoved(
+                                user: config,
+                                onFailure: print,
+                              )),
+                          icon: const Icon(Icons.close),
+                        )
+                      : null,
                   onTap: () => showMaterialModalBottomSheet(
                     context: context,
                     builder: (_) => AddBooruPage(
@@ -97,17 +81,6 @@ class ManageBooruPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  trailing: !isCurrent
-                      ? IconButton(
-                          onPressed: () => context
-                              .read<ManageBooruBloc>()
-                              .add(ManageBooruRemoved(
-                                user: config,
-                                onFailure: print,
-                              )),
-                          icon: const Icon(Icons.close),
-                        )
-                      : null,
                 );
               },
             ),

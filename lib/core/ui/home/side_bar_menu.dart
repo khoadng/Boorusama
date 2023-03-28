@@ -61,12 +61,17 @@ class SideBarMenu extends StatelessWidget {
                                     state.booruConfig!.ratingFilter !=
                                         BooruConfigRatingFilter.none) ...[
                                   const SizedBox(width: 4),
-                                  const SquareChip(
-                                    color: Colors.green,
+                                  SquareChip(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4)),
                                     label: Text(
-                                      'Safe',
-                                      style: TextStyle(fontSize: 12),
+                                      'Safe'.toUpperCase(),
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                      ),
                                     ),
+                                    color: Colors.green,
                                   ),
                                 ],
                               ],

@@ -10,7 +10,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/ui/booru_logo.dart';
+import 'package:boorusama/core/ui/booru_config_info_tile.dart';
 
 class SwitchBooruModal extends StatelessWidget {
   const SwitchBooruModal({
@@ -23,6 +23,8 @@ class SwitchBooruModal extends StatelessWidget {
         context.select((ManageBooruBloc bloc) => bloc.state.configs);
     final settings =
         context.select((SettingsCubit cubit) => cubit.state.settings);
+    final currentConfig =
+        context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
 
     final booruFactory = context.read<BooruFactory>();
 
@@ -34,48 +36,41 @@ class SwitchBooruModal extends StatelessWidget {
             ? MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
-                child: ListView.builder(
-                  controller: ModalScrollController.of(context),
-                  itemCount: configs.length,
-                  itemBuilder: (context, index) {
-                    final config = configs[index];
-                    final booru = config.createBooruFrom(booruFactory);
-                    final isSelected =
-                        settings.currentBooruConfigId == config.id;
+                child: Column(
+                  children: [
+                    BooruConfigInfoTile(
+                      booru: currentConfig!.createBooruFrom(booruFactory),
+                      config: currentConfig,
+                      isCurrent: true,
+                    ),
+                    const Divider(),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: ModalScrollController.of(context),
+                        itemCount: configs.length,
+                        itemBuilder: (context, index) {
+                          final config = configs[index];
+                          final booru = config.createBooruFrom(booruFactory);
 
-                    return ListTile(
-                      horizontalTitleGap: 0,
-                      leading: BooruLogo(booru: booru),
-                      trailing: isSelected ? const Icon(Icons.check) : null,
-                      selectedTileColor: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.15),
-                      title: Text(
-                        config.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
+                          return BooruConfigInfoTile(
+                            booru: booru,
+                            config: config,
+                            isCurrent: false,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              context
+                                  .read<CurrentBooruBloc>()
+                                  .add(CurrentBooruChanged(
+                                    booruConfig: config,
+                                    settings: settings,
+                                  ));
+                            },
+                          );
+                        },
                       ),
-                      selected: isSelected,
-                      subtitle: Text(
-                        config.login?.isEmpty ?? true
-                            ? '<Anonymous>'
-                            : config.login ?? 'Unknown',
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        context
-                            .read<CurrentBooruBloc>()
-                            .add(CurrentBooruChanged(
-                              booruConfig: config,
-                              settings: settings,
-                            ));
-                      },
-                    );
-                  },
+                    ),
+                  ],
                 ),
               )
             : const SizedBox.shrink(),
