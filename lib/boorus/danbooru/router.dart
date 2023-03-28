@@ -1246,19 +1246,28 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
-      padding: isMobilePlatform() ? 0 : 8,
-      title: 'favorite_groups.create_group'.tr(),
-      enableManualDataInput: enableManualPostInput,
-      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
-        name: name,
-        initialIds: ids,
-        isPrivate: isPrivate,
-        onFailure: (message, translatable) => showSimpleSnackBar(
-          context: context,
-          content: translatable ? Text(message).tr() : Text(message),
-        ),
-      )),
+    pageBuilder: (___, _, __) =>
+        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (context) => EditFavoriteGroupDialog(
+            padding: isMobilePlatform() ? 0 : 8,
+            title: 'favorite_groups.create_group'.tr(),
+            enableManualDataInput: enableManualPostInput,
+            onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+              name: name,
+              initialIds: ids,
+              isPrivate: isPrivate,
+              onFailure: (message, translatable) => showSimpleSnackBar(
+                context: context,
+                content: translatable ? Text(message).tr() : Text(message),
+              ),
+            )),
+          ),
+        );
+      },
     ),
   );
 }
