@@ -8,7 +8,7 @@ String? booruFilterConfigToDanbooruTag(BooruConfigRatingFilter? filter) {
     case BooruConfigRatingFilter.none:
       return null;
     case BooruConfigRatingFilter.hideExplicit:
-      return '-rating:e';
+      return '-rating:e,q';
     case BooruConfigRatingFilter.hideNSFW:
       return 'rating:g';
   }

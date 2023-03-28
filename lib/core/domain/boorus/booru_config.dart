@@ -71,6 +71,17 @@ extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
         return 'Safe';
     }
   }
+
+  String getFilterRatingTerm() {
+    switch (this) {
+      case BooruConfigRatingFilter.none:
+        return 'None';
+      case BooruConfigRatingFilter.hideExplicit:
+        return 'Moderate';
+      case BooruConfigRatingFilter.hideNSFW:
+        return 'Aggressive';
+    }
+  }
 }
 
 extension BooruConfigNullX on BooruConfig? {

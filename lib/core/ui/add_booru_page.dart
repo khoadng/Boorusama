@@ -224,7 +224,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     const SizedBox(height: 16),
                     if (selectedBooru != BooruType.safebooru)
                       ListTile(
-                        title: Text('Rating'),
+                        title: Text('Content filtering'),
                         trailing: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8),
@@ -248,7 +248,8 @@ class _AddBooruPageState extends State<AddBooruPage> {
                                     .map((value) => DropdownMenuItem<
                                             BooruConfigRatingFilter>(
                                           value: value,
-                                          child: Text(value.getRatingTerm()),
+                                          child:
+                                              Text(value.getFilterRatingTerm()),
                                         ))
                                     .toList(),
                               ),
