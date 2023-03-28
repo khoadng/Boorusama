@@ -20,6 +20,10 @@ class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
   String _getSample(PostDto post) {
     final preview = post.previewFileUrl ?? '';
     final sample = post.largeFileUrl ?? '';
+    //TODO: refactor this together with MediaInfo mixin
+    final isAnimated = {'mp4', 'webm', 'zip', 'gif'}.contains(post.fileExt);
+
+    if (isAnimated) return sample;
 
     return preview.isNotEmpty
         ? preview.replaceAll('preview', '720x720').replaceAll('.jpg', '.webp')
