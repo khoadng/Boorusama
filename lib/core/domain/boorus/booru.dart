@@ -5,19 +5,23 @@ class BooruData {
   BooruData({
     required this.name,
     required this.url,
+    required this.cheatsheet,
   });
 
   factory BooruData.fromJson(Map<String, dynamic> json) => BooruData(
         name: json['name'],
         url: json['url'],
+        cheatsheet: json['cheatsheet'],
       );
 
   final String name;
   final String url;
+  final String cheatsheet;
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'url': url,
+        'cheatsheet': cheatsheet,
       };
 }
 
@@ -26,20 +30,23 @@ class Booru extends Equatable {
     required this.url,
     required this.booruType,
     required this.name,
+    required this.cheatsheet,
   });
 
   final String url;
   final BooruType booruType;
   final String name;
+  final String cheatsheet;
 
   static const Booru empty = Booru(
     url: '',
     booruType: BooruType.unknown,
     name: '',
+    cheatsheet: '',
   );
 
   @override
-  List<Object?> get props => [url, booruType, name];
+  List<Object?> get props => [url, booruType, name, cheatsheet];
 }
 
 enum BooruType {
@@ -81,6 +88,7 @@ Booru safebooru() => booruDataToBooru(
       BooruData(
         name: 'safebooru',
         url: 'https://safebooru.donmai.us/',
+        cheatsheet: 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet',
       ),
     );
 
@@ -96,6 +104,7 @@ Booru booruDataToBooru(BooruData d) {
     url: d.url,
     booruType: _stringToBooruType(d.name),
     name: d.name,
+    cheatsheet: d.cheatsheet,
   );
 }
 

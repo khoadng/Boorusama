@@ -56,7 +56,6 @@ import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 
-const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 const savedSearchHelpUrl =
     'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
