@@ -143,18 +143,6 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                           showSimpleSnackBar(
                             context: context,
                             duration: const Duration(seconds: 3),
-                            action: SnackBarAction(
-                              label: 'favorite_groups.view_more_popup'.tr(),
-                              onPressed: () {
-                                if (navigatorKey.currentContext != null) {
-                                  goToFavoriteGroupDetailsPage(
-                                    navigatorKey.currentContext!,
-                                    newGroup,
-                                    bloc,
-                                  );
-                                }
-                              },
-                            ),
                             content: Text(
                               'favorite_groups.items_added_notification_popup'
                                   .tr()
