@@ -22,7 +22,6 @@ class GelbooruPost extends Equatable
     required this.tags,
     required this.thumbnailImageUrl,
     required this.width,
-    required this.downloadUrl,
     required this.hasComment,
     required this.hasParentOrChildren,
     required this.fileSize,
@@ -31,7 +30,8 @@ class GelbooruPost extends Equatable
   final String _sampleImageUrl;
 
   @override
-  final String downloadUrl;
+  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
+
   @override
   final String format;
 

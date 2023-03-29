@@ -46,7 +46,9 @@ void goToGelbooruPostDetailsPage({
               builder: (gcontext) => MultiBlocProvider(
                 providers: [
                   BlocProvider.value(value: gcontext.read<ThemeBloc>()),
-                  BlocProvider(create: (_) => SliverPostGridBloc()),
+                  BlocProvider(
+                      create: (_) => SliverPostGridBloc()
+                        ..add(SliverPostGridItemChanged(index: initialIndex))),
                   BlocProvider(
                     create: (_) => TagBloc(
                       tagRepository: gcontext.read<TagRepository>(),

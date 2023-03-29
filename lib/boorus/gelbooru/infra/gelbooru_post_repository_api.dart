@@ -69,7 +69,6 @@ Post postDtoToPost(PostDto dto) {
     format: path.extension(dto.image ?? 'foo.png').substring(1),
     source: dto.source,
     rating: mapStringToRating(dto.rating ?? 'general'),
-    downloadUrl: dto.previewUrl ?? '',
     md5: dto.md5 ?? '',
     hasComment: _boolFromString(dto.hasComments),
     hasParentOrChildren: _boolFromString(dto.hasChildren) ||
