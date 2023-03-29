@@ -30,7 +30,12 @@ class BooruConfigInfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       horizontalTitleGap: 0,
-      leading: BooruLogo(booru: booru),
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BooruLogo(booru: booru),
+        ],
+      ),
       selected: selected ?? false,
       selectedTileColor: selectedTileColor,
       title: Row(

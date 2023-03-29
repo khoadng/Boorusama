@@ -24,14 +24,11 @@ class BooruLogo extends StatelessWidget {
         maxWidth: 20,
         maxHeight: 20,
       ),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: CachedNetworkImage(
-          fit: BoxFit.cover,
-          fadeInDuration: const Duration(milliseconds: 100),
-          fadeOutDuration: const Duration(milliseconds: 200),
-          imageUrl: booru.getIconUrl(),
-        ),
+      child: CachedNetworkImage(
+        fit: BoxFit.cover,
+        fadeInDuration: const Duration(milliseconds: 100),
+        fadeOutDuration: const Duration(milliseconds: 200),
+        imageUrl: booru.getIconUrl(),
       ),
     );
   }
