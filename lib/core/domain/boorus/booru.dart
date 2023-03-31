@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/utils/collection_utils.dart';
+
 class BooruData {
   BooruData({
     required this.name,
@@ -69,7 +72,7 @@ extension BooruTypeX on BooruType {
   String stringify() {
     switch (this) {
       case BooruType.unknown:
-        return '';
+        return '<UNKNOWN>';
       case BooruType.danbooru:
         return 'Danbooru';
       case BooruType.safebooru:
@@ -140,4 +143,9 @@ BooruType _stringToBooruType(String value) {
     default:
       return BooruType.unknown;
   }
+}
+
+BooruType getBooruType(String url, List<BooruData> booruDataList) {
+  return _stringToBooruType(
+      booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
 }

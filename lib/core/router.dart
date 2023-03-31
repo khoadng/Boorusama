@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'application/search_history.dart';
@@ -371,6 +372,7 @@ void goToAddBooruPage(
     child: BlocBuilder<SettingsCubit, SettingsState>(
       builder: (_, state) {
         return AddBooruPage(
+          booruFactory: context.read<BooruFactory>(),
           onSubmit: (config) => context.read<ManageBooruBloc>().add(
                 ManageBooruAdded(
                   config: config,

@@ -15,6 +15,7 @@ class AddBooruPage extends StatefulWidget {
     super.key,
     required this.onSubmit,
     this.initial,
+    required this.booruFactory,
   });
 
   final void Function(
@@ -22,6 +23,7 @@ class AddBooruPage extends StatefulWidget {
   ) onSubmit;
 
   final AddNewBooruConfig? initial;
+  final BooruFactory booruFactory;
 
   @override
   State<AddBooruPage> createState() => _AddBooruPageState();
@@ -31,8 +33,9 @@ class _AddBooruPageState extends State<AddBooruPage> {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
   final nameController = TextEditingController();
+  final urlController = TextEditingController();
 
-  var selectedBooru = BooruType.safebooru;
+  var selectedBooru = BooruType.unknown;
   var hideDeleted = true;
   var ratingFilter = BooruConfigRatingFilter.hideNSFW;
 
@@ -57,6 +60,15 @@ class _AddBooruPageState extends State<AddBooruPage> {
         allowSubmit = isValid();
       });
     });
+    urlController.addListener(() {
+      setState(() {
+        allowSubmit = isValid();
+        selectedBooru = getBooruType(
+          urlController.text,
+          widget.booruFactory.booruData,
+        );
+      });
+    });
 
     if (widget.initial != null) {
       loginController.text = widget.initial!.login;
@@ -73,11 +85,14 @@ class _AddBooruPageState extends State<AddBooruPage> {
     loginController.dispose();
     apiKeyController.dispose();
     nameController.dispose();
+    urlController.dispose();
     super.dispose();
   }
 
   bool isValid() {
+    if (selectedBooru == BooruType.unknown) return false;
     if (nameController.text.isEmpty) return false;
+    if (urlController.text.isEmpty) return false;
 
     return (loginController.text.isNotEmpty &&
             apiKeyController.text.isNotEmpty) ||
@@ -110,46 +125,18 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   vertical: 16,
                 ),
                 child: Text(
-                  'Add a Booru, leave the login details empty to be anonymous',
+                  'Add a source, leave the login details empty to be anonymous',
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall!
                       .copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Card(
+              Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<BooruType>(
-                        isDense: true,
-                        value: selectedBooru,
-                        focusColor: Colors.transparent,
-                        icon: const Padding(
-                          padding: EdgeInsets.only(left: 5, top: 2),
-                          child: FaIcon(FontAwesomeIcons.angleDown, size: 16),
-                        ),
-                        onChanged: (newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedBooru = newValue;
-                            });
-                          }
-                        },
-                        items: getSelectableBoorus()
-                            .sortedBy((e) => e.stringify())
-                            .map((value) => DropdownMenuItem<BooruType>(
-                                  value: value,
-                                  child: Text(value.stringify()),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                padding: const EdgeInsets.all(8),
+                child: Text(selectedBooru.stringify()),
+              )),
               const SizedBox(height: 8),
               const Divider(
                 thickness: 2,
@@ -159,7 +146,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Name'.toUpperCase(),
+                  'Config Name'.toUpperCase(),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w800,
@@ -175,6 +162,27 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   validator: (p0) => null,
                   controller: nameController,
                   labelText: 'Name',
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Site'.toUpperCase(),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Theme.of(context).hintColor,
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: LoginField(
+                  validator: (p0) => null,
+                  controller: urlController,
+                  labelText: 'Site URL',
                 ),
               ),
               const SizedBox(height: 8),
@@ -276,6 +284,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                                 configName: nameController.text,
                                 hideDeleted: hideDeleted,
                                 ratingFilter: ratingFilter,
+                                url: urlController.text,
                               ));
                             }
                           : null,

@@ -10,15 +10,20 @@ import 'booru.dart';
 class BooruFactory {
   const BooruFactory({
     required Map<BooruType, Booru> boorus,
+    required this.booruData,
   }) : _boorus = boorus;
 
   factory BooruFactory.from(List<BooruData> booruData) {
     final boorus = booruData.map(booruDataToBooru).toList();
     final boorusMap = {for (final b in boorus) b.booruType: b};
 
-    return BooruFactory(boorus: boorusMap);
+    return BooruFactory(
+      boorus: boorusMap,
+      booruData: booruData,
+    );
   }
 
+  final List<BooruData> booruData;
   final Map<BooruType, Booru> _boorus;
 
   Booru create({

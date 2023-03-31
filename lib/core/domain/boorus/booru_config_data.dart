@@ -10,6 +10,7 @@ class BooruConfigData {
     required this.name,
     required this.deletedItemBehavior,
     required this.ratingFilter,
+    required this.url,
   });
 
   factory BooruConfigData.anonymous({
@@ -21,6 +22,7 @@ class BooruConfigData {
         booruId: booru.index,
         apiKey: '',
         login: '',
+        url: '',
         booruUserId: null,
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
@@ -33,6 +35,7 @@ class BooruConfigData {
         booruId: json['booruId'] as int,
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
+        url: json['url'] as String,
         booruUserId: json['booruUserId'] as int?,
         name: json['name'] as String,
         deletedItemBehavior: json['deletedItemBehavior'] as int,
@@ -47,6 +50,7 @@ class BooruConfigData {
     required BooruType booru,
     required String login,
     required String apiKey,
+    required String url,
     required int booruUserId,
     required String name,
     required BooruConfigRatingFilter filter,
@@ -60,6 +64,7 @@ class BooruConfigData {
       booruId: booru.index,
       apiKey: apiKey,
       login: login,
+      url: url,
       booruUserId: booruUserId,
       name: name,
       ratingFilter: filter.index,
@@ -72,6 +77,7 @@ class BooruConfigData {
       'booruId': booruId,
       'apiKey': apiKey,
       'login': login,
+      'url': url,
       'booruUserId': booruUserId,
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
@@ -86,6 +92,7 @@ class BooruConfigData {
   final String name;
   final int deletedItemBehavior;
   final int ratingFilter;
+  final String url;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -102,6 +109,7 @@ BooruConfig? convertToBooruConfig({
     apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
     login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
     booruUserId: booruUserId,
+    url: booruConfigData.url,
     name: booruConfigData.name,
     ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
     deletedItemBehavior: BooruConfigDeletedItemBehavior

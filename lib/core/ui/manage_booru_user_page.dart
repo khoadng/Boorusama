@@ -60,6 +60,7 @@ class ManageBooruPage extends StatelessWidget {
                   onTap: () => showMaterialModalBottomSheet(
                     context: context,
                     builder: (_) => AddBooruPage(
+                      booruFactory: context.read<BooruFactory>(),
                       initial: AddNewBooruConfig(
                         login: config.login ?? '',
                         apiKey: config.apiKey ?? '',
@@ -68,6 +69,7 @@ class ManageBooruPage extends StatelessWidget {
                         hideDeleted: config.deletedItemBehavior ==
                             BooruConfigDeletedItemBehavior.hide,
                         ratingFilter: config.ratingFilter,
+                        url: config.url,
                       ),
                       onSubmit: (newConfig) {
                         context.read<ManageBooruBloc>().add(ManageBooruUpdated(

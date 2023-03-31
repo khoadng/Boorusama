@@ -14,6 +14,7 @@ class BooruConfig extends Equatable {
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
+    required this.url,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -25,10 +26,12 @@ class BooruConfig extends Equatable {
     name: '',
     deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
     ratingFilter: BooruConfigRatingFilter.none,
+    url: '',
   );
 
   final int id;
   final int booruId;
+  final String url;
   final String? apiKey;
   final String? login;
   final int? booruUserId;
@@ -46,6 +49,7 @@ class BooruConfig extends Equatable {
         name,
         deletedItemBehavior,
         ratingFilter,
+        url,
       ];
 }
 

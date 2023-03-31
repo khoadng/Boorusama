@@ -66,6 +66,7 @@ class AddNewBooruConfig {
     required this.configName,
     required this.hideDeleted,
     required this.ratingFilter,
+    required this.url,
   });
 
   final String login;
@@ -74,6 +75,7 @@ class AddNewBooruConfig {
   final String configName;
   final bool hideDeleted;
   final BooruConfigRatingFilter ratingFilter;
+  final String url;
 }
 
 class ManageBooruRemoved extends ManageBooruEvent {
@@ -176,6 +178,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
                 : BooruConfigDeletedItemBehavior.show,
             filter: event.config.ratingFilter,
             name: event.config.configName,
+            url: event.config.url,
           );
 
           if (booruConfigData == null) {
@@ -222,6 +225,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
                   : BooruConfigDeletedItemBehavior.show,
               filter: event.config.ratingFilter,
               name: event.config.configName,
+              url: event.config.url,
             )
           : BooruConfigData(
               login: event.config.login,
@@ -233,6 +237,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
                   : BooruConfigDeletedItemBehavior.show.index,
               ratingFilter: event.config.ratingFilter.index,
               name: event.config.configName,
+              url: event.config.url,
             );
 
       if (booruConfigData == null) {
