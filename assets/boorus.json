@@ -23,5 +23,10 @@
         "name" : "aibooru",
         "url" : "https://aibooru.online/",
         "cheatsheet" : "https://aibooru.online/wiki_pages/help:cheatsheet"
+    },
+    {
+        "name" : "konachan",
+        "url" : "https://konachan.com/",
+        "cheatsheet" : "https://konachan.com/help/cheatsheet"
     }
 ]
