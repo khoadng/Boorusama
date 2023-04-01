@@ -49,7 +49,7 @@ class PostDto extends Equatable {
     this.lastCommentedAt,
   });
 
-  PostDto fromJson(Map<String, dynamic> json) {
+  factory PostDto.fromJson(Map<String, dynamic> json) {
     return PostDto(
       id: json['id'],
       tags: json['tags'],
