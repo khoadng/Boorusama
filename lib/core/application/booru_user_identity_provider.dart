@@ -47,6 +47,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
         return id;
       case BooruType.konachan:
       case BooruType.yandere:
+      case BooruType.sakugabooru:
         return 0;
     }
   }

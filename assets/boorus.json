@@ -33,5 +33,10 @@
         "name" : "yandere",
         "url" : "https://yande.re/",
         "cheatsheet" : "https://yande.re/help/cheatsheet"
+    },
+    {
+        "name" : "sakugabooru",
+        "url" : "https://sakugabooru.com/",
+        "cheatsheet" : "https://sakugabooru.com/help/cheatsheet"
     }
 ]

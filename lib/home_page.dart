@@ -121,6 +121,7 @@ class _HomePageState extends State<HomePage> {
               );
             case BooruType.konachan:
             case BooruType.yandere:
+            case BooruType.sakugabooru:
               final gkey = ValueKey(config?.id);
 
               return MoebooruProvider.create(
