@@ -28,5 +28,10 @@
         "name" : "konachan",
         "url" : "https://konachan.com/",
         "cheatsheet" : "https://konachan.com/help/cheatsheet"
+    },
+    {
+        "name" : "yandere",
+        "url" : "https://yande.re/",
+        "cheatsheet" : "https://yande.re/help/cheatsheet"
     }
 ]

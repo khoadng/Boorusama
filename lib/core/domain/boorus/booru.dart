@@ -60,6 +60,7 @@ enum BooruType {
   gelbooru,
   aibooru,
   konachan,
+  yandere,
 }
 
 extension BooruX on Booru {
@@ -86,6 +87,8 @@ extension BooruTypeX on BooruType {
         return 'AIBooru';
       case BooruType.konachan:
         return 'Konachan';
+      case BooruType.yandere:
+        return 'Yandere';
     }
   }
 }
@@ -104,6 +107,7 @@ List<BooruType> getSelectableBoorus() => [
       BooruType.aibooru,
       BooruType.safebooru,
       BooruType.konachan,
+      BooruType.yandere,
     ];
 
 Booru booruDataToBooru(BooruData d) {
@@ -129,6 +133,8 @@ BooruType intToBooruType(int value) {
       return BooruType.aibooru;
     case 6:
       return BooruType.konachan;
+    case 7:
+      return BooruType.yandere;
     default:
       return BooruType.unknown;
   }
@@ -148,6 +154,8 @@ BooruType _stringToBooruType(String value) {
       return BooruType.aibooru;
     case 'konachan':
       return BooruType.konachan;
+    case 'yandere':
+      return BooruType.yandere;
     default:
       return BooruType.unknown;
   }
