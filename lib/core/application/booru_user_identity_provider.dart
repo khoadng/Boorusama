@@ -45,6 +45,8 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
         if (id == null) throw Exception('Profile is null');
 
         return id;
+      case BooruType.konachan:
+        return 0;
     }
   }
 }

@@ -12,6 +12,9 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page_de
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
+import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/ui/moebooru_home_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -110,6 +113,31 @@ class _HomePageState extends State<HomePage> {
                   ],
                   child: CustomContextMenuOverlay(
                     child: GelbooruHomePage(
+                      key: gkey,
+                      onMenuTap: _onMenuTap,
+                    ),
+                  ),
+                ),
+              );
+            case BooruType.konachan:
+              final gkey = ValueKey(config?.id);
+
+              return MoebooruProvider.create(
+                context,
+                key: gkey,
+                booru: booru,
+                builder: (gcontext) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (_) => MoebooruPostBloc(
+                        postRepository: gcontext.read<PostRepository>(),
+                      )..add(const MoebooruPostBlocRefreshed(
+                          tag: '',
+                        )),
+                    ),
+                  ],
+                  child: CustomContextMenuOverlay(
+                    child: MoebooruHomePage(
                       key: gkey,
                       onMenuTap: _onMenuTap,
                     ),
