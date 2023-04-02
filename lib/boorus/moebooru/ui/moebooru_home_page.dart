@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
@@ -86,7 +87,7 @@ class _MoebooruHomePageState extends State<MoebooruHomePage> {
                                             widget.onMenuTap?.call(),
                                       )
                                     : null,
-                                // onTap: () => goToMoebooruSearchPage(context),
+                                onTap: () => goToMoebooruSearchPage(context),
                               ),
                               floating: true,
                               snap: true,

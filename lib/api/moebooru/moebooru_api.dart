@@ -17,4 +17,11 @@ abstract class MoebooruApi {
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET('/tag/summary.json')
+  Future<HttpResponse> getTagSummary({
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

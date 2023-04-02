@@ -7,8 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
+import 'package:boorusama/boorus/moebooru/infra/moebooru_autocomplete_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/infra/tag_summary_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -25,7 +28,7 @@ class MoebooruProvider extends StatelessWidget {
     required this.postRepository,
     // required this.tagRepository,
     required this.builder,
-    // required this.autocompleteRepository,
+    required this.autocompleteRepository,
     required this.userMetatagRepository,
     required this.searchHistoryRepository,
     required this.favoriteTagRepository,
@@ -51,6 +54,9 @@ class MoebooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepository,
       booru: booru,
     );
+    final tagSummaryRepository = MoebooruTagSummaryRepository(api);
+    final autocompleteRepo = MoebooruAutocompleteRepository(
+        tagSummaryRepository: tagSummaryRepository);
 
     final postRepo = MoebooruPostRepositoryApi(
       // currentBooruConfigRepository: currentBooruConfigRepository,
@@ -63,7 +69,7 @@ class MoebooruProvider extends StatelessWidget {
       postRepository: postRepo,
       // tagRepository: tagRepo,
       builder: builder,
-      // autocompleteRepository: autocompleteRepo,
+      autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
@@ -81,7 +87,7 @@ class MoebooruProvider extends StatelessWidget {
   }) {
     final postRepo = context.read<PostRepository>();
     // final tagRepo = context.read<TagRepository>();
-    // final autocompleteRepo = context.read<AutocompleteRepository>();
+    final autocompleteRepo = context.read<AutocompleteRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -94,7 +100,7 @@ class MoebooruProvider extends StatelessWidget {
       postRepository: postRepo,
       // tagRepository: tagRepo,
       builder: builder,
-      // autocompleteRepository: autocompleteRepo,
+      autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
@@ -105,7 +111,7 @@ class MoebooruProvider extends StatelessWidget {
 
   final PostRepository postRepository;
   // final TagRepository tagRepository;
-  // final AutocompleteRepository autocompleteRepository;
+  final AutocompleteRepository autocompleteRepository;
   final UserMetatagRepository userMetatagRepository;
   final SearchHistoryRepository searchHistoryRepository;
   final FavoriteTagRepository favoriteTagRepository;
@@ -120,7 +126,7 @@ class MoebooruProvider extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: postRepository),
         // RepositoryProvider.value(value: tagRepository),
-        // RepositoryProvider.value(value: autocompleteRepository),
+        RepositoryProvider.value(value: autocompleteRepository),
         RepositoryProvider.value(value: userMetatagRepository),
         RepositoryProvider.value(value: searchHistoryRepository),
         RepositoryProvider.value(value: favoriteTagRepository),
