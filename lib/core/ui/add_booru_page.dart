@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -74,6 +73,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
       loginController.text = widget.initial!.login;
       apiKeyController.text = widget.initial!.apiKey;
       nameController.text = widget.initial!.configName;
+      urlController.text = widget.initial!.url;
       hideDeleted = widget.initial!.hideDeleted;
       ratingFilter = widget.initial!.ratingFilter;
       selectedBooru = widget.initial!.booru;

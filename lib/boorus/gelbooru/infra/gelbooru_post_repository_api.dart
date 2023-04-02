@@ -6,6 +6,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/domain/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/domain/utils.dart';
+import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'post_dto.dart';
@@ -25,10 +26,12 @@ class GelbooruPostRepositoryApi implements PostRepository {
   const GelbooruPostRepositoryApi({
     required this.api,
     required this.currentBooruConfigRepository,
+    required this.blacklistedTagRepository,
   });
 
   final GelbooruApi api;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BlacklistedTagRepository blacklistedTagRepository;
 
   @override
   Future<List<Post>> getPostsFromTags(
@@ -38,6 +41,9 @@ class GelbooruPostRepositoryApi implements PostRepository {
   }) async {
     final config = await currentBooruConfigRepository.get();
     final tag = booruFilterConfigToGelbooruTag(config?.ratingFilter);
+
+    final blacklist = await blacklistedTagRepository.getBlacklist();
+    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
 
     return api
         .getPosts(
@@ -53,7 +59,11 @@ class GelbooruPostRepositoryApi implements PostRepository {
           '1',
           (page - 1).toString(),
         )
-        .then(parsePost);
+        .then(parsePost)
+        .then((posts) => posts
+            .where((post) =>
+                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
+            .toList());
   }
 }
 

@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/moebooru/infra/moebooru_post_repository_api.dar
 import 'package:boorusama/boorus/moebooru/infra/tag_summary_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -19,8 +20,6 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/main.dart';
-
-// import 'package:boorusama/core/domain/autocompletes.dart';
 
 class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
@@ -48,6 +47,7 @@ class MoebooruProvider extends StatelessWidget {
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
     final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
     final authenticationCubit = AuthenticationCubit(
@@ -59,8 +59,9 @@ class MoebooruProvider extends StatelessWidget {
         tagSummaryRepository: tagSummaryRepository);
 
     final postRepo = MoebooruPostRepositoryApi(
-      // currentBooruConfigRepository: currentBooruConfigRepository,
       api,
+      globalBlacklistedTagRepo,
+      currentBooruConfigRepository,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 

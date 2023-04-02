@@ -10,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/blacklisted_tag_page.dart';
 import 'package:boorusama/core/ui/booru_logo.dart';
 import 'package:boorusama/core/ui/home/current_booru_action_sheet.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
@@ -109,6 +110,15 @@ class SideBarMenu extends StatelessWidget {
                   onTap: () {
                     if (popOnSelect) Navigator.of(context).pop();
                     goToManageBooruPage(context);
+                  },
+                ),
+                _SideMenuTile(
+                  icon: const Icon(Icons.list_alt),
+                  title: const Text('Your Blacklist'),
+                  onTap: () {
+                    if (popOnSelect) Navigator.of(context).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => BlacklistedTagPage()));
                   },
                 ),
                 _SideMenuTile(

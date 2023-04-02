@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_genera
 import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -49,6 +50,7 @@ class GelbooruProvider extends StatelessWidget {
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
+    final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
     final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
     final authenticationCubit = AuthenticationCubit(
@@ -59,6 +61,7 @@ class GelbooruProvider extends StatelessWidget {
     final postRepo = GelbooruPostRepositoryApi(
       currentBooruConfigRepository: currentBooruConfigRepository,
       api: api,
+      blacklistedTagRepository: globalBlacklistedTagRepo,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 
