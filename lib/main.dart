@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/api.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
+import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
@@ -36,6 +37,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
+import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches.dart';
@@ -44,6 +46,8 @@ import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.dart';
+import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
+import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
 import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
@@ -73,6 +77,7 @@ void main() async {
     Hive
       ..init(dbDirectory.path)
       ..registerAdapter(SearchHistoryHiveObjectAdapter())
+      ..registerAdapter(BookmarkHiveObjectAdapter())
       ..registerAdapter(FavoriteTagHiveObjectAdapter());
   }
 
@@ -138,6 +143,9 @@ void main() async {
 
   final globalBlacklistedTags = HiveBlacklistedTagRepository();
   await globalBlacklistedTags.init();
+
+  final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
+  final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
   final booruFactory = BooruFactory.from(await loadBooruList());
   final packageInfo = PackageInfoProvider(await getPackageInfo());
@@ -270,6 +278,9 @@ void main() async {
             RepositoryProvider<BlacklistedTagRepository>.value(
               value: globalBlacklistedTags,
             ),
+            RepositoryProvider<BookmarkRepository>.value(
+              value: bookmarkRepo,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -304,6 +315,11 @@ void main() async {
                 ),
               BlocProvider(
                 create: (context) => BlacklistedTagCubit(globalBlacklistedTags),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    BookmarkCubit(context.read<BookmarkRepository>())
+                      ..getAllBookmarks(),
               ),
             ],
             child: MultiBlocListener(

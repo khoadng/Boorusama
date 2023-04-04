@@ -2,10 +2,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
 class MoebooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
     implements Post {
   MoebooruPost({
     required this.id,

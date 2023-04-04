@@ -113,6 +113,14 @@ class SideBarMenu extends StatelessWidget {
                   },
                 ),
                 _SideMenuTile(
+                  icon: const Icon(Icons.favorite),
+                  title: const Text('Your Bookmarks'),
+                  onTap: () {
+                    if (popOnSelect) Navigator.of(context).pop();
+                    goToBookmarkPage(context);
+                  },
+                ),
+                _SideMenuTile(
                   icon: const Icon(Icons.list_alt),
                   title: const Text('Your Blacklist'),
                   onTap: () {

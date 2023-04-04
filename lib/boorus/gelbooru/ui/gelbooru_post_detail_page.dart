@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_slider.dart';
+import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
@@ -172,6 +173,8 @@ class MoreActionButton extends StatelessWidget {
       (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
     );
 
+    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
         width: 40,
@@ -184,6 +187,13 @@ class MoreActionButton extends StatelessWidget {
               switch (value) {
                 case 'download':
                   download(post);
+                  break;
+                case 'add_to_bookmark':
+                  context.read<BookmarkCubit>().addBookmark(
+                        post.sampleImageUrl,
+                        booru!,
+                        post,
+                      );
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
@@ -201,6 +211,10 @@ class MoreActionButton extends StatelessWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
+              ),
+              PopupMenuItem(
+                value: 'add_to_bookmark',
+                child: const Text('Add to Bookmark'),
               ),
               PopupMenuItem(
                 value: 'view_in_browser',

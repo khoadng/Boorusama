@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_s
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -541,6 +542,8 @@ class MoreActionButton extends StatelessWidget {
     final authenticationState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
+    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
         width: 40,
@@ -553,6 +556,13 @@ class MoreActionButton extends StatelessWidget {
               switch (value) {
                 case 'download':
                   download(post);
+                  break;
+                case 'add_to_bookmark':
+                  context.read<BookmarkCubit>().addBookmark(
+                        post.sampleImageUrl,
+                        booru!,
+                        post,
+                      );
                   break;
                 case 'add_to_favgroup':
                   goToAddToFavoriteGroupSelectionPage(context, [post]);
@@ -576,6 +586,10 @@ class MoreActionButton extends StatelessWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
+              ),
+              PopupMenuItem(
+                value: 'add_to_bookmark',
+                child: const Text('Add to Bookmark'),
               ),
               if (authenticationState is Authenticated)
                 const PopupMenuItem(

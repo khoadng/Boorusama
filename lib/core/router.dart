@@ -14,11 +14,13 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
+import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'application/search_history.dart';
 import 'application/tags.dart';
@@ -350,6 +352,11 @@ void goToSettingPage(BuildContext context) {
       builder: (context) => const SettingsPageDesktop(),
     );
   }
+}
+
+void goToBookmarkPage(BuildContext context) {
+  context.read<BookmarkCubit>().getAllBookmarks();
+  Navigator.of(context).push(MaterialPageRoute(builder: (_) => BookmarkPage()));
 }
 
 void goToManageBooruPage(BuildContext context) {
