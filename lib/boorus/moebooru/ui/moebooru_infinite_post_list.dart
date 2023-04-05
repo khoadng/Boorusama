@@ -157,7 +157,8 @@ class _InfinitePostListState extends State<MoebooruInfinitePostList>
                   onTap: (int index) {
                     goToMoebooruDetailsPage(
                       context: context,
-                      post: state.data[index],
+                      posts: state.data,
+                      initialPage: index,
                     );
                   },
                 ),
