@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -39,11 +40,18 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     itemBuilder: (context, index) {
                       final bookmark = state.bookmarks[index];
 
-                      return BooruImage(
-                        aspectRatio: bookmark.aspectRatio,
-                        fit: BoxFit.cover,
-                        imageUrl: bookmark.sampleUrl,
-                        placeholderUrl: bookmark.thumbnailUrl,
+                      return GestureDetector(
+                        onTap: () => goToBookmarkDetailsPage(
+                          context: context,
+                          bookmarks: state.bookmarks,
+                          initialIndex: index,
+                        ),
+                        child: BooruImage(
+                          aspectRatio: bookmark.aspectRatio,
+                          fit: BoxFit.cover,
+                          imageUrl: bookmark.sampleUrl,
+                          placeholderUrl: bookmark.thumbnailUrl,
+                        ),
                       );
                     },
                   )

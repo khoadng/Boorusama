@@ -18,8 +18,10 @@ import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/add_booru_page.dart';
+import 'package:boorusama/core/ui/bookmarks/bookmark_details.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/ui/manage_booru_user_page.dart';
 import 'application/search_history.dart';
@@ -357,6 +359,18 @@ void goToSettingPage(BuildContext context) {
 void goToBookmarkPage(BuildContext context) {
   context.read<BookmarkCubit>().getAllBookmarks();
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => BookmarkPage()));
+}
+
+void goToBookmarkDetailsPage(
+    {required BuildContext context,
+    required List<Bookmark> bookmarks,
+    required int initialIndex}) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => BookmarkDetailsPage(
+      bookmarks: bookmarks,
+      initialIndex: initialIndex,
+    ),
+  ));
 }
 
 void goToManageBooruPage(BuildContext context) {

@@ -9,6 +9,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -20,7 +21,6 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details.dart';
 
 void goToMoebooruSearchPage(
   BuildContext context, {
