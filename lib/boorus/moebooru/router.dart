@@ -20,6 +20,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/core/ui/post_details.dart';
 
 void goToMoebooruSearchPage(
   BuildContext context, {
@@ -93,4 +94,16 @@ void goToMoebooruSearchPage(
       },
     ),
   ));
+}
+
+void goToMoebooruDetailsPage({
+  required BuildContext context,
+  required Post post,
+}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PostDetails(post: post),
+    ),
+  );
 }

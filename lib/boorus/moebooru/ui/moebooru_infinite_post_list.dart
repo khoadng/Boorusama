@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,11 +8,14 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 
 class MoebooruInfinitePostList extends StatefulWidget {
@@ -154,11 +155,10 @@ class _InfinitePostListState extends State<MoebooruInfinitePostList>
                   // ignore: no-empty-block
                   onFavoriteTap: (post, isFav) {},
                   onTap: (int index) {
-                    // goToMoebooruPostDetailsPage(
-                    //   context: context,
-                    //   posts: state.data,
-                    //   initialIndex: index,
-                    // );
+                    goToMoebooruDetailsPage(
+                      context: context,
+                      post: state.data[index],
+                    );
                   },
                 ),
               ],

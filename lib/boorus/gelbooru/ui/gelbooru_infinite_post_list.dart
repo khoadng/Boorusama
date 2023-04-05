@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,9 +12,11 @@ import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 
 class GelbooruInfinitePostList extends StatefulWidget {
