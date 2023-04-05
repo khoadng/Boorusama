@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -46,9 +48,8 @@ class GelbooruInfinitePostList extends StatefulWidget {
   State<GelbooruInfinitePostList> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState extends State<GelbooruInfinitePostList> {
-  var selectedPosts = <core.Post>[];
-  var multiSelect = false;
+class _InfinitePostListState extends State<GelbooruInfinitePostList>
+    with MultiSelectableMixin<GelbooruInfinitePostList, Post> {
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
 
@@ -79,9 +80,7 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList> {
     return BlocListener<GelbooruPostBloc, GelbooruPostState>(
       listener: (context, state) {
         if (state.refreshing) {
-          setState(() {
-            selectedPosts.clear();
-          });
+          clearSelected();
         }
       },
       child: WillPopScope(
@@ -92,21 +91,21 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList> {
             return InfiniteLoadListScrollView(
               bottomBuilder: () =>
                   widget.multiSelectActions?.call(
-                    selectedPosts,
-                    _endMultiSelect,
+                    selected,
+                    endMultiSelect,
                   ) ??
                   DefaultMultiSelectionActions(
-                    selectedPosts: selectedPosts,
-                    endMultiSelect: _endMultiSelect,
+                    selectedPosts: selected,
+                    endMultiSelect: endMultiSelect,
                   ),
               topBuilder: () => AppBar(
                 leading: IconButton(
-                  onPressed: _endMultiSelect,
+                  onPressed: endMultiSelect,
                   icon: const Icon(Icons.close),
                 ),
-                title: selectedPosts.isEmpty
+                title: selected.isEmpty
                     ? const Text('Select items')
-                    : Text('${selectedPosts.length} Items selected'),
+                    : Text('${selected.length} Items selected'),
               ),
               enableRefresh: widget.onRefresh != null,
               multiSelect: multiSelect,
@@ -137,19 +136,19 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList> {
                   onPostSelectChanged: (post, selected) {
                     setState(() {
                       if (selected) {
-                        selectedPosts.add(post);
+                        addSelected(post);
                       } else {
-                        selectedPosts.remove(post);
+                        removeSelected(post);
                       }
                     });
                   },
                   multiSelect: multiSelect,
                   contextMenuBuilder: (post) =>
                       widget.contextMenuBuilder
-                          ?.call(post, _enableMultiSelect) ??
+                          ?.call(post, enableMultiSelect) ??
                       GelbooruPostContextMenu(
                         hasAccount: authState is Authenticated,
-                        onMultiSelect: _enableMultiSelect,
+                        onMultiSelect: enableMultiSelect,
                         post: post,
                       ),
                   isFavorite: (post) => false,
@@ -173,23 +172,12 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList> {
 
   Future<bool> _onWillPop() async {
     if (multiSelect) {
-      _endMultiSelect();
+      endMultiSelect();
 
       return false;
     } else {
       return true;
     }
-  }
-
-  void _enableMultiSelect() => setState(() {
-        multiSelect = true;
-      });
-
-  void _endMultiSelect() {
-    setState(() {
-      multiSelect = false;
-      selectedPosts.clear();
-    });
   }
 }
 
