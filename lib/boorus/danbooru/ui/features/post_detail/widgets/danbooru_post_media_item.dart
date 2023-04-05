@@ -6,9 +6,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/ui/post_media_item.dart';
 
 class DanbooruPostMediaItem extends StatelessWidget {
   const DanbooruPostMediaItem({
