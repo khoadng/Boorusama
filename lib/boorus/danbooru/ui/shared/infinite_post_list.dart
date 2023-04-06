@@ -125,13 +125,11 @@ class _InfinitePostListState extends State<InfinitePostList>
               scrollController: controller,
               usePlaceholder: true,
               onPostSelectChanged: (post, selected) {
-                setState(() {
-                  if (selected) {
-                    addSelected(post);
-                  } else {
-                    removeSelected(post);
-                  }
-                });
+                if (selected) {
+                  addSelected(post);
+                } else {
+                  removeSelected(post);
+                }
               },
               multiSelect: multiSelect,
               contextMenuBuilder: (post) =>
