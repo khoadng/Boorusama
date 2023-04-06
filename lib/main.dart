@@ -25,7 +25,7 @@ import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/api.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
-import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';

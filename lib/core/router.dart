@@ -14,7 +14,7 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';

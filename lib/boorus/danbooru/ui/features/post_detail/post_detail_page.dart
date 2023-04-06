@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_s
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';

@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_slider.dart';
-import 'package:boorusama/core/application/bookmarks/bookmark_cubit.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
