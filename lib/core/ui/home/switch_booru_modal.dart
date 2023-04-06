@@ -10,7 +10,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/ui/booru_config_info_tile.dart';
+import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
 class SwitchBooruModal extends StatelessWidget {
   const SwitchBooruModal({

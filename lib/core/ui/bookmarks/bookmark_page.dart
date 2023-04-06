@@ -10,7 +10,7 @@ import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/booru_logo.dart';
+import 'package:boorusama/core/ui/boorus/booru_logo.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/editable_mixin.dart';
 

@@ -10,8 +10,8 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/add_booru_page.dart';
-import 'package:boorusama/core/ui/booru_config_info_tile.dart';
+import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
+import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
 class ManageBooruPage extends StatelessWidget {
   const ManageBooruPage({
