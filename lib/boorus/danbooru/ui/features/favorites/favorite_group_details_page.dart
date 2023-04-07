@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
@@ -41,7 +42,8 @@ class FavoriteGroupDetailsPage extends StatefulWidget {
       _FavoriteGroupDetailsPageState();
 }
 
-class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
+class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
+    with DanbooruFavoriteGroupPostCubitMixin {
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
@@ -78,7 +80,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((PostBloc bloc) => bloc.state);
+    final state = context.select((DanbooruPostCubit bloc) => bloc.state);
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
@@ -177,12 +179,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                 Expanded(
                   child: InfiniteLoadList(
                     scrollController: scrollController,
-                    onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                          tags: '',
-                          fetcher: FavoriteGroupPostFetcher(
-                            ids: widget.postIds.dequeue(20),
-                          ),
-                        )),
+                    onLoadMore: () => fetch(),
                     enableRefresh: false,
                     enableLoadMore: state.hasMore,
                     builder: (context, controller) {
@@ -192,20 +189,20 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                         controller: controller,
                         dragEnabled: editing,
                         itemCount: state.data.length,
-                        onReorder: (oldIndex, newIndex) => context
-                            .read<PostBloc>()
-                            .add(PostMovedAndInserted(
-                              fromIndex: oldIndex,
-                              toIndex: newIndex,
-                              onSuccess: () {
-                                if (oldIndex != newIndex) {
-                                  setState(() {
-                                    commands
-                                        .add([false, oldIndex, newIndex, 0]);
-                                  });
-                                }
-                              },
-                            )),
+                        onReorder: (oldIndex, newIndex) {
+                          // context.read<PostBloc>().add(PostMovedAndInserted(
+                          //       fromIndex: oldIndex,
+                          //       toIndex: newIndex,
+                          //       onSuccess: () {
+                          //         if (oldIndex != newIndex) {
+                          //           setState(() {
+                          //             commands
+                          //                 .add([false, oldIndex, newIndex, 0]);
+                          //           });
+                          //         }
+                          //       },
+                          //     ));
+                        },
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: editing ? rowCountEditMode : count,
                           mainAxisSpacing: 4,
@@ -232,20 +229,20 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                   isFaved: post.isFavorited,
                                   enableFav: authState is Authenticated,
                                   onFavToggle: (isFaved) async {
-                                    final bloc = context.read<PostBloc>();
-                                    final success = await _getFavAction(
-                                      context,
-                                      !isFaved,
-                                      post.post.id,
-                                    );
-                                    if (success) {
-                                      bloc.add(
-                                        PostFavoriteUpdated(
-                                          postId: post.post.id,
-                                          favorite: isFaved,
-                                        ),
-                                      );
-                                    }
+                                    // final bloc = context.read<PostBloc>();
+                                    // final success = await _getFavAction(
+                                    //   context,
+                                    //   !isFaved,
+                                    //   post.post.id,
+                                    // );
+                                    // if (success) {
+                                    //   bloc.add(
+                                    //     PostFavoriteUpdated(
+                                    //       postId: post.post.id,
+                                    //       favorite: isFaved,
+                                    //     ),
+                                    //   );
+                                    // }
                                   },
                                   autoScrollOptions: AutoScrollOptions(
                                     controller: scrollController,
@@ -280,12 +277,12 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                     padding: const EdgeInsets.all(4),
                                     icon: const Icon(Icons.close),
                                     onPressed: () {
-                                      context.read<PostBloc>().add(
-                                            PostRemoved(
-                                              postIds: [post.post.id],
-                                            ),
-                                          );
-                                      commands.add([true, 0, 0, post.post.id]);
+                                      // context.read<PostBloc>().add(
+                                      //       PostRemoved(
+                                      //         postIds: [post.post.id],
+                                      //       ),
+                                      //     );
+                                      // commands.add([true, 0, 0, post.post.id]);
                                     },
                                   ),
                                 ),

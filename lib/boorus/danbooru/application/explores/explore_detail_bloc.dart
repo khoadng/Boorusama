@@ -21,26 +21,32 @@ class ExploreDetailState extends Equatable {
   const ExploreDetailState({
     required this.scale,
     required this.date,
+    required this.category,
   });
+
   factory ExploreDetailState.initial() => ExploreDetailState(
         scale: TimeScale.day,
         date: DateTime.now(),
+        category: ExploreCategory.popular,
       );
 
   final TimeScale scale;
   final DateTime date;
+  final ExploreCategory category;
 
   ExploreDetailState copyWith({
     TimeScale? scale,
     DateTime? date,
+    ExploreCategory? category,
   }) =>
       ExploreDetailState(
         scale: scale ?? this.scale,
         date: date ?? this.date,
+        category: category ?? this.category,
       );
 
   @override
-  List<Object?> get props => [scale, date];
+  List<Object?> get props => [scale, date, category];
 }
 
 @immutable
@@ -68,9 +74,11 @@ class ExploreDetailBloc extends Bloc<ExploreDetailEvent, ExploreDetailState> {
   ExploreDetailBloc({
     DateTime? initialDate,
     TimeScale? initialScale,
+    required ExploreCategory category,
   }) : super(ExploreDetailState(
           scale: initialScale ?? TimeScale.day,
           date: initialDate ?? DateTime.now(),
+          category: category,
         )) {
     on<ExploreDetailDateChanged>(
       (event, emit) => emit(state.copyWith(date: event.date)),

@@ -22,16 +22,18 @@ class LatestView extends StatefulWidget {
     super.key,
     this.onMenuTap,
     this.useAppBarPadding,
+    required this.onSelectedTagChanged,
   });
 
   final VoidCallback? onMenuTap;
   final bool? useAppBarPadding;
+  final void Function(String tag) onSelectedTagChanged;
 
   @override
   State<LatestView> createState() => _LatestViewState();
 }
 
-class _LatestViewState extends State<LatestView> {
+class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   final AutoScrollController _autoScrollController = AutoScrollController();
   final ValueNotifier<String> _selectedTag = ValueNotifier('');
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
@@ -39,11 +41,7 @@ class _LatestViewState extends State<LatestView> {
 
   void _sendRefresh(String tag) {
     _autoScrollController.jumpTo(0);
-
-    context.read<PostBloc>().add(PostRefreshed(
-          tag: tag,
-          fetcher: SearchedPostFetcher.fromTags(tag),
-        ));
+    refresh();
   }
 
   @override
@@ -55,6 +53,7 @@ class _LatestViewState extends State<LatestView> {
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
         .listen((tag) {
+      widget.onSelectedTagChanged(tag);
       _sendRefresh(tag);
     }).addTo(_compositeSubscription);
   }
@@ -70,33 +69,36 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    return InfinitePostList(
-      onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-            tags: _selectedTag.value,
-            fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
-          )),
-      onRefresh: (controller) {
-        _sendRefresh(_selectedTag.value);
-      },
-      scrollController: _autoScrollController,
-      sliverHeaderBuilder: (context) => [
-        _AppBar(
-          onMenuTap: widget.onMenuTap,
-          primary: widget.useAppBarPadding,
-        ),
-        SliverToBoxAdapter(
-          child: ValueListenableBuilder<String>(
-            valueListenable: _selectedTag,
-            builder: (context, value, child) => _MostSearchTagSection(
-              selected: value,
-              onSelected: (search) {
-                _selectedTag.value =
-                    search.keyword == value ? '' : search.keyword;
-              },
+    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
+      buildWhen: (previous, current) => !current.loading,
+      builder: (context, state) {
+        return InfinitePostList(
+          state: state,
+          onLoadMore: () => fetch(),
+          onRefresh: (controller) {
+            _sendRefresh(_selectedTag.value);
+          },
+          scrollController: _autoScrollController,
+          sliverHeaderBuilder: (context) => [
+            _AppBar(
+              onMenuTap: widget.onMenuTap,
+              primary: widget.useAppBarPadding,
             ),
-          ),
-        ),
-      ],
+            SliverToBoxAdapter(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _selectedTag,
+                builder: (context, value, child) => _MostSearchTagSection(
+                  selected: value,
+                  onSelected: (search) {
+                    _selectedTag.value =
+                        search.keyword == value ? '' : search.keyword;
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

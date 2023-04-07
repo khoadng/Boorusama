@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -35,6 +34,7 @@ class DanbooruHomePage extends StatefulWidget {
 
 class _HomePageState extends State<DanbooruHomePage> {
   final viewIndex = ValueNotifier(0);
+  final selectedTag = ValueNotifier('');
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +58,20 @@ class _HomePageState extends State<DanbooruHomePage> {
                   index: index,
                   children: [
                     BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(const PostRefreshed(
-                          fetcher: LatestPostFetcher(),
-                        )),
+                      create: (context) => DanbooruPostCubit.of(
+                        context,
+                        tags: () => selectedTag.value,
+                      )..refresh(),
                       child: _LatestView(
                         onMenuTap: widget.onMenuTap,
+                        onSelectedTagChanged: (tag) => selectedTag.value = tag,
                       ),
                     ),
-                    BlocProvider.value(
-                      value: context.read<ExploreBloc>(),
-                      child: const _ExplorePage(),
-                    ),
+                    // BlocProvider.value(
+                    //   value: context.read<ExploreBloc>(),
+                    //   child: const _ExplorePage(),
+                    // ),
+                    const _ExplorePage(),
                     MultiBlocProvider(
                       providers: [
                         BlocProvider(
@@ -130,15 +132,18 @@ class _PoolPage extends StatelessWidget {
 class _LatestView extends StatelessWidget {
   const _LatestView({
     required this.onMenuTap,
+    required this.onSelectedTagChanged,
   });
 
   final void Function()? onMenuTap;
+  final void Function(String tag) onSelectedTagChanged;
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<NetworkBloc>().state;
 
     return LatestView(
+      onSelectedTagChanged: onSelectedTagChanged,
       onMenuTap: onMenuTap,
       useAppBarPadding: state is NetworkConnectedState,
     );

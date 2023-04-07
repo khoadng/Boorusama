@@ -54,31 +54,29 @@ class ExplorePage extends StatelessWidget {
 
 Widget mapToCarousel(
   BuildContext context,
-  ExploreData explore,
 ) {
-  return explore.data.isNotEmpty
-      ? _ExploreList(
-          posts: explore.data,
-          onTap: (index) {
-            goToDetailPage(
-              context: context,
-              posts: explore.data,
-              initialIndex: index,
-              postBloc: explore.bloc,
-            );
-          },
-        )
-      : SizedBox(
-          height: _kMaxHeight,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) => Padding(
-              padding: _padding,
-              child: createRandomPlaceholderContainer(context),
-            ),
-          ),
-        );
+  return _ExploreList(
+    posts: [], //FIXME
+    onTap: (index) {
+      goToDetailPage(
+        context: context,
+        posts: [],
+        initialIndex: index,
+        // postBloc: explore.bloc,
+      );
+    },
+  );
+  // : SizedBox(
+  //     height: _kMaxHeight,
+  //     child: ListView.builder(
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: 20,
+  //       itemBuilder: (context, index) => Padding(
+  //         padding: _padding,
+  //         child: createRandomPlaceholderContainer(context),
+  //       ),
+  //     ),
+  //   );
 }
 
 class _MostViewedExplore extends StatelessWidget {
@@ -86,14 +84,11 @@ class _MostViewedExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mostViewed =
-        context.select((ExploreBloc bloc) => bloc.state.mostViewed);
-
     return ExploreSection(
-      date: mostViewed.date,
+      date: DateTime.now(),
       title: 'explore.most_viewed'.tr(),
       category: ExploreCategory.mostViewed,
-      builder: (_) => mapToCarousel(context, mostViewed),
+      builder: (_) => mapToCarousel(context),
     );
   }
 }
@@ -103,13 +98,13 @@ class _HotExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
+    // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
 
     return ExploreSection(
-      date: hot.date,
+      date: DateTime.now(),
       title: 'explore.hot'.tr(),
       category: ExploreCategory.hot,
-      builder: (_) => mapToCarousel(context, hot),
+      builder: (_) => mapToCarousel(context),
     );
   }
 }
@@ -119,13 +114,11 @@ class _PopularExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final popular = context.select((ExploreBloc bloc) => bloc.state.popular);
-
     return ExploreSection(
-      date: popular.date,
+      date: DateTime.now(),
       title: 'explore.popular'.tr(),
       category: ExploreCategory.popular,
-      builder: (_) => mapToCarousel(context, popular),
+      builder: (_) => mapToCarousel(context),
     );
   }
 }

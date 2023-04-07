@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
@@ -28,6 +28,7 @@ class InfinitePostList extends StatefulWidget {
     this.refreshController,
     this.contextMenuBuilder,
     this.multiSelectActions,
+    required this.state,
   });
 
   final VoidCallback onLoadMore;
@@ -35,11 +36,12 @@ class InfinitePostList extends StatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
-  final Widget Function(core.Post post, void Function() next)?
-      contextMenuBuilder;
+  final Widget Function(Post post, void Function() next)? contextMenuBuilder;
+
+  final DanbooruPostState state;
 
   final Widget Function(
-    List<core.Post> selectedPosts,
+    List<Post> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
@@ -51,6 +53,8 @@ class _InfinitePostListState extends State<InfinitePostList>
     with MultiSelectableMixin<InfinitePostList, Post> {
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
+
+  DanbooruPostState get state => widget.state;
 
   @override
   void initState() {
@@ -71,77 +75,71 @@ class _InfinitePostListState extends State<InfinitePostList>
     }
   }
 
+  //TODO: clear selected when refreshing
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocListener<PostBloc, PostState>(
-      listener: (context, state) {
-        if (state.refreshing) {
-          clearSelected();
-        }
-      },
-      child: WillPopScope(
-        onWillPop: _onWillPop,
-        child: InfiniteLoadListScrollView(
-          bottomBuilder: () =>
-              widget.multiSelectActions?.call(
-                selected,
-                endMultiSelect,
-              ) ??
-              DefaultMultiSelectionActions(
-                selectedPosts: selected,
-                endMultiSelect: endMultiSelect,
-              ),
-          topBuilder: () => AppBar(
-            leading: IconButton(
-              onPressed: endMultiSelect,
-              icon: const Icon(Icons.close),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: InfiniteLoadListScrollView(
+        bottomBuilder: () =>
+            widget.multiSelectActions?.call(
+              selected,
+              endMultiSelect,
+            ) ??
+            DefaultMultiSelectionActions(
+              selectedPosts: selected,
+              endMultiSelect: endMultiSelect,
             ),
-            title: selected.isEmpty
-                ? const Text('Select items')
-                : Text('${selected.length} Items selected'),
+        topBuilder: () => AppBar(
+          leading: IconButton(
+            onPressed: endMultiSelect,
+            icon: const Icon(Icons.close),
           ),
-          enableRefresh: widget.onRefresh != null,
-          multiSelect: multiSelect,
-          isLoading: state.loading,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => widget.onLoadMore.call(),
-          onRefresh: (controller) {
-            widget.onRefresh?.call(controller);
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => controller.refreshCompleted(),
-            );
-          },
-          scrollController: _autoScrollController,
-          refreshController: _refreshController,
-          sliverBuilder: (controller) => [
-            if (widget.sliverHeaderBuilder != null)
-              ...widget.sliverHeaderBuilder!(context),
-            DanbooruPostGrid(
-              scrollController: controller,
-              usePlaceholder: true,
-              onPostSelectChanged: (post, selected) {
-                if (selected) {
-                  addSelected(post);
-                } else {
-                  removeSelected(post);
-                }
-              },
-              multiSelect: multiSelect,
-              contextMenuBuilder: (post) =>
-                  widget.contextMenuBuilder?.call(post, enableMultiSelect) ??
-                  DefaultPostContextMenu(
-                    hasAccount: authState is Authenticated,
-                    onMultiSelect: enableMultiSelect,
-                    post: post,
-                  ),
-            ),
-          ],
+          title: selected.isEmpty
+              ? const Text('Select items')
+              : Text('${selected.length} Items selected'),
         ),
+        enableRefresh: widget.onRefresh != null,
+        multiSelect: multiSelect,
+        isLoading: state.loading,
+        enableLoadMore: state.hasMore,
+        onLoadMore: () => widget.onLoadMore.call(),
+        onRefresh: (controller) {
+          widget.onRefresh?.call(controller);
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => controller.refreshCompleted(),
+          );
+        },
+        scrollController: _autoScrollController,
+        refreshController: _refreshController,
+        sliverBuilder: (controller) => [
+          if (widget.sliverHeaderBuilder != null)
+            ...widget.sliverHeaderBuilder!(context),
+          DanbooruPostGrid(
+            state: state,
+            scrollController: controller,
+            usePlaceholder: true,
+            onPostSelectChanged: (post, selected) {
+              if (selected) {
+                addSelected(post);
+              } else {
+                removeSelected(post);
+              }
+            },
+            multiSelect: multiSelect,
+            contextMenuBuilder: (post) =>
+                widget.contextMenuBuilder?.call(post, enableMultiSelect) ??
+                DefaultPostContextMenu(
+                  hasAccount: authState is Authenticated,
+                  onMultiSelect: enableMultiSelect,
+                  post: post,
+                ),
+          ),
+        ],
       ),
     );
   }
@@ -165,7 +163,7 @@ class DefaultMultiSelectionActions extends StatelessWidget {
     required this.endMultiSelect,
   });
 
-  final List<core.Post> selectedPosts;
+  final List<Post> selectedPosts;
   final void Function() endMultiSelect;
 
   @override
@@ -220,7 +218,7 @@ class FavoriteGroupMultiSelectionActions extends StatelessWidget {
     required this.onRemoveFromFavGroup,
   });
 
-  final List<core.Post> selectedPosts;
+  final List<Post> selectedPosts;
   final void Function() endMultiSelect;
   final void Function() onRemoveFromFavGroup;
 

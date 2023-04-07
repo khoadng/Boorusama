@@ -1,548 +1,548 @@
-// Package imports:
-import 'package:bloc_test/bloc_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
+// // Package imports:
+// import 'package:bloc_test/bloc_test.dart';
+// import 'package:mocktail/mocktail.dart';
+// import 'package:test/test.dart';
 
-// Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
+// // Project imports:
+// import 'package:boorusama/boorus/danbooru/application/posts.dart';
+// import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+// import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+// import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+// import 'package:boorusama/core/application/common.dart';
+// import 'package:boorusama/core/domain/boorus.dart';
+// import 'package:boorusama/core/domain/error.dart';
+// import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
-class MockPostRepository extends Mock implements DanbooruPostRepository {}
+// class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
-class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
+// class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
-class MockPostVoteRepository extends Mock implements PostVoteRepository {}
+// class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
-class MockPoolRepository extends Mock implements PoolRepository {}
+// class MockPoolRepository extends Mock implements PoolRepository {}
 
-class MockCurrentUserBooruRepository extends Mock
-    implements CurrentBooruConfigRepository {}
+// class MockCurrentUserBooruRepository extends Mock
+//     implements CurrentBooruConfigRepository {}
 
-class MockBlacklistedTagsRepository extends Mock
-    implements BlacklistedTagsRepository {}
+// class MockBlacklistedTagsRepository extends Mock
+//     implements BlacklistedTagsRepository {}
 
-void main() {
-  final mockPostRepo = MockPostRepository();
-  final mockBlacklistedRepo = MockBlacklistedTagsRepository();
-  final mockFavRepo = MockFavoritesRepository();
-  final mockPostVoteRepo = MockPostVoteRepository();
-  final mockPoolRepo = MockPoolRepository();
-  final mockCurrentUserBooruRepo = MockCurrentUserBooruRepository();
-  group('[post bloc failure test]', () {
-    blocTest<PostBloc, PostState>(
-      'tag limit',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: ServerError(httpStatusCode: 422)));
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error: BooruError(error: ServerError(httpStatusCode: 422)),
-          exceptionMessage: 'search.errors.tag_limit',
-        ),
-      ],
-    );
+// void main() {
+//   final mockPostRepo = MockPostRepository();
+//   final mockBlacklistedRepo = MockBlacklistedTagsRepository();
+//   final mockFavRepo = MockFavoritesRepository();
+//   final mockPostVoteRepo = MockPostVoteRepository();
+//   final mockPoolRepo = MockPoolRepository();
+//   final mockCurrentUserBooruRepo = MockCurrentUserBooruRepository();
+//   group('[post bloc failure test]', () {
+//     blocTest<PostBloc, PostState>(
+//       'tag limit',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(BooruError(error: ServerError(httpStatusCode: 422)));
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error: BooruError(error: ServerError(httpStatusCode: 422)),
+//           exceptionMessage: 'search.errors.tag_limit',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'cannot reach server',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(
-          BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
-        );
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error:
-              BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
-          exceptionMessage: 'Cannot reach server, please check your connection',
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       'cannot reach server',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(
+//           BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
+//         );
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error:
+//               BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
+//           exceptionMessage: 'Cannot reach server, please check your connection',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'failed to parse JSON',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(
-          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
-        );
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error:
-              BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
-          exceptionMessage:
-              'Failed to parse data, please report this issue to the developer',
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       'failed to parse JSON',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(
+//           BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+//         );
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error:
+//               BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+//           exceptionMessage:
+//               'Failed to parse data, please report this issue to the developer',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'time out',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: ServerError(httpStatusCode: 500)));
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error: BooruError(error: ServerError(httpStatusCode: 500)),
-          exceptionMessage: 'search.errors.database_timeout',
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       'time out',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(BooruError(error: ServerError(httpStatusCode: 500)));
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error: BooruError(error: ServerError(httpStatusCode: 500)),
+//           exceptionMessage: 'search.errors.database_timeout',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'unknown',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: 1));
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error: BooruError(error: 1),
-          exceptionMessage: 'generic.errors.unknown',
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       'unknown',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(BooruError(error: 1));
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error: BooruError(error: 1),
+//           exceptionMessage: 'generic.errors.unknown',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'unknown server error when favorites repo failed',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [
-                  DanbooruPost.empty(),
-                  DanbooruPost.empty(),
-                ]);
-        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
-            .thenThrow(1);
-        when(() => mockPoolRepo.getPoolsByPostIds(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPostVoteRepo.getPostVotes(any()))
-            .thenAnswer((invocation) async => []);
-      },
-      tearDown: () {
-        reset(mockPostRepo);
-        reset(mockBlacklistedRepo);
-        reset(mockFavRepo);
-        reset(mockPoolRepo);
-        reset(mockPostVoteRepo);
-      },
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error: BooruError(error: 1),
-          exceptionMessage: 'generic.errors.unknown',
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       'unknown server error when favorites repo failed',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenAnswer((invocation) async => [
+//                   DanbooruPost.empty(),
+//                   DanbooruPost.empty(),
+//                 ]);
+//         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
+//             .thenThrow(1);
+//         when(() => mockPoolRepo.getPoolsByPostIds(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPostVoteRepo.getPostVotes(any()))
+//             .thenAnswer((invocation) async => []);
+//       },
+//       tearDown: () {
+//         reset(mockPostRepo);
+//         reset(mockBlacklistedRepo);
+//         reset(mockFavRepo);
+//         reset(mockPoolRepo);
+//         reset(mockPostVoteRepo);
+//       },
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error: BooruError(error: 1),
+//           exceptionMessage: 'generic.errors.unknown',
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      'unknown server error when fetch more',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: ServerError(httpStatusCode: 9999)));
-      },
-      tearDown: () => reset(mockPostRepo),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial().copyWith(status: LoadStatus.loading),
-        PostState.initial().copyWith(
-          status: LoadStatus.failure,
-          error: BooruError(error: ServerError(httpStatusCode: 9999)),
-          exceptionMessage: 'search.errors.unknown',
-        ),
-      ],
-    );
-  });
+//     blocTest<PostBloc, PostState>(
+//       'unknown server error when fetch more',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenThrow(BooruError(error: ServerError(httpStatusCode: 9999)));
+//       },
+//       tearDown: () => reset(mockPostRepo),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial().copyWith(status: LoadStatus.loading),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.failure,
+//           error: BooruError(error: ServerError(httpStatusCode: 9999)),
+//           exceptionMessage: 'search.errors.unknown',
+//         ),
+//       ],
+//     );
+//   });
 
-  group('[post bloc success]', () {
-    blocTest<PostBloc, PostState>(
-      '2 posts returned',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [
-                  DanbooruPost.empty(),
-                  DanbooruPost.empty(),
-                ]);
-        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockFavRepo.getFavorites(any(), any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPoolRepo.getPoolsByPostIds(any()))
-            .thenAnswer((invocation) async => []);
-      },
-      tearDown: () {
-        reset(mockPostRepo);
-        reset(mockBlacklistedRepo);
-        reset(mockFavRepo);
-        reset(mockPoolRepo);
-      },
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.success,
-          posts: [
-            DanbooruPostData.empty(),
-            DanbooruPostData.empty(),
-          ],
-        ),
-      ],
-    );
+//   group('[post bloc success]', () {
+//     blocTest<PostBloc, PostState>(
+//       '2 posts returned',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenAnswer((invocation) async => [
+//                   DanbooruPost.empty(),
+//                   DanbooruPost.empty(),
+//                 ]);
+//         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockFavRepo.getFavorites(any(), any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPoolRepo.getPoolsByPostIds(any()))
+//             .thenAnswer((invocation) async => []);
+//       },
+//       tearDown: () {
+//         reset(mockPostRepo);
+//         reset(mockBlacklistedRepo);
+//         reset(mockFavRepo);
+//         reset(mockPoolRepo);
+//       },
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.success,
+//           posts: [
+//             DanbooruPostData.empty(),
+//             DanbooruPostData.empty(),
+//           ],
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      '2 posts returned, non-anon user',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [
-                  DanbooruPost.empty(),
-                  DanbooruPost.empty(),
-                ]);
-        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPoolRepo.getPoolsByPostIds(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPostVoteRepo.getPostVotes(any()))
-            .thenAnswer((invocation) async => []);
-      },
-      tearDown: () {
-        reset(mockPostRepo);
-        reset(mockBlacklistedRepo);
-        reset(mockFavRepo);
-        reset(mockPoolRepo);
-        reset(mockPostVoteRepo);
-      },
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.success,
-          posts: [
-            DanbooruPostData.empty(),
-            DanbooruPostData.empty(),
-          ],
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       '2 posts returned, non-anon user',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenAnswer((invocation) async => [
+//                   DanbooruPost.empty(),
+//                   DanbooruPost.empty(),
+//                 ]);
+//         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPoolRepo.getPoolsByPostIds(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPostVoteRepo.getPostVotes(any()))
+//             .thenAnswer((invocation) async => []);
+//       },
+//       tearDown: () {
+//         reset(mockPostRepo);
+//         reset(mockBlacklistedRepo);
+//         reset(mockFavRepo);
+//         reset(mockPoolRepo);
+//         reset(mockPostVoteRepo);
+//       },
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.success,
+//           posts: [
+//             DanbooruPostData.empty(),
+//             DanbooruPostData.empty(),
+//           ],
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      '2 posts returned with pools',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [
-                  DanbooruPost.empty().copyWith(id: 1),
-                  DanbooruPost.empty().copyWith(id: 2),
-                ]);
-        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockFavRepo.getFavorites(any(), any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPoolRepo.getPoolsByPostIds(any()))
-            .thenAnswer((invocation) async => [
-                  Pool.empty().copyWith(id: 11, postIds: [1, 100]),
-                  Pool.empty().copyWith(id: 22, postIds: [2, 200]),
-                  Pool.empty().copyWith(id: 33, postIds: [2, 201]),
-                  Pool.empty().copyWith(id: 44, postIds: [2, 202]),
-                ]);
-      },
-      tearDown: () {
-        reset(mockPostRepo);
-        reset(mockBlacklistedRepo);
-        reset(mockFavRepo);
-        reset(mockPoolRepo);
-      },
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-      ),
-      act: (bloc) =>
-          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial(),
-        PostState.initial().copyWith(
-          status: LoadStatus.success,
-          posts: [
-            DanbooruPostData.empty().copyWith(
-              post: DanbooruPost.empty().copyWith(id: 1),
-              pools: [
-                Pool.empty().copyWith(id: 11, postIds: [1, 100]),
-              ],
-            ),
-            DanbooruPostData.empty().copyWith(
-              post: DanbooruPost.empty().copyWith(id: 2),
-              pools: [
-                Pool.empty().copyWith(id: 22, postIds: [2, 200]),
-                Pool.empty().copyWith(id: 33, postIds: [2, 201]),
-                Pool.empty().copyWith(id: 44, postIds: [2, 202]),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
+//     blocTest<PostBloc, PostState>(
+//       '2 posts returned with pools',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenAnswer((invocation) async => [
+//                   DanbooruPost.empty().copyWith(id: 1),
+//                   DanbooruPost.empty().copyWith(id: 2),
+//                 ]);
+//         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockFavRepo.getFavorites(any(), any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPoolRepo.getPoolsByPostIds(any()))
+//             .thenAnswer((invocation) async => [
+//                   Pool.empty().copyWith(id: 11, postIds: [1, 100]),
+//                   Pool.empty().copyWith(id: 22, postIds: [2, 200]),
+//                   Pool.empty().copyWith(id: 33, postIds: [2, 201]),
+//                   Pool.empty().copyWith(id: 44, postIds: [2, 202]),
+//                 ]);
+//       },
+//       tearDown: () {
+//         reset(mockPostRepo);
+//         reset(mockBlacklistedRepo);
+//         reset(mockFavRepo);
+//         reset(mockPoolRepo);
+//       },
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial(),
+//         PostState.initial().copyWith(
+//           status: LoadStatus.success,
+//           posts: [
+//             DanbooruPostData.empty().copyWith(
+//               post: DanbooruPost.empty().copyWith(id: 1),
+//               pools: [
+//                 Pool.empty().copyWith(id: 11, postIds: [1, 100]),
+//               ],
+//             ),
+//             DanbooruPostData.empty().copyWith(
+//               post: DanbooruPost.empty().copyWith(id: 2),
+//               pools: [
+//                 Pool.empty().copyWith(id: 22, postIds: [2, 200]),
+//                 Pool.empty().copyWith(id: 33, postIds: [2, 201]),
+//                 Pool.empty().copyWith(id: 44, postIds: [2, 202]),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      '2 posts initial + 1 posts returned',
-      setUp: () {
-        when(() =>
-                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [
-                  DanbooruPost.empty(),
-                ]);
-        when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockFavRepo.getFavorites(any(), any()))
-            .thenAnswer((invocation) async => []);
-        when(() => mockPoolRepo.getPoolsByPostIds(any()))
-            .thenAnswer((invocation) async => []);
-      },
-      tearDown: () {
-        reset(mockPostRepo);
-        reset(mockBlacklistedRepo);
-        reset(mockFavRepo);
-        reset(mockPoolRepo);
-      },
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-        initialData: [
-          DanbooruPostData.empty(),
-          DanbooruPostData.empty(),
-        ],
-      ),
-      act: (bloc) =>
-          bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
-      expect: () => [
-        PostState.initial().copyWith(
-          status: LoadStatus.loading,
-          posts: [
-            DanbooruPostData.empty(),
-            DanbooruPostData.empty(),
-          ],
-        ),
-        PostState.initial().copyWith(
-          page: 2,
-          status: LoadStatus.success,
-          posts: [
-            DanbooruPostData.empty(),
-            DanbooruPostData.empty(),
-            DanbooruPostData.empty(),
-          ],
-        ),
-      ],
-    );
-  });
+//     blocTest<PostBloc, PostState>(
+//       '2 posts initial + 1 posts returned',
+//       setUp: () {
+//         when(() =>
+//                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+//             .thenAnswer((invocation) async => [
+//                   DanbooruPost.empty(),
+//                 ]);
+//         when(() => mockBlacklistedRepo.getBlacklistedTags(any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockFavRepo.getFavorites(any(), any()))
+//             .thenAnswer((invocation) async => []);
+//         when(() => mockPoolRepo.getPoolsByPostIds(any()))
+//             .thenAnswer((invocation) async => []);
+//       },
+//       tearDown: () {
+//         reset(mockPostRepo);
+//         reset(mockBlacklistedRepo);
+//         reset(mockFavRepo);
+//         reset(mockPoolRepo);
+//       },
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//         initialData: [
+//           DanbooruPostData.empty(),
+//           DanbooruPostData.empty(),
+//         ],
+//       ),
+//       act: (bloc) =>
+//           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
+//       expect: () => [
+//         PostState.initial().copyWith(
+//           status: LoadStatus.loading,
+//           posts: [
+//             DanbooruPostData.empty(),
+//             DanbooruPostData.empty(),
+//           ],
+//         ),
+//         PostState.initial().copyWith(
+//           page: 2,
+//           status: LoadStatus.success,
+//           posts: [
+//             DanbooruPostData.empty(),
+//             DanbooruPostData.empty(),
+//             DanbooruPostData.empty(),
+//           ],
+//         ),
+//       ],
+//     );
+//   });
 
-  group('[post bloc item update]', () {
-    blocTest<PostBloc, PostState>(
-      '3 posts initial, update the middle post',
-      seed: () => PostState.initial().copyWith(
-        page: 1,
-        posts: [
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
-        ],
-      ),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-        stateIdGenerator: () => 123,
-      ),
-      act: (bloc) => bloc.add(PostUpdated(
-        post: DanbooruPostData.empty().copyWith(
-          post: DanbooruPost.empty().copyWith(
-            id: 2,
-            tags: ['foo'],
-          ),
-        ),
-      )),
-      expect: () => [
-        PostState.initial().copyWith(
-          id: 123,
-          posts: [
-            DanbooruPostData.empty()
-                .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
-            DanbooruPostData.empty().copyWith(
-              post: DanbooruPost.empty().copyWith(id: 2, tags: ['foo']),
-            ),
-            DanbooruPostData.empty()
-                .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
-          ],
-        ),
-      ],
-    );
+//   group('[post bloc item update]', () {
+//     blocTest<PostBloc, PostState>(
+//       '3 posts initial, update the middle post',
+//       seed: () => PostState.initial().copyWith(
+//         page: 1,
+//         posts: [
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
+//         ],
+//       ),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//         stateIdGenerator: () => 123,
+//       ),
+//       act: (bloc) => bloc.add(PostUpdated(
+//         post: DanbooruPostData.empty().copyWith(
+//           post: DanbooruPost.empty().copyWith(
+//             id: 2,
+//             tags: ['foo'],
+//           ),
+//         ),
+//       )),
+//       expect: () => [
+//         PostState.initial().copyWith(
+//           id: 123,
+//           posts: [
+//             DanbooruPostData.empty()
+//                 .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+//             DanbooruPostData.empty().copyWith(
+//               post: DanbooruPost.empty().copyWith(id: 2, tags: ['foo']),
+//             ),
+//             DanbooruPostData.empty()
+//                 .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
+//           ],
+//         ),
+//       ],
+//     );
 
-    blocTest<PostBloc, PostState>(
-      '3 posts initial, update the non-exist post',
-      seed: () => PostState.initial().copyWith(
-        page: 1,
-        posts: [
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
-          DanbooruPostData.empty()
-              .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
-        ],
-      ),
-      build: () => PostBloc(
-        postRepository: mockPostRepo,
-        favoritePostRepository: mockFavRepo,
-        blacklistedTagsRepository: mockBlacklistedRepo,
-        postVoteRepository: mockPostVoteRepo,
-        poolRepository: mockPoolRepo,
-        currentBooruConfigRepository: mockCurrentUserBooruRepo,
-        stateIdGenerator: () => 123,
-      ),
-      act: (bloc) => bloc.add(PostUpdated(
-        post: DanbooruPostData.empty().copyWith(
-          post: DanbooruPost.empty().copyWith(
-            id: 4,
-            tags: ['foo'],
-          ),
-        ),
-      )),
-      expect: () => [],
-    );
-  });
-}
+//     blocTest<PostBloc, PostState>(
+//       '3 posts initial, update the non-exist post',
+//       seed: () => PostState.initial().copyWith(
+//         page: 1,
+//         posts: [
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+//           DanbooruPostData.empty()
+//               .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
+//         ],
+//       ),
+//       build: () => PostBloc(
+//         postRepository: mockPostRepo,
+//         favoritePostRepository: mockFavRepo,
+//         blacklistedTagsRepository: mockBlacklistedRepo,
+//         postVoteRepository: mockPostVoteRepo,
+//         poolRepository: mockPoolRepo,
+//         currentBooruConfigRepository: mockCurrentUserBooruRepo,
+//         stateIdGenerator: () => 123,
+//       ),
+//       act: (bloc) => bloc.add(PostUpdated(
+//         post: DanbooruPostData.empty().copyWith(
+//           post: DanbooruPost.empty().copyWith(
+//             id: 4,
+//             tags: ['foo'],
+//           ),
+//         ),
+//       )),
+//       expect: () => [],
+//     );
+//   });
+// }

@@ -9,7 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 
-class ParentChildPostPage extends StatelessWidget {
+class ParentChildPostPage extends StatelessWidget
+    with DanbooruPostCubitStatelessMixin {
   const ParentChildPostPage({
     super.key,
     required this.parentPostId,
@@ -19,26 +20,25 @@ class ParentChildPostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfinitePostList(
-      onLoadMore: () => context.read<PostBloc>().add(
-            PostFetched(
-              tags: 'parent:$parentPostId',
-              fetcher: SearchedPostFetcher.fromTags(
-                'parent:$parentPostId',
+    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
+      buildWhen: (previous, current) => !current.loading,
+      builder: (context, state) {
+        return InfinitePostList(
+          state: state,
+          onLoadMore: () => fetch(context),
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: Text(
+                '${'post.parent_child.children_of'.tr()} $parentPostId',
               ),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
-          ),
-      sliverHeaderBuilder: (context) => [
-        SliverAppBar(
-          title: Text(
-            '${'post.parent_child.children_of'.tr()} $parentPostId',
-          ),
-          floating: true,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

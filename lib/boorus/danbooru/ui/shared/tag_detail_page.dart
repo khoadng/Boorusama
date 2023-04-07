@@ -10,7 +10,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/utils.dart';
 
 class TagDetailPage extends StatefulWidget {
   const TagDetailPage({
@@ -30,82 +30,73 @@ class TagDetailPage extends StatefulWidget {
   State<TagDetailPage> createState() => _TagDetailPageState();
 }
 
-class _TagDetailPageState extends State<TagDetailPage> {
+class _TagDetailPageState extends State<TagDetailPage>
+    with DanbooruPostCubitMixin {
   var currentCategory = TagFilterCategory.newest;
 
   @override
   Widget build(BuildContext context) {
-    return InfinitePostList(
-      onLoadMore: () => _load(),
-      onRefresh: (controller) => _refresh(),
-      sliverHeaderBuilder: (context) => [
-        if (widget.includeHeaders)
-          SliverAppBar(
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  goToBulkDownloadPage(
-                    context,
-                    [widget.tagName],
-                  );
-                },
-                icon: const Icon(Icons.download),
+    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
+      buildWhen: (previous, current) => !current.loading,
+      builder: (context, state) {
+        return InfinitePostList(
+          state: state,
+          onLoadMore: () => _load(),
+          onRefresh: (controller) => _refresh(),
+          sliverHeaderBuilder: (context) => [
+            if (widget.includeHeaders)
+              SliverAppBar(
+                floating: true,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      goToBulkDownloadPage(
+                        context,
+                        [widget.tagName],
+                      );
+                    },
+                    icon: const Icon(Icons.download),
+                  ),
+                ],
               ),
-            ],
-          ),
-        if (widget.includeHeaders)
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TagTitleName(tagName: widget.tagName),
-                widget.otherNamesBuilder(context),
-              ],
+            if (widget.includeHeaders)
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TagTitleName(tagName: widget.tagName),
+                    widget.otherNamesBuilder(context),
+                  ],
+                ),
+              ),
+            if (widget.includeHeaders)
+              const SliverToBoxAdapter(child: SizedBox(height: 50)),
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 10),
+              sliver: SliverToBoxAdapter(
+                child: CategoryToggleSwitch(
+                  onToggle: (category) => setState(() {
+                    currentCategory = category;
+                    _refresh();
+                  }),
+                ),
+              ),
             ),
-          ),
-        if (widget.includeHeaders)
-          const SliverToBoxAdapter(child: SizedBox(height: 50)),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 10),
-          sliver: SliverToBoxAdapter(
-            child: CategoryToggleSwitch(
-              onToggle: (category) => setState(() {
-                currentCategory = category;
-                _refresh();
-              }),
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
   void _load() {
-    context.read<PostBloc>().add(PostFetched(
-          tags: widget.tagName,
-          order: tagFilterCategoryToPostsOrder(currentCategory),
-          fetcher: SearchedPostFetcher.fromTags(
-            widget.tagName,
-            order: tagFilterCategoryToPostsOrder(currentCategory),
-          ),
-        ));
+    fetch();
   }
 
   void _refresh() {
-    context.read<PostBloc>().add(
-          PostRefreshed(
-            tag: widget.tagName,
-            order: tagFilterCategoryToPostsOrder(currentCategory),
-            fetcher: SearchedPostFetcher.fromTags(
-              widget.tagName,
-              order: tagFilterCategoryToPostsOrder(currentCategory),
-            ),
-          ),
-        );
+    refresh();
   }
 }
 
@@ -138,11 +129,11 @@ enum TagFilterCategory {
   newest,
 }
 
-PostsOrder tagFilterCategoryToPostsOrder(TagFilterCategory category) {
-  if (category == TagFilterCategory.popular) return PostsOrder.popular;
+// PostsOrder tagFilterCategoryToPostsOrder(TagFilterCategory category) {
+//   if (category == TagFilterCategory.popular) return PostsOrder.popular;
 
-  return PostsOrder.newest;
-}
+//   return PostsOrder.newest;
+// }
 
 // ignore: prefer-single-widget-per-file
 class CategoryToggleSwitch extends StatefulWidget {

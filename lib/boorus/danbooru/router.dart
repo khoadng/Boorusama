@@ -72,6 +72,7 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -132,11 +133,10 @@ Widget provideArtistPageDependencies(
           return MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => PostBloc.of(dcontext)
-                  ..add(PostRefreshed(
-                    tag: artist,
-                    fetcher: SearchedPostFetcher.fromTags(artist),
-                  )),
+                create: (_) => DanbooruPostCubit.of(
+                  dcontext,
+                  tags: () => artist,
+                )..refresh(),
               ),
               BlocProvider.value(
                 value: dcontext.read<ArtistBloc>()
@@ -193,11 +193,10 @@ Widget provideCharacterPageDependencies(
           return MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => PostBloc.of(dcontext)
-                  ..add(PostRefreshed(
-                    tag: character,
-                    fetcher: SearchedPostFetcher.fromTags(character),
-                  )),
+                create: (_) => DanbooruPostCubit.of(
+                  dcontext,
+                  tags: () => character,
+                )..refresh(),
               ),
               BlocProvider.value(
                 value: dcontext.read<WikiBloc>()
@@ -241,7 +240,7 @@ void goToBulkDownloadPage(
                       downloader: dcontext.read<BulkDownloader<DanbooruPost>>(),
                       postCountRepository: dcontext.read<PostCountRepository>(),
                       postRepository: dcontext.read<DanbooruPostRepository>(),
-                      errorTranslator: getErrorMessage,
+                      errorTranslator: (e) => null, //FIXME
                       onDownloadDone: (path) =>
                           MediaScanner.loadMedia(path: path),
                     ),
@@ -275,14 +274,10 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
                   )..add(PoolDescriptionFetched(poolId: pool.id)),
                 ),
                 BlocProvider(
-                  create: (_) => PostBloc.of(dcontext)
-                    ..add(
-                      PostRefreshed(
-                        fetcher: PoolPostFetcher(
-                          postIds: pool.postIds.reversed.take(20).toList(),
-                        ),
-                      ),
-                    ),
+                  create: (_) => DanbooruPostCubit.of(
+                    dcontext,
+                    tags: () => 'pool:${pool.id}',
+                  )..refresh(),
                 ),
               ],
               child: CustomContextMenuOverlay(
@@ -317,13 +312,10 @@ void goToParentChildPage(
           builder: (dcontext) => MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => PostBloc.of(dcontext)
-                  ..add(PostRefreshed(
-                    tag: tagQueryForDataFetching,
-                    fetcher: SearchedPostFetcher.fromTags(
-                      tagQueryForDataFetching,
-                    ),
-                  )),
+                create: (_) => DanbooruPostCubit.of(
+                  dcontext,
+                  tags: () => tagQueryForDataFetching,
+                )..refresh(),
               ),
             ],
             child: CustomContextMenuOverlay(
@@ -348,7 +340,7 @@ void goToDetailPage({
   required List<DanbooruPostData> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
-  PostBloc? postBloc,
+  // PostBloc? postBloc,
 }) {
   final tags = posts
       .map((e) => e.post)
@@ -389,7 +381,6 @@ void goToDetailPage({
         posts,
         initialIndex,
         tags,
-        postBloc,
         scrollController,
         PostDetailPage(
           intitialIndex: initialIndex,
@@ -405,7 +396,6 @@ void goToDetailPage({
         posts,
         initialIndex,
         tags,
-        postBloc,
         scrollController,
         PostDetailPageDesktop(
           intitialIndex: initialIndex,
@@ -421,7 +411,7 @@ Widget providePostDetailPageDependencies(
   List<DanbooruPostData> posts,
   int initialIndex,
   List<PostDetailTag> tags,
-  PostBloc? postBloc,
+  // PostBloc? postBloc,
   AutoScrollController? scrollController,
   Widget child,
 ) {
@@ -455,9 +445,9 @@ Widget providePostDetailPageDependencies(
                       postVoteRepository: context.read<PostVoteRepository>(),
                       tags: tags,
                       onPostChanged: (post) {
-                        if (postBloc != null && !postBloc.isClosed) {
-                          postBloc.add(PostUpdated(post: post));
-                        }
+                        // if (postBloc != null && !postBloc.isClosed) {
+                        //   postBloc.add(PostUpdated(post: post));
+                        // }
                       },
                       tagCache: {},
                     ),
@@ -540,12 +530,13 @@ Widget provideSearchPageDependencies(
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               );
 
-              final postBloc = PostBloc.of(
+              final postCubit = DanbooruPostCubit.of(
                 context,
-                pagination:
-                    settingsState.settings.contentOrganizationCategory ==
-                        ContentOrganizationCategory.pagination,
-              );
+                // pagination:
+                //     settingsState.settings.contentOrganizationCategory ==
+                //         ContentOrganizationCategory.pagination,
+                tags: () => tagSearchBloc.state.selectedTags.join(' '),
+              )..refresh();
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
                     context.read<SearchHistoryRepository>(),
@@ -565,7 +556,7 @@ Widget provideSearchPageDependencies(
                     value: context.read<FavoriteTagBloc>()
                       ..add(const FavoriteTagFetched()),
                   ),
-                  BlocProvider.value(value: postBloc),
+                  BlocProvider.value(value: postCubit),
                   BlocProvider.value(
                     value: BlocProvider.of<ThemeBloc>(context),
                   ),
@@ -578,7 +569,7 @@ Widget provideSearchPageDependencies(
                       searchHistoryBloc: searchHistoryCubit,
                       relatedTagBloc: relatedTagBloc,
                       searchHistorySuggestionsBloc: searchHistorySuggestions,
-                      postBloc: postBloc,
+                      postCubit: postCubit,
                       postCountRepository: context.read<PostCountRepository>(),
                       initialQuery: tag,
                       booruType: state.booru!.booruType,
@@ -624,38 +615,36 @@ void goToExploreDetailPage(
             return DanbooruProvider.of(
               context,
               booru: state.booru!,
-              builder: (dcontext) => MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (_) => ExploreDetailBloc(initialDate: date),
-                  ),
-                  BlocProvider(
-                    create: (_) => PostBloc.of(dcontext)
-                      ..add(
-                        PostRefreshed(
-                          fetcher: categoryToFetcher(
-                            category,
-                            date ?? DateTime.now(),
-                            TimeScale.day,
-                            dcontext,
-                          ),
-                        ),
-                      ),
-                  ),
-                ],
-                child: CustomContextMenuOverlay(
-                  child: ExploreDetailPage(
-                    title: Text(
-                      title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(fontWeight: FontWeight.w700),
+              builder: (dcontext) {
+                final exploreDetailsBloc = ExploreDetailBloc(
+                  initialDate: date,
+                  category: category,
+                );
+
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: exploreDetailsBloc),
+                    BlocProvider(
+                      create: (_) => DanbooruExplorePostCubit.of(
+                        dcontext,
+                        exploreDetailBloc: exploreDetailsBloc,
+                      )..refresh(),
                     ),
-                    category: category,
+                  ],
+                  child: CustomContextMenuOverlay(
+                    child: ExploreDetailPage(
+                      title: Text(
+                        title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      category: category,
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         ),
@@ -664,38 +653,36 @@ void goToExploreDetailPage(
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => ExploreDetailBloc(initialDate: date),
-          ),
-          BlocProvider(
-            create: (context) => PostBloc.of(context)
-              ..add(
-                PostRefreshed(
-                  fetcher: categoryToFetcher(
-                    category,
-                    date ?? DateTime.now(),
-                    TimeScale.day,
-                    context,
-                  ),
-                ),
-              ),
-          ),
-        ],
-        child: CustomContextMenuOverlay(
-          child: ExploreDetailPage(
-            title: Text(
-              title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.w700),
+      builder: (context) {
+        final exploreDetailsBloc = ExploreDetailBloc(
+          initialDate: date,
+          category: category,
+        );
+
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: exploreDetailsBloc),
+            BlocProvider(
+              create: (_) => DanbooruExplorePostCubit.of(
+                context,
+                exploreDetailBloc: exploreDetailsBloc,
+              )..refresh(),
             ),
-            category: category,
+          ],
+          child: CustomContextMenuOverlay(
+            child: ExploreDetailPage(
+              title: Text(
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              category: category,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -731,7 +718,10 @@ Widget provideSavedSearchPageDependecies(
         builder: (dcontext) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (_) => PostBloc.of(dcontext),
+              create: (_) => DanbooruPostCubit.of(
+                dcontext,
+                tags: () => SavedSearch.all().toQuery(),
+              )..refresh(),
             ),
             BlocProvider(
               create: (_) => SavedSearchFeedBloc(
@@ -1352,12 +1342,10 @@ void goToFavoriteGroupDetailsPage(
           builder: (dcontext) => MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => PostBloc.of(dcontext)
-                  ..add(PostRefreshed(
-                    fetcher: FavoriteGroupPostFetcher(
-                      ids: group.postIds.take(60).toList(),
-                    ),
-                  )),
+                create: (_) => DanbooruFavoriteGroupPostCubit.of(
+                  dcontext,
+                  ids: () => group.postIds,
+                ),
               ),
               BlocProvider.value(value: bloc),
             ],
