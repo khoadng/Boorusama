@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/danbooru_explore_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page.dart';
@@ -85,14 +87,52 @@ class _HomePageState extends State<HomePage> {
                 context,
                 booru: booru,
                 sourceComposer: DanbooruImageSourceComposer(booru),
-                builder: (context) => CustomContextMenuOverlay(
-                  child: isMobilePlatform()
-                      ? DanbooruHomePage(
-                          onMenuTap: _onMenuTap,
-                          key: ValueKey(config?.id),
-                        )
-                      : const DanbooruHomePageDesktop(),
-                ),
+                builder: (context) {
+                  final exploreHotDetailsBloc = ExploreHotDetailBloc();
+                  final exploreMostViewedDetailsBloc =
+                      ExploreMostViewedDetailBloc();
+                  final explorePopularDetailsBloc = ExplorePopularDetailBloc();
+
+                  return CustomContextMenuOverlay(
+                    child: isMobilePlatform()
+                        ? MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(value: exploreHotDetailsBloc),
+                              BlocProvider.value(
+                                  value: exploreMostViewedDetailsBloc),
+                              BlocProvider.value(
+                                  value: explorePopularDetailsBloc),
+                              BlocProvider(
+                                create: (context) =>
+                                    DanbooruHotExplorePostCubit(
+                                  context: context,
+                                  exploreDetailBloc: exploreHotDetailsBloc,
+                                )..refresh(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    DanbooruPopularExplorePostCubit(
+                                  context: context,
+                                  exploreDetailBloc: explorePopularDetailsBloc,
+                                )..refresh(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    DanbooruMostViewedExplorePostCubit(
+                                  context: context,
+                                  exploreDetailBloc:
+                                      exploreMostViewedDetailsBloc,
+                                )..refresh(),
+                              ),
+                            ],
+                            child: DanbooruHomePage(
+                              onMenuTap: _onMenuTap,
+                              key: ValueKey(config?.id),
+                            ),
+                          )
+                        : const DanbooruHomePageDesktop(),
+                  );
+                },
               );
             case BooruType.gelbooru:
               final gkey = ValueKey(config?.id);

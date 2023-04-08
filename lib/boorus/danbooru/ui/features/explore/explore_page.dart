@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
@@ -54,13 +55,14 @@ class ExplorePage extends StatelessWidget {
 
 Widget mapToCarousel(
   BuildContext context,
+  List<DanbooruPostData> posts,
 ) {
   return _ExploreList(
-    posts: [], //FIXME
+    posts: posts, //FIXME
     onTap: (index) {
       goToDetailPage(
         context: context,
-        posts: [],
+        posts: posts,
         initialIndex: index,
         // postBloc: explore.bloc,
       );
@@ -84,11 +86,15 @@ class _MostViewedExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExploreSection(
-      date: DateTime.now(),
-      title: 'explore.most_viewed'.tr(),
-      category: ExploreCategory.mostViewed,
-      builder: (_) => mapToCarousel(context),
+    return BlocBuilder<DanbooruMostViewedExplorePostCubit, DanbooruPostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.most_viewed'.tr(),
+          category: ExploreCategory.mostViewed,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }
@@ -100,11 +106,15 @@ class _HotExplore extends StatelessWidget {
   Widget build(BuildContext context) {
     // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
 
-    return ExploreSection(
-      date: DateTime.now(),
-      title: 'explore.hot'.tr(),
-      category: ExploreCategory.hot,
-      builder: (_) => mapToCarousel(context),
+    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruPostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.hot'.tr(),
+          category: ExploreCategory.hot,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }
@@ -114,11 +124,15 @@ class _PopularExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExploreSection(
-      date: DateTime.now(),
-      title: 'explore.popular'.tr(),
-      category: ExploreCategory.popular,
-      builder: (_) => mapToCarousel(context),
+    return BlocBuilder<DanbooruPopularExplorePostCubit, DanbooruPostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.popular'.tr(),
+          category: ExploreCategory.popular,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }

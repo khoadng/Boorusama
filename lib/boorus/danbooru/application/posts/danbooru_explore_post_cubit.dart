@@ -20,6 +20,7 @@ import 'package:boorusama/core/domain/tags.dart';
 class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
     with DanbooruPostDataTransformMixin {
   DanbooruExplorePostCubit({
+    required this.exploreDetailsData,
     required this.exploreRepository,
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
@@ -31,11 +32,13 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
   }) : super(initial: PostState.initial()) {
     exploreDetailBloc.stream
         .distinct()
-        .listen((event) => _exploreDetailsData = () => ExploreDetailsData(
-              scale: event.scale,
-              date: event.date,
-              category: event.category,
-            ))
+        .listen((event) => exploreDetailsData = () {
+              return ExploreDetailsData(
+                scale: event.scale,
+                date: event.date,
+                category: event.category,
+              );
+            })
         .addTo(compositeSubscription);
   }
 
@@ -44,6 +47,11 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
     required ExploreDetailBloc exploreDetailBloc,
   }) =>
       DanbooruExplorePostCubit(
+        exploreDetailsData: () => ExploreDetailsData(
+          scale: TimeScale.day,
+          date: DateTime.now(),
+          category: ExploreCategory.popular,
+        ),
         exploreDetailBloc: exploreDetailBloc,
         exploreRepository: context.read<ExploreRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
@@ -63,11 +71,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
   final PoolRepository poolRepository;
   PostPreviewPreloader? previewPreloader;
   final CompositeSubscription compositeSubscription = CompositeSubscription();
-  ExploreDetailsData Function() _exploreDetailsData = () => ExploreDetailsData(
-        scale: TimeScale.day,
-        date: DateTime.now(),
-        category: ExploreCategory.popular,
-      );
+  ExploreDetailsData Function() exploreDetailsData;
 
   @override
   Future<void> close() {
@@ -77,7 +81,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
 
   @override
   Future<List<DanbooruPostData>> Function(int page) get fetcher => (page) {
-        final explore = _exploreDetailsData();
+        final explore = exploreDetailsData();
 
         if (explore == ExploreCategory.mostViewed && page > 1)
           return Future.value([]);
@@ -91,7 +95,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
   @override
   Future<List<DanbooruPostData>> Function() get refresher =>
       () => _mapExploreDataToPostFuture(
-            explore: _exploreDetailsData(),
+            explore: exploreDetailsData(),
           ).then(transform);
 
   Future<List<DanbooruPost>> _mapExploreDataToPostFuture({
@@ -145,4 +149,67 @@ class ExploreDetailsData extends Equatable {
 
   @override
   List<Object?> get props => [scale, date, category];
+}
+
+class DanbooruPopularExplorePostCubit extends DanbooruExplorePostCubit {
+  DanbooruPopularExplorePostCubit({
+    required BuildContext context,
+    required super.exploreDetailBloc,
+  }) : super(
+          exploreDetailsData: () => ExploreDetailsData(
+            scale: TimeScale.day,
+            date: DateTime.now(),
+            category: ExploreCategory.popular,
+          ),
+          exploreRepository: context.read<ExploreRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+          favoritePostRepository: context.read<FavoritePostRepository>(),
+          postVoteRepository: context.read<PostVoteRepository>(),
+          poolRepository: context.read<PoolRepository>(),
+          previewPreloader: context.read<PostPreviewPreloader>(),
+          currentBooruConfigRepository:
+              context.read<CurrentBooruConfigRepository>(),
+        );
+}
+
+class DanbooruHotExplorePostCubit extends DanbooruExplorePostCubit {
+  DanbooruHotExplorePostCubit({
+    required BuildContext context,
+    required super.exploreDetailBloc,
+  }) : super(
+          exploreDetailsData: () => ExploreDetailsData(
+            scale: TimeScale.day,
+            date: DateTime.now(),
+            category: ExploreCategory.hot,
+          ),
+          exploreRepository: context.read<ExploreRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+          favoritePostRepository: context.read<FavoritePostRepository>(),
+          postVoteRepository: context.read<PostVoteRepository>(),
+          poolRepository: context.read<PoolRepository>(),
+          previewPreloader: context.read<PostPreviewPreloader>(),
+          currentBooruConfigRepository:
+              context.read<CurrentBooruConfigRepository>(),
+        );
+}
+
+class DanbooruMostViewedExplorePostCubit extends DanbooruExplorePostCubit {
+  DanbooruMostViewedExplorePostCubit({
+    required BuildContext context,
+    required super.exploreDetailBloc,
+  }) : super(
+          exploreDetailsData: () => ExploreDetailsData(
+            scale: TimeScale.day,
+            date: DateTime.now(),
+            category: ExploreCategory.mostViewed,
+          ),
+          exploreRepository: context.read<ExploreRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+          favoritePostRepository: context.read<FavoritePostRepository>(),
+          postVoteRepository: context.read<PostVoteRepository>(),
+          poolRepository: context.read<PoolRepository>(),
+          previewPreloader: context.read<PostPreviewPreloader>(),
+          currentBooruConfigRepository:
+              context.read<CurrentBooruConfigRepository>(),
+        );
 }

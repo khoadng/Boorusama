@@ -91,6 +91,18 @@ class ExploreDetailBloc extends Bloc<ExploreDetailEvent, ExploreDetailState> {
   }
 }
 
+class ExploreHotDetailBloc extends ExploreDetailBloc {
+  ExploreHotDetailBloc() : super(category: ExploreCategory.hot);
+}
+
+class ExplorePopularDetailBloc extends ExploreDetailBloc {
+  ExplorePopularDetailBloc() : super(category: ExploreCategory.popular);
+}
+
+class ExploreMostViewedDetailBloc extends ExploreDetailBloc {
+  ExploreMostViewedDetailBloc() : super(category: ExploreCategory.mostViewed);
+}
+
 extension DateTimeX on DateTime {
   DateTime subtractTimeScale(TimeScale scale) {
     switch (scale) {

@@ -595,6 +595,30 @@ void goToExploreDetailPage(
   String title,
   ExploreCategory category,
 ) {
+  final a = () {
+    switch (category) {
+      case ExploreCategory.popular:
+        return context.read<DanbooruPopularExplorePostCubit>();
+      case ExploreCategory.mostViewed:
+        return context.read<DanbooruMostViewedExplorePostCubit>();
+      case ExploreCategory.hot:
+        return context.read<DanbooruHotExplorePostCubit>();
+    }
+  }();
+
+  final b = () {
+    switch (category) {
+      case ExploreCategory.popular:
+        return context.read<ExplorePopularDetailBloc>();
+      case ExploreCategory.mostViewed:
+        return context.read<ExploreMostViewedDetailBloc>();
+      case ExploreCategory.hot:
+        return context.read<ExploreHotDetailBloc>();
+    }
+  }();
+
+  print(a.state.data.length);
+
   if (isMobilePlatform()) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -616,19 +640,11 @@ void goToExploreDetailPage(
               context,
               booru: state.booru!,
               builder: (dcontext) {
-                final exploreDetailsBloc = ExploreDetailBloc(
-                  initialDate: date,
-                  category: category,
-                );
-
                 return MultiBlocProvider(
                   providers: [
-                    BlocProvider.value(value: exploreDetailsBloc),
+                    BlocProvider.value(value: b),
                     BlocProvider(
-                      create: (_) => DanbooruExplorePostCubit.of(
-                        dcontext,
-                        exploreDetailBloc: exploreDetailsBloc,
-                      )..refresh(),
+                      create: (_) => a,
                     ),
                   ],
                   child: CustomContextMenuOverlay(
