@@ -29,6 +29,7 @@ abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
       emit(state.copyWith(
         refreshing: false,
         data: data,
+        hasMore: data.isNotEmpty,
       ));
     } catch (e, s) {
       final isBooruError = e is BooruError;
@@ -66,7 +67,8 @@ abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
       ));
     } catch (e) {
       emit(state.copyWith(
-        hasMore: true,
+        error: () => e is BooruError ? e : BooruError(error: e),
+        hasMore: false,
       ));
     }
   }

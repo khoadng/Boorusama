@@ -1,13 +1,12 @@
 // Package imports:
 import 'package:rxdart/rxdart.dart';
-import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/core/application/posts/post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/core/application/search.dart';
 
 class SearchRelatedTagSelected extends SearchEvent {
@@ -58,4 +57,22 @@ class DanbooruSearchBloc extends SearchBloc {
   @override
   Future<int?> fetchPostCount(List<String> tags) =>
       postCountRepository.count(tags);
+
+  @override
+  void onInit() {
+    postCubit.stream
+        .map((event) =>
+            event.data.isEmpty && !event.refreshing && !event.hasMore)
+        .distinct()
+        .where((empty) => empty)
+        .listen((event) => add(SearchNoData()))
+        .addTo(compositeSubscription);
+
+    postCubit.stream
+        .map((event) => event.error)
+        .distinct()
+        .where((error) => error != null)
+        .listen((error) => add(SearchError(translateBooruError(error!))))
+        .addTo(compositeSubscription);
+  }
 }
