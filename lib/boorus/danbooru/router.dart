@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -246,7 +247,7 @@ void goToBulkDownloadPage(
                       downloader: dcontext.read<BulkDownloader<DanbooruPost>>(),
                       postCountRepository: dcontext.read<PostCountRepository>(),
                       postRepository: dcontext.read<DanbooruPostRepository>(),
-                      errorTranslator: (e) => null, //FIXME
+                      errorTranslator: translateBooruError,
                       onDownloadDone: (path) =>
                           MediaScanner.loadMedia(path: path),
                     ),
