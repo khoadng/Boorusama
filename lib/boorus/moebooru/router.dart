@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
+import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details.dart';
@@ -55,9 +55,12 @@ void goToMoebooruSearchPage(
                       context.read<SearchHistoryRepository>(),
                 );
 
-                final postBloc = MoebooruPostBloc(
-                  postRepository: gcontext.read<PostRepository>(),
-                );
+                final postBloc = MoebooruPostCubit(
+                    postRepository: gcontext.read<PostRepository>(),
+                    extra: MoebooruPostExtra(
+                      tag: tag ?? '',
+                      limit: sstate.settings.postsPerPage,
+                    ));
 
                 final searchBloc = MoebooruSearchBloc(
                   initial: DisplayState.options,
@@ -66,7 +69,7 @@ void goToMoebooruSearchPage(
                   searchHistorySuggestionsBloc: searchHistorySuggestions,
                   metatags: gcontext.read<TagInfo>().metatags,
                   booruType: state.booru!.booruType,
-                  postBloc: postBloc,
+                  postCubit: postBloc,
                   initialQuery: tag,
                 );
 

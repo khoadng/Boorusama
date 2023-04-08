@@ -1,11 +1,11 @@
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
+import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/core/application/search.dart';
 
 class MoebooruSearchBloc extends SearchBloc {
   MoebooruSearchBloc({
     required super.initial,
-    required this.postBloc,
+    required this.postCubit,
     required super.tagSearchBloc,
     required super.searchHistoryBloc,
     required super.searchHistorySuggestionsBloc,
@@ -14,12 +14,11 @@ class MoebooruSearchBloc extends SearchBloc {
     super.initialQuery,
   });
 
-  final MoebooruPostBloc postBloc;
+  final MoebooruPostCubit postCubit;
 
   @override
   void onSearch(String query) {
-    postBloc.add(MoebooruPostBlocRefreshed(
-      tag: query,
-    ));
+    postCubit.setTags(query);
+    postCubit.refresh();
   }
 }
