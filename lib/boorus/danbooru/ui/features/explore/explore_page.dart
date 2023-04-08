@@ -86,7 +86,8 @@ class _MostViewedExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruMostViewedExplorePostCubit, DanbooruPostState>(
+    return BlocBuilder<DanbooruMostViewedExplorePostCubit,
+        DanbooruExplorePostState>(
       builder: (context, state) {
         return ExploreSection(
           date: DateTime.now(),
@@ -106,7 +107,7 @@ class _HotExplore extends StatelessWidget {
   Widget build(BuildContext context) {
     // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
 
-    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruPostState>(
+    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
       builder: (context, state) {
         return ExploreSection(
           date: DateTime.now(),
@@ -124,7 +125,8 @@ class _PopularExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPopularExplorePostCubit, DanbooruPostState>(
+    return BlocBuilder<DanbooruPopularExplorePostCubit,
+        DanbooruExplorePostState>(
       builder: (context, state) {
         return ExploreSection(
           date: DateTime.now(),

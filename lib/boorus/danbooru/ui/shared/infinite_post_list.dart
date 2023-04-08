@@ -8,17 +8,19 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 
-class InfinitePostList extends StatefulWidget {
+class InfinitePostList<T> extends StatefulWidget {
   const InfinitePostList({
     super.key,
     required this.onLoadMore,
@@ -38,7 +40,7 @@ class InfinitePostList extends StatefulWidget {
   final RefreshController? refreshController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
-  final DanbooruPostState state;
+  final PostState<DanbooruPostData, T> state;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -49,12 +51,12 @@ class InfinitePostList extends StatefulWidget {
   State<InfinitePostList> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState extends State<InfinitePostList>
-    with MultiSelectableMixin<InfinitePostList, Post> {
+class _InfinitePostListState<T> extends State<InfinitePostList<T>>
+    with MultiSelectableMixin<InfinitePostList<T>, Post> {
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
 
-  DanbooruPostState get state => widget.state;
+  PostState<DanbooruPostData, T> get state => widget.state;
 
   @override
   void initState() {

@@ -7,11 +7,12 @@ import 'package:boorusama/core/domain/error.dart';
 
 abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
   PostCubit({
-    required PostState<T, E> initial,
+    required this.initial,
   }) : super(initial);
 
   Future<List<T>> Function() get refresher;
   Future<List<T>> Function(int page) get fetcher;
+  final PostState<T, E> initial;
 
   void refresh() async {
     if (state.refreshing) return;
@@ -70,5 +71,5 @@ abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
     }
   }
 
-  void reset() => emit(PostState.initial());
+  void reset() => emit(initial);
 }

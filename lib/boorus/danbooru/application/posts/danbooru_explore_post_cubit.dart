@@ -17,10 +17,14 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
+typedef DanbooruExplorePostState
+    = PostState<DanbooruPostData, ExploreDetailsData>;
+
+class DanbooruExplorePostCubit
+    extends PostCubit<DanbooruPostData, ExploreDetailsData>
     with DanbooruPostDataTransformMixin {
   DanbooruExplorePostCubit({
-    required this.exploreDetailsData,
+    required ExploreDetailsData exploreDetailsData,
     required this.exploreRepository,
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
@@ -29,16 +33,15 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
     required ExploreDetailBloc exploreDetailBloc,
-  }) : super(initial: PostState.initial()) {
+  }) : super(initial: PostState.initial(exploreDetailsData)) {
     exploreDetailBloc.stream
         .distinct()
-        .listen((event) => exploreDetailsData = () {
-              return ExploreDetailsData(
-                scale: event.scale,
-                date: event.date,
-                category: event.category,
-              );
-            })
+        .listen((event) => emit(state.copyWith(
+                extra: ExploreDetailsData(
+              scale: event.scale,
+              date: event.date,
+              category: event.category,
+            ))))
         .addTo(compositeSubscription);
   }
 
@@ -47,7 +50,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
     required ExploreDetailBloc exploreDetailBloc,
   }) =>
       DanbooruExplorePostCubit(
-        exploreDetailsData: () => ExploreDetailsData(
+        exploreDetailsData: ExploreDetailsData(
           scale: TimeScale.day,
           date: DateTime.now(),
           category: ExploreCategory.popular,
@@ -71,7 +74,6 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
   final PoolRepository poolRepository;
   PostPreviewPreloader? previewPreloader;
   final CompositeSubscription compositeSubscription = CompositeSubscription();
-  ExploreDetailsData Function() exploreDetailsData;
 
   @override
   Future<void> close() {
@@ -81,7 +83,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
 
   @override
   Future<List<DanbooruPostData>> Function(int page) get fetcher => (page) {
-        final explore = exploreDetailsData();
+        final explore = state.extra;
 
         if (explore == ExploreCategory.mostViewed && page > 1)
           return Future.value([]);
@@ -95,7 +97,7 @@ class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
   @override
   Future<List<DanbooruPostData>> Function() get refresher =>
       () => _mapExploreDataToPostFuture(
-            explore: exploreDetailsData(),
+            explore: state.extra,
           ).then(transform);
 
   Future<List<DanbooruPost>> _mapExploreDataToPostFuture({
@@ -156,7 +158,7 @@ class DanbooruPopularExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: () => ExploreDetailsData(
+          exploreDetailsData: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.popular,
@@ -177,7 +179,7 @@ class DanbooruHotExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: () => ExploreDetailsData(
+          exploreDetailsData: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.hot,
@@ -198,7 +200,7 @@ class DanbooruMostViewedExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: () => ExploreDetailsData(
+          exploreDetailsData: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.mostViewed,

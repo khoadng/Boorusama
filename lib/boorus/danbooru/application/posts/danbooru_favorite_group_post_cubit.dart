@@ -25,7 +25,7 @@ mixin DanbooruFavoriteGroupPostCubitMixin<T extends StatefulWidget>
   void fetch() => context.read<DanbooruFavoriteGroupPostCubit>().fetch();
 }
 
-class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData>
+class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
     with DanbooruPostDataTransformMixin {
   DanbooruFavoriteGroupPostCubit({
     required Queue<int> Function() ids,
@@ -37,7 +37,7 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData>
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
   })  : _ids = ids,
-        super(initial: PostState.initial());
+        super(initial: PostState.initial(""));
 
   factory DanbooruFavoriteGroupPostCubit.of(
     BuildContext context, {

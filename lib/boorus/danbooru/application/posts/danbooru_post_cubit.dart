@@ -28,7 +28,7 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
   })  : _tags = tags,
-        super(initial: PostState.initial());
+        super(initial: PostState.initial(""));
 
   factory DanbooruPostCubit.of(
     BuildContext context, {

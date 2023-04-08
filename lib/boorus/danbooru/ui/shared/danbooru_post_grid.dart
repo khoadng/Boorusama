@@ -8,9 +8,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 
@@ -27,7 +29,7 @@ class DanbooruPostGrid<T> extends StatelessWidget {
     required this.state,
   });
 
-  final DanbooruPostState state;
+  final PostState<DanbooruPostData, T> state;
   final AutoScrollController scrollController;
   final void Function()? onTap;
   final bool usePlaceholder;

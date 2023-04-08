@@ -1,13 +1,17 @@
+// Package imports:
 import 'package:equatable/equatable.dart';
+
+// Project imports:
 import 'package:boorusama/core/domain/error.dart';
 
 class PostState<T, E> extends Equatable {
   const PostState({
     required this.state,
-    this.extra,
+    required this.extra,
   });
 
-  factory PostState.initial() => PostState(
+  factory PostState.initial(E extra) => PostState<T, E>(
+        extra: extra,
         state: PostStateData<T>(
           data: <T>[],
           hasMore: true,
@@ -19,7 +23,7 @@ class PostState<T, E> extends Equatable {
       );
 
   final PostStateData<T> state;
-  final E? extra;
+  final E extra;
 
   List<T> get data => state.data;
   bool get hasMore => state.hasMore;
@@ -37,7 +41,7 @@ class PostState<T, E> extends Equatable {
     BooruError? Function()? error,
     E? extra,
   }) =>
-      PostState(
+      PostState<T, E>(
         state: PostStateData<T>(
           page: page ?? state.page,
           hasMore: hasMore ?? state.hasMore,
