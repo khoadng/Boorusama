@@ -57,28 +57,29 @@ Widget mapToCarousel(
   BuildContext context,
   List<DanbooruPostData> posts,
 ) {
-  return _ExploreList(
-    posts: posts, //FIXME
-    onTap: (index) {
-      goToDetailPage(
-        context: context,
-        posts: posts,
-        initialIndex: index,
-        // postBloc: explore.bloc,
-      );
-    },
-  );
-  // : SizedBox(
-  //     height: _kMaxHeight,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: 20,
-  //       itemBuilder: (context, index) => Padding(
-  //         padding: _padding,
-  //         child: createRandomPlaceholderContainer(context),
-  //       ),
-  //     ),
-  //   );
+  return posts.isNotEmpty
+      ? _ExploreList(
+          posts: posts,
+          onTap: (index) {
+            goToDetailPage(
+              context: context,
+              posts: posts,
+              initialIndex: index,
+              // postBloc: explore.bloc,
+            );
+          },
+        )
+      : SizedBox(
+          height: _kMaxHeight,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: (context, index) => Padding(
+              padding: _padding,
+              child: createRandomPlaceholderContainer(context),
+            ),
+          ),
+        );
 }
 
 class _MostViewedExplore extends StatelessWidget {
