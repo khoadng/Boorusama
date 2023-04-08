@@ -135,7 +135,7 @@ Widget provideArtistPageDependencies(
               BlocProvider(
                 create: (_) => DanbooruPostCubit.of(
                   dcontext,
-                  tags: () => artist,
+                  tags: artist,
                 )..refresh(),
               ),
               BlocProvider.value(
@@ -195,7 +195,7 @@ Widget provideCharacterPageDependencies(
               BlocProvider(
                 create: (_) => DanbooruPostCubit.of(
                   dcontext,
-                  tags: () => character,
+                  tags: character,
                 )..refresh(),
               ),
               BlocProvider.value(
@@ -276,7 +276,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
                 BlocProvider(
                   create: (_) => DanbooruPostCubit.of(
                     dcontext,
-                    tags: () => 'pool:${pool.id}',
+                    tags: 'pool:${pool.id}',
                   )..refresh(),
                 ),
               ],
@@ -314,7 +314,7 @@ void goToParentChildPage(
               BlocProvider(
                 create: (_) => DanbooruPostCubit.of(
                   dcontext,
-                  tags: () => tagQueryForDataFetching,
+                  tags: tagQueryForDataFetching,
                 )..refresh(),
               ),
             ],
@@ -535,7 +535,7 @@ Widget provideSearchPageDependencies(
                 // pagination:
                 //     settingsState.settings.contentOrganizationCategory ==
                 //         ContentOrganizationCategory.pagination,
-                tags: () => tagSearchBloc.state.selectedTags.join(' '),
+                tags: tagSearchBloc.state.selectedTags.join(' '),
               )..refresh();
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
@@ -734,7 +734,7 @@ Widget provideSavedSearchPageDependecies(
             BlocProvider(
               create: (_) => DanbooruPostCubit.of(
                 dcontext,
-                tags: () => SavedSearch.all().toQuery(),
+                tags: SavedSearch.all().toQuery(),
               )..refresh(),
             ),
             BlocProvider(

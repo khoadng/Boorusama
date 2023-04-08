@@ -19,7 +19,7 @@ typedef DanbooruPostState = PostState<DanbooruPostData, String>;
 class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
     with DanbooruPostDataTransformMixin {
   DanbooruPostCubit({
-    required String Function() tags,
+    required String tags,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
@@ -27,12 +27,11 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
-  })  : _tags = tags,
-        super(initial: PostState.initial(""));
+  }) : super(initial: PostState.initial(tags));
 
   factory DanbooruPostCubit.of(
     BuildContext context, {
-    required String Function() tags,
+    required String tags,
   }) =>
       DanbooruPostCubit(
         tags: tags,
@@ -53,17 +52,16 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
   final PostVoteRepository postVoteRepository;
   final PoolRepository poolRepository;
   PostPreviewPreloader? previewPreloader;
-  String Function() _tags;
-
-  void setTags(String tags) => _tags = () => tags;
 
   @override
   Future<List<DanbooruPostData>> Function(int page) get fetcher =>
-      (page) => postRepository.getPosts(_tags(), page).then(transform);
+      (page) => postRepository.getPosts(state.extra, page).then(transform);
 
   @override
   Future<List<DanbooruPostData>> Function() get refresher =>
-      () => postRepository.getPosts(_tags(), 1).then(transform);
+      () => postRepository.getPosts(state.extra, 1).then(transform);
+
+  void setTags(String tags) => emit(state.copyWith(extra: tags));
 }
 
 mixin DanbooruPostCubitMixin<T extends StatefulWidget> on State<T> {
