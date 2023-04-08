@@ -70,7 +70,6 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      buildWhen: (previous, current) => !current.loading,
       builder: (context, state) {
         return InfinitePostList(
           state: state,

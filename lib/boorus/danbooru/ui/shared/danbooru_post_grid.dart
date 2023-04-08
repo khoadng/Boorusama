@@ -6,12 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
@@ -58,12 +56,9 @@ class DanbooruPostGrid<T> extends StatelessWidget {
         );
       },
       contextMenuBuilder: contextMenuBuilder,
-      posts: state.data.map((e) => e.post).toList(),
-      status: state.refreshing
-          ? LoadStatus.initial
-          : state.loading
-              ? LoadStatus.loading
-              : LoadStatus.success,
+      loading: state.loading,
+      refreshing: state.refreshing,
+      data: state.data.map((e) => e.post).toList(),
       enableFavorite: authState is Authenticated,
       onFavoriteTap: (post, isFav) async {
         final favRepo = context.read<FavoritePostRepository>();
@@ -74,7 +69,6 @@ class DanbooruPostGrid<T> extends StatelessWidget {
       onPostSelectChanged: onPostSelectChanged,
       onRefresh: onRefresh,
       error: state.error,
-      // exceptionMessage: state.error,
     );
   }
 }

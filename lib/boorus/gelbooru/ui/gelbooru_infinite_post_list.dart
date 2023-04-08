@@ -86,7 +86,6 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList>
       child: WillPopScope(
         onWillPop: _onWillPop,
         child: BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
-          buildWhen: (previous, current) => !current.loading,
           builder: (context, state) {
             return InfiniteLoadListScrollView(
               bottomBuilder: () =>
@@ -127,12 +126,9 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList>
                 PostGrid(
                   enableFavorite: false,
                   controller: controller,
-                  posts: state.data,
-                  status: state.refreshing
-                      ? LoadStatus.initial
-                      : state.loading
-                          ? LoadStatus.loading
-                          : LoadStatus.success,
+                  data: state.data,
+                  loading: state.loading,
+                  refreshing: state.refreshing,
                   onPostSelectChanged: (post, selected) {
                     if (selected) {
                       addSelected(post);

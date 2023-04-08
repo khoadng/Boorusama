@@ -31,7 +31,6 @@ class TagDetailPage extends StatelessWidget
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruArtistCharacterPostCubit,
         DanbooruArtistCharacterPostState>(
-      buildWhen: (previous, current) => !current.loading,
       builder: (context, state) {
         return InfinitePostList(
           state: state,

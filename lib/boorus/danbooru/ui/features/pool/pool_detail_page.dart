@@ -41,7 +41,6 @@ class _PoolDetailPageState extends State<PoolDetailPage>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      buildWhen: (previous, current) => !current.loading,
       builder: (context, state) {
         return InfinitePostList(
           state: state,

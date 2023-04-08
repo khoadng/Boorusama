@@ -39,7 +39,6 @@ class ExploreDetailPage extends StatelessWidget
             Expanded(
               child: BlocBuilder<DanbooruExplorePostCubit,
                   DanbooruExplorePostState>(
-                buildWhen: (previous, current) => !current.loading,
                 builder: (context, pstate) {
                   return InfinitePostList(
                     state: pstate,

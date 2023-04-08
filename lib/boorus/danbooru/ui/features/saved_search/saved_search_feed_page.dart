@@ -72,7 +72,6 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
         _sendRefresh(state.selectedSearch);
       },
       child: BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-        buildWhen: (previous, current) => !current.loading,
         builder: (context, state) {
           return InfinitePostList(
             state: state,

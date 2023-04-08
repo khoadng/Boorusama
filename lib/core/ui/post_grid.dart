@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -27,10 +27,10 @@ class PostGrid extends StatelessWidget {
     required this.contextMenuBuilder,
     this.multiSelect = false,
     this.onPostSelectChanged,
-    required this.posts,
-    required this.status,
+    required this.loading,
+    required this.refreshing,
+    required this.data,
     this.error,
-    this.exceptionMessage,
     required this.enableFavorite,
     required this.onFavoriteTap,
     required this.isFavorite,
@@ -43,10 +43,10 @@ class PostGrid extends StatelessWidget {
   final Widget Function(Post post) contextMenuBuilder;
   final bool multiSelect;
   final void Function(Post post, bool selected)? onPostSelectChanged;
-  final List<Post> posts;
-  final LoadStatus status;
+  final bool loading;
+  final bool refreshing;
   final BooruError? error;
-  final String? exceptionMessage;
+  final List<Post> data;
   final bool enableFavorite;
   final void Function(Post post, bool isFav) onFavoriteTap;
   final bool Function(Post post) isFavorite;
@@ -62,99 +62,90 @@ class PostGrid extends StatelessWidget {
       ),
       sliver: Builder(
         builder: (context) {
-          switch (status) {
-            case LoadStatus.initial:
-              return _Placeholder(usePlaceholder: usePlaceholder);
-            case LoadStatus.loading:
-              return const SliverToBoxAdapter(child: SizedBox.shrink());
-            case LoadStatus.success:
-              return posts.isNotEmpty
-                  ? SliverPostGrid(
-                      isFavorite: isFavorite,
-                      posts: posts,
-                      enableFavorite: enableFavorite,
-                      scrollController: controller,
-                      gridSize: gridSize,
-                      borderRadius: _gridSizeToBorderRadius(gridSize),
-                      contextMenuBuilder: contextMenuBuilder,
-                      multiSelect: multiSelect,
-                      onPostSelectChanged: onPostSelectChanged,
-                      onTap: (post, index) {
-                        onTap.call(index);
-                      },
-                      onFavoriteUpdated: (post, isFaved) async {
-                        onFavoriteTap(post, isFaved);
-                      },
-                    )
-                  : const SliverToBoxAdapter(child: NoDataBox());
-            case LoadStatus.failure:
-              return SliverToBoxAdapter(
-                child: error!.buildWhen(
-                  appError: (err) {
-                    switch (err.type) {
-                      case AppErrorType.cannotReachServer:
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 48, bottom: 16),
-                              child: Text(
-                                'Cannot reach server',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
+          if (refreshing) {
+            return _Placeholder(usePlaceholder: usePlaceholder);
+          }
+
+          if (error != null) {
+            final message = translateBooruError(error!);
+
+            return SliverToBoxAdapter(
+              child: error!.buildWhen(
+                appError: (err) {
+                  switch (err.type) {
+                    case AppErrorType.cannotReachServer:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'Cannot reach server',
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            const Text(
-                              'Please check your internet connection.',
-                            ),
-                          ],
-                        );
-                      case AppErrorType.failedToParseJSON:
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 48, bottom: 16),
-                              child: Text(
-                                'API schema changed error',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                            const Text(
-                              'Please report this error to the developer',
-                            ),
-                          ],
-                        );
-                      case AppErrorType.unknown:
-                        return ErrorBox(
-                          errorMessage: error!.error.toString(),
-                        );
-                    }
-                  },
-                  serverError: (err) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 48, bottom: 16),
-                          child: Text(
-                            err.httpStatusCode.toString(),
-                            style: Theme.of(context).textTheme.displayLarge,
                           ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.failedToParseJSON:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'API schema changed error',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.unknown:
+                      return ErrorBox(errorMessage: message);
+                  }
+                },
+                serverError: (err) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 48, bottom: 16),
+                        child: Text(
+                          err.httpStatusCode.toString(),
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
-                        Text(
-                          exceptionMessage ?? 'generic.errors.unknown',
-                        ).tr(),
-                      ],
-                    ),
-                  ),
-                  unknownError: (context) => ErrorBox(
-                    errorMessage: error!.error.toString(),
+                      ),
+                      Text(message).tr(),
+                    ],
                   ),
                 ),
-              );
+                unknownError: (context) => ErrorBox(errorMessage: message),
+              ),
+            );
           }
+
+          if (data.isEmpty) {
+            return SliverToBoxAdapter(child: NoDataBox());
+          }
+
+          return SliverPostGrid(
+            isFavorite: isFavorite,
+            posts: data,
+            enableFavorite: enableFavorite,
+            scrollController: controller,
+            gridSize: gridSize,
+            borderRadius: _gridSizeToBorderRadius(gridSize),
+            contextMenuBuilder: contextMenuBuilder,
+            multiSelect: multiSelect,
+            onPostSelectChanged: onPostSelectChanged,
+            onTap: (post, index) {
+              onTap.call(index);
+            },
+            onFavoriteUpdated: (post, isFaved) async {
+              onFavoriteTap(post, isFaved);
+            },
+          );
         },
       ),
     );
