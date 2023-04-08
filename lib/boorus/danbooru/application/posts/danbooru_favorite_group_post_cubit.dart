@@ -23,12 +23,24 @@ mixin DanbooruFavoriteGroupPostCubitMixin<T extends StatefulWidget>
     on State<T> {
   void refresh() => context.read<DanbooruFavoriteGroupPostCubit>().refresh();
   void fetch() => context.read<DanbooruFavoriteGroupPostCubit>().fetch();
+  void moveAndInsert({
+    required int fromIndex,
+    required int toIndex,
+    void Function()? onSuccess,
+  }) =>
+      context.read<DanbooruFavoriteGroupPostCubit>().moveAndInsert(
+            fromIndex: fromIndex,
+            toIndex: toIndex,
+            onSuccess: onSuccess,
+          );
+  void remove(List<int> ids) =>
+      context.read<DanbooruFavoriteGroupPostCubit>().remove(ids);
 }
 
 class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
     with DanbooruPostDataTransformMixin {
   DanbooruFavoriteGroupPostCubit({
-    required Queue<int> Function() ids,
+    required Queue<int> ids,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
@@ -44,7 +56,7 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
     required List<int> Function() ids,
   }) =>
       DanbooruFavoriteGroupPostCubit(
-        ids: () => QueueList.from(ids()),
+        ids: QueueList.from(ids()),
         postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
@@ -62,21 +74,42 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
   final PostVoteRepository postVoteRepository;
   final PoolRepository poolRepository;
   PostPreviewPreloader? previewPreloader;
-  Queue<int> Function() _ids;
+  Queue<int> _ids;
 
   @override
   Future<List<DanbooruPostData>> Function(int page) get fetcher =>
-      (page) => _fetch(page).then(transform);
+      (page) => _fetch().then(transform);
 
   @override
   Future<List<DanbooruPostData>> Function() get refresher =>
-      () => _fetch(1).then(transform);
+      () => _fetch().then(transform);
 
-  Future<List<DanbooruPost>> _fetch(
-    int page, {
-    int? limit,
-  }) async {
-    final ids = _ids().dequeue(20);
+  void moveAndInsert({
+    required int fromIndex,
+    required int toIndex,
+    void Function()? onSuccess,
+  }) {
+    final data = [...state.data];
+    final item = data.removeAt(fromIndex);
+    data.insert(toIndex, item);
+    onSuccess?.call();
+
+    emit(state.copyWith(
+      data: data,
+    ));
+  }
+
+  void remove(List<int> postIds) {
+    final data = [...state.data]
+      ..removeWhere((e) => postIds.contains(e.post.id));
+
+    emit(state.copyWith(
+      data: data,
+    ));
+  }
+
+  Future<List<DanbooruPost>> _fetch() async {
+    final ids = _ids.dequeue(20);
     final posts = await postRepository.getPostsFromIds(
       ids,
     );

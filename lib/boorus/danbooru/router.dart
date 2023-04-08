@@ -1368,7 +1368,7 @@ void goToFavoriteGroupDetailsPage(
                 create: (_) => DanbooruFavoriteGroupPostCubit.of(
                   dcontext,
                   ids: () => group.postIds,
-                ),
+                )..refresh(),
               ),
               BlocProvider.value(value: bloc),
             ],
