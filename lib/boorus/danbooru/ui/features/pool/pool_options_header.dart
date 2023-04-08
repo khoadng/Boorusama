@@ -57,16 +57,17 @@ class PoolOptionsHeader extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  final bloc = context.read<PoolOverviewBloc>();
                   Screen.of(context).size == ScreenSize.small
                       ? showMaterialModalBottomSheet(
                           context: context,
-                          builder: (context) => const _OrderMenu(),
+                          builder: (context) => _OrderMenu(bloc),
                         )
                       : showDialog(
                           context: context,
-                          builder: (context) => const AlertDialog(
+                          builder: (context) => AlertDialog(
                             contentPadding: EdgeInsets.zero,
-                            content: _OrderMenu(),
+                            content: _OrderMenu(bloc),
                           ),
                         );
                 },
@@ -86,12 +87,14 @@ class PoolOptionsHeader extends StatelessWidget {
 }
 
 class _OrderMenu extends StatelessWidget {
-  const _OrderMenu();
+  const _OrderMenu(this.bloc);
+
+  final PoolOverviewBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: BlocProvider.of<PoolOverviewBloc>(context),
+      value: bloc,
       child: Material(
         child: SafeArea(
           top: false,
