@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/boorus/moebooru/ui/moebooru_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -136,15 +136,14 @@ class _InfinitePostListState extends State<MoebooruInfinitePostList>
                     }
                   },
                   multiSelect: multiSelect,
-                  // contextMenuBuilder: (post) =>
-                  //     widget.contextMenuBuilder
-                  //         ?.call(post, _enableMultiSelect) ??
-                  //     MoebooruPostContextMenu(
-                  //       hasAccount: authState is Authenticated,
-                  //       onMultiSelect: _enableMultiSelect,
-                  //       post: post,
-                  //     ),
-                  contextMenuBuilder: (post) => Container(),
+                  contextMenuBuilder: (post) =>
+                      widget.contextMenuBuilder
+                          ?.call(post, enableMultiSelect) ??
+                      MoebooruPostContextMenu(
+                        hasAccount: false,
+                        onMultiSelect: enableMultiSelect,
+                        post: post,
+                      ),
                   isFavorite: (post) => false,
                   // ignore: no-empty-block
                   onFavoriteTap: (post, isFav) {},
