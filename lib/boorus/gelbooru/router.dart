@@ -8,7 +8,7 @@ import 'package:page_transition/page_transition.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_search_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_search_page.dart';
@@ -101,9 +101,12 @@ void goToGelbooruSearchPage(
                       context.read<SearchHistoryRepository>(),
                 );
 
-                final postBloc = GelbooruPostBloc(
-                  postRepository: gcontext.read<PostRepository>(),
-                );
+                final postBloc = GelbooruPostCubit(
+                    postRepository: gcontext.read<PostRepository>(),
+                    extra: GelbooruPostExtra(
+                      tag: tag ?? '',
+                      limit: sstate.settings.postsPerPage,
+                    ));
 
                 final searchBloc = GelbooruSearchBloc(
                   initial: DisplayState.options,
@@ -112,7 +115,7 @@ void goToGelbooruSearchPage(
                   searchHistorySuggestionsBloc: searchHistorySuggestions,
                   metatags: gcontext.read<TagInfo>().metatags,
                   booruType: state.booru!.booruType,
-                  postBloc: postBloc,
+                  postCubit: postBloc,
                   initialQuery: tag,
                 );
 

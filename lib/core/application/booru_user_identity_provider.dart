@@ -33,11 +33,8 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
     final cacheKey = '${booru.url}+$login';
 
     if (_accountIdCache.containsKey(cacheKey)) {
-      print('in cached: $cacheKey');
       return _accountIdCache[cacheKey];
     }
-
-    print('fetch new: $cacheKey');
 
     int? accountId;
 

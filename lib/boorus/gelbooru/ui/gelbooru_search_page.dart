@@ -11,7 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -251,7 +251,8 @@ class _SmallLayout extends StatefulWidget {
   State<_SmallLayout> createState() => _SmallLayoutState();
 }
 
-class _SmallLayoutState extends State<_SmallLayout> {
+class _SmallLayoutState extends State<_SmallLayout>
+    with GelbooruPostCubitMixin {
   final scrollController = AutoScrollController();
 
   @override
@@ -264,7 +265,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
   Widget build(BuildContext context) {
     final displayState =
         context.select((SearchBloc bloc) => bloc.state.displayState);
-    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
 
     switch (displayState) {
       case DisplayState.options:
@@ -345,19 +345,12 @@ class _SmallLayoutState extends State<_SmallLayout> {
           ),
         );
       case DisplayState.result:
-        return BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+        return BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return GelbooruInfinitePostList(
-              onLoadMore: () =>
-                  context.read<GelbooruPostBloc>().add(GelbooruPostBlocFetched(
-                        tag: tags.map((e) => e.toString()).join(' '),
-                      )),
-              onRefresh: (controller) => context
-                  .read<GelbooruPostBloc>()
-                  .add(GelbooruPostBlocRefreshed(
-                    tag: tags.map((e) => e.toString()).join(' '),
-                  )),
+              onLoadMore: fetch,
+              onRefresh: (controller) => refresh(),
               scrollController: scrollController,
               sliverHeaderBuilder: (context) => [
                 SliverAppBar(

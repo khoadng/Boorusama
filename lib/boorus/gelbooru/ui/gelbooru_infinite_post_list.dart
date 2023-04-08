@@ -7,7 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
@@ -77,7 +77,7 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList>
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocListener<GelbooruPostBloc, GelbooruPostState>(
+    return BlocListener<GelbooruPostCubit, GelbooruPostState>(
       listener: (context, state) {
         if (state.refreshing) {
           clearSelected();
@@ -85,7 +85,7 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList>
       },
       child: WillPopScope(
         onWillPop: _onWillPop,
-        child: BlocBuilder<GelbooruPostBloc, GelbooruPostState>(
+        child: BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
           buildWhen: (previous, current) => !current.loading,
           builder: (context, state) {
             return InfiniteLoadListScrollView(

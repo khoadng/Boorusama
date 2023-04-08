@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/networking.dart';
@@ -28,7 +28,8 @@ class GelbooruHomePage extends StatefulWidget {
   State<GelbooruHomePage> createState() => _GelbooruHomePageState();
 }
 
-class _GelbooruHomePageState extends State<GelbooruHomePage> {
+class _GelbooruHomePageState extends State<GelbooruHomePage>
+    with GelbooruPostCubitMixin {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final AutoScrollController _autoScrollController = AutoScrollController();
 
@@ -62,16 +63,8 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                       ),
                       Expanded(
                         child: GelbooruInfinitePostList(
-                          onLoadMore: () => context
-                              .read<GelbooruPostBloc>()
-                              .add(const GelbooruPostBlocFetched(
-                                tag: '',
-                              )),
-                          onRefresh: (controller) => context
-                              .read<GelbooruPostBloc>()
-                              .add(const GelbooruPostBlocRefreshed(
-                                tag: '',
-                              )),
+                          onLoadMore: fetch,
+                          onRefresh: (controller) => refresh(),
                           scrollController: _autoScrollController,
                           sliverHeaderBuilder: (context) => [
                             SliverAppBar(

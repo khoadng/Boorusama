@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page_desktop.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_bloc.dart';
@@ -144,11 +144,10 @@ class _HomePageState extends State<HomePage> {
                 builder: (gcontext) => MultiBlocProvider(
                   providers: [
                     BlocProvider(
-                      create: (_) => GelbooruPostBloc(
+                      create: (_) => GelbooruPostCubit(
                         postRepository: gcontext.read<PostRepository>(),
-                      )..add(const GelbooruPostBlocRefreshed(
-                          tag: '',
-                        )),
+                        extra: GelbooruPostExtra(tag: ''),
+                      )..refresh(),
                     ),
                   ],
                   child: CustomContextMenuOverlay(
