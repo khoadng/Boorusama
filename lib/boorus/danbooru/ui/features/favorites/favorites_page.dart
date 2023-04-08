@@ -37,7 +37,7 @@ class FavoritesPage extends StatelessWidget
                 BlocProvider(
                   create: (_) => DanbooruPostCubit.of(
                     dContext,
-                    tags: 'ordfav:$username',
+                    extra: DanbooruPostExtra(tag: 'ordfav:$username'),
                   )..refresh(),
                 ),
               ],

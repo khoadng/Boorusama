@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -14,12 +15,35 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-typedef DanbooruPostState = PostState<DanbooruPostData, String>;
+typedef DanbooruPostState = PostState<DanbooruPostData, DanbooruPostExtra>;
 
-class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
+class DanbooruPostExtra extends Equatable {
+  final String tag;
+  final int? limit;
+
+  DanbooruPostExtra({
+    required this.tag,
+    this.limit,
+  });
+
+  @override
+  List<Object?> get props => [tag, limit];
+
+  DanbooruPostExtra copyWith({
+    String? tag,
+    int? Function()? limit,
+  }) {
+    return DanbooruPostExtra(
+      tag: tag ?? this.tag,
+      limit: limit != null ? limit() : this.limit,
+    );
+  }
+}
+
+class DanbooruPostCubit extends PostCubit<DanbooruPostData, DanbooruPostExtra>
     with DanbooruPostDataTransformMixin {
   DanbooruPostCubit({
-    required String tags,
+    required DanbooruPostExtra extra,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
@@ -27,14 +51,14 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
-  }) : super(initial: PostState.initial(tags));
+  }) : super(initial: PostState.initial(extra));
 
   factory DanbooruPostCubit.of(
     BuildContext context, {
-    required String tags,
+    required DanbooruPostExtra extra,
   }) =>
       DanbooruPostCubit(
-        tags: tags,
+        extra: extra,
         postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
@@ -55,13 +79,27 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
 
   @override
   Future<List<DanbooruPostData>> Function(int page) get fetcher =>
-      (page) => postRepository.getPosts(state.extra, page).then(transform);
+      (page) => postRepository
+          .getPosts(
+            state.extra.tag,
+            page,
+            limit: state.extra.limit,
+          )
+          .then(transform);
 
   @override
   Future<List<DanbooruPostData>> Function() get refresher =>
-      () => postRepository.getPosts(state.extra, 1).then(transform);
+      () => postRepository
+          .getPosts(
+            state.extra.tag,
+            1,
+            limit: state.extra.limit,
+          )
+          .then(transform);
 
-  void setTags(String tags) => emit(state.copyWith(extra: tags));
+  void setTags(String tags) => emit(state.copyWith(
+        extra: state.extra.copyWith(tag: tags),
+      ));
 }
 
 mixin DanbooruPostCubitMixin<T extends StatefulWidget> on State<T> {
