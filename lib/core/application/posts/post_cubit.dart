@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/posts/post_state.dart';
 import 'package:boorusama/core/domain/error.dart';
 
-abstract class PostCubit<T> extends Cubit<PostState<T>> {
+abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
   PostCubit({
-    required PostState<T> initial,
+    required PostState<T, E> initial,
   }) : super(initial);
 
   Future<List<T>> Function() get refresher;

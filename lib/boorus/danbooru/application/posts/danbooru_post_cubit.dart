@@ -14,9 +14,9 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-typedef DanbooruPostState = PostState<DanbooruPostData>;
+typedef DanbooruPostState = PostState<DanbooruPostData, String>;
 
-class DanbooruPostCubit extends PostCubit<DanbooruPostData>
+class DanbooruPostCubit extends PostCubit<DanbooruPostData, String>
     with DanbooruPostDataTransformMixin {
   DanbooruPostCubit({
     required String Function() tags,

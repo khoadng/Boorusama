@@ -7,7 +7,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-mixin DanbooruPostDataTransformMixin on PostCubit<DanbooruPostData> {
+mixin DanbooruPostDataTransformMixin<T, E> on PostCubit<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
   FavoritePostRepository get favoritePostRepository;
   CurrentBooruConfigRepository get currentBooruConfigRepository;

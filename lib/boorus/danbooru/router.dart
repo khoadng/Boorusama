@@ -617,8 +617,6 @@ void goToExploreDetailPage(
     }
   }();
 
-  print(a.state.data.length);
-
   if (isMobilePlatform()) {
     Navigator.of(context).push(
       MaterialPageRoute(

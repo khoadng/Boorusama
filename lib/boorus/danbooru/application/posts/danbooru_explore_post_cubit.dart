@@ -17,7 +17,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData>
+class DanbooruExplorePostCubit extends PostCubit<DanbooruPostData, String>
     with DanbooruPostDataTransformMixin {
   DanbooruExplorePostCubit({
     required this.exploreDetailsData,
