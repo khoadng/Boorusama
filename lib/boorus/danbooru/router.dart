@@ -133,9 +133,12 @@ Widget provideArtistPageDependencies(
           return MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => DanbooruPostCubit.of(
+                create: (_) => DanbooruArtistCharacterPostCubit.of(
                   dcontext,
-                  tags: artist,
+                  extra: DanbooruArtistChararacterExtra(
+                    category: TagFilterCategory.newest,
+                    tag: artist,
+                  ),
                 )..refresh(),
               ),
               BlocProvider.value(
@@ -193,9 +196,12 @@ Widget provideCharacterPageDependencies(
           return MultiBlocProvider(
             providers: [
               BlocProvider(
-                create: (_) => DanbooruPostCubit.of(
+                create: (_) => DanbooruArtistCharacterPostCubit.of(
                   dcontext,
-                  tags: character,
+                  extra: DanbooruArtistChararacterExtra(
+                    category: TagFilterCategory.newest,
+                    tag: character,
+                  ),
                 )..refresh(),
               ),
               BlocProvider.value(

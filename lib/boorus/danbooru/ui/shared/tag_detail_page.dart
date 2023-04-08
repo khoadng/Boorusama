@@ -12,7 +12,8 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/core/utils.dart';
 
-class TagDetailPage extends StatefulWidget {
+class TagDetailPage extends StatelessWidget
+    with DanbooruArtistCharacterPostCubitMixin {
   const TagDetailPage({
     super.key,
     required this.tagName,
@@ -27,24 +28,17 @@ class TagDetailPage extends StatefulWidget {
   final bool includeHeaders;
 
   @override
-  State<TagDetailPage> createState() => _TagDetailPageState();
-}
-
-class _TagDetailPageState extends State<TagDetailPage>
-    with DanbooruPostCubitMixin {
-  var currentCategory = TagFilterCategory.newest;
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
+    return BlocBuilder<DanbooruArtistCharacterPostCubit,
+        DanbooruArtistCharacterPostState>(
       buildWhen: (previous, current) => !current.loading,
       builder: (context, state) {
         return InfinitePostList(
           state: state,
-          onLoadMore: () => _load(),
-          onRefresh: (controller) => _refresh(),
+          onLoadMore: () => fetch(context),
+          onRefresh: (controller) => refresh(context),
           sliverHeaderBuilder: (context) => [
-            if (widget.includeHeaders)
+            if (includeHeaders)
               SliverAppBar(
                 floating: true,
                 elevation: 0,
@@ -55,33 +49,30 @@ class _TagDetailPageState extends State<TagDetailPage>
                     onPressed: () {
                       goToBulkDownloadPage(
                         context,
-                        [widget.tagName],
+                        [tagName],
                       );
                     },
                     icon: const Icon(Icons.download),
                   ),
                 ],
               ),
-            if (widget.includeHeaders)
+            if (includeHeaders)
               SliverToBoxAdapter(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TagTitleName(tagName: widget.tagName),
-                    widget.otherNamesBuilder(context),
+                    TagTitleName(tagName: tagName),
+                    otherNamesBuilder(context),
                   ],
                 ),
               ),
-            if (widget.includeHeaders)
+            if (includeHeaders)
               const SliverToBoxAdapter(child: SizedBox(height: 50)),
             SliverPadding(
               padding: const EdgeInsets.only(bottom: 10),
               sliver: SliverToBoxAdapter(
                 child: CategoryToggleSwitch(
-                  onToggle: (category) => setState(() {
-                    currentCategory = category;
-                    _refresh();
-                  }),
+                  onToggle: (category) => changeCategory(context, category),
                 ),
               ),
             ),
@@ -89,14 +80,6 @@ class _TagDetailPageState extends State<TagDetailPage>
         );
       },
     );
-  }
-
-  void _load() {
-    fetch();
-  }
-
-  void _refresh() {
-    refresh();
   }
 }
 
@@ -123,17 +106,6 @@ class TagTitleName extends StatelessWidget {
     );
   }
 }
-
-enum TagFilterCategory {
-  popular,
-  newest,
-}
-
-// PostsOrder tagFilterCategoryToPostsOrder(TagFilterCategory category) {
-//   if (category == TagFilterCategory.popular) return PostsOrder.popular;
-
-//   return PostsOrder.newest;
-// }
 
 // ignore: prefer-single-widget-per-file
 class CategoryToggleSwitch extends StatefulWidget {
