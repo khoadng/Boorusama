@@ -6,7 +6,6 @@ class BooruConfigData {
     required this.booruId,
     required this.apiKey,
     required this.login,
-    required this.booruUserId,
     required this.name,
     required this.deletedItemBehavior,
     required this.ratingFilter,
@@ -23,7 +22,6 @@ class BooruConfigData {
         apiKey: '',
         login: '',
         url: '',
-        booruUserId: null,
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
         ratingFilter: filter.index,
@@ -36,7 +34,6 @@ class BooruConfigData {
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
         url: json['url'] as String,
-        booruUserId: json['booruUserId'] as int?,
         name: json['name'] as String,
         deletedItemBehavior: json['deletedItemBehavior'] as int,
         ratingFilter: json['ratingFilter'] as int,
@@ -46,39 +43,12 @@ class BooruConfigData {
     }
   }
 
-  static BooruConfigData? withAccount({
-    required BooruType booru,
-    required String login,
-    required String apiKey,
-    required String url,
-    required int booruUserId,
-    required String name,
-    required BooruConfigRatingFilter filter,
-    required BooruConfigDeletedItemBehavior deletedItemBehavior,
-  }) {
-    if (login == '') return null;
-    if (apiKey == '') return null;
-    if (booruUserId <= 0) return null;
-
-    return BooruConfigData(
-      booruId: booru.index,
-      apiKey: apiKey,
-      login: login,
-      url: url,
-      booruUserId: booruUserId,
-      name: name,
-      ratingFilter: filter.index,
-      deletedItemBehavior: deletedItemBehavior.index,
-    );
-  }
-
   Map<String, dynamic> toJson() {
     return {
       'booruId': booruId,
       'apiKey': apiKey,
       'login': login,
       'url': url,
-      'booruUserId': booruUserId,
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
       'ratingFilter': ratingFilter,
@@ -88,7 +58,6 @@ class BooruConfigData {
   final int booruId;
   final String apiKey;
   final String login;
-  final int? booruUserId;
   final String name;
   final int deletedItemBehavior;
   final int ratingFilter;
@@ -101,14 +70,11 @@ BooruConfig? convertToBooruConfig({
 }) {
   if (booruConfigData == null || id == null) return null;
 
-  final booruUserId = booruConfigData.booruUserId;
-
   return BooruConfig(
     id: id,
     booruId: booruConfigData.booruId,
     apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
     login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
-    booruUserId: booruUserId,
     url: booruConfigData.url,
     name: booruConfigData.name,
     ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],

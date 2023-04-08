@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import '../common.dart';
 
 class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
@@ -47,6 +48,7 @@ void main() {
         favoritePostRepository: favRepo,
         postVoteRepository: postVoteRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -116,6 +118,7 @@ void main() {
         favoritePostRepository: favRepo,
         postVoteRepository: postVoteRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         tags: [],
         posts: [
           DanbooruPostData.empty()
@@ -162,6 +165,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -242,6 +246,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -331,6 +336,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -372,6 +378,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -416,6 +423,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -456,6 +464,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -497,6 +506,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -548,6 +558,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -591,6 +602,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -649,6 +661,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -699,6 +712,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -759,6 +773,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -809,6 +824,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
@@ -866,6 +882,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         defaultDetailsStyle: DetailsDisplay.imageFocus,
@@ -945,6 +962,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [

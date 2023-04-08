@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import '../common.dart';
 
 class MockCommentRepository extends Mock implements CommentRepository {}
 
@@ -44,6 +45,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentFetched(postId: 1)),
       expect: () => [
@@ -51,8 +53,8 @@ void main() {
         CommentState.initial().copyWith(
           status: LoadStatus.success,
           comments: [
-            commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
-            commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
+            commentDataFrom(Comment.emty(), null, 1, []),
+            commentDataFrom(Comment.emty(), null, 1, []),
           ],
         ),
       ],
@@ -81,6 +83,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentSent(postId: 1, content: 'a')),
       expect: () => [
@@ -91,7 +94,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'a'),
               null,
-              BooruConfig.empty,
+              1,
               [],
             ),
           ],
@@ -104,7 +107,7 @@ void main() {
       final event = CommentSent(
         postId: 1,
         content: content,
-        replyTo: commentDataFrom(Comment.emty(), null, BooruConfig.empty, []),
+        replyTo: commentDataFrom(Comment.emty(), null, 1, []),
       );
 
       expect(
@@ -136,7 +139,7 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo'),
           null,
-          BooruConfig.empty,
+          1,
           [],
         ),
       ]),
@@ -144,6 +147,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc
           .add(const CommentUpdated(commentId: 1, postId: 1, content: 'bar')),
@@ -154,7 +158,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'bar'),
               null,
-              BooruConfig.empty,
+              1,
               [],
             ),
           ],
@@ -185,13 +189,13 @@ void main() {
         commentDataFrom(
           Comment.emty().copyWith(id: 1, body: 'foo1'),
           null,
-          BooruConfig.empty,
+          1,
           [],
         ),
         commentDataFrom(
           Comment.emty().copyWith(id: 2, body: 'foo2'),
           null,
-          BooruConfig.empty,
+          1,
           [],
         ),
       ]),
@@ -199,6 +203,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentDeleted(commentId: 1, postId: 1)),
       expect: () => [
@@ -208,7 +213,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, body: 'foo2'),
               null,
-              BooruConfig.empty,
+              1,
               [],
             ),
           ],
@@ -233,7 +238,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            BooruConfig.empty,
+            1,
             [
               CommentVote.empty().copyWith(id: 1, score: 1),
             ],
@@ -244,6 +249,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentUpvoted(commentId: 1)),
       expect: () => [
@@ -253,7 +259,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 2, body: 'foo1'),
               null,
-              BooruConfig.empty,
+              1,
               [
                 CommentVote.empty().copyWith(id: 1, commentId: 1, score: 1),
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
@@ -281,7 +287,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
             null,
-            BooruConfig.empty,
+            1,
             [],
           ),
         ],
@@ -290,6 +296,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentDownvoted(commentId: 1)),
       expect: () => [
@@ -299,7 +306,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
               null,
-              BooruConfig.empty,
+              1,
               [
                 CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
               ],
@@ -324,7 +331,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: 1, body: 'foo1'),
             null,
-            BooruConfig.empty,
+            1,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
             ],
@@ -335,6 +342,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentVoteRemoved(
         commentId: 1,
@@ -348,7 +356,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              BooruConfig.empty,
+              1,
               [],
             ),
           ],
@@ -371,7 +379,7 @@ void main() {
           commentDataFrom(
             Comment.emty().copyWith(id: 1, score: -1, body: 'foo1'),
             null,
-            BooruConfig.empty,
+            1,
             [
               CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
             ],
@@ -382,6 +390,7 @@ void main() {
         currentBooruConfigRepository: currentBooruConfigRepository,
         commentRepository: commentRepo,
         commentVoteRepository: commentVoteRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
       ),
       act: (bloc) => bloc.add(const CommentVoteRemoved(
         commentId: 1,
@@ -395,7 +404,7 @@ void main() {
             commentDataFrom(
               Comment.emty().copyWith(id: 1, score: 0, body: 'foo1'),
               null,
-              BooruConfig.empty,
+              1,
               [],
             ),
           ],

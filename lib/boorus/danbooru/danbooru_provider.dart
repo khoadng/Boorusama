@@ -33,6 +33,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -109,6 +110,7 @@ class DanbooruProvider extends StatelessWidget {
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
+    final booruUserIdentityProvider = context.read<BooruUserIdentityProvider>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
 
@@ -184,6 +186,7 @@ class DanbooruProvider extends StatelessWidget {
     final postVoteRepo = PostVoteApiRepositoryApi(
       api: api,
       currentBooruConfigRepository: currentBooruConfigRepo,
+      booruUserIdentityProvider: booruUserIdentityProvider,
     );
 
     final postCountRepo = PostCountRepositoryApi(
@@ -209,6 +212,7 @@ class DanbooruProvider extends StatelessWidget {
     final blacklistedTagsBloc = BlacklistedTagsBloc(
       currentBooruConfigRepository: currentBooruConfigRepo,
       blacklistedTagsRepository: blacklistedTagRepo,
+      booruUserIdentityProvider: booruUserIdentityProvider,
     )..add(const BlacklistedTagRequested());
 
     // PostBloc create() => PostBloc(
@@ -230,6 +234,7 @@ class DanbooruProvider extends StatelessWidget {
     final currentUserBloc = CurrentUserBloc(
       userRepository: userRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
+      booruUserIdentityProvider: booruUserIdentityProvider,
     )..add(const CurrentUserFetched());
 
     final authenticationCubit = AuthenticationCubit(
@@ -272,6 +277,7 @@ class DanbooruProvider extends StatelessWidget {
       commentVoteRepository: commentVoteRepo,
       commentRepository: commentRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
+      booruUserIdentityProvider: booruUserIdentityProvider,
     );
     final artistCommentaryBloc = ArtistCommentaryBloc(
       artistCommentaryRepository: artistCommentaryRepo,

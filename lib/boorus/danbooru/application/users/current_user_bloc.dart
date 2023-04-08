@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
@@ -42,16 +43,15 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   CurrentUserBloc({
     required UserRepository userRepository,
     required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required BooruUserIdentityProvider booruUserIdentityProvider,
   }) : super(CurrentUserState.initial()) {
     on<CurrentUserFetched>((event, emit) async {
-      final booruConfig = await currentBooruConfigRepository.get();
-
-      if (!booruConfig.hasLoginDetails()) {
-        return;
-      }
+      final config = await currentBooruConfigRepository.get();
+      final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
+      if (id == null) return;
 
       await tryAsync<UserSelf?>(
-        action: () => userRepository.getUserSelfById(booruConfig!.booruUserId!),
+        action: () => userRepository.getUserSelfById(id),
         onSuccess: (data) async {
           emit(state.copyWith(
             user: () => data,

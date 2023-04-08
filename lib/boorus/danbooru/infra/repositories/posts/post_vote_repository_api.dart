@@ -6,6 +6,7 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -15,20 +16,24 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
     ).map(postVoteDtoToPostVote).toList();
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
-  const PostVoteApiRepositoryApi({
-    required DanbooruApi api,
-    required CurrentBooruConfigRepository currentBooruConfigRepository,
-  })  : _api = api,
+  const PostVoteApiRepositoryApi(
+      {required DanbooruApi api,
+      required CurrentBooruConfigRepository currentBooruConfigRepository,
+      required this.booruUserIdentityProvider})
+      : _api = api,
         _currentUserBooruRepository = currentBooruConfigRepository;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
+  final BooruUserIdentityProvider booruUserIdentityProvider;
 
   @override
   Future<List<PostVote>> getPostVotes(List<int> postIds) async {
     if (postIds.isEmpty) return Future.value([]);
     final booruConfig = await _currentUserBooruRepository.get();
-    if (booruConfig?.booruUserId == null) return [];
+    final id =
+        await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
+    if (id == null) return [];
 
     return _api
         .getPostVotes(
@@ -36,7 +41,7 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
           booruConfig?.apiKey,
           1,
           postIds.join(','),
-          booruConfig?.booruUserId.toString(),
+          id.toString(),
           false,
           100,
         )

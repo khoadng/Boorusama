@@ -135,8 +135,6 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
 
     on<ManageBooruAdded>((event, emit) async {
       try {
-        final booru = booruFactory.from(type: event.config.booru);
-
         if (event.config.login.isEmpty && event.config.apiKey.isEmpty) {
           final booruConfigData = BooruConfigData.anonymous(
             booru: event.config.booru,
@@ -163,30 +161,17 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
             ],
           ));
         } else {
-          final id = await booruUserIdentityProvider.getAccountId(
+          final booruConfigData = BooruConfigData(
             login: event.config.login,
             apiKey: event.config.apiKey,
-            booru: booru,
-          );
-          final booruConfigData = BooruConfigData.withAccount(
-            login: event.config.login,
-            apiKey: event.config.apiKey,
-            booruUserId: id,
-            booru: event.config.booru,
             deletedItemBehavior: event.config.hideDeleted
-                ? BooruConfigDeletedItemBehavior.hide
-                : BooruConfigDeletedItemBehavior.show,
-            filter: event.config.ratingFilter,
+                ? BooruConfigDeletedItemBehavior.hide.index
+                : BooruConfigDeletedItemBehavior.show.index,
+            ratingFilter: event.config.ratingFilter.index,
             name: event.config.configName,
             url: event.config.url,
+            booruId: event.config.booru.index,
           );
-
-          if (booruConfigData == null) {
-            event.onFailure
-                ?.call('Fail to add account. Account might be incorrect');
-
-            return;
-          }
 
           final config = await userBooruRepository.add(booruConfigData);
 
@@ -215,22 +200,20 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
 
     on<ManageBooruUpdated>((event, emit) async {
       final booruConfigData = event.oldConfig.hasLoginDetails()
-          ? BooruConfigData.withAccount(
+          ? BooruConfigData(
               login: event.config.login,
               apiKey: event.config.apiKey,
-              booruUserId: event.oldConfig.booruUserId!,
-              booru: event.config.booru,
               deletedItemBehavior: event.config.hideDeleted
-                  ? BooruConfigDeletedItemBehavior.hide
-                  : BooruConfigDeletedItemBehavior.show,
-              filter: event.config.ratingFilter,
+                  ? BooruConfigDeletedItemBehavior.hide.index
+                  : BooruConfigDeletedItemBehavior.show.index,
+              ratingFilter: event.config.ratingFilter.index,
               name: event.config.configName,
               url: event.config.url,
+              booruId: event.config.booru.index,
             )
           : BooruConfigData(
               login: event.config.login,
               apiKey: event.config.apiKey,
-              booruUserId: event.oldConfig.booruUserId,
               booruId: event.config.booru.index,
               deletedItemBehavior: event.config.hideDeleted
                   ? BooruConfigDeletedItemBehavior.hide.index
@@ -239,12 +222,6 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
               name: event.config.configName,
               url: event.config.url,
             );
-
-      if (booruConfigData == null) {
-        event.onFailure?.call('Failed to update account');
-
-        return;
-      }
 
       final configs = state.configs;
 

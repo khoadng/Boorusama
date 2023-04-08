@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -37,6 +36,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
@@ -72,6 +72,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -440,6 +441,8 @@ Widget providePostDetailPageDependencies(
                   BlocProvider.value(value: context.read<ThemeBloc>()),
                   BlocProvider(
                     create: (context) => PostDetailBloc(
+                      booruUserIdentityProvider:
+                          context.read<BooruUserIdentityProvider>(),
                       noteRepository: context.read<NoteRepository>(),
                       defaultDetailsStyle: settings.detailsDisplay,
                       posts: posts,

@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -14,6 +15,7 @@ mixin DanbooruPostDataTransformMixin<T, E> on PostCubit<T, E> {
   PostVoteRepository get postVoteRepository;
   PoolRepository get poolRepository;
   PostPreviewPreloader? get previewPreloader;
+  BooruUserIdentityProvider get booruUserIdentityProvider;
 
   Future<List<DanbooruPostData>> transform(List<DanbooruPost> posts) =>
       Future.value(posts)
@@ -22,10 +24,12 @@ mixin DanbooruPostDataTransformMixin<T, E> on PostCubit<T, E> {
             postVoteRepository,
             poolRepository,
             currentBooruConfigRepository,
+            booruUserIdentityProvider,
           ))
           .then(filterWith(
             blacklistedTagsRepository,
             currentBooruConfigRepository,
+            booruUserIdentityProvider,
           ))
           .then(filterFlashFiles())
           .then(preloadPreviewImagesWith(previewPreloader));

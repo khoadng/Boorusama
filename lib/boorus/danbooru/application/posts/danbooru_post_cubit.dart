@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -48,6 +49,7 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, DanbooruPostExtra>
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
     required this.currentBooruConfigRepository,
+    required this.booruUserIdentityProvider,
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
@@ -67,12 +69,14 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, DanbooruPostExtra>
         previewPreloader: context.read<PostPreviewPreloader>(),
         currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
+        booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
       );
 
   final DanbooruPostRepository postRepository;
   final BlacklistedTagsRepository blacklistedTagsRepository;
   final FavoritePostRepository favoritePostRepository;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruUserIdentityProvider booruUserIdentityProvider;
   final PostVoteRepository postVoteRepository;
   final PoolRepository poolRepository;
   PostPreviewPreloader? previewPreloader;

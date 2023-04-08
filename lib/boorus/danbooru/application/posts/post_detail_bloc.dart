@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -59,6 +60,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required DanbooruPostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required BooruUserIdentityProvider booruUserIdentityProvider,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
@@ -95,9 +97,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           previousPost: () => prevPost,
           recommends: [],
         ));
-        final booruConfig = await currentBooruConfigRepository.get();
-        if (booruConfig.hasLoginDetails()) {
-          add(_PostDetailFavoriteFetch(booruConfig!.booruUserId!));
+        final config = await currentBooruConfigRepository.get();
+        final id =
+            await booruUserIdentityProvider.getAccountIdFromConfig(config);
+
+        if (id != null) {
+          add(_PostDetailFavoriteFetch(id));
           add(const _PostDetailVoteFetch());
         }
 

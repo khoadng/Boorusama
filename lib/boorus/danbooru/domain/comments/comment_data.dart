@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
 enum CommentVoteState {
@@ -92,33 +93,35 @@ List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
     (comments) => comments..sort((a, b) => a.id.compareTo(b.id));
 
 CommentData Function(Comment comment) createCommentData({
-  required BooruConfig? booruConfig,
+  required int? accountId,
   required List<CommentVote> votes,
 }) =>
-    (comment) => commentDataFrom(comment, comment.creator, booruConfig, votes);
+    (comment) => commentDataFrom(comment, comment.creator, accountId, votes);
 
-Future<List<CommentData>> Function(List<Comment> comments)
-    createCommentDataWith(
+Future<List<CommentData>> Function(
+    List<Comment> comments) createCommentDataWith(
   CurrentBooruConfigRepository currentBooruConfigRepository,
+  BooruUserIdentityProvider booruUserIdentityProvider,
   CommentVoteRepository commentVoteRepository,
 ) =>
-        (comments) async {
-          final votes = await commentVoteRepository
-              .getCommentVotes(comments.map((e) => e.id).toList());
-          final booruConfig = await currentBooruConfigRepository.get();
+    (comments) async {
+      final votes = await commentVoteRepository
+          .getCommentVotes(comments.map((e) => e.id).toList());
+      final config = await currentBooruConfigRepository.get();
+      final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
 
-          return comments
-              .map(createCommentData(
-                booruConfig: booruConfig,
-                votes: votes,
-              ))
-              .toList();
-        };
+      return comments
+          .map(createCommentData(
+            accountId: id,
+            votes: votes,
+          ))
+          .toList();
+    };
 
 CommentData commentDataFrom(
   Comment comment,
   User? user,
-  BooruConfig? booruConfig,
+  int? accountId,
   List<CommentVote> votes,
 ) =>
     CommentData(
@@ -130,7 +133,7 @@ CommentData commentDataFrom(
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
       score: comment.score,
-      isSelf: comment.creator?.id == booruConfig?.booruUserId,
+      isSelf: comment.creator?.id == accountId,
       recentlyUpdated: comment.createdAt != comment.updatedAt,
       voteState: _getVoteState(comment, votes),
       voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,

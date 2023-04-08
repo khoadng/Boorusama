@@ -3,10 +3,14 @@ import 'package:mocktail/mocktail.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
 class MockCurrentUserBooruRepository extends Mock
     implements CurrentBooruConfigRepository {}
+
+class MockBooruUserIdentityProvider extends Mock
+    implements BooruUserIdentityProvider {}
 
 CurrentBooruConfigRepository mockUserBooruRepo({
   BooruConfig? booruConfig,
@@ -20,7 +24,6 @@ CurrentBooruConfigRepository mockUserBooruRepo({
         apiKey: '',
         login: '',
         url: '',
-        booruUserId: 0,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
         name: '',
         ratingFilter: BooruConfigRatingFilter.none,
@@ -36,7 +39,6 @@ CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
         apiKey: 'apiKey',
         login: 'login',
         url: '',
-        booruUserId: 1,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
         name: 'foo',
         ratingFilter: BooruConfigRatingFilter.none,
@@ -44,6 +46,15 @@ CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
     );
 
 class MockUserRepo extends Mock implements UserRepository {}
+
+BooruUserIdentityProvider createIdentityProvider() {
+  final mock = MockBooruUserIdentityProvider();
+
+  when(() => mock.getAccountIdFromConfig(any()))
+      .thenAnswer((invocation) async => 1);
+
+  return mock;
+}
 
 UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();

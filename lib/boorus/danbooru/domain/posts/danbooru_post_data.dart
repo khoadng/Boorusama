@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
@@ -62,6 +63,7 @@ Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
   CurrentBooruConfigRepository currentBooruConfigRepository,
+  BooruUserIdentityProvider booruUserIdentityProvider,
 ) =>
         (posts) => createPostData(
               favoritePostRepository,
@@ -69,22 +71,25 @@ Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
               poolRepository,
               posts,
               currentBooruConfigRepository,
+              booruUserIdentityProvider,
             );
 
 Future<List<DanbooruPostData>> Function(BooruConfig? booruConfig) process(
-  List<DanbooruPost> posts, {
+  List<DanbooruPost> posts,
+  BooruUserIdentityProvider booruUserIdentityProvider, {
   required Future<List<DanbooruPostData>> Function(List<DanbooruPost> posts)
       forAnonymous,
   required Future<List<DanbooruPostData>> Function(
     List<DanbooruPost> posts,
-    BooruConfig booruConfig,
+    int id,
   )
       forUser,
 }) =>
-    (booruConfig) {
-      return booruConfig.hasLoginDetails()
-          ? forUser(posts, booruConfig!)
-          : forAnonymous(posts);
+    (booruConfig) async {
+      final id =
+          await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
+
+      return id != null ? forUser(posts, id) : forAnonymous(posts);
     };
 
 Map<int, Set<Pool>> createPostPoolMap(
@@ -111,9 +116,11 @@ Future<List<DanbooruPostData>> createPostData(
   PoolRepository poolRepository,
   List<DanbooruPost> posts,
   CurrentBooruConfigRepository currentBooruConfigRepository,
+  BooruUserIdentityProvider booruUserIdentityProvider,
 ) =>
     currentBooruConfigRepository.get().then(process(
           posts,
+          booruUserIdentityProvider,
           forAnonymous: (posts) async {
             final ids = posts.map((e) => e.id).toList();
             final pools = await poolRepository.getPoolsByPostIds(ids);
@@ -127,7 +134,7 @@ Future<List<DanbooruPostData>> createPostData(
                     ))
                 .toList();
           },
-          forUser: (posts, booruConfig) async {
+          forUser: (posts, userId) async {
             List<Favorite> favs = [];
             List<PostVote> votes = [];
             List<Pool> pools = [];
@@ -138,7 +145,7 @@ Future<List<DanbooruPostData>> createPostData(
               favoritePostRepository
                   .filterFavoritesFromUserId(
                     ids,
-                    booruConfig.booruUserId!,
+                    userId,
                     200,
                   )
                   .then((value) => favs = value),
@@ -165,20 +172,23 @@ Future<List<DanbooruPostData>> createPostData(
           },
         ));
 
-Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
-    filterWith(
+Future<List<DanbooruPostData>> Function(
+    List<DanbooruPostData> posts) filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
   CurrentBooruConfigRepository currentBooruConfigRepository,
+  BooruUserIdentityProvider booruUserIdentityProvider,
 ) =>
-        (posts) async {
-          final booruConfig = await currentBooruConfigRepository.get();
+    (posts) async {
+      final booruConfig = await currentBooruConfigRepository.get();
+      final id =
+          await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
 
-          if (!booruConfig.hasLoginDetails()) return posts;
+      if (id == null) return posts;
 
-          return blacklistedTagsRepository
-              .getBlacklistedTags(booruConfig!.booruUserId!)
-              .then((blacklistedTags) => filter(posts, blacklistedTags));
-        };
+      return blacklistedTagsRepository
+          .getBlacklistedTags(id)
+          .then((blacklistedTags) => filter(posts, blacklistedTags));
+    };
 
 Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
     filterUnsupportedFormat(

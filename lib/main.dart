@@ -213,7 +213,8 @@ void main() async {
 
   final dioProvider = DioProvider(tempPath, userAgentGenerator);
 
-  final booruUserIdProvider = BooruUserIdentityProviderImpl(dioProvider);
+  final booruUserIdProvider =
+      BooruUserIdentityProviderImpl(dioProvider, booruFactory);
 
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);

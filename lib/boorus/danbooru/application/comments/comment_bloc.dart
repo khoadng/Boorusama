@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
@@ -11,6 +12,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
     required CommentRepository commentRepository,
     required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required BooruUserIdentityProvider booruUserIdentityProvider,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
@@ -20,6 +22,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             .then(filterDeleted())
             .then(createCommentDataWith(
               currentBooruConfigRepository,
+              booruUserIdentityProvider,
               commentVoteRepository,
             ))
             .then(sortDescendedById()),

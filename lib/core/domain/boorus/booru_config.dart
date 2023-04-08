@@ -10,7 +10,6 @@ class BooruConfig extends Equatable {
     required this.booruId,
     required this.apiKey,
     required this.login,
-    required this.booruUserId,
     required this.name,
     required this.ratingFilter,
     required this.deletedItemBehavior,
@@ -22,7 +21,6 @@ class BooruConfig extends Equatable {
     booruId: -1,
     apiKey: null,
     login: null,
-    booruUserId: -1,
     name: '',
     deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
     ratingFilter: BooruConfigRatingFilter.none,
@@ -34,7 +32,6 @@ class BooruConfig extends Equatable {
   final String url;
   final String? apiKey;
   final String? login;
-  final int? booruUserId;
   final String name;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
@@ -45,7 +42,6 @@ class BooruConfig extends Equatable {
         booruId,
         apiKey,
         login,
-        booruUserId,
         name,
         deletedItemBehavior,
         ratingFilter,
@@ -93,7 +89,6 @@ extension BooruConfigNullX on BooruConfig? {
     if (this == null) return false;
     if (this!.login == null || this!.apiKey == null) return false;
     if (this!.login!.isEmpty && this!.apiKey!.isEmpty) return false;
-    if (this!.booruUserId == null) return false;
 
     return true;
   }

@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/posts/transformer.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -29,6 +30,7 @@ class DanbooruExplorePostCubit
     required this.blacklistedTagsRepository,
     required this.favoritePostRepository,
     required this.currentBooruConfigRepository,
+    required this.booruUserIdentityProvider,
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
@@ -64,11 +66,13 @@ class DanbooruExplorePostCubit
         previewPreloader: context.read<PostPreviewPreloader>(),
         currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
+        booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
       );
 
   final BlacklistedTagsRepository blacklistedTagsRepository;
   final FavoritePostRepository favoritePostRepository;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruUserIdentityProvider booruUserIdentityProvider;
   final PostVoteRepository postVoteRepository;
   final ExploreRepository exploreRepository;
   final PoolRepository poolRepository;
@@ -171,6 +175,7 @@ class DanbooruPopularExplorePostCubit extends DanbooruExplorePostCubit {
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
+          booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
         );
 }
 
@@ -192,6 +197,7 @@ class DanbooruHotExplorePostCubit extends DanbooruExplorePostCubit {
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
+          booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
         );
 }
 
@@ -213,5 +219,6 @@ class DanbooruMostViewedExplorePostCubit extends DanbooruExplorePostCubit {
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
+          booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
         );
 }
