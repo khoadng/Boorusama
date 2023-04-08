@@ -549,7 +549,7 @@ Widget provideSearchPageDependencies(
                   tag: tagSearchBloc.state.selectedTags.join(' '),
                   limit: settingsState.settings.postsPerPage,
                 ),
-              )..refresh();
+              );
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
                     context.read<SearchHistoryRepository>(),
