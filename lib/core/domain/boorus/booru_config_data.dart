@@ -16,12 +16,13 @@ class BooruConfigData {
     required BooruType booru,
     required String name,
     required BooruConfigRatingFilter filter,
+    required String url,
   }) =>
       BooruConfigData(
         booruId: booru.index,
         apiKey: '',
         login: '',
-        url: '',
+        url: url,
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
         ratingFilter: filter.index,

@@ -92,6 +92,8 @@ void main() async {
     });
   }
 
+  final booruFactory = BooruFactory.from(await loadBooruList());
+
   final settingRepository = SettingsRepositoryHive(
     Hive.openBox('settings'),
     Settings.defaultSettings,
@@ -102,8 +104,8 @@ void main() async {
     booruConfigBox = await Hive.openBox<String>('booru_configs');
   } else {
     booruConfigBox = await Hive.openBox<String>('booru_configs');
-    final id =
-        await booruConfigBox.add(HiveBooruConfigRepository.defaultValue());
+    final id = await booruConfigBox
+        .add(HiveBooruConfigRepository.defaultValue(booruFactory));
     final settings = await settingRepository.load();
     await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
   }
@@ -147,7 +149,6 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
-  final booruFactory = BooruFactory.from(await loadBooruList());
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
   final tagInfo =

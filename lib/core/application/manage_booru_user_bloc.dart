@@ -140,6 +140,7 @@ class ManageBooruBloc extends Bloc<ManageBooruEvent, ManageBooruState> {
             booru: event.config.booru,
             filter: event.config.ratingFilter,
             name: event.config.configName,
+            url: event.config.url,
           );
 
           final config = await userBooruRepository.add(booruConfigData);

@@ -15,10 +15,12 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   });
   final Box<String> box;
 
-  static String defaultValue() => jsonEncode(BooruConfigData.anonymous(
+  static String defaultValue(BooruFactory factory) =>
+      jsonEncode(BooruConfigData.anonymous(
         booru: BooruType.safebooru,
         name: 'My config',
         filter: BooruConfigRatingFilter.none,
+        url: factory.from(type: BooruType.safebooru).url,
       ));
 
   @override
