@@ -5,31 +5,39 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 // Project imports:
+import 'package:boorusama/utils/collection_utils.dart';
 import 'booru.dart';
 
 class BooruFactory {
-  const BooruFactory({
+  const BooruFactory._({
     required Map<BooruType, Booru> boorus,
     required this.booruData,
+    required this.booruSaltData,
   }) : _boorus = boorus;
 
-  factory BooruFactory.from(List<BooruData> booruData) {
+  factory BooruFactory.from(
+    List<BooruData> booruData,
+    List<BooruSaltData> booruSaltData,
+  ) {
     final boorus = booruData.map(booruDataToBooru).toList();
     final boorusMap = {for (final b in boorus) b.booruType: b};
 
-    return BooruFactory(
+    return BooruFactory._(
+      booruSaltData: booruSaltData,
       boorus: boorusMap,
       booruData: booruData,
     );
   }
 
   final List<BooruData> booruData;
+  final List<BooruSaltData> booruSaltData;
   final Map<BooruType, Booru> _boorus;
 
-  Booru create({
-    required bool isSafeMode,
-  }) =>
-      from(type: isSafeMode ? BooruType.safebooru : BooruType.danbooru);
+  String getSalt(Booru booru) =>
+      booruSaltData
+          .firstOrNull((e) => stringToBooruType(e.booru) == booru.booruType)
+          ?.salt ??
+      '';
 
   Booru from({
     required BooruType type,
@@ -43,6 +51,7 @@ class BooruFactory {
 }
 
 const String _assetUrl = 'assets/boorus.json';
+const String _saltUrl = 'assets/booru_salts.json';
 
 Future<List<BooruData>> loadBooruList() async {
   try {
@@ -50,6 +59,18 @@ Future<List<BooruData>> loadBooruList() async {
 
     return (jsonDecode(data) as List)
         .map((e) => BooruData.fromJson(e))
+        .toList();
+  } catch (e) {
+    return [];
+  }
+}
+
+Future<List<BooruSaltData>> loadBooruSaltList() async {
+  try {
+    final data = await rootBundle.loadString(_saltUrl);
+
+    return (jsonDecode(data) as List)
+        .map((e) => BooruSaltData.fromJson(e))
         .toList();
   } catch (e) {
     return [];

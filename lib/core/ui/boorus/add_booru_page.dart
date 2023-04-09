@@ -17,6 +17,7 @@ class AddBooruPage extends StatefulWidget {
     super.key,
     required this.onSubmit,
     this.initial,
+    required this.booruFactory,
   });
 
   static Widget of(
@@ -33,6 +34,7 @@ class AddBooruPage extends StatefulWidget {
       child: AddBooruPage(
         onSubmit: onSubmit,
         initial: initialConfig,
+        booruFactory: booruFactory,
       ),
     );
   }
@@ -42,6 +44,7 @@ class AddBooruPage extends StatefulWidget {
   ) onSubmit;
 
   final BooruConfig? initial;
+  final BooruFactory booruFactory;
 
   @override
   State<AddBooruPage> createState() => _AddBooruPageState();
@@ -277,7 +280,9 @@ class _AddBooruPageState extends State<AddBooruPage>
                               ? () {
                                   Navigator.of(context).pop();
                                   widget.onSubmit
-                                      .call(state.createNewBooruConfig());
+                                      .call(state.createNewBooruConfig(
+                                    widget.booruFactory,
+                                  ));
                                 }
                               : null,
                           child: const Text('OK'),

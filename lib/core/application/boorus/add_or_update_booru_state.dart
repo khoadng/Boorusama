@@ -101,10 +101,11 @@ extension AddOrUpdateBooruStateExtensions on AddOrUpdateBooruState {
   bool supportRatingFilter() => selectedBooru.booruType != BooruType.safebooru;
   bool supportHideDeleted() => selectedBooru.booruType != BooruType.gelbooru;
 
-  AddNewBooruConfig createNewBooruConfig() {
+  AddNewBooruConfig createNewBooruConfig(BooruFactory booruFactory) {
     final key = selectedBooru.loginType == LoginType.loginAndPasswordHashed
         ? hashBooruPasswordSHA1(
-            booru: selectedBooru.booruType,
+            booru: selectedBooru,
+            booruFactory: booruFactory,
             password: apiKey,
           )
         : apiKey;

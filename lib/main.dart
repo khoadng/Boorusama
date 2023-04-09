@@ -92,7 +92,10 @@ void main() async {
     });
   }
 
-  final booruFactory = BooruFactory.from(await loadBooruList());
+  final booruFactory = BooruFactory.from(
+    await loadBooruList(),
+    await loadBooruSaltList(),
+  );
 
   final settingRepository = SettingsRepositoryHive(
     Hive.openBox('settings'),

@@ -32,6 +32,23 @@ class BooruData {
       };
 }
 
+class BooruSaltData {
+  final String booru;
+  final String salt;
+
+  BooruSaltData({
+    required this.booru,
+    required this.salt,
+  });
+
+  factory BooruSaltData.fromJson(Map<String, dynamic> json) {
+    return BooruSaltData(
+      booru: json['booru'],
+      salt: json['salt'],
+    );
+  }
+}
+
 class Booru extends Equatable {
   const Booru({
     required this.url,
@@ -84,22 +101,6 @@ extension BooruX on Booru {
 }
 
 extension BooruTypeX on BooruType {
-  String getSalt() {
-    switch (this) {
-      case BooruType.unknown:
-      case BooruType.danbooru:
-      case BooruType.safebooru:
-      case BooruType.testbooru:
-      case BooruType.gelbooru:
-      case BooruType.aibooru:
-      case BooruType.yandere:
-      case BooruType.sakugabooru:
-        return '';
-      case BooruType.konachan:
-        return 'So-I-Heard-You-Like-Mupkids-?--{0}--';
-    }
-  }
-
   String stringify() {
     switch (this) {
       case BooruType.unknown:
@@ -146,7 +147,7 @@ List<BooruType> getSelectableBoorus() => [
 Booru booruDataToBooru(BooruData d) {
   return Booru(
     url: d.url,
-    booruType: _stringToBooruType(d.name),
+    booruType: stringToBooruType(d.name),
     name: d.name,
     cheatsheet: d.cheatsheet,
     loginType: stringToLoginType(d.loginType),
@@ -187,7 +188,7 @@ BooruType intToBooruType(int value) {
   }
 }
 
-BooruType _stringToBooruType(String value) {
+BooruType stringToBooruType(String value) {
   switch (value) {
     case 'danbooru':
       return BooruType.danbooru;
@@ -211,6 +212,6 @@ BooruType _stringToBooruType(String value) {
 }
 
 BooruType getBooruType(String url, List<BooruData> booruDataList) {
-  return _stringToBooruType(
+  return stringToBooruType(
       booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
 }

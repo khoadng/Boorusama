@@ -21,11 +21,12 @@ String hashPasswordSHA1({
 }
 
 String hashBooruPasswordSHA1({
-  required BooruType booru,
+  required Booru booru,
+  required BooruFactory booruFactory,
   required String password,
 }) =>
     hashPasswordSHA1(
-      salt: booru.getSalt(),
+      salt: booruFactory.getSalt(booru),
       password: password,
       hashStringBuilder: (salt, password) => salt.replaceAll('{0}', password),
     );
