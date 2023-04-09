@@ -65,7 +65,7 @@ class DanbooruSearchBloc extends SearchBloc {
             event.data.isEmpty && !event.refreshing && !event.hasMore)
         .distinct()
         .where((empty) => empty)
-        .listen((event) => add(SearchNoData()))
+        .listen((event) => add(const SearchNoData()))
         .addTo(compositeSubscription);
 
     postCubit.stream

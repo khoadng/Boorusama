@@ -358,7 +358,8 @@ void goToSettingPage(BuildContext context) {
 
 void goToBookmarkPage(BuildContext context) {
   context.read<BookmarkCubit>().getAllBookmarks();
-  Navigator.of(context).push(MaterialPageRoute(builder: (_) => BookmarkPage()));
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (_) => const BookmarkPage()));
 }
 
 void goToBookmarkDetailsPage(

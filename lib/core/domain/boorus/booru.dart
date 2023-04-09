@@ -68,7 +68,7 @@ extension BooruX on Booru {
   String getIconUrl({
     int? size,
   }) =>
-      'https://www.google.com/s2/favicons?domain=${url}&sz=${size ?? 64}';
+      'https://www.google.com/s2/favicons?domain=$url&sz=${size ?? 64}';
 }
 
 extension BooruTypeX on BooruType {

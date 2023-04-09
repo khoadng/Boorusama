@@ -25,7 +25,7 @@ class MoebooruTagSummaryRepository implements TagSummaryRepository {
       }
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
-        throw e;
+        rethrow;
       } else {
         throw Exception('Failed to get tag summaries: ${e.message}');
       }

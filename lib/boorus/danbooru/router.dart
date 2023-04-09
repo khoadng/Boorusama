@@ -74,7 +74,6 @@ import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';

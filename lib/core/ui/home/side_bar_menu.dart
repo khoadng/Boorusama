@@ -79,7 +79,8 @@ class SideBarMenu extends StatelessWidget {
                                     color: state.booruConfig!.ratingFilter ==
                                             BooruConfigRatingFilter.hideNSFW
                                         ? Colors.green
-                                        : Color.fromARGB(255, 154, 138, 0),
+                                        : const Color.fromARGB(
+                                            255, 154, 138, 0),
                                   ),
                                 ],
                               ],
@@ -126,7 +127,7 @@ class SideBarMenu extends StatelessWidget {
                   onTap: () {
                     if (popOnSelect) Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => BlacklistedTagPage()));
+                        builder: (_) => const BlacklistedTagPage()));
                   },
                 ),
                 _SideMenuTile(

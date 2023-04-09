@@ -13,7 +13,9 @@ class Bookmark extends Equatable with ImageInfoMixin {
   final String sampleUrl;
   final String originalUrl;
   final String sourceUrl;
+  @override
   final double width;
+  @override
   final double height;
 
   const Bookmark({

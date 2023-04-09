@@ -23,7 +23,8 @@ import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
 
 class MoebooruPostDetails extends StatefulWidget {
-  MoebooruPostDetails({
+  const MoebooruPostDetails({
+    super.key,
     required this.posts,
     required this.initialPage,
   });
@@ -53,7 +54,7 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
             onPageChange: (index) => currentIndex.value = index,
           ),
           Align(
-            alignment: Alignment(
+            alignment: const Alignment(
               -0.95,
               -0.9,
             ),
@@ -76,7 +77,7 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
             ),
           ),
           Align(
-            alignment: Alignment(
+            alignment: const Alignment(
               0.9,
               -0.9,
             ),
@@ -149,9 +150,9 @@ class MoreActionButton extends StatelessWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'add_to_bookmark',
-                child: const Text('Add to Bookmark'),
+                child: Text('Add to Bookmark'),
               ),
               PopupMenuItem(
                 value: 'view_in_browser',

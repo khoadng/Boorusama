@@ -15,7 +15,7 @@ class MoebooruPostExtra extends Equatable {
   final String tag;
   final int? limit;
 
-  MoebooruPostExtra({
+  const MoebooruPostExtra({
     required this.tag,
     this.limit,
   });

@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                     BlocProvider(
                       create: (_) => GelbooruPostCubit(
                         postRepository: gcontext.read<PostRepository>(),
-                        extra: GelbooruPostExtra(tag: ''),
+                        extra: const GelbooruPostExtra(tag: ''),
                       )..refresh(),
                     ),
                   ],
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                     BlocProvider(
                       create: (_) => MoebooruPostCubit(
                         postRepository: gcontext.read<PostRepository>(),
-                        extra: MoebooruPostExtra(tag: ''),
+                        extra: const MoebooruPostExtra(tag: ''),
                       )..refresh(),
                     ),
                   ],

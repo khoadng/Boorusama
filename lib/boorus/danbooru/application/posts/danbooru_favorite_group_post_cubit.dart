@@ -71,12 +71,19 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
       );
 
   final DanbooruPostRepository postRepository;
+  @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
+  @override
   final FavoritePostRepository favoritePostRepository;
+  @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
   final BooruUserIdentityProvider booruUserIdentityProvider;
+  @override
   final PostVoteRepository postVoteRepository;
+  @override
   final PoolRepository poolRepository;
+  @override
   PostPreviewPreloader? previewPreloader;
   Queue<int> _ids;
 

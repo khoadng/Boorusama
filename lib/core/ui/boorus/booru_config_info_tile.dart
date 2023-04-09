@@ -86,7 +86,7 @@ class BooruConfigInfoTile extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              color: Color.fromARGB(255, 154, 138, 0),
+              color: const Color.fromARGB(255, 154, 138, 0),
             ),
           ]
         ],

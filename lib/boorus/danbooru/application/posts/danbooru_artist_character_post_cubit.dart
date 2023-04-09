@@ -29,7 +29,7 @@ class DanbooruArtistChararacterExtra extends Equatable {
   final TagFilterCategory category;
   final String tag;
 
-  DanbooruArtistChararacterExtra({
+  const DanbooruArtistChararacterExtra({
     required this.category,
     required this.tag,
   });
@@ -81,12 +81,19 @@ class DanbooruArtistCharacterPostCubit
       );
 
   final DanbooruPostRepository postRepository;
+  @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
+  @override
   final FavoritePostRepository favoritePostRepository;
+  @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
   final BooruUserIdentityProvider booruUserIdentityProvider;
+  @override
   final PostVoteRepository postVoteRepository;
+  @override
   final PoolRepository poolRepository;
+  @override
   PostPreviewPreloader? previewPreloader;
 
   @override

@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_context_menu.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';

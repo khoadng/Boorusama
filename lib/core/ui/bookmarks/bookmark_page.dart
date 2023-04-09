@@ -18,7 +18,7 @@ class BookmarkPage extends StatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);
 
   @override
-  _BookmarkPageState createState() => _BookmarkPageState();
+  State<BookmarkPage> createState() => _BookmarkPageState();
 }
 
 class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
@@ -37,7 +37,7 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Bookmarks'),
+          title: const Text('Bookmarks'),
           automaticallyImplyLeading: !edit,
           leading: edit
               ? IconButton(
@@ -61,9 +61,9 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                 },
                 itemBuilder: (BuildContext context) {
                   return [
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: 'edit',
-                      child: const Text('Edit'),
+                      child: Text('Edit'),
                     ),
                   ];
                 },
@@ -74,7 +74,7 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
           builder: (context, state) {
             switch (state.status) {
               case BookmarkStatus.loading:
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               case BookmarkStatus.success:
                 return CustomScrollView(
                   slivers: [
@@ -113,7 +113,7 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                                   top: 5,
                                   right: 5,
                                   child: CircularIconButton(
-                                    icon: Icon(Icons.close),
+                                    icon: const Icon(Icons.close),
                                     onPressed: () => context
                                         .read<BookmarkCubit>()
                                         .removeBookmark(bookmark),

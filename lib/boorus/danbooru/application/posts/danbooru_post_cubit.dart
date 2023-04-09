@@ -22,7 +22,7 @@ class DanbooruPostExtra extends Equatable {
   final String tag;
   final int? limit;
 
-  DanbooruPostExtra({
+  const DanbooruPostExtra({
     required this.tag,
     this.limit,
   });
@@ -73,12 +73,19 @@ class DanbooruPostCubit extends PostCubit<DanbooruPostData, DanbooruPostExtra>
       );
 
   final DanbooruPostRepository postRepository;
+  @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
+  @override
   final FavoritePostRepository favoritePostRepository;
+  @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
   final BooruUserIdentityProvider booruUserIdentityProvider;
+  @override
   final PostVoteRepository postVoteRepository;
+  @override
   final PoolRepository poolRepository;
+  @override
   PostPreviewPreloader? previewPreloader;
 
   @override

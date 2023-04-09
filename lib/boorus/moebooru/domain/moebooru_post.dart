@@ -28,23 +28,40 @@ class MoebooruPost extends Equatable
     required this.fileSize,
   });
 
+  @override
   final int id;
+  @override
   final List<String> tags;
+  @override
   final String? source;
+  @override
   final String thumbnailImageUrl;
+  @override
   final String sampleImageUrl;
+  @override
   final String sampleLargeImageUrl;
+  @override
   final String originalImageUrl;
+  @override
   final Rating rating;
+  @override
   final bool hasComment;
+  @override
   final bool isTranslated;
+  @override
   final bool hasParentOrChildren;
+  @override
   final String downloadUrl;
 
+  @override
   final String format;
+  @override
   final double width;
+  @override
   final double height;
+  @override
   final String md5;
+  @override
   final int fileSize;
 
   @override

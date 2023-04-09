@@ -587,9 +587,9 @@ class MoreActionButton extends StatelessWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'add_to_bookmark',
-                child: const Text('Add to Bookmark'),
+                child: Text('Add to Bookmark'),
               ),
               if (authenticationState is Authenticated)
                 const PopupMenuItem(

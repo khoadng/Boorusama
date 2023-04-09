@@ -35,7 +35,7 @@ class BookmarkState {
 class BookmarkCubit extends Cubit<BookmarkState> {
   final BookmarkRepository _repository;
 
-  BookmarkCubit(this._repository) : super(BookmarkState());
+  BookmarkCubit(this._repository) : super(const BookmarkState());
 
   Future<void> getAllBookmarks() async {
     emit(state.copyWith(status: BookmarkStatus.loading));

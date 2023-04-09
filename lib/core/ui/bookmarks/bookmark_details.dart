@@ -21,7 +21,7 @@ class BookmarkDetailsPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BookmarkDetailsPageState createState() => _BookmarkDetailsPageState();
+  State<BookmarkDetailsPage> createState() => _BookmarkDetailsPageState();
 }
 
 class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
@@ -46,35 +46,33 @@ class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 'view_source',
-                  child: const Text('View source'),
+                  child: Text('View source'),
                 ),
               ];
             },
           ),
         ],
       ),
-      body: Container(
-        child: PhotoViewGallery.builder(
-          pageController: pageController,
-          itemCount: widget.bookmarks.length,
-          builder: (context, index) {
-            return PhotoViewGalleryPageOptions(
-              imageProvider: CachedNetworkImageProvider(
-                  widget.bookmarks[index].originalUrl),
-              initialScale: PhotoViewComputedScale.contained,
-              heroAttributes:
-                  PhotoViewHeroAttributes(tag: widget.bookmarks[index].id),
-            );
-          },
-          onPageChanged: (index) => setState(() {
-            currentIndex = index;
-          }),
-          scrollPhysics: const BouncingScrollPhysics(),
-          loadingBuilder: (context, event) => Center(
-            child: CircularProgressIndicator(),
-          ),
+      body: PhotoViewGallery.builder(
+        pageController: pageController,
+        itemCount: widget.bookmarks.length,
+        builder: (context, index) {
+          return PhotoViewGalleryPageOptions(
+            imageProvider:
+                CachedNetworkImageProvider(widget.bookmarks[index].originalUrl),
+            initialScale: PhotoViewComputedScale.contained,
+            heroAttributes:
+                PhotoViewHeroAttributes(tag: widget.bookmarks[index].id),
+          );
+        },
+        onPageChanged: (index) => setState(() {
+          currentIndex = index;
+        }),
+        scrollPhysics: const BouncingScrollPhysics(),
+        loadingBuilder: (context, event) => const Center(
+          child: CircularProgressIndicator(),
         ),
       ),
     );

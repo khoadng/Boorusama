@@ -232,7 +232,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     const SizedBox(height: 16),
                     if (selectedBooru != BooruType.safebooru)
                       ListTile(
-                        title: Text('Content filtering'),
+                        title: const Text('Content filtering'),
                         trailing: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8),

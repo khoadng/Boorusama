@@ -10,8 +10,10 @@ import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dar
 import 'package:boorusama/core/ui/blacklists/blacklisted_tag_sheet.dart';
 
 class BlacklistedTagPage extends StatefulWidget {
+  const BlacklistedTagPage({super.key});
+
   @override
-  _BlacklistedTagPageState createState() => _BlacklistedTagPageState();
+  State<BlacklistedTagPage> createState() => _BlacklistedTagPageState();
 }
 
 class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
@@ -27,12 +29,12 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blacklist'),
+        title: const Text('Blacklist'),
       ),
       body: BlocBuilder<BlacklistedTagCubit, BlacklistState>(
         builder: (context, state) {
           if (state is BlacklistLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (state is BlacklistLoaded) {
@@ -43,7 +45,7 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
                 return ListTile(
                   title: Text(tag.name),
                   trailing: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       context.read<BlacklistedTagCubit>().removeTag(tag);
                     },
@@ -52,7 +54,7 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
               },
             );
           } else {
-            return Center(
+            return const Center(
               child: Text('Error loading blacklist'),
             );
           }
@@ -66,7 +68,7 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
                   onSubmit: (tag) =>
                       context.read<BlacklistedTagCubit>().addTag(tag)));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

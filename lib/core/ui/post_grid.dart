@@ -126,7 +126,7 @@ class PostGrid extends StatelessWidget {
           }
 
           if (data.isEmpty) {
-            return SliverToBoxAdapter(child: NoDataBox());
+            return const SliverToBoxAdapter(child: NoDataBox());
           }
 
           return SliverPostGrid(

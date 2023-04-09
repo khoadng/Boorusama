@@ -15,7 +15,7 @@ class GelbooruPostExtra extends Equatable {
   final String tag;
   final int? limit;
 
-  GelbooruPostExtra({
+  const GelbooruPostExtra({
     required this.tag,
     this.limit,
   });

@@ -8,7 +8,7 @@ class BlacklistedTag extends Equatable {
   final DateTime createdDate;
   final DateTime updatedDate;
 
-  BlacklistedTag({
+  const BlacklistedTag({
     required this.id,
     required this.name,
     required this.isActive,

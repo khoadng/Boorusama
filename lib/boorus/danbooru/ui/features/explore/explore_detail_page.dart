@@ -11,8 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
-import 'package:boorusama/core/application/posts.dart';
-import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'datetime_selector.dart';
 import 'time_scale_toggle_switch.dart';
 

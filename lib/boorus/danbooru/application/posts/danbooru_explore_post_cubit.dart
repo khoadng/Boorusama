@@ -69,13 +69,20 @@ class DanbooruExplorePostCubit
         booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
       );
 
+  @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
+  @override
   final FavoritePostRepository favoritePostRepository;
+  @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
   final BooruUserIdentityProvider booruUserIdentityProvider;
+  @override
   final PostVoteRepository postVoteRepository;
   final ExploreRepository exploreRepository;
+  @override
   final PoolRepository poolRepository;
+  @override
   PostPreviewPreloader? previewPreloader;
   final CompositeSubscription compositeSubscription = CompositeSubscription();
 
@@ -89,8 +96,9 @@ class DanbooruExplorePostCubit
   Future<List<DanbooruPostData>> Function(int page) get fetcher => (page) {
         final explore = state.extra;
 
-        if (explore == ExploreCategory.mostViewed && page > 1)
+        if (explore.category == ExploreCategory.mostViewed && page > 1) {
           return Future.value([]);
+        }
 
         return _mapExploreDataToPostFuture(
           explore: explore,

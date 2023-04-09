@@ -212,9 +212,9 @@ class MoreActionButton extends StatelessWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'add_to_bookmark',
-                child: const Text('Add to Bookmark'),
+                child: Text('Add to Bookmark'),
               ),
               PopupMenuItem(
                 value: 'view_in_browser',

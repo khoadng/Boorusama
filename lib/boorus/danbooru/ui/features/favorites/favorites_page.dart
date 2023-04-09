@@ -8,11 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/posts.dart';
-import 'package:boorusama/core/application/posts/post_cubit.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 class FavoritesPage extends StatelessWidget
