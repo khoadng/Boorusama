@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/application/posts/danbooru_explore_pos
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/danbooru_home_page_desktop.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_home_page.dart';
@@ -18,7 +17,6 @@ import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_home_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
@@ -94,43 +92,36 @@ class _HomePageState extends State<HomePage> {
                   final explorePopularDetailsBloc = ExplorePopularDetailBloc();
 
                   return CustomContextMenuOverlay(
-                    child: isMobilePlatform()
-                        ? MultiBlocProvider(
-                            providers: [
-                              BlocProvider.value(value: exploreHotDetailsBloc),
-                              BlocProvider.value(
-                                  value: exploreMostViewedDetailsBloc),
-                              BlocProvider.value(
-                                  value: explorePopularDetailsBloc),
-                              BlocProvider(
-                                create: (context) =>
-                                    DanbooruHotExplorePostCubit(
-                                  context: context,
-                                  exploreDetailBloc: exploreHotDetailsBloc,
-                                )..refresh(),
-                              ),
-                              BlocProvider(
-                                create: (context) =>
-                                    DanbooruPopularExplorePostCubit(
-                                  context: context,
-                                  exploreDetailBloc: explorePopularDetailsBloc,
-                                )..refresh(),
-                              ),
-                              BlocProvider(
-                                create: (context) =>
-                                    DanbooruMostViewedExplorePostCubit(
-                                  context: context,
-                                  exploreDetailBloc:
-                                      exploreMostViewedDetailsBloc,
-                                )..refresh(),
-                              ),
-                            ],
-                            child: DanbooruHomePage(
-                              onMenuTap: _onMenuTap,
-                              key: ValueKey(config?.id),
-                            ),
-                          )
-                        : const DanbooruHomePageDesktop(),
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: exploreHotDetailsBloc),
+                        BlocProvider.value(value: exploreMostViewedDetailsBloc),
+                        BlocProvider.value(value: explorePopularDetailsBloc),
+                        BlocProvider(
+                          create: (context) => DanbooruHotExplorePostCubit(
+                            context: context,
+                            exploreDetailBloc: exploreHotDetailsBloc,
+                          )..refresh(),
+                        ),
+                        BlocProvider(
+                          create: (context) => DanbooruPopularExplorePostCubit(
+                            context: context,
+                            exploreDetailBloc: explorePopularDetailsBloc,
+                          )..refresh(),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              DanbooruMostViewedExplorePostCubit(
+                            context: context,
+                            exploreDetailBloc: exploreMostViewedDetailsBloc,
+                          )..refresh(),
+                        ),
+                      ],
+                      child: DanbooruHomePage(
+                        onMenuTap: _onMenuTap,
+                        key: ValueKey(config?.id),
+                      ),
+                    ),
                   );
                 },
               );

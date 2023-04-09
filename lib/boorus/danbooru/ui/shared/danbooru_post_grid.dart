@@ -62,7 +62,7 @@ class DanbooruPostGrid<T> extends StatelessWidget {
       enableFavorite: authState is Authenticated,
       onFavoriteTap: (post, isFav) async {
         final favRepo = context.read<FavoritePostRepository>();
-        final success = await (!isFav
+        final _ = await (!isFav
             ? favRepo.removeFromFavorites(post.id)
             : favRepo.addToFavorites(post.id));
       },

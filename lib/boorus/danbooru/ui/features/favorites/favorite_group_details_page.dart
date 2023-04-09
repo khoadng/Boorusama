@@ -228,7 +228,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                   enableFav: authState is Authenticated,
                                   onFavToggle: (isFaved) async {
                                     // final bloc = context.read<PostBloc>();
-                                    final success = await _getFavAction(
+                                    final _ = await _getFavAction(
                                       context,
                                       !isFaved,
                                       post.post.id,
