@@ -38,10 +38,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_cache_manager: ^3.3.0
-  flutter_downloader:
-    git:
-      url: https://github.com/khoadng/flutter_downloader.git
-      ref: master
+  flutter_downloader: ^1.10.2
   flutter_hooks: ^0.18.4
   flutter_html:
     git:

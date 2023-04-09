@@ -138,7 +138,7 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     int progress,
   ) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send!.send([id, status, progress]);
+    send!.send([id, status.value, progress]);
   }
 
   @override

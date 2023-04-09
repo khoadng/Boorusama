@@ -673,12 +673,11 @@ packages:
   flutter_downloader:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "9a3a6bb7568d5c1143b578787ae1b14df1876f5f"
-      url: "https://github.com/khoadng/flutter_downloader.git"
-    source: git
-    version: "1.8.4"
+      name: flutter_downloader
+      sha256: "6f2836668f33d0cd3ed275c3198d30967c42af53fa9b18c6b0edbf5fc12b599a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.2"
   flutter_hooks:
     dependency: "direct main"
     description:
