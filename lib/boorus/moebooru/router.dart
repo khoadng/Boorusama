@@ -19,6 +19,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
@@ -107,9 +108,15 @@ void goToMoebooruDetailsPage({
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => MoebooruPostDetails(
-        posts: posts,
-        initialPage: initialPage,
+      builder: (context) => BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          return MoebooruPostDetails(
+            posts: posts,
+            initialPage: initialPage,
+            fullscreen:
+                state.settings.detailsDisplay == DetailsDisplay.imageFocus,
+          );
+        },
       ),
     ),
   );

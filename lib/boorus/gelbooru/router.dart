@@ -58,6 +58,8 @@ void goToGelbooruPostDetailsPage({
                 child: GelbooruPostDetailPage(
                   posts: posts,
                   initialIndex: initialIndex,
+                  fullscreen:
+                      settings.detailsDisplay == DetailsDisplay.imageFocus,
                 ),
               ),
             );

@@ -24,11 +24,13 @@ class GelbooruPostSlider extends StatefulWidget {
     required this.posts,
     required this.imagePath,
     required this.initialPage,
+    required this.fullscreen,
   });
 
   final List<Post> posts;
   final ValueNotifier<String?> imagePath;
   final int initialPage;
+  final bool fullscreen;
 
   @override
   State<GelbooruPostSlider> createState() => _PostSliderState();
@@ -75,15 +77,20 @@ class _PostSliderState extends State<GelbooruPostSlider> {
               builder: (context, settingsState) {
                 return Stack(
                   children: [
-                    _CarouselContent(
-                      media: media,
-                      imagePath: widget.imagePath,
-                      actionBarDisplayBehavior:
-                          settingsState.settings.actionBarDisplayBehavior,
-                      post: widget.posts[index],
-                      preloadPost: widget.posts[index],
-                      // recommends: state.recommends,
-                    ),
+                    if (!widget.fullscreen)
+                      _CarouselContent(
+                        media: media,
+                        imagePath: widget.imagePath,
+                        actionBarDisplayBehavior:
+                            settingsState.settings.actionBarDisplayBehavior,
+                        post: widget.posts[index],
+                        preloadPost: widget.posts[index],
+                        // recommends: state.recommends,
+                      )
+                    else
+                      Center(
+                        child: media,
+                      ),
                   ],
                 );
               },

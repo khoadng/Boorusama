@@ -27,10 +27,12 @@ class GelbooruPostDetailPage extends StatefulWidget {
     super.key,
     required this.posts,
     required this.initialIndex,
+    required this.fullscreen,
   });
 
   final int initialIndex;
   final List<Post> posts;
+  final bool fullscreen;
 
   @override
   State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
@@ -38,6 +40,7 @@ class GelbooruPostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<GelbooruPostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
+  late var fullscreen = widget.fullscreen;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +72,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
                           posts: widget.posts,
                           imagePath: imagePath,
                           initialPage: widget.initialIndex,
+                          fullscreen: fullscreen,
                         ),
                         Align(
                           alignment: Alignment(
@@ -82,8 +86,13 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
                             0.9,
                             getTopActionIconAlignValue(),
                           ),
-                          child:
-                              _TopRightButtonGroup(widget.posts[currentIndex]),
+                          child: _TopRightButtonGroup(
+                            post: widget.posts[currentIndex],
+                            fullscreen: fullscreen,
+                            onFullscreenToggled: () => setState(() {
+                              fullscreen = !fullscreen;
+                            }),
+                          ),
                         ),
                       ],
                     ),
@@ -234,14 +243,38 @@ class MoreActionButton extends StatelessWidget {
 }
 
 class _TopRightButtonGroup extends StatelessWidget {
-  const _TopRightButtonGroup(this.post);
+  const _TopRightButtonGroup({
+    required this.post,
+    required this.fullscreen,
+    required this.onFullscreenToggled,
+  });
 
   final Post post;
+  final bool fullscreen;
+  final VoidCallback onFullscreenToggled;
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
     return ButtonBar(
       children: [
+        CircularIconButton(
+          icon: fullscreen
+              ? Icon(
+                  Icons.fullscreen_exit,
+                  color: theme == ThemeMode.light
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : null,
+                )
+              : Icon(
+                  Icons.fullscreen,
+                  color: theme == ThemeMode.light
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : null,
+                ),
+          onPressed: onFullscreenToggled,
+        ),
         MoreActionButton(
           post: post,
         ),

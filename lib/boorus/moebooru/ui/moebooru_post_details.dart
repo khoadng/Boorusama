@@ -27,10 +27,12 @@ class MoebooruPostDetails extends StatefulWidget {
     super.key,
     required this.posts,
     required this.initialPage,
+    required this.fullscreen,
   });
 
   final List<Post> posts;
   final int initialPage;
+  final bool fullscreen;
 
   @override
   State<MoebooruPostDetails> createState() => _MoebooruPostDetailsState();
@@ -39,6 +41,7 @@ class MoebooruPostDetails extends StatefulWidget {
 class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
   final imagePath = ValueNotifier<String?>(null);
   late final currentIndex = ValueNotifier(widget.initialPage);
+  late var fullscreen = widget.fullscreen;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,7 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
       body: Stack(
         children: [
           MoebooruPostSlider(
+            fullscreen: fullscreen,
             posts: widget.posts,
             imagePath: imagePath,
             initialPage: widget.initialPage,
@@ -83,11 +87,33 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: ValueListenableBuilder<int>(
-                valueListenable: currentIndex,
-                builder: (context, value, child) => MoreActionButton(
-                  post: widget.posts[value],
-                ),
+              child: ButtonBar(
+                children: [
+                  CircularIconButton(
+                    icon: fullscreen
+                        ? Icon(
+                            Icons.fullscreen_exit,
+                            color: theme == ThemeMode.light
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : null,
+                          )
+                        : Icon(
+                            Icons.fullscreen,
+                            color: theme == ThemeMode.light
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : null,
+                          ),
+                    onPressed: () => setState(() {
+                      fullscreen = !fullscreen;
+                    }),
+                  ),
+                  ValueListenableBuilder<int>(
+                    valueListenable: currentIndex,
+                    builder: (context, value, child) => MoreActionButton(
+                      post: widget.posts[value],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -178,12 +204,14 @@ class MoebooruPostSlider extends StatefulWidget {
     required this.imagePath,
     required this.initialPage,
     required this.onPageChange,
+    required this.fullscreen,
   });
 
   final List<Post> posts;
   final ValueNotifier<String?> imagePath;
   final int initialPage;
   final void Function(int index) onPageChange;
+  final bool fullscreen;
 
   @override
   State<MoebooruPostSlider> createState() => _PostSliderState();
@@ -220,12 +248,17 @@ class _PostSliderState extends State<MoebooruPostSlider> {
             backgroundColor: Colors.transparent,
             body: Stack(
               children: [
-                _CarouselContent(
-                  media: media,
-                  imagePath: widget.imagePath,
-                  post: widget.posts[index],
-                  preloadPost: widget.posts[index],
-                ),
+                if (!widget.fullscreen)
+                  _CarouselContent(
+                    media: media,
+                    imagePath: widget.imagePath,
+                    post: widget.posts[index],
+                    preloadPost: widget.posts[index],
+                  )
+                else
+                  Center(
+                    child: media,
+                  ),
               ],
             ),
           ),
