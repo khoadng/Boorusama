@@ -326,6 +326,7 @@ class _SmallLayoutState extends State<_SmallLayout>
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return MoebooruInfinitePostList(
+              state: state,
               onLoadMore: fetch,
               onRefresh: (controller) => refresh(),
               scrollController: scrollController,

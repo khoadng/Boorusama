@@ -7,7 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
+import 'package:boorusama/boorus/moebooru/domain/moebooru_popular_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/moebooru_autocomplete_repository.dart';
+import 'package:boorusama/boorus/moebooru/infra/moebooru_popular_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/tag_summary_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
@@ -33,6 +35,7 @@ class MoebooruProvider extends StatelessWidget {
     required this.favoriteTagRepository,
     required this.authenticationCubit,
     required this.fileNameGenerator,
+    required this.moebooruPopularRepository,
   });
 
   factory MoebooruProvider.create(
@@ -64,6 +67,11 @@ class MoebooruProvider extends StatelessWidget {
       currentBooruConfigRepository,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
+    final popularRepository = MoebooruPopularRepositoryApi(
+      api,
+      globalBlacklistedTagRepo,
+      currentBooruConfigRepository,
+    );
 
     return MoebooruProvider(
       key: key,
@@ -76,6 +84,7 @@ class MoebooruProvider extends StatelessWidget {
       favoriteTagRepository: favoriteTagRepo,
       authenticationCubit: authenticationCubit,
       fileNameGenerator: fileNameGenerator,
+      moebooruPopularRepository: popularRepository,
     );
   }
 
@@ -93,13 +102,14 @@ class MoebooruProvider extends StatelessWidget {
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
+    final popularRepository = context.read<MoebooruPopularRepository>();
 
     final authenticationCubit = context.read<AuthenticationCubit>();
 
     return MoebooruProvider(
       key: key,
       postRepository: postRepo,
-      // tagRepository: tagRepo,
+      moebooruPopularRepository: popularRepository,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
@@ -117,6 +127,7 @@ class MoebooruProvider extends StatelessWidget {
   final SearchHistoryRepository searchHistoryRepository;
   final FavoriteTagRepository favoriteTagRepository;
   final FileNameGenerator fileNameGenerator;
+  final MoebooruPopularRepository moebooruPopularRepository;
   final Widget Function(BuildContext context) builder;
 
   final AuthenticationCubit authenticationCubit;
@@ -126,7 +137,7 @@ class MoebooruProvider extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: postRepository),
-        // RepositoryProvider.value(value: tagRepository),
+        RepositoryProvider.value(value: moebooruPopularRepository),
         RepositoryProvider.value(value: autocompleteRepository),
         RepositoryProvider.value(value: userMetatagRepository),
         RepositoryProvider.value(value: searchHistoryRepository),

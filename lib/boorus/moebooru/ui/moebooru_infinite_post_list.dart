@@ -7,9 +7,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as core;
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -18,7 +18,7 @@ import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 
-class MoebooruInfinitePostList extends StatefulWidget {
+class MoebooruInfinitePostList<T> extends StatefulWidget {
   const MoebooruInfinitePostList({
     super.key,
     required this.onLoadMore,
@@ -28,6 +28,7 @@ class MoebooruInfinitePostList extends StatefulWidget {
     this.refreshController,
     this.contextMenuBuilder,
     this.multiSelectActions,
+    required this.state,
   });
 
   final VoidCallback onLoadMore;
@@ -38,6 +39,8 @@ class MoebooruInfinitePostList extends StatefulWidget {
   final Widget Function(core.Post post, void Function() next)?
       contextMenuBuilder;
 
+  final PostState<Post, T> state;
+
   final Widget Function(
     List<core.Post> selectedPosts,
     void Function() endMultiSelect,
@@ -47,8 +50,8 @@ class MoebooruInfinitePostList extends StatefulWidget {
   State<MoebooruInfinitePostList> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState extends State<MoebooruInfinitePostList>
-    with MultiSelectableMixin<MoebooruInfinitePostList, Post> {
+class _InfinitePostListState<T> extends State<MoebooruInfinitePostList<T>>
+    with MultiSelectableMixin<MoebooruInfinitePostList<T>, Post> {
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
 
@@ -76,89 +79,77 @@ class _InfinitePostListState extends State<MoebooruInfinitePostList>
     // final authState =
     //     context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocListener<MoebooruPostCubit, MoebooruPostState>(
-      listener: (context, state) {
-        if (state.refreshing) {
-          clearSelected();
-        }
-      },
-      child: WillPopScope(
-        onWillPop: _onWillPop,
-        child: BlocBuilder<MoebooruPostCubit, MoebooruPostState>(
-          builder: (context, state) {
-            return InfiniteLoadListScrollView(
-              bottomBuilder: () =>
-                  widget.multiSelectActions?.call(
-                    selected,
-                    endMultiSelect,
-                  ) ??
-                  DefaultMultiSelectionActions(
-                    selectedPosts: selected,
-                    endMultiSelect: endMultiSelect,
-                  ),
-              topBuilder: () => AppBar(
-                leading: IconButton(
-                  onPressed: endMultiSelect,
-                  icon: const Icon(Icons.close),
-                ),
-                title: selected.isEmpty
-                    ? const Text('Select items')
-                    : Text('${selected.length} Items selected'),
-              ),
-              enableRefresh: widget.onRefresh != null,
-              multiSelect: multiSelect,
-              isLoading: state.loading,
-              enableLoadMore: state.hasMore,
-              onLoadMore: () => widget.onLoadMore.call(),
-              onRefresh: (controller) {
-                widget.onRefresh?.call(controller);
-                Future.delayed(
-                  const Duration(seconds: 1),
-                  () => controller.refreshCompleted(),
-                );
-              },
-              scrollController: _autoScrollController,
-              refreshController: _refreshController,
-              sliverBuilder: (controller) => [
-                if (widget.sliverHeaderBuilder != null)
-                  ...widget.sliverHeaderBuilder!(context),
-                PostGrid(
-                  enableFavorite: false,
-                  controller: controller,
-                  data: state.data,
-                  loading: state.loading,
-                  refreshing: state.refreshing,
-                  onPostSelectChanged: (post, selected) {
-                    if (selected) {
-                      addSelected(post);
-                    } else {
-                      removeSelected(post);
-                    }
-                  },
-                  multiSelect: multiSelect,
-                  contextMenuBuilder: (post) =>
-                      widget.contextMenuBuilder
-                          ?.call(post, enableMultiSelect) ??
-                      GeneralPostContextMenu(
-                        hasAccount: false,
-                        onMultiSelect: enableMultiSelect,
-                        post: post,
-                      ),
-                  isFavorite: (post) => false,
-                  // ignore: no-empty-block
-                  onFavoriteTap: (post, isFav) {},
-                  onTap: (int index) {
-                    goToMoebooruDetailsPage(
-                      context: context,
-                      posts: state.data,
-                      initialPage: index,
-                    );
-                  },
-                ),
-              ],
-            );
-          },
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: InfiniteLoadListScrollView(
+        bottomBuilder: () =>
+            widget.multiSelectActions?.call(
+              selected,
+              endMultiSelect,
+            ) ??
+            DefaultMultiSelectionActions(
+              selectedPosts: selected,
+              endMultiSelect: endMultiSelect,
+            ),
+        topBuilder: () => AppBar(
+          leading: IconButton(
+            onPressed: endMultiSelect,
+            icon: const Icon(Icons.close),
+          ),
+          title: selected.isEmpty
+              ? const Text('Select items')
+              : Text('${selected.length} Items selected'),
         ),
+        enableRefresh: widget.onRefresh != null,
+        multiSelect: multiSelect,
+        isLoading: widget.state.loading,
+        enableLoadMore: widget.state.hasMore,
+        onLoadMore: () => widget.onLoadMore.call(),
+        onRefresh: (controller) {
+          widget.onRefresh?.call(controller);
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => controller.refreshCompleted(),
+          );
+        },
+        scrollController: _autoScrollController,
+        refreshController: _refreshController,
+        sliverBuilder: (controller) => [
+          if (widget.sliverHeaderBuilder != null)
+            ...widget.sliverHeaderBuilder!(context),
+          PostGrid(
+            enableFavorite: false,
+            controller: controller,
+            data: widget.state.data,
+            loading: widget.state.loading,
+            refreshing: widget.state.refreshing,
+            onPostSelectChanged: (post, selected) {
+              if (selected) {
+                addSelected(post);
+              } else {
+                removeSelected(post);
+              }
+            },
+            multiSelect: multiSelect,
+            contextMenuBuilder: (post) =>
+                widget.contextMenuBuilder?.call(post, enableMultiSelect) ??
+                GeneralPostContextMenu(
+                  hasAccount: false,
+                  onMultiSelect: enableMultiSelect,
+                  post: post,
+                ),
+            isFavorite: (post) => false,
+            // ignore: no-empty-block
+            onFavoriteTap: (post, isFav) {},
+            onTap: (int index) {
+              goToMoebooruDetailsPage(
+                context: context,
+                posts: widget.state.data,
+                initialPage: index,
+              );
+            },
+          ),
+        ],
       ),
     );
   }

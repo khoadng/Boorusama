@@ -24,4 +24,41 @@ abstract class MoebooruApi {
     @Query('password_hash') String? passwordHash,
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  // @GET('/post/popular_recent.json')
+  // Future<HttpResponse> getPopularPostsRecent(
+  //   @Query('login') String? login,
+  //   @Query('password_hash') String? passwordHash,
+  //   @Query('period') String period, {
+  //   @CancelRequest() CancelToken? cancelToken,
+  // });
+
+  @GET('/post/popular_by_day.json')
+  Future<HttpResponse> getPopularPostsByDay(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('day') int day,
+    @Query('month') int month,
+    @Query('year') int year, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
+  @GET('/post/popular_by_week.json')
+  Future<HttpResponse> getPopularPostsByWeek(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('day') int day,
+    @Query('month') int month,
+    @Query('year') int year, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
+  @GET('/post/popular_by_month.json')
+  Future<HttpResponse> getPopularPostsByMonth(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('month') int month,
+    @Query('year') int year, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }
