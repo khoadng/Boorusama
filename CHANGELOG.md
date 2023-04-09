@@ -1,3 +1,9 @@
+# 2.11.1
+- Fixed issue with bulk download permissions not being granted correctly
+- Resolved issue with bulk downloads not showing any progress
+- Temporarily disabled related tags in the search page 
+- Fixed some network security issue
+
 # 2.11.0
 - Add a user details page
 - Add a new settings for performance

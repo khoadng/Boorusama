@@ -12,7 +12,7 @@ class DownloadErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: const Text('general.errors.unknown').tr(),
+      child: const Text('generic.errors.unknown').tr(),
     );
   }
 }

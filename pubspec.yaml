@@ -2,10 +2,10 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none"
-version: 2.11.0+46
+version: 2.11.1+47
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
   android_intent_plus: ^3.1.6
@@ -22,8 +22,8 @@ dependencies:
   context_menus: ^1.0.2
   cross_file: ^0.3.3+2
   device_info_plus: ^8.1.0
-  dio: ^4.0.6
-  dio_cache_interceptor: ^3.3.1
+  dio: ^5.1.1
+  dio_cache_interceptor: ^3.4.2
   dio_cache_interceptor_hive_store: ^3.2.1
   easy_localization: ^3.0.1
   equatable: ^2.0.5
@@ -37,10 +37,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_cache_manager: ^3.3.0
-  flutter_downloader:
-    git:
-      url: https://github.com/khoadng/flutter_downloader.git
-      ref: master
+  flutter_downloader: ^1.10.2
   flutter_hooks: ^0.18.4
   flutter_html:
     git:
@@ -82,7 +79,7 @@ dependencies:
   readmore: ^2.2.0
   recase: ^4.0.0
   reorderable_grid_view: ^2.2.5
-  retrofit: ^3.3.1
+  retrofit: ^4.0.1
   rich_text_controller:
     git:
       url: https://github.com/khoadng/rich_text_controller.git
@@ -112,7 +109,7 @@ dev_dependencies:
   hive_generator: ^2.0.0
   import_sorter: ^4.6.0
   mocktail: ^0.3.0
-  retrofit_generator: ^4.0.1
+  retrofit_generator: ^6.0.0
   test: ^1.21.1
 
 flutter_icons:

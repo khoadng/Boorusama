@@ -32,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_re
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -171,7 +172,7 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
     );
 
-    final relatedTagRepo = RelatedTagRepositoryApi(api);
+    final relatedTagRepo = RelatedTagRepositoryEmpty();
 
     final commentVoteRepo =
         CommentVoteApiRepository(api, currentBooruConfigRepo);
