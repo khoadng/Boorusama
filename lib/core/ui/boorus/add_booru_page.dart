@@ -192,16 +192,6 @@ class _AddBooruPageState extends State<AddBooruPage>
                 indent: 16,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Config Name'.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Theme.of(context).hintColor,
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
@@ -214,16 +204,6 @@ class _AddBooruPageState extends State<AddBooruPage>
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Site'.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Theme.of(context).hintColor,
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
@@ -233,17 +213,6 @@ class _AddBooruPageState extends State<AddBooruPage>
                   controller: urlController,
                   labelText: 'Site URL',
                   onChanged: changeUrl,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Login details'.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Theme.of(context).hintColor,
-                        fontWeight: FontWeight.w800,
-                      ),
                 ),
               ),
               Padding(
