@@ -38,11 +38,13 @@ class SearchPage extends StatefulWidget {
     required this.metatags,
     required this.metatagHighlightColor,
     this.autoFocusSearchBar = true,
+    required this.pagination,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
   final bool autoFocusSearchBar;
+  final bool pagination;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -90,11 +92,13 @@ class _SearchPageState extends State<SearchPage> {
                 focus: focus,
                 autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
+                pagination: widget.pagination,
               )
             : _SmallLayout(
                 focus: focus,
                 autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
+                pagination: widget.pagination,
               ),
       ),
     );
@@ -106,11 +110,13 @@ class _LargeLayout extends StatelessWidget {
     required this.focus,
     required this.queryEditingController,
     this.autoFocus = true,
+    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
   final bool autoFocus;
+  final bool pagination;
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +174,9 @@ class _LargeLayout extends StatelessWidget {
                       child: Text('Your result will appear here'),
                     );
                   case DisplayState.result:
-                    return const ResultView();
+                    return ResultView(
+                      pagination: pagination,
+                    );
                   case DisplayState.noResult:
                     return EmptyView(text: 'search.no_result'.tr());
                   case DisplayState.error:
@@ -335,11 +343,13 @@ class _SmallLayout extends StatefulWidget {
     required this.focus,
     required this.queryEditingController,
     this.autoFocus = true,
+    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
   final bool autoFocus;
+  final bool pagination;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -439,6 +449,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
         );
       case DisplayState.result:
         return ResultView(
+          pagination: widget.pagination,
           scrollController: scrollController,
           headerBuilder: () => [
             SliverAppBar(

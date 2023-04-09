@@ -503,6 +503,8 @@ void goToSearchPage(
         context,
         tag,
         (context, settings) => SearchPage(
+          pagination: settings.contentOrganizationCategory ==
+              ContentOrganizationCategory.pagination,
           autoFocusSearchBar: settings.autoFocusSearchBar,
           metatags: context.read<TagInfo>().metatags,
           metatagHighlightColor: Theme.of(context).colorScheme.primary,
@@ -516,6 +518,8 @@ void goToSearchPage(
         context,
         tag,
         (context, settings) => SearchPageDesktop(
+          pagination: settings.contentOrganizationCategory ==
+              ContentOrganizationCategory.pagination,
           metatags: context.read<TagInfo>().metatags,
           metatagHighlightColor: Theme.of(context).colorScheme.primary,
         ),
@@ -544,9 +548,6 @@ Widget provideSearchPageDependencies(
 
               final postCubit = DanbooruPostCubit.of(
                 context,
-                // pagination:
-                //     settingsState.settings.contentOrganizationCategory ==
-                //         ContentOrganizationCategory.pagination,
                 extra: DanbooruPostExtra(
                   tag: tagSearchBloc.state.selectedTags.join(' '),
                   limit: settingsState.settings.postsPerPage,
