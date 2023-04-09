@@ -45,7 +45,7 @@ class BooruFactory {
     try {
       return _boorus[type]!;
     } catch (e) {
-      return safebooru();
+      return unknownBooru();
     }
   }
 }

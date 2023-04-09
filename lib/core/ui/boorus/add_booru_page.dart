@@ -93,6 +93,62 @@ class _AddBooruPageState extends State<AddBooruPage>
     final selectedBooru = context
         .select((AddOrUpdateBooruCubit cubit) => cubit.state.selectedBooru);
 
+    if (selectedBooru == unknownBooru()) {
+      return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              onPressed: Navigator.of(context).pop,
+              icon: const Icon(Icons.close),
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
+                  ),
+                  child: Text(
+                    'Add a source',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(fontWeight: FontWeight.w900),
+                  ),
+                ),
+                const Divider(
+                  thickness: 2,
+                  endIndent: 16,
+                  indent: 16,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: LoginField(
+                    validator: (p0) => null,
+                    controller: urlController,
+                    labelText: 'Site URL',
+                    onChanged: changeUrl,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(

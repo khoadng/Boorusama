@@ -134,6 +134,15 @@ Booru safebooru() => booruDataToBooru(
       ),
     );
 
+Booru unknownBooru() => booruDataToBooru(
+      BooruData(
+        name: '',
+        url: '',
+        cheatsheet: '',
+        loginType: 'login_api_key',
+      ),
+    );
+
 List<BooruType> getSelectableBoorus() => [
       BooruType.danbooru,
       BooruType.gelbooru,
