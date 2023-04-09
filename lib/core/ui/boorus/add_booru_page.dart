@@ -2,9 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart';
+import 'package:boorusama/core/application/boorus/add_or_update_booru_state.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
@@ -14,69 +17,52 @@ class AddBooruPage extends StatefulWidget {
     super.key,
     required this.onSubmit,
     this.initial,
-    required this.booruFactory,
   });
+
+  static Widget of(
+    BuildContext context, {
+    required void Function(AddNewBooruConfig config) onSubmit,
+    required BooruFactory booruFactory,
+    BooruConfig? initialConfig,
+  }) {
+    return BlocProvider(
+      create: (context) => AddOrUpdateBooruCubit(
+        booruFactory: booruFactory,
+        initialConfig: initialConfig,
+      ),
+      child: AddBooruPage(
+        onSubmit: onSubmit,
+        initial: initialConfig,
+      ),
+    );
+  }
 
   final void Function(
     AddNewBooruConfig config,
   ) onSubmit;
 
-  final AddNewBooruConfig? initial;
-  final BooruFactory booruFactory;
+  final BooruConfig? initial;
 
   @override
   State<AddBooruPage> createState() => _AddBooruPageState();
 }
 
-class _AddBooruPageState extends State<AddBooruPage> {
+class _AddBooruPageState extends State<AddBooruPage>
+    with AddOrUpdateBooruCubitMixin {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
   final nameController = TextEditingController();
   final urlController = TextEditingController();
 
-  var selectedBooru = BooruType.unknown;
-  var hideDeleted = true;
-  var ratingFilter = BooruConfigRatingFilter.hideNSFW;
-
-  var allowSubmit = false;
-  var showKey = false;
-
   @override
   void initState() {
     super.initState();
-    loginController.addListener(() {
-      setState(() {
-        allowSubmit = isValid();
-      });
-    });
-    apiKeyController.addListener(() {
-      setState(() {
-        allowSubmit = isValid();
-      });
-    });
-    nameController.addListener(() {
-      setState(() {
-        allowSubmit = isValid();
-      });
-    });
-    urlController.addListener(() {
-      setState(() {
-        allowSubmit = isValid();
-        selectedBooru = getBooruType(
-          urlController.text,
-          widget.booruFactory.booruData,
-        );
-      });
-    });
 
     if (widget.initial != null) {
-      loginController.text = widget.initial!.login;
-      apiKeyController.text = widget.initial!.apiKey;
-      nameController.text = widget.initial!.configName;
+      loginController.text = widget.initial!.login ?? '';
+      apiKeyController.text = widget.initial!.apiKey ?? '';
+      nameController.text = widget.initial!.name;
       urlController.text = widget.initial!.url;
-      hideDeleted = widget.initial!.hideDeleted;
-      ratingFilter = widget.initial!.ratingFilter;
-      selectedBooru = widget.initial!.booru;
     }
   }
 
@@ -89,18 +75,21 @@ class _AddBooruPageState extends State<AddBooruPage> {
     super.dispose();
   }
 
-  bool isValid() {
-    if (selectedBooru == BooruType.unknown) return false;
-    if (nameController.text.isEmpty) return false;
-    if (urlController.text.isEmpty) return false;
-
-    return (loginController.text.isNotEmpty &&
-            apiKeyController.text.isNotEmpty) ||
-        (loginController.text.isEmpty && apiKeyController.text.isEmpty);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final supportContentFilter = context.select(
+        (AddOrUpdateBooruCubit cubit) => cubit.state.supportRatingFilter());
+    final supportHideDeleted = context.select(
+        (AddOrUpdateBooruCubit cubit) => cubit.state.supportHideDeleted());
+    final ratingFilter = context
+        .select((AddOrUpdateBooruCubit cubit) => cubit.state.ratingFilter);
+    final hideDeleted = context.select((AddOrUpdateBooruCubit cubit) =>
+        cubit.state.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide);
+    final allowSubmit = context
+        .select((AddOrUpdateBooruCubit cubit) => cubit.state.allowSubmit());
+    final selectedBooru = context
+        .select((AddOrUpdateBooruCubit cubit) => cubit.state.selectedBooru);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -162,6 +151,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   validator: (p0) => null,
                   controller: nameController,
                   labelText: 'Name',
+                  onChanged: changeConfigName,
                 ),
               ),
               Padding(
@@ -183,6 +173,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                   validator: (p0) => null,
                   controller: urlController,
                   labelText: 'Site URL',
+                  onChanged: changeUrl,
                 ),
               ),
               const SizedBox(height: 8),
@@ -208,29 +199,34 @@ class _AddBooruPageState extends State<AddBooruPage> {
                       validator: (p0) => null,
                       controller: loginController,
                       labelText: 'Login',
+                      onChanged: changeLogin,
                     ),
                     const SizedBox(height: 16),
-                    LoginField(
-                      validator: (p0) => null,
-                      obscureText: !showKey,
-                      controller: apiKeyController,
-                      labelText: 'API key',
-                      suffixIcon: IconButton(
-                        splashColor: Colors.transparent,
-                        icon: showKey
-                            ? const FaIcon(
-                                FontAwesomeIcons.solidEyeSlash,
-                                size: 18,
-                              )
-                            : const FaIcon(
-                                FontAwesomeIcons.solidEye,
-                                size: 18,
-                              ),
-                        onPressed: () => setState(() => showKey = !showKey),
-                      ),
+                    AddOrUpdateBooruBuider(
+                      builder: (context, state) {
+                        return LoginField(
+                          validator: (p0) => null,
+                          obscureText: !state.revealKey,
+                          controller: apiKeyController,
+                          labelText: 'API key',
+                          onChanged: changeApiKey,
+                          suffixIcon: IconButton(
+                            splashColor: Colors.transparent,
+                            icon: state.revealKey
+                                ? const FaIcon(
+                                    FontAwesomeIcons.solidEyeSlash,
+                                    size: 18,
+                                  )
+                                : const FaIcon(
+                                    FontAwesomeIcons.solidEye,
+                                    size: 18,
+                                  ),
+                            onPressed: toggleApiKey,
+                          ),
+                        );
+                      },
                     ),
-                    const SizedBox(height: 16),
-                    if (selectedBooru != BooruType.safebooru)
+                    if (supportContentFilter)
                       ListTile(
                         title: const Text('Content filtering'),
                         trailing: Card(
@@ -245,13 +241,7 @@ class _AddBooruPageState extends State<AddBooruPage> {
                                   child: FaIcon(FontAwesomeIcons.angleDown,
                                       size: 16),
                                 ),
-                                onChanged: (newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      ratingFilter = newValue;
-                                    });
-                                  }
-                                },
+                                onChanged: changeRatingFilter,
                                 items: BooruConfigRatingFilter.values
                                     .map((value) => DropdownMenuItem<
                                             BooruConfigRatingFilter>(
@@ -265,30 +255,26 @@ class _AddBooruPageState extends State<AddBooruPage> {
                           ),
                         ),
                       ),
-                    if (selectedBooru != BooruType.gelbooru)
+                    const SizedBox(height: 16),
+                    if (supportHideDeleted)
                       SwitchListTile.adaptive(
                         title: const Text('Hide deleted posts'),
                         value: hideDeleted,
-                        onChanged: (value) => setState(() {
-                          hideDeleted = value;
-                        }),
+                        onChanged: (_) => toggleDeleted(),
                       ),
-                    ElevatedButton(
-                      onPressed: allowSubmit
-                          ? () {
-                              Navigator.of(context).pop();
-                              widget.onSubmit.call(AddNewBooruConfig(
-                                login: loginController.text,
-                                apiKey: apiKeyController.text,
-                                booru: selectedBooru,
-                                configName: nameController.text,
-                                hideDeleted: hideDeleted,
-                                ratingFilter: ratingFilter,
-                                url: urlController.text,
-                              ));
-                            }
-                          : null,
-                      child: const Text('OK'),
+                    AddOrUpdateBooruBuider(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          onPressed: allowSubmit
+                              ? () {
+                                  Navigator.of(context).pop();
+                                  widget.onSubmit
+                                      .call(state.createNewBooruConfig());
+                                }
+                              : null,
+                          child: const Text('OK'),
+                        );
+                      },
                     ),
                   ],
                 ),

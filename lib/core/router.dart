@@ -393,7 +393,8 @@ void goToAddBooruPage(
     type: PageTransitionType.rightToLeft,
     child: BlocBuilder<SettingsCubit, SettingsState>(
       builder: (_, state) {
-        return AddBooruPage(
+        return AddBooruPage.of(
+          context,
           booruFactory: context.read<BooruFactory>(),
           onSubmit: (config) => context.read<ManageBooruBloc>().add(
                 ManageBooruAdded(

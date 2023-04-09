@@ -59,18 +59,10 @@ class ManageBooruPage extends StatelessWidget {
                       : null,
                   onTap: () => showMaterialModalBottomSheet(
                     context: context,
-                    builder: (_) => AddBooruPage(
+                    builder: (_) => AddBooruPage.of(
+                      context,
                       booruFactory: context.read<BooruFactory>(),
-                      initial: AddNewBooruConfig(
-                        login: config.login ?? '',
-                        apiKey: config.apiKey ?? '',
-                        booru: booru.booruType,
-                        configName: config.name,
-                        hideDeleted: config.deletedItemBehavior ==
-                            BooruConfigDeletedItemBehavior.hide,
-                        ratingFilter: config.ratingFilter,
-                        url: config.url,
-                      ),
+                      initialConfig: config,
                       onSubmit: (newConfig) {
                         context.read<ManageBooruBloc>().add(ManageBooruUpdated(
                               config: newConfig,
