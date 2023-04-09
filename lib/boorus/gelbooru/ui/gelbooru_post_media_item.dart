@@ -72,7 +72,10 @@ class _PostMediaItemState extends State<GelbooruPostMediaItem> {
     return widget.post.isVideo
         ? p.extension(widget.post.sampleImageUrl) == '.webm'
             ? EmbeddedWebViewWebm(videoHtml: videoHtml)
-            : PostVideo(post: widget.post)
+            : BooruVideo(
+                url: widget.post.sampleImageUrl,
+                aspectRatio: widget.post.aspectRatio,
+              )
         : InteractiveImage(
             useOriginalSize: false,
             onTap: widget.onTap,

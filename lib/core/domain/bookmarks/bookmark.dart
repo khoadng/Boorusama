@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/image.dart';
@@ -17,6 +18,8 @@ class Bookmark extends Equatable with ImageInfoMixin {
   final double width;
   @override
   final double height;
+
+  bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
 
   const Bookmark({
     required this.id,

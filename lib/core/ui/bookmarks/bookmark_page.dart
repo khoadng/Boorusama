@@ -80,8 +80,8 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                   slivers: [
                     SliverMasonryGrid.count(
                       crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
                       childCount: state.bookmarks.length,
                       itemBuilder: (context, index) {
                         final bookmark = state.bookmarks[index];
@@ -97,7 +97,9 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                               BooruImage(
                                 aspectRatio: bookmark.aspectRatio,
                                 fit: BoxFit.cover,
-                                imageUrl: bookmark.sampleUrl,
+                                imageUrl: bookmark.isVideo
+                                    ? bookmark.thumbnailUrl
+                                    : bookmark.sampleUrl,
                                 placeholderUrl: bookmark.thumbnailUrl,
                               ),
                               Positioned(

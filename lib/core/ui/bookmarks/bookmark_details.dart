@@ -1,14 +1,17 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_slider.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/ui/bookmarks/bookmark_media_item.dart';
 
 class BookmarkDetailsPage extends StatefulWidget {
   final List<Bookmark> bookmarks;
@@ -55,25 +58,83 @@ class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
           ),
         ],
       ),
-      body: PhotoViewGallery.builder(
-        pageController: pageController,
-        itemCount: widget.bookmarks.length,
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            imageProvider:
-                CachedNetworkImageProvider(widget.bookmarks[index].originalUrl),
-            initialScale: PhotoViewComputedScale.contained,
-            heroAttributes:
-                PhotoViewHeroAttributes(tag: widget.bookmarks[index].id),
-          );
-        },
-        onPageChanged: (index) => setState(() {
+      body: BookmarkSlider(
+        bookmarks: widget.bookmarks,
+        initialPage: widget.initialIndex,
+        onPageChange: (index) => setState(() {
           currentIndex = index;
         }),
-        scrollPhysics: const BouncingScrollPhysics(),
-        loadingBuilder: (context, event) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        fullscreen: true,
+      ),
+    );
+  }
+}
+
+class BookmarkSlider extends StatefulWidget {
+  const BookmarkSlider({
+    super.key,
+    required this.bookmarks,
+    required this.initialPage,
+    required this.onPageChange,
+    required this.fullscreen,
+  });
+
+  final List<Bookmark> bookmarks;
+  final int initialPage;
+  final void Function(int index) onPageChange;
+  final bool fullscreen;
+
+  @override
+  State<BookmarkSlider> createState() => _PostSliderState();
+}
+
+class _PostSliderState extends State<BookmarkSlider> {
+  var enableSwipe = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider.builder(
+      itemCount: widget.bookmarks.length,
+      itemBuilder: (context, index, realIndex) {
+        final media = BookmarkMediaItem(
+          //TODO: this is used to preload image between page
+          bookmark: widget.bookmarks[index],
+          previewCacheManager: context.read<PreviewImageCacheManager>(),
+          onZoomUpdated: (zoom) {
+            final swipe = !zoom;
+            if (swipe != enableSwipe) {
+              setState(() {
+                enableSwipe = swipe;
+              });
+            }
+          },
+        );
+
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [
+                Center(
+                  child: media,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      options: CarouselOptions(
+        scrollPhysics: enableSwipe
+            ? const DetailPageViewScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        height: MediaQuery.of(context).size.height,
+        viewportFraction: 1,
+        enableInfiniteScroll: false,
+        initialPage: widget.initialPage,
+        onPageChanged: (index, reason) => widget.onPageChange(index),
       ),
     );
   }

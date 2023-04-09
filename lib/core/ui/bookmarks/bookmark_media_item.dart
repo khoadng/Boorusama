@@ -11,39 +11,35 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 
-class PostMediaItem extends StatefulWidget {
-  const PostMediaItem({
+class BookmarkMediaItem extends StatefulWidget {
+  const BookmarkMediaItem({
     super.key,
-    required this.post,
-    required this.onCached,
+    required this.bookmark,
     this.onTap,
     this.onZoomUpdated,
     this.previewCacheManager,
-    this.imageOverlayBuilder,
   });
 
-  final Post post;
-  final void Function(String? path) onCached;
+  final Bookmark bookmark;
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
   final CacheManager? previewCacheManager;
-  final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
 
   @override
-  State<PostMediaItem> createState() => _PostMediaItemState();
+  State<BookmarkMediaItem> createState() => _PostMediaItemState();
 }
 
-class _PostMediaItemState extends State<PostMediaItem> {
+class _PostMediaItemState extends State<BookmarkMediaItem> {
   late final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
-                <source src=${widget.post.sampleImageUrl}#t=0.01 type="video/webm" />
+                <source src=${widget.bookmark.sampleUrl}#t=0.01 type="video/webm" />
               </video>
             </center>''';
 
@@ -71,36 +67,29 @@ class _PostMediaItemState extends State<PostMediaItem> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.post.isVideo
-        ? p.extension(widget.post.sampleImageUrl) == '.webm'
+    return widget.bookmark.isVideo
+        ? p.extension(widget.bookmark.sampleUrl) == '.webm'
             ? EmbeddedWebViewWebm(videoHtml: videoHtml)
             : BooruVideo(
-                url: widget.post.sampleImageUrl,
-                aspectRatio: widget.post.aspectRatio,
+                url: widget.bookmark.sampleUrl,
+                aspectRatio: widget.bookmark.aspectRatio,
               )
         : InteractiveImage(
             useOriginalSize: false,
             onTap: widget.onTap,
             transformationController: transformationController,
             image: Hero(
-              tag: '${widget.post.id}_hero',
+              tag: '${widget.bookmark.id}_hero',
               child: AspectRatio(
-                aspectRatio: widget.post.aspectRatio,
+                aspectRatio: widget.bookmark.aspectRatio,
                 child: LayoutBuilder(
                   builder: (context, constraints) => CachedNetworkImage(
                     httpHeaders: {
                       'User-Agent':
                           context.read<UserAgentGenerator>().generate(),
                     },
-                    imageUrl: widget.post.sampleLargeImageUrl,
+                    imageUrl: widget.bookmark.sampleUrl,
                     imageBuilder: (context, imageProvider) {
-                      DefaultCacheManager()
-                          .getFileFromCache(widget.post.sampleImageUrl)
-                          .then((file) {
-                        if (!mounted) return;
-                        widget.onCached(file?.file.path);
-                      });
-
                       final w = math.max(
                         constraints.maxWidth,
                         MediaQuery.of(context).size.width,
@@ -111,17 +100,11 @@ class _PostMediaItemState extends State<PostMediaItem> {
                         MediaQuery.of(context).size.height,
                       );
 
-                      return Stack(
-                        children: [
-                          Image(
-                            width: w,
-                            height: h,
-                            fit: BoxFit.contain,
-                            image: imageProvider,
-                          ),
-                          ...widget.imageOverlayBuilder?.call(constraints) ??
-                              [],
-                        ],
+                      return Image(
+                        width: w,
+                        height: h,
+                        fit: BoxFit.contain,
+                        image: imageProvider,
                       );
                     },
                     placeholderFadeInDuration: Duration.zero,
@@ -133,7 +116,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                             context.read<UserAgentGenerator>().generate(),
                       },
                       fit: BoxFit.fill,
-                      imageUrl: widget.post.thumbnailImageUrl,
+                      imageUrl: widget.bookmark.thumbnailUrl,
                       cacheManager: widget.previewCacheManager,
                       fadeInDuration: Duration.zero,
                       fadeOutDuration: Duration.zero,
@@ -141,8 +124,8 @@ class _PostMediaItemState extends State<PostMediaItem> {
                           FittedBox(
                         fit: BoxFit.cover,
                         child: SizedBox(
-                          height: widget.post.height,
-                          width: widget.post.width,
+                          height: widget.bookmark.height,
+                          width: widget.bookmark.width,
                           child: Stack(children: [
                             Align(
                               alignment: Alignment.bottomCenter,

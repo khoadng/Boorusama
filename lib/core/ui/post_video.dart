@@ -6,31 +6,34 @@ import 'package:chewie/chewie.dart' hide MaterialDesktopControls;
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 
 //TODO: implement caching video
-class PostVideo extends StatefulWidget {
-  const PostVideo({super.key, required this.post});
+class BooruVideo extends StatefulWidget {
+  const BooruVideo({
+    super.key,
+    required this.url,
+    required this.aspectRatio,
+  });
 
-  final Post post;
+  final String url;
+  final double aspectRatio;
 
   @override
-  State<PostVideo> createState() => _PostVideoState();
+  State<BooruVideo> createState() => _BooruVideoState();
 }
 
-class _PostVideoState extends State<PostVideo> {
+class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
 
   @override
   void initState() {
     super.initState();
-    _videoPlayerController =
-        VideoPlayerController.network(widget.post.sampleImageUrl);
+    _videoPlayerController = VideoPlayerController.network(widget.url);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
-      aspectRatio: widget.post.aspectRatio,
+      aspectRatio: widget.aspectRatio,
       autoPlay: true,
       customControls: const MaterialDesktopControls(),
       looping: true,
