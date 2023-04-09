@@ -48,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/api/api.dart';
@@ -350,7 +351,7 @@ void main() async {
                     accountRepository: accountRepo,
                   );
 
-                  final relatedTagRepo = RelatedTagRepositoryApi(api);
+                  final relatedTagRepo = RelatedTagRepositoryEmpty();
 
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
