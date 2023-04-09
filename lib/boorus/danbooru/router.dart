@@ -86,7 +86,9 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
@@ -242,7 +244,8 @@ void goToBulkDownloadPage(
                 BlocProvider(
                   create: (_) => BulkImageDownloadBloc(
                     permissionChecker: () => Permission.storage.status,
-                    permissionRequester: () => Permission.storage.request(),
+                    permissionRequester: () =>
+                        requestMediaPermissions(context.read<DeviceInfo>()),
                     bulkPostDownloadBloc: BulkPostDownloadBloc(
                       downloader: dcontext.read<BulkDownloader<DanbooruPost>>(),
                       postCountRepository: dcontext.read<PostCountRepository>(),
