@@ -58,7 +58,9 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'router.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -532,7 +534,8 @@ final bulkDownloadHandler =
       BlocProvider(
         create: (context) => BulkImageDownloadBloc(
           permissionChecker: () => Permission.storage.status,
-          permissionRequester: () => Permission.storage.request(),
+          permissionRequester: () =>
+              requestMediaPermissions(context.read<DeviceInfo>()),
           bulkPostDownloadBloc: bulkPostDownloadBloc,
         )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
       ),
