@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -21,7 +20,6 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
-import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list.dart';
@@ -48,17 +46,7 @@ class GelbooruSearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<GelbooruSearchPage> {
-  late final _tags = widget.metatags.map((e) => e.name).join('|');
-  late final queryEditingController = RichTextController(
-    patternMatchMap: {
-      RegExp('($_tags)+:'): TextStyle(
-        fontWeight: FontWeight.w800,
-        color: widget.metatagHighlightColor,
-      ),
-    },
-    // ignore: no-empty-block
-    onMatch: (List<String> match) {},
-  );
+  late final queryEditingController = TextEditingController();
   final compositeSubscription = CompositeSubscription();
   final focus = FocusNode();
 
@@ -172,17 +160,6 @@ class _LandingView extends StatelessWidget {
           onTap: (value) => _onHistoryTap(context, value, searchBloc),
         );
       },
-      metatagsBuilder: (context) => DanbooruMetatagsSection(
-        onOptionTap: (value) {
-          context.read<SearchBloc>().add(
-                SearchRawMetatagSelected(
-                  tag: value,
-                ),
-              );
-          onFocusRequest?.call();
-          onTextChanged.call('$value:');
-        },
-      ),
     );
   }
 
@@ -212,7 +189,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
     this.autofocus = false,
   });
 
-  final RichTextController queryEditingController;
+  final TextEditingController queryEditingController;
   final FocusNode? focusNode;
   final bool autofocus;
 
@@ -244,7 +221,7 @@ class _SmallLayout extends StatefulWidget {
   });
 
   final FocusNode focus;
-  final RichTextController queryEditingController;
+  final TextEditingController queryEditingController;
   final bool autoFocus;
 
   @override
@@ -472,7 +449,7 @@ class _SearchBar extends StatelessWidget {
     this.autofocus = false,
   });
 
-  final RichTextController queryEditingController;
+  final TextEditingController queryEditingController;
   final FocusNode? focusNode;
   final bool autofocus;
 
