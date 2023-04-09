@@ -43,8 +43,8 @@ class MoebooruPostRepositoryApi implements PostRepository {
 
     return _api
         .getPosts(
-          null,
-          null,
+          config?.login,
+          config?.apiKey,
           page,
           [
             ...tags.split(' '),

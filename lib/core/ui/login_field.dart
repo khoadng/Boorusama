@@ -10,6 +10,7 @@ class LoginField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
+    this.readOnly = false,
   });
 
   final TextEditingController controller;
@@ -18,10 +19,12 @@ class LoginField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,

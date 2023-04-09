@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/crypto.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
 class AddOrUpdateBooruState extends Equatable {
@@ -10,7 +11,7 @@ class AddOrUpdateBooruState extends Equatable {
   final String apiKey;
   final String url;
   final String configName;
-  final BooruType selectedBooru;
+  final Booru selectedBooru;
   final BooruConfigRatingFilter ratingFilter;
   final bool revealKey;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
@@ -26,12 +27,13 @@ class AddOrUpdateBooruState extends Equatable {
     required this.deletedItemBehavior,
   });
 
-  factory AddOrUpdateBooruState.initial() => const AddOrUpdateBooruState(
+  factory AddOrUpdateBooruState.initial(BooruFactory factory) =>
+      AddOrUpdateBooruState(
         login: '',
         apiKey: '',
         url: '',
         configName: '',
-        selectedBooru: BooruType.unknown,
+        selectedBooru: factory.from(type: BooruType.unknown),
         ratingFilter: BooruConfigRatingFilter.hideNSFW,
         revealKey: false,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
@@ -46,7 +48,7 @@ class AddOrUpdateBooruState extends Equatable {
         apiKey: config.apiKey ?? '',
         url: config.url,
         configName: config.name,
-        selectedBooru: config.createBooruFrom(factory).booruType,
+        selectedBooru: config.createBooruFrom(factory),
         ratingFilter: config.ratingFilter,
         revealKey: false,
         deletedItemBehavior: config.deletedItemBehavior,
@@ -57,7 +59,7 @@ class AddOrUpdateBooruState extends Equatable {
     String? apiKey,
     String? url,
     String? configName,
-    BooruType? selectedBooru,
+    Booru? selectedBooru,
     BooruConfigRatingFilter? ratingFilter,
     bool? revealKey,
     BooruConfigDeletedItemBehavior? deletedItemBehavior,
@@ -88,7 +90,7 @@ class AddOrUpdateBooruState extends Equatable {
 
 extension AddOrUpdateBooruStateExtensions on AddOrUpdateBooruState {
   bool allowSubmit() {
-    if (selectedBooru == BooruType.unknown) return false;
+    if (selectedBooru.booruType == BooruType.unknown) return false;
     if (configName.isEmpty) return false;
     if (url.isEmpty) return false;
 
@@ -96,14 +98,21 @@ extension AddOrUpdateBooruStateExtensions on AddOrUpdateBooruState {
         (login.isEmpty && apiKey.isEmpty);
   }
 
-  bool supportRatingFilter() => selectedBooru != BooruType.safebooru;
-  bool supportHideDeleted() => selectedBooru != BooruType.gelbooru;
+  bool supportRatingFilter() => selectedBooru.booruType != BooruType.safebooru;
+  bool supportHideDeleted() => selectedBooru.booruType != BooruType.gelbooru;
 
   AddNewBooruConfig createNewBooruConfig() {
+    final key = selectedBooru.loginType == LoginType.loginAndPasswordHashed
+        ? hashBooruPasswordSHA1(
+            booru: selectedBooru.booruType,
+            password: apiKey,
+          )
+        : apiKey;
+
     return AddNewBooruConfig(
       login: login,
-      apiKey: apiKey,
-      booru: selectedBooru,
+      apiKey: key,
+      booru: selectedBooru.booruType,
       configName: configName,
       hideDeleted: deletedItemBehavior == BooruConfigDeletedItemBehavior.hide,
       ratingFilter: ratingFilter,

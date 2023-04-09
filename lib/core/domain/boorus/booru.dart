@@ -9,22 +9,26 @@ class BooruData {
     required this.name,
     required this.url,
     required this.cheatsheet,
+    required this.loginType,
   });
 
   factory BooruData.fromJson(Map<String, dynamic> json) => BooruData(
         name: json['name'],
         url: json['url'],
         cheatsheet: json['cheatsheet'],
+        loginType: json['login_type'],
       );
 
   final String name;
   final String url;
   final String cheatsheet;
+  final String loginType;
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'url': url,
         'cheatsheet': cheatsheet,
+        'login_type': loginType,
       };
 }
 
@@ -34,22 +38,25 @@ class Booru extends Equatable {
     required this.booruType,
     required this.name,
     required this.cheatsheet,
+    required this.loginType,
   });
 
   final String url;
   final BooruType booruType;
   final String name;
   final String cheatsheet;
+  final LoginType loginType;
 
   static const Booru empty = Booru(
     url: '',
     booruType: BooruType.unknown,
     name: '',
     cheatsheet: '',
+    loginType: LoginType.loginAndApiKey,
   );
 
   @override
-  List<Object?> get props => [url, booruType, name, cheatsheet];
+  List<Object?> get props => [url, booruType, name, cheatsheet, loginType];
 }
 
 enum BooruType {
@@ -64,6 +71,11 @@ enum BooruType {
   sakugabooru,
 }
 
+enum LoginType {
+  loginAndApiKey,
+  loginAndPasswordHashed,
+}
+
 extension BooruX on Booru {
   String getIconUrl({
     int? size,
@@ -72,6 +84,22 @@ extension BooruX on Booru {
 }
 
 extension BooruTypeX on BooruType {
+  String getSalt() {
+    switch (this) {
+      case BooruType.unknown:
+      case BooruType.danbooru:
+      case BooruType.safebooru:
+      case BooruType.testbooru:
+      case BooruType.gelbooru:
+      case BooruType.aibooru:
+      case BooruType.yandere:
+      case BooruType.sakugabooru:
+        return '';
+      case BooruType.konachan:
+        return 'So-I-Heard-You-Like-Mupkids-?--{0}--';
+    }
+  }
+
   String stringify() {
     switch (this) {
       case BooruType.unknown:
@@ -101,6 +129,7 @@ Booru safebooru() => booruDataToBooru(
         name: 'safebooru',
         url: 'https://safebooru.donmai.us/',
         cheatsheet: 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet',
+        loginType: 'login_api_key',
       ),
     );
 
@@ -120,7 +149,19 @@ Booru booruDataToBooru(BooruData d) {
     booruType: _stringToBooruType(d.name),
     name: d.name,
     cheatsheet: d.cheatsheet,
+    loginType: stringToLoginType(d.loginType),
   );
+}
+
+LoginType stringToLoginType(String value) {
+  switch (value) {
+    case 'login_api_key':
+      return LoginType.loginAndApiKey;
+    case 'login_password_hashed':
+      return LoginType.loginAndPasswordHashed;
+    default:
+      throw ArgumentError('Invalid login type: $value');
+  }
 }
 
 BooruType intToBooruType(int value) {

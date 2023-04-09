@@ -21,6 +21,7 @@ dependencies:
   connectivity_plus: ^3.0.2
   context_menus: ^1.0.2
   cross_file: ^0.3.3+2
+  crypto: ^3.0.2
   device_info_plus: ^8.1.0
   dio: ^5.1.1
   dio_cache_interceptor: ^3.4.2

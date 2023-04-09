@@ -124,7 +124,7 @@ class _AddBooruPageState extends State<AddBooruPage>
               Card(
                   child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text(selectedBooru.stringify()),
+                child: Text(selectedBooru.booruType.stringify()),
               )),
               const SizedBox(height: 8),
               const Divider(
@@ -205,10 +205,18 @@ class _AddBooruPageState extends State<AddBooruPage>
                     AddOrUpdateBooruBuider(
                       builder: (context, state) {
                         return LoginField(
+                          readOnly: state.selectedBooru.loginType ==
+                                  LoginType.loginAndPasswordHashed &&
+                              widget.initial != null,
                           validator: (p0) => null,
                           obscureText: !state.revealKey,
                           controller: apiKeyController,
-                          labelText: 'API key',
+                          labelText: state.selectedBooru.loginType ==
+                                  LoginType.loginAndApiKey
+                              ? 'API key'
+                              : widget.initial != null
+                                  ? 'Password Hashed (readonly)'
+                                  : 'Password',
                           onChanged: changeApiKey,
                           suffixIcon: IconButton(
                             splashColor: Colors.transparent,

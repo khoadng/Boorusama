@@ -16,7 +16,7 @@ class AddOrUpdateBooruCubit extends Cubit<AddOrUpdateBooruState> {
     required this.booruFactory,
     BooruConfig? initialConfig,
   }) : super(initialConfig == null
-            ? AddOrUpdateBooruState.initial()
+            ? AddOrUpdateBooruState.initial(booruFactory)
             : AddOrUpdateBooruState.fromConfig(
                 config: initialConfig,
                 factory: booruFactory,
@@ -33,7 +33,8 @@ class AddOrUpdateBooruCubit extends Cubit<AddOrUpdateBooruState> {
   }
 
   void changeUrl(String newUrl) {
-    final booru = getBooruType(newUrl, booruFactory.booruData);
+    final booruType = getBooruType(newUrl, booruFactory.booruData);
+    final booru = booruFactory.from(type: booruType);
 
     emit(state.copyWith(
       url: newUrl,
