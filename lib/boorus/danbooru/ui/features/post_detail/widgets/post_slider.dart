@@ -21,6 +21,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 import 'information_section.dart';
 import 'parent_child_tile.dart';
 import 'pool_tiles.dart';
@@ -245,7 +246,9 @@ class _CarouselContentState extends State<_CarouselContent> {
                       FileDetailsSection(
                         post: post,
                       ),
-                      const Divider(height: 8, thickness: 1),
+                      SourceSection(
+                        post: post,
+                      ),
                       RecommendArtistList(
                         recommends: widget.recommends
                             .where((element) =>

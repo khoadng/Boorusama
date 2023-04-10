@@ -17,6 +17,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 
 class GelbooruPostSlider extends StatefulWidget {
   const GelbooruPostSlider({
@@ -183,8 +184,6 @@ class _CarouselContentState extends State<_CarouselContent> {
                   // ),
                   // if (widget.preloadPost.hasParentOrChildren)
                   //   _ParentChildTile(post: widget.preloadPost),
-                  if (!widget.preloadPost.hasParentOrChildren)
-                    const Divider(height: 8, thickness: 1),
                   TagsTile(
                     post: post,
                     onExpand: () => context
@@ -197,6 +196,10 @@ class _CarouselContentState extends State<_CarouselContent> {
                   FileDetailsSection(
                     post: post,
                   ),
+                  if (post.source != null &&
+                      post.source!.isNotEmpty &&
+                      Uri.tryParse(post.source!) != null)
+                    SourceSection(post: post),
                 ],
               ),
             ],

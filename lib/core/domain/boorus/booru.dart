@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/infra/utils.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
 class BooruData {
@@ -97,7 +98,7 @@ extension BooruX on Booru {
   String getIconUrl({
     int? size,
   }) =>
-      'https://www.google.com/s2/favicons?domain=$url&sz=${size ?? 64}';
+      getFavicon(url, size: size);
 }
 
 extension BooruTypeX on BooruType {

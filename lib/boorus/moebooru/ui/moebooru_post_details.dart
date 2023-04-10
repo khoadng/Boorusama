@@ -22,6 +22,7 @@ import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 
 class MoebooruPostDetails extends StatefulWidget {
@@ -319,10 +320,17 @@ class _CarouselContentState extends State<_CarouselContent> {
                       onTap: (tag) => goToMoebooruSearchPage(context, tag: tag),
                     ),
                   ),
-                  const Divider(),
+                  const Divider(
+                    thickness: 1.5,
+                    height: 4,
+                  ),
                   FileDetailsSection(
                     post: post,
                   ),
+                  if (post.source != null &&
+                      post.source!.isNotEmpty &&
+                      Uri.tryParse(post.source!) != null)
+                    SourceSection(post: post),
                 ],
               ),
             ],
