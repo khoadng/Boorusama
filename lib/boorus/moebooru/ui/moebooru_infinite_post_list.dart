@@ -55,6 +55,8 @@ class _InfinitePostListState<T> extends State<MoebooruInfinitePostList<T>>
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
 
+  PostState<Post, T> get state => widget.state;
+
   @override
   void initState() {
     super.initState();
@@ -102,8 +104,8 @@ class _InfinitePostListState<T> extends State<MoebooruInfinitePostList<T>>
         ),
         enableRefresh: widget.onRefresh != null,
         multiSelect: multiSelect,
-        isLoading: widget.state.loading,
-        enableLoadMore: widget.state.hasMore,
+        isLoading: state.loading,
+        enableLoadMore: state.hasMore,
         onLoadMore: () => widget.onLoadMore.call(),
         onRefresh: (controller) {
           widget.onRefresh?.call(controller);
@@ -120,9 +122,9 @@ class _InfinitePostListState<T> extends State<MoebooruInfinitePostList<T>>
           PostGrid(
             enableFavorite: false,
             controller: controller,
-            data: widget.state.data,
-            loading: widget.state.loading,
-            refreshing: widget.state.refreshing,
+            data: state.data,
+            loading: state.loading,
+            refreshing: state.refreshing,
             onPostSelectChanged: (post, selected) {
               if (selected) {
                 addSelected(post);

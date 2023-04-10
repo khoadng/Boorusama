@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -128,13 +129,14 @@ class _LandingView extends StatelessWidget {
     return SearchLandingView(
       onAddTagRequest: () {
         final bloc = context.read<FavoriteTagBloc>();
-        goToQuickSearchPage(
+        goToMoebooruQuickSearchPage(
           context,
           onSubmitted: (context, text) {
             Navigator.of(context).pop();
             bloc.add(FavoriteTagAdded(tag: text));
           },
-          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
+          onSelected: (context, tag) =>
+              bloc.add(FavoriteTagAdded(tag: tag.value)),
         );
       },
       onHistoryTap: (value) {
@@ -323,7 +325,6 @@ class _SmallLayoutState extends State<_SmallLayout>
         );
       case DisplayState.result:
         return BlocBuilder<MoebooruPostCubit, MoebooruPostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return MoebooruInfinitePostList(
               state: state,

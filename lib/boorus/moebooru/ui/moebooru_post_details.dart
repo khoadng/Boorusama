@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_slider.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -21,6 +22,7 @@ import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 
 class MoebooruPostDetails extends StatefulWidget {
   const MoebooruPostDetails({
@@ -310,6 +312,14 @@ class _CarouselContentState extends State<_CarouselContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: BasicTagList(
+                      tags: post.tags,
+                      onTap: (tag) => goToMoebooruSearchPage(context, tag: tag),
+                    ),
+                  ),
+                  const Divider(),
                   FileDetailsSection(
                     post: post,
                   ),

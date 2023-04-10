@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
@@ -16,12 +18,14 @@ import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 
 void goToMoebooruSearchPage(
   BuildContext context, {
@@ -118,6 +122,63 @@ void goToMoebooruDetailsPage({
           );
         },
       ),
+    ),
+  );
+}
+
+void goToMoebooruQuickSearchPage(
+  BuildContext context, {
+  bool ensureValidTag = false,
+  Widget Function(String text)? floatingActionButton,
+  required void Function(BuildContext context, AutocompleteData tag) onSelected,
+  void Function(BuildContext context, String text)? onSubmitted,
+}) {
+  showSimpleTagSearchView(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.quickSearch,
+    ),
+    ensureValidTag: ensureValidTag,
+    floatingActionButton: floatingActionButton,
+    builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (_, themeState) {
+        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+          builder: (_, state) {
+            return MoebooruProvider.of(
+              context,
+              booru: state.booru!,
+              builder: (gcontext) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(gcontext, tag),
+                      textColorBuilder: (tag) => generateAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(gcontext, tag),
+                      textColorBuilder: (tag) => generateAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    ),
+            );
+          },
+        );
+      },
     ),
   );
 }
