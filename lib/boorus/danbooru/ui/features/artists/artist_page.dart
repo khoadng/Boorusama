@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/tag_other_names.dart';
 
 class ArtistPage extends StatelessWidget {
   const ArtistPage({

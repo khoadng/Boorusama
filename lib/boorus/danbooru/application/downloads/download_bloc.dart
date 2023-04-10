@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 
 enum DownloadStatus {

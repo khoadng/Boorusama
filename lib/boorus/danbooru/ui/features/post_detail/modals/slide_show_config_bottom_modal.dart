@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/slide_show_configuration.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/slide_show_configuration.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 

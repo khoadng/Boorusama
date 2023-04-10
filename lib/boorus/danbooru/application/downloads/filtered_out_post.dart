@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 class FilteredOutPost extends Equatable {
   const FilteredOutPost({
@@ -10,7 +10,7 @@ class FilteredOutPost extends Equatable {
     required this.reason,
   });
 
-  factory FilteredOutPost.from(Post post) {
+  factory FilteredOutPost.from(DanbooruPost post) {
     return FilteredOutPost(
       postId: post.id,
       reason: post.isBanned

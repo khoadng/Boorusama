@@ -7,13 +7,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
-import 'package:boorusama/common/bloc/pagination_mixin.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
+import 'package:boorusama/utils/bloc/pagination_mixin.dart';
 
 class FavoriteGroupsState extends Equatable
     implements PaginationLoadState<FavoriteGroup, FavoriteGroupsState> {
@@ -235,12 +235,12 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
-    required AccountRepository accountRepository,
-    required PostRepository postRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required DanbooruPostRepository postRepository,
     required UserSelf? currentUser,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
-      final currentUser = await accountRepository.get();
+      final currentUser = await currentBooruConfigRepository.get();
       await load(
         emit: EmitConfig(
           stateGetter: () => state,
@@ -249,11 +249,11 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         page: 1,
         onFetchEnd: (data) =>
             emit(state.copyWith(filteredFavoriteGroups: data)),
-        fetch: (page) => currentUser != Account.empty
+        fetch: (page) => currentUser.hasLoginDetails()
             ? favoriteGroupRepository
                 .getFavoriteGroupsByCreatorName(
                 page: page,
-                name: currentUser.username!,
+                name: currentUser!.login ?? '',
               )
                 .then((value) {
                 if (event.includePreviews) {
@@ -445,8 +445,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
   }) =>
       FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
-        accountRepository: context.read<AccountRepository>(),
-        postRepository: context.read<PostRepository>(),
+        currentBooruConfigRepository:
+            context.read<CurrentBooruConfigRepository>(),
+        postRepository: context.read<DanbooruPostRepository>(),
         currentUser: currentUser,
       );
 }

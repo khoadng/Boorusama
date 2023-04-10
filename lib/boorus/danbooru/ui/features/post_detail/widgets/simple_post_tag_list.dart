@@ -7,13 +7,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class SimplePostTagList extends StatelessWidget {
@@ -28,10 +30,11 @@ class SimplePostTagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) {
-        return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
           builder: (context, state) {
             return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, themeState) {
+                final booru = state.booru ?? safebooru();
                 final tags_ = [
                   ...tags.where(
                     (e) => e.category == TagCategory.artist.stringify(),
@@ -88,7 +91,7 @@ class SimplePostTagList extends StatelessWidget {
                                     // onAddToBlacklisted(tag);
                                   } else if (value == 'wiki') {
                                     launchWikiPage(
-                                      state.booru.url,
+                                      booru.url,
                                       tag.rawName,
                                     );
                                   } else if (value ==

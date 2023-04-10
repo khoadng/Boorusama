@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
@@ -18,23 +18,23 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required AccountRepository accountRepository,
-    required Api api,
-  })  : _accountRepository = accountRepository,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required DanbooruApi api,
+  })  : _currentUserBooruRepository = currentBooruConfigRepository,
         _api = api;
 
-  final AccountRepository _accountRepository;
-  final Api _api;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final DanbooruApi _api;
 
   @override
   Future<List<Search>> getSearchByDate(DateTime date) async {
     try {
-      return _accountRepository
+      return _currentUserBooruRepository
           .get()
           .then(
-            (account) => _api.getPopularSearchByDate(
-              account.username,
-              account.apiKey,
+            (booruConfig) => _api.getPopularSearchByDate(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               '${date.year}-${date.month}-${date.day}',
             ),
           )

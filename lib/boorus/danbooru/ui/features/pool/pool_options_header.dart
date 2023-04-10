@@ -8,9 +8,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/application/pools/pool_overview_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/core.dart';
 
 class PoolOptionsHeader extends StatelessWidget {
@@ -50,23 +49,25 @@ class PoolOptionsHeader extends StatelessWidget {
             builder: (context, state) {
               return TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).textTheme.titleLarge!.color,
+                  foregroundColor:
+                      Theme.of(context).textTheme.titleLarge!.color,
                   backgroundColor: Theme.of(context).cardColor,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
                 onPressed: () {
+                  final bloc = context.read<PoolOverviewBloc>();
                   Screen.of(context).size == ScreenSize.small
                       ? showMaterialModalBottomSheet(
                           context: context,
-                          builder: (context) => const _OrderMenu(),
+                          builder: (context) => _OrderMenu(bloc),
                         )
                       : showDialog(
                           context: context,
-                          builder: (context) => const AlertDialog(
+                          builder: (context) => AlertDialog(
                             contentPadding: EdgeInsets.zero,
-                            content: _OrderMenu(),
+                            content: _OrderMenu(bloc),
                           ),
                         );
                 },
@@ -86,12 +87,14 @@ class PoolOptionsHeader extends StatelessWidget {
 }
 
 class _OrderMenu extends StatelessWidget {
-  const _OrderMenu();
+  const _OrderMenu(this.bloc);
+
+  final PoolOverviewBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: BlocProvider.of<PoolOverviewBloc>(context),
+      value: bloc,
       child: Material(
         child: SafeArea(
           top: false,
@@ -101,7 +104,7 @@ class _OrderMenu extends StatelessWidget {
                 .map((e) => ListTile(
                       title: Text(_poolOrderToString(e)).tr(),
                       onTap: () {
-                        AppRouter.router.pop(context);
+                        Navigator.of(context).pop();
                         context
                             .read<PoolOverviewBloc>()
                             .add(PoolOverviewChanged(order: e));

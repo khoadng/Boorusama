@@ -3,9 +3,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
 class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 

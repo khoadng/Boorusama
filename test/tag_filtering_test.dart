@@ -3,12 +3,12 @@ import 'package:quiver/iterables.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
 
-Post _createPost(int id, List<String> tags) => Post(
+DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       id: id,
       thumbnailImageUrl: '',
       sampleImageUrl: '',

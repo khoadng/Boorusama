@@ -7,12 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/utils.dart';
 
-class TagDetailPage extends StatefulWidget {
+class TagDetailPage extends StatelessWidget
+    with DanbooruArtistCharacterPostCubitMixin {
   const TagDetailPage({
     super.key,
     required this.tagName,
@@ -27,85 +28,57 @@ class TagDetailPage extends StatefulWidget {
   final bool includeHeaders;
 
   @override
-  State<TagDetailPage> createState() => _TagDetailPageState();
-}
-
-class _TagDetailPageState extends State<TagDetailPage> {
-  var currentCategory = TagFilterCategory.newest;
-
-  @override
   Widget build(BuildContext context) {
-    return InfinitePostList(
-      onLoadMore: () => _load(),
-      onRefresh: (controller) => _refresh(),
-      sliverHeaderBuilder: (context) => [
-        if (widget.includeHeaders)
-          SliverAppBar(
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  goToBulkDownloadPage(
-                    context,
-                    [widget.tagName],
-                  );
-                },
-                icon: const Icon(Icons.download),
+    return BlocBuilder<DanbooruArtistCharacterPostCubit,
+        DanbooruArtistCharacterPostState>(
+      builder: (context, state) {
+        return InfinitePostList(
+          state: state,
+          onLoadMore: () => fetch(context),
+          onRefresh: (controller) => refresh(context),
+          sliverHeaderBuilder: (context) => [
+            if (includeHeaders)
+              SliverAppBar(
+                floating: true,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      goToBulkDownloadPage(
+                        context,
+                        [tagName],
+                      );
+                    },
+                    icon: const Icon(Icons.download),
+                  ),
+                ],
               ),
-            ],
-          ),
-        if (widget.includeHeaders)
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TagTitleName(tagName: widget.tagName),
-                widget.otherNamesBuilder(context),
-              ],
+            if (includeHeaders)
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TagTitleName(tagName: tagName),
+                    otherNamesBuilder(context),
+                  ],
+                ),
+              ),
+            if (includeHeaders)
+              const SliverToBoxAdapter(child: SizedBox(height: 50)),
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 10),
+              sliver: SliverToBoxAdapter(
+                child: CategoryToggleSwitch(
+                  onToggle: (category) => changeCategory(context, category),
+                ),
+              ),
             ),
-          ),
-        if (widget.includeHeaders)
-          const SliverToBoxAdapter(child: SizedBox(height: 50)),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 10),
-          sliver: SliverToBoxAdapter(
-            child: CategoryToggleSwitch(
-              onToggle: (category) => setState(() {
-                currentCategory = category;
-                _refresh();
-              }),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _load() {
-    context.read<PostBloc>().add(PostFetched(
-          tags: widget.tagName,
-          order: tagFilterCategoryToPostsOrder(currentCategory),
-          fetcher: SearchedPostFetcher.fromTags(
-            widget.tagName,
-            order: tagFilterCategoryToPostsOrder(currentCategory),
-          ),
-        ));
-  }
-
-  void _refresh() {
-    context.read<PostBloc>().add(
-          PostRefreshed(
-            tag: widget.tagName,
-            order: tagFilterCategoryToPostsOrder(currentCategory),
-            fetcher: SearchedPostFetcher.fromTags(
-              widget.tagName,
-              order: tagFilterCategoryToPostsOrder(currentCategory),
-            ),
-          ),
+          ],
         );
+      },
+    );
   }
 }
 
@@ -131,17 +104,6 @@ class TagTitleName extends StatelessWidget {
       ),
     );
   }
-}
-
-enum TagFilterCategory {
-  popular,
-  newest,
-}
-
-PostsOrder tagFilterCategoryToPostsOrder(TagFilterCategory category) {
-  if (category == TagFilterCategory.popular) return PostsOrder.popular;
-
-  return PostsOrder.newest;
 }
 
 // ignore: prefer-single-widget-per-file

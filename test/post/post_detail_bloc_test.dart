@@ -4,30 +4,32 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/domain/tags.dart';
+import '../common.dart';
 
-class MockPostRepository extends Mock implements PostRepository {}
+class MockPostRepository extends Mock implements DanbooruPostRepository {}
 
 class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
-
-class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
 class MockNoteRepository extends Mock implements NoteRepository {}
 
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentBooruConfigRepository {}
+
 void main() {
   final postRepo = MockPostRepository();
   final favRepo = MockFavoritesRepository();
-  final accountRepo = MockAccountRepository();
   final postVoteRepo = MockPostVoteRepository();
   final noteRepo = MockNoteRepository();
+  final currentBooruConfigRepo = MockCurrentUserBooruRepository();
 
   group('[post detail test]', () {
     blocTest<PostDetailBloc, PostDetailState>(
@@ -35,20 +37,18 @@ void main() {
       setUp: () {
         when(() => postRepo.putTag(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(postRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
         postVoteRepository: postVoteRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -57,7 +57,8 @@ void main() {
           ),
         ],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -70,8 +71,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'foo',
@@ -83,8 +84,8 @@ void main() {
         PostDetailState.initial().copyWith(
           id: 1,
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'bar',
@@ -106,24 +107,24 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
         postVoteRepository: postVoteRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -132,17 +133,17 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          nextPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -150,15 +151,12 @@ void main() {
     blocTest<PostDetailBloc, PostDetailState>(
       'index changed with notes load',
       setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => noteRepo.getNotesFrom(any())).thenAnswer((_) async => [
               Note.empty(),
               Note.empty(),
             ]);
       },
       tearDown: () {
-        reset(accountRepo);
         reset(noteRepo);
       },
       build: () => PostDetailBloc(
@@ -166,16 +164,18 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2, tags: ['translated']),
           ),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
         ],
         idGenerator: () => 1,
@@ -187,31 +187,31 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2, tags: ['translated']),
           ),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          nextPost: () => PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          nextPost: () => DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 3, tags: ['translated']),
           ),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 2),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 2),
             notes: [
               Note.empty(),
               Note.empty(),
@@ -226,30 +226,34 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
         when(() => postRepo.getPosts('foo', any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 3)]);
+            .thenAnswer(
+          (invocation) async => [DanbooruPost.empty().copyWith(id: 3)],
+        );
         when(() => postRepo.getPosts('bar', any(), limit: any(named: 'limit')))
-            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 4)]);
+            .thenAnswer(
+          (invocation) async => [DanbooruPost.empty().copyWith(id: 4)],
+        );
       },
       tearDown: () {
         reset(favRepo);
         reset(postRepo);
-        reset(accountRepo);
+        reset(currentBooruConfigRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 2,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -265,29 +269,30 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          nextPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          nextPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
@@ -295,22 +300,24 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-          previousPost: () =>
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 2)),
+          previousPost: () => DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
             Recommend(
               title: 'bar',
               posts: [
-                PostData.empty().copyWith(post: Post.empty().copyWith(id: 4)),
+                DanbooruPostData.empty()
+                    .copyWith(post: DanbooruPost.empty().copyWith(id: 4)),
               ],
               type: RecommendType.character,
             ),
@@ -321,23 +328,20 @@ void main() {
 
     blocTest<PostDetailBloc, PostDetailState>(
       'mode changed',
-      setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
-      },
-      tearDown: () {
-        reset(accountRepo);
-      },
+      // setUp: () {},
+      // tearDown: () {},
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -347,37 +351,39 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           enableSlideShow: true,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
 
     blocTest<PostDetailBloc, PostDetailState>(
       'slide show config changed',
-      setUp: () {
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
-      },
-      tearDown: () {
-        reset(accountRepo);
-      },
+      // setUp: () {
+      //   when(() => accountRepo.get())
+      //       .thenAnswer((invocation) async => Account.empty);
+      // },
+      // tearDown: () {
+      //   reset(accountRepo);
+      // },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -388,16 +394,16 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           slideShowConfig: PostDetailState.initial()
               .slideShowConfig
               .copyWith(skipAnimation: true),
-          currentPost:
-              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          currentPost: DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -407,23 +413,22 @@ void main() {
       setUp: () {
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -433,8 +438,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
           ),
@@ -449,23 +454,22 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         tagCache: {},
@@ -474,8 +478,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -489,14 +493,11 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -504,11 +505,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -518,16 +521,16 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -541,14 +544,12 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
+
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -556,11 +557,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          DanbooruPostData.empty()
+              .copyWith(post: DanbooruPost.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -571,8 +574,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
@@ -586,14 +589,11 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(id: 1, apiKey: '', username: ''));
         when(() => postVoteRepo.getPostVotes(any()))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -601,12 +601,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ],
@@ -618,22 +619,22 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(id: 1),
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ),
@@ -645,8 +646,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -654,7 +653,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -662,12 +660,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -681,9 +680,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.upvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 1,
               downScore: 0,
@@ -698,8 +697,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))
@@ -707,7 +704,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -715,12 +711,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -734,9 +731,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.upvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 1,
               downScore: 0,
@@ -744,9 +741,9 @@ void main() {
           ),
         ),
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.unvote,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -761,8 +758,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => PostVote.empty());
         when(() => postVoteRepo.getPostVotes(any()))
@@ -770,7 +765,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -778,12 +772,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -797,9 +792,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.downvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: -1,
@@ -814,8 +809,6 @@ void main() {
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get()).thenAnswer((invocation) async =>
-            const Account(apiKey: '', username: '', id: 100));
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((invocation) async => null);
         when(() => postVoteRepo.getPostVotes(any()))
@@ -823,7 +816,6 @@ void main() {
       },
       tearDown: () {
         reset(favRepo);
-        reset(accountRepo);
         reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
@@ -831,12 +823,13 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -850,9 +843,9 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.downvoted,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: -1,
@@ -860,9 +853,9 @@ void main() {
           ),
         ),
         PostDetailState.initial().copyWith(
-          currentPost: PostData.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
             voteState: VoteState.unvote,
-            post: Post.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               upScore: 0,
               downScore: 0,
@@ -888,13 +881,14 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         defaultDetailsStyle: DetailsDisplay.imageFocus,
         posts: [
-          PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -910,8 +904,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -920,8 +914,8 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -937,8 +931,8 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           fullScreen: false,
-          currentPost: PostData.empty().copyWith(
-            post: Post.empty().copyWith(
+          currentPost: DanbooruPostData.empty().copyWith(
+            post: DanbooruPost.empty().copyWith(
               id: 1,
               artistTags: ['foo'],
               characterTags: ['bar'],
@@ -967,11 +961,12 @@ void main() {
         noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
-        accountRepository: accountRepo,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        booruUserIdentityProvider: createIdentityProvider(),
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData.empty(),
+          DanbooruPostData.empty(),
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,

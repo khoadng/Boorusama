@@ -4,19 +4,27 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/utils.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 
-class PostFileNameGenerator implements FileNameGenerator<Post> {
+class BoorusamaStyledFileNameGenerator
+    implements FileNameGenerator<DanbooruPost> {
   @override
-  String generateFor(Post item) =>
+  String generateFor(DanbooruPost item) =>
       '${generateFullReadableName(item)} - ${path.basename(item.downloadUrl)}'
           .fixInvalidCharacterForPathName();
 }
 
-class Md5OnlyFileNameGenerator implements FileNameGenerator<Post> {
+class Md5OnlyFileNameGenerator implements FileNameGenerator<DanbooruPost> {
   @override
-  String generateFor(Post item) => '${item.md5}${extension(item.downloadUrl)}';
+  String generateFor(DanbooruPost item) =>
+      '${item.md5}${extension(item.downloadUrl)}';
+}
+
+class DownloadUrlBaseNameFileNameGenerator implements FileNameGenerator<Post> {
+  @override
+  String generateFor(Post item) => path.basename(item.downloadUrl);
 }
 
 extension InvalidFileCharsExtension on String {

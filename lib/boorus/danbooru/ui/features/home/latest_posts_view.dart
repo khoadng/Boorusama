@@ -7,13 +7,13 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'most_search_tag_list.dart';
 
@@ -22,16 +22,18 @@ class LatestView extends StatefulWidget {
     super.key,
     this.onMenuTap,
     this.useAppBarPadding,
+    required this.onSelectedTagChanged,
   });
 
   final VoidCallback? onMenuTap;
   final bool? useAppBarPadding;
+  final void Function(String tag) onSelectedTagChanged;
 
   @override
   State<LatestView> createState() => _LatestViewState();
 }
 
-class _LatestViewState extends State<LatestView> {
+class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   final AutoScrollController _autoScrollController = AutoScrollController();
   final ValueNotifier<String> _selectedTag = ValueNotifier('');
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
@@ -39,11 +41,7 @@ class _LatestViewState extends State<LatestView> {
 
   void _sendRefresh(String tag) {
     _autoScrollController.jumpTo(0);
-
-    context.read<PostBloc>().add(PostRefreshed(
-          tag: tag,
-          fetcher: SearchedPostFetcher.fromTags(tag),
-        ));
+    refresh();
   }
 
   @override
@@ -55,6 +53,7 @@ class _LatestViewState extends State<LatestView> {
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
         .listen((tag) {
+      widget.onSelectedTagChanged(tag);
       _sendRefresh(tag);
     }).addTo(_compositeSubscription);
   }
@@ -70,33 +69,35 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    return InfinitePostList(
-      onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-            tags: _selectedTag.value,
-            fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
-          )),
-      onRefresh: (controller) {
-        _sendRefresh(_selectedTag.value);
-      },
-      scrollController: _autoScrollController,
-      sliverHeaderBuilder: (context) => [
-        _AppBar(
-          onMenuTap: widget.onMenuTap,
-          primary: widget.useAppBarPadding,
-        ),
-        SliverToBoxAdapter(
-          child: ValueListenableBuilder<String>(
-            valueListenable: _selectedTag,
-            builder: (context, value, child) => _MostSearchTagSection(
-              selected: value,
-              onSelected: (search) {
-                _selectedTag.value =
-                    search.keyword == value ? '' : search.keyword;
-              },
+    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
+      builder: (context, state) {
+        return InfinitePostList(
+          state: state,
+          onLoadMore: () => fetch(),
+          onRefresh: (controller) {
+            _sendRefresh(_selectedTag.value);
+          },
+          scrollController: _autoScrollController,
+          sliverHeaderBuilder: (context) => [
+            _AppBar(
+              onMenuTap: widget.onMenuTap,
+              primary: widget.useAppBarPadding,
             ),
-          ),
-        ),
-      ],
+            SliverToBoxAdapter(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _selectedTag,
+                builder: (context, value, child) => _MostSearchTagSection(
+                  selected: value,
+                  onSelected: (search) {
+                    _selectedTag.value =
+                        search.keyword == value ? '' : search.keyword;
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -2,14 +2,14 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 class WikiRepositoryApi implements WikiRepository {
-  WikiRepositoryApi(Api api) : _api = api;
-  final Api _api;
+  WikiRepositoryApi(DanbooruApi api) : _api = api;
+  final DanbooruApi _api;
 
   @override
   Future<Wiki?> getWikiFor(

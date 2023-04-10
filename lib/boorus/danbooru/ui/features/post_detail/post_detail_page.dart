@@ -7,23 +7,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/floating_glassy_card.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
@@ -43,7 +47,7 @@ class PostDetailPage extends StatefulWidget {
   });
 
   final int intitialIndex;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -197,7 +201,7 @@ class _FloatingQuickActionBar extends StatelessWidget {
       bottom: 12,
       left: MediaQuery.of(context).size.width * 0.05,
       child: FloatingGlassyCard(
-        child: BlocSelector<PostDetailBloc, PostDetailState, PostData>(
+        child: BlocSelector<PostDetailBloc, PostDetailState, DanbooruPostData>(
           selector: (state) => state.currentPost,
           builder: (context, post) {
             return ActionBar(
@@ -376,7 +380,7 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.recommends,
   });
 
-  final PostData post;
+  final DanbooruPostData post;
   final ValueNotifier<String?> imagePath;
   final ScreenSize size;
   final List<Recommend> recommends;
@@ -532,10 +536,13 @@ class MoreActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final post =
         context.select((PostDetailBloc bloc) => bloc.state.currentPost.post);
-    final endpoint =
-        context.select((ApiEndpointCubit cubit) => cubit.state.booru.url);
+    final endpoint = context.select(
+      (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
+    );
     final authenticationState =
         context.select((AuthenticationCubit cubit) => cubit.state);
+
+    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -549,6 +556,13 @@ class MoreActionButton extends StatelessWidget {
               switch (value) {
                 case 'download':
                   download(post);
+                  break;
+                case 'add_to_bookmark':
+                  context.read<BookmarkCubit>().addBookmark(
+                        post.sampleImageUrl,
+                        booru!,
+                        post,
+                      );
                   break;
                 case 'add_to_favgroup':
                   goToAddToFavoriteGroupSelectionPage(context, [post]);
@@ -572,6 +586,10 @@ class MoreActionButton extends StatelessWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
+              ),
+              const PopupMenuItem(
+                value: 'add_to_bookmark',
+                child: Text('Add to Bookmark'),
               ),
               if (authenticationState is Authenticated)
                 const PopupMenuItem(
@@ -654,7 +672,7 @@ class _BackButton extends StatelessWidget {
         context
             .read<SliverPostGridBloc>()
             .add(SliverPostGridExited(lastIndex: currentIndex));
-        AppRouter.router.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

@@ -2,26 +2,59 @@
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
-class MockAccountRepo extends Mock implements AccountRepository {}
+class MockCurrentUserBooruRepository extends Mock
+    implements CurrentBooruConfigRepository {}
 
-AccountRepository mockAccountRepo({
-  Account? account,
+class MockBooruUserIdentityProvider extends Mock
+    implements BooruUserIdentityProvider {}
+
+CurrentBooruConfigRepository mockUserBooruRepo({
+  BooruConfig? booruConfig,
 }) {
-  final repo = MockAccountRepo();
-  when(() => repo.get()).thenAnswer((_) async => account ?? Account.empty);
+  final repo = MockCurrentUserBooruRepository();
+  when(() => repo.get()).thenAnswer((_) async =>
+      booruConfig ??
+      const BooruConfig(
+        id: 0,
+        booruId: 0,
+        apiKey: '',
+        login: '',
+        url: '',
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
+        name: '',
+        ratingFilter: BooruConfigRatingFilter.none,
+      ));
 
   return repo;
 }
 
-AccountRepository emptyAccountRepo() => mockAccountRepo();
-AccountRepository fakeAccountRepo() => mockAccountRepo(
-      account: Account.create('foo', 'bar', 0),
+CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
+      booruConfig: const BooruConfig(
+        id: 1,
+        booruId: 1,
+        apiKey: 'apiKey',
+        login: 'login',
+        url: '',
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
+        name: 'foo',
+        ratingFilter: BooruConfigRatingFilter.none,
+      ),
     );
 
 class MockUserRepo extends Mock implements UserRepository {}
+
+BooruUserIdentityProvider createIdentityProvider() {
+  final mock = MockBooruUserIdentityProvider();
+
+  when(() => mock.getAccountIdFromConfig(any()))
+      .thenAnswer((invocation) async => 1);
+
+  return mock;
+}
 
 UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();

@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/utils/bloc/bloc.dart';
 
 class PostFavoriteState extends Equatable
     implements InfiniteLoadState<User, PostFavoriteState> {

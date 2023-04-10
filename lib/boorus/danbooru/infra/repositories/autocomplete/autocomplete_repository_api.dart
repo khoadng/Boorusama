@@ -2,10 +2,10 @@
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
@@ -53,21 +53,21 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
-    required Api api,
-    required AccountRepository accountRepository,
-  })  : _accountRepository = accountRepository,
+    required DanbooruApi api,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
+  })  : _currentUserBooruRepository = currentBooruConfigRepository,
         _api = api;
 
-  final Api _api;
-  final AccountRepository _accountRepository;
+  final DanbooruApi _api;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<List<AutocompleteData>> getAutocomplete(String query) async =>
-      _accountRepository
+      _currentUserBooruRepository
           .get()
           .then((account) => _api.autocomplete(
-                account.username,
-                account.apiKey,
+                account?.login,
+                account?.apiKey,
                 query,
                 'tag_query',
                 10,

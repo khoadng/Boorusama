@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends StatefulWidget {

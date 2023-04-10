@@ -8,20 +8,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/circular_icon_button.dart';
+import 'package:boorusama/core/ui/file_details_section.dart';
 import 'models/parent_child_data.dart';
 import 'post_detail_page.dart';
-import 'widgets/file_details_section.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/post_slider_desktop.dart';
 import 'widgets/recommend_character_list.dart';
@@ -39,7 +39,7 @@ class PostDetailPageDesktop extends StatefulWidget {
   });
 
   final int intitialIndex;
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
 
   @override
   State<PostDetailPageDesktop> createState() => _PostDetailPageDesktopState();
@@ -262,7 +262,7 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.recommends,
   });
 
-  final PostData post;
+  final DanbooruPostData post;
   final ValueNotifier<String?> imagePath;
   final List<Recommend> recommends;
 
@@ -452,7 +452,7 @@ class _BackButton extends StatelessWidget {
             : const Icon(Icons.arrow_back_ios),
       ),
       onPressed: () {
-        AppRouter.router.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

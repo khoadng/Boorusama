@@ -1,7 +1,9 @@
 // Project imports:
+import 'package:boorusama/core/domain/image.dart';
+import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'rating.dart';
 
-abstract class Post {
+abstract class Post with MediaInfoMixin, ImageInfoMixin {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
@@ -10,9 +12,9 @@ abstract class Post {
   List<String> get tags;
   String? get source;
   Rating get rating;
-  String get format;
-  double get width;
-  double get height;
+  bool get hasComment;
+  bool get isTranslated;
+  bool get hasParentOrChildren;
 
   String get downloadUrl;
 

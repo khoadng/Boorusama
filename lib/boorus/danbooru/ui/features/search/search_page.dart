@@ -9,21 +9,27 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/search/empty_view.dart';
+import 'package:boorusama/core/ui/search/error_view.dart';
+import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/core/ui/search/search_button.dart';
+import 'package:boorusama/core/ui/search/search_landing_view.dart';
+import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'empty_view.dart';
-import 'error_view.dart';
+import 'package:boorusama/core/ui/tag_suggestion_items.dart';
+import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
-import 'search_button.dart';
-import 'selected_tag_list.dart';
 
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+import 'package:boorusama/core/application/search_history.dart'
     hide SearchHistoryCleared;
 
 class SearchPage extends StatefulWidget {
@@ -32,11 +38,13 @@ class SearchPage extends StatefulWidget {
     required this.metatags,
     required this.metatagHighlightColor,
     this.autoFocusSearchBar = true,
+    required this.pagination,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
   final bool autoFocusSearchBar;
+  final bool pagination;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -84,11 +92,13 @@ class _SearchPageState extends State<SearchPage> {
                 focus: focus,
                 autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
+                pagination: widget.pagination,
               )
             : _SmallLayout(
                 focus: focus,
                 autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
+                pagination: widget.pagination,
               ),
       ),
     );
@@ -100,11 +110,13 @@ class _LargeLayout extends StatelessWidget {
     required this.focus,
     required this.queryEditingController,
     this.autoFocus = true,
+    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
   final bool autoFocus;
+  final bool pagination;
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +174,9 @@ class _LargeLayout extends StatelessWidget {
                       child: Text('Your result will appear here'),
                     );
                   case DisplayState.result:
-                    return const ResultView();
+                    return ResultView(
+                      pagination: pagination,
+                    );
                   case DisplayState.noResult:
                     return EmptyView(text: 'search.no_result'.tr());
                   case DisplayState.error:
@@ -220,16 +234,23 @@ class _LandingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LandingView(
-      onOptionTap: (value) {
-        context.read<SearchBloc>().add(
-              SearchRawMetatagSelected(
-                tag: value,
-              ),
-            );
-        onFocusRequest?.call();
-        onTextChanged.call('$value:');
+    return SearchLandingView(
+      onAddTagRequest: () {
+        final bloc = context.read<FavoriteTagBloc>();
+        goToQuickSearchPage(
+          context,
+          onSubmitted: (context, text) {
+            Navigator.of(context).pop();
+            bloc.add(FavoriteTagAdded(tag: text));
+          },
+          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
+        );
       },
+      trendingBuilder: (context) => TrendingSection(
+        onTagTap: (value) {
+          _onTagTap(context, value);
+        },
+      ),
       onHistoryTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(
@@ -239,7 +260,6 @@ class _LandingView extends StatelessWidget {
             );
       },
       onTagTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
         _onTagTap(context, value);
       },
       onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
@@ -254,11 +274,25 @@ class _LandingView extends StatelessWidget {
           onTap: (value) => _onHistoryTap(context, value, searchBloc),
         );
       },
+      metatagsBuilder: (context) => DanbooruMetatagsSection(
+        onOptionTap: (value) {
+          context.read<SearchBloc>().add(
+                SearchRawMetatagSelected(
+                  tag: value,
+                ),
+              );
+          onFocusRequest?.call();
+          onTextChanged.call('$value:');
+        },
+      ),
     );
   }
 
-  void _onTagTap(BuildContext context, String value) =>
-      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  void _onTagTap(BuildContext context, String value) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  }
 
   void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
     Navigator.of(context).pop();
@@ -309,11 +343,13 @@ class _SmallLayout extends StatefulWidget {
     required this.focus,
     required this.queryEditingController,
     this.autoFocus = true,
+    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
   final bool autoFocus;
+  final bool pagination;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -413,6 +449,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
         );
       case DisplayState.result:
         return ResultView(
+          pagination: widget.pagination,
           scrollController: scrollController,
           headerBuilder: () => [
             SliverAppBar(
@@ -482,6 +519,7 @@ class _TagSuggestionItems extends StatelessWidget {
         context.select((SearchBloc bloc) => bloc.state.currentQuery);
     final histories = context
         .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
 
     return SliverTagSuggestionItemsWithHistory(
       tags: suggestionTags,
@@ -502,6 +540,7 @@ class _TagSuggestionItems extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
+      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
     );
   }
 }
@@ -549,7 +588,7 @@ class _SearchBar extends StatelessWidget {
                 ? context
                     .read<SearchBloc>()
                     .add(const SearchGoBackToSearchOptionsRequested())
-                : AppRouter.router.pop(context),
+                : Navigator.of(context).pop(),
           );
         },
       ),

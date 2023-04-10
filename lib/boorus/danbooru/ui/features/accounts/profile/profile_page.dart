@@ -6,12 +6,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/common.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({

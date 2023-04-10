@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'download_bloc.dart';
 import 'download_options.dart';
 import 'download_state.dart';
@@ -25,7 +25,7 @@ class BulkImageDownloadState extends Equatable {
     required this.status,
     required this.selectedTags,
     required this.options,
-    required DownloadState<Post> downloadState,
+    required DownloadState<DanbooruPost> downloadState,
   }) : _downloadState = downloadState;
 
   factory BulkImageDownloadState.initial() => BulkImageDownloadState(
@@ -35,7 +35,7 @@ class BulkImageDownloadState extends Equatable {
           onlyDownloadNewFile: true,
           storagePath: '',
         ),
-        downloadState: DownloadState<Post>.initial(),
+        downloadState: DownloadState<DanbooruPost>.initial(),
       );
 
   int get totalCount => _downloadState.totalCount;
@@ -54,13 +54,13 @@ class BulkImageDownloadState extends Equatable {
   final List<String> selectedTags;
   final DownloadOptions options;
 
-  final DownloadState<Post> _downloadState;
+  final DownloadState<DanbooruPost> _downloadState;
 
   BulkImageDownloadState copyWith({
     BulkImageDownloadStatus? status,
     List<String>? selectedTags,
     DownloadOptions? options,
-    DownloadState<Post>? downloadState,
+    DownloadState<DanbooruPost>? downloadState,
   }) =>
       BulkImageDownloadState(
         status: status ?? this.status,
@@ -155,7 +155,7 @@ class _DownloadStateChanged extends BulkImageDownloadEvent {
     required this.dState,
   });
 
-  final DownloadState<Post> dState;
+  final DownloadState<DanbooruPost> dState;
 
   @override
   List<Object?> get props => [dState];

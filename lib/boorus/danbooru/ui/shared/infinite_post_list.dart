@@ -7,16 +7,19 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/posts.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/multi_selectable_mixin.dart';
 
-class InfinitePostList extends StatefulWidget {
+class InfinitePostList<T> extends StatefulWidget {
   const InfinitePostList({
     super.key,
     required this.onLoadMore,
@@ -26,6 +29,7 @@ class InfinitePostList extends StatefulWidget {
     this.refreshController,
     this.contextMenuBuilder,
     this.multiSelectActions,
+    required this.state,
   });
 
   final VoidCallback onLoadMore;
@@ -33,8 +37,9 @@ class InfinitePostList extends StatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
-  final Widget Function(PostData post, void Function() next)?
-      contextMenuBuilder;
+  final Widget Function(Post post, void Function() next)? contextMenuBuilder;
+
+  final PostState<DanbooruPostData, T> state;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -45,11 +50,12 @@ class InfinitePostList extends StatefulWidget {
   State<InfinitePostList> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState extends State<InfinitePostList> {
-  var selectedPosts = <Post>[];
-  var multiSelect = false;
+class _InfinitePostListState<T> extends State<InfinitePostList<T>>
+    with MultiSelectableMixin<InfinitePostList<T>, Post> {
   late final AutoScrollController _autoScrollController;
   late final RefreshController _refreshController;
+
+  PostState<DanbooruPostData, T> get state => widget.state;
 
   @override
   void initState() {
@@ -70,100 +76,83 @@ class _InfinitePostListState extends State<InfinitePostList> {
     }
   }
 
+  //TODO: clear selected when refreshing
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
+    final authState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocListener<PostBloc, PostState>(
-      listener: (context, state) {
-        if (state.refreshing) {
-          setState(() {
-            selectedPosts.clear();
-          });
-        }
-      },
-      child: WillPopScope(
-        onWillPop: _onWillPop,
-        child: InfiniteLoadListScrollView(
-          bottomBuilder: () =>
-              widget.multiSelectActions?.call(
-                selectedPosts,
-                _endMultiSelect,
-              ) ??
-              DefaultMultiSelectionActions(
-                selectedPosts: selectedPosts,
-                endMultiSelect: _endMultiSelect,
-              ),
-          topBuilder: () => AppBar(
-            leading: IconButton(
-              onPressed: _endMultiSelect,
-              icon: const Icon(Icons.close),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: InfiniteLoadListScrollView(
+        bottomBuilder: () =>
+            widget.multiSelectActions?.call(
+              selected,
+              endMultiSelect,
+            ) ??
+            DefaultMultiSelectionActions(
+              selectedPosts: selected,
+              endMultiSelect: endMultiSelect,
             ),
-            title: selectedPosts.isEmpty
-                ? const Text('Select items')
-                : Text('${selectedPosts.length} Items selected'),
+        topBuilder: () => AppBar(
+          leading: IconButton(
+            onPressed: endMultiSelect,
+            icon: const Icon(Icons.close),
           ),
-          enableRefresh: widget.onRefresh != null,
-          multiSelect: multiSelect,
-          isLoading: state.loading,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => widget.onLoadMore.call(),
-          onRefresh: (controller) {
-            widget.onRefresh?.call(controller);
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => controller.refreshCompleted(),
-            );
-          },
-          scrollController: _autoScrollController,
-          refreshController: _refreshController,
-          sliverBuilder: (controller) => [
-            if (widget.sliverHeaderBuilder != null)
-              ...widget.sliverHeaderBuilder!(context),
-            PostGrid(
-              controller: controller,
-              onPostSelectChanged: (post, selected) {
-                setState(() {
-                  if (selected) {
-                    selectedPosts.add(post);
-                  } else {
-                    selectedPosts.remove(post);
-                  }
-                });
-              },
-              multiSelect: multiSelect,
-              contextMenuBuilder: (post) =>
-                  widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
-                  DefaultPostContextMenu(
-                    onMultiSelect: _enableMultiSelect,
-                    post: post,
-                  ),
-            ),
-          ],
+          title: selected.isEmpty
+              ? const Text('Select items')
+              : Text('${selected.length} Items selected'),
         ),
+        enableRefresh: widget.onRefresh != null,
+        multiSelect: multiSelect,
+        isLoading: state.loading,
+        enableLoadMore: state.hasMore,
+        onLoadMore: () => widget.onLoadMore.call(),
+        onRefresh: (controller) {
+          widget.onRefresh?.call(controller);
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => controller.refreshCompleted(),
+          );
+        },
+        scrollController: _autoScrollController,
+        refreshController: _refreshController,
+        sliverBuilder: (controller) => [
+          if (widget.sliverHeaderBuilder != null)
+            ...widget.sliverHeaderBuilder!(context),
+          DanbooruPostGrid(
+            state: state,
+            scrollController: controller,
+            usePlaceholder: true,
+            onPostSelectChanged: (post, selected) {
+              if (selected) {
+                addSelected(post);
+              } else {
+                removeSelected(post);
+              }
+            },
+            multiSelect: multiSelect,
+            contextMenuBuilder: (post) =>
+                widget.contextMenuBuilder?.call(post, enableMultiSelect) ??
+                DefaultPostContextMenu(
+                  hasAccount: authState is Authenticated,
+                  onMultiSelect: enableMultiSelect,
+                  post: post,
+                ),
+          ),
+        ],
       ),
     );
   }
 
   Future<bool> _onWillPop() async {
     if (multiSelect) {
-      _endMultiSelect();
+      endMultiSelect();
 
       return false;
     } else {
       return true;
     }
-  }
-
-  void _enableMultiSelect() => setState(() {
-        multiSelect = true;
-      });
-
-  void _endMultiSelect() {
-    setState(() {
-      multiSelect = false;
-      selectedPosts.clear();
-    });
   }
 }
 

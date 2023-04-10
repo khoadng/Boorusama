@@ -7,8 +7,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 @immutable
@@ -96,19 +97,20 @@ class BlacklistedTagRequested extends BlacklistedTagsEvent {
   List<Object?> get props => [];
 }
 
-//TODO: handle empty account, just in case
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
-    required AccountRepository accountRepository,
+    required BooruUserIdentityProvider booruUserIdentityProvider,
+    required CurrentBooruConfigRepository currentBooruConfigRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {
-      final account = await accountRepository.get();
-      if (account == Account.empty) return;
+      final config = await currentBooruConfigRepository.get();
+      final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
+      if (id == null) return;
 
       await tryAsync<List<String>>(
-        action: () => blacklistedTagsRepository.getBlacklistedTags(account.id),
+        action: () => blacklistedTagsRepository.getBlacklistedTags(id),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
@@ -120,17 +122,18 @@ class BlacklistedTagsBloc
     });
 
     on<BlacklistedTagAdded>((event, emit) async {
-      if (state.blacklistedTags == null) {
+      final config = await currentBooruConfigRepository.get();
+      final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
+
+      if (state.blacklistedTags == null || id == null) {
         event.onFailure?.call('Fail to add tag');
 
         return;
       }
 
-      final account = await accountRepository.get();
       final tags = [...state.blacklistedTags!, event.tag];
       await tryAsync<bool>(
-        action: () =>
-            blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+        action: () => blacklistedTagsRepository.setBlacklistedTags(id, tags),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onUnknownFailure: (stackTrace, error) {
           event.onFailure?.call('Fail to add tag');
@@ -146,17 +149,19 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagRemoved>(
       (event, emit) async {
-        if (state.blacklistedTags == null) {
+        final config = await currentBooruConfigRepository.get();
+        final id =
+            await booruUserIdentityProvider.getAccountIdFromConfig(config);
+
+        if (state.blacklistedTags == null || id == null) {
           event.onFailure?.call('Fail to remove tag');
 
           return;
         }
 
-        final account = await accountRepository.get();
         final tags = [...state.blacklistedTags!]..remove(event.tag);
         await tryAsync<bool>(
-          action: () =>
-              blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+          action: () => blacklistedTagsRepository.setBlacklistedTags(id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onUnknownFailure: (stackTrace, error) {
             event.onFailure?.call('Fail to remove tag');
@@ -174,20 +179,22 @@ class BlacklistedTagsBloc
 
     on<BlacklistedTagReplaced>(
       (event, emit) async {
-        if (state.blacklistedTags == null) {
+        final config = await currentBooruConfigRepository.get();
+        final id =
+            await booruUserIdentityProvider.getAccountIdFromConfig(config);
+
+        if (state.blacklistedTags == null || id == null) {
           event.onFailure?.call('Fail to replace tag');
 
           return;
         }
 
-        final account = await accountRepository.get();
         final tags = [
           ...[...state.blacklistedTags!]..remove(event.oldTag),
           event.newTag,
         ];
         await tryAsync<bool>(
-          action: () =>
-              blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+          action: () => blacklistedTagsRepository.setBlacklistedTags(id, tags),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onUnknownFailure: (stackTrace, error) {
             event.onFailure?.call('Fail to replace tag');

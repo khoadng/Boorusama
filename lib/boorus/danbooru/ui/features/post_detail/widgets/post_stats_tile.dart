@@ -6,9 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_info_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
@@ -21,7 +21,7 @@ class PostStatsTile extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
   });
 
-  final Post post;
+  final DanbooruPost post;
   final EdgeInsets padding;
 
   @override
@@ -132,7 +132,7 @@ class _StatButton extends StatelessWidget {
   }
 }
 
-String _generatePercentText(Post post) {
+String _generatePercentText(DanbooruPost post) {
   return post.totalVote > 0
       ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
       : '';
@@ -145,7 +145,7 @@ class VoterDetailsView extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<VoterDetailsView> createState() => _VoterDetailsViewState();
@@ -258,7 +258,7 @@ class FavoriterDetailsView extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<FavoriterDetailsView> createState() => _FavoriterDetailsViewState();

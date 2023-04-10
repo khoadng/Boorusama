@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 
 class PoolDescriptionRepositoryApi implements PoolDescriptionRepository {
   const PoolDescriptionRepositoryApi({

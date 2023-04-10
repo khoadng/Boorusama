@@ -8,12 +8,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'blacklisted_tags_search_page.dart';
@@ -69,7 +69,6 @@ class BlacklistedTagsPage extends StatelessWidget {
 
             goToBlacklistedTagsSearchPage(
               context,
-              oldWidget: this,
               onSelectDone: (tagItems) {
                 bloc.add(BlacklistedTagAdded(
                   tag: tagItems.map((e) => e.toString()).join(' '),
@@ -132,7 +131,6 @@ class BlacklistedTagsList extends StatelessWidget {
                             ));
                             Navigator.of(context).pop();
                           },
-                          oldWidget: this,
                         );
                       },
                     );

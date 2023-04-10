@@ -6,11 +6,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
+import 'package:boorusama/core/ui/source_link.dart';
 import 'package:boorusama/core/utils.dart';
-import 'source_link.dart';
 
 enum ArtistCommentaryTranlationState {
   original,
@@ -23,7 +23,7 @@ class ArtistSection extends StatefulWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   State<ArtistSection> createState() => _ArtistSectionState();

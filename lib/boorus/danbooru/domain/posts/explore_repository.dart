@@ -1,18 +1,18 @@
 // Project imports:
-import 'post.dart';
+import 'danbooru_post.dart';
 import 'time_scale.dart';
 
 abstract class ExploreRepository {
-  Future<List<Post>> getPopularPosts(
+  Future<List<DanbooruPost>> getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale, {
     int? limit,
   });
 
-  Future<List<Post>> getMostViewedPosts(DateTime date);
+  Future<List<DanbooruPost>> getMostViewedPosts(DateTime date);
 
-  Future<List<Post>> getHotPosts(
+  Future<List<DanbooruPost>> getHotPosts(
     int page, {
     int? limit,
   });

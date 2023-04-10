@@ -1,14 +1,56 @@
 [
     {
         "name" : "danbooru",
-        "url" : "https://danbooru.donmai.us/"
+        "url" : "https://danbooru.donmai.us/",
+        "cheatsheet" : "https://danbooru.donmai.us/wiki_pages/help:cheatsheet",
+        "login_type" : "login_api_key"
     },
     {
         "name" : "safebooru",
-        "url" : "https://safebooru.donmai.us/"
+        "url" : "https://safebooru.donmai.us/",
+        "cheatsheet" : "https://safebooru.donmai.us/wiki_pages/help:cheatsheet",
+        "login_type" : "login_api_key"
     },
     {
         "name" : "testbooru",
-        "url" : "https://testbooru.donmai.us/"
+        "url" : "https://testbooru.donmai.us/",
+        "cheatsheet" : "https://safebooru.donmai.us/wiki_pages/help:cheatsheet",
+        "login_type" : "login_api_key"
+    },
+    {
+        "name" : "gelbooru",
+        "url" : "https://gelbooru.com/",
+        "cheatsheet" : "https://gelbooru.com/index.php?page=help&topic=cheatsheet",
+        "login_type" : "login_api_key"
+    },
+    {
+        "name" : "aibooru",
+        "url" : "https://aibooru.online/",
+        "cheatsheet" : "https://aibooru.online/wiki_pages/help:cheatsheet",
+        "login_type" : "login_api_key"
+    },
+    {
+        "name" : "konachan",
+        "url" : "https://konachan.com/",
+        "cheatsheet" : "https://konachan.com/help/cheatsheet",
+        "login_type" : "login_password_hashed"
+    },
+    {
+        "name" : "konachan",
+        "url" : "https://konachan.net/",
+        "cheatsheet" : "https://konachan.net/help/cheatsheet",
+        "login_type" : "login_password_hashed"
+    },
+    {
+        "name" : "yandere",
+        "url" : "https://yande.re/",
+        "cheatsheet" : "https://yande.re/help/cheatsheet",
+        "login_type" : "login_password_hashed"
+    },
+    {
+        "name" : "sakugabooru",
+        "url" : "https://sakugabooru.com/",
+        "cheatsheet" : "https://sakugabooru.com/help/cheatsheet",
+        "login_type" : "login_password_hashed"
     }
 ]

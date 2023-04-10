@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<User> parseUser(
@@ -29,12 +29,12 @@ List<UserSelf> parseUserSelf(
 class UserRepositoryApi implements UserRepository {
   UserRepositoryApi(
     this._api,
-    this._accountRepository,
+    this._currentBooruRepository,
     this.defaultBlacklistedTags,
   );
 
-  final AccountRepository _accountRepository;
-  final Api _api;
+  final CurrentBooruConfigRepository _currentBooruRepository;
+  final DanbooruApi _api;
   final List<String> defaultBlacklistedTags;
 
   @override
@@ -64,12 +64,12 @@ class UserRepositoryApi implements UserRepository {
   }
 
   @override
-  Future<User> getUserById(int id) => _accountRepository
+  Future<User> getUserById(int id) => _currentBooruRepository
       .get()
       .then(
-        (account) => _api.getUserById(
-          account.username,
-          account.apiKey,
+        (booruConfig) => _api.getUserById(
+          booruConfig?.login,
+          booruConfig?.apiKey,
           id,
         ),
       )
@@ -78,12 +78,12 @@ class UserRepositoryApi implements UserRepository {
       .then((d) => userDtoToUser(d));
 
   @override
-  Future<UserSelf?> getUserSelfById(int id) => _accountRepository
+  Future<UserSelf?> getUserSelfById(int id) => _currentBooruRepository
       .get()
       .then(
-        (account) => _api.getUserById(
-          account.username,
-          account.apiKey,
+        (booruConfig) => _api.getUserById(
+          booruConfig?.login,
+          booruConfig?.apiKey,
           id,
         ),
       )

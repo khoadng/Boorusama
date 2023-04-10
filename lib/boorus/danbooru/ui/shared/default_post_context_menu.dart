@@ -9,9 +9,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class DefaultPostContextMenu extends StatelessWidget {
@@ -19,39 +20,38 @@ class DefaultPostContextMenu extends StatelessWidget {
     super.key,
     required this.post,
     this.onMultiSelect,
+    required this.hasAccount,
   });
 
-  final PostData post;
+  final Post post;
   final void Function()? onMultiSelect;
+  final bool hasAccount;
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
-
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
             'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(context, post.post),
+            onPressed: () => goToImagePreviewPage(context, post),
           ),
-          if (post.post.hasComment)
+          if (post.hasComment)
             ContextMenuButtonConfig(
               'post.action.view_comments'.tr(),
-              onPressed: () => goToCommentPage(context, post.post.id),
+              onPressed: () => goToCommentPage(context, post.id),
             ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
-            onPressed: () => download(post.post),
+            onPressed: () => download(post),
           ),
-          if (authState is Authenticated)
+          if (hasAccount)
             ContextMenuButtonConfig(
               'post.action.add_to_favorite_group'.tr(),
               onPressed: () {
                 goToAddToFavoriteGroupSelectionPage(
                   context,
-                  [post.post],
+                  [post],
                 );
               },
             ),
@@ -77,7 +77,7 @@ class FavoriteGroupsPostContextMenu extends StatelessWidget {
     required this.onRemoveFromFavGroup,
   });
 
-  final PostData post;
+  final Post post;
   final void Function()? onMultiSelect;
   final void Function()? onRemoveFromFavGroup;
 
@@ -91,11 +91,11 @@ class FavoriteGroupsPostContextMenu extends StatelessWidget {
         buttonConfigs: [
           ContextMenuButtonConfig(
             'Preview',
-            onPressed: () => goToImagePreviewPage(context, post.post),
+            onPressed: () => goToImagePreviewPage(context, post),
           ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
-            onPressed: () => download(post.post),
+            onPressed: () => download(post),
           ),
           if (authState is Authenticated)
             ContextMenuButtonConfig(

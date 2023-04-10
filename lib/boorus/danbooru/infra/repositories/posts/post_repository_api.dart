@@ -2,92 +2,136 @@
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as core;
+import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
-List<Post> parsePost(HttpResponse<dynamic> value) => parse(
+List<DanbooruPost> parsePost(
+  HttpResponse<dynamic> value,
+  ImageSourceComposer<PostDto> urlComposer,
+) =>
+    parse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
-    ).map(postDtoToPost).where(isPostValid).toList();
+    ).map((e) => postDtoToPost(e, urlComposer)).where(isPostValid).toList();
 
-List<Post> Function(HttpResponse<dynamic> value) parsePostWithOptions({
+List<DanbooruPost> Function(
+  HttpResponse<dynamic> value,
+) parsePostWithOptions({
   required bool includeInvalid,
+  required ImageSourceComposer<PostDto> urlComposer,
 }) =>
     (value) => includeInvalid
         ? parse(
             value: value,
             converter: (item) => PostDto.fromJson(item),
-          ).map(postDtoToPost).toList()
-        : parsePost(value);
+          ).map((e) => postDtoToPost(e, urlComposer)).toList()
+        : parsePost(value, urlComposer);
 
 const String postParams =
     'id,created_at,uploader_id,score,source,md5,last_comment_bumped_at,rating,image_width,image_height,tag_string,fav_count,file_ext,last_noted_at,parent_id,has_children,approver_id,tag_count_general,tag_count_artist,tag_count_character,tag_count_copyright,file_size,up_score,down_score,is_pending,is_flagged,is_deleted,tag_count,updated_at,is_banned,pixiv_id,last_commented_at,has_active_children,bit_flags,tag_count_meta,has_large,has_visible_children,tag_string_general,tag_string_character,tag_string_copyright,tag_string_artist,tag_string_meta,file_url,large_file_url,preview_file_url,comments[is_deleted],artist_commentary';
 
-class PostRepositoryApi implements PostRepository {
+class PostRepositoryApi implements DanbooruPostRepository {
   PostRepositoryApi(
-    Api api,
-    AccountRepository accountRepository,
+    DanbooruApi api,
+    CurrentBooruConfigRepository currentBooruConfigRepository,
+    this.urlComposer,
   )   : _api = api,
-        _accountRepository = accountRepository;
+        _currentUserBooruRepository = currentBooruConfigRepository;
 
-  final AccountRepository _accountRepository;
-  final Api _api;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final DanbooruApi _api;
+  final ImageSourceComposer<PostDto> urlComposer;
 
   static const int _limit = 60;
 
   @override
-  Future<List<Post>> getPosts(
+  Future<List<DanbooruPost>> getPosts(
     String tags,
     int page, {
     int? limit,
     bool? includeInvalid,
-  }) {
-    return _accountRepository
-        .get()
-        .then(
-          (account) => _api.getPosts(
-            account.username,
-            account.apiKey,
-            page,
-            tags,
-            postParams,
-            limit ?? _limit,
-          ),
+  }) async {
+    final booruConfig = await _currentUserBooruRepository.get();
+    final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
+    final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
+      booruConfig?.deletedItemBehavior,
+    );
+
+    return _api
+        .getPosts(
+          booruConfig?.login,
+          booruConfig?.apiKey,
+          page,
+          [
+            ...tags.split(' '),
+            if (tag != null) tag,
+            if (deletedStatusTag != null) deletedStatusTag,
+          ].join(' '),
+          postParams,
+          limit ?? _limit,
         )
-        .then(parsePostWithOptions(includeInvalid: includeInvalid ?? false))
+        .then(parsePostWithOptions(
+          includeInvalid: includeInvalid ?? false,
+          urlComposer: urlComposer,
+        ))
         .catchError((e) {
       handleError(e);
 
-      return <Post>[];
+      return <DanbooruPost>[];
     });
   }
 
   @override
-  Future<List<Post>> getPostsFromIds(List<int> ids) => getPosts(
+  Future<List<DanbooruPost>> getPostsFromIds(List<int> ids) => getPosts(
         'id:${ids.join(',')}',
         1,
         limit: ids.length,
       );
 
   @override
-  Future<bool> putTag(int postId, String tagString) => _accountRepository
-      .get()
-      .then((account) => _api.putTag(account.username, account.apiKey, postId, {
-            'post[tag_string]': tagString,
-            'post[old_tag_string]': '',
-          }))
-      .then((value) => value.response.statusCode == 200);
+  Future<bool> putTag(int postId, String tagString) =>
+      _currentUserBooruRepository
+          .get()
+          .then((booruConfig) => _api.putTag(
+                booruConfig?.login,
+                booruConfig?.apiKey,
+                postId,
+                {
+                  'post[tag_string]': tagString,
+                  'post[old_tag_string]': '',
+                },
+              ))
+          .then((value) => value.response.statusCode == 200);
+
+  @override
+  Future<List<core.Post>> getPostsFromTags(
+    String tags,
+    int page, {
+    int? limit,
+  }) =>
+      getPosts(
+        tags,
+        page,
+        limit: limit,
+        includeInvalid: true,
+      );
 }
 
 List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
 
-Post postDtoToPost(PostDto dto) {
+DanbooruPost postDtoToPost(
+  PostDto dto,
+  ImageSourceComposer<PostDto> urlComposer,
+) {
   try {
     final comments = dto.comments
         .map((e) => CommentDto.fromJson(e))
@@ -99,11 +143,13 @@ Post postDtoToPost(PostDto dto) {
         ? ArtistCommentaryDto.fromJson(dto.artistCommentary)
         : null;
 
-    return Post(
+    final sources = urlComposer.compose(dto);
+
+    return DanbooruPost(
       id: dto.id!,
-      thumbnailImageUrl: dto.previewFileUrl ?? '',
-      sampleImageUrl: dto.largeFileUrl ?? '',
-      originalImageUrl: dto.fileUrl ?? '',
+      thumbnailImageUrl: sources.thumbnail,
+      sampleImageUrl: sources.sample,
+      originalImageUrl: sources.original,
       copyrightTags: splitTag(dto.copyrightTags),
       characterTags: splitTag(dto.characterTags),
       artistTags: splitTag(dto.artistTags),
@@ -136,6 +182,6 @@ Post postDtoToPost(PostDto dto) {
           : null,
     );
   } catch (e) {
-    return Post.empty();
+    return DanbooruPost.empty();
   }
 }

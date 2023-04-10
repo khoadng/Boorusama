@@ -31,6 +31,20 @@ class AppError extends Error with EquatableMixin {
     }
   }
 
+  T? mapWhen<T>({
+    T Function()? cannotReachServer,
+    T Function()? failedToParseJSON,
+    T Function()? unknown,
+  }) {
+    if (type == AppErrorType.cannotReachServer) {
+      return cannotReachServer?.call();
+    } else if (type == AppErrorType.failedToParseJSON) {
+      return failedToParseJSON?.call();
+    } else {
+      return unknown?.call();
+    }
+  }
+
   @override
   bool? get stringify => false;
 
@@ -77,6 +91,20 @@ class BooruError extends Error with EquatableMixin {
       serverError?.call(error as ServerError);
     } else {
       unknownError?.call(error);
+    }
+  }
+
+  T? mapWhen<T>({
+    required T Function(AppError error)? appError,
+    required T Function(ServerError error)? serverError,
+    required T Function(Object error)? unknownError,
+  }) {
+    if (error is AppError) {
+      return appError?.call(error as AppError);
+    } else if (error is ServerError) {
+      return serverError?.call(error as ServerError);
+    } else {
+      return unknownError?.call(error);
     }
   }
 

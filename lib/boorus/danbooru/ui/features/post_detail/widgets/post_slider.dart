@@ -7,25 +7,26 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/parent_child_data.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
-import 'file_details_section.dart';
+import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 import 'information_section.dart';
 import 'parent_child_tile.dart';
 import 'pool_tiles.dart';
 import 'post_action_toolbar.dart';
 import 'post_info.dart';
-import 'post_media_item.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
 import 'recommend_artist_list.dart';
@@ -38,7 +39,7 @@ class PostSlider extends StatefulWidget {
     required this.imagePath,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final ValueNotifier<String?> imagePath;
 
   @override
@@ -55,7 +56,7 @@ class _PostSliderState extends State<PostSlider> {
     return CarouselSlider.builder(
       itemCount: widget.posts.length,
       itemBuilder: (context, index, realIndex) {
-        final media = PostMediaItem(
+        final media = DanbooruPostMediaItem(
           //TODO: this is used to preload image between page
           post: widget.posts[index].post,
           onCached: (path) => widget.imagePath.value = path,
@@ -176,10 +177,10 @@ class _CarouselContent extends StatefulWidget {
     required this.pools,
   });
 
-  final PostMediaItem media;
+  final DanbooruPostMediaItem media;
   final ValueNotifier<String?> imagePath;
-  final PostData post;
-  final Post preloadPost;
+  final DanbooruPostData post;
+  final DanbooruPost preloadPost;
   final List<Pool> pools;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
@@ -189,7 +190,7 @@ class _CarouselContent extends StatefulWidget {
 }
 
 class _CarouselContentState extends State<_CarouselContent> {
-  Post get post => widget.post.post;
+  DanbooruPost get post => widget.post.post;
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +246,9 @@ class _CarouselContentState extends State<_CarouselContent> {
                       FileDetailsSection(
                         post: post,
                       ),
-                      const Divider(height: 8, thickness: 1),
+                      SourceSection(
+                        post: post,
+                      ),
                       RecommendArtistList(
                         recommends: widget.recommends
                             .where((element) =>
@@ -277,7 +280,7 @@ class TagsTile extends StatelessWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +312,7 @@ class _ParentChildTile extends StatelessWidget {
     required this.post,
   });
 
-  final Post post;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +336,7 @@ class ActionBar extends StatelessWidget {
   });
 
   final ValueNotifier<String?> imagePath;
-  final PostData postData;
+  final DanbooruPostData postData;
 
   @override
   Widget build(BuildContext context) {

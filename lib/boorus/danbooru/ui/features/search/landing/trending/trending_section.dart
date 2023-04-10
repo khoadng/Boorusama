@@ -2,11 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/trending_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'trending_tags.dart';
 
 class TrendingSection extends StatelessWidget {
@@ -19,11 +20,30 @@ class TrendingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status =
-        context.select((TrendingTagCubit cubit) => cubit.state.status);
+    final state = context.select((TrendingTagCubit cubit) => cubit.state);
 
-    return status != LoadStatus.success
+    return state.status != LoadStatus.success
         ? const Center(child: CircularProgressIndicator.adaptive())
-        : TrendingTags(onTagTap: onTagTap);
+        : state.tags != null && state.tags!.isNotEmpty
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Divider(thickness: 1),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'search.trending'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                  ),
+                  TrendingTags(
+                    onTagTap: onTagTap,
+                    tags: state.tags,
+                  ),
+                ],
+              )
+            : const SizedBox.shrink();
   }
 }

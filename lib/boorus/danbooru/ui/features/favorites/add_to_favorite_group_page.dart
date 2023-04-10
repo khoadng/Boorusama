@@ -9,12 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 
@@ -143,18 +142,6 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                           showSimpleSnackBar(
                             context: context,
                             duration: const Duration(seconds: 3),
-                            action: SnackBarAction(
-                              label: 'favorite_groups.view_more_popup'.tr(),
-                              onPressed: () {
-                                if (navigatorKey.currentContext != null) {
-                                  goToFavoriteGroupDetailsPage(
-                                    navigatorKey.currentContext!,
-                                    newGroup,
-                                    bloc,
-                                  );
-                                }
-                              },
-                            ),
                             content: Text(
                               'favorite_groups.items_added_notification_popup'
                                   .tr()

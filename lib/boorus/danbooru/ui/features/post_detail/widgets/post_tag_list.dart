@@ -8,18 +8,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
-import 'package:boorusama/core/application/api/api.dart';
-import 'package:boorusama/core/application/tags/favorite_tag_bloc.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class PostTagList extends StatelessWidget {
@@ -89,8 +89,10 @@ class PostTagList extends StatelessWidget {
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
-    return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (context, state) {
+        final booru = state.booru ?? safebooru();
+
         return Tags(
           alignment: WrapAlignment.start,
           runSpacing: isMobilePlatform() ? 0 : 4,
@@ -125,7 +127,7 @@ class PostTagList extends StatelessWidget {
                 if (value == 'blacklist') {
                   onAddToBlacklisted(tag);
                 } else if (value == 'wiki') {
-                  launchWikiPage(state.booru.url, tag.rawName);
+                  launchWikiPage(booru.url, tag.rawName);
                 } else if (value == 'copy_and_move_to_saved_search') {
                   Clipboard.setData(
                     ClipboardData(text: tag.rawName),

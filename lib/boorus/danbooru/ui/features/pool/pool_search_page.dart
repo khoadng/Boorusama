@@ -6,15 +6,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:boorusama/core/ui/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'sliver_pool_grid.dart';
 

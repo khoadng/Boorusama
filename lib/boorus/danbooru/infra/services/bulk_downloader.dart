@@ -78,12 +78,12 @@ class BulkDownloader<T> {
   Stream<DownloadData> get stream => _eventController.stream
       .map((data) {
         final String id = data[0];
-        final DownloadTaskStatus status = data[1];
+        final int status = data[1];
         // final int progress = data[2];
 
         return Tuple2(id, status);
       })
-      .where((event) => event.item2 == DownloadTaskStatus.complete)
+      .where((event) => event.item2 == DownloadTaskStatus.complete.value)
       //TODO: quick hack, should investigate why the task ID for this event doesn't exist in the first place
       .where((event) => _taskIdToPostIdMap.containsKey(event.item1))
       .map((event) => _taskIdToPostIdMap[event.item1]!);
@@ -129,7 +129,7 @@ class BulkDownloader<T> {
     int progress,
   ) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send!.send([id, status, progress]);
+    send!.send([id, status.value, progress]);
   }
 
   void dispose() {

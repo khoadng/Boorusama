@@ -8,14 +8,13 @@ import 'package:path_provider/path_provider.dart';
 // Project imports:
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class MacOSDownloader implements DownloadService<Post> {
-  MacOSDownloader(this._fileNameGenerator, this._agentGenerator);
+  MacOSDownloader(this._agentGenerator);
   late String? _localPath;
   late String? _savedDir;
-  final FileNameGenerator _fileNameGenerator;
   final UserAgentGenerator _agentGenerator;
 
   @override
@@ -34,6 +33,7 @@ class MacOSDownloader implements DownloadService<Post> {
     item, {
     String? path,
     String? folderName,
+    required FileNameGenerator fileNameGenerator,
   }) async {
     if (_localPath == null || _savedDir == null) {
       throw Exception('Uninitialzed');
@@ -44,7 +44,7 @@ class MacOSDownloader implements DownloadService<Post> {
         'User-Agent': _agentGenerator.generate(),
       },
     ));
-    final fileName = _fileNameGenerator.generateFor(item);
+    final fileName = fileNameGenerator.generateFor(item);
     try {
       final file = File('$_savedDir${Platform.pathSeparator}$fileName');
 

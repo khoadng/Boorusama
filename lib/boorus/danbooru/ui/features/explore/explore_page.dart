@@ -6,11 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -56,17 +55,17 @@ class ExplorePage extends StatelessWidget {
 
 Widget mapToCarousel(
   BuildContext context,
-  ExploreData explore,
+  List<DanbooruPostData> posts,
 ) {
-  return explore.data.isNotEmpty
+  return posts.isNotEmpty
       ? _ExploreList(
-          posts: explore.data,
+          posts: posts,
           onTap: (index) {
             goToDetailPage(
               context: context,
-              posts: explore.data,
+              posts: posts,
               initialIndex: index,
-              postBloc: explore.bloc,
+              // postBloc: explore.bloc,
             );
           },
         )
@@ -88,14 +87,16 @@ class _MostViewedExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mostViewed =
-        context.select((ExploreBloc bloc) => bloc.state.mostViewed);
-
-    return ExploreSection(
-      date: mostViewed.date,
-      title: 'explore.most_viewed'.tr(),
-      category: ExploreCategory.mostViewed,
-      builder: (_) => mapToCarousel(context, mostViewed),
+    return BlocBuilder<DanbooruMostViewedExplorePostCubit,
+        DanbooruExplorePostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.most_viewed'.tr(),
+          category: ExploreCategory.mostViewed,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }
@@ -105,13 +106,17 @@ class _HotExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
+    // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
 
-    return ExploreSection(
-      date: hot.date,
-      title: 'explore.hot'.tr(),
-      category: ExploreCategory.hot,
-      builder: (_) => mapToCarousel(context, hot),
+    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.hot'.tr(),
+          category: ExploreCategory.hot,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }
@@ -121,13 +126,16 @@ class _PopularExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final popular = context.select((ExploreBloc bloc) => bloc.state.popular);
-
-    return ExploreSection(
-      date: popular.date,
-      title: 'explore.popular'.tr(),
-      category: ExploreCategory.popular,
-      builder: (_) => mapToCarousel(context, popular),
+    return BlocBuilder<DanbooruPopularExplorePostCubit,
+        DanbooruExplorePostState>(
+      builder: (context, state) {
+        return ExploreSection(
+          date: DateTime.now(),
+          title: 'explore.popular'.tr(),
+          category: ExploreCategory.popular,
+          builder: (_) => mapToCarousel(context, state.data),
+        );
+      },
     );
   }
 }
@@ -138,7 +146,7 @@ class _ExploreList extends StatefulWidget {
     required this.onTap,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final void Function(int index) onTap;
 
   @override

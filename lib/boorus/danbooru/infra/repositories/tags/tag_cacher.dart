@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class TagCacher implements TagRepository {
@@ -39,8 +39,4 @@ class TagCacher implements TagRepository {
 
     return [...cachedTags, ...freshTags];
   }
-
-  @override
-  Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) =>
-      repo.getTagsByNamePattern(stringPattern, page);
 }

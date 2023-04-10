@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/ui/tags/tags.dart';
 
 class AddToBlacklistPage extends StatelessWidget {
   const AddToBlacklistPage({

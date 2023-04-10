@@ -7,11 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/user/user_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'user_level_colors.dart';
 
@@ -236,7 +236,7 @@ class _PreviewList extends StatelessWidget {
   });
 
   final String title;
-  final List<Post> posts;
+  final List<DanbooruPost> posts;
   final void Function() onViewMore;
 
   @override
@@ -273,7 +273,7 @@ class _PreviewList extends StatelessWidget {
                     onTap: () => goToDetailPage(
                       context: context,
                       posts: posts
-                          .map((e) => PostData(
+                          .map((e) => DanbooruPostData(
                                 post: e,
                                 isFavorited: false,
                                 pools: const [],

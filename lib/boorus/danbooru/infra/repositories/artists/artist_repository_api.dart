@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -15,10 +15,10 @@ List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(
 
 class ArtistRepositoryApi implements ArtistRepository {
   ArtistRepositoryApi({
-    required Api api,
+    required DanbooruApi api,
   }) : _api = api;
 
-  final Api _api;
+  final DanbooruApi _api;
 
   @override
   Future<Artist> getArtist(String name, {CancelToken? cancelToken}) async {

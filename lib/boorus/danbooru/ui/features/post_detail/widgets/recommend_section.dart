@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 
 class RecommendPostSection extends StatelessWidget {
@@ -18,7 +18,7 @@ class RecommendPostSection extends StatelessWidget {
     required this.onTap,
   });
 
-  final List<PostData> posts;
+  final List<DanbooruPostData> posts;
   final Widget header;
   final void Function(int index) onTap;
 

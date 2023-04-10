@@ -1,23 +1,23 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class PostCountRepositoryApi implements PostCountRepository {
   const PostCountRepositoryApi({
     required this.api,
-    required this.accountRepository,
+    required this.currentBooruConfigRepository,
   });
 
-  final Api api;
-  final AccountRepository accountRepository;
+  final DanbooruApi api;
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
 
   @override
-  Future<int?> count(List<String> tags) => accountRepository
+  Future<int?> count(List<String> tags) => currentBooruConfigRepository
       .get()
-      .then((account) => api.countPosts(
-            account.username,
-            account.apiKey,
+      .then((booruConfig) => api.countPosts(
+            booruConfig?.login,
+            booruConfig?.apiKey,
             tags.join(' '),
           ))
       .then((value) => value.data['counts']['posts'])

@@ -8,10 +8,13 @@ enum Rating {
 Rating mapStringToRating(String str) {
   switch (str) {
     case 's':
+    case 'sensitive':
       return Rating.sensitive;
     case 'e':
+    case 'explicit':
       return Rating.explicit;
     case 'g':
+    case 'general':
       return Rating.general;
     default:
       return Rating.questionable;

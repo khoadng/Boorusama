@@ -3,7 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/tags/tags.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 

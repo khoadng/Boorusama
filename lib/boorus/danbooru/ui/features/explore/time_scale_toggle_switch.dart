@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 class TimeScaleToggleSwitch extends StatefulWidget {
   const TimeScaleToggleSwitch({

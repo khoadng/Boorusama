@@ -1,9 +1,7 @@
 mixin MediaInfoMixin {
   String get format;
-  double get width;
-  double get height;
   String get md5;
-  double get aspectRatio => width / height;
+  int get fileSize;
 
   bool get isVideo {
     //TODO: handle other kind of video format

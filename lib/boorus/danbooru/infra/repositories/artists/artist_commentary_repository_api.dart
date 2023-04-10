@@ -2,27 +2,27 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 
 class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
-  ArtistCommentaryRepositoryApi(this._api, this._accountRepository);
-  final Api _api;
-  final AccountRepository _accountRepository;
+  ArtistCommentaryRepositoryApi(this._api, this._currentUserBooruRepository);
+  final DanbooruApi _api;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
   Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {
-    final account = await _accountRepository.get();
+    final booruConfig = await _currentUserBooruRepository.get();
 
     try {
       final value = await _api.getArtistCommentary(
-        account.username,
-        account.apiKey,
+        booruConfig?.login,
+        booruConfig?.apiKey,
         postId,
         cancelToken: cancelToken,
       );

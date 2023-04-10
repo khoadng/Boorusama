@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 
 class DownloadCompletedView extends StatelessWidget {
   const DownloadCompletedView({

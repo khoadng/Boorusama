@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parse(
@@ -17,19 +17,19 @@ List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parse(
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(
     this._api,
-    this._accountRepository,
+    this._currentUserBooruRepository,
   );
 
-  final Api _api;
-  final AccountRepository _accountRepository;
+  final DanbooruApi _api;
+  final CurrentBooruConfigRepository _currentUserBooruRepository;
 
   @override
-  Future<bool> addToFavorites(int postId) => _accountRepository
+  Future<bool> addToFavorites(int postId) => _currentUserBooruRepository
           .get()
           .then(
-            (account) => _api.addToFavorites(
-              account.username,
-              account.apiKey,
+            (booruConfig) => _api.addToFavorites(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postId,
             ),
           )
@@ -48,13 +48,13 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
 
   @override
   Future<bool> removeFromFavorites(int postId) async {
-    return _accountRepository
+    return _currentUserBooruRepository
         .get()
         .then(
-          (account) => _api.removeFromFavorites(
+          (booruConfig) => _api.removeFromFavorites(
             postId,
-            account.username,
-            account.apiKey,
+            booruConfig?.login,
+            booruConfig?.apiKey,
             'delete',
           ),
         )
@@ -78,12 +78,12 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
     int userId,
     int limit,
   ) =>
-      _accountRepository
+      _currentUserBooruRepository
           .get()
           .then(
-            (account) => _api.filterFavoritesFromUserId(
-              account.username,
-              account.apiKey,
+            (booruConfig) => _api.filterFavoritesFromUserId(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postIds.join(','),
               userId,
               limit,
@@ -97,12 +97,12 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
     int userId,
     int postId,
   ) =>
-      _accountRepository
+      _currentUserBooruRepository
           .get()
           .then(
-            (account) => _api.filterFavoritesFromUserId(
-              account.username,
-              account.apiKey,
+            (booruConfig) => _api.filterFavoritesFromUserId(
+              booruConfig?.login,
+              booruConfig?.apiKey,
               postId.toString(),
               userId,
               20,
