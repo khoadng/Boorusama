@@ -82,6 +82,7 @@ String _getHost(Uri uri) {
   if (uri.host.contains('discordapp.com')) return 'discordapp.com';
   if (uri.host.contains('kym-cdn.com')) return 'knowyourmeme.com';
   if (uri.host.contains('images-wixmp')) return 'deviantart.com';
+  if (uri.host.contains('fantia.jp')) return 'fantia.jp';
   if (uri.host.contains('lofter.com')) {
     return 'https://www.lofter.com/favicon.ico';
   }
