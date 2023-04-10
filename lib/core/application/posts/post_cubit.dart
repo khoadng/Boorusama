@@ -19,6 +19,7 @@ abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
 
     try {
       emit(state.copyWith(
+        data: [],
         refreshing: true,
         hasMore: true,
         page: 1,
