@@ -53,6 +53,7 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   hive: ^2.2.3
   html: ^0.15.0
+  http: ^0.13.5
   image_gallery_saver: ^1.7.1
   intl: ^0.17.0
   jiffy: ^5.0.0
