@@ -497,6 +497,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  exprollable_page_view:
+    dependency: "direct main"
+    description:
+      name: exprollable_page_view
+      sha256: "8fbbd788da90faf14372cc123dd5ded337ae64e4457fee9dcde016e63b7aa117"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-beta"
   fake_async:
     dependency: transitive
     description:

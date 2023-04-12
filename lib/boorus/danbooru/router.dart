@@ -399,20 +399,20 @@ void goToDetailPage({
       ),
     ));
   } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => providePostDetailPageDependencies(
-        context,
-        posts,
-        initialIndex,
-        tags,
-        scrollController,
-        PostDetailPageDesktop(
-          intitialIndex: initialIndex,
-          posts: posts,
-        ),
-      ),
-    );
+    // showDesktopFullScreenWindow(
+    //   context,
+    //   builder: (_) => providePostDetailPageDependencies(
+    //     context,
+    //     posts,
+    //     initialIndex,
+    //     tags,
+    //     scrollController,
+    //     PostDetailPageDesktop(
+    //       intitialIndex: initialIndex,
+    //       posts: posts,
+    //     ),
+    //   ),
+    // );
   }
 }
 

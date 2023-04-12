@@ -1,8 +1,15 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
+import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
+import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -74,6 +81,79 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final screenSize = screenWidthToDisplaySize(size.width);
     final currentIndex =
         context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
+    // final state = context.watch<PostDetailBloc>().state;
+    final recommends =
+        context.select((PostDetailBloc bloc) => bloc.state.recommends);
+    final currentPost =
+        context.select((PostDetailBloc bloc) => bloc.state.currentPost);
+
+    return Scaffold(
+      body: ExprollablePageView(
+        itemCount: 5,
+        itemBuilder: (context, page) {
+          final media = DanbooruPostMediaItem(
+            //TODO: this is used to preload image between page
+            post: widget.posts[page].post,
+            onCached: (path) => {},
+            enableNotes: false,
+            notes: [],
+            previewCacheManager: context.read<PreviewImageCacheManager>(),
+            // onTap: () => context
+            //     .read<PostDetailBloc>()
+            //     .add(PostDetailOverlayVisibilityChanged(
+            //       enableOverlay: !state.enableOverlay,
+            //     )),
+            onZoomUpdated: (zoom) {
+              // final swipe = !zoom;
+              // if (swipe != enableSwipe) {
+              //   setState(() {
+              //     enableSwipe = swipe;
+              //   });
+              // }
+            },
+          );
+
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: BlocBuilder<SettingsCubit, SettingsState>(
+                buildWhen: (previous, current) =>
+                    previous.settings.actionBarDisplayBehavior !=
+                    current.settings.actionBarDisplayBehavior,
+                builder: (context, settingsState) {
+                  return Stack(
+                    children: [
+                      if (Screen.of(context).size != ScreenSize.small &&
+                          !currentPost.post.isVideo)
+                        Center(
+                          child: media,
+                        )
+                      else
+                        _CarouselContent(
+                          scrollController:
+                              PageContentScrollController.of(context),
+                          media: media,
+                          // imagePath: widget.imagePath,
+                          actionBarDisplayBehavior:
+                              settingsState.settings.actionBarDisplayBehavior,
+                          post: currentPost,
+                          preloadPost: widget.posts[page].post,
+                          key: ValueKey(currentIndex),
+                          recommends: recommends,
+                          pools: widget.posts[page].pools,
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
 
     return MultiBlocListener(
       listeners: [
@@ -205,7 +285,7 @@ class _FloatingQuickActionBar extends StatelessWidget {
           selector: (state) => state.currentPost,
           builder: (context, post) {
             return ActionBar(
-              imagePath: imagePath,
+              // imagePath: imagePath,
               postData: post,
             );
           },
@@ -402,7 +482,7 @@ class _LargeLayoutContent extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: ActionBar(
-                  imagePath: imagePath,
+                  // imagePath: imagePath,
                   postData: post,
                 ),
               ),
@@ -763,5 +843,190 @@ class _SlideShowButtonState extends State<_SlideShowButton>
               config,
             ),
           );
+  }
+}
+
+class _CarouselContent extends StatefulWidget {
+  const _CarouselContent({
+    super.key,
+    required this.media,
+    // required this.imagePath,
+    required this.actionBarDisplayBehavior,
+    required this.post,
+    required this.preloadPost,
+    required this.recommends,
+    required this.pools,
+    required this.scrollController,
+  });
+
+  final DanbooruPostMediaItem media;
+  // final ValueNotifier<String?> imagePath;
+  final DanbooruPostData post;
+  final DanbooruPost preloadPost;
+  final List<Pool> pools;
+  final ActionBarDisplayBehavior actionBarDisplayBehavior;
+  final List<Recommend> recommends;
+  final ScrollController? scrollController;
+
+  @override
+  State<_CarouselContent> createState() => _CarouselContentState();
+}
+
+class _CarouselContentState extends State<_CarouselContent> {
+  DanbooruPost get post => widget.post.post;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = Screen.of(context).size;
+
+    return BlocProvider(
+      create: (context) =>
+          PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
+            ..add(PoolFromPostIdRequested(postId: post.id)),
+      child: CustomScrollView(
+        controller: widget.scrollController,
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                RepaintBoundary(child: widget.media),
+                if (screenSize == ScreenSize.small) ...[
+                  PoolTiles(pools: widget.pools),
+                  // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  //   builder: (context, state) {
+                  //     return state.status == LoadStatus.success
+                  //         ? PoolTiles(pools: state.data!)
+                  //         : const SizedBox.shrink();
+                  //   },
+                  // ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InformationSection(post: widget.preloadPost),
+                      const Divider(height: 8, thickness: 1),
+                      if (widget.actionBarDisplayBehavior ==
+                          ActionBarDisplayBehavior.scrolling) ...[
+                        RepaintBoundary(
+                          child: ActionBar(
+                            // imagePath: widget.imagePath,
+                            postData: widget.post,
+                          ),
+                        ),
+                        const Divider(height: 8, thickness: 1),
+                      ],
+                      ArtistSection(post: widget.preloadPost),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child:
+                            RepaintBoundary(child: PostStatsTile(post: post)),
+                      ),
+                      if (widget.preloadPost.hasParentOrChildren)
+                        _ParentChildTile(post: widget.preloadPost),
+                      if (!widget.preloadPost.hasParentOrChildren)
+                        const Divider(height: 8, thickness: 1),
+                      TagsTile(post: post),
+                      const Divider(height: 8, thickness: 1),
+                      FileDetailsSection(
+                        post: post,
+                      ),
+                      SourceSection(
+                        post: post,
+                      ),
+                      RecommendArtistList(
+                        recommends: widget.recommends
+                            .where((element) =>
+                                element.type == RecommendType.artist)
+                            .toList(),
+                      ),
+                      RecommendCharacterList(
+                        recommends: widget.recommends
+                            .where((element) =>
+                                element.type == RecommendType.character)
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class TagsTile extends StatelessWidget {
+  const TagsTile({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = context.select((PostDetailBloc bloc) =>
+        bloc.state.tags.where((e) => e.postId == post.id).toList());
+
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text('${tags.length} tags'),
+        controlAffinity: ListTileControlAffinity.leading,
+        onExpansionChanged: (value) => value
+            ? context.read<TagBloc>().add(TagFetched(tags: post.tags))
+            : null,
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: PostTagList(),
+          ),
+          SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParentChildTile extends StatelessWidget {
+  const _ParentChildTile({
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context) {
+    return ParentChildTile(
+      data: getParentChildData(post),
+      onTap: (data) => goToParentChildPage(
+        context,
+        data.parentId,
+        data.tagQueryForDataFetching,
+      ),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class ActionBar extends StatelessWidget {
+  const ActionBar({
+    super.key,
+    // required this.imagePath,
+    required this.postData,
+  });
+
+  // final ValueNotifier<String?> imagePath;
+  final DanbooruPostData postData;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostActionToolbar(
+      postData: postData,
+      imagePath: null,
+    );
   }
 }
