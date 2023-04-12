@@ -10,6 +10,7 @@ import 'package:flutter_html/flutter_html.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/warning_container.dart';

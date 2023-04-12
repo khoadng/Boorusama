@@ -6,8 +6,8 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/error.dart';
-import 'download_bloc.dart';
 
 class BulkPostDownloadBloc extends DownloadBloc<String, DanbooruPost> {
   BulkPostDownloadBloc({

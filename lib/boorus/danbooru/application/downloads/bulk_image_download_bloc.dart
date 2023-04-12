@@ -5,12 +5,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'download_bloc.dart';
-import 'download_options.dart';
-import 'download_state.dart';
-import 'filtered_out_post.dart';
+import 'package:boorusama/core/application/downloads.dart';
 
 enum BulkImageDownloadStatus {
   initial,

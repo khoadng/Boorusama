@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';

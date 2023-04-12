@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads.dart';
+import 'package:boorusama/core/application/downloads.dart';
 
 const _downloadFolderPath = '/storage/emulated/0/Download';
 const _rootFolderPath = '/storage/emulated/0/Test';

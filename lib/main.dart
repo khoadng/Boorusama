@@ -29,7 +29,7 @@ import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
-import 'package:boorusama/core/application/download/download_service.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';

@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/downloads.dart';
 
 class MockPostDownloadBloc extends MockBloc<DownloadEvent<String, DanbooruPost>,
     DownloadState<DanbooruPost>> implements BulkPostDownloadBloc {}
