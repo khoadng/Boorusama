@@ -131,4 +131,5 @@ flutter:
     - assets/information.json
     - assets/tagdef.json
     - assets/boorus.json
+    - assets/booru_salts.json
     - CHANGELOG.md
