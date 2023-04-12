@@ -97,6 +97,13 @@ class SettingsPage extends StatelessWidget {
                                 onTap: () => goToSettingsSearch(context, this),
                               ),
                               ListTile(
+                                title: const Text('settings.network').tr(),
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.networkWired,
+                                ),
+                                onTap: () => goToSettingsNetwork(context, this),
+                              ),
+                              ListTile(
                                 title:
                                     const Text('settings.privacy.privacy').tr(),
                                 leading:

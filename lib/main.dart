@@ -215,7 +215,7 @@ void main() async {
     booruUserRepo,
   );
 
-  final dioProvider = DioProvider(tempPath, userAgentGenerator);
+  final dioProvider = DioProvider(tempPath, userAgentGenerator, settings);
 
   final booruUserIdProvider =
       BooruUserIdentityProviderImpl(dioProvider, booruFactory);
@@ -372,10 +372,16 @@ Future<void> _localNotificatonHandler(NotificationResponse response) async {
 }
 
 class DioProvider {
-  DioProvider(this.dir, this.generator);
+  DioProvider(this.dir, this.generator, this.settings);
 
   final Directory dir;
   final UserAgentGenerator generator;
+  final Settings settings;
 
-  Dio getDio(String baseUrl) => dio(dir, baseUrl, generator);
+  Dio getDio(String baseUrl) => dio(
+        dir,
+        baseUrl,
+        generator,
+        settings.selectedDohProvider,
+      );
 }

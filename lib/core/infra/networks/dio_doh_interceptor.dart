@@ -7,8 +7,13 @@ import 'package:http/http.dart' as http;
 enum DnsRecordType {
   A,
   AAAA,
-  MX,
   CNAME,
+  MX,
+  NS,
+  PTR,
+  SOA,
+  SRV,
+  TXT,
 }
 
 enum DnsProvider {
@@ -32,11 +37,15 @@ class DohInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final resolvedHost = await _resolveHostUsingDns(options.uri.host);
-    print(resolvedHost);
 
     var uri = Uri.parse(options.uri.toString());
+    var headers = options.headers;
+    headers['Host'] = options.uri.host;
     var modifiedUri = uri.replace(host: resolvedHost);
-    var modifiedOptions = options.copyWith(baseUrl: modifiedUri.toString());
+    var modifiedOptions = options.copyWith(
+      baseUrl: modifiedUri.toString(),
+      headers: headers,
+    );
 
     return handler.next(modifiedOptions);
   }
@@ -65,7 +74,7 @@ class DohInterceptor extends Interceptor {
 
       if (answers.isNotEmpty) {
         for (final answer in answers) {
-          if (answer['type'] == 1) {
+          if (answer['type'] == dnsRecordTypeToInt(_dnsType)) {
             return answer['data'];
           }
         }
@@ -91,5 +100,55 @@ String _mapProviderToUrl(DnsProvider provider) {
       return 'https://cloudflare-dns.com/dns-query';
     case DnsProvider.google:
       return 'https://dns.google/resolve';
+  }
+}
+
+int dnsRecordTypeToInt(DnsRecordType type) {
+  switch (type) {
+    case DnsRecordType.A:
+      return 1;
+    case DnsRecordType.AAAA:
+      return 28;
+    case DnsRecordType.CNAME:
+      return 5;
+    case DnsRecordType.MX:
+      return 15;
+    case DnsRecordType.NS:
+      return 2;
+    case DnsRecordType.PTR:
+      return 12;
+    case DnsRecordType.SOA:
+      return 6;
+    case DnsRecordType.SRV:
+      return 33;
+    case DnsRecordType.TXT:
+      return 16;
+    default:
+      throw ArgumentError('Invalid DNS record type');
+  }
+}
+
+DnsRecordType intToDnsRecordType(int value) {
+  switch (value) {
+    case 1:
+      return DnsRecordType.A;
+    case 28:
+      return DnsRecordType.AAAA;
+    case 5:
+      return DnsRecordType.CNAME;
+    case 15:
+      return DnsRecordType.MX;
+    case 2:
+      return DnsRecordType.NS;
+    case 12:
+      return DnsRecordType.PTR;
+    case 6:
+      return DnsRecordType.SOA;
+    case 33:
+      return DnsRecordType.SRV;
+    case 16:
+      return DnsRecordType.TXT;
+    default:
+      throw ArgumentError('Invalid DNS record type integer value');
   }
 }

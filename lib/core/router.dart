@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/ui/settings/network_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -121,6 +122,18 @@ void goToSettingsSearch(BuildContext context, Widget oldWidget) {
       oldWidget: oldWidget,
       settings: const RouteSettings(
         name: RouterPageConstant.settingsSearch,
+      ),
+    ),
+  );
+}
+
+void goToSettingsNetwork(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const NetworkPage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsNetwork,
       ),
     ),
   );

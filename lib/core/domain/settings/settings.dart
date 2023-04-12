@@ -51,6 +51,7 @@ class Settings extends Equatable {
     required this.autoFocusSearchBar,
     required this.postsPerPage,
     required this.currentBooruConfigId,
+    required this.selectedDohProvider,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -94,6 +95,9 @@ class Settings extends Equatable {
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
         imageBorderRadius = json['imageBorderRadius'],
+        selectedDohProvider = json['selectedDohProvider'] != null
+            ? DohOptions.values[json['selectedDohProvider']]
+            : DohOptions.none,
         imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
@@ -116,6 +120,7 @@ class Settings extends Equatable {
     autoFocusSearchBar: true,
     postsPerPage: 60,
     currentBooruConfigId: -1,
+    selectedDohProvider: DohOptions.none,
   );
 
   final String blacklistedTags;
@@ -149,6 +154,8 @@ class Settings extends Equatable {
 
   final int currentBooruConfigId;
 
+  final DohOptions selectedDohProvider;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -169,6 +176,7 @@ class Settings extends Equatable {
     bool? autoFocusSearchBar,
     int? postsPerPage,
     int? currentBooruConfigId,
+    DohOptions? selectedDohProvider,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -193,6 +201,7 @@ class Settings extends Equatable {
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
+        selectedDohProvider: selectedDohProvider ?? this.selectedDohProvider,
       );
 
   Map<String, dynamic> toJson() => {
@@ -215,6 +224,7 @@ class Settings extends Equatable {
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
         'currentBooruConfigId': currentBooruConfigId,
+        'selectedDohProvider': selectedDohProvider.index,
       };
 
   @override
@@ -238,6 +248,7 @@ class Settings extends Equatable {
         autoFocusSearchBar,
         postsPerPage,
         currentBooruConfigId,
+        selectedDohProvider,
       ];
 }
 
