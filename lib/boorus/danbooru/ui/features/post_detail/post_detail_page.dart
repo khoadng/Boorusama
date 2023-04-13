@@ -51,10 +51,12 @@ class PostDetailPage extends StatefulWidget {
     super.key,
     required this.posts,
     required this.intitialIndex,
+    required this.onPageChanged,
   });
 
   final int intitialIndex;
   final List<DanbooruPostData> posts;
+  final void Function(int page) onPageChanged;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -90,72 +92,191 @@ class _PostDetailPageState extends State<PostDetailPage> {
       final expanded = vp.offset <= expandedOffset;
       isExpanded.value = expanded;
     });
+
+    controller.currentPage.addListener(() {
+      widget.onPageChanged(controller.currentPage.value);
+    });
+  }
+
+  bool _isSwipingDown = false;
+  double _dragStartPosition = 0.0;
+  double _dragDistance = 0.0;
+  double _dragStartXPosition = 0.0;
+  double _dragDistanceX = 0.0;
+  double _scale = 1.0;
+
+  double _navigationButtonGroupOffset = 0.0;
+  double _topRightButtonGroupOffset = 0.0;
+
+  void _handlePointerMove(PointerMoveEvent event, bool expanded) {
+    if (expanded) {
+      // Ignore the swipe down behavior when in expanded mode
+      return;
+    }
+    if (!_isSwipingDown &&
+        event.delta.dy > 0 &&
+        event.delta.dy.abs() > event.delta.dx.abs() * 2) {
+      _isSwipingDown = true;
+      _dragStartPosition = event.position.dy;
+      _dragStartXPosition = event.position.dx;
+    }
+
+    if (_isSwipingDown) {
+      setState(() {
+        _dragDistance = event.position.dy - _dragStartPosition;
+        _dragDistanceX = event.position.dx - _dragStartXPosition;
+        double scaleValue = 1 -
+            (_dragDistance.abs() / MediaQuery.of(context).size.height) * 0.5;
+        scaleValue = scaleValue.clamp(0.8, 1.0);
+        _scale = scaleValue;
+
+        _navigationButtonGroupOffset = -_dragDistance > 0 ? 0 : -_dragDistance;
+        _topRightButtonGroupOffset = -_dragDistance > 0 ? 0 : -_dragDistance;
+      });
+    }
+  }
+
+  void _handlePointerUp(PointerUpEvent event, bool expanded) {
+    if (expanded) {
+      // Ignore the swipe down behavior when in expanded mode
+      return;
+    }
+
+    if (_isSwipingDown) {
+      Navigator.of(context).pop();
+      _isSwipingDown = false;
+    }
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    // Disable scrolling if swiping down
+    if (_isSwipingDown) {
+      return true;
+    }
+    // Return false to allow the notification to continue propagating
+    return false;
+  }
+
+  double _calculateBackgroundOpacity() {
+    if (!_isSwipingDown) {
+      return 1.0;
+    }
+    // Calculate the opacity based on the drag distance
+    double opacity =
+        1 - (_dragDistance.abs() / MediaQuery.of(context).size.height);
+    // Clamp the opacity value between 0.0 and 1.0
+    return opacity.clamp(0.0, 1.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex =
-        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
-    // final state = context.watch<PostDetailBloc>().state;
     final recommends =
         context.select((PostDetailBloc bloc) => bloc.state.recommends);
     final currentPost =
         context.select((PostDetailBloc bloc) => bloc.state.currentPost);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.black.withOpacity(_calculateBackgroundOpacity()),
       body: Stack(
         children: [
-          ExprollablePageView(
-            controller: controller,
-            itemCount: widget.posts.length,
-            itemBuilder: (context, page) {
-              final media = DanbooruPostMediaItem(
-                //TODO: this is used to preload image between page
-                post: widget.posts[page].post,
-                onCached: (path) => {},
-                enableNotes: false,
-                notes: [],
-                previewCacheManager: context.read<PreviewImageCacheManager>(),
-                // onTap: () => context
-                //     .read<PostDetailBloc>()
-                //     .add(PostDetailOverlayVisibilityChanged(
-                //       enableOverlay: !state.enableOverlay,
-                //     )),
-                onZoomUpdated: (zoom) {
-                  // final swipe = !zoom;
-                  // if (swipe != enableSwipe) {
-                  //   setState(() {
-                  //     enableSwipe = swipe;
-                  //   });
-                  // }
-                },
-              );
+          ValueListenableBuilder<int>(
+            valueListenable: controller.currentPage,
+            builder: (context, currentPage, _) => ValueListenableBuilder<bool>(
+              valueListenable: isExpanded,
+              builder: (context, expanded, _) {
+                if (_isSwipingDown && !expanded) {
+                  final media = DanbooruPostMediaItem(
+                    post: widget.posts[currentPage].post,
+                    onCached: (path) => {},
+                    enableNotes: false,
+                    notes: [],
+                    previewCacheManager:
+                        context.read<PreviewImageCacheManager>(),
+                    onZoomUpdated: (zoom) {},
+                  );
 
-              return BlocBuilder<SettingsCubit, SettingsState>(
-                buildWhen: (previous, current) =>
-                    previous.settings.actionBarDisplayBehavior !=
-                    current.settings.actionBarDisplayBehavior,
-                builder: (context, settingsState) {
-                  return ValueListenableBuilder<bool>(
-                    valueListenable: isExpanded,
-                    builder: (context, value, child) => _CarouselContent(
-                      isExpaned: value,
-                      scrollController: PageContentScrollController.of(context),
-                      media: media,
-                      // imagePath: widget.imagePath,
-                      actionBarDisplayBehavior:
-                          settingsState.settings.actionBarDisplayBehavior,
-                      postData: currentPost,
-                      preloadPost: widget.posts[page].post,
-                      key: ValueKey(currentIndex),
-                      recommends: recommends,
-                      pools: widget.posts[page].pools,
+                  return Transform.translate(
+                    offset: Offset(_dragDistanceX, _dragDistance),
+                    child: Listener(
+                      onPointerMove: (event) =>
+                          _handlePointerMove(event, expanded),
+                      onPointerUp: (event) => _handlePointerUp(event, expanded),
+                      child: Transform.scale(
+                        scale: _scale,
+                        child: media,
+                      ),
                     ),
                   );
-                },
-              );
-            },
+                } else {
+                  return Transform.translate(
+                    offset: Offset(_dragDistanceX, _dragDistance),
+                    child: Listener(
+                      onPointerMove: (event) =>
+                          _handlePointerMove(event, expanded),
+                      onPointerUp: (event) => _handlePointerUp(event, expanded),
+                      child: NotificationListener<ScrollNotification>(
+                        onNotification: _handleScrollNotification,
+                        child: ExprollablePageView(
+                          controller: controller,
+                          itemCount: widget.posts.length,
+                          itemBuilder: (context, page) {
+                            final media = DanbooruPostMediaItem(
+                              //TODO: this is used to preload image between page
+                              post: widget.posts[page].post,
+                              onCached: (path) => {},
+                              enableNotes: false,
+                              notes: [],
+                              useHero: page == currentPage,
+                              previewCacheManager:
+                                  context.read<PreviewImageCacheManager>(),
+                              // onTap: () => context
+                              //     .read<PostDetailBloc>()
+                              //     .add(PostDetailOverlayVisibilityChanged(
+                              //       enableOverlay: !state.enableOverlay,
+                              //     )),
+                              onZoomUpdated: (zoom) {
+                                // final swipe = !zoom;
+                                // if (swipe != enableSwipe) {
+                                //   setState(() {
+                                //     enableSwipe = swipe;
+                                //   });
+                                // }
+                              },
+                            );
+
+                            return BlocBuilder<SettingsCubit, SettingsState>(
+                              buildWhen: (previous, current) =>
+                                  previous.settings.actionBarDisplayBehavior !=
+                                  current.settings.actionBarDisplayBehavior,
+                              builder: (context, settingsState) {
+                                return ValueListenableBuilder<bool>(
+                                  valueListenable: isExpanded,
+                                  builder: (context, value, child) =>
+                                      _CarouselContent(
+                                    isExpaned: value,
+                                    scrollController:
+                                        PageContentScrollController.of(context),
+                                    media: media,
+                                    // imagePath: widget.imagePath,
+                                    actionBarDisplayBehavior: settingsState
+                                        .settings.actionBarDisplayBehavior,
+                                    postData: currentPost,
+                                    preloadPost: widget.posts[page].post,
+                                    key: ValueKey(currentPage),
+                                    recommends: recommends,
+                                    pools: widget.posts[page].pools,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ),
           Align(
             alignment: Alignment(
@@ -166,7 +287,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
               selector: (state) => state.enableOverlay,
               builder: (context, enable) {
                 return enable
-                    ? const _NavigationButtonGroup()
+                    ? Transform.translate(
+                        offset: Offset(0, _navigationButtonGroupOffset),
+                        child: const _NavigationButtonGroup(),
+                      )
                     : const SizedBox.shrink();
               },
             ),
@@ -176,7 +300,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
               0.9,
               getTopActionIconAlignValue(),
             ),
-            child: const _TopRightButtonGroup(),
+            child: Transform.translate(
+              offset: Offset(0, _topRightButtonGroupOffset),
+              child: const _TopRightButtonGroup(),
+            ),
           ),
         ],
       ),
