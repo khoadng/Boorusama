@@ -62,6 +62,16 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
+  late final controller = ExprollablePageController(
+    initialPage: widget.intitialIndex,
+    maxViewportOffset: ViewportOffset.shrunk,
+    minViewportFraction: 0.999,
+    snapViewportOffsets: [
+      const ViewportOffset.fractional(0.5),
+      ViewportOffset.shrunk,
+    ],
+  );
+  var isExpanded = ValueNotifier(false);
 
   @override
   void initState() {
@@ -73,12 +83,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
             );
       }
     });
+
+    controller.viewport.addListener(() {
+      final vp = controller.viewport.value;
+      final expandedOffset = ViewportOffset.expanded.toConcreteValue(vp);
+      final expanded = vp.offset <= expandedOffset;
+      isExpanded.value = expanded;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final screenSize = screenWidthToDisplaySize(size.width);
     final currentIndex =
         context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
     // final state = context.watch<PostDetailBloc>().state;
@@ -88,181 +103,82 @@ class _PostDetailPageState extends State<PostDetailPage> {
         context.select((PostDetailBloc bloc) => bloc.state.currentPost);
 
     return Scaffold(
-      body: ExprollablePageView(
-        itemCount: 5,
-        itemBuilder: (context, page) {
-          final media = DanbooruPostMediaItem(
-            //TODO: this is used to preload image between page
-            post: widget.posts[page].post,
-            onCached: (path) => {},
-            enableNotes: false,
-            notes: [],
-            previewCacheManager: context.read<PreviewImageCacheManager>(),
-            // onTap: () => context
-            //     .read<PostDetailBloc>()
-            //     .add(PostDetailOverlayVisibilityChanged(
-            //       enableOverlay: !state.enableOverlay,
-            //     )),
-            onZoomUpdated: (zoom) {
-              // final swipe = !zoom;
-              // if (swipe != enableSwipe) {
-              //   setState(() {
-              //     enableSwipe = swipe;
-              //   });
-              // }
-            },
-          );
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          ExprollablePageView(
+            controller: controller,
+            itemCount: widget.posts.length,
+            itemBuilder: (context, page) {
+              final media = DanbooruPostMediaItem(
+                //TODO: this is used to preload image between page
+                post: widget.posts[page].post,
+                onCached: (path) => {},
+                enableNotes: false,
+                notes: [],
+                previewCacheManager: context.read<PreviewImageCacheManager>(),
+                // onTap: () => context
+                //     .read<PostDetailBloc>()
+                //     .add(PostDetailOverlayVisibilityChanged(
+                //       enableOverlay: !state.enableOverlay,
+                //     )),
+                onZoomUpdated: (zoom) {
+                  // final swipe = !zoom;
+                  // if (swipe != enableSwipe) {
+                  //   setState(() {
+                  //     enableSwipe = swipe;
+                  //   });
+                  // }
+                },
+              );
 
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: const SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-            ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: BlocBuilder<SettingsCubit, SettingsState>(
+              return BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     previous.settings.actionBarDisplayBehavior !=
                     current.settings.actionBarDisplayBehavior,
                 builder: (context, settingsState) {
-                  return Stack(
-                    children: [
-                      if (Screen.of(context).size != ScreenSize.small &&
-                          !currentPost.post.isVideo)
-                        Center(
-                          child: media,
-                        )
-                      else
-                        _CarouselContent(
-                          scrollController:
-                              PageContentScrollController.of(context),
-                          media: media,
-                          // imagePath: widget.imagePath,
-                          actionBarDisplayBehavior:
-                              settingsState.settings.actionBarDisplayBehavior,
-                          post: currentPost,
-                          preloadPost: widget.posts[page].post,
-                          key: ValueKey(currentIndex),
-                          recommends: recommends,
-                          pools: widget.posts[page].pools,
-                        ),
-                    ],
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: isExpanded,
+                    builder: (context, value, child) => _CarouselContent(
+                      isExpaned: value,
+                      scrollController: PageContentScrollController.of(context),
+                      media: media,
+                      // imagePath: widget.imagePath,
+                      actionBarDisplayBehavior:
+                          settingsState.settings.actionBarDisplayBehavior,
+                      postData: currentPost,
+                      preloadPost: widget.posts[page].post,
+                      key: ValueKey(currentIndex),
+                      recommends: recommends,
+                      pools: widget.posts[page].pools,
+                    ),
                   );
                 },
-              ),
-            ),
-          );
-        },
-      ),
-    );
-
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostDetailBloc, PostDetailState>(
-          listenWhen: (previous, current) =>
-              previous.currentPost != current.currentPost,
-          listener: (context, state) {
-            if (screenSize != ScreenSize.small) {
-              context
-                  .read<TagBloc>()
-                  .add(TagFetched(tags: state.currentPost.post.tags));
-            }
-          },
-        ),
-      ],
-      child: WillPopScope(
-        onWillPop: () async {
-          context
-              .read<SliverPostGridBloc>()
-              .add(SliverPostGridExited(lastIndex: currentIndex));
-
-          return true;
-        },
-        child: Scaffold(
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const NetworkUnavailableIndicatorWithNetworkBloc(
-                includeSafeArea: false,
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          PostSlider(
-                            posts: widget.posts,
-                            imagePath: imagePath,
-                          ),
-                          Align(
-                            alignment: Alignment(
-                              -0.75,
-                              getTopActionIconAlignValue(),
-                            ),
-                            child: BlocSelector<PostDetailBloc, PostDetailState,
-                                bool>(
-                              selector: (state) => state.enableOverlay,
-                              builder: (context, enable) {
-                                return enable
-                                    ? const _NavigationButtonGroup()
-                                    : const SizedBox.shrink();
-                              },
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment(
-                              0.9,
-                              getTopActionIconAlignValue(),
-                            ),
-                            child: const _TopRightButtonGroup(),
-                          ),
-                          if (Screen.of(context).size == ScreenSize.small)
-                            BlocBuilder<PostDetailBloc, PostDetailState>(
-                              builder: (context, state) {
-                                return BlocBuilder<SettingsCubit,
-                                    SettingsState>(
-                                  builder: (context, settingsState) =>
-                                      state.shouldShowFloatingActionBar(
-                                    settingsState
-                                        .settings.actionBarDisplayBehavior,
-                                  )
-                                          ? _FloatingQuickActionBar(
-                                              imagePath: imagePath,
-                                            )
-                                          : const SizedBox.shrink(),
-                                );
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                    if (screenSize != ScreenSize.small)
-                      MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: context.read<TagBloc>()),
-                        ],
-                        child: Container(
-                          color: Theme.of(context).colorScheme.background,
-                          width: _infoBarWidth,
-                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                            builder: (context, state) {
-                              return _LargeLayoutContent(
-                                key: ValueKey(state.currentPost.post.id),
-                                post: state.currentPost,
-                                imagePath: imagePath,
-                                size: screenSize,
-                                recommends: state.recommends,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
+          Align(
+            alignment: Alignment(
+              -0.75,
+              getTopActionIconAlignValue(),
+            ),
+            child: BlocSelector<PostDetailBloc, PostDetailState, bool>(
+              selector: (state) => state.enableOverlay,
+              builder: (context, enable) {
+                return enable
+                    ? const _NavigationButtonGroup()
+                    : const SizedBox.shrink();
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment(
+              0.9,
+              getTopActionIconAlignValue(),
+            ),
+            child: const _TopRightButtonGroup(),
+          ),
+        ],
       ),
     );
   }
@@ -846,52 +762,56 @@ class _SlideShowButtonState extends State<_SlideShowButton>
   }
 }
 
-class _CarouselContent extends StatefulWidget {
+class _CarouselContent extends StatelessWidget {
   const _CarouselContent({
     super.key,
     required this.media,
     // required this.imagePath,
     required this.actionBarDisplayBehavior,
-    required this.post,
+    required this.postData,
     required this.preloadPost,
     required this.recommends,
     required this.pools,
     required this.scrollController,
+    required this.isExpaned,
   });
 
   final DanbooruPostMediaItem media;
   // final ValueNotifier<String?> imagePath;
-  final DanbooruPostData post;
+  final DanbooruPostData postData;
   final DanbooruPost preloadPost;
   final List<Pool> pools;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
   final ScrollController? scrollController;
+  final bool isExpaned;
 
-  @override
-  State<_CarouselContent> createState() => _CarouselContentState();
-}
-
-class _CarouselContentState extends State<_CarouselContent> {
-  DanbooruPost get post => widget.post.post;
+  DanbooruPost get post => postData.post;
 
   @override
   Widget build(BuildContext context) {
     final screenSize = Screen.of(context).size;
+    print('Rebuild');
 
-    return BlocProvider(
-      create: (context) =>
-          PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
-            ..add(PoolFromPostIdRequested(postId: post.id)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomScrollView(
-        controller: widget.scrollController,
+        controller: scrollController,
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                RepaintBoundary(child: widget.media),
-                if (screenSize == ScreenSize.small) ...[
-                  PoolTiles(pools: widget.pools),
+                !isExpaned
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).viewPadding.top,
+                        child: RepaintBoundary(child: media),
+                      )
+                    : RepaintBoundary(child: media),
+                if (!isExpaned)
+                  SizedBox(height: MediaQuery.of(context).size.height),
+                if (isExpaned) ...[
+                  PoolTiles(pools: pools),
                   // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                   //   builder: (context, state) {
                   //     return state.status == LoadStatus.success
@@ -903,27 +823,27 @@ class _CarouselContentState extends State<_CarouselContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      InformationSection(post: widget.preloadPost),
+                      InformationSection(post: preloadPost),
                       const Divider(height: 8, thickness: 1),
-                      if (widget.actionBarDisplayBehavior ==
+                      if (actionBarDisplayBehavior ==
                           ActionBarDisplayBehavior.scrolling) ...[
                         RepaintBoundary(
                           child: ActionBar(
                             // imagePath: widget.imagePath,
-                            postData: widget.post,
+                            postData: postData,
                           ),
                         ),
                         const Divider(height: 8, thickness: 1),
                       ],
-                      ArtistSection(post: widget.preloadPost),
+                      ArtistSection(post: preloadPost),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child:
                             RepaintBoundary(child: PostStatsTile(post: post)),
                       ),
-                      if (widget.preloadPost.hasParentOrChildren)
-                        _ParentChildTile(post: widget.preloadPost),
-                      if (!widget.preloadPost.hasParentOrChildren)
+                      if (preloadPost.hasParentOrChildren)
+                        _ParentChildTile(post: preloadPost),
+                      if (!preloadPost.hasParentOrChildren)
                         const Divider(height: 8, thickness: 1),
                       TagsTile(post: post),
                       const Divider(height: 8, thickness: 1),
@@ -934,13 +854,13 @@ class _CarouselContentState extends State<_CarouselContent> {
                         post: post,
                       ),
                       RecommendArtistList(
-                        recommends: widget.recommends
+                        recommends: recommends
                             .where((element) =>
                                 element.type == RecommendType.artist)
                             .toList(),
                       ),
                       RecommendCharacterList(
-                        recommends: widget.recommends
+                        recommends: recommends
                             .where((element) =>
                                 element.type == RecommendType.character)
                             .toList(),
