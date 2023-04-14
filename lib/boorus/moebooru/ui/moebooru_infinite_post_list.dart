@@ -148,6 +148,7 @@ class _InfinitePostListState<T> extends State<MoebooruInfinitePostList<T>>
                 context: context,
                 posts: widget.state.data,
                 initialPage: index,
+                scrollController: _autoScrollController,
               );
             },
           ),
