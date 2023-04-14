@@ -115,14 +115,23 @@ void goToMoebooruDetailsPage({
   Navigator.push(
     context,
     TransparentRoute(
-      builder: (context) => BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return MoebooruPostDetails(
-            posts: posts,
-            onPageChanged: (page) => scrollController?.scrollToIndex(page),
-            initialPage: initialPage,
-            fullscreen:
-                state.settings.detailsDisplay == DetailsDisplay.imageFocus,
+      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (_, sstate) {
+              return MoebooruProvider.of(
+                context,
+                booru: state.booru!,
+                builder: (context) => MoebooruPostDetails(
+                  posts: posts,
+                  onPageChanged: (page) =>
+                      scrollController?.scrollToIndex(page),
+                  initialPage: initialPage,
+                  fullscreen: sstate.settings.detailsDisplay ==
+                      DetailsDisplay.imageFocus,
+                ),
+              );
+            },
           );
         },
       ),
