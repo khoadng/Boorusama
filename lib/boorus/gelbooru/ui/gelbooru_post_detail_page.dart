@@ -1,29 +1,29 @@
 // Flutter imports:
-import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
-import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
-import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
-import 'package:boorusama/core/ui/details_page.dart';
-import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/source_section.dart';
-import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
+import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 
 class GelbooruPostDetailPage extends StatefulWidget {
   const GelbooruPostDetailPage({

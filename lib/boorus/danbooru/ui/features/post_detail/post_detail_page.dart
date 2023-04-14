@@ -1,15 +1,9 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
-import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
-import 'package:boorusama/core/ui/details_page.dart';
-import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/source_section.dart';
-import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -18,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
@@ -27,10 +22,15 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
+import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/floating_glassy_card.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
 import 'widgets/recommend_character_list.dart';

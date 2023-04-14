@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/router.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({
