@@ -58,7 +58,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';
@@ -304,6 +303,24 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   ));
 }
 
+class TransparentRoute<T> extends PageRouteBuilder<T> {
+  TransparentRoute({
+    required WidgetBuilder builder,
+    RouteSettings? settings,
+    Duration? transitionDuration,
+  }) : super(
+            opaque: false,
+            barrierDismissible: false,
+            pageBuilder: (context, _, __) => builder(context),
+            settings: settings,
+            transitionDuration:
+                transitionDuration ?? const Duration(milliseconds: 300),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            });
+}
+
 void goToParentChildPage(
   BuildContext context,
   int parentId,
@@ -338,14 +355,7 @@ void goToParentChildPage(
   ));
 }
 
-void goToHomePage(
-  BuildContext context, {
-  bool replace = false,
-}) {
-  Navigator.of(context).popUntil((route) => route.isFirst);
-}
-
-void goToDetailPage({
+Future<void> goToDetailPage({
   required BuildContext context,
   required List<DanbooruPostData> posts,
   required int initialIndex,
@@ -384,36 +394,36 @@ void goToDetailPage({
       .expand((e) => e)
       .toList();
 
-  if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => providePostDetailPageDependencies(
-        context,
-        posts,
-        initialIndex,
-        tags,
-        scrollController,
-        PostDetailPage(
-          intitialIndex: initialIndex,
-          posts: posts,
-        ),
-      ),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
+  return Navigator.of(context).push(TransparentRoute(
+    builder: (_) => providePostDetailPageDependencies(
       context,
-      builder: (_) => providePostDetailPageDependencies(
-        context,
-        posts,
-        initialIndex,
-        tags,
-        scrollController,
-        PostDetailPageDesktop(
-          intitialIndex: initialIndex,
-          posts: posts,
-        ),
+      posts,
+      initialIndex,
+      tags,
+      scrollController,
+      PostDetailPage(
+        intitialIndex: initialIndex,
+        posts: posts,
+        onPageChanged: (page) {
+          scrollController?.scrollToIndex(page);
+        },
       ),
-    );
-  }
+    ),
+  ));
+  // showDesktopFullScreenWindow(
+  //   context,
+  //   builder: (_) => providePostDetailPageDependencies(
+  //     context,
+  //     posts,
+  //     initialIndex,
+  //     tags,
+  //     scrollController,
+  //     PostDetailPageDesktop(
+  //       intitialIndex: initialIndex,
+  //       posts: posts,
+  //     ),
+  //   ),
+  // );
 }
 
 Widget providePostDetailPageDependencies(

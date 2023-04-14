@@ -20,6 +20,7 @@ class DanbooruPostMediaItem extends StatelessWidget {
     this.previewCacheManager,
     this.enableNotes = true,
     required this.notes,
+    this.useHero = true,
   });
 
   final Post post;
@@ -29,6 +30,7 @@ class DanbooruPostMediaItem extends StatelessWidget {
   final CacheManager? previewCacheManager;
   final bool enableNotes;
   final List<Note> notes;
+  final bool useHero;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class DanbooruPostMediaItem extends StatelessWidget {
       onCached: onCached,
       onTap: onTap,
       onZoomUpdated: onZoomUpdated,
+      useHero: useHero,
       previewCacheManager: previewCacheManager,
       imageOverlayBuilder: (constraints) => [
         if (enableNotes)

@@ -16,6 +16,7 @@ import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class GelbooruPostMediaItem extends StatefulWidget {
   const GelbooruPostMediaItem({
@@ -25,6 +26,7 @@ class GelbooruPostMediaItem extends StatefulWidget {
     this.onTap,
     this.onZoomUpdated,
     this.previewCacheManager,
+    this.useHero = true,
   });
 
   final Post post;
@@ -32,6 +34,7 @@ class GelbooruPostMediaItem extends StatefulWidget {
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
   final CacheManager? previewCacheManager;
+  final bool useHero;
 
   @override
   State<GelbooruPostMediaItem> createState() => _PostMediaItemState();
@@ -80,8 +83,8 @@ class _PostMediaItemState extends State<GelbooruPostMediaItem> {
             useOriginalSize: false,
             onTap: widget.onTap,
             transformationController: transformationController,
-            image: Hero(
-              tag: '${widget.post.id}_hero',
+            image: ConditionalParentWidget(
+              condition: widget.useHero,
               child: AspectRatio(
                 aspectRatio: widget.post.aspectRatio,
                 child: LayoutBuilder(
@@ -152,6 +155,10 @@ class _PostMediaItemState extends State<GelbooruPostMediaItem> {
                     ),
                   ),
                 ),
+              ),
+              conditionalBuilder: (child) => Hero(
+                tag: '${widget.post.id}_hero',
+                child: child,
               ),
             ),
           );

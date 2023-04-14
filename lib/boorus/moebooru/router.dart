@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
@@ -108,17 +110,28 @@ void goToMoebooruDetailsPage({
   required BuildContext context,
   required List<Post> posts,
   required int initialPage,
+  AutoScrollController? scrollController,
 }) {
   Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (context) => BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return MoebooruPostDetails(
-            posts: posts,
-            initialPage: initialPage,
-            fullscreen:
-                state.settings.detailsDisplay == DetailsDisplay.imageFocus,
+    TransparentRoute(
+      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+        builder: (_, state) {
+          return BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (_, sstate) {
+              return MoebooruProvider.of(
+                context,
+                booru: state.booru!,
+                builder: (context) => MoebooruPostDetails(
+                  posts: posts,
+                  onPageChanged: (page) =>
+                      scrollController?.scrollToIndex(page),
+                  initialPage: initialPage,
+                  fullscreen: sstate.settings.detailsDisplay ==
+                      DetailsDisplay.imageFocus,
+                ),
+              );
+            },
           );
         },
       ),

@@ -52,6 +52,7 @@ class DanbooruPostGrid<T> extends StatelessWidget {
           context: context,
           posts: state.data,
           initialIndex: index,
+          scrollController: scrollController,
           // postBloc: context.read<PostBloc>(),
         );
       },

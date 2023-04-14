@@ -8,6 +8,7 @@ import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
 import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/domain/posts/source_mixin.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
@@ -15,7 +16,7 @@ const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];
 
 class DanbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, SourceMixin
     implements base.Post {
   const DanbooruPost({
     required this.id,

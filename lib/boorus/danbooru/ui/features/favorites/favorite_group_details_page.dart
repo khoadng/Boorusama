@@ -251,6 +251,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                             context: context,
                                             posts: state.data,
                                             initialIndex: index,
+                                            scrollController: scrollController,
                                           )
                                       : null,
                                   image: BooruImage(

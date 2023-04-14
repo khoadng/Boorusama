@@ -393,7 +393,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             title: tag,
             posts: posts
                 .where((e) => !e.isFlash)
-                .take(6)
+                .take(20)
                 .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,
@@ -427,7 +427,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             title: tag,
             posts: posts
                 .where((e) => !e.isFlash)
-                .take(6)
+                .take(20)
                 .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
@@ -33,8 +35,9 @@ void goToGelbooruPostDetailsPage({
   required BuildContext context,
   required List<Post> posts,
   required int initialIndex,
+  AutoScrollController? scrollController,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
+  Navigator.of(context).push(TransparentRoute(
     builder: (_) => BlocSelector<SettingsCubit, SettingsState, Settings>(
       selector: (state) => state.settings,
       builder: (_, settings) {
@@ -58,6 +61,8 @@ void goToGelbooruPostDetailsPage({
                 child: GelbooruPostDetailPage(
                   posts: posts,
                   initialIndex: initialIndex,
+                  onPageChanged: (page) =>
+                      scrollController?.scrollToIndex(page),
                   fullscreen:
                       settings.detailsDisplay == DetailsDisplay.imageFocus,
                 ),

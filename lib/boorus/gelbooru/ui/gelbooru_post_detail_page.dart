@@ -3,24 +3,27 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_slider.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
+import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/circular_icon_button.dart';
+import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
-import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
-
-double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
+import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/source_section.dart';
 
 class GelbooruPostDetailPage extends StatefulWidget {
   const GelbooruPostDetailPage({
@@ -28,11 +31,13 @@ class GelbooruPostDetailPage extends StatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.fullscreen,
+    required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
+  final void Function(int page) onPageChanged;
 
   @override
   State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
@@ -44,125 +49,123 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex =
-        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
+    return DetailsPage(
+      intitialIndex: widget.initialIndex,
+      onPageChanged: widget.onPageChanged,
+      targetSwipeDownBuilder: (context, index) => GelbooruPostMediaItem(
+        //TODO: this is used to preload image between page
+        post: widget.posts[index],
+        onCached: (path) => imagePath.value = path,
+        previewCacheManager: context.read<PreviewImageCacheManager>(),
+        onZoomUpdated: (zoom) {},
+      ),
+      expandedBuilder: (context, page, currentPage, expanded) =>
+          BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          return _CarouselContent(
+            isExpanded: expanded,
+            scrollController: PageContentScrollController.of(context),
 
-    return WillPopScope(
-      onWillPop: () async {
-        context
-            .read<SliverPostGridBloc>()
-            .add(SliverPostGridExited(lastIndex: currentIndex));
-
-        return true;
-      },
-      child: Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const NetworkUnavailableIndicatorWithNetworkBloc(
-              includeSafeArea: false,
+            media: GelbooruPostMediaItem(
+              //TODO: this is used to preload image between page
+              post: widget.posts[page],
+              onCached: (path) => imagePath.value = path,
+              previewCacheManager: context.read<PreviewImageCacheManager>(),
+              useHero: page == currentPage,
+              onZoomUpdated: (zoom) {},
             ),
-            Expanded(
-              child: Row(
+            imagePath: imagePath,
+            actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
+            post: widget.posts[page],
+            preloadPost: widget.posts[page],
+            // recommends: state.recommends,
+          );
+        },
+      ),
+      pageCount: widget.posts.length,
+      topRightButtonsBuilder: (page) => [
+        MoreActionButton(post: widget.posts[page]),
+      ],
+    );
+  }
+}
+
+class _CarouselContent extends StatelessWidget {
+  const _CarouselContent({
+    required this.media,
+    required this.imagePath,
+    required this.actionBarDisplayBehavior,
+    required this.post,
+    required this.preloadPost,
+    required this.isExpanded,
+    required this.scrollController,
+  });
+
+  final GelbooruPostMediaItem media;
+  final ValueNotifier<String?> imagePath;
+  final Post post;
+  final Post preloadPost;
+  final ActionBarDisplayBehavior actionBarDisplayBehavior;
+  final bool isExpanded;
+  final ScrollController? scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      controller: scrollController,
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              !isExpanded
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).viewPadding.top,
+                      child: RepaintBoundary(child: media),
+                    )
+                  : RepaintBoundary(child: media),
+              if (!isExpanded)
+                SizedBox(height: MediaQuery.of(context).size.height),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        GelbooruPostSlider(
-                          posts: widget.posts,
-                          imagePath: imagePath,
-                          initialPage: widget.initialIndex,
-                          fullscreen: fullscreen,
-                        ),
-                        Align(
-                          alignment: Alignment(
-                            -0.75,
-                            getTopActionIconAlignValue(),
-                          ),
-                          child: const _NavigationButtonGroup(),
-                        ),
-                        Align(
-                          alignment: Alignment(
-                            0.9,
-                            getTopActionIconAlignValue(),
-                          ),
-                          child: _TopRightButtonGroup(
-                            post: widget.posts[currentIndex],
-                            fullscreen: fullscreen,
-                            onFullscreenToggled: () => setState(() {
-                              fullscreen = !fullscreen;
-                            }),
-                          ),
-                        ),
-                      ],
-                    ),
+                  // if (widget.actionBarDisplayBehavior ==
+                  //     ActionBarDisplayBehavior.scrolling) ...[
+                  //   RepaintBoundary(
+                  //     child: ActionBar(
+                  //       imagePath: widget.imagePath,
+                  //       postData: widget.post,
+                  //     ),
+                  //   ),
+                  //   const Divider(height: 8, thickness: 1),
+                  // ],
+                  // ArtistSection(post: widget.preloadPost),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 8),
+                  //   child: RepaintBoundary(child: PostStatsTile(post: post)),
+                  // ),
+                  // if (widget.preloadPost.hasParentOrChildren)
+                  //   _ParentChildTile(post: widget.preloadPost),
+                  TagsTile(
+                    post: post,
+                    onExpand: () => context
+                        .read<TagBloc>()
+                        .add(TagFetched(tags: post.tags)),
+                    onTagTap: (tag) =>
+                        goToGelbooruSearchPage(context, tag: tag.rawName),
                   ),
+                  const Divider(height: 8, thickness: 1),
+                  FileDetailsSection(
+                    post: post,
+                  ),
+                  if (post.hasWebSource) SourceSection(post: post),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _NavigationButtonGroup extends StatelessWidget {
-  const _NavigationButtonGroup();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          const _BackButton(),
-          const SizedBox(
-            width: 4,
-          ),
-          CircularIconButton(
-            icon: theme == ThemeMode.light
-                ? Icon(
-                    Icons.home,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )
-                : const Icon(Icons.home),
-            onPressed: () => goToHomePage(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-
-    final currentIndex =
-        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
-
-    return CircularIconButton(
-      icon: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: theme == ThemeMode.light
-            ? Icon(
-                Icons.arrow_back_ios,
-                color: Theme.of(context).colorScheme.onPrimary,
-              )
-            : const Icon(Icons.arrow_back_ios),
-      ),
-      onPressed: () {
-        context
-            .read<SliverPostGridBloc>()
-            .add(SliverPostGridExited(lastIndex: currentIndex));
-        Navigator.of(context).pop();
-      },
+      ],
     );
   }
 }
@@ -238,47 +241,6 @@ class MoreActionButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TopRightButtonGroup extends StatelessWidget {
-  const _TopRightButtonGroup({
-    required this.post,
-    required this.fullscreen,
-    required this.onFullscreenToggled,
-  });
-
-  final Post post;
-  final bool fullscreen;
-  final VoidCallback onFullscreenToggled;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-
-    return ButtonBar(
-      children: [
-        CircularIconButton(
-          icon: fullscreen
-              ? Icon(
-                  Icons.fullscreen_exit,
-                  color: theme == ThemeMode.light
-                      ? Theme.of(context).colorScheme.onPrimary
-                      : null,
-                )
-              : Icon(
-                  Icons.fullscreen,
-                  color: theme == ThemeMode.light
-                      ? Theme.of(context).colorScheme.onPrimary
-                      : null,
-                ),
-          onPressed: onFullscreenToggled,
-        ),
-        MoreActionButton(
-          post: post,
-        ),
-      ],
     );
   }
 }

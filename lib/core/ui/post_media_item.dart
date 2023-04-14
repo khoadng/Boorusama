@@ -16,6 +16,7 @@ import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
@@ -26,6 +27,7 @@ class PostMediaItem extends StatefulWidget {
     this.onZoomUpdated,
     this.previewCacheManager,
     this.imageOverlayBuilder,
+    this.useHero = true,
   });
 
   final Post post;
@@ -34,6 +36,7 @@ class PostMediaItem extends StatefulWidget {
   final void Function(bool zoom)? onZoomUpdated;
   final CacheManager? previewCacheManager;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
+  final bool useHero;
 
   @override
   State<PostMediaItem> createState() => _PostMediaItemState();
@@ -82,8 +85,12 @@ class _PostMediaItemState extends State<PostMediaItem> {
             useOriginalSize: false,
             onTap: widget.onTap,
             transformationController: transformationController,
-            image: Hero(
-              tag: '${widget.post.id}_hero',
+            image: ConditionalParentWidget(
+              condition: widget.useHero,
+              conditionalBuilder: (child) => Hero(
+                tag: '${widget.post.id}_hero',
+                child: child,
+              ),
               child: AspectRatio(
                 aspectRatio: widget.post.aspectRatio,
                 child: LayoutBuilder(

@@ -152,6 +152,7 @@ class _InfinitePostListState extends State<GelbooruInfinitePostList>
                       context: context,
                       posts: state.data,
                       initialIndex: index,
+                      scrollController: _autoScrollController,
                     );
                   },
                 ),
