@@ -9,12 +9,10 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -354,8 +352,6 @@ class _TopRightButtonGroup extends StatelessWidget {
     return enableOverlay
         ? ButtonBar(
             children: [
-              if (Screen.of(context).size == ScreenSize.small)
-                const _FullScreenButton(),
               if (isTranslated) const _NoteViewControlButton(),
               _SlideShowButton(
                 onStop: () => context
@@ -423,37 +419,6 @@ class _TopRightButtonGroup extends StatelessWidget {
   }
 }
 
-class _FullScreenButton extends StatelessWidget {
-  const _FullScreenButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-    final fullScreen =
-        context.select((PostDetailBloc bloc) => bloc.state.fullScreen);
-
-    return CircularIconButton(
-      icon: fullScreen
-          ? Icon(
-              Icons.fullscreen_exit,
-              color: theme == ThemeMode.light
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : null,
-            )
-          : Icon(
-              Icons.fullscreen,
-              color: theme == ThemeMode.light
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : null,
-            ),
-      onPressed: () =>
-          context.read<PostDetailBloc>().add(PostDetailDisplayModeChanged(
-                fullScreen: !fullScreen,
-              )),
-    );
-  }
-}
-
 class _NoteViewControlButton extends StatelessWidget {
   const _NoteViewControlButton();
 
@@ -495,164 +460,6 @@ class _NoteViewControlButton extends StatelessWidget {
   }
 }
 
-class _LargeLayoutContent extends StatelessWidget {
-  const _LargeLayoutContent({
-    super.key,
-    required this.post,
-    required this.imagePath,
-    required this.size,
-    required this.recommends,
-  });
-
-  final DanbooruPostData post;
-  final ValueNotifier<String?> imagePath;
-  final ScreenSize size;
-  final List<Recommend> recommends;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              SizedBox(
-                height: MediaQuery.of(context).viewPadding.top,
-              ),
-              InformationSection(
-                post: post.post,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: ActionBar(
-                  // imagePath: imagePath,
-                  postData: post,
-                ),
-              ),
-              const Divider(height: 0),
-              ArtistSection(
-                post: post.post,
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: RepaintBoundary(
-                    child: PostStatsTile(
-                      post: post.post,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
-              ),
-              if (!post.post.hasParentOrChildren) const Divider(),
-              if (post.post.hasParentOrChildren)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: ParentChildTile(
-                    data: getParentChildData(post.post),
-                    onTap: (data) => goToParentChildPage(
-                      context,
-                      data.parentId,
-                      data.tagQueryForDataFetching,
-                    ),
-                  ),
-                ),
-              BlocProvider(
-                create: (context) => PoolFromPostIdBloc(
-                  poolRepository: context.read<PoolRepository>(),
-                )..add(PoolFromPostIdRequested(postId: post.post.id)),
-                child:
-                    BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  builder: (context, state) {
-                    return state.status == LoadStatus.success
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (state.data!.isNotEmpty)
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 16, top: 16),
-                                  child: Text(
-                                    '${state.data!.length} Pools',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                  ),
-                                ),
-                              ...state.data!.map((e) => Column(children: [
-                                    ListTile(
-                                      dense: true,
-                                      visualDensity: VisualDensity.compact,
-                                      title: Text(
-                                        e.name.removeUnderscoreWithSpace(),
-                                        maxLines: 2,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: Text('${e.postCount} posts'),
-                                      trailing: const Icon(Icons.arrow_right),
-                                      onTap: () =>
-                                          goToPoolDetailPage(context, e),
-                                    ),
-                                  ])),
-                            ],
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
-              ),
-              RecommendArtistList(
-                recommends: recommends
-                    .where((element) => element.type == RecommendType.artist)
-                    .toList(),
-                useSeperator: true,
-                header: (item) => ListTile(
-                  visualDensity: VisualDensity.compact,
-                  dense: true,
-                  onTap: () => goToArtistPage(context, item),
-                  title: RichText(
-                    text: TextSpan(
-                      text: '',
-                      children: [
-                        TextSpan(
-                          text: 'More from ',
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                        ),
-                        TextSpan(
-                          text: item,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              RecommendCharacterList(
-                recommends: recommends
-                    .where((element) => element.type == RecommendType.character)
-                    .toList(),
-                useSeperator: true,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: RepaintBoundary(
-                  child: PostTagList(
-                    maxTagWidth: _infoBarWidth,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
 class MoreActionButton extends StatelessWidget {
   const MoreActionButton({super.key});
 
