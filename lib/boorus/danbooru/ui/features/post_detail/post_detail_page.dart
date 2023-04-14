@@ -218,6 +218,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         onNotification: _handleScrollNotification,
                         child: ExprollablePageView(
                           controller: controller,
+                          physics: const DetailPageViewScrollPhysics(),
                           itemCount: widget.posts.length,
                           itemBuilder: (context, page) {
                             final media = DanbooruPostMediaItem(
@@ -1076,4 +1077,20 @@ class ActionBar extends StatelessWidget {
       imagePath: null,
     );
   }
+}
+
+class DetailPageViewScrollPhysics extends ScrollPhysics {
+  const DetailPageViewScrollPhysics({super.parent});
+
+  @override
+  DetailPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return DetailPageViewScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 80,
+        stiffness: 100,
+        damping: 1,
+      );
 }

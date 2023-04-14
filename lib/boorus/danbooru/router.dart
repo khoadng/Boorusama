@@ -363,7 +363,7 @@ void goToHomePage(
   Navigator.of(context).popUntil((route) => route.isFirst);
 }
 
-void goToDetailPage({
+Future<void> goToDetailPage({
   required BuildContext context,
   required List<DanbooruPostData> posts,
   required int initialIndex,
@@ -402,39 +402,36 @@ void goToDetailPage({
       .expand((e) => e)
       .toList();
 
-  if (isMobilePlatform()) {
-    Navigator.of(context).push(TransparentRoute(
-      builder: (_) => providePostDetailPageDependencies(
-        context,
-        posts,
-        initialIndex,
-        tags,
-        scrollController,
-        PostDetailPage(
-          intitialIndex: initialIndex,
-          posts: posts,
-          onPageChanged: (page) {
-            scrollController?.scrollToIndex(page);
-          },
-        ),
+  return Navigator.of(context).push(TransparentRoute(
+    builder: (_) => providePostDetailPageDependencies(
+      context,
+      posts,
+      initialIndex,
+      tags,
+      scrollController,
+      PostDetailPage(
+        intitialIndex: initialIndex,
+        posts: posts,
+        onPageChanged: (page) {
+          scrollController?.scrollToIndex(page);
+        },
       ),
-    ));
-  } else {
-    // showDesktopFullScreenWindow(
-    //   context,
-    //   builder: (_) => providePostDetailPageDependencies(
-    //     context,
-    //     posts,
-    //     initialIndex,
-    //     tags,
-    //     scrollController,
-    //     PostDetailPageDesktop(
-    //       intitialIndex: initialIndex,
-    //       posts: posts,
-    //     ),
-    //   ),
-    // );
-  }
+    ),
+  ));
+  // showDesktopFullScreenWindow(
+  //   context,
+  //   builder: (_) => providePostDetailPageDependencies(
+  //     context,
+  //     posts,
+  //     initialIndex,
+  //     tags,
+  //     scrollController,
+  //     PostDetailPageDesktop(
+  //       intitialIndex: initialIndex,
+  //       posts: posts,
+  //     ),
+  //   ),
+  // );
 }
 
 Widget providePostDetailPageDependencies(

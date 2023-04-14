@@ -152,45 +152,51 @@ class SliverPostGrid extends StatelessWidget {
                   index: index,
                 ),
                 image: legacy
-                    ? Hero(
-                        tag: '${post.id}_hero',
-                        child: BooruImageLegacy(
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: gridSize,
-                              presetImageQuality: state.settings.imageQuality,
+                    ? RepaintBoundary(
+                        child: Hero(
+                          tag: '${post.id}_hero',
+                          child: BooruImageLegacy(
+                            imageUrl: getImageUrlForDisplay(
+                              post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
                             ),
+                            placeholderUrl: post.thumbnailImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                         ),
                       )
-                    : Hero(
-                        tag: '${post.id}_hero',
-                        child: BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: gridSize,
-                              presetImageQuality: state.settings.imageQuality,
+                    : RepaintBoundary(
+                        child: Hero(
+                          tag: '${post.id}_hero',
+                          child: BooruImage(
+                            aspectRatio: post.aspectRatio,
+                            imageUrl: getImageUrlForDisplay(
+                              post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
                             ),
+                            placeholderUrl: post.thumbnailImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            previewCacheManager:
+                                context.read<PreviewImageCacheManager>(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          previewCacheManager:
-                              context.read<PreviewImageCacheManager>(),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                         ),
                       ),
                 onTap: () => onTap?.call(post, index),
