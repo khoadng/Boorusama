@@ -22,7 +22,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_s
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -33,10 +32,8 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/floating_glassy_card.dart';
-import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
-import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
@@ -353,69 +350,10 @@ class _TopRightButtonGroup extends StatelessWidget {
         ? ButtonBar(
             children: [
               if (isTranslated) const _NoteViewControlButton(),
-              _SlideShowButton(
-                onStop: () => context
-                    .read<PostDetailBloc>()
-                    .add(const PostDetailModeChanged(
-                      enableSlideshow: false,
-                    )),
-                onShow: (start, config) => _onShowSlideshowConfig(
-                  context,
-                  config,
-                  start,
-                ),
-              ),
               const MoreActionButton(),
             ],
           )
         : const SizedBox.shrink();
-  }
-
-  void _onShowSlideshowConfig(
-    BuildContext context,
-    SlideShowConfiguration slideShowConfig,
-    void Function() start,
-  ) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final bloc = context.read<PostDetailBloc>();
-
-      final config = Screen.of(context).size == ScreenSize.small
-          ? (await showModalBottomSheet<SlideShowConfiguration>(
-              backgroundColor: Colors.transparent,
-              context: context,
-              builder: (context) => Wrap(
-                children: [
-                  SlideShowConfigContainer(
-                    initialConfig: slideShowConfig,
-                  ),
-                ],
-              ),
-            ))
-          : (await showDialog<SlideShowConfiguration>(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: SlideShowConfigContainer(
-                  isModal: false,
-                  initialConfig: slideShowConfig,
-                ),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ));
-      if (config != null) {
-        bloc
-          ..add(
-            PostDetailSlideShowConfigChanged(
-              config: config,
-            ),
-          )
-          ..add(
-            const PostDetailModeChanged(
-              enableSlideshow: true,
-            ),
-          );
-        start();
-      }
-    });
   }
 }
 
