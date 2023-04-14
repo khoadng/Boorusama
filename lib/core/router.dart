@@ -43,6 +43,13 @@ import 'ui/settings/settings.dart';
 import 'ui/widgets/parallax_slide_in_page_route.dart';
 import 'utils.dart';
 
+void goToHomePage(
+  BuildContext context, {
+  bool replace = false,
+}) {
+  Navigator.of(context).popUntil((route) => route.isFirst);
+}
+
 void goToOriginalImagePage(BuildContext context, Post post) {
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.fade,

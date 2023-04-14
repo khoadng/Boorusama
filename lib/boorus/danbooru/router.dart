@@ -355,13 +355,6 @@ void goToParentChildPage(
   ));
 }
 
-void goToHomePage(
-  BuildContext context, {
-  bool replace = false,
-}) {
-  Navigator.of(context).popUntil((route) => route.isFirst);
-}
-
 Future<void> goToDetailPage({
   required BuildContext context,
   required List<DanbooruPostData> posts,

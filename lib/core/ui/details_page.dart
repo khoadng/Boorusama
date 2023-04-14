@@ -1,6 +1,6 @@
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
