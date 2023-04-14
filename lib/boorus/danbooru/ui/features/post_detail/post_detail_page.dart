@@ -82,6 +82,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
+      onPageChanged: widget.onPageChanged,
       targetSwipeDownBuilder: (context, page) => DanbooruPostMediaItem(
         post: widget.posts[page].post,
         onCached: (path) => {},

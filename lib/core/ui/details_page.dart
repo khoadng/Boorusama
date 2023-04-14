@@ -42,32 +42,19 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     maxViewportOffset: ViewportOffset.shrunk,
     minViewportFraction: 0.999,
     snapViewportOffsets: [
-      const ViewportOffset.fractional(0.5),
       ViewportOffset.shrunk,
     ],
   );
   var isExpanded = ValueNotifier(false);
 
-  @override
-  void initState() {
-    super.initState();
-
-    controller.viewport.addListener(() {
-      final vp = controller.viewport.value;
-      final expandedOffset = ViewportOffset.expanded.toConcreteValue(vp);
-      final expanded = vp.offset <= expandedOffset;
-      isExpanded.value = expanded;
-      if (expanded) {
-        widget.onExpanded.call(controller.currentPage.value);
-      }
-    });
-    controller.currentPage.addListener(() {
-      widget.onPageChanged?.call(controller.currentPage.value);
-    });
-  }
-
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
     if (expanded) {
@@ -132,6 +119,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                         onNotification: _handleScrollNotification,
                         child: ExprollablePageView(
                           controller: controller,
+                          onViewportChanged: (metrics) =>
+                              isExpanded.value = metrics.isExpanded,
+                          onPageChanged: (page) =>
+                              widget.onPageChanged?.call(page),
                           physics: const DefaultPageViewScrollPhysics(),
                           itemCount: widget.pageCount,
                           itemBuilder: (context, page) {
