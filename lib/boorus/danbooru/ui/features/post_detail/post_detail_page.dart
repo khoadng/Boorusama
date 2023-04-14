@@ -36,10 +36,6 @@ import 'models/parent_child_data.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
-double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
-
-const double _infoBarWidth = 360;
-
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
     super.key,
@@ -133,7 +129,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         },
       ),
       pageCount: widget.posts.length,
-      topRightButtonsBuilder: () => [
+      topRightButtonsBuilder: (_) => [
         if (isTranslated) const _NoteViewControlButton(),
         const MoreActionButton(),
       ],
@@ -417,9 +413,6 @@ class _CarouselContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = Screen.of(context).size;
-    print('Rebuild');
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomScrollView(

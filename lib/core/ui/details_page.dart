@@ -18,7 +18,7 @@ class DetailsPage<T> extends StatefulWidget {
     required this.expandedBuilder,
     required this.pageCount,
     required this.topRightButtonsBuilder,
-    required this.onExpanded,
+    this.onExpanded,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
@@ -28,8 +28,8 @@ class DetailsPage<T> extends StatefulWidget {
           BuildContext context, int page, int currentPage, bool expanded)
       expandedBuilder;
   final int pageCount;
-  final List<Widget> Function() topRightButtonsBuilder;
-  final void Function(int currentPage) onExpanded;
+  final List<Widget> Function(int currentPage) topRightButtonsBuilder;
+  final void Function(int currentPage)? onExpanded;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -119,8 +119,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                         onNotification: _handleScrollNotification,
                         child: ExprollablePageView(
                           controller: controller,
-                          onViewportChanged: (metrics) =>
-                              isExpanded.value = metrics.isExpanded,
+                          onViewportChanged: (metrics) {
+                            isExpanded.value = metrics.isExpanded;
+                            widget.onExpanded?.call(currentPage);
+                          },
                           onPageChanged: (page) =>
                               widget.onPageChanged?.call(page),
                           physics: const DefaultPageViewScrollPhysics(),
@@ -159,7 +161,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
             child: Transform.translate(
               offset: Offset(0, _topRightButtonGroupOffset),
               child: ButtonBar(
-                children: widget.topRightButtonsBuilder(),
+                children:
+                    widget.topRightButtonsBuilder(controller.currentPage.value),
               ),
             ),
           ),
