@@ -9,6 +9,7 @@ import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/source_section.dart';
+import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -30,11 +31,13 @@ class GelbooruPostDetailPage extends StatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.fullscreen,
+    required this.onPageChanged,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
+  final void Function(int page) onPageChanged;
 
   @override
   State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
@@ -48,6 +51,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
   Widget build(BuildContext context) {
     return DetailsPage(
       intitialIndex: widget.initialIndex,
+      onPageChanged: widget.onPageChanged,
       targetSwipeDownBuilder: (context, index) => GelbooruPostMediaItem(
         //TODO: this is used to preload image between page
         post: widget.posts[index],
@@ -59,6 +63,9 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
           BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return _CarouselContent(
+            isExpanded: expanded,
+            scrollController: PageContentScrollController.of(context),
+
             media: GelbooruPostMediaItem(
               //TODO: this is used to preload image between page
               post: widget.posts[page],
@@ -83,13 +90,15 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
   }
 }
 
-class _CarouselContent extends StatefulWidget {
+class _CarouselContent extends StatelessWidget {
   const _CarouselContent({
     required this.media,
     required this.imagePath,
     required this.actionBarDisplayBehavior,
     required this.post,
     required this.preloadPost,
+    required this.isExpanded,
+    required this.scrollController,
   });
 
   final GelbooruPostMediaItem media;
@@ -97,22 +106,26 @@ class _CarouselContent extends StatefulWidget {
   final Post post;
   final Post preloadPost;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
-
-  @override
-  State<_CarouselContent> createState() => _CarouselContentState();
-}
-
-class _CarouselContentState extends State<_CarouselContent> {
-  Post get post => widget.post;
+  final bool isExpanded;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      controller: scrollController,
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              RepaintBoundary(child: widget.media),
+              !isExpanded
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).viewPadding.top,
+                      child: RepaintBoundary(child: media),
+                    )
+                  : RepaintBoundary(child: media),
+              if (!isExpanded)
+                SizedBox(height: MediaQuery.of(context).size.height),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -146,10 +159,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                   FileDetailsSection(
                     post: post,
                   ),
-                  if (post.source != null &&
-                      post.source!.isNotEmpty &&
-                      Uri.tryParse(post.source!) != null)
-                    SourceSection(post: post),
+                  if (post.hasWebSource) SourceSection(post: post),
                 ],
               ),
             ],

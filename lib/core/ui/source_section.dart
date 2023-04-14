@@ -49,8 +49,8 @@ class SourceSection extends StatelessWidget {
                   child: Row(
                     children: [
                       WebsiteLogo(
-                        url: _getHost(Uri.parse(post.source!)),
-                        isIcoUrl: _useIco(Uri.parse(post.source!)),
+                        url: post.sourceHost!,
+                        isIcoUrl: post.hasIcoLogoSource,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -75,26 +75,6 @@ class SourceSection extends StatelessWidget {
       ],
     );
   }
-}
-
-String _getHost(Uri uri) {
-  if (uri.host.contains('artstation.com')) return 'artstation.com';
-  if (uri.host.contains('discordapp.com')) return 'discordapp.com';
-  if (uri.host.contains('kym-cdn.com')) return 'knowyourmeme.com';
-  if (uri.host.contains('images-wixmp')) return 'deviantart.com';
-  if (uri.host.contains('fantia.jp')) return 'fantia.jp';
-  if (uri.host.contains('hentai-foundry.com')) return 'hentai-foundry.com';
-  if (uri.host.contains('exhentai.org')) return 'e-hentai.org';
-  if (uri.host.contains('lofter.com')) {
-    return 'https://www.lofter.com/favicon.ico';
-  }
-
-  return uri.host;
-}
-
-bool _useIco(Uri uri) {
-  if (uri.host.contains('lofter.com')) return true;
-  return false;
 }
 
 String _mapUriToSourceText(Uri uri) {

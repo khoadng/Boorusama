@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/domain/posts/source_mixin.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -15,7 +16,7 @@ const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];
 
 class DanbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, SourceMixin
     implements base.Post {
   const DanbooruPost({
     required this.id,

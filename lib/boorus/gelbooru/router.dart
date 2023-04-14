@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -26,6 +27,7 @@ import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'ui/gelbooru_post_detail_page.dart';
 import 'ui/utils.dart';
 
@@ -33,8 +35,9 @@ void goToGelbooruPostDetailsPage({
   required BuildContext context,
   required List<Post> posts,
   required int initialIndex,
+  AutoScrollController? scrollController,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
+  Navigator.of(context).push(TransparentRoute(
     builder: (_) => BlocSelector<SettingsCubit, SettingsState, Settings>(
       selector: (state) => state.settings,
       builder: (_, settings) {
@@ -58,6 +61,8 @@ void goToGelbooruPostDetailsPage({
                 child: GelbooruPostDetailPage(
                   posts: posts,
                   initialIndex: initialIndex,
+                  onPageChanged: (page) =>
+                      scrollController?.scrollToIndex(page),
                   fullscreen:
                       settings.detailsDisplay == DetailsDisplay.imageFocus,
                 ),

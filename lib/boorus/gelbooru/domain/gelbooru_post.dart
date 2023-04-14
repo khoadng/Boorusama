@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/domain/posts/source_mixin.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -9,7 +10,7 @@ import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
 
 class GelbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, SourceMixin
     implements base.Post {
   const GelbooruPost({
     required this.format,

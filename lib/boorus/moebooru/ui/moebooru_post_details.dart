@@ -327,10 +327,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                   FileDetailsSection(
                     post: post,
                   ),
-                  if (post.source != null &&
-                      post.source!.isNotEmpty &&
-                      Uri.tryParse(post.source!) != null)
-                    SourceSection(post: post),
+                  if (post.hasWebSource) SourceSection(post: post),
                 ],
               ),
             ],
