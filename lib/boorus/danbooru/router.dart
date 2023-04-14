@@ -58,7 +58,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';

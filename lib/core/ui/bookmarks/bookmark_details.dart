@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,7 +8,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_slider.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
