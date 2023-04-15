@@ -65,6 +65,7 @@ Widget mapToCarousel(
               context: context,
               posts: posts,
               initialIndex: index,
+              hero: false,
               // postBloc: explore.bloc,
             );
           },

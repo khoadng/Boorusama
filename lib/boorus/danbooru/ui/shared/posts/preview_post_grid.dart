@@ -27,34 +27,34 @@ class PreviewPostGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index].post;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => BooruImage(
-                      imageUrl: _getImageUrl(post, imageQuality),
-                      placeholderUrl: post.thumbnailImageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              );
-            },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 3,
+            mainAxisSpacing: 3,
           ),
+          shrinkWrap: true,
+          physics: physics ?? const NeverScrollableScrollPhysics(),
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            final post = posts[index].post;
+
+            return GestureDetector(
+              onTap: () => onTap(index),
+              child: LayoutBuilder(
+                builder: (context, constraints) => BooruImage(
+                  imageUrl: _getImageUrl(post, imageQuality),
+                  placeholderUrl: post.thumbnailImageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

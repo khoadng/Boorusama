@@ -470,9 +470,10 @@ class _CarouselContent extends StatelessWidget {
                       FileDetailsSection(
                         post: post,
                       ),
-                      SourceSection(
-                        post: post,
-                      ),
+                      if (post.hasWebSource)
+                        SourceSection(
+                          post: post,
+                        ),
                       RecommendArtistList(
                         recommends: recommends
                             .where((element) =>

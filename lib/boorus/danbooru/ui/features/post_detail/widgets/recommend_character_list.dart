@@ -34,6 +34,7 @@ class RecommendCharacterList extends StatelessWidget {
               context: context,
               posts: r.posts,
               initialIndex: index,
+              hero: false,
             ),
           ),
         ),
