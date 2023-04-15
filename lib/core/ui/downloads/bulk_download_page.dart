@@ -58,8 +58,8 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
       );
     }
 
-    return BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-        BulkImageDownloadStatus>(
+    return BlocSelector<BulkDownloadManagerBloc, BulkDownloadManagerState,
+        BulkDownloadManagerStatus>(
       selector: (state) => state.status,
       builder: (context, status) {
         return GestureDetector(
@@ -88,10 +88,10 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 ],
               ),
               automaticallyImplyLeading:
-                  status != BulkImageDownloadStatus.downloadInProgress,
+                  status != BulkDownloadManagerStatus.downloadInProgress,
             ),
-            body: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                BulkImageDownloadStatus>(
+            body: BlocSelector<BulkDownloadManagerBloc,
+                BulkDownloadManagerState, BulkDownloadManagerStatus>(
               selector: (state) => state.status,
               builder: (context, status) => _buildBody(status),
             ),
@@ -101,9 +101,9 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
     );
   }
 
-  Widget _buildBody(BulkImageDownloadStatus status) {
+  Widget _buildBody(BulkDownloadManagerStatus status) {
     switch (status) {
-      case BulkImageDownloadStatus.initial:
+      case BulkDownloadManagerStatus.initial:
         return BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) {
             return DownloadEmptyTagView(
@@ -111,14 +111,14 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
             );
           },
         );
-      case BulkImageDownloadStatus.dataSelected:
+      case BulkDownloadManagerStatus.dataSelected:
         return const DownloadTagSelectionView();
-      case BulkImageDownloadStatus.downloadInProgress:
+      case BulkDownloadManagerStatus.downloadInProgress:
         return const DownloadProgressView();
-      case BulkImageDownloadStatus.failure:
+      case BulkDownloadManagerStatus.failure:
         return const DownloadErrorView();
-      case BulkImageDownloadStatus.done:
-        return BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+      case BulkDownloadManagerStatus.done:
+        return BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
           builder: (context, state) {
             return DownloadCompletedView(
               doneCount: state.doneCount,

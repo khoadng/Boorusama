@@ -59,8 +59,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               vertical: 18,
               horizontal: 16,
             ),
-            child: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                List<String>>(
+            child: BlocSelector<BulkDownloadManagerBloc,
+                BulkDownloadManagerState, List<String>>(
               selector: (state) => state.selectedTags,
               builder: (context, selectedTags) {
                 return Wrap(
@@ -74,8 +74,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                             color: Theme.of(context).colorScheme.error,
                           ),
                           onDeleted: () => context
-                              .read<BulkImageDownloadBloc>()
-                              .add(BulkImageDownloadTagRemoved(tag: e)),
+                              .read<BulkDownloadManagerBloc>()
+                              .add(BulkDownloadManagerTagRemoved(tag: e)),
                         )),
                     BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
                       builder: (context, state) {
@@ -83,20 +83,21 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                           iconSize: 28,
                           splashRadius: 20,
                           onPressed: () {
-                            final bloc = context.read<BulkImageDownloadBloc>();
+                            final bloc =
+                                context.read<BulkDownloadManagerBloc>();
                             goToQuickSearchPage(
                               context,
                               onSubmitted: (context, text) {
                                 Navigator.of(context).pop();
                                 bloc.add(
-                                  BulkImageDownloadTagsAdded(
+                                  BulkDownloadManagerTagsAdded(
                                     tags: [text],
                                   ),
                                 );
                               },
                               onSelected: (tag) {
                                 bloc.add(
-                                  BulkImageDownloadTagsAdded(
+                                  BulkDownloadManagerTagsAdded(
                                     tags: [tag.value],
                                   ),
                                 );
@@ -132,8 +133,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               horizontal: 16,
               vertical: 8,
             ),
-            child: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                DownloadOptions>(
+            child: BlocSelector<BulkDownloadManagerBloc,
+                BulkDownloadManagerState, DownloadOptions>(
               selector: (state) => state.options,
               builder: (context, options) {
                 return Material(
@@ -173,7 +174,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             ),
           ),
           if (isAndroid())
-            BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+            BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
               builder: (context, state) {
                 return state.shouldDisplayWarning(
                   hasScopeStorage: hasScopedStorage(context
@@ -197,7 +198,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+            child:
+                BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
               builder: (context, state) {
                 return ElevatedButton(
                   onPressed: state.isValidToStartDownload(
@@ -208,8 +210,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                             .sdkInt) ??
                         false,
                   )
-                      ? () => context.read<BulkImageDownloadBloc>().add(
-                            BulkImagesDownloadRequested(
+                      ? () => context.read<BulkDownloadManagerBloc>().add(
+                            BulkDownloadManagerRequested(
                               tags: state.selectedTags,
                             ),
                           )
@@ -228,12 +230,12 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
     BuildContext context,
     DownloadOptions options,
   ) async {
-    final bloc = context.read<BulkImageDownloadBloc>();
+    final bloc = context.read<BulkDownloadManagerBloc>();
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
       bloc.add(
-        BulkImageDownloadOptionsChanged(
+        BulkDownloadManagerOptionsChanged(
           options: options.copyWith(
             storagePath: selectedDirectory,
           ),

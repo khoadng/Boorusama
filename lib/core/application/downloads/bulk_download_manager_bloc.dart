@@ -9,7 +9,7 @@ import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/filtered_out_post.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
-enum BulkImageDownloadStatus {
+enum BulkDownloadManagerStatus {
   initial,
   dataSelected,
   downloadInProgress,
@@ -17,16 +17,16 @@ enum BulkImageDownloadStatus {
   done,
 }
 
-class BulkImageDownloadState extends Equatable {
-  const BulkImageDownloadState({
+class BulkDownloadManagerState extends Equatable {
+  const BulkDownloadManagerState({
     required this.status,
     required this.selectedTags,
     required this.options,
     required DownloadState<Post> downloadState,
   }) : _downloadState = downloadState;
 
-  factory BulkImageDownloadState.initial() => BulkImageDownloadState(
-        status: BulkImageDownloadStatus.initial,
+  factory BulkDownloadManagerState.initial() => BulkDownloadManagerState(
+        status: BulkDownloadManagerStatus.initial,
         selectedTags: const [],
         options: const DownloadOptions(
           onlyDownloadNewFile: true,
@@ -46,19 +46,19 @@ class BulkImageDownloadState extends Equatable {
   bool get allDownloadCompleted => _downloadState.allDownloadCompleted;
   String get message => _downloadState.errorMessage;
 
-  final BulkImageDownloadStatus status;
+  final BulkDownloadManagerStatus status;
   final List<String> selectedTags;
   final DownloadOptions options;
 
   final DownloadState<Post> _downloadState;
 
-  BulkImageDownloadState copyWith({
-    BulkImageDownloadStatus? status,
+  BulkDownloadManagerState copyWith({
+    BulkDownloadManagerStatus? status,
     List<String>? selectedTags,
     DownloadOptions? options,
     DownloadState<Post>? downloadState,
   }) =>
-      BulkImageDownloadState(
+      BulkDownloadManagerState(
         status: status ?? this.status,
         selectedTags: selectedTags ?? this.selectedTags,
         options: options ?? this.options,
@@ -75,12 +75,12 @@ class BulkImageDownloadState extends Equatable {
       ];
 }
 
-abstract class BulkImageDownloadEvent extends Equatable {
-  const BulkImageDownloadEvent();
+abstract class BulkDownloadManagerEvent extends Equatable {
+  const BulkDownloadManagerEvent();
 }
 
-class BulkImagesDownloadRequested<T> extends BulkImageDownloadEvent {
-  const BulkImagesDownloadRequested({
+class BulkDownloadManagerRequested<T> extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerRequested({
     required this.tags,
   });
 
@@ -92,29 +92,29 @@ class BulkImagesDownloadRequested<T> extends BulkImageDownloadEvent {
       ];
 }
 
-class BulkImagesDownloadCancel extends BulkImageDownloadEvent {
-  const BulkImagesDownloadCancel();
+class BulkDownloadManagerCancel extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerCancel();
 
   @override
   List<Object?> get props => [];
 }
 
-class BulkImageDownloadReset extends BulkImageDownloadEvent {
-  const BulkImageDownloadReset();
+class BulkDownloadManagerReset extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerReset();
 
   @override
   List<Object?> get props => [];
 }
 
-class BulkImageDownloadSwitchToResutlView extends BulkImageDownloadEvent {
-  const BulkImageDownloadSwitchToResutlView();
+class BulkDownloadManagerSwitchToResutlView extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerSwitchToResutlView();
 
   @override
   List<Object?> get props => [];
 }
 
-class BulkImageDownloadOptionsChanged extends BulkImageDownloadEvent {
-  const BulkImageDownloadOptionsChanged({
+class BulkDownloadManagerOptionsChanged extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerOptionsChanged({
     required this.options,
   });
 
@@ -124,8 +124,8 @@ class BulkImageDownloadOptionsChanged extends BulkImageDownloadEvent {
   List<Object?> get props => [options];
 }
 
-class BulkImageDownloadTagsAdded extends BulkImageDownloadEvent {
-  const BulkImageDownloadTagsAdded({
+class BulkDownloadManagerTagsAdded extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerTagsAdded({
     required this.tags,
   });
 
@@ -135,8 +135,8 @@ class BulkImageDownloadTagsAdded extends BulkImageDownloadEvent {
   List<Object?> get props => [tags];
 }
 
-class BulkImageDownloadTagRemoved extends BulkImageDownloadEvent {
-  const BulkImageDownloadTagRemoved({
+class BulkDownloadManagerTagRemoved extends BulkDownloadManagerEvent {
+  const BulkDownloadManagerTagRemoved({
     required this.tag,
   });
 
@@ -146,7 +146,7 @@ class BulkImageDownloadTagRemoved extends BulkImageDownloadEvent {
   List<Object?> get props => [tag];
 }
 
-class _DownloadStateChanged extends BulkImageDownloadEvent {
+class _DownloadStateChanged extends BulkDownloadManagerEvent {
   const _DownloadStateChanged({
     required this.dState,
   });
@@ -157,27 +157,27 @@ class _DownloadStateChanged extends BulkImageDownloadEvent {
   List<Object?> get props => [dState];
 }
 
-class BulkImageDownloadBloc<E extends Post>
-    extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
-  BulkImageDownloadBloc({
+class BulkDownloadManagerBloc<E extends Post>
+    extends Bloc<BulkDownloadManagerEvent, BulkDownloadManagerState> {
+  BulkDownloadManagerBloc({
     required this.bulkPostDownloadBloc,
     required Future<PermissionStatus> Function() permissionChecker,
     required Future<PermissionStatus> Function() permissionRequester,
-  }) : super(BulkImageDownloadState.initial()) {
-    on<BulkImagesDownloadRequested>((event, emit) async {
+  }) : super(BulkDownloadManagerState.initial()) {
+    on<BulkDownloadManagerRequested>((event, emit) async {
       final permission = await permissionChecker();
       //TODO: ask permission here, set some state to notify user
       if (permission != PermissionStatus.granted) {
         final status = await permissionRequester();
         if (status != PermissionStatus.granted) {
-          emit(state.copyWith(status: BulkImageDownloadStatus.failure));
+          emit(state.copyWith(status: BulkDownloadManagerStatus.failure));
 
           return;
         }
       }
 
       emit(state.copyWith(
-        status: BulkImageDownloadStatus.downloadInProgress,
+        status: BulkDownloadManagerStatus.downloadInProgress,
       ));
 
       bulkPostDownloadBloc.add(
@@ -185,47 +185,47 @@ class BulkImageDownloadBloc<E extends Post>
       );
     });
 
-    on<BulkImagesDownloadCancel>((event, emit) async {
+    on<BulkDownloadManagerCancel>((event, emit) async {
       bulkPostDownloadBloc.add(const DownloadCancel());
-      emit(state.copyWith(status: BulkImageDownloadStatus.done));
+      emit(state.copyWith(status: BulkDownloadManagerStatus.done));
     });
 
-    on<BulkImageDownloadTagsAdded>((event, emit) {
+    on<BulkDownloadManagerTagsAdded>((event, emit) {
       if (event.tags == null) return;
 
       final tags = [...state.selectedTags, ...event.tags!];
 
       emit(state.copyWith(
         selectedTags: tags,
-        status: BulkImageDownloadStatus.dataSelected,
+        status: BulkDownloadManagerStatus.dataSelected,
       ));
     });
 
-    on<BulkImageDownloadTagRemoved>((event, emit) {
+    on<BulkDownloadManagerTagRemoved>((event, emit) {
       final tags = [
         ...state.selectedTags,
       ]..remove(event.tag);
 
       emit(state.copyWith(
         selectedTags: tags,
-        status: BulkImageDownloadStatus.dataSelected,
+        status: BulkDownloadManagerStatus.dataSelected,
       ));
     });
 
-    on<BulkImageDownloadReset>((event, emit) {
+    on<BulkDownloadManagerReset>((event, emit) {
       bulkPostDownloadBloc.add(const DownloadReset());
-      emit(BulkImageDownloadState.initial());
+      emit(BulkDownloadManagerState.initial());
     });
 
-    on<BulkImageDownloadOptionsChanged>((event, emit) {
+    on<BulkDownloadManagerOptionsChanged>((event, emit) {
       emit(state.copyWith(
         options: event.options,
       ));
     });
 
-    on<BulkImageDownloadSwitchToResutlView>((event, emit) {
-      if (state.status == BulkImageDownloadStatus.downloadInProgress) {
-        emit(state.copyWith(status: BulkImageDownloadStatus.done));
+    on<BulkDownloadManagerSwitchToResutlView>((event, emit) {
+      if (state.status == BulkDownloadManagerStatus.downloadInProgress) {
+        emit(state.copyWith(status: BulkDownloadManagerStatus.done));
       }
     });
 
@@ -251,7 +251,7 @@ class BulkImageDownloadBloc<E extends Post>
   }
 }
 
-extension BulkImageDownloadStateX on BulkImageDownloadState {
+extension BulkImageDownloadStateX on BulkDownloadManagerState {
   bool isValidToStartDownload({
     required bool hasScopeStorage,
   }) =>

@@ -8,22 +8,22 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/downloads.dart';
 
 class MockPostDownloadBloc extends MockBloc<DownloadEvent<String, DanbooruPost>,
-    DownloadState<DanbooruPost>> implements BulkPostDownloadBloc {}
+    DownloadState<DanbooruPost>> implements DanbooruBulkDownloadBloc {}
 
 void main() {
   final downloadBloc = MockPostDownloadBloc();
 
-  blocTest<BulkImageDownloadBloc, BulkImageDownloadState>(
+  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'enter a tag will switch from empty view to tag confirmation state',
-    build: () => BulkImageDownloadBloc(
+    build: () => BulkDownloadManagerBloc(
       permissionChecker: () async => PermissionStatus.granted,
       permissionRequester: () async => PermissionStatus.granted,
       bulkPostDownloadBloc: downloadBloc,
     ),
-    act: (bloc) => bloc.add(const BulkImageDownloadTagsAdded(tags: ['foo'])),
+    act: (bloc) => bloc.add(const BulkDownloadManagerTagsAdded(tags: ['foo'])),
     expect: () => [
-      BulkImageDownloadState.initial().copyWith(
-        status: BulkImageDownloadStatus.dataSelected,
+      BulkDownloadManagerState.initial().copyWith(
+        status: BulkDownloadManagerStatus.dataSelected,
         selectedTags: [
           'foo',
         ],
@@ -31,23 +31,23 @@ void main() {
     ],
   );
 
-  blocTest<BulkImageDownloadBloc, BulkImageDownloadState>(
+  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'have 1 tag, add another tag',
-    seed: () => BulkImageDownloadState.initial().copyWith(
-      status: BulkImageDownloadStatus.dataSelected,
+    seed: () => BulkDownloadManagerState.initial().copyWith(
+      status: BulkDownloadManagerStatus.dataSelected,
       selectedTags: [
         'bar',
       ],
     ),
-    build: () => BulkImageDownloadBloc(
+    build: () => BulkDownloadManagerBloc(
       permissionChecker: () async => PermissionStatus.granted,
       permissionRequester: () async => PermissionStatus.granted,
       bulkPostDownloadBloc: downloadBloc,
     ),
-    act: (bloc) => bloc.add(const BulkImageDownloadTagsAdded(tags: ['foo'])),
+    act: (bloc) => bloc.add(const BulkDownloadManagerTagsAdded(tags: ['foo'])),
     expect: () => [
-      BulkImageDownloadState.initial().copyWith(
-        status: BulkImageDownloadStatus.dataSelected,
+      BulkDownloadManagerState.initial().copyWith(
+        status: BulkDownloadManagerStatus.dataSelected,
         selectedTags: [
           'bar',
           'foo',
@@ -56,23 +56,23 @@ void main() {
     ],
   );
 
-  blocTest<BulkImageDownloadBloc, BulkImageDownloadState>(
+  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'have 1 tag, remove 1 tag',
-    seed: () => BulkImageDownloadState.initial().copyWith(
-      status: BulkImageDownloadStatus.dataSelected,
+    seed: () => BulkDownloadManagerState.initial().copyWith(
+      status: BulkDownloadManagerStatus.dataSelected,
       selectedTags: [
         'bar',
       ],
     ),
-    build: () => BulkImageDownloadBloc(
+    build: () => BulkDownloadManagerBloc(
       permissionChecker: () async => PermissionStatus.granted,
       permissionRequester: () async => PermissionStatus.granted,
       bulkPostDownloadBloc: downloadBloc,
     ),
-    act: (bloc) => bloc.add(const BulkImagesDownloadRequested(tags: ['bar'])),
+    act: (bloc) => bloc.add(const BulkDownloadManagerRequested(tags: ['bar'])),
     expect: () => [
-      BulkImageDownloadState.initial().copyWith(
-        status: BulkImageDownloadStatus.downloadInProgress,
+      BulkDownloadManagerState.initial().copyWith(
+        status: BulkDownloadManagerStatus.downloadInProgress,
         selectedTags: [
           'bar',
         ],
@@ -80,44 +80,44 @@ void main() {
     ],
   );
 
-  blocTest<BulkImageDownloadBloc, BulkImageDownloadState>(
+  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'request download will switch to download progress state',
-    seed: () => BulkImageDownloadState.initial().copyWith(
-      status: BulkImageDownloadStatus.dataSelected,
+    seed: () => BulkDownloadManagerState.initial().copyWith(
+      status: BulkDownloadManagerStatus.dataSelected,
       selectedTags: [
         'bar',
       ],
     ),
-    build: () => BulkImageDownloadBloc(
+    build: () => BulkDownloadManagerBloc(
       permissionChecker: () async => PermissionStatus.granted,
       permissionRequester: () async => PermissionStatus.granted,
       bulkPostDownloadBloc: downloadBloc,
     ),
-    act: (bloc) => bloc.add(const BulkImageDownloadTagRemoved(tag: 'bar')),
+    act: (bloc) => bloc.add(const BulkDownloadManagerTagRemoved(tag: 'bar')),
     expect: () => [
-      BulkImageDownloadState.initial().copyWith(
-        status: BulkImageDownloadStatus.dataSelected,
+      BulkDownloadManagerState.initial().copyWith(
+        status: BulkDownloadManagerStatus.dataSelected,
         selectedTags: [],
       ),
     ],
   );
 
-  blocTest<BulkImageDownloadBloc, BulkImageDownloadState>(
+  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'when download done, hit reset to back to empty state',
-    seed: () => BulkImageDownloadState.initial().copyWith(
-      status: BulkImageDownloadStatus.done,
+    seed: () => BulkDownloadManagerState.initial().copyWith(
+      status: BulkDownloadManagerStatus.done,
       selectedTags: [
         'bar',
       ],
     ),
-    build: () => BulkImageDownloadBloc(
+    build: () => BulkDownloadManagerBloc(
       permissionChecker: () async => PermissionStatus.granted,
       permissionRequester: () async => PermissionStatus.granted,
       bulkPostDownloadBloc: downloadBloc,
     ),
-    act: (bloc) => bloc.add(const BulkImageDownloadReset()),
+    act: (bloc) => bloc.add(const BulkDownloadManagerReset()),
     expect: () => [
-      BulkImageDownloadState.initial(),
+      BulkDownloadManagerState.initial(),
     ],
   );
 }

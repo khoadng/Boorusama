@@ -30,7 +30,7 @@ void main() {
   group('[valid storage test]', () {
     test('empty path => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -44,7 +44,7 @@ void main() {
 
     test('No scoped storage, internal storage => true', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -58,7 +58,7 @@ void main() {
 
     test('No scoped storage, SD card => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -72,7 +72,7 @@ void main() {
 
     test('Scoped storage, SD card => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -86,7 +86,7 @@ void main() {
 
     test('Scoped storage, internal storage, public folder => true', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -100,7 +100,7 @@ void main() {
 
     test('Scoped storage, internal storage, non public folder => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -116,7 +116,7 @@ void main() {
   group('[warning visibility test]', () {
     test('empty folder path => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -130,7 +130,7 @@ void main() {
 
     test('valid folder path => false', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,
@@ -144,7 +144,7 @@ void main() {
 
     test('invalid folder path => true', () {
       expect(
-        BulkImageDownloadState.initial()
+        BulkDownloadManagerState.initial()
             .copyWith(
               options: const DownloadOptions(
                 onlyDownloadNewFile: false,

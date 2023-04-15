@@ -23,8 +23,8 @@ class DownloadProgressView extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         context
-            .read<BulkImageDownloadBloc>()
-            .add(const BulkImagesDownloadCancel());
+            .read<BulkDownloadManagerBloc>()
+            .add(const BulkDownloadManagerCancel());
 
         return true;
       },
@@ -43,8 +43,8 @@ class DownloadProgressView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                      int>(
+                  BlocSelector<BulkDownloadManagerBloc,
+                      BulkDownloadManagerState, int>(
                     selector: (state) => state.downloadedSize,
                     builder: (context, state) {
                       return _DownloadIndicator(
@@ -53,8 +53,8 @@ class DownloadProgressView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                      int>(
+                  BlocSelector<BulkDownloadManagerBloc,
+                      BulkDownloadManagerState, int>(
                     selector: (state) => state.estimateDownloadSize,
                     builder: (context, state) {
                       return _DownloadIndicator(
@@ -70,8 +70,8 @@ class DownloadProgressView extends StatelessWidget {
                       thickness: 2,
                     ),
                   ),
-                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                      int>(
+                  BlocSelector<BulkDownloadManagerBloc,
+                      BulkDownloadManagerState, int>(
                     selector: (state) => state.doneCount,
                     builder: (context, state) {
                       return _DownloadIndicator(
@@ -80,8 +80,8 @@ class DownloadProgressView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                      int>(
+                  BlocSelector<BulkDownloadManagerBloc,
+                      BulkDownloadManagerState, int>(
                     selector: (state) => state.totalCount,
                     builder: (context, state) {
                       return _DownloadIndicator(
@@ -98,7 +98,7 @@ class DownloadProgressView extends StatelessWidget {
                 'download.bulk_download_stay_on_screen_request',
               ).tr(),
             ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+            BlocSelector<BulkDownloadManagerBloc, BulkDownloadManagerState,
                 List<String>>(
               selector: (state) => state.selectedTags,
               builder: (context, selectedTags) {
@@ -116,7 +116,7 @@ class DownloadProgressView extends StatelessWidget {
                 );
               },
             ),
-            BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+            BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
               buildWhen: (previous, current) =>
                   previous.doneCount != current.doneCount ||
                   previous.totalCount != current.totalCount,
@@ -142,7 +142,7 @@ class DownloadProgressView extends StatelessWidget {
                 );
               },
             ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+            BlocSelector<BulkDownloadManagerBloc, BulkDownloadManagerState,
                 List<FilteredOutPost>>(
               selector: (state) => state.filteredPosts,
               builder: (context, filteredPosts) {
@@ -189,7 +189,7 @@ class DownloadProgressView extends StatelessWidget {
                 );
               },
             ),
-            BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+            BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
               buildWhen: (previous, current) =>
                   previous.options != current.options ||
                   previous.duplicate != current.duplicate,
@@ -217,7 +217,8 @@ class DownloadProgressView extends StatelessWidget {
                     : const SizedBox.shrink();
               },
             ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, bool>(
+            BlocSelector<BulkDownloadManagerBloc, BulkDownloadManagerState,
+                bool>(
               selector: (state) => state.allDownloadCompleted,
               builder: (context, allDone) {
                 return allDone
@@ -225,8 +226,9 @@ class DownloadProgressView extends StatelessWidget {
                         padding: const EdgeInsets.all(16),
                         child: ElevatedButton(
                           onPressed: () => context
-                              .read<BulkImageDownloadBloc>()
-                              .add(const BulkImageDownloadSwitchToResutlView()),
+                              .read<BulkDownloadManagerBloc>()
+                              .add(
+                                  const BulkDownloadManagerSwitchToResutlView()),
                           child:
                               const Text('download.bulk_download_done_confirm')
                                   .tr(),
@@ -236,15 +238,16 @@ class DownloadProgressView extends StatelessWidget {
                         padding: const EdgeInsets.all(16),
                         child: ElevatedButton(
                           onPressed: () => context
-                              .read<BulkImageDownloadBloc>()
-                              .add(const BulkImagesDownloadCancel()),
+                              .read<BulkDownloadManagerBloc>()
+                              .add(const BulkDownloadManagerCancel()),
                           child:
                               const Text('download.bulk_download_cancel').tr(),
                         ),
                       );
               },
             ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
+            BlocSelector<BulkDownloadManagerBloc, BulkDownloadManagerState,
+                String>(
               selector: (state) => state.message,
               builder: (context, state) {
                 return state.isNotEmpty
@@ -263,8 +266,8 @@ class DownloadProgressView extends StatelessWidget {
                             ).tr(),
                             ElevatedButton(
                               onPressed: () => context
-                                  .read<BulkImageDownloadBloc>()
-                                  .add(const BulkImageDownloadReset()),
+                                  .read<BulkDownloadManagerBloc>()
+                                  .add(const BulkDownloadManagerReset()),
                               child: const Text('OK'),
                             ),
                           ],

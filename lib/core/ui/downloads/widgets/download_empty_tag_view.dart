@@ -54,8 +54,8 @@ class DownloadEmptyTagView extends StatelessWidget {
                 closeOnSelected: false,
                 ensureValidTag: false,
                 onSelected: (tag) {
-                  context.read<BulkImageDownloadBloc>().add(
-                        BulkImageDownloadTagsAdded(
+                  context.read<BulkDownloadManagerBloc>().add(
+                        BulkDownloadManagerTagsAdded(
                           tags: [tag.value],
                         ),
                       );

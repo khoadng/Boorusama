@@ -91,8 +91,8 @@ class DownloadCompletedView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: ElevatedButton(
             onPressed: () => context
-                .read<BulkImageDownloadBloc>()
-                .add(const BulkImageDownloadReset()),
+                .read<BulkDownloadManagerBloc>()
+                .add(const BulkDownloadManagerReset()),
             child: const Text('download.bulk_download_download_more').tr(),
           ),
         ),

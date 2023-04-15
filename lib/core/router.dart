@@ -636,8 +636,8 @@ Future<void> goToBulkDownloadPage(
                 booru: state.booru!,
                 builder: (dcontext) => MultiBlocProvider(
                   providers: [
-                    BlocProvider<BulkImageDownloadBloc<Post>>(
-                      create: (_) => BulkImageDownloadBloc(
+                    BlocProvider<BulkDownloadManagerBloc<Post>>(
+                      create: (_) => BulkDownloadManagerBloc(
                         permissionChecker: () => Permission.storage.status,
                         permissionRequester: () =>
                             requestMediaPermissions(context.read<DeviceInfo>()),
@@ -653,7 +653,7 @@ Future<void> goToBulkDownloadPage(
                           onDownloadDone: (path) =>
                               MediaScanner.loadMedia(path: path),
                         ),
-                      )..add(BulkImageDownloadTagsAdded(tags: tags)),
+                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],
                   child: const BulkDownloadPage(),
@@ -669,12 +669,12 @@ Future<void> goToBulkDownloadPage(
                 sourceComposer: DanbooruImageSourceComposer(state.booru!),
                 builder: (dcontext) => MultiBlocProvider(
                   providers: [
-                    BlocProvider<BulkImageDownloadBloc<Post>>(
-                      create: (_) => BulkImageDownloadBloc(
+                    BlocProvider<BulkDownloadManagerBloc<Post>>(
+                      create: (_) => BulkDownloadManagerBloc(
                         permissionChecker: () => Permission.storage.status,
                         permissionRequester: () =>
                             requestMediaPermissions(context.read<DeviceInfo>()),
-                        bulkPostDownloadBloc: BulkPostDownloadBloc(
+                        bulkPostDownloadBloc: DanbooruBulkDownloadBloc(
                           downloader:
                               dcontext.read<BulkDownloader<DanbooruPost>>(),
                           postCountRepository:
@@ -685,7 +685,7 @@ Future<void> goToBulkDownloadPage(
                           onDownloadDone: (path) =>
                               MediaScanner.loadMedia(path: path),
                         ),
-                      )..add(BulkImageDownloadTagsAdded(tags: tags)),
+                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],
                   child: const BulkDownloadPage(),
@@ -697,8 +697,8 @@ Future<void> goToBulkDownloadPage(
                 booru: state.booru!,
                 builder: (dcontext) => MultiBlocProvider(
                   providers: [
-                    BlocProvider<BulkImageDownloadBloc<Post>>(
-                      create: (_) => BulkImageDownloadBloc(
+                    BlocProvider<BulkDownloadManagerBloc<Post>>(
+                      create: (_) => BulkDownloadManagerBloc(
                         permissionChecker: () => Permission.storage.status,
                         permissionRequester: () =>
                             requestMediaPermissions(context.read<DeviceInfo>()),
@@ -714,7 +714,7 @@ Future<void> goToBulkDownloadPage(
                           onDownloadDone: (path) =>
                               MediaScanner.loadMedia(path: path),
                         ),
-                      )..add(BulkImageDownloadTagsAdded(tags: tags)),
+                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],
                   child: const BulkDownloadPage(),
