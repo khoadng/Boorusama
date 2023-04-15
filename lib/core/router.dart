@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

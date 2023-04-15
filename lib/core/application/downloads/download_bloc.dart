@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/downloads/download_options.dart';
 import 'package:boorusama/core/application/downloads/download_state.dart';
+import 'package:boorusama/core/domain/downloads.dart';
 
 enum DownloadStatus {
   notStarted,
@@ -86,7 +86,7 @@ class _DownloadDoneAll<E, T> extends DownloadEvent<E, T> {
 
 class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
   DownloadBloc({
-    required BulkDownloader<T> downloader,
+    required this.downloader,
     required Future<List<T>> Function(
       int page,
       E arg,
@@ -272,10 +272,12 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
   }
 
   final CompositeSubscription compositeSubscription = CompositeSubscription();
+  final BulkDownloader<T> downloader;
 
   @override
   Future<void> close() {
     compositeSubscription.dispose();
+    downloader.dispose();
 
     return super.close();
   }

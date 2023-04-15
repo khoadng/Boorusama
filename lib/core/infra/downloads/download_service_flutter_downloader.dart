@@ -4,7 +4,6 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
@@ -12,13 +11,8 @@ import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
-import 'package:boorusama/core/infra/services/alternative_download_service.dart';
-import 'package:boorusama/core/infra/services/macos_download_service.dart';
-import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
 // ignore: avoid_bool_literals_in_conditional_expressions
 bool _shouldUsePublicStorage(DeviceInfo deviceInfo) => isAndroid()
@@ -31,45 +25,6 @@ Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
   return hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
       ? defaultPath
       : await IOHelper.getDownloadPath();
-}
-
-Future<DownloadService<Post>> createDownloader(
-  DownloadMethod method,
-  DeviceInfo deviceInfo,
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-  UserAgentGenerator agentGenerator,
-) async {
-  if (isMobilePlatform()) {
-    if (method == DownloadMethod.imageGallerySaver) {
-      final d = AlternativeDownloadService(
-        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
-        agentGenerator: agentGenerator,
-      );
-      await d.init();
-
-      return d;
-    }
-
-    final d = DownloadServiceFlutterDownloader(
-      deviceInfo: deviceInfo,
-    );
-
-    if (isAndroid() || isIOS()) {
-      await FlutterDownloader.initialize();
-    }
-
-    await d.init();
-
-    return d;
-  } else {
-    final d = isMacOS()
-        ? MacOSDownloader(agentGenerator)
-        : WindowDownloader(agentGenerator);
-
-    await d.init();
-
-    return d;
-  }
 }
 
 @pragma('vm:entry-point')

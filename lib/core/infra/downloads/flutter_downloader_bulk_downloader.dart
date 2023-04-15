@@ -11,24 +11,13 @@ import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/infra.dart';
 
-class DownloadData {
-  const DownloadData(
-    this.itemId,
-    this.path,
-    this.fileName,
-  );
-
-  final int itemId;
-  final String path;
-  final String fileName;
-}
-
 @pragma('vm:entry-point')
-class BulkDownloader<T> {
-  BulkDownloader({
+class FlutterDownloaderBulkDownloader<T> implements BulkDownloader<T> {
+  FlutterDownloaderBulkDownloader({
     required FileNameGenerator<T> fileNameGenerator,
     required this.deviceInfo,
     required this.idSelector,
@@ -47,12 +36,15 @@ class BulkDownloader<T> {
   final compositeSubscription = CompositeSubscription();
   var _initialized = false;
 
+  @override
   bool get isInit => _initialized;
 
+  @override
   Future<String> getDownloadDirPath() async => isAndroid()
       ? (await IOHelper.getDownloadPath())
       : (await getApplicationDocumentsDirectory()).path;
 
+  @override
   Future<void> enqueueDownload(
     T downloadable, {
     String? folder,
@@ -76,8 +68,10 @@ class BulkDownloader<T> {
     }
   }
 
+  @override
   Future<void> cancelAll() => FlutterDownloader.cancelAll();
 
+  @override
   Stream<DownloadData> get stream => _eventController.stream
       .map((data) {
         final String id = data[0];
@@ -114,6 +108,7 @@ class BulkDownloader<T> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
+  @override
   Future<void> init() async {
     if (_initialized) return;
 
@@ -139,6 +134,7 @@ class BulkDownloader<T> {
     send!.send([id, status.value, progress]);
   }
 
+  @override
   void dispose() {
     _unbindBackgroundIsolate();
     _eventController.close();

@@ -670,6 +670,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+  flutter_download_manager:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: dio
+      resolved-ref: "8db12c256f658ab21f7f33f3a049d7010845595f"
+      url: "https://github.com/khoadng/flutter_download_manager.git"
+    source: git
+    version: "0.5.5"
   flutter_downloader:
     dependency: "direct main"
     description:

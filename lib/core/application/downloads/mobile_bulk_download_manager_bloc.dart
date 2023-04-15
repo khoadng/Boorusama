@@ -1,9 +1,9 @@
 // Package imports:
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/permission.dart';
 

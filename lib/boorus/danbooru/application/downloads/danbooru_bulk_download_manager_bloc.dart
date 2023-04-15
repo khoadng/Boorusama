@@ -10,8 +10,9 @@ import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/downloads.dart';
 
 class DanbooruBulkDownloadManagerBloc
     extends MobileBulkDownloadManagerBloc<DanbooruPost> {
@@ -20,11 +21,12 @@ class DanbooruBulkDownloadManagerBloc
     required super.deviceInfo,
   }) : super(
             bulkPostDownloadBloc: DanbooruBulkDownloadBloc(
-          downloader: BulkDownloader<DanbooruPost>(
-            idSelector: (item) => item.id,
-            downloadUrlSelector: (item) => item.downloadUrl,
-            fileNameGenerator: DanbooruMd5OnlyFileNameGenerator(),
-            deviceInfo: deviceInfo,
+          downloader: CrossplatformBulkDownloader<DanbooruPost>(
+            userAgentGenerator: context.read<UserAgentGenerator>(),
+            urlResolver: (item) => item.downloadUrl,
+            fileNameResolver: (item) =>
+                DanbooruMd5OnlyFileNameGenerator().generateFor(item),
+            idResolver: (items) => items.id,
           ),
           postCountRepository: context.read<PostCountRepository>(),
           postRepository: context.read<DanbooruPostRepository>(),
