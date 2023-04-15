@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,25 +10,18 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:media_scanner/media_scanner.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/danbooru_bulk_download_manager_bloc.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
-import 'package:boorusama/boorus/moebooru/application/moebooru_bulk_post_download_bloc.dart';
+import 'package:boorusama/boorus/moebooru/application/moebooru_bulk_download_manager_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -40,7 +34,6 @@ import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
-import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_details.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
@@ -634,25 +627,12 @@ Future<void> goToBulkDownloadPage(
               return MoebooruProvider.create(
                 context,
                 booru: state.booru!,
-                builder: (dcontext) => MultiBlocProvider(
+                builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => BulkDownloadManagerBloc(
-                        permissionChecker: () => Permission.storage.status,
-                        permissionRequester: () =>
-                            requestMediaPermissions(context.read<DeviceInfo>()),
-                        bulkPostDownloadBloc: MoebooruBulkPostDownloadBloc(
-                          downloader: BulkDownloader<Post>(
-                            idSelector: (item) => item.id,
-                            downloadUrlSelector: (item) => item.downloadUrl,
-                            fileNameGenerator: Md5OnlyFileNameGenerator(),
-                            deviceInfo: context.read<DeviceInfo>(),
-                          ),
-                          postRepository: dcontext.read<PostRepository>(),
-                          errorTranslator: translateBooruError,
-                          onDownloadDone: (path) =>
-                              MediaScanner.loadMedia(path: path),
-                        ),
+                      create: (_) => MoebooruBulkDownloadManagerBloc(
+                        context: context,
+                        deviceInfo: context.read<DeviceInfo>(),
                       )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],
@@ -667,24 +647,12 @@ Future<void> goToBulkDownloadPage(
                 context,
                 booru: state.booru!,
                 sourceComposer: DanbooruImageSourceComposer(state.booru!),
-                builder: (dcontext) => MultiBlocProvider(
+                builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => BulkDownloadManagerBloc(
-                        permissionChecker: () => Permission.storage.status,
-                        permissionRequester: () =>
-                            requestMediaPermissions(context.read<DeviceInfo>()),
-                        bulkPostDownloadBloc: DanbooruBulkDownloadBloc(
-                          downloader:
-                              dcontext.read<BulkDownloader<DanbooruPost>>(),
-                          postCountRepository:
-                              dcontext.read<PostCountRepository>(),
-                          postRepository:
-                              dcontext.read<DanbooruPostRepository>(),
-                          errorTranslator: translateBooruError,
-                          onDownloadDone: (path) =>
-                              MediaScanner.loadMedia(path: path),
-                        ),
+                      create: (_) => DanbooruBulkDownloadManagerBloc(
+                        context: context,
+                        deviceInfo: context.read<DeviceInfo>(),
                       )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],
@@ -695,25 +663,12 @@ Future<void> goToBulkDownloadPage(
               return GelbooruProvider.create(
                 context,
                 booru: state.booru!,
-                builder: (dcontext) => MultiBlocProvider(
+                builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => BulkDownloadManagerBloc(
-                        permissionChecker: () => Permission.storage.status,
-                        permissionRequester: () =>
-                            requestMediaPermissions(context.read<DeviceInfo>()),
-                        bulkPostDownloadBloc: GelbooruBulkPostDownloadBloc(
-                          downloader: BulkDownloader<Post>(
-                            idSelector: (item) => item.id,
-                            downloadUrlSelector: (item) => item.downloadUrl,
-                            fileNameGenerator: Md5OnlyFileNameGenerator(),
-                            deviceInfo: context.read<DeviceInfo>(),
-                          ),
-                          postRepository: dcontext.read<PostRepository>(),
-                          errorTranslator: translateBooruError,
-                          onDownloadDone: (path) =>
-                              MediaScanner.loadMedia(path: path),
-                        ),
+                      create: (_) => MoebooruBulkDownloadManagerBloc(
+                        context: context,
+                        deviceInfo: context.read<DeviceInfo>(),
                       )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                     ),
                   ],

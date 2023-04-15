@@ -19,9 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/api.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
@@ -184,16 +181,6 @@ void main() async {
     flutterLocalNotificationsPlugin,
     userAgentGenerator,
   );
-  final bulkDownloader = BulkDownloader<DanbooruPost>(
-    idSelector: (item) => item.id,
-    downloadUrlSelector: (item) => item.downloadUrl,
-    fileNameGenerator: DanbooruMd5OnlyFileNameGenerator(),
-    deviceInfo: deviceInfo,
-  );
-
-  if (isMobilePlatform()) {
-    await bulkDownloader.init();
-  }
 
   if (isWindows()) WindowsVideoPlayer.registerWith();
 
@@ -243,9 +230,6 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
-            RepositoryProvider<BulkDownloader<DanbooruPost>>.value(
-              value: bulkDownloader,
-            ),
             RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<FavoriteTagRepository>.value(
               value: favoriteTagsRepo,

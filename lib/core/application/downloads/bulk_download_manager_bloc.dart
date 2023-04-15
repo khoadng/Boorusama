@@ -6,7 +6,6 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/downloads/filtered_out_post.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
 enum BulkDownloadManagerStatus {
