@@ -160,7 +160,7 @@ class _DownloadStateChanged extends BulkImageDownloadEvent {
 class BulkImageDownloadBloc<E extends Post>
     extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
   BulkImageDownloadBloc({
-    required DownloadBloc<String, E> bulkPostDownloadBloc,
+    required this.bulkPostDownloadBloc,
     required Future<PermissionStatus> Function() permissionChecker,
     required Future<PermissionStatus> Function() permissionRequester,
   }) : super(BulkImageDownloadState.initial()) {
@@ -240,10 +240,12 @@ class BulkImageDownloadBloc<E extends Post>
   }
 
   final CompositeSubscription compositeSubscription = CompositeSubscription();
+  final DownloadBloc<String, E> bulkPostDownloadBloc;
 
   @override
   Future<void> close() {
     compositeSubscription.dispose();
+    bulkPostDownloadBloc.close();
 
     return super.close();
   }
