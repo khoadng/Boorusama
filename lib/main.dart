@@ -187,7 +187,7 @@ void main() async {
   final bulkDownloader = BulkDownloader<DanbooruPost>(
     idSelector: (item) => item.id,
     downloadUrlSelector: (item) => item.downloadUrl,
-    fileNameGenerator: Md5OnlyFileNameGenerator(),
+    fileNameGenerator: DanbooruMd5OnlyFileNameGenerator(),
     deviceInfo: deviceInfo,
   );
 

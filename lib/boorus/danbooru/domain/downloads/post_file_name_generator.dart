@@ -16,10 +16,16 @@ class BoorusamaStyledFileNameGenerator
           .fixInvalidCharacterForPathName();
 }
 
-class Md5OnlyFileNameGenerator implements FileNameGenerator<DanbooruPost> {
+class DanbooruMd5OnlyFileNameGenerator
+    implements FileNameGenerator<DanbooruPost> {
   @override
   String generateFor(DanbooruPost item) =>
       '${item.md5}${extension(item.downloadUrl)}';
+}
+
+class Md5OnlyFileNameGenerator implements FileNameGenerator<Post> {
+  @override
+  String generateFor(Post item) => '${item.md5}${extension(item.downloadUrl)}';
 }
 
 class DownloadUrlBaseNameFileNameGenerator implements FileNameGenerator<Post> {

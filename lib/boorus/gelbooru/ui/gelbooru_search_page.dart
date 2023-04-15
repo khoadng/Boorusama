@@ -8,7 +8,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_infinite_post_list.dart';

@@ -8,8 +8,8 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 
 class TagDetailPage extends StatelessWidget

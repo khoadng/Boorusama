@@ -45,6 +45,9 @@ class BulkDownloader<T> {
 
   final _eventController = StreamController<dynamic>.broadcast();
   final compositeSubscription = CompositeSubscription();
+  var _initialized = false;
+
+  bool get isInit => _initialized;
 
   Future<String> getDownloadDirPath() async => isAndroid()
       ? (await IOHelper.getDownloadPath())
@@ -112,6 +115,8 @@ class BulkDownloader<T> {
   }
 
   Future<void> init() async {
+    if (_initialized) return;
+
     if (!FlutterDownloader.initialized) {
       await FlutterDownloader.initialize();
     }
@@ -120,6 +125,8 @@ class BulkDownloader<T> {
     await _prepare();
 
     _port.listen(_eventController.add).addTo(compositeSubscription);
+
+    _initialized = true;
   }
 
   @pragma('vm:entry-point')

@@ -13,7 +13,14 @@ import 'post_dto.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) {
   final dtos = <PostDto>[];
-  for (final item in value.response.data['post']) {
+  dynamic data;
+  try {
+    data = value.response.data['post'];
+  } catch (e) {
+    return [];
+  }
+
+  for (final item in data) {
     dtos.add(PostDto.fromJson(item));
   }
 

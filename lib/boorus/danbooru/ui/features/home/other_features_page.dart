@@ -53,13 +53,6 @@ class OtherFeaturesPage extends StatelessWidget {
                   goToBlacklistedTagPage(context);
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('download.bulk_download').tr(),
-                onTap: () {
-                  goToBulkDownloadPage(context, null);
-                },
-              ),
             ],
           ),
         ),

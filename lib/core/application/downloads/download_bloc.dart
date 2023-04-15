@@ -104,6 +104,7 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
   }) : super(DownloadState.initial()) {
     on<DownloadRequested<E, T>>(
       (event, emit) async {
+        if (!downloader.isInit) await downloader.init();
         final path = await downloader.getDownloadDirPath();
         final storagePath = event.options.storagePath.isEmpty
             ? path

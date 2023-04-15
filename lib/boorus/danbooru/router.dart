@@ -8,17 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_scanner/media_scanner.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
@@ -36,8 +33,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
@@ -71,7 +66,6 @@ import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -84,12 +78,9 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
 
@@ -223,44 +214,6 @@ Widget provideCharacterPageDependencies(
 void goToFavoritesPage(BuildContext context, String? username) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => FavoritesPage.of(context, username: username!),
-  ));
-}
-
-void goToBulkDownloadPage(
-  BuildContext context,
-  List<String>? tags,
-) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) {
-      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (dcontext) => MultiBlocProvider(
-              providers: [
-                BlocProvider<BulkImageDownloadBloc<Post>>(
-                  create: (_) => BulkImageDownloadBloc(
-                    permissionChecker: () => Permission.storage.status,
-                    permissionRequester: () =>
-                        requestMediaPermissions(context.read<DeviceInfo>()),
-                    bulkPostDownloadBloc: BulkPostDownloadBloc(
-                      downloader: dcontext.read<BulkDownloader<DanbooruPost>>(),
-                      postCountRepository: dcontext.read<PostCountRepository>(),
-                      postRepository: dcontext.read<DanbooruPostRepository>(),
-                      errorTranslator: translateBooruError,
-                      onDownloadDone: (path) =>
-                          MediaScanner.loadMedia(path: path),
-                    ),
-                  )..add(BulkImageDownloadTagsAdded(tags: tags)),
-                ),
-              ],
-              child: const BulkDownloadPage(),
-            ),
-          );
-        },
-      );
-    },
   ));
 }
 
