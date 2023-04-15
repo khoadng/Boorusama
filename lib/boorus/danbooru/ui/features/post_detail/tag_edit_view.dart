@@ -122,7 +122,7 @@ class TagEditView extends StatelessWidget {
                       ));
                     },
                     textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, theme),
+                        generateDanbooruAutocompleteTagColor(tag, theme),
                   ),
                 );
               },

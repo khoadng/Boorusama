@@ -19,6 +19,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
@@ -468,7 +469,8 @@ class _TagSuggestionItems extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
-      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
+      textColorBuilder: (tag) =>
+          generateDanbooruAutocompleteTagColor(tag, theme),
     );
   }
 }

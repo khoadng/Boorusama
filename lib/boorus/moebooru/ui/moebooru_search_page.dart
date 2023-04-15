@@ -11,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_infinite_post_list.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -129,14 +128,13 @@ class _LandingView extends StatelessWidget {
     return SearchLandingView(
       onAddTagRequest: () {
         final bloc = context.read<FavoriteTagBloc>();
-        goToMoebooruQuickSearchPage(
+        goToQuickSearchPage(
           context,
           onSubmitted: (context, text) {
             Navigator.of(context).pop();
             bloc.add(FavoriteTagAdded(tag: text));
           },
-          onSelected: (context, tag) =>
-              bloc.add(FavoriteTagAdded(tag: tag.value)),
+          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
         );
       },
       onHistoryTap: (value) {
@@ -422,7 +420,8 @@ class _TagSuggestionItems extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
-      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
+      textColorBuilder: (tag) =>
+          generateDanbooruAutocompleteTagColor(tag, theme),
     );
   }
 }

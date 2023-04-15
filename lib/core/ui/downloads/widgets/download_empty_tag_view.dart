@@ -50,7 +50,7 @@ class DownloadEmptyTagView extends StatelessWidget {
             Expanded(
               child: SimpleTagSearchView(
                 textColorBuilder: (tag) =>
-                    generateAutocompleteTagColor(tag, theme),
+                    generateDanbooruAutocompleteTagColor(tag, theme),
                 closeOnSelected: false,
                 ensureValidTag: false,
                 onSelected: (tag) {

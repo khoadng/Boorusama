@@ -420,7 +420,8 @@ class _TagSuggestionItems extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
-      textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
+      textColorBuilder: (tag) =>
+          generateDanbooruAutocompleteTagColor(tag, theme),
     );
   }
 }

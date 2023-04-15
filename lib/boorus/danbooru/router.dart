@@ -67,7 +67,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -91,7 +90,6 @@ import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
-import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
 
@@ -241,7 +239,7 @@ void goToBulkDownloadPage(
             booru: state.booru!,
             builder: (dcontext) => MultiBlocProvider(
               providers: [
-                BlocProvider(
+                BlocProvider<BulkImageDownloadBloc<Post>>(
                   create: (_) => BulkImageDownloadBloc(
                     permissionChecker: () => Permission.storage.status,
                     permissionRequester: () =>
@@ -1015,57 +1013,6 @@ void goToPoolSearchPage(BuildContext context) {
       name: RouterPageConstant.poolSearch,
     ),
   ));
-}
-
-void goToQuickSearchPage(
-  BuildContext context, {
-  bool ensureValidTag = false,
-  Widget Function(String text)? floatingActionButton,
-  required void Function(AutocompleteData tag) onSelected,
-  void Function(BuildContext context, String text)? onSubmitted,
-}) {
-  showSimpleTagSearchView(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.quickSearch,
-    ),
-    ensureValidTag: ensureValidTag,
-    floatingActionButton: floatingActionButton,
-    builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (_, themeState) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dcontext) => isMobile
-                  ? SimpleTagSearchView(
-                      onSubmitted: onSubmitted,
-                      ensureValidTag: ensureValidTag,
-                      floatingActionButton: floatingActionButton != null
-                          ? (text) => floatingActionButton.call(text)
-                          : null,
-                      onSelected: onSelected,
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, themeState.theme),
-                    )
-                  : SimpleTagSearchView(
-                      onSubmitted: onSubmitted,
-                      backButton: IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-                      ensureValidTag: ensureValidTag,
-                      onSelected: onSelected,
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, themeState.theme),
-                    ),
-            );
-          },
-        );
-      },
-    ),
-  );
 }
 
 void goToRelatedTagsPage(

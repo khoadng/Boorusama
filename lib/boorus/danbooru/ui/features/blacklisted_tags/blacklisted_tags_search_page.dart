@@ -141,7 +141,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
                   Expanded(
                     child: TagSuggestionItems(
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateDanbooruAutocompleteTagColor(tag, theme),
                       tags: state.suggestionTags,
                       currentQuery: state.query,
                       onItemTap: (tag) => context

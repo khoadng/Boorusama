@@ -7,7 +7,7 @@ import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/ui/tags/tags.dart';
 
-Color? generateAutocompleteTagColor(
+Color? generateGelbooruAutocompleteTagColor(
   AutocompleteData tag,
   ThemeMode theme,
 ) {
