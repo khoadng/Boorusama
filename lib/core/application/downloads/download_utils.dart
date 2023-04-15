@@ -30,12 +30,12 @@ bool isNonPublicDirectories(String? path) {
 }
 
 mixin DownloadMixin {
-  String get storagePath;
+  String? get storagePath;
 
   bool shouldDisplayWarning({
     required bool hasScopeStorage,
   }) {
-    if (storagePath.isEmpty) return false;
+    if (storagePath == null || storagePath!.isEmpty) return false;
 
     return !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
   }
@@ -43,7 +43,8 @@ mixin DownloadMixin {
   bool isValidDownload({
     required bool hasScopeStorage,
   }) =>
-      storagePath.isNotEmpty &&
+      storagePath != null &&
+      storagePath!.isNotEmpty &&
       hasValidStoragePath(hasScopeStorage: hasScopeStorage);
 
   List<String> get allowedFolders => _allowedDownloadFolders;
@@ -51,7 +52,7 @@ mixin DownloadMixin {
   bool hasValidStoragePath({
     required bool hasScopeStorage,
   }) {
-    if (storagePath.isEmpty) return false;
+    if (storagePath == null || storagePath!.isEmpty) return false;
     if (!isInternalStorage(storagePath)) return false;
 
     // ignore: avoid_bool_literals_in_conditional_expressions

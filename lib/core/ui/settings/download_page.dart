@@ -31,7 +31,7 @@ class DownloadPage extends StatefulWidget {
 
 class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
   final changed = ValueNotifier(false);
-  String path = "";
+  String? path;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
     final settings = context.read<SettingsCubit>().state;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        path = settings.settings.downloadPath ?? '';
+        path = settings.settings.downloadPath;
       });
     });
   }
@@ -95,7 +95,7 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Download path'.tr().toUpperCase(),
+                'Download path'.toUpperCase(),
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontWeight: FontWeight.w800,
@@ -120,9 +120,9 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
                     visualDensity: VisualDensity.compact,
                     minVerticalPadding: 0,
                     onTap: () => _pickFolder(settings),
-                    title: storagePath.isNotEmpty
+                    title: storagePath != null && storagePath!.isNotEmpty
                         ? Text(
-                            storagePath,
+                            storagePath!,
                             overflow: TextOverflow.fade,
                           )
                         : Text(
@@ -172,9 +172,12 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
 
     if (selectedDirectory != null) {
       bloc.update(settings.copyWith(downloadPath: selectedDirectory));
+      setState(() {
+        path = selectedDirectory;
+      });
     }
   }
 
   @override
-  String get storagePath => path;
+  String? get storagePath => path;
 }

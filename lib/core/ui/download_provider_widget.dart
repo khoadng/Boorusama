@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
@@ -13,26 +14,33 @@ import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/infra/io_helper.dart';
 
-void _download(
+Future<String> _getDownloadPath(String? defaultPath) async {
+  if (defaultPath != null) return defaultPath;
+
+  return isAndroid()
+      ? (await IOHelper.getDownloadPath())
+      : (await getApplicationDocumentsDirectory()).path;
+}
+
+Future<void> _download(
   BuildContext context,
   Post downloadable, {
   PermissionStatus? permission,
-}) {
+}) async {
   final service = context.read<DownloadService>();
   final fileNameGenerator = context.read<FileNameGenerator>();
   final settings = context.read<SettingsCubit>().state.settings;
-  void download() => service.download(
+  Future<void> download() async => service.download(
         downloadable,
         fileNameGenerator: fileNameGenerator,
-        folderName: settings.downloadPath,
+        folderName: await _getDownloadPath(settings.downloadPath),
       );
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
     download();
-
-    return;
   }
 
   if (permission == PermissionStatus.granted) {

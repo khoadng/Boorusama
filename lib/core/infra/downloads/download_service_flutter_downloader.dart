@@ -39,7 +39,7 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
 
     final id = await FlutterDownloader.enqueue(
       saveInPublicStorage: folderName == null,
-      showNotification: false,
+      showNotification: true,
       url: downloadable.downloadUrl,
       fileName: fileName,
       savedDir: folderName ?? '',
