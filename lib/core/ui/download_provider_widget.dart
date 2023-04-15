@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 // Project imports:
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -20,9 +21,11 @@ void _download(
 }) {
   final service = context.read<DownloadService>();
   final fileNameGenerator = context.read<FileNameGenerator>();
+  final settings = context.read<SettingsCubit>().state.settings;
   void download() => service.download(
         downloadable,
         fileNameGenerator: fileNameGenerator,
+        folderName: settings.downloadPath,
       );
 
   // Platform doesn't require permissions, just download it right away

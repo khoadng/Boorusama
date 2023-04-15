@@ -1,10 +1,13 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:media_scanner/media_scanner.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
@@ -12,20 +15,6 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
-import 'package:boorusama/core/infra/io_helper.dart';
-
-// ignore: avoid_bool_literals_in_conditional_expressions
-bool _shouldUsePublicStorage(DeviceInfo deviceInfo) => isAndroid()
-    ? hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
-    : false;
-
-Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
-  if (isIOS()) return IOHelper.getDownloadPath();
-
-  return hasScopedStorage(deviceInfo.androidDeviceInfo?.version.sdkInt) ?? true
-      ? defaultPath
-      : await IOHelper.getDownloadPath();
-}
 
 @pragma('vm:entry-point')
 class DownloadServiceFlutterDownloader implements DownloadService<Post> {
@@ -35,7 +24,9 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
 
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
-  String _savedDir = '';
+  final _eventController = StreamController<dynamic>.broadcast();
+  final compositeSubscription = CompositeSubscription();
+  final Map<String, String> _taskIdToFolderMap = {};
 
   @override
   Future<void> download(
@@ -45,18 +36,21 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     required FileNameGenerator fileNameGenerator,
   }) async {
     final fileName = fileNameGenerator.generateFor(downloadable);
-    await FlutterDownloader.enqueue(
-      saveInPublicStorage: _shouldUsePublicStorage(deviceInfo),
+
+    final id = await FlutterDownloader.enqueue(
+      saveInPublicStorage: folderName == null,
+      showNotification: false,
       url: downloadable.downloadUrl,
       fileName: fileName,
-      savedDir: await _getSaveDir(deviceInfo, _savedDir),
+      savedDir: folderName ?? '',
     );
+
+    if (id != null) {
+      _taskIdToFolderMap[id] = '$folderName/$fileName';
+    }
   }
 
-  Future<void> _prepare() async {
-    // This won't be used.
-    _savedDir = (await getTemporaryDirectory()).path;
-  }
+  Future<void> _prepare() async {}
 
   void _bindBackgroundIsolate() {
     final bool isSuccess = IsolateNameServer.registerPortWithName(
@@ -80,6 +74,26 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     _bindBackgroundIsolate();
     await FlutterDownloader.registerCallback(downloadCallback);
     await _prepare();
+
+    _port.listen(_eventController.add).addTo(compositeSubscription);
+
+    _eventController.stream
+        .map((data) {
+          final String id = data[0];
+          final int status = data[1];
+          // final int progress = data[2];
+
+          return Tuple2(id, status);
+        })
+        .where((event) => event.item2 == DownloadTaskStatus.complete.value)
+        .where((event) => _taskIdToFolderMap.containsKey(event.item1))
+        .map((event) => _taskIdToFolderMap[event.item1]!)
+        .listen((event) {
+          if (isAndroid()) {
+            MediaScanner.loadMedia(path: event);
+          }
+        })
+        .addTo(compositeSubscription);
   }
 
   @pragma('vm:entry-point')
@@ -95,5 +109,6 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
   @override
   void dispose() {
     _unbindBackgroundIsolate();
+    compositeSubscription.dispose();
   }
 }

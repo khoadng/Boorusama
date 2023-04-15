@@ -184,7 +184,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                           .sdkInt) ??
                       true,
                 )
-                    ? _DownloadPathWarning(
+                    ? DownloadPathWarning(
                         releaseName: context
                                 .read<DeviceInfo>()
                                 .androidDeviceInfo
@@ -245,8 +245,9 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
   }
 }
 
-class _DownloadPathWarning extends StatelessWidget {
-  const _DownloadPathWarning({
+class DownloadPathWarning extends StatelessWidget {
+  const DownloadPathWarning({
+    super.key,
     required this.releaseName,
     required this.allowedFolders,
   });

@@ -1,16 +1,16 @@
-// Dart imports:
-import 'dart:typed_data';
-
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:media_scanner/media_scanner.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/io_helper.dart';
+import 'package:boorusama/core/platform.dart';
 
 class AlternativeDownloadService implements DownloadService<Post> {
   AlternativeDownloadService({
@@ -27,6 +27,10 @@ class AlternativeDownloadService implements DownloadService<Post> {
   @override
   // ignore: no-empty-block
   void dispose() {}
+
+  Future<String> getDownloadDirPath() async => isAndroid()
+      ? (await IOHelper.getDownloadPath())
+      : (await getApplicationDocumentsDirectory()).path;
 
   @override
   Future<void> download(
@@ -60,22 +64,22 @@ class AlternativeDownloadService implements DownloadService<Post> {
         );
       }
 
-      final response = await dio.get(
+      final savedPath = folderName ?? await getDownloadDirPath();
+      final filePath = '$savedPath/$fileName';
+
+      await dio.download(
         item.downloadUrl,
+        filePath,
         options: Options(
           headers: {
             'User-Agent': _agentGenerator.generate(),
           },
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          validateStatus: (status) => status != null && status < 500,
         ),
       );
 
-      await ImageGallerySaver.saveImage(
-        Uint8List.fromList(response.data),
-        name: fileName,
-      );
+      if (isAndroid()) {
+        MediaScanner.loadMedia(path: filePath);
+      }
 
       if (enableNotification) {
         await _flutterLocalNotificationsPlugin.show(

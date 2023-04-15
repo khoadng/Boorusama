@@ -16,7 +16,7 @@ enum BulkDownloadManagerStatus {
   done,
 }
 
-class BulkDownloadManagerState extends Equatable {
+class BulkDownloadManagerState extends Equatable with DownloadMixin {
   const BulkDownloadManagerState({
     required this.status,
     required this.selectedTags,
@@ -48,6 +48,9 @@ class BulkDownloadManagerState extends Equatable {
   final BulkDownloadManagerStatus status;
   final List<String> selectedTags;
   final DownloadOptions options;
+
+  @override
+  String get storagePath => options.storagePath;
 
   final DownloadState<Post> _downloadState;
 
@@ -255,65 +258,11 @@ extension BulkImageDownloadStateX on BulkDownloadManagerState {
     required bool hasScopeStorage,
   }) =>
       selectedTags.isNotEmpty &&
-      options.storagePath.isNotEmpty &&
-      hasValidStoragePath(hasScopeStorage: hasScopeStorage);
-
-  bool shouldDisplayWarning({
-    required bool hasScopeStorage,
-  }) {
-    if (options.storagePath.isEmpty) return false;
-
-    return !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
-  }
-
-  bool hasValidStoragePath({
-    required bool hasScopeStorage,
-  }) {
-    if (options.storagePath.isEmpty) return false;
-    if (!isInternalStorage(options.storagePath)) return false;
-
-    // ignore: avoid_bool_literals_in_conditional_expressions
-    return hasScopeStorage
-        ? !isNonPublicDirectories(options.storagePath)
-        : true;
-  }
-
-  List<String> get allowedFolders => _allowedFolders;
+      isValidDownload(hasScopeStorage: hasScopeStorage);
 
   double get percentCompletion {
     if (estimateDownloadSize == 0) return 0;
 
     return downloadedSize / estimateDownloadSize;
-  }
-}
-
-const String _basePath = '/storage/emulated/0';
-const List<String> _allowedFolders = [
-  'Download',
-  'Downloads',
-  'Documents',
-  'Pictures',
-];
-
-bool isInternalStorage(String? path) {
-  if (path == null) return false;
-
-  return path.startsWith(_basePath);
-}
-
-bool isNonPublicDirectories(String? path) {
-  try {
-    if (path == null) return false;
-    if (!isInternalStorage(path)) return false;
-
-    final nonBasePath = path.replaceAll('$_basePath/', '');
-    final paths = nonBasePath.split('/');
-
-    if (paths.isEmpty) return true;
-    if (!_allowedFolders.contains(paths.first)) return true;
-
-    return false;
-  } catch (e) {
-    return false;
   }
 }

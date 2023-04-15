@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
@@ -11,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 // Project imports:
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/io_helper.dart';
+import 'package:boorusama/core/platform.dart';
 
 class CrossplatformBulkDownloader<T> extends BulkDownloader<T> {
   late final String Function(T item) _urlResolver;
@@ -46,10 +47,9 @@ class CrossplatformBulkDownloader<T> extends BulkDownloader<T> {
   }
 
   @override
-  Future<String> getDownloadDirPath() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    return appDocDir.path;
-  }
+  Future<String> getDownloadDirPath() async => isAndroid()
+      ? (await IOHelper.getDownloadPath())
+      : (await getApplicationDocumentsDirectory()).path;
 
   @override
   Future<void> enqueueDownload(T downloadable, {String? folder}) async {
@@ -72,7 +72,6 @@ class CrossplatformBulkDownloader<T> extends BulkDownloader<T> {
       _downloadDataController
           .addError(error); // Emit error events through the stream
     });
-    ;
   }
 
   @override
