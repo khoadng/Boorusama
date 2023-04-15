@@ -9,6 +9,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads.dart';
+import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/application/downloads/filtered_out_post.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 class DownloadProgressView extends StatelessWidget {
@@ -159,7 +161,8 @@ class DownloadProgressView extends StatelessWidget {
                       trailing: Text(
                         filteredPosts
                             .where(
-                              (e) => e.reason == FilteredReason.censoredTag,
+                              (e) =>
+                                  e.reason == FilteredReason.censoredTag.name,
                             )
                             .toList()
                             .length
@@ -174,7 +177,8 @@ class DownloadProgressView extends StatelessWidget {
                       trailing: Text(
                         filteredPosts
                             .where(
-                              (e) => e.reason == FilteredReason.bannedArtist,
+                              (e) =>
+                                  e.reason == FilteredReason.bannedArtist.name,
                             )
                             .toList()
                             .length

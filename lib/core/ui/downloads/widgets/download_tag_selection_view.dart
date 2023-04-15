@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
@@ -77,31 +77,35 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                               .read<BulkImageDownloadBloc>()
                               .add(BulkImageDownloadTagRemoved(tag: e)),
                         )),
-                    IconButton(
-                      iconSize: 28,
-                      splashRadius: 20,
-                      onPressed: () {
-                        final bloc = context.read<BulkImageDownloadBloc>();
-                        goToQuickSearchPage(
-                          context,
-                          onSubmitted: (context, text) {
-                            Navigator.of(context).pop();
-                            bloc.add(
-                              BulkImageDownloadTagsAdded(
-                                tags: [text],
-                              ),
+                    BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+                      builder: (context, state) {
+                        return IconButton(
+                          iconSize: 28,
+                          splashRadius: 20,
+                          onPressed: () {
+                            final bloc = context.read<BulkImageDownloadBloc>();
+                            goToQuickSearchPage(
+                              context,
+                              onSubmitted: (context, text) {
+                                Navigator.of(context).pop();
+                                bloc.add(
+                                  BulkImageDownloadTagsAdded(
+                                    tags: [text],
+                                  ),
+                                );
+                              },
+                              onSelected: (tag) {
+                                bloc.add(
+                                  BulkImageDownloadTagsAdded(
+                                    tags: [tag.value],
+                                  ),
+                                );
+                              },
                             );
                           },
-                          onSelected: (tag) {
-                            bloc.add(
-                              BulkImageDownloadTagsAdded(
-                                tags: [tag.value],
-                              ),
-                            );
-                          },
+                          icon: const Icon(Icons.add),
                         );
                       },
-                      icon: const Icon(Icons.add),
                     ),
                   ],
                 );

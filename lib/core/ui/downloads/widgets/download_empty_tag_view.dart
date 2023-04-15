@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
