@@ -108,6 +108,14 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (_currentPage != widget.intitialIndex &&
+          controller.page == widget.intitialIndex) {
+        controller.jumpToPage(_currentPage);
+      }
+    });
+
     handlePointerUp(event);
   }
 
@@ -119,6 +127,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     await _bottomSheetAnimationController.reverse();
     navigator.pop();
   }
+
+  late var _currentPage = widget.intitialIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -172,8 +182,12 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                               isExpanded.value = metrics.isExpanded;
                               widget.onExpanded?.call(currentPage);
                             },
-                            onPageChanged: (page) =>
-                                widget.onPageChanged?.call(page),
+                            onPageChanged: (page) {
+                              setState(() {
+                                _currentPage = page;
+                              });
+                              widget.onPageChanged?.call(page);
+                            },
                             physics: const DefaultPageViewScrollPhysics(),
                             itemCount: widget.pageCount,
                             itemBuilder: (context, page) {
