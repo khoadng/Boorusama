@@ -32,7 +32,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
 
   void handlePointerUp(PointerUpEvent event) {
     if (_isSwipingDown) {
-      Navigator.of(context).pop();
+      popper();
       _isSwipingDown = false;
     }
   }
@@ -57,4 +57,6 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
   double get dragDistance => _dragDistance;
   double get dragDistanceX => _dragDistanceX;
   bool get isSwipingDown => _isSwipingDown;
+
+  Function() get popper;
 }

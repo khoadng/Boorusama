@@ -29,7 +29,6 @@ import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/floating_glassy_card.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
@@ -54,6 +53,7 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
+  late var _currentPage = widget.intitialIndex;
 
   @override
   void initState() {
@@ -78,7 +78,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
-      onPageChanged: widget.onPageChanged,
+      onPageChanged: (page) => setState(() {
+        _currentPage = page;
+      }),
+      bottomSheet: ActionBar(postData: widget.posts[_currentPage]),
       targetSwipeDownBuilder: (context, page) => DanbooruPostMediaItem(
         post: widget.posts[page].post,
         onCached: (path) => {},
@@ -136,33 +139,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       onExpanded: (currentPage) => context
           .read<PostDetailBloc>()
           .add(PostDetailIndexChanged(index: currentPage)),
-    );
-  }
-}
-
-class _FloatingQuickActionBar extends StatelessWidget {
-  const _FloatingQuickActionBar({
-    required this.imagePath,
-  });
-
-  final ValueNotifier<String?> imagePath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 12,
-      left: MediaQuery.of(context).size.width * 0.05,
-      child: FloatingGlassyCard(
-        child: BlocSelector<PostDetailBloc, PostDetailState, DanbooruPostData>(
-          selector: (state) => state.currentPost,
-          builder: (context, post) {
-            return ActionBar(
-              // imagePath: imagePath,
-              postData: post,
-            );
-          },
-        ),
-      ),
     );
   }
 }
@@ -565,9 +541,13 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostActionToolbar(
-      postData: postData,
-      imagePath: null,
+    return Container(
+      padding: const EdgeInsets.only(bottom: 24),
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: PostActionToolbar(
+        postData: postData,
+        imagePath: null,
+      ),
     );
   }
 }
