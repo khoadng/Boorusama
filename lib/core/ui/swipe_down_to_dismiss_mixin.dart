@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
-  bool _isSwipingDown = false;
+  final _isSwipingDown = ValueNotifier(false);
   double _dragStartPosition = 0.0;
   double _dragDistance = 0.0;
   double _dragStartXPosition = 0.0;
@@ -10,15 +10,15 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
   double _scale = 1.0;
 
   void handlePointerMove(PointerMoveEvent event) {
-    if (!_isSwipingDown &&
+    if (!_isSwipingDown.value &&
         event.delta.dy > 0 &&
         event.delta.dy.abs() > event.delta.dx.abs() * 2) {
-      _isSwipingDown = true;
+      _isSwipingDown.value = true;
       _dragStartPosition = event.position.dy;
       _dragStartXPosition = event.position.dx;
     }
 
-    if (_isSwipingDown) {
+    if (_isSwipingDown.value) {
       setState(() {
         _dragDistance = event.position.dy - _dragStartPosition;
         _dragDistanceX = event.position.dx - _dragStartXPosition;
@@ -31,21 +31,21 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
   }
 
   void handlePointerUp(PointerUpEvent event) {
-    if (_isSwipingDown) {
+    if (_isSwipingDown.value) {
       popper();
-      _isSwipingDown = false;
+      _isSwipingDown.value = false;
     }
   }
 
   bool handleScrollNotification(ScrollNotification notification) {
-    if (_isSwipingDown) {
+    if (_isSwipingDown.value) {
       return true;
     }
     return false;
   }
 
   double calculateBackgroundOpacity() {
-    if (!_isSwipingDown) {
+    if (!_isSwipingDown.value) {
       return 1.0;
     }
     double opacity =
@@ -56,7 +56,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
   double get scale => _scale;
   double get dragDistance => _dragDistance;
   double get dragDistanceX => _dragDistanceX;
-  bool get isSwipingDown => _isSwipingDown;
+  ValueNotifier<bool> get isSwipingDown => _isSwipingDown;
 
   Function() get popper;
 }

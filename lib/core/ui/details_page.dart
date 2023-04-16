@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
@@ -13,7 +14,6 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
-import 'package:boorusama/core/ui/floating_glassy_card.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
@@ -64,7 +64,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;
   late AnimationController _bottomSheetAnimationController;
-  late Animation<Offset> _bottomSheetAnimation;
 
   @override
   void initState() {
@@ -73,14 +72,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
       vsync: this,
       duration: const Duration(milliseconds: 80),
     );
-
-    _bottomSheetAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _bottomSheetAnimationController,
-      curve: Curves.easeOut,
-    ));
 
     // Start the animation after a delay of 0.5 seconds
     Timer(const Duration(milliseconds: 500), () {
@@ -104,7 +95,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
     handlePointerMove(event);
 
-    if (isSwipingDown) {
+    if (isSwipingDown.value) {
       setState(() {
         _navigationButtonGroupOffset = -dragDistance > 0 ? 0 : -dragDistance;
         _topRightButtonGroupOffset = -dragDistance > 0 ? 0 : -dragDistance;
@@ -148,7 +139,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                   ValueListenableBuilder<bool>(
                 valueListenable: isExpanded,
                 builder: (context, expanded, _) {
-                  if (isSwipingDown && !expanded) {
+                  if (isSwipingDown.value && !expanded) {
                     return Transform.translate(
                       offset: Offset(dragDistanceX, dragDistance),
                       child: Listener(
@@ -260,33 +251,39 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
             Align(
               alignment: Alignment.bottomCenter,
               child: widget.bottomSheet != null
-                  ? SlideTransition(
-                      position: _bottomSheetAnimation,
-                      child: widget.bottomSheet,
+                  ? ValueListenableBuilder<bool>(
+                      valueListenable: isSwipingDown,
+                      builder: (context, isSwipingDown, _) {
+                        double clampedDragDistance = max(0.0, dragDistance);
+                        final swipeOffset = isSwipingDown
+                            ? Offset(0, clampedDragDistance)
+                            : Offset.zero;
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: isExpanded,
+                          builder: (context, isExpanded, _) {
+                            final expandOffset =
+                                isExpanded ? const Offset(0, 1) : Offset.zero;
+                            final offset = swipeOffset + expandOffset;
+                            return SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0, 1),
+                                end: offset,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: _bottomSheetAnimationController,
+                                  curve: Curves.easeOut,
+                                ),
+                              ),
+                              child: widget.bottomSheet,
+                            );
+                          },
+                        );
+                      },
                     )
                   : const SizedBox.shrink(),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _FloatingQuickActionBar extends StatelessWidget {
-  const _FloatingQuickActionBar({
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 12,
-      left: MediaQuery.of(context).size.width * 0.05,
-      child: FloatingGlassyCard(
-        child: builder(context),
       ),
     );
   }
