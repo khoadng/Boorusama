@@ -11,7 +11,7 @@ class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
   @override
   ImageSource compose(PostDto post) {
     return ImageSource(
-      thumbnail: post.previewFileUrl?.replaceAll('preview', '360x360') ?? '',
+      thumbnail: post.previewFileUrl ?? '',
       sample: _getSample(post),
       original: post.fileUrl ?? '',
     );
@@ -26,7 +26,7 @@ class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
     if (isAnimated) return sample;
 
     return preview.isNotEmpty
-        ? preview.replaceAll('preview', '720x720').replaceAll('.jpg', '.webp')
+        ? preview.replaceAll('180x180', '720x720').replaceAll('.jpg', '.webp')
         : sample;
   }
 }

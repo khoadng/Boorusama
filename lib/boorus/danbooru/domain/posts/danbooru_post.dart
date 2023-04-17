@@ -100,7 +100,7 @@ class DanbooruPost extends Equatable
   String get sampleImageUrl {
     if (isAnimated) return _sampleImageUrl;
 
-    return _thumbnailImageUrl.isNotEmpty ? _thumbnailImageUrl : _sampleImageUrl;
+    return _thumbnailImageUrl.isNotEmpty ? _sampleImageUrl : _thumbnailImageUrl;
   }
 
   @override
