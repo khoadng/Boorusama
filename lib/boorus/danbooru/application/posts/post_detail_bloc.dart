@@ -86,6 +86,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         )) {
     on<PostDetailIndexChanged>(
       (event, emit) async {
+        if (_loaded.contains(event.index)) return;
+
         final post = posts[event.index];
         final nextPost = posts.getOrNull(event.index + 1);
         final prevPost = posts.getOrNull(event.index - 1);
@@ -121,6 +123,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           post.post.artistTags,
           post.post.characterTags,
         ));
+
+        _loaded.add(event.index);
       },
       transformer: restartable(),
     );
@@ -371,6 +375,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       ));
     });
   }
+
+  final _loaded = <int>{};
 
   Future<void> _fetchCharactersPosts(
     List<String> tags,
