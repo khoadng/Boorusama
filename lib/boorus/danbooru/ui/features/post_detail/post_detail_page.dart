@@ -54,6 +54,7 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
   late var _currentPage = widget.intitialIndex;
+  var enableSwipe = true;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
+      enablePageSwipe: enableSwipe,
       onPageChanged: (page) => setState(() {
         _currentPage = page;
       }),
@@ -113,12 +115,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
               //       enableOverlay: !state.enableOverlay,
               //     )),
               onZoomUpdated: (zoom) {
-                // final swipe = !zoom;
-                // if (swipe != enableSwipe) {
-                //   setState(() {
-                //     enableSwipe = swipe;
-                //   });
-                // }
+                final swipe = !zoom;
+                if (swipe != enableSwipe) {
+                  setState(() {
+                    enableSwipe = swipe;
+                  });
+                }
               },
             ),
             // imagePath: widget.imagePath,

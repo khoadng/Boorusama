@@ -15,6 +15,7 @@ import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
+import 'package:boorusama/core/ui/touch_count_recognizer.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
@@ -29,6 +30,7 @@ class DetailsPage<T> extends StatefulWidget {
     required this.topRightButtonsBuilder,
     this.onExpanded,
     this.bottomSheet,
+    this.enablePageSwipe = true,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
@@ -41,6 +43,7 @@ class DetailsPage<T> extends StatefulWidget {
   final List<Widget> Function(int currentPage) topRightButtonsBuilder;
   final void Function(int currentPage)? onExpanded;
   final Widget? bottomSheet;
+  final bool enablePageSwipe;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -88,7 +91,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (expanded) {
+    if (expanded || _multiTouch) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -104,7 +107,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded) {
+    if (expanded || _multiTouch) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -119,8 +122,11 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     handlePointerUp(event);
   }
 
-  bool _handleScrollNotification(ScrollNotification notification) =>
-      handleScrollNotification(notification);
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (!widget.enablePageSwipe) return false;
+
+    return handleScrollNotification(notification);
+  }
 
   Future<void> _onBackButtonPressed() async {
     final navigator = Navigator.of(context);
@@ -129,6 +135,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   late var _currentPage = widget.intitialIndex;
+  var _multiTouch = false;
 
   @override
   Widget build(BuildContext context) {
@@ -169,35 +176,51 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                   } else {
                     return Transform.translate(
                       offset: Offset(dragDistanceX, dragDistance),
-                      child: Listener(
-                        onPointerMove: (event) =>
-                            _handlePointerMove(event, expanded),
-                        onPointerUp: (event) =>
-                            _handlePointerUp(event, expanded),
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: _handleScrollNotification,
-                          child: ExprollablePageView(
-                            controller: controller,
-                            onViewportChanged: (metrics) {
-                              isExpanded.value = metrics.isExpanded;
-                              widget.onExpanded?.call(currentPage);
-                            },
-                            onPageChanged: (page) {
+                      child: RawGestureDetector(
+                        gestures: <Type, GestureRecognizerFactory>{
+                          TouchCountRecognizer:
+                              GestureRecognizerFactoryWithHandlers<
+                                  TouchCountRecognizer>(
+                            () => TouchCountRecognizer((multiTouch) {
                               setState(() {
-                                _currentPage = page;
+                                _multiTouch = multiTouch;
                               });
-                              widget.onPageChanged?.call(page);
-                            },
-                            physics: const DefaultPageViewScrollPhysics(),
-                            itemCount: widget.pageCount,
-                            itemBuilder: (context, page) {
-                              return ValueListenableBuilder<bool>(
-                                valueListenable: isExpanded,
-                                builder: (context, value, child) =>
-                                    widget.expandedBuilder(
-                                        context, page, currentPage, value),
-                              );
-                            },
+                            }),
+                            (TouchCountRecognizer instance) {},
+                          ),
+                        },
+                        child: Listener(
+                          onPointerMove: (event) =>
+                              _handlePointerMove(event, expanded),
+                          onPointerUp: (event) =>
+                              _handlePointerUp(event, expanded),
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: _handleScrollNotification,
+                            child: ExprollablePageView(
+                              controller: controller,
+                              onViewportChanged: (metrics) {
+                                isExpanded.value = metrics.isExpanded;
+                                widget.onExpanded?.call(currentPage);
+                              },
+                              onPageChanged: (page) {
+                                setState(() {
+                                  _currentPage = page;
+                                });
+                                widget.onPageChanged?.call(page);
+                              },
+                              physics: widget.enablePageSwipe
+                                  ? const DefaultPageViewScrollPhysics()
+                                  : const NeverScrollableScrollPhysics(),
+                              itemCount: widget.pageCount,
+                              itemBuilder: (context, page) {
+                                return ValueListenableBuilder<bool>(
+                                  valueListenable: isExpanded,
+                                  builder: (context, value, child) =>
+                                      widget.expandedBuilder(
+                                          context, page, currentPage, value),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
