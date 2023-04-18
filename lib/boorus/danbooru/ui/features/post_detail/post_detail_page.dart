@@ -99,6 +99,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             current.settings.actionBarDisplayBehavior,
         builder: (context, state) {
           return _CarouselContent(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
             isExpaned: expanded,
             scrollController: PageContentScrollController.of(context),
             media: DanbooruPostMediaItem(
@@ -375,6 +376,7 @@ class _CarouselContent extends StatelessWidget {
     required this.pools,
     required this.scrollController,
     required this.isExpaned,
+    this.physics,
   });
 
   final DanbooruPostMediaItem media;
@@ -386,6 +388,7 @@ class _CarouselContent extends StatelessWidget {
   final List<Recommend> recommends;
   final ScrollController? scrollController;
   final bool isExpaned;
+  final ScrollPhysics? physics;
 
   DanbooruPost get post => postData.post;
 
@@ -394,6 +397,7 @@ class _CarouselContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomScrollView(
+        physics: physics,
         controller: scrollController,
         slivers: [
           SliverList(

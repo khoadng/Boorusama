@@ -91,7 +91,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (expanded || _multiTouch) {
+    if (expanded || _multiTouch || !widget.enablePageSwipe) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -107,7 +107,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded || _multiTouch) {
+    if (expanded || _multiTouch || !widget.enablePageSwipe) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -200,7 +200,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                               controller: controller,
                               onViewportChanged: (metrics) {
                                 isExpanded.value = metrics.isExpanded;
-                                widget.onExpanded?.call(currentPage);
+                                if (isExpanded.value) {
+                                  widget.onExpanded?.call(currentPage);
+                                }
                               },
                               onPageChanged: (page) {
                                 setState(() {
