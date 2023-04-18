@@ -24,6 +24,7 @@ class RecommendCharacterList extends StatelessWidget {
       children: [
         ...recommends.map(
           (r) => RecommendPostSection(
+            grid: false,
             header: ListTile(
               onTap: () => goToCharacterPage(context, r.title),
               title: Text(r.title.removeUnderscoreWithSpace()),

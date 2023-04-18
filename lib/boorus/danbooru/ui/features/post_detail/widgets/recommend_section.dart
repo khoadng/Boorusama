@@ -16,11 +16,13 @@ class RecommendPostSection extends StatelessWidget {
     required this.posts,
     required this.header,
     required this.onTap,
+    this.grid = true,
   });
 
   final List<DanbooruPostData> posts;
   final Widget header;
   final void Function(int index) onTap;
+  final bool grid;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,19 @@ class RecommendPostSection extends StatelessWidget {
             header,
             Padding(
               padding: const EdgeInsets.all(4),
-              child: PreviewPostGrid(
-                cacheManager: context.read<PreviewImageCacheManager>(),
-                posts: posts,
-                imageQuality: state.settings.imageQuality,
-                onTap: onTap,
-              ),
+              child: grid
+                  ? PreviewPostGrid(
+                      cacheManager: context.read<PreviewImageCacheManager>(),
+                      posts: posts,
+                      imageQuality: state.settings.imageQuality,
+                      onTap: onTap,
+                    )
+                  : PreviewPostList(
+                      cacheManager: context.read<PreviewImageCacheManager>(),
+                      posts: posts,
+                      imageQuality: state.settings.imageQuality,
+                      onTap: onTap,
+                    ),
             ),
           ],
         );
