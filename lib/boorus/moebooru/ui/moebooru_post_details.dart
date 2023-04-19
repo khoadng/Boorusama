@@ -42,31 +42,42 @@ class MoebooruPostDetails extends StatefulWidget {
 
 class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
   final imagePath = ValueNotifier<String?>(null);
-  late var fullscreen = widget.fullscreen;
+  var enableSwipe = true;
+  var hideOverlay = false;
 
   @override
   Widget build(BuildContext context) {
     return DetailsPage(
       intitialIndex: widget.initialPage,
+      enablePageSwipe: enableSwipe,
+      hideOverlay: hideOverlay,
       onPageChanged: widget.onPageChanged,
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
-        //TODO: this is used to preload image between page
         post: widget.posts[index],
-        onCached: (path) => imagePath.value = path,
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
-        onZoomUpdated: (zoom) {},
       ),
       expandedBuilder: (context, page, currentPage, expanded) =>
           _CarouselContent(
+        physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
         scrollController: PageContentScrollController.of(context),
         isExpanded: expanded,
         media: PostMediaItem(
-          //TODO: this is used to preload image between page
           useHero: page == currentPage,
           post: widget.posts[page],
           onCached: (path) => imagePath.value = path,
           previewCacheManager: context.read<PreviewImageCacheManager>(),
-          onZoomUpdated: (zoom) {},
+          onTap: () {
+            setState(() {
+              hideOverlay = !hideOverlay;
+            });
+          },
+          onZoomUpdated: (zoom) {
+            final swipe = !zoom;
+            if (swipe != enableSwipe) {
+              setState(() {
+                enableSwipe = swipe;
+              });
+            }
+          },
         ),
         imagePath: imagePath,
         post: widget.posts[page],
@@ -164,6 +175,7 @@ class _CarouselContent extends StatelessWidget {
     required this.preloadPost,
     required this.isExpanded,
     this.scrollController,
+    this.physics,
   });
 
   final PostMediaItem media;
@@ -172,49 +184,55 @@ class _CarouselContent extends StatelessWidget {
   final Post preloadPost;
   final bool isExpanded;
   final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              !isExpanded
-                  ? SizedBox(
-                      height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).viewPadding.top,
-                      child: RepaintBoundary(child: media),
-                    )
-                  : RepaintBoundary(child: media),
-              if (!isExpanded)
-                SizedBox(height: MediaQuery.of(context).size.height),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: BasicTagList(
-                      tags: post.tags,
-                      onTap: (tag) => goToMoebooruSearchPage(context, tag: tag),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: CustomScrollView(
+        physics: physics,
+        controller: scrollController,
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                !isExpanded
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).viewPadding.top,
+                        child: RepaintBoundary(child: media),
+                      )
+                    : RepaintBoundary(child: media),
+                if (!isExpanded)
+                  SizedBox(height: MediaQuery.of(context).size.height),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: BasicTagList(
+                        tags: post.tags,
+                        onTap: (tag) =>
+                            goToMoebooruSearchPage(context, tag: tag),
+                      ),
                     ),
-                  ),
-                  const Divider(
-                    thickness: 1.5,
-                    height: 4,
-                  ),
-                  FileDetailsSection(
-                    post: post,
-                  ),
-                  if (post.hasWebSource) SourceSection(post: post),
-                ],
-              ),
-            ],
+                    const Divider(
+                      thickness: 1.5,
+                      height: 4,
+                    ),
+                    FileDetailsSection(
+                      post: post,
+                    ),
+                    if (post.hasWebSource) SourceSection(post: post),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

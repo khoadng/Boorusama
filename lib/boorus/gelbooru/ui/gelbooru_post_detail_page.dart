@@ -23,6 +23,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/post_media_item.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 
 class GelbooruPostDetailPage extends StatefulWidget {
@@ -45,34 +46,44 @@ class GelbooruPostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<GelbooruPostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
-  late var fullscreen = widget.fullscreen;
+  var enableSwipe = true;
+  var hideOverlay = false;
 
   @override
   Widget build(BuildContext context) {
     return DetailsPage(
       intitialIndex: widget.initialIndex,
+      enablePageSwipe: enableSwipe,
+      hideOverlay: hideOverlay,
       onPageChanged: widget.onPageChanged,
-      targetSwipeDownBuilder: (context, index) => GelbooruPostMediaItem(
-        //TODO: this is used to preload image between page
+      targetSwipeDownBuilder: (context, index) => PostMediaItem(
         post: widget.posts[index],
-        onCached: (path) => imagePath.value = path,
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
-        onZoomUpdated: (zoom) {},
       ),
       expandedBuilder: (context, page, currentPage, expanded) =>
           BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return _CarouselContent(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
             isExpanded: expanded,
             scrollController: PageContentScrollController.of(context),
-
             media: GelbooruPostMediaItem(
-              //TODO: this is used to preload image between page
               post: widget.posts[page],
               onCached: (path) => imagePath.value = path,
               previewCacheManager: context.read<PreviewImageCacheManager>(),
               useHero: page == currentPage,
-              onZoomUpdated: (zoom) {},
+              onTap: () {
+                setState(() {
+                  hideOverlay = !hideOverlay;
+                });
+              },
+              onZoomUpdated: (zoom) {
+                final swipe = !zoom;
+                if (swipe != enableSwipe) {
+                  setState(() {
+                    enableSwipe = swipe;
+                  });
+                }
+              },
             ),
             imagePath: imagePath,
             actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
@@ -99,6 +110,7 @@ class _CarouselContent extends StatelessWidget {
     required this.preloadPost,
     required this.isExpanded,
     required this.scrollController,
+    this.physics,
   });
 
   final GelbooruPostMediaItem media;
@@ -108,64 +120,52 @@ class _CarouselContent extends StatelessWidget {
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final bool isExpanded;
   final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              !isExpanded
-                  ? SizedBox(
-                      height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).viewPadding.top,
-                      child: RepaintBoundary(child: media),
-                    )
-                  : RepaintBoundary(child: media),
-              if (!isExpanded)
-                SizedBox(height: MediaQuery.of(context).size.height),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // if (widget.actionBarDisplayBehavior ==
-                  //     ActionBarDisplayBehavior.scrolling) ...[
-                  //   RepaintBoundary(
-                  //     child: ActionBar(
-                  //       imagePath: widget.imagePath,
-                  //       postData: widget.post,
-                  //     ),
-                  //   ),
-                  //   const Divider(height: 8, thickness: 1),
-                  // ],
-                  // ArtistSection(post: widget.preloadPost),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 8),
-                  //   child: RepaintBoundary(child: PostStatsTile(post: post)),
-                  // ),
-                  // if (widget.preloadPost.hasParentOrChildren)
-                  //   _ParentChildTile(post: widget.preloadPost),
-                  TagsTile(
-                    post: post,
-                    onExpand: () => context
-                        .read<TagBloc>()
-                        .add(TagFetched(tags: post.tags)),
-                    onTagTap: (tag) =>
-                        goToGelbooruSearchPage(context, tag: tag.rawName),
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  FileDetailsSection(
-                    post: post,
-                  ),
-                  if (post.hasWebSource) SourceSection(post: post),
-                ],
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: CustomScrollView(
+        physics: physics,
+        controller: scrollController,
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                !isExpanded
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).viewPadding.top,
+                        child: RepaintBoundary(child: media),
+                      )
+                    : RepaintBoundary(child: media),
+                if (!isExpanded)
+                  SizedBox(height: MediaQuery.of(context).size.height),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TagsTile(
+                      post: post,
+                      onExpand: () => context
+                          .read<TagBloc>()
+                          .add(TagFetched(tags: post.tags)),
+                      onTagTap: (tag) =>
+                          goToGelbooruSearchPage(context, tag: tag.rawName),
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    FileDetailsSection(
+                      post: post,
+                    ),
+                    if (post.hasWebSource) SourceSection(post: post),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

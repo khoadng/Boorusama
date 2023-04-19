@@ -93,9 +93,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       bottomSheet: ActionBar(postData: widget.posts[_currentPage]),
       targetSwipeDownBuilder: (context, page) => PostMediaItem(
         post: widget.posts[page].post,
-        onCached: (path) => {},
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
-        onZoomUpdated: (zoom) {},
       ),
       expandedBuilder: (context, page, currentPage, expanded) =>
           BlocBuilder<SettingsCubit, SettingsState>(
@@ -108,7 +105,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
             isExpanded: expanded,
             scrollController: PageContentScrollController.of(context),
             media: DanbooruPostMediaItem(
-              //TODO: this is used to preload image between page
               post: widget.posts[page].post,
               onCached: (path) => imagePath.value = path,
               enableNotes: true,

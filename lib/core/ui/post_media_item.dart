@@ -22,7 +22,7 @@ class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
     super.key,
     required this.post,
-    required this.onCached,
+    this.onCached,
     this.onTap,
     this.onZoomUpdated,
     this.previewCacheManager,
@@ -31,7 +31,7 @@ class PostMediaItem extends StatefulWidget {
   });
 
   final Post post;
-  final void Function(String? path) onCached;
+  final void Function(String? path)? onCached;
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
   final CacheManager? previewCacheManager;
@@ -105,7 +105,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                           .getFileFromCache(widget.post.sampleImageUrl)
                           .then((file) {
                         if (!mounted) return;
-                        widget.onCached(file?.file.path);
+                        widget.onCached?.call(file?.file.path);
                       });
 
                       final w = math.max(
