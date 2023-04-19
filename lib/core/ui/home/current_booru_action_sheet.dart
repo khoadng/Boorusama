@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 
 class CurrentBooruActionSheet extends StatelessWidget {
@@ -30,6 +31,13 @@ class CurrentBooruActionSheet extends StatelessWidget {
                 context: context,
                 builder: (_) => const SwitchBooruModal(),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Add booru'),
+            onTap: () {
+              Navigator.of(context).pop();
+              goToAddBooruPage(context);
             },
           ),
         ],

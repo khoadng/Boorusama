@@ -107,7 +107,7 @@ class SideBarMenu extends StatelessWidget {
                 const Divider(),
                 _SideMenuTile(
                   icon: const Icon(Icons.manage_accounts),
-                  title: const Text('Manage sources'),
+                  title: const Text('Manage boorus'),
                   onTap: () {
                     if (popOnSelect) Navigator.of(context).pop();
                     goToManageBooruPage(context);

@@ -54,11 +54,11 @@ class SettingsPage extends StatelessWidget {
                               //             settings.copyWith(safeMode: value));
                               //       }),
                               // ),
-                              ListTile(
-                                leading: const FaIcon(FontAwesomeIcons.gears),
-                                title: const Text('settings.general').tr(),
-                                onTap: () => goToSettingsGeneral(context, this),
-                              ),
+                              // ListTile(
+                              //   leading: const FaIcon(FontAwesomeIcons.gears),
+                              //   title: const Text('settings.general').tr(),
+                              //   onTap: () => goToSettingsGeneral(context, this),
+                              // ),
                               ListTile(
                                 leading: const FaIcon(
                                   FontAwesomeIcons.paintRoller,

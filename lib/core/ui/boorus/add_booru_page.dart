@@ -118,7 +118,7 @@ class _AddBooruPageState extends State<AddBooruPage>
                     vertical: 16,
                   ),
                   child: Text(
-                    'Add a source',
+                    'Add a booru',
                     style: Theme.of(context)
                         .textTheme
                         .headlineSmall!
