@@ -55,6 +55,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
   late var _currentPage = widget.intitialIndex;
   var enableSwipe = true;
+  var hideOverlay = false;
 
   @override
   void initState() {
@@ -80,6 +81,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
       enablePageSwipe: enableSwipe,
+      hideOverlay: hideOverlay,
       onPageChanged: (page) => setState(() {
         _currentPage = page;
       }),
@@ -110,11 +112,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
               notes: [],
               useHero: page == currentPage,
               previewCacheManager: context.read<PreviewImageCacheManager>(),
-              // onTap: () => context
-              //     .read<PostDetailBloc>()
-              //     .add(PostDetailOverlayVisibilityChanged(
-              //       enableOverlay: !state.enableOverlay,
-              //     )),
+              onTap: () {
+                setState(() {
+                  hideOverlay = !hideOverlay;
+                });
+              },
               onZoomUpdated: (zoom) {
                 final swipe = !zoom;
                 if (swipe != enableSwipe) {

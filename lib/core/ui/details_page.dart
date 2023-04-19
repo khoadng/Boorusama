@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
@@ -31,6 +30,7 @@ class DetailsPage<T> extends StatefulWidget {
     this.onExpanded,
     this.bottomSheet,
     this.enablePageSwipe = true,
+    this.hideOverlay = false,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
@@ -44,6 +44,7 @@ class DetailsPage<T> extends StatefulWidget {
   final void Function(int currentPage)? onExpanded;
   final Widget? bottomSheet;
   final bool enablePageSwipe;
+  final bool hideOverlay;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -60,6 +61,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     ],
   );
   var isExpanded = ValueNotifier(false);
+  late final _hideOverlayNotifier = ValueNotifier(widget.hideOverlay);
+  late final _shouldSlideDownNotifier = ValueNotifier(false);
 
   @override
   Function() get popper => () => _onBackButtonPressed();
@@ -73,14 +76,28 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     // Initialize the animation controller and animation
     _bottomSheetAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 80),
+      duration: const Duration(milliseconds: 160),
     );
 
-    // Start the animation after a delay of 0.5 seconds
-    Timer(const Duration(milliseconds: 500), () {
-      _bottomSheetAnimationController.forward();
-    });
+    isSwipingDown.addListener(_updateShouldSlideDown);
+    isExpanded.addListener(_updateShouldSlideDown);
+
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(DetailsPage<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.hideOverlay != widget.hideOverlay) {
+      _hideOverlayNotifier.value = widget.hideOverlay;
+    }
+
+    _updateShouldSlideDown();
+  }
+
+  void _updateShouldSlideDown() {
+    _shouldSlideDownNotifier.value =
+        isSwipingDown.value || isExpanded.value || _hideOverlayNotifier.value;
   }
 
   @override
@@ -88,6 +105,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     super.dispose();
     controller.dispose();
     _bottomSheetAnimationController.dispose();
+
+    isSwipingDown.removeListener(_updateShouldSlideDown);
+    isExpanded.removeListener(_updateShouldSlideDown);
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
@@ -291,31 +311,31 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
               alignment: Alignment.bottomCenter,
               child: widget.bottomSheet != null
                   ? ValueListenableBuilder<bool>(
-                      valueListenable: isSwipingDown,
-                      builder: (context, isSwipingDown, _) {
-                        double clampedDragDistance = max(0.0, dragDistance);
-                        final swipeOffset = isSwipingDown
-                            ? Offset(0, clampedDragDistance)
-                            : Offset.zero;
-                        return ValueListenableBuilder<bool>(
-                          valueListenable: isExpanded,
-                          builder: (context, isExpanded, _) {
-                            final expandOffset =
-                                isExpanded ? const Offset(0, 1) : Offset.zero;
-                            final offset = swipeOffset + expandOffset;
-                            return SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(0, 1),
-                                end: offset,
-                              ).animate(
-                                CurvedAnimation(
-                                  parent: _bottomSheetAnimationController,
-                                  curve: Curves.easeOut,
-                                ),
-                              ),
-                              child: widget.bottomSheet,
-                            );
-                          },
+                      valueListenable: _shouldSlideDownNotifier,
+                      builder: (context, shouldSlideDown, _) {
+                        // If shouldSlideDown is true, slide down the bottom sheet, otherwise slide it up.
+                        final targetOffset = shouldSlideDown
+                            ? const Offset(0, 1)
+                            : const Offset(0, 0);
+
+                        // Animate the bottom sheet to the target position.
+                        _bottomSheetAnimationController.animateTo(
+                          shouldSlideDown ? 0 : 1,
+                          duration: const Duration(milliseconds: 160),
+                          curve: Curves.easeInOut,
+                        );
+
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 1),
+                            end: targetOffset,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: _bottomSheetAnimationController,
+                              curve: Curves.easeOut,
+                            ),
+                          ),
+                          child: widget.bottomSheet,
                         );
                       },
                     )
