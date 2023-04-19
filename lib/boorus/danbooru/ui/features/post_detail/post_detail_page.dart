@@ -29,6 +29,7 @@ import 'package:boorusama/core/ui/circular_icon_button.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
+import 'package:boorusama/core/ui/post_media_item.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
@@ -78,6 +79,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final isTranslated = context.select(
       (PostDetailBloc bloc) => bloc.state.currentPost.post.isTranslated,
     );
+    final notes =
+        context.select((PostDetailBloc bloc) => bloc.state.currentPost.notes);
+
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
       enablePageSwipe: enableSwipe,
@@ -87,11 +91,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
         widget.onPageChanged.call(page);
       }),
       bottomSheet: ActionBar(postData: widget.posts[_currentPage]),
-      targetSwipeDownBuilder: (context, page) => DanbooruPostMediaItem(
+      targetSwipeDownBuilder: (context, page) => PostMediaItem(
         post: widget.posts[page].post,
         onCached: (path) => {},
-        enableNotes: false,
-        notes: [],
         previewCacheManager: context.read<PreviewImageCacheManager>(),
         onZoomUpdated: (zoom) {},
       ),
@@ -103,14 +105,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
         builder: (context, state) {
           return _CarouselContent(
             physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            isExpaned: expanded,
+            isExpanded: expanded,
             scrollController: PageContentScrollController.of(context),
             media: DanbooruPostMediaItem(
               //TODO: this is used to preload image between page
               post: widget.posts[page].post,
-              onCached: (path) => {},
-              enableNotes: false,
-              notes: [],
+              onCached: (path) => imagePath.value = path,
+              enableNotes: true,
+              notes: notes,
               useHero: page == currentPage,
               previewCacheManager: context.read<PreviewImageCacheManager>(),
               onTap: () {
@@ -127,7 +129,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 }
               },
             ),
-            // imagePath: widget.imagePath,
             actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
             postData: currentPost,
             preloadPost: widget.posts[page].post,
@@ -378,7 +379,7 @@ class _CarouselContent extends StatelessWidget {
     required this.recommends,
     required this.pools,
     required this.scrollController,
-    required this.isExpaned,
+    required this.isExpanded,
     this.physics,
   });
 
@@ -390,7 +391,7 @@ class _CarouselContent extends StatelessWidget {
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
   final ScrollController? scrollController;
-  final bool isExpaned;
+  final bool isExpanded;
   final ScrollPhysics? physics;
 
   DanbooruPost get post => postData.post;
@@ -406,16 +407,16 @@ class _CarouselContent extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                !isExpaned
+                !isExpanded
                     ? SizedBox(
                         height: MediaQuery.of(context).size.height -
                             MediaQuery.of(context).viewPadding.top,
                         child: RepaintBoundary(child: media),
                       )
                     : RepaintBoundary(child: media),
-                if (!isExpaned)
+                if (!isExpanded)
                   SizedBox(height: MediaQuery.of(context).size.height),
-                if (isExpaned) ...[
+                if (isExpanded) ...[
                   PoolTiles(pools: pools),
                   // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                   //   builder: (context, state) {

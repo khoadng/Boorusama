@@ -110,13 +110,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
         if (post.post.isTranslated) {
           add(_PostDetailNoteFetch(post.post.id));
-          if (nextPost?.post.isTranslated ?? false) {
-            // prefetch next post
-            unawaited(Future.delayed(
-              const Duration(milliseconds: 200),
-              () => noteRepository.getNotesFrom(nextPost!.post.id),
-            ));
-          }
         }
 
         add(_PostDetailRecommendedFetch(
