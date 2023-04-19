@@ -387,7 +387,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     for (final tag in tags) {
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository.getPosts(tag, 1, limit: 20);
+          : await postRepository.getPosts(tag, 1);
 
       tagCache[tag] = posts;
 
@@ -399,7 +399,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             title: tag,
             posts: posts
                 .where((e) => !e.isFlash)
-                .take(20)
                 .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,
@@ -421,7 +420,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     for (final tag in tags) {
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository.getPosts(tag, 1, limit: 20);
+          : await postRepository.getPosts(tag, 1);
 
       tagCache[tag] = posts;
 
@@ -433,7 +432,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             title: tag,
             posts: posts
                 .where((e) => !e.isFlash)
-                .take(20)
                 .map((e) => DanbooruPostData(
                       post: e,
                       isFavorited: false,

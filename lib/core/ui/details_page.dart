@@ -95,18 +95,20 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _updateShouldSlideDown() {
-    _shouldSlideDownNotifier.value =
-        isSwipingDown.value || isExpanded.value || _hideOverlayNotifier.value;
+    _shouldSlideDownNotifier.value = isSwipingDown.value ||
+        isExpanded.value ||
+        _hideOverlayNotifier.value ||
+        !_exiting;
   }
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
     _bottomSheetAnimationController.dispose();
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
+    super.dispose();
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
@@ -132,6 +134,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!mounted) return;
+      if (!controller.hasClients) return;
       if (_currentPage != widget.intitialIndex &&
           controller.page == widget.intitialIndex) {
         controller.jumpToPage(_currentPage);
@@ -142,6 +146,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   Future<void> _onBackButtonPressed() async {
+    setState(() {
+      _exiting = true;
+    });
     final navigator = Navigator.of(context);
     await _bottomSheetAnimationController.reverse();
     navigator.pop();
@@ -149,6 +156,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   late var _currentPage = widget.intitialIndex;
   var _multiTouch = false;
+  var _exiting = false;
 
   @override
   Widget build(BuildContext context) {

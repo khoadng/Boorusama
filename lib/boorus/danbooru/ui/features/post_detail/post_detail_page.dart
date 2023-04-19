@@ -84,6 +84,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       hideOverlay: hideOverlay,
       onPageChanged: (page) => setState(() {
         _currentPage = page;
+        widget.onPageChanged.call(page);
       }),
       bottomSheet: ActionBar(postData: widget.posts[_currentPage]),
       targetSwipeDownBuilder: (context, page) => DanbooruPostMediaItem(

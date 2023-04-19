@@ -501,10 +501,10 @@ packages:
     dependency: "direct main"
     description:
       name: exprollable_page_view
-      sha256: "8b151e2a361f33a342798c32b908bee91d9446751f6ab5e2b78126a6e6729bd8"
+      sha256: "66738302b27ec1d0df388e0937e936d28957c2e615777e458591e9f6728bc8f2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-beta.3"
+    version: "1.0.0-beta.6"
   fake_async:
     dependency: transitive
     description:
