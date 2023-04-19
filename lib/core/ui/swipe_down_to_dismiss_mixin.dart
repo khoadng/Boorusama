@@ -45,13 +45,6 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  bool handleScrollNotification(ScrollNotification notification) {
-    if (_isSwipingDown.value) {
-      return true;
-    }
-    return false;
-  }
-
   double calculateBackgroundOpacity() {
     if (!_isSwipingDown.value) {
       return 1.0;

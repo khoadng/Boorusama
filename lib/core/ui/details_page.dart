@@ -73,7 +73,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   @override
   void initState() {
-    // Initialize the animation controller and animation
     _bottomSheetAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 160),
@@ -142,12 +141,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     handlePointerUp(event);
   }
 
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (!widget.enablePageSwipe) return false;
-
-    return handleScrollNotification(notification);
-  }
-
   Future<void> _onBackButtonPressed() async {
     final navigator = Navigator.of(context);
     await _bottomSheetAnimationController.reverse();
@@ -170,92 +163,91 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
         backgroundColor: Colors.black.withOpacity(calculateBackgroundOpacity()),
         body: Stack(
           children: [
-            ValueListenableBuilder<int>(
-              valueListenable: controller.currentPage,
-              builder: (context, currentPage, _) =>
-                  ValueListenableBuilder<bool>(
-                valueListenable: isExpanded,
-                builder: (context, expanded, _) {
-                  if (isSwipingDown.value && !expanded) {
-                    return Transform.translate(
-                      offset: Offset(dragDistanceX, dragDistance),
-                      child: Listener(
-                        onPointerMove: (event) =>
-                            _handlePointerMove(event, expanded),
-                        onPointerUp: (event) =>
-                            _handlePointerUp(event, expanded),
-                        child: Transform.scale(
-                          scale: scale,
-                          child: widget.targetSwipeDownBuilder(
-                            context,
-                            currentPage,
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Transform.translate(
-                      offset: Offset(dragDistanceX, dragDistance),
-                      child: RawGestureDetector(
-                        gestures: <Type, GestureRecognizerFactory>{
-                          TouchCountRecognizer:
-                              GestureRecognizerFactoryWithHandlers<
-                                  TouchCountRecognizer>(
-                            () => TouchCountRecognizer((multiTouch) {
-                              setState(() {
-                                _multiTouch = multiTouch;
-                              });
-                            }),
-                            (TouchCountRecognizer instance) {},
-                          ),
-                        },
-                        child: Listener(
-                          onPointerMove: (event) =>
-                              _handlePointerMove(event, expanded),
-                          onPointerUp: (event) =>
-                              _handlePointerUp(event, expanded),
-                          child: NotificationListener<ScrollNotification>(
-                            onNotification: _handleScrollNotification,
-                            child: ExprollablePageView(
-                              controller: controller,
-                              onViewportChanged: (metrics) {
-                                isExpanded.value = metrics.isExpanded;
-                                if (isExpanded.value) {
-                                  widget.onExpanded?.call(currentPage);
-                                }
-                              },
-                              onPageChanged: (page) {
-                                setState(() {
-                                  _currentPage = page;
-                                });
-                                widget.onPageChanged?.call(page);
-                              },
-                              physics: widget.enablePageSwipe
-                                  ? const DefaultPageViewScrollPhysics()
-                                  : const NeverScrollableScrollPhysics(),
-                              itemCount: widget.pageCount,
-                              itemBuilder: (context, page) {
-                                return ValueListenableBuilder<bool>(
-                                  valueListenable: isExpanded,
-                                  builder: (context, value, child) =>
-                                      widget.expandedBuilder(
-                                          context, page, currentPage, value),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
+            _buildScrollContent(),
             _buildNavigationButtonGroup(theme, context),
             _buildTopRightButtonGroup(),
             _buildBottomSheet(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildScrollContent() {
+    return ValueListenableBuilder<int>(
+      valueListenable: controller.currentPage,
+      builder: (context, currentPage, _) => ValueListenableBuilder<bool>(
+        valueListenable: isExpanded,
+        builder: (context, expanded, _) {
+          if (isSwipingDown.value && !expanded) {
+            return Transform.translate(
+              offset: Offset(dragDistanceX, dragDistance),
+              child: Listener(
+                onPointerMove: (event) => _handlePointerMove(event, expanded),
+                onPointerUp: (event) => _handlePointerUp(event, expanded),
+                child: Transform.scale(
+                  scale: scale,
+                  child: widget.targetSwipeDownBuilder(
+                    context,
+                    currentPage,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return Transform.translate(
+              offset: Offset(dragDistanceX, dragDistance),
+              child: RawGestureDetector(
+                gestures: <Type, GestureRecognizerFactory>{
+                  TouchCountRecognizer: GestureRecognizerFactoryWithHandlers<
+                      TouchCountRecognizer>(
+                    () => TouchCountRecognizer((multiTouch) {
+                      setState(() {
+                        _multiTouch = multiTouch;
+                      });
+                    }),
+                    (TouchCountRecognizer instance) {},
+                  ),
+                },
+                child: Listener(
+                  onPointerMove: (event) => _handlePointerMove(event, expanded),
+                  onPointerUp: (event) => _handlePointerUp(event, expanded),
+                  child: ExprollablePageView(
+                    controller: controller,
+                    onViewportChanged: (metrics) {
+                      isExpanded.value = metrics.isExpanded;
+                      if (isExpanded.value) {
+                        widget.onExpanded?.call(currentPage);
+                      }
+                    },
+                    onPageChanged: (page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                      widget.onPageChanged?.call(page);
+                    },
+                    physics: widget.enablePageSwipe
+                        ? const DefaultPageViewScrollPhysics()
+                        : const NeverScrollableScrollPhysics(),
+                    itemCount: widget.pageCount,
+                    itemBuilder: (context, page) {
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: isExpanded,
+                        builder: (context, value, child) =>
+                            widget.expandedBuilder(
+                          context,
+                          page,
+                          currentPage,
+                          value,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
