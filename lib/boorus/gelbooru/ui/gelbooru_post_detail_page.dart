@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_media_item.dart';
 import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -66,7 +65,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
             physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
             isExpanded: expanded,
             scrollController: PageContentScrollController.of(context),
-            media: GelbooruPostMediaItem(
+            media: PostMediaItem(
               post: widget.posts[page],
               onCached: (path) => imagePath.value = path,
               previewCacheManager: context.read<PreviewImageCacheManager>(),
@@ -113,7 +112,7 @@ class _CarouselContent extends StatelessWidget {
     this.physics,
   });
 
-  final GelbooruPostMediaItem media;
+  final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
   final Post post;
   final Post preloadPost;
