@@ -251,99 +251,108 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                 },
               ),
             ),
-            Align(
-              alignment: Alignment(
-                -0.75,
-                getTopActionIconAlignValue(),
-              ),
-              child: Transform.translate(
-                offset: Offset(0, _navigationButtonGroupOffset),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      CircularIconButton(
-                        icon: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: theme == ThemeMode.light
-                              ? Icon(
-                                  Icons.arrow_back_ios,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                )
-                              : const Icon(Icons.arrow_back_ios),
-                        ),
-                        onPressed: () {
-                          _onBackButtonPressed();
-                        },
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      CircularIconButton(
-                        icon: theme == ThemeMode.light
-                            ? Icon(
-                                Icons.home,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              )
-                            : const Icon(Icons.home),
-                        onPressed: () => goToHomePage(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment(
-                0.9,
-                getTopActionIconAlignValue(),
-              ),
-              child: Transform.translate(
-                offset: Offset(0, _topRightButtonGroupOffset),
-                child: ButtonBar(
-                  children: widget
-                      .topRightButtonsBuilder(controller.currentPage.value),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: widget.bottomSheet != null
-                  ? ValueListenableBuilder<bool>(
-                      valueListenable: _shouldSlideDownNotifier,
-                      builder: (context, shouldSlideDown, _) {
-                        // If shouldSlideDown is true, slide down the bottom sheet, otherwise slide it up.
-                        final targetOffset = shouldSlideDown
-                            ? const Offset(0, 1)
-                            : const Offset(0, 0);
-
-                        // Animate the bottom sheet to the target position.
-                        _bottomSheetAnimationController.animateTo(
-                          shouldSlideDown ? 0 : 1,
-                          duration: const Duration(milliseconds: 160),
-                          curve: Curves.easeInOut,
-                        );
-
-                        return SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0, 1),
-                            end: targetOffset,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: _bottomSheetAnimationController,
-                              curve: Curves.easeOut,
-                            ),
-                          ),
-                          child: widget.bottomSheet,
-                        );
-                      },
-                    )
-                  : const SizedBox.shrink(),
-            ),
+            _buildNavigationButtonGroup(theme, context),
+            _buildTopRightButtonGroup(),
+            _buildBottomSheet(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNavigationButtonGroup(ThemeMode theme, BuildContext context) {
+    return Align(
+      alignment: Alignment(
+        -0.75,
+        getTopActionIconAlignValue(),
+      ),
+      child: Transform.translate(
+        offset: Offset(0, _navigationButtonGroupOffset),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              CircularIconButton(
+                icon: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: theme == ThemeMode.light
+                      ? Icon(
+                          Icons.arrow_back_ios,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )
+                      : const Icon(Icons.arrow_back_ios),
+                ),
+                onPressed: () {
+                  _onBackButtonPressed();
+                },
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+              CircularIconButton(
+                icon: theme == ThemeMode.light
+                    ? Icon(
+                        Icons.home,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      )
+                    : const Icon(Icons.home),
+                onPressed: () => goToHomePage(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopRightButtonGroup() {
+    return Align(
+      alignment: Alignment(
+        0.9,
+        getTopActionIconAlignValue(),
+      ),
+      child: Transform.translate(
+        offset: Offset(0, _topRightButtonGroupOffset),
+        child: ButtonBar(
+          children: widget.topRightButtonsBuilder(controller.currentPage.value),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSheet() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: widget.bottomSheet != null
+          ? ValueListenableBuilder<bool>(
+              valueListenable: _shouldSlideDownNotifier,
+              builder: (context, shouldSlideDown, _) {
+                // If shouldSlideDown is true, slide down the bottom sheet, otherwise slide it up.
+                final targetOffset =
+                    shouldSlideDown ? const Offset(0, 1) : const Offset(0, 0);
+
+                // Animate the bottom sheet to the target position.
+                _bottomSheetAnimationController.animateTo(
+                  shouldSlideDown ? 0 : 1,
+                  duration: const Duration(milliseconds: 160),
+                  curve: Curves.easeInOut,
+                );
+
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: targetOffset,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: _bottomSheetAnimationController,
+                      curve: Curves.easeOut,
+                    ),
+                  ),
+                  child: widget.bottomSheet,
+                );
+              },
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
