@@ -312,7 +312,7 @@ Future<void> goToDetailPage({
   required List<DanbooruPostData> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
-  bool hero = true,
+  bool hero = false,
   // PostBloc? postBloc,
 }) {
   final tags = posts
@@ -364,7 +364,7 @@ Future<void> goToDetailPage({
 
   return Navigator.of(context).push(hero && !posts[initialIndex].post.isAnimated
       ? TransparentRoute(builder: (_) => page)
-      : MaterialPageRoute(builder: (_) => page));
+      : MaterialPageRoute(builder: (_) => page, fullscreenDialog: true));
   // showDesktopFullScreenWindow(
   //   context,
   //   builder: (_) => providePostDetailPageDependencies(

@@ -155,48 +155,40 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                   hasComments: post.hasComment,
                   hasParentOrChildren: post.hasParentOrChildren,
                   image: state.settings.imageListType == ImageListType.masonry
-                      ? Hero(
-                          tag: '${post.id}_hero',
-                          child: BooruImage(
-                            aspectRatio: post.aspectRatio,
-                            imageUrl: getImageUrlForDisplay(
-                              post,
-                              getImageQuality(
-                                size: state.settings.gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
+                      ? BooruImage(
+                          aspectRatio: post.aspectRatio,
+                          imageUrl: getImageUrlForDisplay(
+                            post,
+                            getImageQuality(
+                              size: state.settings.gridSize,
+                              presetImageQuality: state.settings.imageQuality,
                             ),
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            previewCacheManager:
-                                context.read<PreviewImageCacheManager>(),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
+                          borderRadius: BorderRadius.circular(
+                            state.settings.imageBorderRadius,
+                          ),
+                          placeholderUrl: post.thumbnailImageUrl,
+                          previewCacheManager:
+                              context.read<PreviewImageCacheManager>(),
+                          cacheHeight:
+                              (constraints.maxHeight * 2).toIntOrNull(),
+                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                         )
-                      : Hero(
-                          tag: '${post.id}_hero',
-                          child: BooruImageLegacy(
-                            imageUrl: getImageUrlForDisplay(
-                              post,
-                              getImageQuality(
-                                size: state.settings.gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
+                      : BooruImageLegacy(
+                          imageUrl: getImageUrlForDisplay(
+                            post,
+                            getImageQuality(
+                              size: state.settings.gridSize,
+                              presetImageQuality: state.settings.imageQuality,
                             ),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
+                          placeholderUrl: post.thumbnailImageUrl,
+                          borderRadius: BorderRadius.circular(
+                            state.settings.imageBorderRadius,
+                          ),
+                          cacheHeight:
+                              (constraints.maxHeight * 2).toIntOrNull(),
+                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                         ),
                 ),
               ),

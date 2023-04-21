@@ -146,11 +146,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   Future<void> _onBackButtonPressed() async {
-    // setState(() {
     _keepBottomSheetDown = true;
-    // });
     final navigator = Navigator.of(context);
-    await _bottomSheetAnimationController.reverse();
     navigator.pop();
   }
 
