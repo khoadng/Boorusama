@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 
 class ParentChildPostPage extends StatelessWidget
     with DanbooruPostCubitStatelessMixin {
@@ -22,8 +22,12 @@ class ParentChildPostPage extends StatelessWidget
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
       builder: (context, state) {
-        return InfinitePostList(
-          state: state,
+        return DanbooruInfinitePostList(
+          refreshing: state.refreshing,
+          loading: state.loading,
+          hasMore: state.hasMore,
+          error: state.error,
+          data: state.data,
           onLoadMore: () => fetch(context),
           sliverHeaderBuilder: (context) => [
             SliverAppBar(

@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -42,8 +42,12 @@ class _PoolDetailPageState extends State<PoolDetailPage>
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
       builder: (context, state) {
-        return InfinitePostList(
-          state: state,
+        return DanbooruInfinitePostList(
+          refreshing: state.refreshing,
+          loading: state.loading,
+          hasMore: state.hasMore,
+          error: state.error,
+          data: state.data,
           onLoadMore: () => fetch(),
           sliverHeaderBuilder: (context) => [
             SliverAppBar(

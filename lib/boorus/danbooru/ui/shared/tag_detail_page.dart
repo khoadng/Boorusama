@@ -8,7 +8,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -32,10 +32,14 @@ class TagDetailPage extends StatelessWidget
     return BlocBuilder<DanbooruArtistCharacterPostCubit,
         DanbooruArtistCharacterPostState>(
       builder: (context, state) {
-        return InfinitePostList(
-          state: state,
+        return DanbooruInfinitePostList(
+          refreshing: state.refreshing,
+          loading: state.loading,
+          hasMore: state.hasMore,
+          error: state.error,
+          data: state.data,
           onLoadMore: () => fetch(context),
-          onRefresh: (controller) => refresh(context),
+          onRefresh: () => refresh(context),
           sliverHeaderBuilder: (context) => [
             if (includeHeaders)
               SliverAppBar(

@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -71,10 +71,14 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
       builder: (context, state) {
-        return InfinitePostList(
-          state: state,
+        return DanbooruInfinitePostList(
+          refreshing: state.refreshing,
+          loading: state.loading,
+          hasMore: state.hasMore,
+          error: state.error,
+          data: state.data,
           onLoadMore: () => fetch(),
-          onRefresh: (controller) {
+          onRefresh: () {
             _sendRefresh(_selectedTag.value);
           },
           scrollController: _autoScrollController,

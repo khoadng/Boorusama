@@ -62,31 +62,42 @@ class _GelbooruHomePageState extends State<GelbooruHomePage>
                         ),
                       ),
                       Expanded(
-                        child: GelbooruInfinitePostList(
-                          onLoadMore: fetch,
-                          onRefresh: (controller) => refresh(),
-                          scrollController: _autoScrollController,
-                          sliverHeaderBuilder: (context) => [
-                            SliverAppBar(
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              toolbarHeight: kToolbarHeight * 1.2,
-                              title: SearchBar(
-                                enabled: false,
-                                leading: widget.onMenuTap != null
-                                    ? IconButton(
-                                        icon: const Icon(Icons.menu),
-                                        onPressed: () =>
-                                            widget.onMenuTap?.call(),
-                                      )
-                                    : null,
-                                onTap: () => goToGelbooruSearchPage(context),
-                              ),
-                              floating: true,
-                              snap: true,
-                              automaticallyImplyLeading: false,
-                            ),
-                          ],
+                        child:
+                            BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
+                          builder: (context, state) {
+                            return GelbooruInfinitePostList(
+                              refreshing: state.refreshing,
+                              loading: state.loading,
+                              hasMore: state.hasMore,
+                              error: state.error,
+                              data: state.data,
+                              onLoadMore: fetch,
+                              onRefresh: () => refresh(),
+                              scrollController: _autoScrollController,
+                              sliverHeaderBuilder: (context) => [
+                                SliverAppBar(
+                                  backgroundColor:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  toolbarHeight: kToolbarHeight * 1.2,
+                                  title: SearchBar(
+                                    enabled: false,
+                                    leading: widget.onMenuTap != null
+                                        ? IconButton(
+                                            icon: const Icon(Icons.menu),
+                                            onPressed: () =>
+                                                widget.onMenuTap?.call(),
+                                          )
+                                        : null,
+                                    onTap: () =>
+                                        goToGelbooruSearchPage(context),
+                                  ),
+                                  floating: true,
+                                  snap: true,
+                                  automaticallyImplyLeading: false,
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ],

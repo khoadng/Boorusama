@@ -64,9 +64,13 @@ class _MoebooruHomePageState extends State<MoebooruHomePage>
                         BlocBuilder<MoebooruPostCubit, MoebooruPostState>(
                           builder: (context, state) {
                             return MoebooruInfinitePostList(
-                              state: state,
+                              refreshing: state.refreshing,
+                              loading: state.loading,
+                              hasMore: state.hasMore,
+                              error: state.error,
+                              data: state.data,
                               onLoadMore: fetch,
-                              onRefresh: (controller) => refresh(),
+                              onRefresh: () => refresh(),
                               scrollController: _autoScrollController,
                               sliverHeaderBuilder: (context) => [
                                 SliverAppBar(

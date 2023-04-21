@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/router.dart';
@@ -217,7 +217,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                 condition: !editing,
                                 conditionalBuilder: (child) =>
                                     ContextMenuRegion(
-                                  contextMenu: DefaultPostContextMenu(
+                                  contextMenu: DanbooruPostContextMenu(
                                     post: post.post,
                                     hasAccount: authState is Authenticated,
                                   ),

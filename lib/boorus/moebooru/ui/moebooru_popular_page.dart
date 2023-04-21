@@ -63,10 +63,13 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage>
                   MoebooruPopularPostState>(
                 builder: (context, state) {
                   return MoebooruInfinitePostList(
-                    state: state,
-                    refreshController: _refreshController,
+                    refreshing: state.refreshing,
+                    loading: state.loading,
+                    hasMore: state.hasMore,
+                    error: state.error,
+                    data: state.data,
                     scrollController: _scrollController,
-                    onRefresh: (_) => refresh(),
+                    onRefresh: () => refresh(),
                     sliverHeaderBuilder: (context) => [],
                     onLoadMore: fetch,
                   );

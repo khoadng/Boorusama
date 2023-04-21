@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
@@ -73,9 +73,13 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
       },
       child: BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
         builder: (context, state) {
-          return InfinitePostList(
-            state: state,
-            onRefresh: (controller) {
+          return DanbooruInfinitePostList(
+            refreshing: state.refreshing,
+            loading: state.loading,
+            hasMore: state.hasMore,
+            error: state.error,
+            data: state.data,
+            onRefresh: () {
               _sendRefresh(savedSearchState.selectedSearch);
             },
             onLoadMore: () {

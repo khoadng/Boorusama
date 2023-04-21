@@ -33,8 +33,6 @@ class ImageGridItem extends StatelessWidget {
     this.enableFav = false,
     this.onFavToggle,
     this.isFaved,
-    this.multiSelect = false,
-    this.multiSelectBuilder,
     this.hideOverlay = false,
   });
 
@@ -49,8 +47,6 @@ class ImageGridItem extends StatelessWidget {
   final bool enableFav;
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
-  final bool multiSelect;
-  final Widget Function()? multiSelectBuilder;
   final bool hideOverlay;
 
   @override
@@ -66,7 +62,7 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if ((enableFav && !multiSelect) && !hideOverlay)
+          if ((enableFav) && !hideOverlay)
             Positioned(
               bottom: 4,
               right: 4,
@@ -121,27 +117,19 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return !multiSelect
-        ? Stack(
-            children: [
-              GestureDetector(
-                onTap: onTap,
-                child: image,
-              ),
-              if (!hideOverlay)
-                Padding(
-                  padding: const EdgeInsets.only(top: 1, left: 1),
-                  child: _buildOverlayIcon(),
-                ),
-            ],
-          )
-        : Stack(
-            children: [
-              image,
-              // multiSelectBackgroundBuilder?.call() ?? const SizedBox.shrink(),
-              multiSelectBuilder?.call() ?? const SizedBox.shrink(),
-            ],
-          );
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: image,
+        ),
+        if (!hideOverlay)
+          Padding(
+            padding: const EdgeInsets.only(top: 1, left: 1),
+            child: _buildOverlayIcon(),
+          ),
+      ],
+    );
   }
 }
 

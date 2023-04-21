@@ -325,8 +325,13 @@ class _SmallLayoutState extends State<_SmallLayout>
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return GelbooruInfinitePostList(
+              refreshing: state.refreshing,
+              loading: state.loading,
+              hasMore: state.hasMore,
+              error: state.error,
+              data: state.data,
               onLoadMore: fetch,
-              onRefresh: (controller) => refresh(),
+              onRefresh: () => refresh(),
               scrollController: scrollController,
               sliverHeaderBuilder: (context) => [
                 SliverAppBar(

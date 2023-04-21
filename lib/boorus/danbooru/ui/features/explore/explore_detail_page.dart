@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'datetime_selector.dart';
 import 'time_scale_toggle_switch.dart';
 
@@ -31,19 +30,22 @@ class ExploreDetailPage extends StatelessWidget
 
     return _ExploreDetail(
       // title: title,
-      builder: (context, refreshController, scrollController) {
+      builder: (context, scrollController) {
         return Column(
           children: [
             Expanded(
               child: BlocBuilder<DanbooruExplorePostCubit,
                   DanbooruExplorePostState>(
                 builder: (context, pstate) {
-                  return InfinitePostList(
-                    state: pstate,
-                    refreshController: refreshController,
+                  return DanbooruInfinitePostList(
+                    refreshing: pstate.refreshing,
+                    loading: pstate.loading,
+                    hasMore: pstate.hasMore,
+                    error: pstate.error,
+                    data: pstate.data,
                     scrollController: scrollController,
                     onLoadMore: () => fetch(context),
-                    onRefresh: (_) => refresh(context),
+                    onRefresh: () => refresh(context),
                     sliverHeaderBuilder: (context) => [
                       SliverAppBar(
                         title: title,
@@ -93,7 +95,6 @@ class _ExploreDetail extends StatefulWidget {
   // final Widget title;
   final Widget Function(
     BuildContext context,
-    RefreshController refreshController,
     AutoScrollController scrollController,
   ) builder;
 
@@ -102,12 +103,10 @@ class _ExploreDetail extends StatefulWidget {
 }
 
 class _ExploreDetailState extends State<_ExploreDetail> {
-  final RefreshController _refreshController = RefreshController();
   final AutoScrollController _scrollController = AutoScrollController();
 
   @override
   void dispose() {
-    _refreshController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -117,11 +116,9 @@ class _ExploreDetailState extends State<_ExploreDetail> {
     return BlocListener<ExploreDetailBloc, ExploreDetailState>(
       listener: (context, state) {
         _scrollController.jumpTo(0);
-        _refreshController.requestRefresh();
       },
       child: widget.builder(
         context,
-        _refreshController,
         _scrollController,
       ),
     );

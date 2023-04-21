@@ -324,9 +324,13 @@ class _SmallLayoutState extends State<_SmallLayout>
         return BlocBuilder<MoebooruPostCubit, MoebooruPostState>(
           builder: (context, state) {
             return MoebooruInfinitePostList(
-              state: state,
+              refreshing: state.refreshing,
+              loading: state.loading,
+              hasMore: state.hasMore,
+              error: state.error,
+              data: state.data,
               onLoadMore: fetch,
-              onRefresh: (controller) => refresh(),
+              onRefresh: () => refresh(),
               scrollController: scrollController,
               sliverHeaderBuilder: (context) => [
                 SliverAppBar(

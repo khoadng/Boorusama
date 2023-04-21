@@ -15,8 +15,8 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class DefaultPostContextMenu extends StatelessWidget {
-  const DefaultPostContextMenu({
+class DanbooruPostContextMenu extends StatelessWidget {
+  const DanbooruPostContextMenu({
     super.key,
     required this.post,
     this.onMultiSelect,

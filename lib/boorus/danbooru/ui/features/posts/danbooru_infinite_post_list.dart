@@ -7,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -17,8 +20,7 @@ import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
-import 'package:boorusama/core/ui/default_multi_selection_actions.dart';
-import 'package:boorusama/core/ui/general_post_context_menu.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/infinite_post_list.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
@@ -26,8 +28,8 @@ import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
-class MoebooruInfinitePostList extends StatefulWidget {
-  const MoebooruInfinitePostList({
+class DanbooruInfinitePostList extends StatefulWidget {
+  const DanbooruInfinitePostList({
     super.key,
     required this.onLoadMore,
     this.onRefresh,
@@ -50,11 +52,12 @@ class MoebooruInfinitePostList extends StatefulWidget {
   final AutoScrollController? scrollController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
+  // final PostState<DanbooruPostData, T> state;
   final bool loading;
   final bool refreshing;
   final bool hasMore;
   final BooruError? error;
-  final List<Post> data;
+  final List<DanbooruPostData> data;
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -65,13 +68,13 @@ class MoebooruInfinitePostList extends StatefulWidget {
   )? multiSelectActions;
 
   @override
-  State<MoebooruInfinitePostList> createState() =>
-      _MoebooruInfinitePostListState();
+  State<DanbooruInfinitePostList> createState() =>
+      _DanbooruInfinitePostListState();
 }
 
-class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
+class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
   late final AutoScrollController _autoScrollController;
-  final _multiSelectController = MultiSelectController<Post>();
+  final _multiSelectController = MultiSelectController<DanbooruPostData>();
   var multiSelect = false;
 
   @override
@@ -106,11 +109,11 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
           previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
         return SafeArea(
-          child: InfinitePostList(
+          child: InfinitePostList<DanbooruPostData>(
             scrollController: _autoScrollController,
             sliverHeaderBuilder: widget.sliverHeaderBuilder,
             footerBuilder: (context, selectedItems) =>
-                DefaultMultiSelectionActions(
+                DanbooruMultiSelectionActions(
               selectedPosts: selectedItems,
               endMultiSelect: () {
                 _multiSelectController.disableMultiSelect();
@@ -121,11 +124,12 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
             onRefresh: widget.onRefresh,
             hasMore: widget.hasMore,
             itemBuilder: (context, index) {
-              final post = widget.data[index];
+              final postData = widget.data[index];
+              final post = postData.post;
 
               return ContextMenuRegion(
                 isEnabled: !multiSelect,
-                contextMenu: GeneralPostContextMenu(
+                contextMenu: DanbooruPostContextMenu(
                   hasAccount: false,
                   onMultiSelect: () {
                     _multiSelectController.enableMultiSelect();
@@ -136,17 +140,22 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                   builder: (context, constraints) => ImageGridItem(
                     onTap: !multiSelect
                         ? () {
-                            goToMoebooruDetailsPage(
+                            goToDetailPage(
                               context: context,
                               posts: widget.data,
-                              initialPage: index,
+                              initialIndex: index,
                               scrollController: _autoScrollController,
                             );
                           }
                         : null,
-                    isFaved: false,
+                    isFaved: widget.data[index].isFavorited,
                     enableFav: authState is Authenticated,
-                    onFavToggle: (isFaved) async {},
+                    onFavToggle: (isFaved) async {
+                      final favRepo = context.read<FavoritePostRepository>();
+                      final _ = await (!isFaved
+                          ? favRepo.removeFromFavorites(post.id)
+                          : favRepo.addToFavorites(post.id));
+                    },
                     autoScrollOptions: AutoScrollOptions(
                       controller: _autoScrollController,
                       index: index,
@@ -212,13 +221,64 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                 settings: state.settings,
                 refreshing: widget.refreshing,
                 error: widget.error,
-                data: widget.data,
+                data: widget.data.map((e) => e.post).toList(),
               );
             },
             loading: widget.loading,
           ),
         );
       },
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class FavoriteGroupMultiSelectionActions extends StatelessWidget {
+  const FavoriteGroupMultiSelectionActions({
+    super.key,
+    required this.selectedPosts,
+    required this.endMultiSelect,
+    required this.onRemoveFromFavGroup,
+  });
+
+  final List<Post> selectedPosts;
+  final void Function() endMultiSelect;
+  final void Function() onRemoveFromFavGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
+
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        DownloadProviderWidget(
+          builder: (context, download) => IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      download(p);
+                    }
+
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.download),
+          ),
+        ),
+        if (authenticationState is Authenticated)
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    onRemoveFromFavGroup();
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.remove),
+          ),
+      ],
     );
   }
 }

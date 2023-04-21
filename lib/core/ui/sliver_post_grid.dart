@@ -2,22 +2,255 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/selectable_icon_button.dart';
+import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
-import 'package:boorusama/core/infra/preloader/preloader.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/booru_image_legacy.dart';
-import 'package:boorusama/core/ui/image_grid_item.dart';
-import 'package:boorusama/utils/double_utils.dart';
+import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/core/ui/no_data_box.dart';
+import 'package:boorusama/core/utils.dart';
+
+class SliverPostGrid extends StatelessWidget {
+  final IndexedWidgetBuilder itemBuilder;
+  final Settings settings;
+  final bool refreshing;
+  final BooruError? error;
+  final List<Post> data;
+
+  const SliverPostGrid({
+    Key? key,
+    required this.itemBuilder,
+    required this.refreshing,
+    required this.error,
+    required this.data,
+    required this.settings,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 18,
+      ),
+      sliver: Builder(
+        builder: (context) {
+          if (refreshing) {
+            return const _Placeholder(usePlaceholder: true);
+          }
+
+          if (error != null) {
+            final message = translateBooruError(error!);
+
+            return SliverToBoxAdapter(
+              child: error?.buildWhen(
+                appError: (err) {
+                  switch (err.type) {
+                    case AppErrorType.cannotReachServer:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'Cannot reach server',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.failedToParseJSON:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'API schema changed error',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.unknown:
+                      return ErrorBox(errorMessage: message);
+                  }
+                },
+                serverError: (err) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 48, bottom: 16),
+                        child: Text(
+                          err.httpStatusCode.toString(),
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ),
+                      Text(message).tr(),
+                    ],
+                  ),
+                ),
+                unknownError: (context) => ErrorBox(errorMessage: message),
+              ),
+            );
+          }
+
+          if (data.isEmpty) {
+            return const SliverToBoxAdapter(child: NoDataBox());
+          }
+
+          switch (settings.imageListType) {
+            case ImageListType.standard:
+              return SliverGrid(
+                gridDelegate: gridSizeToGridDelegate(
+                  size: settings.gridSize,
+                  spacing: settings.imageGridSpacing,
+                  screenWidth: MediaQuery.of(context).size.width,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  itemBuilder,
+                  childCount: data.length,
+                ),
+              );
+
+            case ImageListType.masonry:
+              final payload = gridSizeToGridData(
+                size: settings.gridSize,
+                spacing: settings.imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              );
+              final crossAxisCount = payload.first;
+              final mainAxisSpacing = payload[1];
+              final crossAxisSpacing = payload[2];
+
+              return SliverMasonryGrid.count(
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: mainAxisSpacing,
+                crossAxisSpacing: crossAxisSpacing,
+                childCount: data.length,
+                itemBuilder: itemBuilder,
+              );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder({
+    required this.usePlaceholder,
+  });
+
+  final bool usePlaceholder;
+
+  @override
+  Widget build(BuildContext context) {
+    final gridSize =
+        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
+
+    return usePlaceholder
+        ? SliverPostGridPlaceHolder(gridSize: gridSize)
+        : const SliverToBoxAdapter(
+            child: SizedBox.shrink(),
+          );
+  }
+}
+
+class SliverPostGridPlaceHolder extends StatelessWidget {
+  const SliverPostGridPlaceHolder({
+    super.key,
+    this.gridSize = GridSize.normal,
+  });
+
+  final GridSize gridSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) =>
+          previous.settings.imageBorderRadius !=
+              current.settings.imageBorderRadius ||
+          previous.settings.imageGridSpacing !=
+              current.settings.imageGridSpacing ||
+          previous.settings.imageListType != current.settings.imageListType,
+      builder: (context, state) {
+        switch (state.settings.imageListType) {
+          case ImageListType.standard:
+            return SliverGrid(
+              gridDelegate: gridSizeToGridDelegate(
+                size: gridSize,
+                spacing: state.settings.imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, _) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(
+                        state.settings.imageBorderRadius,
+                      ),
+                    ),
+                  );
+                },
+                childCount: 100,
+              ),
+            );
+          case ImageListType.masonry:
+            final data = gridSizeToGridData(
+              size: gridSize,
+              spacing: state.settings.imageGridSpacing,
+              screenWidth: MediaQuery.of(context).size.width,
+            );
+            final crossAxisCount = data.first;
+            final mainAxisSpacing = data[1];
+            final crossAxisSpacing = data[2];
+
+            return SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
+              childCount: 100,
+              itemBuilder: (context, index) {
+                return createRandomPlaceholderContainer(
+                  context,
+                  borderRadius:
+                      BorderRadius.circular(state.settings.imageBorderRadius),
+                );
+              },
+            );
+        }
+      },
+    );
+  }
+}
+
+SliverGridDelegate gridSizeToGridDelegate({
+  required GridSize size,
+  required double spacing,
+  required double screenWidth,
+}) {
+  final displaySize = screenWidthToDisplaySize(screenWidth);
+  switch (size) {
+    case GridSize.large:
+      return SliverPostGridDelegate.large(spacing, displaySize);
+    case GridSize.small:
+      return SliverPostGridDelegate.small(spacing, displaySize);
+    case GridSize.normal:
+      return SliverPostGridDelegate.normal(spacing, displaySize);
+  }
+}
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -56,210 +289,6 @@ int displaySizeToGridCountWeight(ScreenSize size) {
   if (size == ScreenSize.medium) return 2;
 
   return 3;
-}
-
-class SliverPostGrid extends StatelessWidget {
-  const SliverPostGrid({
-    super.key,
-    required this.posts,
-    required this.scrollController,
-    this.onFavoriteUpdated,
-    this.onItemChanged,
-    this.onTap,
-    this.quality,
-    this.gridSize = GridSize.normal,
-    this.borderRadius,
-    this.postAnnotationBuilder,
-    this.onPostSelectChanged,
-    this.multiSelect = false,
-    required this.contextMenuBuilder,
-    required this.enableFavorite,
-    this.isFavorite,
-  });
-
-  final List<core.Post> posts;
-  final AutoScrollController scrollController;
-  final ValueChanged<int>? onItemChanged;
-  final void Function(core.Post post, int index)? onTap;
-  final ImageQuality? quality;
-  final GridSize gridSize;
-  final BorderRadiusGeometry? borderRadius;
-  final Widget Function(BuildContext context, core.Post post, int index)?
-      postAnnotationBuilder;
-  final void Function(core.Post post, bool value)? onFavoriteUpdated;
-  final void Function(core.Post post, bool selected)? onPostSelectChanged;
-  final bool multiSelect;
-  final Widget Function(core.Post post) contextMenuBuilder;
-  final bool enableFavorite;
-  final bool Function(core.Post post)? isFavorite;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.imageBorderRadius !=
-              current.settings.imageBorderRadius ||
-          previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing ||
-          previous.settings.imageQuality != current.settings.imageQuality ||
-          previous.settings.imageListType != current.settings.imageListType,
-      builder: (context, state) {
-        Widget buildItem(
-          int index, {
-          required bool legacy,
-        }) {
-          final post = posts[index];
-
-          return ContextMenuRegion(
-            isEnabled: !multiSelect,
-            contextMenu: contextMenuBuilder(post),
-            child: LayoutBuilder(
-              builder: (context, constraints) => ImageGridItem(
-                multiSelect: multiSelect,
-                multiSelectBuilder: () => SelectableIconButton(
-                  unSelectedIcon: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black45,
-                    ),
-                    child: const Icon(
-                      FontAwesomeIcons.circle,
-                      size: 32,
-                    ),
-                  ),
-                  selectedIcon: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    child: const Icon(
-                      Icons.check,
-                    ),
-                  ),
-                  onChanged: (value) => onPostSelectChanged?.call(post, value),
-                ),
-                isFaved: isFavorite?.call(post) ?? false,
-                enableFav: enableFavorite,
-                onFavToggle: (isFaved) async {
-                  onFavoriteUpdated?.call(post, isFaved);
-                },
-                autoScrollOptions: AutoScrollOptions(
-                  controller: scrollController,
-                  index: index,
-                ),
-                image: legacy
-                    ? RepaintBoundary(
-                        child: Hero(
-                          tag: '${post.id}_hero',
-                          child: BooruImageLegacy(
-                            imageUrl: getImageUrlForDisplay(
-                              post,
-                              getImageQuality(
-                                size: gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
-                            ),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
-                          ),
-                        ),
-                      )
-                    : RepaintBoundary(
-                        child: Hero(
-                          tag: '${post.id}_hero',
-                          child: BooruImage(
-                            aspectRatio: post.aspectRatio,
-                            imageUrl: getImageUrlForDisplay(
-                              post,
-                              getImageQuality(
-                                size: gridSize,
-                                presetImageQuality: state.settings.imageQuality,
-                              ),
-                            ),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            borderRadius: BorderRadius.circular(
-                              state.settings.imageBorderRadius,
-                            ),
-                            previewCacheManager:
-                                context.read<PreviewImageCacheManager>(),
-                            cacheHeight:
-                                (constraints.maxHeight * 2).toIntOrNull(),
-                            cacheWidth:
-                                (constraints.maxWidth * 2).toIntOrNull(),
-                          ),
-                        ),
-                      ),
-                onTap: () => onTap?.call(post, index),
-                isAnimated: post.isAnimated,
-                isTranslated: post.isTranslated,
-                hasComments: post.hasComment,
-                hasParentOrChildren: post.hasParentOrChildren,
-              ),
-            ),
-          );
-        }
-
-        switch (state.settings.imageListType) {
-          case ImageListType.standard:
-            return SliverGrid(
-              gridDelegate: gridSizeToGridDelegate(
-                size: gridSize,
-                spacing: state.settings.imageGridSpacing,
-                screenWidth: MediaQuery.of(context).size.width,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => buildItem(index, legacy: true),
-                childCount: posts.length,
-              ),
-            );
-
-          case ImageListType.masonry:
-            final data = gridSizeToGridData(
-              size: gridSize,
-              spacing: state.settings.imageGridSpacing,
-              screenWidth: MediaQuery.of(context).size.width,
-            );
-            final crossAxisCount = data.first;
-            final mainAxisSpacing = data[1];
-            final crossAxisSpacing = data[2];
-
-            return SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: mainAxisSpacing,
-              crossAxisSpacing: crossAxisSpacing,
-              childCount: posts.length,
-              itemBuilder: (context, index) => buildItem(index, legacy: false),
-            );
-        }
-      },
-    );
-  }
-}
-
-SliverGridDelegate gridSizeToGridDelegate({
-  required GridSize size,
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  switch (size) {
-    case GridSize.large:
-      return SliverPostGridDelegate.large(spacing, displaySize);
-    case GridSize.small:
-      return SliverPostGridDelegate.small(spacing, displaySize);
-    case GridSize.normal:
-      return SliverPostGridDelegate.normal(spacing, displaySize);
-  }
 }
 
 List<dynamic> gridSizeToGridData({

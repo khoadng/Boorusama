@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -88,10 +88,14 @@ class _InfiniteScroll extends StatelessWidget
   Widget build(BuildContext context) {
     return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
       builder: (context, state) {
-        return InfinitePostList(
-          state: state,
+        return DanbooruInfinitePostList(
+          refreshing: state.refreshing,
+          loading: state.loading,
+          hasMore: state.hasMore,
+          error: state.error,
+          data: state.data,
           onLoadMore: () => fetch(context),
-          onRefresh: (controller) {
+          onRefresh: () {
             refresh(context);
           },
           sliverHeaderBuilder: (context) => [
