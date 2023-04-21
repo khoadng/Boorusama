@@ -216,9 +216,8 @@ class _InfinitePostListState<T> extends State<InfinitePostList<T>>
                   child: CustomScrollView(
                     controller: _autoScrollController,
                     slivers: [
-                      if (widget.sliverHeaderBuilder != null)
-                        if (!multiSelect)
-                          ...widget.sliverHeaderBuilder!(context),
+                      if (!multiSelect && widget.sliverHeaderBuilder != null)
+                        ...widget.sliverHeaderBuilder!(context),
                       widget.bodyBuilder(context, itemBuilder),
                       if (widget.loading)
                         const SliverPadding(

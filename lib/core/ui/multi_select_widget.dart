@@ -50,9 +50,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
     super.initState();
     _controller = widget.multiSelectController ?? MultiSelectController();
 
-    _controller.addListener(() {
-      multiSelect = _controller.multiSelectEnabled;
-    });
+    _controller.addListener(_onMultiSelectChanged);
   }
 
   @override
@@ -60,7 +58,18 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
     if (widget.multiSelectController == null) {
       _controller.dispose();
     }
+    _controller.removeListener(_onMultiSelectChanged);
+
     super.dispose();
+  }
+
+  void _onMultiSelectChanged() {
+    setState(() {
+      if (_controller.multiSelectEnabled != multiSelect) {
+        widget.onMultiSelectChanged?.call(_controller.multiSelectEnabled);
+      }
+      multiSelect = _controller.multiSelectEnabled;
+    });
   }
 
   @override
@@ -79,11 +88,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
             var item = widget.items[index];
             return multiSelect
                 ? GestureDetector(
-                    onTap: () {
-                      _controller.toggleSelection(item);
-                      //TODO: quick fix
-                      setState(() {});
-                    },
+                    onTap: () => _controller.toggleSelection(item),
                     child: Stack(
                       alignment: Alignment.topRight,
                       children: [

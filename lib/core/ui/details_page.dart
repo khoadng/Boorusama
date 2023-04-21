@@ -70,12 +70,13 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;
   late AnimationController _bottomSheetAnimationController;
+  var _keepBottomSheetDown = false;
 
   @override
   void initState() {
     _bottomSheetAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 160),
+      duration: const Duration(milliseconds: 120),
     );
 
     isSwipingDown.addListener(_updateShouldSlideDown);
@@ -95,10 +96,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _updateShouldSlideDown() {
-    _shouldSlideDownNotifier.value = isSwipingDown.value ||
-        isExpanded.value ||
-        _hideOverlayNotifier.value ||
-        !_exiting;
+    if (_keepBottomSheetDown) return;
+    _shouldSlideDownNotifier.value =
+        isSwipingDown.value || isExpanded.value || _hideOverlayNotifier.value;
   }
 
   @override
@@ -146,9 +146,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   Future<void> _onBackButtonPressed() async {
-    setState(() {
-      _exiting = true;
-    });
+    // setState(() {
+    _keepBottomSheetDown = true;
+    // });
     final navigator = Navigator.of(context);
     await _bottomSheetAnimationController.reverse();
     navigator.pop();
@@ -156,7 +156,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   late var _currentPage = widget.intitialIndex;
   var _multiTouch = false;
-  var _exiting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +333,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                 // Animate the bottom sheet to the target position.
                 _bottomSheetAnimationController.animateTo(
                   shouldSlideDown ? 0 : 1,
-                  duration: const Duration(milliseconds: 160),
+                  duration: const Duration(milliseconds: 120),
                   curve: Curves.easeInOut,
                 );
 
