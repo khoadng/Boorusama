@@ -105,118 +105,114 @@ class _DanbooruInfinitePostListState extends State<GelbooruInfinitePostList> {
           previous.settings.imageQuality != current.settings.imageQuality ||
           previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
-        return SafeArea(
-          child: InfinitePostList(
-            scrollController: _autoScrollController,
-            sliverHeaderBuilder: widget.sliverHeaderBuilder,
-            footerBuilder: (context, selectedItems) =>
-                DefaultMultiSelectionActions(
-              selectedPosts: selectedItems,
-              endMultiSelect: () {
-                _multiSelectController.disableMultiSelect();
-              },
-            ),
-            multiSelectController: _multiSelectController,
-            onLoadMore: widget.onLoadMore,
-            onRefresh: widget.onRefresh,
-            hasMore: widget.hasMore,
-            itemBuilder: (context, index) {
-              final post = widget.data[index];
-
-              return ContextMenuRegion(
-                isEnabled: !multiSelect,
-                contextMenu: GeneralPostContextMenu(
-                  hasAccount: false,
-                  onMultiSelect: () {
-                    _multiSelectController.enableMultiSelect();
-                  },
-                  post: post,
-                ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) => ImageGridItem(
-                    onTap: !multiSelect
-                        ? () {
-                            goToGelbooruPostDetailsPage(
-                              context: context,
-                              posts: widget.data,
-                              initialIndex: index,
-                              scrollController: _autoScrollController,
-                            );
-                          }
-                        : null,
-                    isFaved: false,
-                    enableFav: authState is Authenticated,
-                    onFavToggle: (isFaved) async {},
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    hasComments: post.hasComment,
-                    hasParentOrChildren: post.hasParentOrChildren,
-                    image: state.settings.imageListType == ImageListType.masonry
-                        ? Hero(
-                            tag: '${post.id}_hero',
-                            child: BooruImage(
-                              aspectRatio: post.aspectRatio,
-                              imageUrl: getImageUrlForDisplay(
-                                post,
-                                getImageQuality(
-                                  size: state.settings.gridSize,
-                                  presetImageQuality:
-                                      state.settings.imageQuality,
-                                ),
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                state.settings.imageBorderRadius,
-                              ),
-                              placeholderUrl: post.thumbnailImageUrl,
-                              previewCacheManager:
-                                  context.read<PreviewImageCacheManager>(),
-                              cacheHeight:
-                                  (constraints.maxHeight * 2).toIntOrNull(),
-                              cacheWidth:
-                                  (constraints.maxWidth * 2).toIntOrNull(),
-                            ),
-                          )
-                        : Hero(
-                            tag: '${post.id}_hero',
-                            child: BooruImageLegacy(
-                              imageUrl: getImageUrlForDisplay(
-                                post,
-                                getImageQuality(
-                                  size: state.settings.gridSize,
-                                  presetImageQuality:
-                                      state.settings.imageQuality,
-                                ),
-                              ),
-                              placeholderUrl: post.thumbnailImageUrl,
-                              borderRadius: BorderRadius.circular(
-                                state.settings.imageBorderRadius,
-                              ),
-                              cacheHeight:
-                                  (constraints.maxHeight * 2).toIntOrNull(),
-                              cacheWidth:
-                                  (constraints.maxWidth * 2).toIntOrNull(),
-                            ),
-                          ),
-                  ),
-                ),
-              );
+        return InfinitePostList(
+          scrollController: _autoScrollController,
+          sliverHeaderBuilder: widget.sliverHeaderBuilder,
+          footerBuilder: (context, selectedItems) =>
+              DefaultMultiSelectionActions(
+            selectedPosts: selectedItems,
+            endMultiSelect: () {
+              _multiSelectController.disableMultiSelect();
             },
-            items: widget.data,
-            bodyBuilder: (context, itemBuilder) {
-              return SliverPostGrid(
-                itemBuilder: itemBuilder,
-                settings: state.settings,
-                refreshing: widget.refreshing,
-                error: widget.error,
-                data: widget.data,
-              );
-            },
-            loading: widget.loading,
           ),
+          multiSelectController: _multiSelectController,
+          onLoadMore: widget.onLoadMore,
+          onRefresh: widget.onRefresh,
+          hasMore: widget.hasMore,
+          itemBuilder: (context, index) {
+            final post = widget.data[index];
+
+            return ContextMenuRegion(
+              isEnabled: !multiSelect,
+              contextMenu: GeneralPostContextMenu(
+                hasAccount: false,
+                onMultiSelect: () {
+                  _multiSelectController.enableMultiSelect();
+                },
+                post: post,
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) => ImageGridItem(
+                  onTap: !multiSelect
+                      ? () {
+                          goToGelbooruPostDetailsPage(
+                            context: context,
+                            posts: widget.data,
+                            initialIndex: index,
+                            scrollController: _autoScrollController,
+                          );
+                        }
+                      : null,
+                  isFaved: false,
+                  enableFav: authState is Authenticated,
+                  onFavToggle: (isFaved) async {},
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  hasComments: post.hasComment,
+                  hasParentOrChildren: post.hasParentOrChildren,
+                  image: state.settings.imageListType == ImageListType.masonry
+                      ? Hero(
+                          tag: '${post.id}_hero',
+                          child: BooruImage(
+                            aspectRatio: post.aspectRatio,
+                            imageUrl: getImageUrlForDisplay(
+                              post,
+                              getImageQuality(
+                                size: state.settings.gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            placeholderUrl: post.thumbnailImageUrl,
+                            previewCacheManager:
+                                context.read<PreviewImageCacheManager>(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
+                          ),
+                        )
+                      : Hero(
+                          tag: '${post.id}_hero',
+                          child: BooruImageLegacy(
+                            imageUrl: getImageUrlForDisplay(
+                              post,
+                              getImageQuality(
+                                size: state.settings.gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
+                            ),
+                            placeholderUrl: post.thumbnailImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
+                          ),
+                        ),
+                ),
+              ),
+            );
+          },
+          items: widget.data,
+          bodyBuilder: (context, itemBuilder) {
+            return SliverPostGrid(
+              itemBuilder: itemBuilder,
+              settings: state.settings,
+              refreshing: widget.refreshing,
+              error: widget.error,
+              data: widget.data,
+            );
+          },
+          loading: widget.loading,
         );
       },
     );

@@ -147,93 +147,101 @@ class _InfinitePostListState<T> extends State<InfinitePostList<T>>
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _onWillPop,
-        child: MultiSelectWidget<T>(
-          footerBuilder: widget.footerBuilder,
-          multiSelectController: _multiSelectController,
-          onMultiSelectChanged: (p0) => setState(() {
-            multiSelect = p0;
-          }),
-          headerBuilder: (context, selected, clearSelected) =>
-              widget.headerBuilder != null
-                  ? widget.headerBuilder!(context, selected, clearSelected)
-                  : AppBar(
-                      leading: IconButton(
-                        onPressed: () =>
-                            _multiSelectController.disableMultiSelect(),
-                        icon: const Icon(Icons.close),
-                      ),
-                      actions: [
-                        IconButton(
-                          onPressed: clearSelected,
-                          icon: const Icon(Icons.clear_all),
+        child: ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: SafeArea(
+            child: MultiSelectWidget<T>(
+              footerBuilder: widget.footerBuilder,
+              multiSelectController: _multiSelectController,
+              onMultiSelectChanged: (p0) => setState(() {
+                multiSelect = p0;
+              }),
+              headerBuilder: (context, selected, clearSelected) =>
+                  widget.headerBuilder != null
+                      ? widget.headerBuilder!(context, selected, clearSelected)
+                      : AppBar(
+                          leading: IconButton(
+                            onPressed: () =>
+                                _multiSelectController.disableMultiSelect(),
+                            icon: const Icon(Icons.close),
+                          ),
+                          actions: [
+                            IconButton(
+                              onPressed: clearSelected,
+                              icon: const Icon(Icons.clear_all),
+                            ),
+                          ],
+                          title: selected.isEmpty
+                              ? const Text('Select items')
+                              : Text('${selected.length} Items selected'),
                         ),
-                      ],
-                      title: selected.isEmpty
-                          ? const Text('Select items')
-                          : Text('${selected.length} Items selected'),
+              items: widget.items,
+              itemBuilder: widget.itemBuilder,
+              scrollableWidgetBuilder: (context, items, itemBuilder) {
+                return Scaffold(
+                  floatingActionButton: FadeTransition(
+                    opacity: _animationController,
+                    child: ScaleTransition(
+                      scale: _animationController,
+                      child: widget.extendBody
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                bottom: widget.extendBodyHeight ??
+                                    kBottomNavigationBarHeight,
+                              ),
+                              child: FloatingActionButton(
+                                heroTag: null,
+                                child: const FaIcon(FontAwesomeIcons.angleUp),
+                                onPressed: () =>
+                                    _autoScrollController.jumpTo(0),
+                              ),
+                            )
+                          : FloatingActionButton(
+                              heroTag: null,
+                              child: const FaIcon(FontAwesomeIcons.angleUp),
+                              onPressed: () => _autoScrollController.jumpTo(0),
+                            ),
                     ),
-          items: widget.items,
-          itemBuilder: widget.itemBuilder,
-          scrollableWidgetBuilder: (context, items, itemBuilder) {
-            return Scaffold(
-              floatingActionButton: FadeTransition(
-                opacity: _animationController,
-                child: ScaleTransition(
-                  scale: _animationController,
-                  child: widget.extendBody
-                      ? Padding(
-                          padding: EdgeInsets.only(
-                            bottom: widget.extendBodyHeight ??
-                                kBottomNavigationBarHeight,
-                          ),
-                          child: FloatingActionButton(
-                            heroTag: null,
-                            child: const FaIcon(FontAwesomeIcons.angleUp),
-                            onPressed: () => _autoScrollController.jumpTo(0),
-                          ),
-                        )
-                      : FloatingActionButton(
-                          heroTag: null,
-                          child: const FaIcon(FontAwesomeIcons.angleUp),
-                          onPressed: () => _autoScrollController.jumpTo(0),
-                        ),
-                ),
-              ),
-              body: RefreshIndicator(
-                notificationPredicate:
-                    widget.onRefresh != null ? (_) => true : (_) => false,
-                onRefresh: () async {
-                  widget.onRefresh?.call();
-                  _multiSelectController.clearSelected();
-                  await Future.delayed(
-                    const Duration(seconds: 1),
-                  );
-                },
-                child: ImprovedScrolling(
-                  scrollController: _autoScrollController,
-                  enableKeyboardScrolling: true,
-                  enableMMBScrolling: true,
-                  child: CustomScrollView(
-                    controller: _autoScrollController,
-                    slivers: [
-                      if (!multiSelect && widget.sliverHeaderBuilder != null)
-                        ...widget.sliverHeaderBuilder!(context),
-                      widget.bodyBuilder(context, itemBuilder),
-                      if (widget.loading)
-                        const SliverPadding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          sliver: SliverToBoxAdapter(
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        )
-                      else
-                        const SliverToBoxAdapter(child: SizedBox.shrink()),
-                    ],
                   ),
-                ),
-              ),
-            );
-          },
+                  body: RefreshIndicator(
+                    notificationPredicate:
+                        widget.onRefresh != null ? (_) => true : (_) => false,
+                    onRefresh: () async {
+                      widget.onRefresh?.call();
+                      _multiSelectController.clearSelected();
+                      await Future.delayed(
+                        const Duration(seconds: 1),
+                      );
+                    },
+                    child: ImprovedScrolling(
+                      scrollController: _autoScrollController,
+                      enableKeyboardScrolling: true,
+                      enableMMBScrolling: true,
+                      child: CustomScrollView(
+                        controller: _autoScrollController,
+                        slivers: [
+                          if (!multiSelect &&
+                              widget.sliverHeaderBuilder != null)
+                            ...widget.sliverHeaderBuilder!(context),
+                          widget.bodyBuilder(context, itemBuilder),
+                          if (widget.loading)
+                            const SliverPadding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              sliver: SliverToBoxAdapter(
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              ),
+                            )
+                          else
+                            const SliverToBoxAdapter(child: SizedBox.shrink()),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ));
   }
 
