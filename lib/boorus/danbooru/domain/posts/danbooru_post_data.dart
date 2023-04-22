@@ -5,15 +5,12 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
 class DanbooruPostData extends Equatable {
   const DanbooruPostData({
@@ -171,44 +168,3 @@ Future<List<DanbooruPostData>> createPostData(
                 .toList();
           },
         ));
-
-Future<List<DanbooruPostData>> Function(
-    List<DanbooruPostData> posts) filterWith(
-  BlacklistedTagsRepository blacklistedTagsRepository,
-  CurrentBooruConfigRepository currentBooruConfigRepository,
-  BooruUserIdentityProvider booruUserIdentityProvider,
-) =>
-    (posts) async {
-      final booruConfig = await currentBooruConfigRepository.get();
-      final id =
-          await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
-
-      if (id == null) return posts;
-
-      return blacklistedTagsRepository
-          .getBlacklistedTags(id)
-          .then((blacklistedTags) => filter(posts, blacklistedTags));
-    };
-
-Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
-    filterUnsupportedFormat(
-  Set<String> fileExtensions,
-) =>
-        (posts) async => posts
-            .where((e) => !fileExtensions.contains(e.post.format))
-            .where((e) => !e.post.metaTags.contains('flash'))
-            .toList();
-
-Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
-    preloadPreviewImagesWith(
-  PostPreviewPreloader? preloader,
-) =>
-        (posts) async {
-          if (preloader != null) {
-            for (final post in posts) {
-              unawaited(preloader.preload(post.post));
-            }
-          }
-
-          return posts;
-        };
