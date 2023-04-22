@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_search_bloc.dart';
@@ -34,7 +33,7 @@ void goToGelbooruPostDetailsPage({
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
-  Navigator.of(context).push(TransparentRoute(
+  Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => BlocSelector<SettingsCubit, SettingsState, Settings>(
       selector: (state) => state.settings,
       builder: (_, settings) {

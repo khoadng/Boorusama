@@ -255,24 +255,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   ));
 }
 
-class TransparentRoute<T> extends PageRouteBuilder<T> {
-  TransparentRoute({
-    required WidgetBuilder builder,
-    RouteSettings? settings,
-    Duration? transitionDuration,
-  }) : super(
-            opaque: false,
-            barrierDismissible: false,
-            pageBuilder: (context, _, __) => builder(context),
-            settings: settings,
-            transitionDuration:
-                transitionDuration ?? const Duration(milliseconds: 300),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            });
-}
-
 void goToParentChildPage(
   BuildContext context,
   int parentId,
@@ -362,9 +344,7 @@ Future<void> goToDetailPage({
     ),
   );
 
-  return Navigator.of(context).push(hero && !posts[initialIndex].post.isAnimated
-      ? TransparentRoute(builder: (_) => page)
-      : MaterialPageRoute(builder: (_) => page, fullscreenDialog: true));
+  return Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   // showDesktopFullScreenWindow(
   //   context,
   //   builder: (_) => providePostDetailPageDependencies(

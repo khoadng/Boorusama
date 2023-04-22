@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
@@ -110,7 +109,7 @@ void goToMoebooruDetailsPage({
 }) {
   Navigator.push(
     context,
-    TransparentRoute(
+    MaterialPageRoute(
       builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
         builder: (_, state) {
           return BlocBuilder<SettingsCubit, SettingsState>(
