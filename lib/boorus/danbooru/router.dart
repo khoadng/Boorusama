@@ -291,14 +291,14 @@ void goToParentChildPage(
 
 Future<void> goToDetailPage({
   required BuildContext context,
-  required List<DanbooruPostData> posts,
+  required List<DanbooruPost> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
   bool hero = false,
   // PostBloc? postBloc,
 }) {
   final tags = posts
-      .map((e) => e.post)
+      .map((e) => e)
       .map((p) => [
             ...p.artistTags.map((e) => PostDetailTag(
                   name: e,
@@ -363,7 +363,7 @@ Future<void> goToDetailPage({
 
 Widget providePostDetailPageDependencies(
   BuildContext context,
-  List<DanbooruPostData> posts,
+  List<DanbooruPost> posts,
   int initialIndex,
   List<PostDetailTag> tags,
   // PostBloc? postBloc,
@@ -395,8 +395,7 @@ Widget providePostDetailPageDependencies(
                       posts: posts,
                       initialIndex: initialIndex,
                       postRepository: context.read<DanbooruPostRepository>(),
-                      favoritePostRepository:
-                          context.read<FavoritePostRepository>(),
+                      poolRepository: context.read<PoolRepository>(),
                       currentBooruConfigRepository:
                           context.read<CurrentBooruConfigRepository>(),
                       postVoteRepository: context.read<PostVoteRepository>(),

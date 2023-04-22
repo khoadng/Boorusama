@@ -1,13 +1,13 @@
+//TODO: handle other kind of video format
+final _supportVideoFormat = {'mp4', 'webm', 'zip'};
+
 mixin MediaInfoMixin {
   String get format;
   String get md5;
   int get fileSize;
 
   bool get isVideo {
-    //TODO: handle other kind of video format
-    final supportVideoFormat = {'mp4', 'webm', 'zip'};
-
-    return supportVideoFormat.contains(format);
+    return _supportVideoFormat.contains(format);
   }
 
   bool get isFlash => format == 'swf';

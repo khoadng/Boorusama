@@ -17,7 +17,7 @@ class DanbooruMultiSelectionActions extends StatelessWidget {
     required this.endMultiSelect,
   });
 
-  final List<DanbooruPostData> selectedPosts;
+  final List<DanbooruPost> selectedPosts;
   final void Function() endMultiSelect;
 
   @override
@@ -34,7 +34,7 @@ class DanbooruMultiSelectionActions extends StatelessWidget {
                 ? () {
                     // ignore: prefer_foreach
                     for (final p in selectedPosts) {
-                      download(p.post);
+                      download(p);
                     }
 
                     endMultiSelect();
@@ -49,7 +49,7 @@ class DanbooruMultiSelectionActions extends StatelessWidget {
                 ? () async {
                     final shouldEnd = await goToAddToFavoriteGroupSelectionPage(
                       context,
-                      selectedPosts.map((e) => e.post).toList(),
+                      selectedPosts,
                     );
                     if (shouldEnd != null && shouldEnd) {
                       endMultiSelect();

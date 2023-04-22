@@ -19,7 +19,7 @@ class PreviewPostGrid extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
@@ -42,7 +42,7 @@ class PreviewPostGrid extends StatelessWidget {
           physics: physics ?? const NeverScrollableScrollPhysics(),
           itemCount: posts.length,
           itemBuilder: (context, index) {
-            final post = posts[index].post;
+            final post = posts[index];
 
             return GestureDetector(
               onTap: () => onTap(index),
@@ -71,7 +71,7 @@ class PreviewPostList extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
@@ -90,21 +90,19 @@ class PreviewPostList extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: posts.length,
             itemBuilder: (context, index) {
-              final post = posts[index].post;
+              final post = posts[index];
 
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: GestureDetector(
                   onTap: () => onTap(index),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => BooruImage(
-                      aspectRatio: 0.6,
-                      imageUrl: post.isAnimated
-                          ? post.thumbnailImageUrl
-                          : post.sampleImageUrl,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      fit: BoxFit.cover,
-                    ),
+                  child: BooruImage(
+                    aspectRatio: 0.6,
+                    imageUrl: post.isAnimated
+                        ? post.thumbnailImageUrl
+                        : post.sampleImageUrl,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    fit: BoxFit.cover,
                   ),
                 ),
               );

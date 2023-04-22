@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
 import 'recommend_section.dart';
 
 class RecommendArtistList extends StatelessWidget {
@@ -21,15 +20,15 @@ class RecommendArtistList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ...recommends.map(
-          (r) => RecommendPostSection(
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final r = recommends[index];
+          return RecommendPostSection(
             header: header?.call(r.title) ??
                 ListTile(
-                  onTap: () => goToArtistPage(context, r.title),
-                  title: Text(r.title.removeUnderscoreWithSpace()),
+                  onTap: () => goToArtistPage(context, r.tag),
+                  title: Text(r.title),
                   trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                 ),
             posts: r.posts,
@@ -38,9 +37,10 @@ class RecommendArtistList extends StatelessWidget {
               posts: r.posts,
               initialIndex: index,
             ),
-          ),
-        ),
-      ],
+          );
+        },
+        childCount: recommends.length,
+      ),
     );
   }
 }

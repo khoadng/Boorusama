@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
@@ -57,7 +57,7 @@ class DanbooruInfinitePostList extends StatefulWidget {
   final bool refreshing;
   final bool hasMore;
   final BooruError? error;
-  final List<DanbooruPostData> data;
+  final List<DanbooruPost> data;
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -74,7 +74,7 @@ class DanbooruInfinitePostList extends StatefulWidget {
 
 class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
   late final AutoScrollController _autoScrollController;
-  final _multiSelectController = MultiSelectController<DanbooruPostData>();
+  final _multiSelectController = MultiSelectController<DanbooruPost>();
   var multiSelect = false;
 
   @override
@@ -108,112 +108,129 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
           previous.settings.imageQuality != current.settings.imageQuality ||
           previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
-        return InfinitePostList<DanbooruPostData>(
-          scrollController: _autoScrollController,
-          sliverHeaderBuilder: widget.sliverHeaderBuilder,
-          footerBuilder: (context, selectedItems) =>
-              DanbooruMultiSelectionActions(
-            selectedPosts: selectedItems,
-            endMultiSelect: () {
-              _multiSelectController.disableMultiSelect();
-            },
-          ),
-          multiSelectController: _multiSelectController,
-          onLoadMore: widget.onLoadMore,
-          onRefresh: widget.onRefresh,
-          hasMore: widget.hasMore,
-          itemBuilder: (context, index) {
-            final postData = widget.data[index];
-            final post = postData.post;
-
-            return ContextMenuRegion(
-              isEnabled: !multiSelect,
-              contextMenu: DanbooruPostContextMenu(
-                hasAccount: false,
-                onMultiSelect: () {
-                  _multiSelectController.enableMultiSelect();
+        return BlocBuilder<FavoritePostCubit, FavoritePostState>(
+          buildWhen: (previous, current) => current is FavoritePostListSuccess,
+          builder: (context, favoriteState) {
+            return InfinitePostList(
+              scrollController: _autoScrollController,
+              sliverHeaderBuilder: widget.sliverHeaderBuilder,
+              footerBuilder: (context, selectedItems) =>
+                  DanbooruMultiSelectionActions(
+                selectedPosts: selectedItems,
+                endMultiSelect: () {
+                  _multiSelectController.disableMultiSelect();
                 },
-                post: post,
               ),
-              child: LayoutBuilder(
-                builder: (context, constraints) => ImageGridItem(
-                  onTap: !multiSelect
-                      ? () {
-                          goToDetailPage(
-                            context: context,
-                            posts: widget.data,
-                            initialIndex: index,
-                            scrollController: _autoScrollController,
-                          );
-                        }
-                      : null,
-                  isFaved: widget.data[index].isFavorited,
-                  enableFav: authState is Authenticated,
-                  onFavToggle: (isFaved) async {
-                    final favRepo = context.read<FavoritePostRepository>();
-                    final _ = await (!isFaved
-                        ? favRepo.removeFromFavorites(post.id)
-                        : favRepo.addToFavorites(post.id));
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
+              multiSelectController: _multiSelectController,
+              onLoadMore: widget.onLoadMore,
+              onRefresh: widget.onRefresh,
+              hasMore: widget.hasMore,
+              itemBuilder: (context, index) {
+                final post = widget.data[index];
+
+                var isFaved = false;
+                if (favoriteState is FavoritePostListSuccess) {
+                  isFaved = favoriteState.favorites[post.id] ?? false;
+                }
+
+                return ContextMenuRegion(
+                  isEnabled: !multiSelect,
+                  contextMenu: DanbooruPostContextMenu(
+                    hasAccount: false,
+                    onMultiSelect: () {
+                      _multiSelectController.enableMultiSelect();
+                    },
+                    post: post,
                   ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  image: state.settings.imageListType == ImageListType.masonry
-                      ? BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: state.settings.gridSize,
-                              presetImageQuality: state.settings.imageQuality,
-                            ),
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          previewCacheManager:
-                              context.read<PreviewImageCacheManager>(),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        )
-                      : BooruImageLegacy(
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: state.settings.gridSize,
-                              presetImageQuality: state.settings.imageQuality,
-                            ),
-                          ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        ),
-                ),
-              ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => ImageGridItem(
+                      onTap: !multiSelect
+                          ? () {
+                              goToDetailPage(
+                                context: context,
+                                posts: widget.data,
+                                initialIndex: index,
+                                scrollController: _autoScrollController,
+                              );
+                            }
+                          : null,
+                      isFaved: isFaved,
+                      enableFav: authState is Authenticated,
+                      onFavToggle: (isFaved) async {
+                        final favoritePostCubit =
+                            context.read<FavoritePostCubit>();
+                        if (!isFaved) {
+                          await favoritePostCubit.removeFavorite(post.id);
+                        } else {
+                          await favoritePostCubit.addFavorite(post.id);
+                        }
+                      },
+                      autoScrollOptions: AutoScrollOptions(
+                        controller: _autoScrollController,
+                        index: index,
+                      ),
+                      isAnimated: post.isAnimated,
+                      isTranslated: post.isTranslated,
+                      hasComments: post.hasComment,
+                      hasParentOrChildren: post.hasParentOrChildren,
+                      image:
+                          state.settings.imageListType == ImageListType.masonry
+                              ? BooruImage(
+                                  aspectRatio: post.aspectRatio,
+                                  imageUrl: getImageUrlForDisplay(
+                                    post,
+                                    getImageQuality(
+                                      size: state.settings.gridSize,
+                                      presetImageQuality:
+                                          state.settings.imageQuality,
+                                    ),
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    state.settings.imageBorderRadius,
+                                  ),
+                                  placeholderUrl: post.thumbnailImageUrl,
+                                  previewCacheManager:
+                                      context.read<PreviewImageCacheManager>(),
+                                  cacheHeight:
+                                      (constraints.maxHeight * 2).toIntOrNull(),
+                                  cacheWidth:
+                                      (constraints.maxWidth * 2).toIntOrNull(),
+                                )
+                              : BooruImageLegacy(
+                                  imageUrl: getImageUrlForDisplay(
+                                    post,
+                                    getImageQuality(
+                                      size: state.settings.gridSize,
+                                      presetImageQuality:
+                                          state.settings.imageQuality,
+                                    ),
+                                  ),
+                                  placeholderUrl: post.thumbnailImageUrl,
+                                  borderRadius: BorderRadius.circular(
+                                    state.settings.imageBorderRadius,
+                                  ),
+                                  cacheHeight:
+                                      (constraints.maxHeight * 2).toIntOrNull(),
+                                  cacheWidth:
+                                      (constraints.maxWidth * 2).toIntOrNull(),
+                                ),
+                    ),
+                  ),
+                );
+              },
+              items: widget.data,
+              bodyBuilder: (context, itemBuilder) {
+                return SliverPostGrid(
+                  itemBuilder: itemBuilder,
+                  settings: state.settings,
+                  refreshing: widget.refreshing,
+                  error: widget.error,
+                  data: widget.data,
+                );
+              },
+              loading: widget.loading,
             );
           },
-          items: widget.data,
-          bodyBuilder: (context, itemBuilder) {
-            return SliverPostGrid(
-              itemBuilder: itemBuilder,
-              settings: state.settings,
-              refreshing: widget.refreshing,
-              error: widget.error,
-              data: widget.data.map((e) => e.post).toList(),
-            );
-          },
-          loading: widget.loading,
         );
       },
     );

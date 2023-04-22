@@ -55,7 +55,7 @@ class ExplorePage extends StatelessWidget {
 
 Widget mapToCarousel(
   BuildContext context,
-  List<DanbooruPostData> posts,
+  List<DanbooruPost> posts,
 ) {
   return posts.isNotEmpty
       ? _ExploreList(
@@ -147,7 +147,7 @@ class _ExploreList extends StatefulWidget {
     required this.onTap,
   });
 
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final void Function(int index) onTap;
 
   @override
@@ -171,7 +171,7 @@ class _ExploreListState extends State<_ExploreList> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final posts = widget.posts;
-          final post = posts[index].post;
+          final post = posts[index];
 
           return Padding(
             padding: _padding,

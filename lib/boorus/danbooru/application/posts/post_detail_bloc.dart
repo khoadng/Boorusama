@@ -1,39 +1,21 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:math';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/utils/bloc/bloc.dart';
 import 'package:boorusama/utils/collection_utils.dart';
-
-class _PostDetailFavoriteFetch extends PostDetailEvent {
-  const _PostDetailFavoriteFetch(this.accountId);
-
-  final int accountId;
-
-  @override
-  List<Object?> get props => [accountId];
-}
-
-class _PostDetailVoteFetch extends PostDetailEvent {
-  const _PostDetailVoteFetch();
-
-  @override
-  List<Object?> get props => [];
-}
 
 class _PostDetailRecommendedFetch extends PostDetailEvent {
   const _PostDetailRecommendedFetch(this.artistTags, this.characterTags);
@@ -54,20 +36,29 @@ class _PostDetailNoteFetch extends PostDetailEvent {
   List<Object?> get props => [postId];
 }
 
+class _PostDetailPoolFetch extends PostDetailEvent {
+  const _PostDetailPoolFetch(this.postId);
+
+  final int postId;
+
+  @override
+  List<Object?> get props => [postId];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required NoteRepository noteRepository,
     required DanbooruPostRepository postRepository,
-    required FavoritePostRepository favoritePostRepository,
+    required PoolRepository poolRepository,
     required CurrentBooruConfigRepository currentBooruConfigRepository,
     required BooruUserIdentityProvider booruUserIdentityProvider,
     required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
-    required List<DanbooruPostData> posts,
+    required List<DanbooruPost> posts,
     required Map<String, List<DanbooruPost>> tagCache,
     void Function(
-      DanbooruPostData post,
+      DanbooruPost post,
     )?
         onPostChanged,
     double Function()? idGenerator,
@@ -82,6 +73,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           previousPost: posts.getOrNull(initialIndex - 1),
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
+          pools: const [],
+          notes: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
         )) {
     on<PostDetailIndexChanged>(
@@ -98,63 +91,25 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           nextPost: () => nextPost,
           previousPost: () => prevPost,
           recommends: [],
+          pools: [],
+          notes: [],
         ));
-        final config = await currentBooruConfigRepository.get();
-        final id =
-            await booruUserIdentityProvider.getAccountIdFromConfig(config);
 
-        if (id != null) {
-          add(_PostDetailFavoriteFetch(id));
-          add(const _PostDetailVoteFetch());
+        if (post.isTranslated) {
+          add(_PostDetailNoteFetch(post.id));
         }
 
-        if (post.post.isTranslated) {
-          add(_PostDetailNoteFetch(post.post.id));
-        }
+        add(_PostDetailPoolFetch(post.id));
 
         add(_PostDetailRecommendedFetch(
-          post.post.artistTags,
-          post.post.characterTags,
+          post.artistTags,
+          post.characterTags,
         ));
 
         _loaded.add(event.index);
       },
       transformer: restartable(),
     );
-
-    on<PostDetailTagUpdated>((event, emit) async {
-      if (event.category == null) return;
-
-      await tryAsync<bool>(
-        action: () => postRepository.putTag(event.postId, event.tag),
-        onSuccess: (data) async {
-          emit(state.copyWith(
-            tags: [
-              ...state.tags,
-              PostDetailTag(
-                name: event.tag,
-                category: event.category!,
-                postId: event.postId,
-              ),
-            ]..sort((a, b) => a.name.compareTo(b.name)),
-            id: idGenerator?.call() ?? Random().nextDouble(),
-          ));
-
-          final post = posts.firstOrNull((e) => e.post.id == event.postId);
-          if (post != null) {
-            final newPost = post.copyWith(
-              post: _newPost(
-                post.post,
-                event.tag,
-                stringToTagCategory(event.category!),
-              ),
-            );
-
-            onPostChanged?.call(newPost);
-          }
-        },
-      );
-    });
 
     on<_PostDetailRecommendedFetch>(
       (event, emit) async {
@@ -176,45 +131,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       transformer: debounce(const Duration(milliseconds: 500)),
     );
 
-    on<_PostDetailFavoriteFetch>(
-      (event, emit) async {
-        await favoritePostRepository
-            .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
-            .then((fav) {
-          emit(state.copyWith(
-            currentPost: state.currentPost.copyWith(isFavorited: fav),
-          ));
-        });
-      },
-      transformer: debounceRestartable(const Duration(milliseconds: 300)),
-    );
-
-    on<_PostDetailVoteFetch>(
-      (event, emit) async {
-        await postVoteRepository
-            .getPostVotes([state.currentPost.post.id]).then((votes) {
-          if (votes.isNotEmpty) {
-            emit(state.copyWith(
-              currentPost:
-                  state.currentPost.copyWith(voteState: votes.first.voteState),
-            ));
-          }
-        });
-      },
-      transformer: debounceRestartable(const Duration(milliseconds: 300)),
-    );
-
-    on<_PostDetailNoteFetch>(
-      (event, emit) async {
-        final notes = await noteRepository.getNotesFrom(event.postId);
-
-        emit(state.copyWith(
-          currentPost: state.currentPost.copyWith(notes: notes),
-        ));
-      },
-      transformer: debounceRestartable(const Duration(milliseconds: 300)),
-    );
-
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(
         enableSlideShow: event.enableSlideshow,
@@ -227,109 +143,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       ));
     });
 
-    on<PostDetailFavoritesChanged>((event, emit) async {
-      final booruConfig = await currentBooruConfigRepository.get();
-      if (!booruConfig.hasLoginDetails()) return;
-
-      var success = false;
-      final originalState = state;
-      final post = state.currentPost;
-      final newPost = state.currentPost.copyWith(
-        post: post.post.copyWith(
-          favCount: post.post.favCount + (event.favorite ? 1 : 0),
-          score: post.post.score + (event.favorite ? 1 : 0),
-          upScore: post.post.upScore + (event.favorite ? 1 : 0),
-        ),
-        isFavorited: event.favorite,
-        voteState: event.favorite
-            ? VoteState.upvoted
-            : post.voteState == VoteState.upvoted
-                ? VoteState.unvote
-                : post.voteState,
-      );
-
-      posts[state.currentIndex] = newPost;
-      emit(state.copyWith(
-        currentPost: newPost,
-      ));
-
-      success = event.favorite
-          ? await favoritePostRepository.addToFavorites(post.post.id)
-          : await favoritePostRepository.removeFromFavorites(post.post.id);
-
-      if (!success) {
-        emit(originalState);
-        posts[state.currentIndex] = post;
-      }
-
-      onPostChanged?.call(newPost);
-    });
-
-    on<PostDetailUpvoted>((event, emit) async {
-      final post = state.currentPost;
-      final originalState = state;
-      if (post.voteState == VoteState.upvoted) return;
-
-      final up = post.post.upScore + 1;
-      final down = post.voteState == VoteState.downvoted
-          ? post.post.downScore + 1
-          : post.post.downScore;
-
-      final newPost = post.copyWith(
-        post: post.post.copyWith(
-          score: post.post.score + 1,
-          upScore: up,
-          downScore: down,
-        ),
-        voteState: VoteState.upvoted,
-      );
-
-      posts[state.currentIndex] = newPost;
-
-      emit(state.copyWith(
-        currentPost: newPost,
-      ));
-
-      final vote = await postVoteRepository.upvote(post.post.id);
-
-      if (vote == null) {
-        emit(originalState);
-        posts[state.currentIndex] = post;
-      }
-    });
-
-    on<PostDetailDownvoted>((event, emit) async {
-      final post = state.currentPost;
-      final originalState = state;
-      if (post.voteState == VoteState.downvoted) return;
-
-      final down = post.post.downScore - 1;
-      final up = post.voteState == VoteState.upvoted
-          ? post.post.upScore - 1
-          : post.post.upScore;
-
-      final newPost = post.copyWith(
-        post: post.post.copyWith(
-          score: post.post.score - 1,
-          upScore: up,
-          downScore: down,
-        ),
-        voteState: VoteState.downvoted,
-      );
-
-      posts[state.currentIndex] = newPost;
-
-      emit(state.copyWith(
-        currentPost: newPost,
-      ));
-
-      final vote = await postVoteRepository.downvote(post.post.id);
-
-      if (vote == null) {
-        emit(originalState);
-        posts[state.currentIndex] = post;
-      }
-    });
     if (fireIndexChangedAtStart) {
       add(PostDetailIndexChanged(index: initialIndex));
     }
@@ -340,13 +153,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       ));
       if (!event.fullScreen && state.recommends.isEmpty) {
         await _fetchArtistPosts(
-          state.currentPost.post.artistTags,
+          state.currentPost.artistTags,
           postRepository,
           emit,
           tagCache,
         );
         await _fetchCharactersPosts(
-          state.currentPost.post.characterTags,
+          state.currentPost.characterTags,
           postRepository,
           emit,
           tagCache,
@@ -366,6 +179,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(state.copyWith(
         enableOverlay: event.enableOverlay,
       ));
+    });
+
+    on<_PostDetailPoolFetch>((event, emit) async {
+      final pools = await poolRepository.getPoolsByPostId(event.postId);
+
+      emit(state.copyWith(pools: pools));
+    });
+
+    on<_PostDetailNoteFetch>((event, emit) async {
+      final notes = await noteRepository.getNotesFrom(event.postId);
+
+      emit(state.copyWith(notes: notes));
     });
   }
 
@@ -389,15 +214,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           ...state.recommends,
           Recommend(
             type: RecommendType.character,
-            title: tag,
-            posts: posts
-                .where((e) => !e.isFlash)
-                .map((e) => DanbooruPostData(
-                      post: e,
-                      isFavorited: false,
-                      pools: const [],
-                    ))
-                .toList(),
+            title: tag.removeUnderscoreWithSpace(),
+            tag: tag,
+            posts: posts.where((e) => !e.isFlash).toList(),
           ),
         ],
       ));
@@ -422,15 +241,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           ...state.recommends,
           Recommend(
             type: RecommendType.artist,
-            title: tag,
-            posts: posts
-                .where((e) => !e.isFlash)
-                .map((e) => DanbooruPostData(
-                      post: e,
-                      isFavorited: false,
-                      pools: const [],
-                    ))
-                .toList(),
+            title: tag.removeUnderscoreWithSpace(),
+            tag: tag,
+            posts: posts.where((e) => !e.isFlash).toList(),
           ),
         ],
       ));
@@ -447,34 +260,5 @@ extension PostDetailStateX on PostDetailState {
     return behavior == ActionBarDisplayBehavior.staticAtBottom
         ? true
         : fullScreen;
-  }
-}
-
-DanbooruPost _newPost(DanbooruPost post, String tag, TagCategory category) {
-  if (category == TagCategory.artist) {
-    return post.copyWith(
-      artistTags: [...post.artistTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.copyright) {
-    return post.copyWith(
-      copyrightTags: [...post.copyrightTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.charater) {
-    return post.copyWith(
-      characterTags: [...post.characterTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.meta) {
-    return post.copyWith(
-      metaTags: [...post.metaTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else {
-    return post.copyWith(
-      generalTags: [...post.generalTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
   }
 }

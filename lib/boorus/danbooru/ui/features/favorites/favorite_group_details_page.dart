@@ -13,6 +13,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -177,112 +178,124 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                     ],
                   ),
                 Expanded(
-                  child: InfiniteLoadList(
-                    scrollController: scrollController,
-                    onLoadMore: () => fetch(),
-                    enableRefresh: false,
-                    enableLoadMore: state.hasMore,
-                    builder: (context, controller) {
-                      final count = _sizeToGridCount(Screen.of(context).size);
+                  child: BlocBuilder<FavoritePostCubit, FavoritePostState>(
+                    buildWhen: (previous, current) =>
+                        current is FavoritePostListSuccess,
+                    builder: (context, favoriteState) {
+                      return InfiniteLoadList(
+                        scrollController: scrollController,
+                        onLoadMore: () => fetch(),
+                        enableRefresh: false,
+                        enableLoadMore: state.hasMore,
+                        builder: (context, controller) {
+                          final count =
+                              _sizeToGridCount(Screen.of(context).size);
 
-                      return ReorderableGridView.builder(
-                        controller: controller,
-                        dragEnabled: editing,
-                        itemCount: state.data.length,
-                        onReorder: (oldIndex, newIndex) {
-                          moveAndInsert(
-                            fromIndex: oldIndex,
-                            toIndex: newIndex,
-                            onSuccess: () {
-                              if (oldIndex != newIndex) {
-                                setState(() {
-                                  commands.add([false, oldIndex, newIndex, 0]);
-                                });
-                              }
+                          return ReorderableGridView.builder(
+                            controller: controller,
+                            dragEnabled: editing,
+                            itemCount: state.data.length,
+                            onReorder: (oldIndex, newIndex) {
+                              moveAndInsert(
+                                fromIndex: oldIndex,
+                                toIndex: newIndex,
+                                onSuccess: () {
+                                  if (oldIndex != newIndex) {
+                                    setState(() {
+                                      commands
+                                          .add([false, oldIndex, newIndex, 0]);
+                                    });
+                                  }
+                                },
+                              );
                             },
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: editing ? rowCountEditMode : count,
-                          mainAxisSpacing: 4,
-                          crossAxisSpacing: 4,
-                        ),
-                        itemBuilder: (context, index) {
-                          final post = state.data[index];
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount:
+                                  editing ? rowCountEditMode : count,
+                              mainAxisSpacing: 4,
+                              crossAxisSpacing: 4,
+                            ),
+                            itemBuilder: (context, index) {
+                              final post = state.data[index];
 
-                          return Stack(
-                            key: ValueKey(index),
-                            children: [
-                              ConditionalParentWidget(
-                                condition: !editing,
-                                conditionalBuilder: (child) =>
-                                    ContextMenuRegion(
-                                  contextMenu: DanbooruPostContextMenu(
-                                    post: post.post,
-                                    hasAccount: authState is Authenticated,
+                              var isFaved = false;
+                              if (favoriteState is FavoritePostListSuccess) {
+                                isFaved =
+                                    favoriteState.favorites[post.id] ?? false;
+                              }
+
+                              return Stack(
+                                key: ValueKey(index),
+                                children: [
+                                  ConditionalParentWidget(
+                                    condition: !editing,
+                                    conditionalBuilder: (child) =>
+                                        ContextMenuRegion(
+                                      contextMenu: DanbooruPostContextMenu(
+                                        post: post,
+                                        hasAccount: authState is Authenticated,
+                                      ),
+                                      child: child,
+                                    ),
+                                    child: ImageGridItem(
+                                      hideOverlay: editing,
+                                      isFaved: isFaved,
+                                      enableFav: authState is Authenticated,
+                                      onFavToggle: (isFaved) async {
+                                        final favoritePostCubit =
+                                            context.read<FavoritePostCubit>();
+                                        if (!isFaved) {
+                                          await favoritePostCubit
+                                              .removeFavorite(post.id);
+                                        } else {
+                                          await favoritePostCubit
+                                              .addFavorite(post.id);
+                                        }
+                                      },
+                                      autoScrollOptions: AutoScrollOptions(
+                                        controller: scrollController,
+                                        index: index,
+                                      ),
+                                      onTap: !editing
+                                          ? () => goToDetailPage(
+                                                context: context,
+                                                posts: state.data,
+                                                initialIndex: index,
+                                                scrollController:
+                                                    scrollController,
+                                              )
+                                          : null,
+                                      image: BooruImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: post.isAnimated
+                                            ? post.thumbnailImageUrl
+                                            : post.sampleImageUrl,
+                                        placeholderUrl: post.thumbnailImageUrl,
+                                      ),
+                                      isAnimated: post.isAnimated,
+                                      isTranslated: post.isTranslated,
+                                      hasComments: post.hasComment,
+                                      hasParentOrChildren:
+                                          post.hasParentOrChildren,
+                                    ),
                                   ),
-                                  child: child,
-                                ),
-                                child: ImageGridItem(
-                                  hideOverlay: editing,
-                                  isFaved: post.isFavorited,
-                                  enableFav: authState is Authenticated,
-                                  onFavToggle: (isFaved) async {
-                                    // final bloc = context.read<PostBloc>();
-                                    final _ = await _getFavAction(
-                                      context,
-                                      !isFaved,
-                                      post.post.id,
-                                    );
-                                    // if (success) {
-                                    //   bloc.add(
-                                    //     PostFavoriteUpdated(
-                                    //       postId: post.post.id,
-                                    //       favorite: isFaved,
-                                    //     ),
-                                    //   );
-                                    // }
-                                  },
-                                  autoScrollOptions: AutoScrollOptions(
-                                    controller: scrollController,
-                                    index: index,
-                                  ),
-                                  onTap: !editing
-                                      ? () => goToDetailPage(
-                                            context: context,
-                                            posts: state.data,
-                                            initialIndex: index,
-                                            scrollController: scrollController,
-                                          )
-                                      : null,
-                                  image: BooruImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: post.post.isAnimated
-                                        ? post.post.thumbnailImageUrl
-                                        : post.post.sampleImageUrl,
-                                    placeholderUrl: post.post.thumbnailImageUrl,
-                                  ),
-                                  isAnimated: post.post.isAnimated,
-                                  isTranslated: post.post.isTranslated,
-                                  hasComments: post.post.hasComment,
-                                  hasParentOrChildren:
-                                      post.post.hasParentOrChildren,
-                                ),
-                              ),
-                              if (editing)
-                                Positioned(
-                                  top: 4,
-                                  right: 4,
-                                  child: CircularIconButton(
-                                    padding: const EdgeInsets.all(4),
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      remove([post.post.id]);
-                                      commands.add([true, 0, 0, post.post.id]);
-                                    },
-                                  ),
-                                ),
-                            ],
+                                  if (editing)
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: CircularIconButton(
+                                        padding: const EdgeInsets.all(4),
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () {
+                                          remove([post.id]);
+                                          commands.add([true, 0, 0, post.id]);
+                                        },
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
                           );
                         },
                       );
@@ -292,12 +305,6 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
               ],
             ),
     );
-  }
-
-  Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {
-    return isFaved
-        ? context.read<FavoritePostRepository>().removeFromFavorites(postId)
-        : context.read<FavoritePostRepository>().addToFavorites(postId);
   }
 }
 

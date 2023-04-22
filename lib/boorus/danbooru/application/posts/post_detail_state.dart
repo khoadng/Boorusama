@@ -2,6 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'slide_show_configuration.dart';
 
@@ -19,13 +21,15 @@ class PostDetailState extends Equatable {
     this.enableOverlay = true,
     required this.slideShowConfig,
     required this.recommends,
+    required this.pools,
+    required this.notes,
   });
 
   factory PostDetailState.initial() => PostDetailState(
         id: 0,
         tags: const [],
         currentIndex: 0,
-        currentPost: DanbooruPostData.empty(),
+        currentPost: DanbooruPost.empty(),
         previousPost: null,
         nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
@@ -33,19 +37,23 @@ class PostDetailState extends Equatable {
           skipAnimation: false,
         ),
         recommends: const [],
+        pools: const [],
+        notes: const [],
       );
 
   final List<PostDetailTag> tags;
   final int currentIndex;
-  final DanbooruPostData currentPost;
-  final DanbooruPostData? nextPost;
-  final DanbooruPostData? previousPost;
+  final DanbooruPost currentPost;
+  final DanbooruPost? nextPost;
+  final DanbooruPost? previousPost;
   final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
   final bool enableOverlay;
   final SlideShowConfiguration slideShowConfig;
   final List<Recommend> recommends;
+  final List<Pool> pools;
+  final List<Note> notes;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -54,15 +62,17 @@ class PostDetailState extends Equatable {
     double? id,
     List<PostDetailTag>? tags,
     int? currentIndex,
-    DanbooruPostData? currentPost,
-    DanbooruPostData? Function()? nextPost,
-    DanbooruPostData? Function()? previousPost,
+    DanbooruPost? currentPost,
+    DanbooruPost? Function()? nextPost,
+    DanbooruPost? Function()? previousPost,
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
     bool? enableOverlay,
     SlideShowConfiguration? slideShowConfig,
     List<Recommend>? recommends,
+    List<Pool>? pools,
+    List<Note>? notes,
   }) =>
       PostDetailState(
         id: id ?? this.id,
@@ -77,6 +87,8 @@ class PostDetailState extends Equatable {
         recommends: recommends ?? this.recommends,
         enableNotes: enableNotes ?? this.enableNotes,
         enableOverlay: enableOverlay ?? this.enableOverlay,
+        pools: pools ?? this.pools,
+        notes: notes ?? this.notes,
       );
 
   @override
@@ -93,6 +105,8 @@ class PostDetailState extends Equatable {
         enableOverlay,
         slideShowConfig,
         recommends,
+        pools,
+        notes,
       ];
 }
 
@@ -121,14 +135,16 @@ class Recommend extends Equatable {
     required this.title,
     required this.posts,
     required this.type,
+    required this.tag,
   });
 
   final String title;
-  final List<DanbooruPostData> posts;
+  final String tag;
+  final List<DanbooruPost> posts;
   final RecommendType type;
 
   @override
-  List<Object?> get props => [title, posts, type];
+  List<Object?> get props => [title, posts, type, tag];
 }
 
 extension PostDetailX on PostDetailState {

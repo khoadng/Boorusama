@@ -5,7 +5,8 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -15,31 +16,34 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-mixin DanbooruPostDataTransformMixin<T, E> on PostCubit<T, E> {
+mixin DanbooruPostTransformMixin<T, E> on PostCubit<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
-  FavoritePostRepository get favoritePostRepository;
   CurrentBooruConfigRepository get currentBooruConfigRepository;
   PostVoteRepository get postVoteRepository;
   PoolRepository get poolRepository;
   PostPreviewPreloader? get previewPreloader;
   BooruUserIdentityProvider get booruUserIdentityProvider;
+  FavoritePostCubit get favoriteCubit;
+  PostVoteCubit get postVoteCubit;
 
-  Future<List<DanbooruPostData>> transform(List<DanbooruPost> posts) =>
-      Future.value(posts)
-          .then(filterWith(
-            blacklistedTagsRepository,
-            currentBooruConfigRepository,
-            booruUserIdentityProvider,
-          ))
-          .then(filterFlashFiles())
-          .then(createPostDataWith(
-            favoritePostRepository,
-            postVoteRepository,
-            poolRepository,
-            currentBooruConfigRepository,
-            booruUserIdentityProvider,
-          ))
-          .then(preloadPreviewImagesWith(previewPreloader));
+  Future<List<DanbooruPost>> transform(List<DanbooruPost> posts) async {
+    final config = await currentBooruConfigRepository.get();
+    final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
+    if (id != null) {
+      final ids = posts.map((e) => e.id).toList();
+      unawaited(favoriteCubit.checkFavorites(ids));
+      unawaited(postVoteCubit.getVotes(ids));
+    }
+
+    return Future.value(posts)
+        .then(filterWith(
+          blacklistedTagsRepository,
+          currentBooruConfigRepository,
+          booruUserIdentityProvider,
+        ))
+        .then(filterFlashFiles())
+        .then(preloadPreviewImagesWith(previewPreloader));
+  }
 
   Future<List<DanbooruPost>> Function(List<DanbooruPost> posts) filterWith(
     BlacklistedTagsRepository blacklistedTagsRepository,
@@ -152,14 +156,14 @@ Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
             .where((e) => !e.metaTags.contains('flash'))
             .toList();
 
-Future<List<DanbooruPostData>> Function(List<DanbooruPostData> posts)
+Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
     preloadPreviewImagesWith(
   PostPreviewPreloader? preloader,
 ) =>
         (posts) async {
           if (preloader != null) {
             for (final post in posts) {
-              unawaited(preloader.preload(post.post));
+              unawaited(preloader.preload(post));
             }
           }
 

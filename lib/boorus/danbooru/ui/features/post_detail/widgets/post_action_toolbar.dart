@@ -9,7 +9,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
@@ -17,19 +18,18 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/utils/collection_utils.dart';
 import 'modal_share.dart';
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     super.key,
-    required this.postData,
+    required this.post,
     required this.imagePath,
   });
 
-  final DanbooruPostData postData;
+  final DanbooruPost post;
   final String? imagePath;
-
-  DanbooruPost get post => postData.post;
 
   @override
   Widget build(BuildContext context) {
@@ -50,27 +50,50 @@ class PostActionToolbar extends StatelessWidget {
   }
 
   Widget _buildUpvoteButton(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        Icons.arrow_upward,
-        color:
-            postData.voteState == VoteState.upvoted ? Colors.redAccent : null,
-      ),
-      onPressed: () {
-        context.read<PostDetailBloc>().add(const PostDetailUpvoted());
+    return BlocBuilder<PostVoteCubit, PostVoteState>(
+      builder: (context, state) {
+        var voteState = VoteState.unvote;
+
+        if (state is PostVoteLoaded) {
+          voteState = state.postVotes
+                  .firstOrNull((e) => e.postId == post.id)
+                  ?.voteState ??
+              VoteState.unvote;
+        }
+        return IconButton(
+          icon: Icon(
+            Icons.arrow_upward,
+            color: voteState == VoteState.upvoted ? Colors.redAccent : null,
+          ),
+          onPressed: () {
+            context.read<PostVoteCubit>().upvote(post.id);
+          },
+        );
       },
     );
   }
 
   Widget _buildDownvoteButton(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        Icons.arrow_downward,
-        color:
-            postData.voteState == VoteState.downvoted ? Colors.redAccent : null,
-      ),
-      onPressed: () {
-        context.read<PostDetailBloc>().add(const PostDetailDownvoted());
+    return BlocBuilder<PostVoteCubit, PostVoteState>(
+      builder: (context, state) {
+        var voteState = VoteState.unvote;
+
+        if (state is PostVoteLoaded) {
+          voteState = state.postVotes
+                  .firstOrNull((e) => e.postId == post.id)
+                  ?.voteState ??
+              VoteState.unvote;
+        }
+
+        return IconButton(
+          icon: Icon(
+            Icons.arrow_downward,
+            color: voteState == VoteState.downvoted ? Colors.blueAccent : null,
+          ),
+          onPressed: () {
+            context.read<PostVoteCubit>().downvote(post.id);
+          },
+        );
       },
     );
   }
@@ -134,30 +157,42 @@ class PostActionToolbar extends StatelessWidget {
     BuildContext context,
     AuthenticationState authState,
   ) {
-    return IconButton(
-      onPressed: () async {
-        if (authState is Unauthenticated) {
-          showSimpleSnackBar(
-            context: context,
-            content: const Text(
-              'post.detail.login_required_notice',
-            ).tr(),
-            duration: const Duration(seconds: 1),
-          );
+    return BlocBuilder<FavoritePostCubit, FavoritePostState>(
+      builder: (context, state) {
+        var isFaved = false;
+        if (state is FavoritePostListSuccess) {
+          isFaved = state.favorites[post.id] ?? false;
         }
 
-        context
-            .read<PostDetailBloc>()
-            .add(PostDetailFavoritesChanged(favorite: !postData.isFavorited));
+        return IconButton(
+          onPressed: () async {
+            if (authState is Unauthenticated) {
+              showSimpleSnackBar(
+                context: context,
+                content: const Text(
+                  'post.detail.login_required_notice',
+                ).tr(),
+                duration: const Duration(seconds: 1),
+              );
+
+              return;
+            }
+            if (isFaved) {
+              context.read<FavoritePostCubit>().removeFavorite(post.id);
+            } else {
+              context.read<FavoritePostCubit>().addFavorite(post.id);
+            }
+          },
+          icon: isFaved
+              ? const FaIcon(
+                  FontAwesomeIcons.solidHeart,
+                  color: Colors.red,
+                )
+              : const FaIcon(
+                  FontAwesomeIcons.heart,
+                ),
+        );
       },
-      icon: postData.isFavorited
-          ? const FaIcon(
-              FontAwesomeIcons.solidHeart,
-              color: Colors.red,
-            )
-          : const FaIcon(
-              FontAwesomeIcons.heart,
-            ),
     );
   }
 }

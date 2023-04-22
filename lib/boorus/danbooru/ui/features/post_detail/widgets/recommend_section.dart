@@ -19,7 +19,7 @@ class RecommendPostSection extends StatelessWidget {
     this.grid = true,
   });
 
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final Widget header;
   final void Function(int index) onTap;
   final bool grid;

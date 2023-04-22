@@ -272,13 +272,7 @@ class _PreviewList extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => goToDetailPage(
                       context: context,
-                      posts: posts
-                          .map((e) => DanbooruPostData(
-                                post: e,
-                                isFavorited: false,
-                                pools: const [],
-                              ))
-                          .toList(),
+                      posts: posts.toList(),
                       initialIndex: index,
                     ),
                     child: BooruImage(

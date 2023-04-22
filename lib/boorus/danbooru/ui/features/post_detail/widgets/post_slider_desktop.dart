@@ -19,7 +19,7 @@ class PostSliderDesktop extends StatelessWidget {
     required this.controller,
   });
 
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final ValueNotifier<String?> imagePath;
   final CarouselController controller;
 
@@ -33,10 +33,10 @@ class PostSliderDesktop extends StatelessWidget {
       itemBuilder: (context, index, realIndex) {
         final media = DanbooruPostMediaItem(
           //TODO: this is used to preload image between page
-          post: posts[index].post,
+          post: posts[index],
           onCached: (path) => imagePath.value = path,
           enableNotes: state.enableNotes,
-          notes: state.currentPost.notes,
+          notes: [],
           previewCacheManager: context.read<PreviewImageCacheManager>(),
           onTap: () => context
               .read<PostDetailBloc>()

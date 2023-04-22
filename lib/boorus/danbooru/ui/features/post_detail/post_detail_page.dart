@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/danbooru_post_media_item.dart';
@@ -45,7 +44,7 @@ class PostDetailPage extends StatefulWidget {
   });
 
   final int intitialIndex;
-  final List<DanbooruPostData> posts;
+  final List<DanbooruPost> posts;
   final void Function(int page) onPageChanged;
 
   @override
@@ -64,7 +63,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Screen.of(context).size != ScreenSize.small) {
         context.read<TagBloc>().add(
-              TagFetched(tags: widget.posts[widget.intitialIndex].post.tags),
+              TagFetched(tags: widget.posts[widget.intitialIndex].tags),
             );
       }
     });
@@ -77,10 +76,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final currentPost =
         context.select((PostDetailBloc bloc) => bloc.state.currentPost);
     final isTranslated = context.select(
-      (PostDetailBloc bloc) => bloc.state.currentPost.post.isTranslated,
+      (PostDetailBloc bloc) => bloc.state.currentPost.isTranslated,
     );
-    final notes =
-        context.select((PostDetailBloc bloc) => bloc.state.currentPost.notes);
+    final notes = context.select((PostDetailBloc bloc) => bloc.state.notes);
 
     return DetailsPage(
       intitialIndex: widget.intitialIndex,
@@ -90,9 +88,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
         _currentPage = page;
         widget.onPageChanged.call(page);
       }),
-      bottomSheet: ActionBar(postData: widget.posts[_currentPage]),
+      bottomSheet: ActionBar(post: widget.posts[_currentPage]),
       targetSwipeDownBuilder: (context, page) => PostMediaItem(
-        post: widget.posts[page].post,
+        post: widget.posts[page],
       ),
       expandedBuilder: (context, page, currentPage, expanded) =>
           BlocBuilder<SettingsCubit, SettingsState>(
@@ -105,9 +103,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
             isExpanded: expanded,
             scrollController: PageContentScrollController.of(context),
             media: DanbooruPostMediaItem(
-              post: widget.posts[page].post,
+              post: widget.posts[page],
               onCached: (path) => imagePath.value = path,
-              enableNotes: true,
+              enableNotes: expanded,
               notes: notes,
               useHero: page == currentPage,
               previewCacheManager: context.read<PreviewImageCacheManager>(),
@@ -126,11 +124,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
               },
             ),
             actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
-            postData: currentPost,
-            preloadPost: widget.posts[page].post,
+            post: currentPost,
+            preloadPost: widget.posts[page],
             key: ValueKey(currentPage),
             recommends: recommends,
-            pools: widget.posts[page].pools,
           );
         },
       ),
@@ -193,7 +190,7 @@ class MoreActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final post =
-        context.select((PostDetailBloc bloc) => bloc.state.currentPost.post);
+        context.select((PostDetailBloc bloc) => bloc.state.currentPost);
     final endpoint = context.select(
       (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
     );
@@ -370,10 +367,9 @@ class _CarouselContent extends StatelessWidget {
     required this.media,
     // required this.imagePath,
     required this.actionBarDisplayBehavior,
-    required this.postData,
+    required this.post,
     required this.preloadPost,
     required this.recommends,
-    required this.pools,
     required this.scrollController,
     required this.isExpanded,
     this.physics,
@@ -381,19 +377,17 @@ class _CarouselContent extends StatelessWidget {
 
   final DanbooruPostMediaItem media;
   // final ValueNotifier<String?> imagePath;
-  final DanbooruPostData postData;
+  final DanbooruPost post;
   final DanbooruPost preloadPost;
-  final List<Pool> pools;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
   final ScrollController? scrollController;
   final bool isExpanded;
   final ScrollPhysics? physics;
 
-  DanbooruPost get post => postData.post;
-
   @override
   Widget build(BuildContext context) {
+    final widgets = _buildWidgets(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomScrollView(
@@ -401,83 +395,75 @@ class _CarouselContent extends StatelessWidget {
         controller: scrollController,
         slivers: [
           SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                !isExpanded
-                    ? SizedBox(
-                        height: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).viewPadding.top,
-                        child: RepaintBoundary(child: media),
-                      )
-                    : RepaintBoundary(child: media),
-                if (!isExpanded)
-                  SizedBox(height: MediaQuery.of(context).size.height),
-                if (isExpanded) ...[
-                  PoolTiles(pools: pools),
-                  // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  //   builder: (context, state) {
-                  //     return state.status == LoadStatus.success
-                  //         ? PoolTiles(pools: state.data!)
-                  //         : const SizedBox.shrink();
-                  //   },
-                  // ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InformationSection(post: preloadPost),
-                      const Divider(height: 8, thickness: 1),
-                      if (actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.scrolling) ...[
-                        RepaintBoundary(
-                          child: ActionBar(
-                            // imagePath: widget.imagePath,
-                            postData: postData,
-                          ),
-                        ),
-                        const Divider(height: 8, thickness: 1),
-                      ],
-                      ArtistSection(post: preloadPost),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child:
-                            RepaintBoundary(child: PostStatsTile(post: post)),
-                      ),
-                      if (preloadPost.hasParentOrChildren)
-                        _ParentChildTile(post: preloadPost),
-                      if (!preloadPost.hasParentOrChildren)
-                        const Divider(height: 8, thickness: 1),
-                      TagsTile(post: post),
-                      const Divider(height: 8, thickness: 1),
-                      FileDetailsSection(
-                        post: post,
-                      ),
-                      if (post.hasWebSource)
-                        SourceSection(
-                          post: post,
-                        ),
-                      RecommendArtistList(
-                        recommends: recommends
-                            .where((element) =>
-                                element.type == RecommendType.artist)
-                            .toList(),
-                      ),
-                      RecommendCharacterList(
-                        recommends: recommends
-                            .where((element) =>
-                                element.type == RecommendType.character)
-                            .toList(),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => widgets[index],
+              childCount: widgets.length,
             ),
+          ),
+          RecommendArtistList(
+            recommends: recommends
+                .where((element) => element.type == RecommendType.artist)
+                .toList(),
+          ),
+          RecommendCharacterList(
+            recommends: recommends
+                .where((element) => element.type == RecommendType.character)
+                .toList(),
           ),
         ],
       ),
     );
   }
+
+  List<Widget> _buildWidgets(BuildContext context) => [
+        if (!isExpanded)
+          SizedBox(
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).viewPadding.top,
+            child: RepaintBoundary(child: media),
+          )
+        else
+          RepaintBoundary(child: media),
+        if (!isExpanded) SizedBox(height: MediaQuery.of(context).size.height),
+        if (isExpanded) ...[
+          BlocBuilder<PostDetailBloc, PostDetailState>(
+            buildWhen: (previous, current) => previous.pools != current.pools,
+            builder: (context, state) {
+              return PoolTiles(pools: state.pools);
+            },
+          ),
+          InformationSection(post: preloadPost),
+          const Divider(height: 8, thickness: 1),
+          if (actionBarDisplayBehavior ==
+              ActionBarDisplayBehavior.scrolling) ...[
+            RepaintBoundary(
+              child: ActionBar(
+                // imagePath: widget.imagePath,
+                post: post,
+              ),
+            ),
+            const Divider(height: 8, thickness: 1),
+          ],
+          ArtistSection(post: preloadPost),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: RepaintBoundary(child: PostStatsTile(post: post)),
+          ),
+          if (preloadPost.hasParentOrChildren)
+            _ParentChildTile(post: preloadPost),
+          if (!preloadPost.hasParentOrChildren)
+            const Divider(height: 8, thickness: 1),
+          TagsTile(post: post),
+          const Divider(height: 8, thickness: 1),
+          FileDetailsSection(
+            post: post,
+          ),
+          if (post.hasWebSource)
+            SourceSection(
+              post: post,
+            ),
+        ],
+      ];
 }
 
 // ignore: prefer-single-widget-per-file
@@ -539,11 +525,11 @@ class ActionBar extends StatelessWidget {
   const ActionBar({
     super.key,
     // required this.imagePath,
-    required this.postData,
+    required this.post,
   });
 
   // final ValueNotifier<String?> imagePath;
-  final DanbooruPostData postData;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -551,7 +537,7 @@ class ActionBar extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 24),
       color: Theme.of(context).scaffoldBackgroundColor,
       child: PostActionToolbar(
-        postData: postData,
+        post: post,
         imagePath: null,
       ),
     );

@@ -8,11 +8,14 @@ class UserAgentGeneratorImpl implements UserAgentGenerator {
   UserAgentGeneratorImpl({
     required this.appVersion,
     required this.appName,
-  });
+  }) {
+    name = '${appName.sentenceCase}/$appVersion';
+  }
 
   final String appVersion;
   final String appName;
+  late final String name;
 
   @override
-  String generate() => '${appName.sentenceCase}/$appVersion';
+  String generate() => name;
 }

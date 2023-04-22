@@ -9,8 +9,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/transformer.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -38,18 +39,19 @@ mixin DanbooruFavoriteGroupPostCubitMixin<T extends StatefulWidget>
       context.read<DanbooruFavoriteGroupPostCubit>().remove(ids);
 }
 
-class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
-    with DanbooruPostDataTransformMixin {
+class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPost, String>
+    with DanbooruPostTransformMixin {
   DanbooruFavoriteGroupPostCubit({
     required Queue<int> ids,
     required this.postRepository,
     required this.blacklistedTagsRepository,
-    required this.favoritePostRepository,
     required this.currentBooruConfigRepository,
     required this.booruUserIdentityProvider,
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
+    required this.favoriteCubit,
+    required this.postVoteCubit,
   })  : _ids = ids,
         super(initial: PostState.initial(""));
 
@@ -61,20 +63,19 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
         ids: QueueList.from(ids()),
         postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        favoritePostRepository: context.read<FavoritePostRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
         booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+        favoriteCubit: context.read<FavoritePostCubit>(),
+        postVoteCubit: context.read<PostVoteCubit>(),
       );
 
   final DanbooruPostRepository postRepository;
   @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
-  @override
-  final FavoritePostRepository favoritePostRepository;
   @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   @override
@@ -85,14 +86,18 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
   final PoolRepository poolRepository;
   @override
   PostPreviewPreloader? previewPreloader;
+  @override
+  FavoritePostCubit favoriteCubit;
+  @override
+  PostVoteCubit postVoteCubit;
   Queue<int> _ids;
 
   @override
-  Future<List<DanbooruPostData>> Function(int page) get fetcher =>
+  Future<List<DanbooruPost>> Function(int page) get fetcher =>
       (page) => _fetch().then(transform);
 
   @override
-  Future<List<DanbooruPostData>> Function() get refresher =>
+  Future<List<DanbooruPost>> Function() get refresher =>
       () => _fetch().then(transform);
 
   void moveAndInsert({
@@ -111,8 +116,7 @@ class DanbooruFavoriteGroupPostCubit extends PostCubit<DanbooruPostData, String>
   }
 
   void remove(List<int> postIds) {
-    final data = [...state.data]
-      ..removeWhere((e) => postIds.contains(e.post.id));
+    final data = [...state.data]..removeWhere((e) => postIds.contains(e.id));
 
     emit(state.copyWith(
       data: data,

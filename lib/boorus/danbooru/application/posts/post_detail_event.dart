@@ -19,17 +19,6 @@ class PostDetailIndexChanged extends PostDetailEvent {
   List<Object?> get props => [index];
 }
 
-class PostDetailFavoritesChanged extends PostDetailEvent {
-  const PostDetailFavoritesChanged({
-    required this.favorite,
-  });
-
-  final bool favorite;
-
-  @override
-  List<Object?> get props => [favorite];
-}
-
 class PostDetailModeChanged extends PostDetailEvent {
   const PostDetailModeChanged({
     required this.enableSlideshow,
@@ -83,33 +72,4 @@ class PostDetailOverlayVisibilityChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [enableOverlay];
-}
-
-class PostDetailTagUpdated extends PostDetailEvent {
-  const PostDetailTagUpdated({
-    required this.tag,
-    required this.category,
-    required this.postId,
-  });
-
-  final String? category;
-  final String tag;
-  final int postId;
-
-  @override
-  List<Object?> get props => [tag, category, postId];
-}
-
-class PostDetailUpvoted extends PostDetailEvent {
-  const PostDetailUpvoted();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class PostDetailDownvoted extends PostDetailEvent {
-  const PostDetailDownvoted();
-
-  @override
-  List<Object?> get props => [];
 }

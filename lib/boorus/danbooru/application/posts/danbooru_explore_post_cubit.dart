@@ -8,8 +8,9 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/transformer.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -18,23 +19,23 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-typedef DanbooruExplorePostState
-    = PostState<DanbooruPostData, ExploreDetailsData>;
+typedef DanbooruExplorePostState = PostState<DanbooruPost, ExploreDetailsData>;
 
 class DanbooruExplorePostCubit
-    extends PostCubit<DanbooruPostData, ExploreDetailsData>
-    with DanbooruPostDataTransformMixin {
+    extends PostCubit<DanbooruPost, ExploreDetailsData>
+    with DanbooruPostTransformMixin {
   DanbooruExplorePostCubit({
     required ExploreDetailsData exploreDetailsData,
     required this.exploreRepository,
     required this.blacklistedTagsRepository,
-    required this.favoritePostRepository,
     required this.currentBooruConfigRepository,
     required this.booruUserIdentityProvider,
     required this.postVoteRepository,
     required this.poolRepository,
     PostPreviewPreloader? previewPreloader,
     required ExploreDetailBloc exploreDetailBloc,
+    required this.favoriteCubit,
+    required this.postVoteCubit,
   }) : super(initial: PostState.initial(exploreDetailsData)) {
     exploreDetailBloc.stream
         .distinct()
@@ -60,19 +61,18 @@ class DanbooruExplorePostCubit
         exploreDetailBloc: exploreDetailBloc,
         exploreRepository: context.read<ExploreRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        favoritePostRepository: context.read<FavoritePostRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         currentBooruConfigRepository:
             context.read<CurrentBooruConfigRepository>(),
         booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+        favoriteCubit: context.read<FavoritePostCubit>(),
+        postVoteCubit: context.read<PostVoteCubit>(),
       );
 
   @override
   final BlacklistedTagsRepository blacklistedTagsRepository;
-  @override
-  final FavoritePostRepository favoritePostRepository;
   @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   @override
@@ -84,6 +84,11 @@ class DanbooruExplorePostCubit
   final PoolRepository poolRepository;
   @override
   PostPreviewPreloader? previewPreloader;
+  @override
+  FavoritePostCubit favoriteCubit;
+  @override
+  PostVoteCubit postVoteCubit;
+
   final CompositeSubscription compositeSubscription = CompositeSubscription();
 
   @override
@@ -93,7 +98,7 @@ class DanbooruExplorePostCubit
   }
 
   @override
-  Future<List<DanbooruPostData>> Function(int page) get fetcher => (page) {
+  Future<List<DanbooruPost>> Function(int page) get fetcher => (page) {
         final explore = state.extra;
 
         if (explore.category == ExploreCategory.mostViewed && page > 1) {
@@ -107,7 +112,7 @@ class DanbooruExplorePostCubit
       };
 
   @override
-  Future<List<DanbooruPostData>> Function() get refresher =>
+  Future<List<DanbooruPost>> Function() get refresher =>
       () => _mapExploreDataToPostFuture(
             explore: state.extra,
           ).then(transform);
@@ -177,13 +182,14 @@ class DanbooruPopularExplorePostCubit extends DanbooruExplorePostCubit {
           ),
           exploreRepository: context.read<ExploreRepository>(),
           blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-          favoritePostRepository: context.read<FavoritePostRepository>(),
           postVoteRepository: context.read<PostVoteRepository>(),
           poolRepository: context.read<PoolRepository>(),
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
           booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+          favoriteCubit: context.read<FavoritePostCubit>(),
+          postVoteCubit: context.read<PostVoteCubit>(),
         );
 }
 
@@ -199,13 +205,14 @@ class DanbooruHotExplorePostCubit extends DanbooruExplorePostCubit {
           ),
           exploreRepository: context.read<ExploreRepository>(),
           blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-          favoritePostRepository: context.read<FavoritePostRepository>(),
           postVoteRepository: context.read<PostVoteRepository>(),
           poolRepository: context.read<PoolRepository>(),
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
           booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+          favoriteCubit: context.read<FavoritePostCubit>(),
+          postVoteCubit: context.read<PostVoteCubit>(),
         );
 }
 
@@ -221,12 +228,13 @@ class DanbooruMostViewedExplorePostCubit extends DanbooruExplorePostCubit {
           ),
           exploreRepository: context.read<ExploreRepository>(),
           blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-          favoritePostRepository: context.read<FavoritePostRepository>(),
           postVoteRepository: context.read<PostVoteRepository>(),
           poolRepository: context.read<PoolRepository>(),
           previewPreloader: context.read<PostPreviewPreloader>(),
           currentBooruConfigRepository:
               context.read<CurrentBooruConfigRepository>(),
           booruUserIdentityProvider: context.read<BooruUserIdentityProvider>(),
+          favoriteCubit: context.read<FavoritePostCubit>(),
+          postVoteCubit: context.read<PostVoteCubit>(),
         );
 }

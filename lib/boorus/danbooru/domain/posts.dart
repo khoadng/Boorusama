@@ -1,5 +1,4 @@
 export 'posts/danbooru_post.dart';
-export 'posts/danbooru_post_data.dart';
 export 'posts/danbooru_post_repository.dart';
 export 'posts/explore_repository.dart';
 export 'posts/filter.dart';
