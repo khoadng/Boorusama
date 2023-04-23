@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'slide_show_configuration.dart';
 
 class PostDetailState extends Equatable {
@@ -51,7 +52,7 @@ class PostDetailState extends Equatable {
   final bool enableNotes;
   final bool enableOverlay;
   final SlideShowConfiguration slideShowConfig;
-  final List<Recommend> recommends;
+  final List<Recommend<DanbooruPost>> recommends;
   final List<Pool> pools;
   final List<Note> notes;
 
@@ -70,7 +71,7 @@ class PostDetailState extends Equatable {
     bool? enableNotes,
     bool? enableOverlay,
     SlideShowConfiguration? slideShowConfig,
-    List<Recommend>? recommends,
+    List<Recommend<DanbooruPost>>? recommends,
     List<Pool>? pools,
     List<Note>? notes,
   }) =>
@@ -123,28 +124,6 @@ class PostDetailTag extends Equatable {
 
   @override
   List<Object?> get props => [postId, name];
-}
-
-enum RecommendType {
-  artist,
-  character,
-}
-
-class Recommend extends Equatable {
-  const Recommend({
-    required this.title,
-    required this.posts,
-    required this.type,
-    required this.tag,
-  });
-
-  final String title;
-  final String tag;
-  final List<DanbooruPost> posts;
-  final RecommendType type;
-
-  @override
-  List<Object?> get props => [title, posts, type, tag];
 }
 
 extension PostDetailX on PostDetailState {

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 
-class PreviewPostGrid extends StatelessWidget {
+class PreviewPostGrid<T extends Post> extends StatelessWidget {
   const PreviewPostGrid({
     super.key,
     required this.posts,
@@ -19,7 +19,7 @@ class PreviewPostGrid extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<DanbooruPost> posts;
+  final List<T> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
@@ -61,7 +61,7 @@ class PreviewPostGrid extends StatelessWidget {
   }
 }
 
-class PreviewPostList extends StatelessWidget {
+class PreviewPostList<T extends Post> extends StatelessWidget {
   const PreviewPostList({
     super.key,
     required this.posts,
@@ -71,7 +71,7 @@ class PreviewPostList extends StatelessWidget {
     this.cacheManager,
   });
 
-  final List<DanbooruPost> posts;
+  final List<T> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
@@ -114,7 +114,7 @@ class PreviewPostList extends StatelessWidget {
   }
 }
 
-String _getImageUrl(DanbooruPost post, ImageQuality quality) {
+String _getImageUrl(Post post, ImageQuality quality) {
   if (post.isAnimated) return post.thumbnailImageUrl;
   if (quality == ImageQuality.high) return post.sampleImageUrl;
 

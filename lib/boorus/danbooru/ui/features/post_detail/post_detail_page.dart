@@ -21,6 +21,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/router.dart';
@@ -29,9 +30,10 @@ import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/recommend_artist_list.dart';
+import 'package:boorusama/core/ui/recommend_character_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'models/parent_child_data.dart';
-import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
 class PostDetailPage extends StatefulWidget {
@@ -309,6 +311,13 @@ class _CarouselContent extends StatelessWidget {
           BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
               return RecommendArtistList(
+                onTap: (index) => goToDetailPage(
+                  context: context,
+                  posts: state.recommends[index].posts,
+                  initialIndex: index,
+                ),
+                onHeaderTap: (index) =>
+                    goToArtistPage(context, state.recommends[index].tag),
                 recommends: state.recommends
                     .where((element) => element.type == RecommendType.artist)
                     .toList(),
@@ -318,6 +327,14 @@ class _CarouselContent extends StatelessWidget {
           BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
               return RecommendCharacterList(
+                onHeaderTap: (index) =>
+                    goToCharacterPage(context, state.recommends[index].tag),
+                onTap: (index) => goToDetailPage(
+                  context: context,
+                  posts: state.recommends[index].posts,
+                  initialIndex: index,
+                  hero: false,
+                ),
                 recommends: state.recommends
                     .where((element) => element.type == RecommendType.character)
                     .toList(),

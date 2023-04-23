@@ -1,7 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/source_mixin.dart';
 
 abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
   int get id;

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
+import 'package:boorusama/core/ui/preview_post_grid.dart';
 
-class RecommendPostSection extends StatelessWidget {
+class RecommendPostSection<T extends Post> extends StatelessWidget {
   const RecommendPostSection({
     super.key,
     required this.posts,
@@ -19,7 +19,7 @@ class RecommendPostSection extends StatelessWidget {
     this.grid = true,
   });
 
-  final List<DanbooruPost> posts;
+  final List<T> posts;
   final Widget header;
   final void Function(int index) onTap;
   final bool grid;

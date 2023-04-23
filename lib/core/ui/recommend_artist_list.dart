@@ -2,19 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'recommend_section.dart';
 
-class RecommendCharacterList extends StatelessWidget {
-  const RecommendCharacterList({
+class RecommendArtistList<T extends Post> extends StatelessWidget {
+  const RecommendArtistList({
     super.key,
     required this.recommends,
-    this.useSeperator = false,
+    required this.onHeaderTap,
+    required this.onTap,
   });
 
-  final bool useSeperator;
-  final List<Recommend> recommends;
+  final List<Recommend<T>> recommends;
+  final void Function(int index) onHeaderTap;
+  final void Function(int index) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +24,13 @@ class RecommendCharacterList extends StatelessWidget {
         (context, index) {
           final r = recommends[index];
           return RecommendPostSection(
-            grid: false,
             header: ListTile(
-              onTap: () => goToCharacterPage(context, r.tag),
+              onTap: () => onHeaderTap(index),
               title: Text(r.title),
               trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             ),
             posts: r.posts,
-            onTap: (index) => goToDetailPage(
-              context: context,
-              posts: r.posts,
-              initialIndex: index,
-              hero: false,
-            ),
+            onTap: onTap,
           );
         },
         childCount: recommends.length,
