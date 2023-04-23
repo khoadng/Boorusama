@@ -29,8 +29,8 @@ class DetailsPage<T> extends StatefulWidget {
     required this.topRightButtonsBuilder,
     this.onExpanded,
     this.bottomSheet,
-    this.enablePageSwipe = true,
-    this.hideOverlay = false,
+    required this.enablePageSwipe,
+    required this.hideOverlay,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
@@ -43,8 +43,8 @@ class DetailsPage<T> extends StatefulWidget {
   final List<Widget> Function(int currentPage) topRightButtonsBuilder;
   final void Function(int currentPage)? onExpanded;
   final Widget? bottomSheet;
-  final bool enablePageSwipe;
-  final bool hideOverlay;
+  final ValueNotifier<bool> enablePageSwipe;
+  final ValueNotifier<bool> hideOverlay;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -61,7 +61,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     ],
   );
   var isExpanded = ValueNotifier(false);
-  late final _hideOverlayNotifier = ValueNotifier(widget.hideOverlay);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
 
   @override
@@ -88,17 +87,13 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   @override
   void didUpdateWidget(DetailsPage<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.hideOverlay != widget.hideOverlay) {
-      _hideOverlayNotifier.value = widget.hideOverlay;
-    }
-
     _updateShouldSlideDown();
   }
 
   void _updateShouldSlideDown() {
     if (_keepBottomSheetDown) return;
     _shouldSlideDownNotifier.value =
-        isSwipingDown.value || isExpanded.value || _hideOverlayNotifier.value;
+        isSwipingDown.value || isExpanded.value || widget.hideOverlay.value;
   }
 
   @override
@@ -112,7 +107,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (expanded || _multiTouch || !widget.enablePageSwipe) {
+    if (expanded || _multiTouch || !widget.enablePageSwipe.value) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -128,7 +123,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded || _multiTouch || !widget.enablePageSwipe) {
+    if (expanded || _multiTouch || !widget.enablePageSwipe.value) {
       // Ignore the swipe down behavior when in expanded mode
       return;
     }
@@ -230,7 +225,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                       });
                       widget.onPageChanged?.call(page);
                     },
-                    physics: widget.enablePageSwipe
+                    physics: widget.enablePageSwipe.value
                         ? const DefaultPageViewScrollPhysics()
                         : const NeverScrollableScrollPhysics(),
                     itemCount: widget.pageCount,

@@ -42,8 +42,8 @@ class MoebooruPostDetails extends StatefulWidget {
 
 class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
   final imagePath = ValueNotifier<String?>(null);
-  var enableSwipe = true;
-  var hideOverlay = false;
+  var enableSwipe = ValueNotifier(true);
+  var hideOverlay = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -56,32 +56,24 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
         post: widget.posts[index],
       ),
       expandedBuilder: (context, page, currentPage, expanded) =>
-          _CarouselContent(
-        physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-        scrollController: PageContentScrollController.of(context),
-        isExpanded: expanded,
-        media: PostMediaItem(
-          useHero: page == currentPage,
+          ValueListenableBuilder<bool>(
+        valueListenable: enableSwipe,
+        builder: (_, swipe, __) => _CarouselContent(
+          physics: swipe ? null : const NeverScrollableScrollPhysics(),
+          scrollController: PageContentScrollController.of(context),
+          isExpanded: expanded,
+          media: PostMediaItem(
+            useHero: page == currentPage,
+            post: widget.posts[page],
+            onCached: (path) => imagePath.value = path,
+            previewCacheManager: context.read<PreviewImageCacheManager>(),
+            onTap: () => hideOverlay.value = !hideOverlay.value,
+            onZoomUpdated: (zoom) => enableSwipe.value = !zoom,
+          ),
+          imagePath: imagePath,
           post: widget.posts[page],
-          onCached: (path) => imagePath.value = path,
-          previewCacheManager: context.read<PreviewImageCacheManager>(),
-          onTap: () {
-            setState(() {
-              hideOverlay = !hideOverlay;
-            });
-          },
-          onZoomUpdated: (zoom) {
-            final swipe = !zoom;
-            if (swipe != enableSwipe) {
-              setState(() {
-                enableSwipe = swipe;
-              });
-            }
-          },
+          preloadPost: widget.posts[page],
         ),
-        imagePath: imagePath,
-        post: widget.posts[page],
-        preloadPost: widget.posts[page],
       ),
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (currentPage) => [

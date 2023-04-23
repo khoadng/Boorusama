@@ -30,7 +30,6 @@ import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
 import 'package:boorusama/core/ui/source_section.dart';
-import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'models/parent_child_data.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
@@ -53,9 +52,9 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
-  late var _currentPage = widget.intitialIndex;
-  var enableSwipe = true;
-  var hideOverlay = false;
+  late var currentPage = ValueNotifier(widget.intitialIndex);
+  var enableSwipe = ValueNotifier(true);
+  var hideOverlay = ValueNotifier(false);
 
   @override
   void initState() {
@@ -71,8 +70,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final recommends =
-        context.select((PostDetailBloc bloc) => bloc.state.recommends);
     final currentPost =
         context.select((PostDetailBloc bloc) => bloc.state.currentPost);
     final isTranslated = context.select(
@@ -84,11 +81,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
       intitialIndex: widget.intitialIndex,
       enablePageSwipe: enableSwipe,
       hideOverlay: hideOverlay,
-      onPageChanged: (page) => setState(() {
-        _currentPage = page;
+      onPageChanged: (page) {
+        currentPage.value = page;
         widget.onPageChanged.call(page);
-      }),
-      bottomSheet: ActionBar(post: widget.posts[_currentPage]),
+      },
+      bottomSheet: ValueListenableBuilder<int>(
+        valueListenable: currentPage,
+        builder: (_, page, __) => Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: ActionBar(post: widget.posts[page]),
+        ),
+      ),
       targetSwipeDownBuilder: (context, page) => PostMediaItem(
         post: widget.posts[page],
       ),
@@ -98,36 +101,27 @@ class _PostDetailPageState extends State<PostDetailPage> {
             previous.settings.actionBarDisplayBehavior !=
             current.settings.actionBarDisplayBehavior,
         builder: (context, state) {
-          return _CarouselContent(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            isExpanded: expanded,
-            scrollController: PageContentScrollController.of(context),
-            media: DanbooruPostMediaItem(
-              post: widget.posts[page],
-              onCached: (path) => imagePath.value = path,
-              enableNotes: expanded,
-              notes: notes,
-              useHero: page == currentPage,
-              previewCacheManager: context.read<PreviewImageCacheManager>(),
-              onTap: () {
-                setState(() {
-                  hideOverlay = !hideOverlay;
-                });
-              },
-              onZoomUpdated: (zoom) {
-                final swipe = !zoom;
-                if (swipe != enableSwipe) {
-                  setState(() {
-                    enableSwipe = swipe;
-                  });
-                }
-              },
+          return ValueListenableBuilder<bool>(
+            valueListenable: enableSwipe,
+            builder: (_, swipe, __) => _CarouselContent(
+              physics: swipe ? null : const NeverScrollableScrollPhysics(),
+              isExpanded: expanded,
+              scrollController: PageContentScrollController.of(context),
+              media: DanbooruPostMediaItem(
+                post: widget.posts[page],
+                onCached: (path) => imagePath.value = path,
+                enableNotes: expanded,
+                notes: notes,
+                useHero: page == currentPage,
+                previewCacheManager: context.read<PreviewImageCacheManager>(),
+                onTap: () => hideOverlay.value = !hideOverlay.value,
+                onZoomUpdated: (zoom) => enableSwipe.value = !zoom,
+              ),
+              actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
+              post: currentPost,
+              preloadPost: widget.posts[page],
+              key: ValueKey(currentPage),
             ),
-            actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
-            post: currentPost,
-            preloadPost: widget.posts[page],
-            key: ValueKey(currentPage),
-            recommends: recommends,
           );
         },
       ),
@@ -273,114 +267,22 @@ class MoreActionButton extends StatelessWidget {
   }
 }
 
-class _SlideShowButton extends StatefulWidget {
-  const _SlideShowButton({
-    required this.onShow,
-    required this.onStop,
-  });
-
-  final void Function(
-    void Function() start,
-    SlideShowConfiguration config,
-  ) onShow;
-  final void Function() onStop;
-
-  @override
-  State<_SlideShowButton> createState() => _SlideShowButtonState();
-}
-
-class _SlideShowButtonState extends State<_SlideShowButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController spinningIconpanelAnimationController;
-  late final Animation<double> rotateAnimation;
-  var play = false;
-
-  @override
-  void initState() {
-    super.initState();
-    spinningIconpanelAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 200),
-    );
-    rotateAnimation = Tween<double>(begin: 0, end: 360)
-        .animate(spinningIconpanelAnimationController);
-  }
-
-  @override
-  void dispose() {
-    spinningIconpanelAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-    final config =
-        context.select((PostDetailBloc bloc) => bloc.state.slideShowConfig);
-
-    return play
-        ? RepaintBoundary(
-            child: AnimatedSpinningIcon(
-              icon: CircularIconButton(
-                icon: Icon(
-                  Icons.sync,
-                  color: theme == ThemeMode.light
-                      ? Theme.of(context).colorScheme.onPrimary
-                      : null,
-                ),
-                onPressed: () {
-                  setState(() {
-                    widget.onStop();
-                    play = false;
-                    spinningIconpanelAnimationController
-                      ..stop()
-                      ..reset();
-                  });
-                },
-              ),
-              animation: rotateAnimation,
-            ),
-          )
-        : CircularIconButton(
-            icon: Icon(
-              Icons.slideshow,
-              color: theme == ThemeMode.light
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : null,
-            ),
-            onPressed: () => widget.onShow(
-              () {
-                setState(() {
-                  play = true;
-                  spinningIconpanelAnimationController.repeat();
-                });
-              },
-              config,
-            ),
-          );
-  }
-}
-
 class _CarouselContent extends StatelessWidget {
   const _CarouselContent({
     super.key,
     required this.media,
-    // required this.imagePath,
     required this.actionBarDisplayBehavior,
     required this.post,
     required this.preloadPost,
-    required this.recommends,
     required this.scrollController,
     required this.isExpanded,
     this.physics,
   });
 
   final DanbooruPostMediaItem media;
-  // final ValueNotifier<String?> imagePath;
   final DanbooruPost post;
   final DanbooruPost preloadPost;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
-  final List<Recommend> recommends;
   final ScrollController? scrollController;
   final bool isExpanded;
   final ScrollPhysics? physics;
@@ -400,15 +302,23 @@ class _CarouselContent extends StatelessWidget {
               childCount: widgets.length,
             ),
           ),
-          RecommendArtistList(
-            recommends: recommends
-                .where((element) => element.type == RecommendType.artist)
-                .toList(),
+          BlocBuilder<PostDetailBloc, PostDetailState>(
+            builder: (context, state) {
+              return RecommendArtistList(
+                recommends: state.recommends
+                    .where((element) => element.type == RecommendType.artist)
+                    .toList(),
+              );
+            },
           ),
-          RecommendCharacterList(
-            recommends: recommends
-                .where((element) => element.type == RecommendType.character)
-                .toList(),
+          BlocBuilder<PostDetailBloc, PostDetailState>(
+            builder: (context, state) {
+              return RecommendCharacterList(
+                recommends: state.recommends
+                    .where((element) => element.type == RecommendType.character)
+                    .toList(),
+              );
+            },
           ),
         ],
       ),
@@ -533,13 +443,9 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 24),
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: PostActionToolbar(
-        post: post,
-        imagePath: null,
-      ),
+    return PostActionToolbar(
+      post: post,
+      imagePath: null,
     );
   }
 }

@@ -45,8 +45,8 @@ class GelbooruPostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<GelbooruPostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
-  var enableSwipe = true;
-  var hideOverlay = false;
+  var enableSwipe = ValueNotifier(true);
+  var hideOverlay = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -61,34 +61,26 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
       expandedBuilder: (context, page, currentPage, expanded) =>
           BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
-          return _CarouselContent(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            isExpanded: expanded,
-            scrollController: PageContentScrollController.of(context),
-            media: PostMediaItem(
+          return ValueListenableBuilder<bool>(
+            valueListenable: enableSwipe,
+            builder: (_, swipe, __) => _CarouselContent(
+              physics: swipe ? null : const NeverScrollableScrollPhysics(),
+              isExpanded: expanded,
+              scrollController: PageContentScrollController.of(context),
+              media: PostMediaItem(
+                post: widget.posts[page],
+                onCached: (path) => imagePath.value = path,
+                previewCacheManager: context.read<PreviewImageCacheManager>(),
+                useHero: page == currentPage,
+                onTap: () => hideOverlay.value = !hideOverlay.value,
+                onZoomUpdated: (zoom) => enableSwipe.value = !zoom,
+              ),
+              imagePath: imagePath,
+              actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
               post: widget.posts[page],
-              onCached: (path) => imagePath.value = path,
-              previewCacheManager: context.read<PreviewImageCacheManager>(),
-              useHero: page == currentPage,
-              onTap: () {
-                setState(() {
-                  hideOverlay = !hideOverlay;
-                });
-              },
-              onZoomUpdated: (zoom) {
-                final swipe = !zoom;
-                if (swipe != enableSwipe) {
-                  setState(() {
-                    enableSwipe = swipe;
-                  });
-                }
-              },
+              preloadPost: widget.posts[page],
+              // recommends: state.recommends,
             ),
-            imagePath: imagePath,
-            actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
-            post: widget.posts[page],
-            preloadPost: widget.posts[page],
-            // recommends: state.recommends,
           );
         },
       ),
