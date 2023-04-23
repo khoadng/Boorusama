@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
+import 'package:boorusama/core/router.dart';
 
 class BlacklistedTagPage extends StatefulWidget {
   const BlacklistedTagPage({super.key});

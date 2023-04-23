@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cu
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -66,7 +67,7 @@ class DanbooruArtistCharacterPostCubit
   }) =>
       DanbooruArtistCharacterPostCubit(
         extra: extra,
-        postRepository: context.read<DanbooruPostRepository>(),
+        postRepository: context.read<DanbooruArtistCharacterPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),

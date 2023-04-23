@@ -33,6 +33,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
@@ -399,7 +400,8 @@ Widget providePostDetailPageDependencies(
                       defaultDetailsStyle: settings.detailsDisplay,
                       posts: posts,
                       initialIndex: initialIndex,
-                      postRepository: context.read<DanbooruPostRepository>(),
+                      postRepository:
+                          context.read<DanbooruArtistCharacterPostRepository>(),
                       poolRepository: context.read<PoolRepository>(),
                       currentBooruConfigRepository:
                           context.read<CurrentBooruConfigRepository>(),
