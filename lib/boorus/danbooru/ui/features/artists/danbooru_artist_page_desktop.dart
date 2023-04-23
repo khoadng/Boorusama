@@ -10,8 +10,8 @@ import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 
-class ArtistPageDesktop extends StatelessWidget {
-  const ArtistPageDesktop({
+class DanbooruArtistPageDesktop extends StatelessWidget {
+  const DanbooruArtistPageDesktop({
     super.key,
     required this.artistName,
   });

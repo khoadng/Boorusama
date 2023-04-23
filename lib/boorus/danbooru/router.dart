@@ -33,7 +33,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
@@ -89,7 +89,7 @@ void goToArtistPage(BuildContext context, String artist) {
       builder: (_) => provideArtistPageDependencies(
         context,
         artist: artist,
-        page: ArtistPage(
+        page: DanbooruArtistPage(
           artistName: artist,
           backgroundImageUrl: '',
         ),
@@ -101,7 +101,7 @@ void goToArtistPage(BuildContext context, String artist) {
       builder: (_) => provideArtistPageDependencies(
         context,
         artist: artist,
-        page: ArtistPage(
+        page: DanbooruArtistPage(
           artistName: artist,
           backgroundImageUrl: '',
         ),

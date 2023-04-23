@@ -12,8 +12,8 @@ import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 
-class ArtistPage extends StatelessWidget {
-  const ArtistPage({
+class DanbooruArtistPage extends StatelessWidget {
+  const DanbooruArtistPage({
     super.key,
     required this.artistName,
     required this.backgroundImageUrl,
