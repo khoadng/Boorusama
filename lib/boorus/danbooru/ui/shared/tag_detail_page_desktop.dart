@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
+import 'package:boorusama/core/ui/tags.dart';
 import 'tag_detail_page.dart';
 
 class TagDetailPageDesktop extends StatelessWidget {

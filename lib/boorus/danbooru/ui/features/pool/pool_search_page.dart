@@ -14,7 +14,7 @@ import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/tags/tags.dart';
+import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'sliver_pool_grid.dart';
 

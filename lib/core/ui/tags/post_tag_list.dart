@@ -12,7 +12,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags.dart';
-import 'package:boorusama/core/ui/tags/tags.dart';
+import 'package:boorusama/core/ui/tags.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({

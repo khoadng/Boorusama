@@ -13,14 +13,10 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/posts.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
-
-enum TagFilterCategory {
-  popular,
-  newest,
-}
 
 typedef DanbooruArtistCharacterPostState
     = PostState<DanbooruPost, DanbooruArtistChararacterExtra>;
