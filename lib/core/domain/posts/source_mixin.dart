@@ -35,6 +35,7 @@ String _getHost(Uri uri) {
   if (uri.host.contains('hentai-foundry.com')) return 'hentai-foundry.com';
   if (uri.host.contains('exhentai.org')) return 'e-hentai.org';
   if (uri.host.contains('ngfiles.com')) return 'newgrounds.com';
+  if (uri.host.contains('i.pximg.net')) return 'pixiv.net';
   if (uri.host.contains('lofter.com')) {
     return 'https://www.lofter.com/favicon.ico';
   }

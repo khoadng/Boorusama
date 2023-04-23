@@ -11,6 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -29,6 +31,8 @@ class DanbooruPostContextMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
         buttonConfigs: [
@@ -44,6 +48,14 @@ class DanbooruPostContextMenu extends StatelessWidget {
           ContextMenuButtonConfig(
             'download.download'.tr(),
             onPressed: () => download(post),
+          ),
+          ContextMenuButtonConfig(
+            'Add to Bookmark',
+            onPressed: () => context.read<BookmarkCubit>().addBookmark(
+                  post.sampleImageUrl,
+                  booru!,
+                  post,
+                ),
           ),
           if (hasAccount)
             ContextMenuButtonConfig(

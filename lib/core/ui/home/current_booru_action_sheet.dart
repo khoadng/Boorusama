@@ -34,10 +34,13 @@ class CurrentBooruActionSheet extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Add booru'),
+            title: const Text('Add and switch booru'),
             onTap: () {
               Navigator.of(context).pop();
-              goToAddBooruPage(context);
+              goToAddBooruPage(
+                context,
+                setCurrentBooruOnSubmit: true,
+              );
             },
           ),
         ],
