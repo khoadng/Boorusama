@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';

@@ -61,7 +61,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -335,12 +334,15 @@ Future<void> goToDetailPage({
     initialIndex,
     tags,
     scrollController,
-    PostDetailPage(
+    (shareCubit) => PostDetailPage(
       intitialIndex: initialIndex,
       posts: posts,
       onPageChanged: (page) {
         scrollController?.scrollToIndex(page);
+        shareCubit.updateInformation(posts[page]);
       },
+      onCachedImagePathUpdate: (imagePath) =>
+          shareCubit.setImagePath(imagePath ?? ''),
     ),
   );
 
@@ -368,7 +370,7 @@ Widget providePostDetailPageDependencies(
   List<PostDetailTag> tags,
   // PostBloc? postBloc,
   AutoScrollController? scrollController,
-  Widget child,
+  Widget Function(PostShareCubit shareCubit) childBuilder,
 ) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (_, state) {
@@ -379,13 +381,17 @@ Widget providePostDetailPageDependencies(
           return BlocSelector<SettingsCubit, SettingsState, Settings>(
             selector: (state) => state.settings,
             builder: (_, settings) {
+              final shareCubit = PostShareCubit.of(context);
+
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (_) => SliverPostGridBloc()),
                   BlocProvider.value(
                     value: context.read<AuthenticationCubit>(),
                   ),
                   BlocProvider.value(value: context.read<ThemeBloc>()),
+                  BlocProvider(
+                    create: (context) => shareCubit,
+                  ),
                   BlocProvider(
                     create: (context) => PostDetailBloc(
                       booruUserIdentityProvider:
@@ -411,21 +417,7 @@ Widget providePostDetailPageDependencies(
                 ],
                 child: RepositoryProvider.value(
                   value: context.read<TagRepository>(),
-                  child: Builder(
-                    builder: (context) =>
-                        BlocListener<SliverPostGridBloc, SliverPostGridState>(
-                      listenWhen: (previous, current) =>
-                          previous.nextIndex != current.nextIndex,
-                      listener: (context, state) {
-                        if (scrollController == null) return;
-                        scrollController.scrollToIndex(
-                          state.nextIndex,
-                          duration: const Duration(milliseconds: 200),
-                        );
-                      },
-                      child: child,
-                    ),
-                  ),
+                  child: childBuilder(shareCubit),
                 ),
               );
             },

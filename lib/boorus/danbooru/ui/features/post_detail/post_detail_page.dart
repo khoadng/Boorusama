@@ -40,18 +40,19 @@ class PostDetailPage extends StatefulWidget {
     required this.posts,
     required this.intitialIndex,
     required this.onPageChanged,
+    required this.onCachedImagePathUpdate,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
   final void Function(int page) onPageChanged;
+  final void Function(String? imagePath) onCachedImagePathUpdate;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  final imagePath = ValueNotifier<String?>(null);
   late var currentPage = ValueNotifier(widget.intitialIndex);
   var enableSwipe = ValueNotifier(true);
   var hideOverlay = ValueNotifier(false);
@@ -89,7 +90,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         valueListenable: currentPage,
         builder: (_, page, __) => Padding(
           padding: const EdgeInsets.only(bottom: 24),
-          child: ActionBar(post: widget.posts[page]),
+          child: PostActionToolbar(post: widget.posts[page]),
         ),
       ),
       targetSwipeDownBuilder: (context, page) => PostMediaItem(
@@ -109,7 +110,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               scrollController: PageContentScrollController.of(context),
               media: DanbooruPostMediaItem(
                 post: widget.posts[page],
-                onCached: (path) => imagePath.value = path,
+                onCached: widget.onCachedImagePathUpdate,
                 enableNotes: expanded,
                 notes: notes,
                 useHero: page == currentPage,
@@ -347,10 +348,7 @@ class _CarouselContent extends StatelessWidget {
           if (actionBarDisplayBehavior ==
               ActionBarDisplayBehavior.scrolling) ...[
             RepaintBoundary(
-              child: ActionBar(
-                // imagePath: widget.imagePath,
-                post: post,
-              ),
+              child: PostActionToolbar(post: post),
             ),
             const Divider(height: 8, thickness: 1),
           ],
@@ -428,40 +426,4 @@ class _ParentChildTile extends StatelessWidget {
       ),
     );
   }
-}
-
-// ignore: prefer-single-widget-per-file
-class ActionBar extends StatelessWidget {
-  const ActionBar({
-    super.key,
-    // required this.imagePath,
-    required this.post,
-  });
-
-  // final ValueNotifier<String?> imagePath;
-  final DanbooruPost post;
-
-  @override
-  Widget build(BuildContext context) {
-    return PostActionToolbar(
-      post: post,
-      imagePath: null,
-    );
-  }
-}
-
-class DetailPageViewScrollPhysics extends ScrollPhysics {
-  const DetailPageViewScrollPhysics({super.parent});
-
-  @override
-  DetailPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return DetailPageViewScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-        mass: 80,
-        stiffness: 100,
-        damping: 1,
-      );
 }

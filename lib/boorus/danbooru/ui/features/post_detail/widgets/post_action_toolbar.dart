@@ -10,26 +10,23 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_share_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/modal_share.dart';
 import 'package:boorusama/utils/collection_utils.dart';
-import 'modal_share.dart';
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     super.key,
     required this.post,
-    required this.imagePath,
   });
 
   final DanbooruPost post;
-  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -108,39 +105,43 @@ class PostActionToolbar extends StatelessWidget {
   }
 
   Widget _buildShareButton(BuildContext context) {
-    final modal = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    return BlocBuilder<PostShareCubit, PostShareState>(
       builder: (context, state) {
-        final booru = state.booru ?? safebooru();
-
-        return ModalShare(
-          endpoint: booru.url,
-          onTap: Share.share,
-          onTapFile: (filePath) => Share.shareXFiles([XFile(filePath)]),
-          post: post,
-          imagePath: imagePath,
+        return IconButton(
+          onPressed: () => Screen.of(context).size == ScreenSize.small
+              ? showMaterialModalBottomSheet(
+                  expand: false,
+                  context: context,
+                  barrierColor: Colors.black45,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => ModalShare(
+                    booruLink: state.booruLink,
+                    sourceLink: state.sourceLink,
+                    onTap: Share.share,
+                    onTapFile: (filePath) =>
+                        Share.shareXFiles([XFile(filePath)]),
+                    imagePath: state.booruImagePath,
+                  ),
+                )
+              : showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    contentPadding: EdgeInsets.zero,
+                    content: ModalShare(
+                      booruLink: state.booruLink,
+                      sourceLink: state.sourceLink,
+                      onTap: Share.share,
+                      onTapFile: (filePath) =>
+                          Share.shareXFiles([XFile(filePath)]),
+                      imagePath: state.booruImagePath,
+                    ),
+                  ),
+                ),
+          icon: const FaIcon(
+            FontAwesomeIcons.share,
+          ),
         );
       },
-    );
-
-    return IconButton(
-      onPressed: () => Screen.of(context).size == ScreenSize.small
-          ? showMaterialModalBottomSheet(
-              expand: false,
-              context: context,
-              barrierColor: Colors.black45,
-              backgroundColor: Colors.transparent,
-              builder: (context) => modal,
-            )
-          : showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                contentPadding: EdgeInsets.zero,
-                content: modal,
-              ),
-            ),
-      icon: const FaIcon(
-        FontAwesomeIcons.share,
-      ),
     );
   }
 

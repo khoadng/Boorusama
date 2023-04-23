@@ -5,24 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-
 class ModalShare extends StatelessWidget {
   const ModalShare({
     super.key,
-    required this.post,
-    required this.endpoint,
     required this.onTap,
     required this.onTapFile,
     required this.imagePath,
+    required this.booruLink,
+    required this.sourceLink,
   });
 
   final void Function(String value) onTap;
   final void Function(String filePath) onTapFile;
-  final DanbooruPost post;
-  final String endpoint;
-  final String? imagePath;
+  final String booruLink;
+  final String sourceLink;
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +28,14 @@ class ModalShare extends StatelessWidget {
         top: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (post.source != null)
+          children: [
+            if (sourceLink.isNotEmpty)
               ListTile(
                 title: const Text('post.detail.share.source').tr(),
                 leading: const FaIcon(FontAwesomeIcons.link),
                 onTap: () {
                   Navigator.of(context).pop();
-                  onTap.call(getShareContent(ShareMode.source, post, endpoint));
+                  onTap.call(sourceLink);
                 },
               ),
             ListTile(
@@ -46,16 +43,16 @@ class ModalShare extends StatelessWidget {
               leading: const FaIcon(FontAwesomeIcons.box),
               onTap: () {
                 Navigator.of(context).pop();
-                onTap.call(getShareContent(ShareMode.booru, post, endpoint));
+                onTap.call(booruLink);
               },
             ),
-            if (imagePath != null)
+            if (imagePath.isNotEmpty)
               ListTile(
                 title: const Text('post.detail.share.image').tr(),
                 leading: const FaIcon(FontAwesomeIcons.fileImage),
                 onTap: () {
                   Navigator.of(context).pop();
-                  onTapFile.call(imagePath!);
+                  onTapFile.call(imagePath);
                 },
               ),
           ],
@@ -63,17 +60,4 @@ class ModalShare extends StatelessWidget {
       ),
     );
   }
-}
-
-enum ShareMode {
-  source,
-  booru,
-}
-
-String getShareContent(ShareMode mode, DanbooruPost post, String endpoint) {
-  final booruLink = '${endpoint}posts/${post.id}';
-  if (mode == ShareMode.booru) return booruLink;
-  if (post.source == null) return booruLink;
-
-  return post.source.toString();
 }

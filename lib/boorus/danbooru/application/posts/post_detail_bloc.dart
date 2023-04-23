@@ -3,7 +3,6 @@ import 'dart:async';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -14,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/bloc/bloc.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
