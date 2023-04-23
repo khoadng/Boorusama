@@ -333,7 +333,6 @@ Future<void> goToDetailPage({
     posts,
     initialIndex,
     tags,
-    scrollController,
     (shareCubit) => PostDetailPage(
       intitialIndex: initialIndex,
       posts: posts,
@@ -369,7 +368,6 @@ Widget providePostDetailPageDependencies(
   int initialIndex,
   List<PostDetailTag> tags,
   // PostBloc? postBloc,
-  AutoScrollController? scrollController,
   Widget Function(PostShareCubit shareCubit) childBuilder,
 ) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(

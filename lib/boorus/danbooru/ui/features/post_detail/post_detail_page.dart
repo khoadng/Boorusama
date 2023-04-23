@@ -58,8 +58,8 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   late var currentPage = ValueNotifier(widget.intitialIndex);
-  var enableSwipe = ValueNotifier(true);
-  var hideOverlay = ValueNotifier(false);
+  var enableSwipe = true;
+  var hideOverlay = false;
 
   @override
   void initState() {
@@ -107,27 +107,35 @@ class _PostDetailPageState extends State<PostDetailPage> {
             previous.settings.actionBarDisplayBehavior !=
             current.settings.actionBarDisplayBehavior,
         builder: (context, state) {
-          return ValueListenableBuilder<bool>(
-            valueListenable: enableSwipe,
-            builder: (_, swipe, __) => _CarouselContent(
-              physics: swipe ? null : const NeverScrollableScrollPhysics(),
-              isExpanded: expanded,
-              scrollController: PageContentScrollController.of(context),
-              media: DanbooruPostMediaItem(
-                post: widget.posts[page],
-                onCached: widget.onCachedImagePathUpdate,
-                enableNotes: expanded,
-                notes: notes,
-                useHero: page == currentPage,
-                previewCacheManager: context.read<PreviewImageCacheManager>(),
-                onTap: () => hideOverlay.value = !hideOverlay.value,
-                onZoomUpdated: (zoom) => enableSwipe.value = !zoom,
-              ),
-              actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
-              post: currentPost,
-              preloadPost: widget.posts[page],
-              key: ValueKey(currentPage),
+          return _CarouselContent(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
+            isExpanded: expanded,
+            scrollController: PageContentScrollController.of(context),
+            media: DanbooruPostMediaItem(
+              post: widget.posts[page],
+              onCached: widget.onCachedImagePathUpdate,
+              enableNotes: expanded,
+              notes: notes,
+              useHero: page == currentPage,
+              previewCacheManager: context.read<PreviewImageCacheManager>(),
+              onTap: () {
+                setState(() {
+                  hideOverlay = !hideOverlay;
+                });
+              },
+              onZoomUpdated: (zoom) {
+                final swipe = !zoom;
+                if (swipe != enableSwipe) {
+                  setState(() {
+                    enableSwipe = swipe;
+                  });
+                }
+              },
             ),
+            actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
+            post: currentPost,
+            preloadPost: widget.posts[page],
+            key: ValueKey(currentPage),
           );
         },
       ),
