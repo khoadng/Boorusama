@@ -140,7 +140,8 @@ class _CarouselContent extends StatelessWidget {
           ),
           BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
             builder: (context, state) => RecommendArtistList(
-              onHeaderTap: (index) => print(index),
+              onHeaderTap: (index) =>
+                  goToGelbooruArtistPage(context, state.recommends[index].tag),
               onTap: (index) => goToGelbooruPostDetailsPage(
                 context: context,
                 posts: state.recommends[index].posts,

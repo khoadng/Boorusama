@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_artist_character_post_cubit.dart';
+import 'package:boorusama/boorus/gelbooru/ui/gelbooru_artist_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -149,4 +151,49 @@ void goToGelbooruSearchPage(
       },
     ),
   ));
+}
+
+void goToGelbooruArtistPage(BuildContext context, String artist) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => provideArtistPageDependencies(
+      context,
+      artist: artist,
+      page: GelbooruArtistPage(
+        tagName: artist,
+      ),
+    ),
+  ));
+}
+
+Widget provideArtistPageDependencies(
+  BuildContext context, {
+  required String artist,
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return GelbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => GelbooruArtistCharacterPostCubit.of(
+                  dcontext,
+                  extra: GelbooruArtistChararacterExtra(
+                    category: TagFilterCategory.newest,
+                    tag: artist,
+                  ),
+                )..refresh(),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
+            ),
+          );
+        },
+      );
+    },
+  );
 }

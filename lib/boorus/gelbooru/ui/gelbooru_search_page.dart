@@ -322,7 +322,6 @@ class _SmallLayoutState extends State<_SmallLayout>
         );
       case DisplayState.result:
         return BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return GelbooruInfinitePostList(
               refreshing: state.refreshing,

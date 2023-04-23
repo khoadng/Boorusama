@@ -16,6 +16,7 @@ List<Post> parsePost(HttpResponse<dynamic> value) {
   dynamic data;
   try {
     data = value.response.data['post'];
+    if (data == null) return [];
   } catch (e) {
     return [];
   }
