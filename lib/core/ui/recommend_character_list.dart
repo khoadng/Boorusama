@@ -15,7 +15,7 @@ class RecommendCharacterList<T extends Post> extends StatelessWidget {
 
   final List<Recommend<T>> recommends;
   final void Function(int index) onHeaderTap;
-  final void Function(int index) onTap;
+  final void Function(int recommendIndex, int postIndex) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class RecommendCharacterList<T extends Post> extends StatelessWidget {
               trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             ),
             posts: r.posts,
-            onTap: onTap,
+            onTap: (postIdx) => onTap(index, postIdx),
           );
         },
         childCount: recommends.length,

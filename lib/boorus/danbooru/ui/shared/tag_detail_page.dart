@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/tags/category_toggle_switch.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -10,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/tags.dart';
+import 'package:boorusama/core/ui/tags/category_toggle_switch.dart';
 
 class TagDetailPage extends StatelessWidget
     with DanbooruArtistCharacterPostCubitMixin {

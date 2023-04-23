@@ -150,10 +150,10 @@ class _CarouselContent extends StatelessWidget {
             builder: (context, state) => RecommendArtistList(
               onHeaderTap: (index) =>
                   goToGelbooruArtistPage(context, state.recommends[index].tag),
-              onTap: (index) => goToGelbooruPostDetailsPage(
+              onTap: (recommendIndex, postIndex) => goToGelbooruPostDetailsPage(
                 context: context,
-                posts: state.recommends[index].posts,
-                initialIndex: index,
+                posts: state.recommends[recommendIndex].posts,
+                initialIndex: postIndex,
               ),
               recommends: state.recommends
                   .where((element) => element.type == RecommendType.artist)

@@ -318,34 +318,37 @@ class _CarouselContent extends StatelessWidget {
           ),
           BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
+              final artists = state.recommends
+                  .where((element) => element.type == RecommendType.artist)
+                  .toList();
+
               return RecommendArtistList(
-                onTap: (index) => goToDetailPage(
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
                   context: context,
-                  posts: state.recommends[index].posts,
-                  initialIndex: index,
+                  posts: artists[recommendIndex].posts,
+                  initialIndex: postIndex,
                 ),
                 onHeaderTap: (index) =>
                     goToArtistPage(context, state.recommends[index].tag),
-                recommends: state.recommends
-                    .where((element) => element.type == RecommendType.artist)
-                    .toList(),
+                recommends: artists,
               );
             },
           ),
           BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
+              final characters = state.recommends
+                  .where((element) => element.type == RecommendType.character)
+                  .toList();
               return RecommendCharacterList(
                 onHeaderTap: (index) =>
                     goToCharacterPage(context, state.recommends[index].tag),
-                onTap: (index) => goToDetailPage(
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
                   context: context,
-                  posts: state.recommends[index].posts,
-                  initialIndex: index,
+                  posts: characters[recommendIndex].posts,
+                  initialIndex: postIndex,
                   hero: false,
                 ),
-                recommends: state.recommends
-                    .where((element) => element.type == RecommendType.character)
-                    .toList(),
+                recommends: characters,
               );
             },
           ),

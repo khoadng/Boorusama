@@ -30,18 +30,21 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) => ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildFavoriteButton(context, authState),
-          if (authState is Authenticated) _buildUpvoteButton(context),
-          if (authState is Authenticated) _buildDownvoteButton(context),
-          _buildCommentButton(context),
-          _buildDownloadButton(),
-          _buildShareButton(context),
-        ],
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+        builder: (context, authState) => ButtonBar(
+          buttonPadding: EdgeInsets.zero,
+          alignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildFavoriteButton(context, authState),
+            if (authState is Authenticated) _buildUpvoteButton(context),
+            if (authState is Authenticated) _buildDownvoteButton(context),
+            _buildCommentButton(context),
+            _buildDownloadButton(),
+            _buildShareButton(context),
+          ],
+        ),
       ),
     );
   }
