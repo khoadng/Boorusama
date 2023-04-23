@@ -28,60 +28,64 @@ class ExploreDetailPage extends StatelessWidget
   Widget build(BuildContext context) {
     final state = context.watch<ExploreDetailBloc>().state;
 
-    return _ExploreDetail(
-      // title: title,
-      builder: (context, scrollController) {
-        return Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<DanbooruExplorePostCubit,
-                  DanbooruExplorePostState>(
-                builder: (context, pstate) {
-                  return DanbooruInfinitePostList(
-                    refreshing: pstate.refreshing,
-                    loading: pstate.loading,
-                    hasMore: pstate.hasMore,
-                    error: pstate.error,
-                    data: pstate.data,
-                    scrollController: scrollController,
-                    onLoadMore: () => fetch(context),
-                    onRefresh: () => refresh(context),
-                    sliverHeaderBuilder: (context) => [
-                      SliverAppBar(
-                        title: title,
-                        floating: true,
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      ...categoryToListHeader(
-                        context,
-                        category,
-                        state.date,
-                        state.scale,
-                      ).map((header) => SliverToBoxAdapter(child: header)),
-                    ],
-                  );
-                },
-              ),
-            ),
-            if (category != ExploreCategory.hot)
-              Container(
-                color:
-                    Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-                child: DateTimeSelector(
-                  onDateChanged: (date) => context
-                      .read<ExploreDetailBloc>()
-                      .add(ExploreDetailDateChanged(date)),
-                  date: state.date,
-                  scale: state.scale,
-                  backgroundColor: Colors.transparent,
+    return BlocListener<ExploreDetailBloc, ExploreDetailState>(
+      listener: (context, state) => refresh(context),
+      child: _ExploreDetail(
+        // title: title,
+        builder: (context, scrollController) {
+          return Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<DanbooruExplorePostCubit,
+                    DanbooruExplorePostState>(
+                  builder: (context, pstate) {
+                    return DanbooruInfinitePostList(
+                      refreshing: pstate.refreshing,
+                      loading: pstate.loading,
+                      hasMore: pstate.hasMore,
+                      error: pstate.error,
+                      data: pstate.data,
+                      scrollController: scrollController,
+                      onLoadMore: () => fetch(context),
+                      onRefresh: () => refresh(context),
+                      sliverHeaderBuilder: (context) => [
+                        SliverAppBar(
+                          title: title,
+                          floating: true,
+                          elevation: 0,
+                          shadowColor: Colors.transparent,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                        ...categoryToListHeader(
+                          context,
+                          category,
+                          state.date,
+                          state.scale,
+                        ).map((header) => SliverToBoxAdapter(child: header)),
+                      ],
+                    );
+                  },
                 ),
               ),
-          ],
-        );
-      },
+              if (category != ExploreCategory.hot)
+                Container(
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .backgroundColor,
+                  child: DateTimeSelector(
+                    onDateChanged: (date) => context
+                        .read<ExploreDetailBloc>()
+                        .add(ExploreDetailDateChanged(date)),
+                    date: state.date,
+                    scale: state.scale,
+                    backgroundColor: Colors.transparent,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
