@@ -147,18 +147,22 @@ class _CarouselContent extends StatelessWidget {
             ),
           ),
           BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
-            builder: (context, state) => RecommendArtistList(
-              onHeaderTap: (index) =>
-                  goToGelbooruArtistPage(context, state.recommends[index].tag),
-              onTap: (recommendIndex, postIndex) => goToGelbooruPostDetailsPage(
-                context: context,
-                posts: state.recommends[recommendIndex].posts,
-                initialIndex: postIndex,
-              ),
-              recommends: state.recommends
+            builder: (context, state) {
+              final artists = state.recommends
                   .where((element) => element.type == RecommendType.artist)
-                  .toList(),
-            ),
+                  .toList();
+              return RecommendArtistList(
+                onHeaderTap: (index) =>
+                    goToGelbooruArtistPage(context, artists[index].tag),
+                onTap: (recommendIndex, postIndex) =>
+                    goToGelbooruPostDetailsPage(
+                  context: context,
+                  posts: artists[recommendIndex].posts,
+                  initialIndex: postIndex,
+                ),
+                recommends: artists,
+              );
+            },
           )
         ],
       ),

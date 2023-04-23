@@ -329,7 +329,7 @@ class _CarouselContent extends StatelessWidget {
                   initialIndex: postIndex,
                 ),
                 onHeaderTap: (index) =>
-                    goToArtistPage(context, state.recommends[index].tag),
+                    goToArtistPage(context, artists[index].tag),
                 recommends: artists,
               );
             },
@@ -341,7 +341,7 @@ class _CarouselContent extends StatelessWidget {
                   .toList();
               return RecommendCharacterList(
                 onHeaderTap: (index) =>
-                    goToCharacterPage(context, state.recommends[index].tag),
+                    goToCharacterPage(context, characters[index].tag),
                 onTap: (recommendIndex, postIndex) => goToDetailPage(
                   context: context,
                   posts: characters[recommendIndex].posts,
