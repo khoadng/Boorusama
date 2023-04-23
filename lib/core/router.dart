@@ -463,9 +463,10 @@ void goToQuickSearchPage(
               case BooruType.safebooru:
               case BooruType.testbooru:
               case BooruType.aibooru:
-                return DanbooruProvider.of(
+                return DanbooruProvider.create(
                   context,
                   booru: state.booru!,
+                  sourceComposer: DanbooruImageSourceComposer(state.booru!),
                   builder: (dcontext) => isMobile
                       ? SimpleTagSearchView(
                           onSubmitted: onSubmitted,
@@ -492,7 +493,7 @@ void goToQuickSearchPage(
                         ),
                 );
               case BooruType.gelbooru:
-                return GelbooruProvider.of(
+                return GelbooruProvider.create(
                   context,
                   booru: state.booru!,
                   builder: (gcontext) => isMobile
@@ -529,7 +530,7 @@ void goToQuickSearchPage(
               case BooruType.konachan:
               case BooruType.yandere:
               case BooruType.sakugabooru:
-                return MoebooruProvider.of(
+                return MoebooruProvider.create(
                   context,
                   booru: state.booru!,
                   builder: (gcontext) => isMobile

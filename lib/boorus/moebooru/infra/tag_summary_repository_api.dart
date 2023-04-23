@@ -8,16 +8,17 @@ import 'package:boorusama/boorus/moebooru/domain/tag_summary_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/tag_summary_dto.dart';
 
 class MoebooruTagSummaryRepository implements TagSummaryRepository {
-  final MoebooruApi _api;
-
   MoebooruTagSummaryRepository(this._api);
+
+  final MoebooruApi _api;
 
   @override
   Future<List<TagSummary>> getTagSummaries() async {
     try {
       var response = await _api.getTagSummary();
-      if (response.response.statusCode == 200) {
+      if ([200, 304].contains(response.response.statusCode)) {
         var tagSummaryDto = TagSummaryDto.fromJson(response.data);
+
         return convertTagSummaryDtoToTagSummaryList(tagSummaryDto);
       } else {
         throw Exception(

@@ -1,13 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/core/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
-import 'package:boorusama/core/ui/blacklists/blacklisted_tag_sheet.dart';
 
 class BlacklistedTagPage extends StatefulWidget {
   const BlacklistedTagPage({super.key});
@@ -62,11 +61,11 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showMaterialModalBottomSheet(
-              context: context,
-              builder: (_) => BlacklistedTagSheet(
-                  onSubmit: (tag) =>
-                      context.read<BlacklistedTagCubit>().addTag(tag)));
+          goToQuickSearchPage(
+            context,
+            onSelected: (tag) =>
+                context.read<BlacklistedTagCubit>().addTag(tag.value),
+          );
         },
         child: const Icon(Icons.add),
       ),
