@@ -34,13 +34,13 @@ class RecommendPostSection<T extends Post> extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(4),
               child: grid
-                  ? PreviewPostGrid(
+                  ? PreviewPostGrid<T>(
                       cacheManager: context.read<PreviewImageCacheManager>(),
                       posts: posts,
                       imageQuality: state.settings.imageQuality,
                       onTap: onTap,
                     )
-                  : PreviewPostList(
+                  : PreviewPostList<T>(
                       cacheManager: context.read<PreviewImageCacheManager>(),
                       posts: posts,
                       imageQuality: state.settings.imageQuality,

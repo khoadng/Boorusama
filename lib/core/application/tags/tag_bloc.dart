@@ -44,12 +44,14 @@ abstract class TagEvent extends Equatable {
 class TagFetched extends TagEvent {
   const TagFetched({
     required this.tags,
+    this.onResult,
   });
 
   final List<String> tags;
+  final void Function(List<TagGroupItem> tags)? onResult;
 
   @override
-  List<Object?> get props => [tags];
+  List<Object?> get props => [tags, onResult];
 }
 
 class TagBloc extends Bloc<TagEvent, TagState> {
@@ -80,6 +82,7 @@ class TagBloc extends Bloc<TagEvent, TagState> {
                     ))
                 .toList()
               ..sort((a, b) => a.order.compareTo(b.order));
+            event.onResult?.call(group);
             emit(state.copyWith(
               tags: group,
               status: LoadStatus.success,

@@ -29,6 +29,23 @@ class GelbooruPost extends Equatable
     required this.fileSize,
   }) : _sampleImageUrl = sampleImageUrl;
 
+  factory GelbooruPost.empty() => const GelbooruPost(
+        format: '',
+        height: 0.0,
+        id: 0,
+        md5: '',
+        originalImageUrl: '',
+        rating: Rating.general,
+        sampleImageUrl: '',
+        source: '',
+        tags: [],
+        thumbnailImageUrl: '',
+        width: 0.0,
+        hasComment: false,
+        hasParentOrChildren: false,
+        fileSize: 0,
+      );
+
   final String _sampleImageUrl;
 
   @override

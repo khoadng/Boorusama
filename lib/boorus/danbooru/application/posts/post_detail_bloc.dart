@@ -204,6 +204,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     Map<String, List<DanbooruPost>> tagCache,
   ) async {
     for (final tag in tags) {
+      if (state.recommends.any((e) => e.tag == tag)) continue;
+
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
           : await postRepository.getPosts(tag, 1);
@@ -231,6 +233,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     Map<String, List<DanbooruPost>> tagCache,
   ) async {
     for (final tag in tags) {
+      if (state.recommends.any((e) => e.tag == tag)) continue;
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
           : await postRepository.getPosts(tag, 1);

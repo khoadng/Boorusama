@@ -7,6 +7,8 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_detail_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_detail_state.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
@@ -16,13 +18,13 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 
 class GelbooruPostDetailPage extends StatefulWidget {
@@ -78,11 +80,8 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
                 onTap: () => hideOverlay.value = !hideOverlay.value,
                 onZoomUpdated: (zoom) => enableSwipe.value = !zoom,
               ),
-              imagePath: imagePath,
-              actionBarDisplayBehavior: state.settings.actionBarDisplayBehavior,
               post: widget.posts[page],
               preloadPost: widget.posts[page],
-              // recommends: state.recommends,
             ),
           );
         },
@@ -91,6 +90,17 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
       topRightButtonsBuilder: (page) => [
         MoreActionButton(post: widget.posts[page]),
       ],
+      onExpanded: (currentPage) => context.read<TagBloc>().add(TagFetched(
+            tags: widget.posts[currentPage].tags,
+            onResult: (tags) {
+              final t = tags
+                  .firstWhere((e) => e.groupName.toLowerCase() == 'artist')
+                  .tags;
+              context
+                  .read<GelbooruPostDetailBloc>()
+                  .add(GelbooruPostDetailRecommendedFetch(t));
+            },
+          )),
     );
   }
 }
@@ -98,8 +108,6 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
 class _CarouselContent extends StatelessWidget {
   const _CarouselContent({
     required this.media,
-    required this.imagePath,
-    required this.actionBarDisplayBehavior,
     required this.post,
     required this.preloadPost,
     required this.isExpanded,
@@ -108,16 +116,16 @@ class _CarouselContent extends StatelessWidget {
   });
 
   final PostMediaItem media;
-  final ValueNotifier<String?> imagePath;
   final Post post;
   final Post preloadPost;
-  final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final bool isExpanded;
   final ScrollController? scrollController;
   final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
+    final widgets = _buildWidgets(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomScrollView(
@@ -125,43 +133,51 @@ class _CarouselContent extends StatelessWidget {
         controller: scrollController,
         slivers: [
           SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                !isExpanded
-                    ? SizedBox(
-                        height: MediaQuery.of(context).size.height -
-                            MediaQuery.of(context).viewPadding.top,
-                        child: RepaintBoundary(child: media),
-                      )
-                    : RepaintBoundary(child: media),
-                if (!isExpanded)
-                  SizedBox(height: MediaQuery.of(context).size.height),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TagsTile(
-                      post: post,
-                      onExpand: () => context
-                          .read<TagBloc>()
-                          .add(TagFetched(tags: post.tags)),
-                      onTagTap: (tag) =>
-                          goToGelbooruSearchPage(context, tag: tag.rawName),
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                    FileDetailsSection(
-                      post: post,
-                    ),
-                    if (post.hasWebSource) SourceSection(post: post),
-                  ],
-                ),
-              ],
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => widgets[index],
+              childCount: widgets.length,
             ),
           ),
+          BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
+            builder: (context, state) => RecommendArtistList(
+              onHeaderTap: (index) => print(index),
+              onTap: (index) => goToGelbooruPostDetailsPage(
+                context: context,
+                posts: state.recommends[index].posts,
+                initialIndex: index,
+              ),
+              recommends: state.recommends
+                  .where((element) => element.type == RecommendType.artist)
+                  .toList(),
+            ),
+          )
         ],
       ),
     );
   }
+
+  List<Widget> _buildWidgets(BuildContext context) => [
+        if (!isExpanded)
+          SizedBox(
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).viewPadding.top,
+            child: RepaintBoundary(child: media),
+          )
+        else
+          RepaintBoundary(child: media),
+        if (!isExpanded) SizedBox(height: MediaQuery.of(context).size.height),
+        if (isExpanded) ...[
+          TagsTile(post: post),
+          const Divider(height: 8, thickness: 1),
+          FileDetailsSection(
+            post: post,
+          ),
+          if (post.hasWebSource)
+            SourceSection(
+              post: post,
+            ),
+        ],
+      ];
 }
 
 // ignore: prefer-single-widget-per-file

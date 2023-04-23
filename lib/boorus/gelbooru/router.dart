@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
+import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_detail_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_search_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_search_page.dart';
@@ -43,6 +44,12 @@ void goToGelbooruPostDetailsPage({
               booru: state.booru!,
               builder: (gcontext) => MultiBlocProvider(
                 providers: [
+                  BlocProvider(
+                      create: (_) => GelbooruPostDetailBloc(
+                            postRepository: gcontext.read<PostRepository>(),
+                            initialIndex: initialIndex,
+                            posts: posts,
+                          )..add(PostDetailRequested(index: initialIndex))),
                   BlocProvider.value(value: gcontext.read<ThemeBloc>()),
                   BlocProvider(
                     create: (_) => TagBloc(
