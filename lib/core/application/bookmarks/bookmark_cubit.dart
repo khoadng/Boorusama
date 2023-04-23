@@ -33,14 +33,16 @@ class BookmarkState {
 }
 
 class BookmarkCubit extends Cubit<BookmarkState> {
-  final BookmarkRepository _repository;
+  BookmarkCubit({
+    required this.bookmarkRepository,
+  }) : super(const BookmarkState());
 
-  BookmarkCubit(this._repository) : super(const BookmarkState());
+  final BookmarkRepository bookmarkRepository;
 
   Future<void> getAllBookmarks() async {
     emit(state.copyWith(status: BookmarkStatus.loading));
     try {
-      final bookmarks = await _repository.getAllBookmarks();
+      final bookmarks = await bookmarkRepository.getAllBookmarks();
       emit(
           state.copyWith(bookmarks: bookmarks, status: BookmarkStatus.success));
     } catch (e) {
@@ -55,7 +57,7 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   ) async {
     emit(state.copyWith(status: BookmarkStatus.loading));
     try {
-      final bookmark = await _repository.addBookmark(booru, post);
+      final bookmark = await bookmarkRepository.addBookmark(booru, post);
       emit(state.copyWith(
           bookmarks: [...state.bookmarks, bookmark],
           status: BookmarkStatus.success));
@@ -67,7 +69,7 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   Future<void> removeBookmark(Bookmark bookmark) async {
     emit(state.copyWith(status: BookmarkStatus.loading));
     try {
-      await _repository.removeBookmark(bookmark);
+      await bookmarkRepository.removeBookmark(bookmark);
       final newFavorites = List<Bookmark>.from(state.bookmarks)
         ..remove(bookmark);
       emit(state.copyWith(
@@ -80,7 +82,7 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   Future<void> updateBookmark(Bookmark bookmark) async {
     emit(state.copyWith(status: BookmarkStatus.loading));
     try {
-      await _repository.updateBookmark(bookmark);
+      await bookmarkRepository.updateBookmark(bookmark);
       final index = state.bookmarks.indexWhere((f) => f.id == bookmark.id);
       final newBookmarks = List<Bookmark>.from(state.bookmarks)
         ..replaceRange(index, index + 1, [bookmark]);

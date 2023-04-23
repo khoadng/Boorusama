@@ -306,9 +306,9 @@ void main() async {
                 create: (context) => BlacklistedTagCubit(globalBlacklistedTags),
               ),
               BlocProvider(
-                create: (context) =>
-                    BookmarkCubit(context.read<BookmarkRepository>())
-                      ..getAllBookmarks(),
+                create: (context) => BookmarkCubit(
+                    bookmarkRepository: context.read<BookmarkRepository>())
+                  ..getAllBookmarks(),
               ),
             ],
             child: MultiBlocListener(
