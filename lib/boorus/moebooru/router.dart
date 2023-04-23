@@ -119,8 +119,8 @@ void goToMoebooruDetailsPage({
                 booru: state.booru!,
                 builder: (context) => MoebooruPostDetails(
                   posts: posts,
-                  onPageChanged: (page) =>
-                      scrollController?.scrollToIndex(page),
+                  onExit: (page) => scrollController?.scrollToIndex(page),
+                  onPageChanged: (page) => {},
                   initialPage: initialPage,
                   fullscreen: sstate.settings.detailsDisplay ==
                       DetailsDisplay.imageFocus,

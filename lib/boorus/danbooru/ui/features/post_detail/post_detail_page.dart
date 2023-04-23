@@ -41,12 +41,14 @@ class PostDetailPage extends StatefulWidget {
     required this.intitialIndex,
     required this.onPageChanged,
     required this.onCachedImagePathUpdate,
+    required this.onExit,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
   final void Function(int page) onPageChanged;
   final void Function(String? imagePath) onCachedImagePathUpdate;
+  final void Function(int page) onExit;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -82,6 +84,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       intitialIndex: widget.intitialIndex,
       enablePageSwipe: enableSwipe,
       hideOverlay: hideOverlay,
+      onExit: widget.onExit,
       onPageChanged: (page) {
         currentPage.value = page;
         widget.onPageChanged.call(page);

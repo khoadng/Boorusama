@@ -53,8 +53,8 @@ void goToGelbooruPostDetailsPage({
                 child: GelbooruPostDetailPage(
                   posts: posts,
                   initialIndex: initialIndex,
-                  onPageChanged: (page) =>
-                      scrollController?.scrollToIndex(page),
+                  onPageChanged: (page) {},
+                  onExit: (page) => scrollController?.scrollToIndex(page),
                   fullscreen:
                       settings.detailsDisplay == DetailsDisplay.imageFocus,
                 ),

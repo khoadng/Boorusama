@@ -337,8 +337,8 @@ Future<void> goToDetailPage({
     (shareCubit) => PostDetailPage(
       intitialIndex: initialIndex,
       posts: posts,
+      onExit: (page) => scrollController?.scrollToIndex(page),
       onPageChanged: (page) {
-        scrollController?.scrollToIndex(page);
         shareCubit.updateInformation(posts[page]);
       },
       onCachedImagePathUpdate: (imagePath) =>

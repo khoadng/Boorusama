@@ -29,12 +29,14 @@ class MoebooruPostDetails extends StatefulWidget {
     required this.initialPage,
     required this.fullscreen,
     required this.onPageChanged,
+    required this.onExit,
   });
 
   final List<Post> posts;
   final int initialPage;
   final bool fullscreen;
   final void Function(int page) onPageChanged;
+  final void Function(int page) onExit;
 
   @override
   State<MoebooruPostDetails> createState() => _MoebooruPostDetailsState();
@@ -51,6 +53,7 @@ class _MoebooruPostDetailsState extends State<MoebooruPostDetails> {
       intitialIndex: widget.initialPage,
       enablePageSwipe: enableSwipe,
       hideOverlay: hideOverlay,
+      onExit: widget.onExit,
       onPageChanged: widget.onPageChanged,
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
         post: widget.posts[index],

@@ -31,6 +31,7 @@ class DetailsPage<T> extends StatefulWidget {
     this.bottomSheet,
     required this.enablePageSwipe,
     required this.hideOverlay,
+    required this.onExit,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
@@ -45,6 +46,7 @@ class DetailsPage<T> extends StatefulWidget {
   final Widget? bottomSheet;
   final ValueNotifier<bool> enablePageSwipe;
   final ValueNotifier<bool> hideOverlay;
+  final void Function(int index) onExit;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -142,8 +144,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   Future<void> _onBackButtonPressed() async {
     _keepBottomSheetDown = true;
-    final navigator = Navigator.of(context);
-    navigator.pop();
+    widget.onExit(_currentPage);
+    Navigator.of(context).pop();
   }
 
   late var _currentPage = widget.intitialIndex;

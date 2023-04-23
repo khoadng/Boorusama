@@ -32,12 +32,14 @@ class GelbooruPostDetailPage extends StatefulWidget {
     required this.initialIndex,
     required this.fullscreen,
     required this.onPageChanged,
+    required this.onExit,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
   final void Function(int page) onPageChanged;
+  final void Function(int page) onExit;
 
   @override
   State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
@@ -54,6 +56,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
       intitialIndex: widget.initialIndex,
       enablePageSwipe: enableSwipe,
       hideOverlay: hideOverlay,
+      onExit: widget.onExit,
       onPageChanged: widget.onPageChanged,
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
         post: widget.posts[index],
