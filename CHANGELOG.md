@@ -1,3 +1,6 @@
+# 2.11.2
+- Fixed broken thumbnails
+
 # 2.11.1
 - Fixed issue with bulk download permissions not being granted correctly
 - Resolved issue with bulk downloads not showing any progress
