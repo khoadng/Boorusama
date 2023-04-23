@@ -60,7 +60,7 @@ class _HomePageState extends State<DanbooruHomePage> {
                     BlocProvider(
                       create: (context) => DanbooruPostCubit.of(
                         context,
-                        extra: DanbooruPostExtra(tag: selectedTag.value),
+                        extra: DanbooruPostExtra(tag: () => selectedTag.value),
                       )..refresh(),
                       child: _LatestView(
                         onMenuTap: widget.onMenuTap,

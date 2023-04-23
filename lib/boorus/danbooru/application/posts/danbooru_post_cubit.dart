@@ -19,7 +19,7 @@ import 'package:boorusama/core/domain/tags.dart';
 typedef DanbooruPostState = PostState<DanbooruPost, DanbooruPostExtra>;
 
 class DanbooruPostExtra extends Equatable {
-  final String tag;
+  final String Function() tag;
   final int? limit;
 
   const DanbooruPostExtra({
@@ -31,7 +31,7 @@ class DanbooruPostExtra extends Equatable {
   List<Object?> get props => [tag, limit];
 
   DanbooruPostExtra copyWith({
-    String? tag,
+    String Function()? tag,
     int? Function()? limit,
   }) {
     return DanbooruPostExtra(
@@ -96,7 +96,7 @@ class DanbooruPostCubit extends PostCubit<DanbooruPost, DanbooruPostExtra>
   Future<List<DanbooruPost>> Function(int page) get fetcher =>
       (page) => postRepository
           .getPosts(
-            state.extra.tag,
+            state.extra.tag(),
             page,
             limit: state.extra.limit,
           )
@@ -105,14 +105,14 @@ class DanbooruPostCubit extends PostCubit<DanbooruPost, DanbooruPostExtra>
   @override
   Future<List<DanbooruPost>> Function() get refresher => () => postRepository
       .getPosts(
-        state.extra.tag,
+        state.extra.tag(),
         1,
         limit: state.extra.limit,
       )
       .then(transform);
 
   void setTags(String tags) => emit(state.copyWith(
-        extra: state.extra.copyWith(tag: tags),
+        extra: state.extra.copyWith(tag: () => tags),
       ));
 }
 

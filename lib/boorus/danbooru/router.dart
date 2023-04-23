@@ -236,7 +236,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
                 BlocProvider(
                   create: (_) => DanbooruPostCubit.of(
                     dcontext,
-                    extra: DanbooruPostExtra(tag: 'pool:${pool.id}'),
+                    extra: DanbooruPostExtra(tag: () => 'pool:${pool.id}'),
                   )..refresh(),
                 ),
               ],
@@ -274,7 +274,7 @@ void goToParentChildPage(
               BlocProvider(
                 create: (_) => DanbooruPostCubit.of(
                   dcontext,
-                  extra: DanbooruPostExtra(tag: tagQueryForDataFetching),
+                  extra: DanbooruPostExtra(tag: () => tagQueryForDataFetching),
                 )..refresh(),
               ),
             ],
@@ -483,7 +483,7 @@ Widget provideSearchPageDependencies(
               final postCubit = DanbooruPostCubit.of(
                 context,
                 extra: DanbooruPostExtra(
-                  tag: tagSearchBloc.state.selectedTags.join(' '),
+                  tag: () => tagSearchBloc.state.selectedTags.join(' '),
                   limit: settingsState.settings.postsPerPage,
                 ),
               );
@@ -684,7 +684,8 @@ Widget provideSavedSearchPageDependecies(
             BlocProvider(
               create: (_) => DanbooruPostCubit.of(
                 dcontext,
-                extra: DanbooruPostExtra(tag: SavedSearch.all().toQuery()),
+                extra:
+                    DanbooruPostExtra(tag: () => SavedSearch.all().toQuery()),
               )..refresh(),
             ),
             BlocProvider(
