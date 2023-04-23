@@ -6,13 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
@@ -67,26 +63,7 @@ class _HomePageState extends State<DanbooruHomePage> {
                         onSelectedTagChanged: (tag) => selectedTag.value = tag,
                       ),
                     ),
-                    // BlocProvider.value(
-                    //   value: context.read<ExploreBloc>(),
-                    //   child: const _ExplorePage(),
-                    // ),
                     const _ExplorePage(),
-                    MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => PoolBloc(
-                            poolRepository: context.read<PoolRepository>(),
-                            postRepository:
-                                context.read<DanbooruPostRepository>(),
-                          )..add(const PoolRefreshed(
-                              category: PoolCategory.series,
-                              order: PoolOrder.latest,
-                            )),
-                        ),
-                      ],
-                      child: const _PoolPage(),
-                    ),
                     const OtherFeaturesPage(),
                   ],
                 ),
@@ -111,19 +88,6 @@ class _ExplorePage extends StatelessWidget {
     final state = context.watch<NetworkBloc>().state;
 
     return ExplorePage(
-      useAppBarPadding: state is NetworkConnectedState,
-    );
-  }
-}
-
-class _PoolPage extends StatelessWidget {
-  const _PoolPage();
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<NetworkBloc>().state;
-
-    return PoolPage(
       useAppBarPadding: state is NetworkConnectedState,
     );
   }

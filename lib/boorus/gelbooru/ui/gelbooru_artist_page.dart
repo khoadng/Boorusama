@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/application/gelbooru_artist_character_post_cubit.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
 import 'package:boorusama/boorus/gelbooru/ui/gelbooru_infinite_post_list.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/tags.dart';

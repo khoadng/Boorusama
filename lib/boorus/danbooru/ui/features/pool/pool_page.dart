@@ -19,10 +19,7 @@ import 'sliver_pool_grid.dart';
 class PoolPage extends StatefulWidget {
   const PoolPage({
     super.key,
-    this.useAppBarPadding = true,
   });
-
-  final bool useAppBarPadding;
 
   @override
   State<PoolPage> createState() => _PoolPageState();
@@ -45,7 +42,6 @@ class _PoolPageState extends State<PoolPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('pool.pool_gallery').tr(),
-          primary: widget.useAppBarPadding,
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: const [

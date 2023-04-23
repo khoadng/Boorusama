@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 
 class OtherFeaturesPage extends StatelessWidget {
@@ -17,6 +18,8 @@ class OtherFeaturesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final booruConfig =
         context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
+    final authState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return Scaffold(
       body: SafeArea(
@@ -24,35 +27,44 @@ class OtherFeaturesPage extends StatelessWidget {
           child: Column(
             children: [
               ListTile(
-                leading: const Icon(Icons.favorite_outline),
-                title: Text('profile.favorites'.tr()),
+                leading: const Icon(Icons.photo_album_outlined),
+                title: const Text('Pools'),
                 onTap: () {
-                  goToFavoritesPage(context, booruConfig!.login);
+                  goToPoolPage(context);
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.collections),
-                title: const Text('Favorite groups'),
-                onTap: () {
-                  goToFavoriteGroupPage(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.search),
-                title: const Text('Saved search'),
-                onTap: () {
-                  goToSavedSearchPage(context, booruConfig!.login);
-                },
-              ),
-              ListTile(
-                leading: const FaIcon(FontAwesomeIcons.ban, size: 20),
-                title: const Text(
-                  'blacklisted_tags.blacklisted_tags',
-                ).tr(),
-                onTap: () {
-                  goToBlacklistedTagPage(context);
-                },
-              ),
+              if (authState is Authenticated) ...[
+                ListTile(
+                  leading: const Icon(Icons.favorite_outline),
+                  title: Text('profile.favorites'.tr()),
+                  onTap: () {
+                    goToFavoritesPage(context, booruConfig!.login);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.collections),
+                  title: const Text('Favorite groups'),
+                  onTap: () {
+                    goToFavoriteGroupPage(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.search),
+                  title: const Text('Saved search'),
+                  onTap: () {
+                    goToSavedSearchPage(context, booruConfig!.login);
+                  },
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.ban, size: 20),
+                  title: const Text(
+                    'blacklisted_tags.blacklisted_tags',
+                  ).tr(),
+                  onTap: () {
+                    goToBlacklistedTagPage(context);
+                  },
+                ),
+              ]
             ],
           ),
         ),

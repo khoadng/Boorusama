@@ -49,6 +49,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_d
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -724,6 +725,31 @@ void goToSavedSearchEditPage(BuildContext context) {
         },
       );
     },
+  ));
+}
+
+void goToPoolPage(BuildContext context) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) => DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => PoolBloc(
+                poolRepository: context.read<PoolRepository>(),
+                postRepository: context.read<DanbooruPostRepository>(),
+              )..add(const PoolRefreshed(
+                  category: PoolCategory.series,
+                  order: PoolOrder.latest,
+                )),
+            ),
+          ],
+          child: const PoolPage(),
+        ),
+      ),
+    ),
   ));
 }
 
