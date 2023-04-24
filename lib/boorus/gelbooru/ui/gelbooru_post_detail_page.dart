@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,11 +103,15 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage> {
             tags: widget.posts[currentPage].tags,
             onResult: (tags) {
               final t = tags
-                  .firstWhere((e) => e.groupName.toLowerCase() == 'artist')
-                  .tags;
-              context
-                  .read<GelbooruPostDetailBloc>()
-                  .add(GelbooruPostDetailRecommendedFetch(t));
+                  .firstWhereOrNull(
+                      (e) => e.groupName.toLowerCase() == 'artist')
+                  ?.tags;
+
+              if (t != null) {
+                context
+                    .read<GelbooruPostDetailBloc>()
+                    .add(GelbooruPostDetailRecommendedFetch(t));
+              }
             },
           )),
     );
