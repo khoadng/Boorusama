@@ -6,9 +6,9 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:boorusama/core/utils.dart';
 
 class FullHistoryView extends StatelessWidget {
   const FullHistoryView({

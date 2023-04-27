@@ -10,11 +10,12 @@ import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/app_theme.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';

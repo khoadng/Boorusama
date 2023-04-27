@@ -10,10 +10,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/platform.dart';
 
 @pragma('vm:entry-point')
 class FlutterDownloaderBulkDownloader<T> implements BulkDownloader<T> {

@@ -11,9 +11,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tag_suggestion_items.dart';

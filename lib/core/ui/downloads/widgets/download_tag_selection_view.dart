@@ -8,10 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
+import 'package:boorusama/core/android.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 

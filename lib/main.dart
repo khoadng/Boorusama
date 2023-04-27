@@ -20,7 +20,6 @@ import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/api.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -32,7 +31,6 @@ import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -58,6 +56,7 @@ import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/internationalization.dart';
+import 'package:boorusama/core/platform.dart';
 import 'app.dart';
 
 const savedSearchHelpUrl =

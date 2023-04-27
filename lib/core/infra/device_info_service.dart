@@ -3,7 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/platform.dart';
 
 class DeviceInfoService {
   const DeviceInfoService({

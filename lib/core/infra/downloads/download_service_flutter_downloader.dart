@@ -11,10 +11,10 @@ import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/platform.dart';
 
 @pragma('vm:entry-point')
 class DownloadServiceFlutterDownloader implements DownloadService<Post> {

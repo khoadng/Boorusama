@@ -4,18 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
-
-class BlacklistState {}
-
-class BlacklistLoading extends BlacklistState {}
-
-class BlacklistLoaded extends BlacklistState {
-  final List<BlacklistedTag> tags;
-
-  BlacklistLoaded(this.tags);
-}
-
-class BlacklistError extends BlacklistState {}
+import 'blacklisted_tags_state.dart';
 
 class BlacklistedTagCubit extends Cubit<BlacklistState> {
   final BlacklistedTagRepository _blacklistRepository;

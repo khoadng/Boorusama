@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/platform.dart';
 
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({

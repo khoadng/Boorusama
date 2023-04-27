@@ -11,10 +11,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
+import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/utils.dart';
 
 Future<String> _getDownloadPath(String? defaultPath) async {
   if (defaultPath != null) return defaultPath;

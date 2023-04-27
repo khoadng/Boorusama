@@ -7,10 +7,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_media_item.dart';
+import 'package:boorusama/core/utils.dart';
 
 class BookmarkDetailsPage extends StatefulWidget {
   final List<Bookmark> bookmarks;

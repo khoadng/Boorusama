@@ -7,12 +7,12 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_artist_character_post_cubit.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_cubit.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_search_bloc.dart';
+import 'package:boorusama/boorus/gelbooru/application/posts.dart';
+import 'package:boorusama/boorus/gelbooru/application/search/gelbooru_search_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_artist_page.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_search_page.dart';
+import 'package:boorusama/boorus/gelbooru/ui/artists/gelbooru_artist_page.dart';
+import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
+import 'package:boorusama/boorus/gelbooru/ui/search/gelbooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
@@ -23,7 +23,6 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'ui/gelbooru_post_detail_page.dart';
 
 void goToGelbooruPostDetailsPage({
   required BuildContext context,

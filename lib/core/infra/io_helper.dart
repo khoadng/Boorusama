@@ -9,7 +9,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/platform.dart';
 
 class IOHelper {
   static Future<String> getDownloadPath() async {

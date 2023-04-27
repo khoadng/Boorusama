@@ -10,12 +10,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
+import 'package:boorusama/core/utils.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({

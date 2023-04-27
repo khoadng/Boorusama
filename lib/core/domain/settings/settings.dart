@@ -3,32 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/core.dart';
-
-enum DataCollectingStatus {
-  allow,
-  prohibit,
-}
-
-enum ActionBarDisplayBehavior {
-  scrolling,
-  staticAtBottom,
-}
-
-enum DetailsDisplay {
-  postFocus,
-  imageFocus,
-}
-
-enum DownloadMethod {
-  flutterDownloader,
-  imageGallerySaver,
-}
-
-enum ContentOrganizationCategory {
-  infiniteScroll,
-  pagination,
-}
+import 'types.dart';
 
 class Settings extends Equatable {
   const Settings({

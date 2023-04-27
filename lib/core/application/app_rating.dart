@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/platform.dart';
 
 RateMyApp _createRateMyApp() => RateMyApp(
       minDays: 14,

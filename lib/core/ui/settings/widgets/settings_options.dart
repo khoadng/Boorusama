@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/modal_options.dart';
 
 Future<T?> showRadioOptionsModalBottomSheet<T>({
   required BuildContext context,

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/utils.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({

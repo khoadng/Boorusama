@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_completed_view.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_empty_tag_view.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_error_view.dart';

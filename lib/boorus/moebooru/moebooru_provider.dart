@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/moebooru/domain/moebooru_popular_repository.dart';
-import 'package:boorusama/boorus/moebooru/infra/moebooru_autocomplete_repository.dart';
-import 'package:boorusama/boorus/moebooru/infra/moebooru_popular_repository_api.dart';
-import 'package:boorusama/boorus/moebooru/infra/moebooru_post_repository_api.dart';
-import 'package:boorusama/boorus/moebooru/infra/tag_summary_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_popular_repository.dart';
+import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocomplete_repository.dart';
+import 'package:boorusama/boorus/moebooru/infra/posts.dart';
+import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/infra/tags.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';

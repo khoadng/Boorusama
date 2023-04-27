@@ -13,7 +13,6 @@ import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/utils.dart';

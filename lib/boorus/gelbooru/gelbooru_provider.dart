@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/gelbooru/infra/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/boorus/gelbooru/infra/autocompletes/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
@@ -18,8 +18,8 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/main.dart';
-import 'infra/gelbooru_post_repository_api.dart';
-import 'infra/gelbooru_tag_repository_api.dart';
+import 'infra/posts/gelbooru_post_repository_api.dart';
+import 'infra/tags/gelbooru_tag_repository_api.dart';
 
 class GelbooruProvider extends StatelessWidget {
   const GelbooruProvider({

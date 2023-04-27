@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PerformancePage extends StatefulWidget {

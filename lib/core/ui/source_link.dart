@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/string_utils.dart';
 
 class SourceLink extends StatelessWidget {

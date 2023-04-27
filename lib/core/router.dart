@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
-import 'package:boorusama/boorus/moebooru/application/moebooru_bulk_download_manager_bloc.dart';
+import 'package:boorusama/boorus/moebooru/application/downloads.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';

@@ -7,11 +7,11 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
-import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
+import 'package:boorusama/boorus/moebooru/application/posts/moebooru_post_cubit.dart';
+import 'package:boorusama/boorus/moebooru/application/search/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details_page.dart';
-import 'package:boorusama/boorus/moebooru/ui/moebooru_search_page.dart';
+import 'package:boorusama/boorus/moebooru/ui/posts.dart';
+import 'package:boorusama/boorus/moebooru/ui/search/moebooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
