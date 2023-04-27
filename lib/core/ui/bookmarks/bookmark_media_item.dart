@@ -36,13 +36,6 @@ class BookmarkMediaItem extends StatefulWidget {
 }
 
 class _PostMediaItemState extends State<BookmarkMediaItem> {
-  late final String videoHtml = '''
-            <center>
-              <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
-                <source src=${widget.bookmark.sampleUrl}#t=0.01 type="video/webm" />
-              </video>
-            </center>''';
-
   final transformationController = TransformationController();
 
   @override
@@ -69,7 +62,9 @@ class _PostMediaItemState extends State<BookmarkMediaItem> {
   Widget build(BuildContext context) {
     return widget.bookmark.isVideo
         ? p.extension(widget.bookmark.sampleUrl) == '.webm'
-            ? EmbeddedWebViewWebm(videoHtml: videoHtml)
+            ? EmbeddedWebViewWebm(
+                url: widget.bookmark.sampleUrl,
+              )
             : BooruVideo(
                 url: widget.bookmark.sampleUrl,
                 aspectRatio: widget.bookmark.aspectRatio,

@@ -10,7 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/application/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details.dart';
+import 'package:boorusama/boorus/moebooru/ui/moebooru_post_details_page.dart';
 import 'package:boorusama/boorus/moebooru/ui/moebooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -20,7 +20,6 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
@@ -109,27 +108,11 @@ void goToMoebooruDetailsPage({
 }) {
   Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (_, sstate) {
-              return MoebooruProvider.of(
-                context,
-                booru: state.booru!,
-                builder: (context) => MoebooruPostDetails(
-                  posts: posts,
-                  onExit: (page) => scrollController?.scrollToIndex(page),
-                  onPageChanged: (page) => {},
-                  initialPage: initialPage,
-                  fullscreen: sstate.settings.detailsDisplay ==
-                      DetailsDisplay.imageFocus,
-                ),
-              );
-            },
-          );
-        },
-      ),
+    MoebooruPostDetailsPage.routeOf(
+      context,
+      posts: posts,
+      initialIndex: initialPage,
+      scrollController: scrollController,
     ),
   );
 }

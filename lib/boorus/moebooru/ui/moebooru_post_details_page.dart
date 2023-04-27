@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,23 +9,17 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts/post_share_cubit.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_detail_bloc.dart';
-import 'package:boorusama/boorus/gelbooru/application/gelbooru_post_detail_state.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/boorus/gelbooru/ui/gelbooru_post_action_toolbar.dart';
-import 'package:boorusama/boorus/gelbooru/ui/tags_tile.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/boorus/moebooru/ui/moebooru_post_action_toolbar.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/boorus/booru.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags/tag_repository.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -38,22 +31,22 @@ import 'package:boorusama/core/ui/file_details_section.dart';
 import 'package:boorusama/core/ui/post_media_item.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/posts.dart';
-import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
+import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 
-class GelbooruPostDetailPage extends StatefulWidget {
-  const GelbooruPostDetailPage({
+class MoebooruPostDetailsPage extends StatefulWidget {
+  const MoebooruPostDetailsPage({
     super.key,
     required this.posts,
-    required this.initialIndex,
+    required this.initialPage,
     required this.fullscreen,
     required this.onPageChanged,
     required this.onExit,
     required this.onCachedImagePathUpdate,
   });
 
-  final int initialIndex;
   final List<Post> posts;
+  final int initialPage;
   final bool fullscreen;
   final void Function(int page) onPageChanged;
   final void Function(String? imagePath) onCachedImagePathUpdate;
@@ -69,54 +62,43 @@ class GelbooruPostDetailPage extends StatefulWidget {
     final booru = context.read<CurrentBooruBloc>().state.booru!;
 
     return MaterialPageRoute(
-      builder: (_) => GelbooruProvider.of(
-        context,
-        booru: booru,
-        builder: (gcontext) {
-          final shareCubit = PostShareCubit.of(context)
-            ..updateInformation(posts[initialIndex]);
+      builder: (_) {
+        final shareCubit = PostShareCubit.of(context)
+          ..updateInformation(posts[initialIndex]);
 
-          return MultiBlocProvider(
+        return MoebooruProvider.of(
+          context,
+          booru: booru,
+          builder: (context) => MultiBlocProvider(
             providers: [
-              BlocProvider(
-                  create: (_) => GelbooruPostDetailBloc(
-                        postRepository: gcontext.read<PostRepository>(),
-                        initialIndex: initialIndex,
-                        posts: posts,
-                      )..add(PostDetailRequested(index: initialIndex))),
-              BlocProvider.value(value: gcontext.read<ThemeBloc>()),
               BlocProvider.value(value: shareCubit),
-              BlocProvider(
-                create: (_) => TagBloc(
-                  tagRepository: gcontext.read<TagRepository>(),
-                ),
-              ),
             ],
-            child: GelbooruPostDetailPage(
+            child: MoebooruPostDetailsPage(
               posts: posts,
-              initialIndex: initialIndex,
+              onExit: (page) => scrollController?.scrollToIndex(page),
               onPageChanged: (page) {
                 shareCubit.updateInformation(posts[page]);
               },
               onCachedImagePathUpdate: (imagePath) =>
                   shareCubit.setImagePath(imagePath ?? ''),
-              onExit: (page) => scrollController?.scrollToIndex(page),
+              initialPage: initialIndex,
               fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
   @override
-  State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
+  State<MoebooruPostDetailsPage> createState() =>
+      _MoebooruPostDetailsPageState();
 }
 
-class _PostDetailPageState extends State<GelbooruPostDetailPage>
-    with PostDetailsPageMixin<GelbooruPostDetailPage, Post> {
+class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
+    with PostDetailsPageMixin<MoebooruPostDetailsPage, Post> {
   late final _controller = DetailsPageController(
-      swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
+      swipeDownToDismiss: !widget.posts[widget.initialPage].isVideo);
 
   @override
   DetailsPageController get controller => _controller;
@@ -130,8 +112,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
   @override
   Widget build(BuildContext context) {
     return DetailsPage(
-      controller: controller,
-      intitialIndex: widget.initialIndex,
+      intitialIndex: widget.initialPage,
       onExit: widget.onExit,
       onPageChanged: widget.onPageChanged,
       bottomSheet: (page) => Column(
@@ -143,7 +124,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
               builder: (_, progress, __) =>
                   BooruVideoProgressBar(progress: progress),
             ),
-          GelbooruPostActionToolbar(post: posts[page]),
+          MoebooruPostActionToolbar(post: posts[page]),
         ],
       ),
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
@@ -167,49 +148,17 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
                     childCount: widgets.length,
                   ),
                 ),
-                BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
-                  builder: (context, state) {
-                    final artists = state.recommends
-                        .where(
-                            (element) => element.type == RecommendType.artist)
-                        .toList();
-                    return RecommendArtistList(
-                      onHeaderTap: (index) =>
-                          goToGelbooruArtistPage(context, artists[index].tag),
-                      onTap: (recommendIndex, postIndex) =>
-                          goToGelbooruPostDetailsPage(
-                        context: context,
-                        posts: artists[recommendIndex].posts,
-                        initialIndex: postIndex,
-                      ),
-                      recommends: artists,
-                    );
-                  },
-                )
               ],
             ),
           );
         },
       ),
       pageCount: widget.posts.length,
-      topRightButtonsBuilder: (page) => [
-        MoreActionButton(post: widget.posts[page]),
+      topRightButtonsBuilder: (currentPage) => [
+        MoreActionButton(
+          post: widget.posts[currentPage],
+        ),
       ],
-      onExpanded: (currentPage) => context.read<TagBloc>().add(TagFetched(
-            tags: widget.posts[currentPage].tags,
-            onResult: (tags) {
-              final t = tags
-                  .firstWhereOrNull(
-                      (e) => e.groupName.toLowerCase() == 'artist')
-                  ?.tags;
-
-              if (t != null) {
-                context
-                    .read<GelbooruPostDetailBloc>()
-                    .add(GelbooruPostDetailRecommendedFetch(t));
-              }
-            },
-          )),
     );
   }
 
@@ -260,21 +209,26 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
         RepaintBoundary(child: media),
       if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
       if (expanded) ...[
-        TagsTile(post: post),
-        const Divider(height: 8, thickness: 1),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: BasicTagList(
+            tags: post.tags,
+            onTap: (tag) => goToMoebooruSearchPage(context, tag: tag),
+          ),
+        ),
+        const Divider(
+          thickness: 1.5,
+          height: 4,
+        ),
         FileDetailsSection(
           post: post,
         ),
-        if (post.hasWebSource)
-          SourceSection(
-            post: post,
-          ),
+        if (post.hasWebSource) SourceSection(post: post),
       ],
     ];
   }
 }
 
-// ignore: prefer-single-widget-per-file
 class MoreActionButton extends StatelessWidget {
   const MoreActionButton({
     super.key,

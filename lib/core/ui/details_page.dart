@@ -18,6 +18,57 @@ import 'package:boorusama/core/ui/touch_count_recognizer.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
+class DetailsPageController extends ChangeNotifier {
+  DetailsPageController({
+    bool swipeDownToDismiss = true,
+  }) : _enableSwipeDownToDismiss = swipeDownToDismiss;
+
+  var _enableSwipeDownToDismiss = false;
+  var _enablePageSwipe = true;
+  final _hideOverlay = ValueNotifier(false);
+
+  bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
+  bool get pageSwipe => _enablePageSwipe;
+  ValueNotifier<bool> get hideOverlay => _hideOverlay;
+
+  void enableSwipeDownToDismiss() {
+    _enableSwipeDownToDismiss = true;
+    notifyListeners();
+  }
+
+  void disableSwipeDownToDismiss() {
+    _enableSwipeDownToDismiss = false;
+    notifyListeners();
+  }
+
+  void enablePageSwipe() {
+    _enablePageSwipe = true;
+    notifyListeners();
+  }
+
+  void disablePageSwipe() {
+    _enablePageSwipe = false;
+    notifyListeners();
+  }
+
+  // set overlay value
+  void setOverlay(bool value) {
+    _hideOverlay.value = value;
+    notifyListeners();
+  }
+
+  // set enable swipe page
+  void setEnablePageSwipe(bool value) {
+    _enablePageSwipe = value;
+    notifyListeners();
+  }
+
+  void toggleOverlay() {
+    _hideOverlay.value = !_hideOverlay.value;
+    notifyListeners();
+  }
+}
+
 class DetailsPage<T> extends StatefulWidget {
   const DetailsPage({
     Key? key,
@@ -29,24 +80,21 @@ class DetailsPage<T> extends StatefulWidget {
     required this.topRightButtonsBuilder,
     this.onExpanded,
     this.bottomSheet,
-    this.enablePageSwipe = true,
-    this.hideOverlay = false,
     required this.onExit,
+    this.controller,
   }) : super(key: key);
 
   final void Function(int page)? onPageChanged;
   final int intitialIndex;
   final Widget Function(BuildContext context, int index) targetSwipeDownBuilder;
-  final Widget Function(
-          BuildContext context, int page, int currentPage, bool expanded)
-      expandedBuilder;
+  final Widget Function(BuildContext context, int page, int currentPage,
+      bool expanded, bool enableSwipe) expandedBuilder;
   final int pageCount;
   final List<Widget> Function(int currentPage) topRightButtonsBuilder;
   final void Function(int currentPage)? onExpanded;
-  final Widget? bottomSheet;
-  final bool enablePageSwipe;
-  final bool hideOverlay;
+  final Widget? Function(int currentPage)? bottomSheet;
   final void Function(int index) onExit;
+  final DetailsPageController? controller;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -63,8 +111,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     ],
   );
   var isExpanded = ValueNotifier(false);
-  late final _hideOverlayNotifier = ValueNotifier(widget.hideOverlay);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
+
+  //details page contorller
+  late final _controller = widget.controller ?? DetailsPageController();
 
   @override
   Function() get popper => () => _onBackButtonPressed();
@@ -73,6 +123,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   double _topRightButtonGroupOffset = 0.0;
   late AnimationController _bottomSheetAnimationController;
   var _keepBottomSheetDown = false;
+  var _pageSwipe = true;
 
   @override
   void initState() {
@@ -84,23 +135,32 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
 
+    _controller.addListener(_onPageDetailsChanged);
+
     super.initState();
+  }
+
+  void _onPageDetailsChanged() {
+    _updateShouldSlideDown();
+    if (_controller.pageSwipe != _pageSwipe) {
+      setState(() {
+        _pageSwipe = _controller.pageSwipe;
+      });
+    }
   }
 
   @override
   void didUpdateWidget(DetailsPage<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.hideOverlay != widget.hideOverlay) {
-      _hideOverlayNotifier.value = widget.hideOverlay;
-    }
 
     _updateShouldSlideDown();
   }
 
   void _updateShouldSlideDown() {
     if (_keepBottomSheetDown) return;
-    _shouldSlideDownNotifier.value =
-        isSwipingDown.value || isExpanded.value || _hideOverlayNotifier.value;
+    _shouldSlideDownNotifier.value = isSwipingDown.value ||
+        isExpanded.value ||
+        _controller.hideOverlay.value;
   }
 
   @override
@@ -110,14 +170,19 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
+
+    _controller.removeListener(_onPageDetailsChanged);
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (expanded || _multiTouch || !widget.enablePageSwipe) {
-      // Ignore the swipe down behavior when in expanded mode
-      return;
-    }
+    if (!_controller.pageSwipe ||
+        !_controller.swipeDownToDismiss ||
+        expanded ||
+        _multiTouch) return;
 
     handlePointerMove(event);
 
@@ -130,17 +195,17 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded || _multiTouch || !widget.enablePageSwipe) {
-      // Ignore the swipe down behavior when in expanded mode
-      return;
-    }
+    if (expanded ||
+        _multiTouch ||
+        !_controller.pageSwipe ||
+        !_controller.swipeDownToDismiss) return;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!mounted) return;
       if (!controller.hasClients) return;
-      if (_currentPage != widget.intitialIndex &&
+      if (controller.currentPage.value != widget.intitialIndex &&
           controller.page == widget.intitialIndex) {
-        controller.jumpToPage(_currentPage);
+        controller.jumpToPage(controller.currentPage.value);
       }
     });
 
@@ -150,10 +215,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   Future<void> _onBackButtonPressed() async {
     _keepBottomSheetDown = true;
     Navigator.of(context).pop();
-    widget.onExit(_currentPage);
+    widget.onExit(controller.currentPage.value);
   }
 
-  late var _currentPage = widget.intitialIndex;
   var _multiTouch = false;
 
   @override
@@ -226,13 +290,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                         widget.onExpanded?.call(currentPage);
                       }
                     },
-                    onPageChanged: (page) {
-                      setState(() {
-                        _currentPage = page;
-                      });
-                      widget.onPageChanged?.call(page);
-                    },
-                    physics: widget.enablePageSwipe
+                    onPageChanged: widget.onPageChanged,
+                    physics: _pageSwipe
                         ? const DefaultPageViewScrollPhysics()
                         : const NeverScrollableScrollPhysics(),
                     itemCount: widget.pageCount,
@@ -245,6 +304,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                           page,
                           currentPage,
                           value,
+                          _pageSwipe,
                         ),
                       );
                     },
@@ -259,62 +319,74 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   Widget _buildNavigationButtonGroup(ThemeMode theme, BuildContext context) {
-    return Align(
-      alignment: Alignment(
-        -0.75,
-        getTopActionIconAlignValue(),
-      ),
-      child: Transform.translate(
-        offset: Offset(0, _navigationButtonGroupOffset),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              CircularIconButton(
-                icon: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: theme == ThemeMode.light
-                      ? Icon(
-                          Icons.arrow_back_ios,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        )
-                      : const Icon(Icons.arrow_back_ios),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _controller.hideOverlay,
+      builder: (_, hide, __) => !hide
+          ? Align(
+              alignment: Alignment(
+                -0.75,
+                getTopActionIconAlignValue(),
+              ),
+              child: Transform.translate(
+                offset: Offset(0, _navigationButtonGroupOffset),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      CircularIconButton(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: theme == ThemeMode.light
+                              ? Icon(
+                                  Icons.arrow_back_ios,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                )
+                              : const Icon(Icons.arrow_back_ios),
+                        ),
+                        onPressed: () {
+                          _onBackButtonPressed();
+                        },
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      CircularIconButton(
+                        icon: theme == ThemeMode.light
+                            ? Icon(
+                                Icons.home,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              )
+                            : const Icon(Icons.home),
+                        onPressed: () => goToHomePage(context),
+                      ),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  _onBackButtonPressed();
-                },
               ),
-              const SizedBox(
-                width: 4,
-              ),
-              CircularIconButton(
-                icon: theme == ThemeMode.light
-                    ? Icon(
-                        Icons.home,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      )
-                    : const Icon(Icons.home),
-                onPressed: () => goToHomePage(context),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 
   Widget _buildTopRightButtonGroup() {
-    return Align(
-      alignment: Alignment(
-        0.9,
-        getTopActionIconAlignValue(),
-      ),
-      child: Transform.translate(
-        offset: Offset(0, _topRightButtonGroupOffset),
-        child: ButtonBar(
-          children: widget.topRightButtonsBuilder(controller.currentPage.value),
-        ),
-      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _controller.hideOverlay,
+      builder: (_, hide, __) => !hide
+          ? Align(
+              alignment: Alignment(
+                0.9,
+                getTopActionIconAlignValue(),
+              ),
+              child: Transform.translate(
+                offset: Offset(0, _topRightButtonGroupOffset),
+                child: ButtonBar(
+                  children: widget
+                      .topRightButtonsBuilder(controller.currentPage.value),
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 
@@ -346,7 +418,12 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                       curve: Curves.easeOut,
                     ),
                   ),
-                  child: widget.bottomSheet,
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: controller.currentPage,
+                    builder: (context, page, child) =>
+                        widget.bottomSheet?.call(page) ??
+                        const SizedBox.shrink(),
+                  ),
                 );
               },
             )

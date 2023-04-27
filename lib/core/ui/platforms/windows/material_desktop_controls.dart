@@ -22,9 +22,11 @@ class MaterialDesktopControls extends StatefulWidget {
   const MaterialDesktopControls({
     this.showPlayButton = true,
     super.key,
+    this.onVisibilityChanged,
   });
 
   final bool showPlayButton;
+  final void Function(bool value)? onVisibilityChanged;
 
   @override
   State<StatefulWidget> createState() {
@@ -60,6 +62,9 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
   void initState() {
     super.initState();
     notifier = Provider.of<PlayerNotifier>(context, listen: false);
+    notifier.addListener(() {
+      widget.onVisibilityChanged?.call(notifier.hideStuff);
+    });
   }
 
   @override
@@ -83,7 +88,9 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         _cancelAndRestartTimer();
       },
       child: GestureDetector(
-        onTap: () => _cancelAndRestartTimer(),
+        onTap: () {
+          _cancelAndRestartTimer();
+        },
         child: AbsorbPointer(
           absorbing: notifier.hideStuff,
           child: Stack(
@@ -104,7 +111,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
                       child:
                           _buildSubtitles(context, chewieController.subtitle!),
                     ),
-                  _buildBottomBar(context),
+                  // _buildBottomBar(context),
                 ],
               ),
             ],
@@ -258,6 +265,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
     );
   }
 
+  // ignore: unused_element
   AnimatedOpacity _buildBottomBar(
     BuildContext context,
   ) {
@@ -596,7 +604,8 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
             ChewieProgressColors(
               playedColor: Theme.of(context).colorScheme.secondary,
               handleColor: Theme.of(context).colorScheme.secondary,
-              bufferedColor: Theme.of(context).colorScheme.background.withOpacity(0.5),
+              bufferedColor:
+                  Theme.of(context).colorScheme.background.withOpacity(0.5),
               backgroundColor: Theme.of(context).disabledColor.withOpacity(0.5),
             ),
       ),

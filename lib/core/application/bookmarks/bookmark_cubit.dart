@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -8,7 +10,7 @@ import 'package:boorusama/core/domain/posts.dart';
 
 enum BookmarkStatus { initial, loading, success, failure }
 
-class BookmarkState {
+class BookmarkState extends Equatable {
   final List<Bookmark> bookmarks;
   final BookmarkStatus status;
   final String error;
@@ -30,6 +32,9 @@ class BookmarkState {
       error: error ?? this.error,
     );
   }
+
+  @override
+  List<Object?> get props => [bookmarks, status, error];
 }
 
 class BookmarkCubit extends Cubit<BookmarkState> {
@@ -95,5 +100,19 @@ class BookmarkCubit extends Cubit<BookmarkState> {
 
   void emitError(String message) {
     // emitError(FavoriteStatus.failure, error: message);
+  }
+}
+
+extension BookmarkCubitX on BookmarkState {
+  // check if a post is bookmarked
+  bool isBookmarked(Post post, BooruType booru) {
+    return bookmarks.any((b) =>
+        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
+  }
+
+  // get bookmark from Post
+  Bookmark? getBookmark(Post post, BooruType booru) {
+    return bookmarks.firstWhereOrNull((b) =>
+        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
   }
 }

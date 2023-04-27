@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import '../models/parent_child_data.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 
 class ParentChildTile extends StatelessWidget {
   const ParentChildTile({

@@ -27,13 +27,11 @@ import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
@@ -52,10 +50,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.d
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/add_to_blacklist_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
@@ -63,9 +57,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_details_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
@@ -78,7 +71,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -298,56 +290,13 @@ Future<void> goToDetailPage({
   bool hero = false,
   // PostBloc? postBloc,
 }) {
-  final tags = posts
-      .map((e) => e)
-      .map((p) => [
-            ...p.artistTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.artist.stringify(),
-                  postId: p.id,
-                )),
-            ...p.characterTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.charater.stringify(),
-                  postId: p.id,
-                )),
-            ...p.copyrightTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.copyright.stringify(),
-                  postId: p.id,
-                )),
-            ...p.generalTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.general.stringify(),
-                  postId: p.id,
-                )),
-            ...p.metaTags.map((e) => PostDetailTag(
-                  name: e,
-                  category: TagCategory.meta.stringify(),
-                  postId: p.id,
-                )),
-          ])
-      .expand((e) => e)
-      .toList();
-
-  final page = providePostDetailPageDependencies(
+  return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
     context,
-    posts,
-    initialIndex,
-    tags,
-    (shareCubit) => PostDetailPage(
-      intitialIndex: initialIndex,
-      posts: posts,
-      onExit: (page) => scrollController?.scrollToIndex(page),
-      onPageChanged: (page) {
-        shareCubit.updateInformation(posts[page]);
-      },
-      onCachedImagePathUpdate: (imagePath) =>
-          shareCubit.setImagePath(imagePath ?? ''),
-    ),
-  );
-
-  return Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+    posts: posts,
+    scrollController: scrollController,
+    initialIndex: initialIndex,
+    hero: hero,
+  ));
   // showDesktopFullScreenWindow(
   //   context,
   //   builder: (_) => providePostDetailPageDependencies(
@@ -362,71 +311,6 @@ Future<void> goToDetailPage({
   //     ),
   //   ),
   // );
-}
-
-Widget providePostDetailPageDependencies(
-  BuildContext context,
-  List<DanbooruPost> posts,
-  int initialIndex,
-  List<PostDetailTag> tags,
-  // PostBloc? postBloc,
-  Widget Function(PostShareCubit shareCubit) childBuilder,
-) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (context) {
-          return BlocSelector<SettingsCubit, SettingsState, Settings>(
-            selector: (state) => state.settings,
-            builder: (_, settings) {
-              final shareCubit = PostShareCubit.of(context);
-
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(
-                    value: context.read<AuthenticationCubit>(),
-                  ),
-                  BlocProvider.value(value: context.read<ThemeBloc>()),
-                  BlocProvider(
-                    create: (context) => shareCubit,
-                  ),
-                  BlocProvider(
-                    create: (context) => PostDetailBloc(
-                      booruUserIdentityProvider:
-                          context.read<BooruUserIdentityProvider>(),
-                      noteRepository: context.read<NoteRepository>(),
-                      defaultDetailsStyle: settings.detailsDisplay,
-                      posts: posts,
-                      initialIndex: initialIndex,
-                      postRepository:
-                          context.read<DanbooruArtistCharacterPostRepository>(),
-                      poolRepository: context.read<PoolRepository>(),
-                      currentBooruConfigRepository:
-                          context.read<CurrentBooruConfigRepository>(),
-                      postVoteRepository: context.read<PostVoteRepository>(),
-                      tags: tags,
-                      onPostChanged: (post) {
-                        // if (postBloc != null && !postBloc.isClosed) {
-                        //   postBloc.add(PostUpdated(post: post));
-                        // }
-                      },
-                      tagCache: {},
-                    ),
-                  ),
-                ],
-                child: RepositoryProvider.value(
-                  value: context.read<TagRepository>(),
-                  child: childBuilder(shareCubit),
-                ),
-              );
-            },
-          );
-        },
-      );
-    },
-  );
 }
 
 void goToSearchPage(

@@ -14,10 +14,14 @@ class BooruVideo extends StatefulWidget {
     super.key,
     required this.url,
     required this.aspectRatio,
+    this.onCurrentPositionChanged,
+    this.onVisibilityChanged,
   });
 
   final String url;
   final double aspectRatio;
+  final void Function(double current, double total)? onCurrentPositionChanged;
+  final void Function(bool value)? onVisibilityChanged;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -34,14 +38,34 @@ class _BooruVideoState extends State<BooruVideo> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
-      autoPlay: true,
-      customControls: const MaterialDesktopControls(),
+      autoPlay: false,
+      customControls: MaterialDesktopControls(
+        onVisibilityChanged: widget.onVisibilityChanged,
+      ),
       looping: true,
+      autoInitialize: true,
     );
+
+    _listenToVideoPosition();
+  }
+
+  // Listen to the video position and report it back to the parent widget
+  // if the callback is set.
+  void _listenToVideoPosition() {
+    if (widget.onCurrentPositionChanged != null) {
+      _videoPlayerController.addListener(_onChanged);
+    }
+  }
+
+  void _onChanged() {
+    final current = _videoPlayerController.value.position.inSeconds.toDouble();
+    final total = _videoPlayerController.value.duration.inSeconds.toDouble();
+    widget.onCurrentPositionChanged!(current, total);
   }
 
   @override
   void dispose() {
+    _videoPlayerController.removeListener(_onChanged);
     _videoPlayerController.dispose();
     _chewieController.dispose();
     super.dispose();
