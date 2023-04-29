@@ -8,6 +8,8 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 
 // Project imports:
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/infra/networks/dio_logger_interceptor.dart';
 
 Dio dio(Directory dir, String baseUrl, UserAgentGenerator generator) {
   final dio = Dio(BaseOptions(
@@ -24,6 +26,12 @@ Dio dio(Directory dir, String baseUrl, UserAgentGenerator generator) {
         maxStale: const Duration(days: 7),
         hitCacheOnErrorExcept: [],
       ),
+    ),
+  );
+
+  dio.interceptors.add(
+    LoggingInterceptor(
+      logger: ConsoleLogger(),
     ),
   );
 
