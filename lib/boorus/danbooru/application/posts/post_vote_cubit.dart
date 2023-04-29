@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -62,6 +63,17 @@ class PostVoteCubit extends Cubit<PostVoteState> {
       if (postIdsToFetch.isNotEmpty) {
         List<PostVote> fetchedPostVotes =
             await _repository.getPostVotes(postIdsToFetch);
+
+        if (fetchedPostVotes.length < postIdsToFetch.length) {
+          // If some postId has no votes, cache it with null value
+          for (var postId in postIdsToFetch) {
+            if (!fetchedPostVotes
+                .any((postVote) => postVote.postId == postId)) {
+              _cache[postId] = PostVote.empty();
+            }
+          }
+        }
+
         for (var postVote in fetchedPostVotes) {
           _addToCache(postVote);
         }
@@ -69,8 +81,8 @@ class PostVoteCubit extends Cubit<PostVoteState> {
 
       List<PostVote> postVotes = postIds
           .map((postId) => _cache[postId])
-          .where((postVote) => postVote != null)
-          .cast<PostVote>()
+          .whereNotNull()
+          .where((postVote) => postVote != PostVote.empty())
           .toList();
 
       emit(PostVoteLoaded(postVotes));

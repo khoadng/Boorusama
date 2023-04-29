@@ -15,12 +15,20 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   final UserRepository userRepository;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final DanbooruApi api;
+  final Map<int, List<String>> _blacklistedTagsCache = {};
 
   @override
-  Future<List<String>> getBlacklistedTags(int uid) {
-    return userRepository
+  Future<List<String>> getBlacklistedTags(int uid) async {
+    if (_blacklistedTagsCache.containsKey(uid)) {
+      return _blacklistedTagsCache[uid]!;
+    }
+
+    final tags = await userRepository
         .getUserSelfById(uid)
-        .then((value) => value?.blacklistedTags ?? []);
+        .then((value) => value?.blacklistedTags ?? <String>[]);
+
+    _blacklistedTagsCache[uid] = tags;
+    return tags;
   }
 
   @override
@@ -37,6 +45,9 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
                 userId,
                 tagsToTagString(tags),
               ));
+
+      // Clear the cache for the user
+      _blacklistedTagsCache.remove(userId);
 
       return true;
     } catch (e) {
