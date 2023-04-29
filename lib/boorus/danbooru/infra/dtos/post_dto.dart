@@ -45,8 +45,6 @@ class PostDto {
     required this.fileUrl,
     required this.largeFileUrl,
     required this.previewFileUrl,
-    required this.comments,
-    this.artistCommentary,
   });
 
   factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
@@ -101,8 +99,6 @@ class PostDto {
         fileUrl: json['file_url'],
         largeFileUrl: json['large_file_url'],
         previewFileUrl: json['preview_file_url'],
-        comments: json['comments'],
-        artistCommentary: json['artist_commentary'],
       );
 
   final int? id;
@@ -150,6 +146,4 @@ class PostDto {
   final String? fileUrl;
   final String? largeFileUrl;
   final String? previewFileUrl;
-  final List<dynamic> comments;
-  final dynamic artistCommentary;
 }

@@ -19,9 +19,11 @@ class PostStatsTile extends StatelessWidget {
     super.key,
     required this.post,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    required this.totalComments,
   });
 
   final DanbooruPost post;
+  final int totalComments;
   final EdgeInsets padding;
 
   @override
@@ -81,14 +83,14 @@ class PostStatsTile extends StatelessWidget {
             enable: post.hasComment,
             child: RichText(
               text: TextSpan(
-                text: '${post.totalComments} ',
+                text: '$totalComments ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 children: [
                   TextSpan(
-                    text: 'comment.counter'.plural(post.totalComments),
+                    text: 'comment.counter'.plural(totalComments),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

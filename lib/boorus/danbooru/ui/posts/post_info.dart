@@ -7,7 +7,6 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
 import 'package:boorusama/core/ui/source_link.dart';
 import 'package:boorusama/core/utils.dart';
@@ -20,10 +19,14 @@ enum ArtistCommentaryTranlationState {
 class ArtistSection extends StatefulWidget {
   const ArtistSection({
     super.key,
-    required this.post,
+    required this.artistCommentary,
+    required this.artistTags,
+    required this.source,
   });
 
-  final DanbooruPost post;
+  final ArtistCommentary artistCommentary;
+  final List<String> artistTags;
+  final String? source;
 
   @override
   State<ArtistSection> createState() => _ArtistSectionState();
@@ -31,29 +34,23 @@ class ArtistSection extends StatefulWidget {
 
 class _ArtistSectionState extends State<ArtistSection> {
   late final artistCommentaryDisplay = ValueNotifier(
-    (widget.post.artistCommentary?.isTranslated ?? false)
+    (widget.artistCommentary.isTranslated)
         ? ArtistCommentaryTranlationState.translated
         : ArtistCommentaryTranlationState.original,
   );
 
   @override
   Widget build(BuildContext context) {
-    if (widget.post.artistCommentary == null) {
-      return Container();
-    }
-
-    final artistCommentary = widget.post.artistCommentary!;
+    final artistCommentary = widget.artistCommentary;
 
     return ValueListenableBuilder<ArtistCommentaryTranlationState>(
       valueListenable: artistCommentaryDisplay,
       builder: (context, display, _) => Wrap(
         children: [
           SourceLink(
-            name: widget.post.artistTags.isEmpty
-                ? ''
-                : widget.post.artistTags.first,
-            title: Text(widget.post.artistTags.join(' ')),
-            url: widget.post.source,
+            name: widget.artistTags.isEmpty ? '' : widget.artistTags.first,
+            title: Text(widget.artistTags.join(' ')),
+            url: widget.source,
             actionBuilder: () => artistCommentary.isTranslated
                 ? PopupMenuButton<ArtistCommentaryTranlationState>(
                     padding: EdgeInsets.zero,

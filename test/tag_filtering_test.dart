@@ -38,8 +38,6 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       hasChildren: false,
       parentId: null,
       hasLarge: false,
-      comments: const [],
-      totalComments: 0,
     );
 
 void main() {

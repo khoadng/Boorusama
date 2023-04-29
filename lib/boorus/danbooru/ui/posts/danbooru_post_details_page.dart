@@ -5,12 +5,15 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -327,9 +330,16 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
         ),
         const DanbooruMoreActionButton(),
       ],
-      onExpanded: (currentPage) => context
-          .read<PostDetailBloc>()
-          .add(PostDetailIndexChanged(index: currentPage)),
+      onExpanded: (currentPage) {
+        final post = posts[currentPage];
+        context
+            .read<PostDetailBloc>()
+            .add(PostDetailIndexChanged(index: currentPage));
+
+        context.read<ArtistCommentaryCubit>().getCommentary(post.id);
+
+        context.read<CommentsCubit>().getCommentsFromPostId(post.id);
+      },
     );
   }
 
@@ -409,10 +419,31 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
           child: DanbooruPostActionToolbar(post: post),
         ),
         const Divider(height: 8, thickness: 1),
-        ArtistSection(post: post),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: RepaintBoundary(child: PostStatsTile(post: post)),
+        BlocBuilder<ArtistCommentaryCubit, ArtistCommentaryState>(
+            builder: (context, state) =>
+                state.commentaryMap.lookup(post.id).fold(
+                      () => const SizedBox.shrink(),
+                      (commentary) => ArtistSection(
+                        artistCommentary: commentary,
+                        artistTags: post.artistTags,
+                        source: post.source,
+                      ),
+                    )),
+        BlocBuilder<CommentsCubit, CommentsState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: RepaintBoundary(
+                child: state.commentsMap.lookup(post.id).fold(
+                      () => const SizedBox.shrink(),
+                      (comments) => PostStatsTile(
+                        post: post,
+                        totalComments: comments.length,
+                      ),
+                    ),
+              ),
+            );
+          },
         ),
         if (post.hasParentOrChildren)
           ParentChildTile(

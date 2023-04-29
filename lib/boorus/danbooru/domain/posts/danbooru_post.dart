@@ -2,8 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
@@ -48,9 +46,6 @@ class DanbooruPost extends Equatable
     required this.hasChildren,
     required this.parentId,
     required this.hasLarge,
-    required this.comments,
-    required this.totalComments,
-    this.artistCommentary,
   })  : _source = source,
         _sampleImageUrl = sampleImageUrl,
         _thumbnailImageUrl = thumbnailImageUrl;
@@ -84,8 +79,6 @@ class DanbooruPost extends Equatable
         isBanned: false,
         hasChildren: false,
         hasLarge: false,
-        comments: const [],
-        totalComments: 0,
         parentId: null,
       );
 
@@ -140,9 +133,6 @@ class DanbooruPost extends Equatable
   final bool hasChildren;
   final int? parentId;
   final bool hasLarge;
-  final List<Comment> comments;
-  final int totalComments;
-  final ArtistCommentary? artistCommentary;
 
   DanbooruPost copyWith({
     int? id,
@@ -195,9 +185,6 @@ class DanbooruPost extends Equatable
         isBanned: isBanned,
         hasChildren: hasChildren ?? this.hasChildren,
         hasLarge: hasLarge,
-        comments: comments,
-        totalComments: totalComments,
-        artistCommentary: artistCommentary,
         parentId: parentId ?? this.parentId,
       );
 

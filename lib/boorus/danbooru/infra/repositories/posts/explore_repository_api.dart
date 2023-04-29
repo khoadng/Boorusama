@@ -53,7 +53,6 @@ class ExploreRepositoryApi implements ExploreRepository {
               booruConfig?.login,
               booruConfig?.apiKey,
               '${date.year}-${date.month}-${date.day}',
-              postParams,
             ),
           )
           .then((e) => parsePost(e, urlComposer))
@@ -79,7 +78,6 @@ class ExploreRepositoryApi implements ExploreRepository {
               '${date.year}-${date.month}-${date.day}',
               scale.toString().split('.').last,
               page,
-              postParams,
               limit ?? _limit,
             ),
           )

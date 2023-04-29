@@ -126,7 +126,6 @@ abstract class DanbooruApi {
     @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('tags') String tags,
-    @Query('only') String only,
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
@@ -160,7 +159,6 @@ abstract class DanbooruApi {
     @Query('date') String date,
     @Query('scale') String scale,
     @Query('page') int page,
-    @Query('only') String only,
     @Query('limit') int limit,
   );
 
@@ -169,7 +167,6 @@ abstract class DanbooruApi {
     @Query('login') String? login,
     @Query('api_key') String? apiKey,
     @Query('date') String date,
-    @Query('only') String only,
   );
 
   @GET('/explore/posts/searches.json')
