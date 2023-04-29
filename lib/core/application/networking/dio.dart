@@ -11,7 +11,12 @@ import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/networks/dio_logger_interceptor.dart';
 
-Dio dio(Directory dir, String baseUrl, UserAgentGenerator generator) {
+Dio dio(
+  Directory dir,
+  String baseUrl,
+  UserAgentGenerator generator,
+  LoggerService logger,
+) {
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,
     headers: {
@@ -31,7 +36,7 @@ Dio dio(Directory dir, String baseUrl, UserAgentGenerator generator) {
 
   dio.interceptors.add(
     LoggingInterceptor(
-      logger: ConsoleLogger(),
+      logger: logger,
     ),
   );
 

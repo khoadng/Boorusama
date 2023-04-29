@@ -47,6 +47,7 @@ import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/downloads.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
@@ -55,6 +56,7 @@ import 'package:boorusama/core/infra/repositories/search_histories.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/infra/settings/settings.dart';
+import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'package:boorusama/core/platform.dart';
 import 'app.dart';
@@ -93,8 +95,13 @@ void main() async {
     await loadBooruSaltList(),
   );
 
-  final settingRepository = SettingsRepositoryHive(
-    Hive.openBox('settings'),
+  final logger = ConsoleLogger();
+
+  final settingRepository = SettingsRepositoryLoggerInterceptor(
+    SettingsRepositoryHive(
+      Hive.openBox('settings'),
+    ),
+    logger: logger,
   );
 
   Box<String> booruConfigBox;
@@ -208,7 +215,7 @@ void main() async {
     booruUserRepo,
   );
 
-  final dioProvider = DioProvider(tempPath, userAgentGenerator);
+  final dioProvider = DioProvider(tempPath, userAgentGenerator, logger);
 
   final booruUserIdProvider =
       BooruUserIdentityProviderImpl(dioProvider, booruFactory);
@@ -362,10 +369,15 @@ Future<void> _localNotificatonHandler(NotificationResponse response) async {
 }
 
 class DioProvider {
-  DioProvider(this.dir, this.generator);
+  DioProvider(
+    this.dir,
+    this.generator,
+    this.loggerService,
+  );
 
   final Directory dir;
   final UserAgentGenerator generator;
+  final LoggerService loggerService;
 
-  Dio getDio(String baseUrl) => dio(dir, baseUrl, generator);
+  Dio getDio(String baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }
