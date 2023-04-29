@@ -14,6 +14,8 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   DetailsPageController get controller;
   Function(int page) get onPageChanged;
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
+  int get initialPage;
+  late var _page = initialPage;
 
   void onSwiped(int page) {
     _videoProgress.value = VideoProgress.zero;
@@ -23,9 +25,13 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
       controller.enableSwipeDownToDismiss();
     }
     onPageChanged.call(page);
+    _page = page;
   }
 
-  void onCurrentPositionChanged(double current, double total) {
+  void onCurrentPositionChanged(double current, double total, String url) {
+    // check if the current video is the same as the one being played
+    if (posts[_page].sampleImageUrl != url) return;
+
     _videoProgress.value = VideoProgress(
         Duration(milliseconds: (total * 1000).toInt()),
         Duration(milliseconds: (current * 1000).toInt()));

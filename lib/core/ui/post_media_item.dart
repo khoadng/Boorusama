@@ -39,7 +39,8 @@ class PostMediaItem extends StatelessWidget {
   final CacheManager? previewCacheManager;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final bool useHero;
-  final void Function(double current, double total)? onCurrentPositionChanged;
+  final void Function(double current, double total, String url)?
+      onCurrentPositionChanged;
   final void Function(bool value)? onVisibilityChanged;
 
   @override

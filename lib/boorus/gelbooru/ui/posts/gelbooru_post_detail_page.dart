@@ -120,12 +120,15 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
   List<Post> get posts => widget.posts;
 
   @override
+  int get initialPage => widget.initialIndex;
+
+  @override
   Widget build(BuildContext context) {
     return DetailsPage(
       controller: controller,
       intitialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      onPageChanged: onSwiped,
       bottomSheet: (page) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -140,7 +140,8 @@ class EmbeddedWebViewWebm extends StatefulWidget {
 
   final String url;
   final void Function(bool value)? onVisibilityChanged;
-  final void Function(double current, double total)? onCurrentPositionChanged;
+  final void Function(double current, double total, String url)?
+      onCurrentPositionChanged;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -149,7 +150,9 @@ class EmbeddedWebViewWebm extends StatefulWidget {
 class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
   var showPlay = true;
   late final webmVideoController = WebmVideoController(
-      onCurrentPositionChanged: widget.onCurrentPositionChanged);
+    onCurrentPositionChanged: (current, total) =>
+        widget.onCurrentPositionChanged?.call(current, total, widget.url),
+  );
 
   @override
   void initState() {

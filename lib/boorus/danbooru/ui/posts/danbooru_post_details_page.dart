@@ -204,6 +204,9 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
   List<DanbooruPost> get posts => widget.posts;
 
   @override
+  int get initialPage => widget.intitialIndex;
+
+  @override
   void dispose() {
     super.dispose();
     controller.dispose();

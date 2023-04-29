@@ -104,11 +104,14 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
   List<Post> get posts => widget.posts;
 
   @override
+  int get initialPage => widget.initialPage;
+
+  @override
   Widget build(BuildContext context) {
     return DetailsPage(
       intitialIndex: widget.initialPage,
       onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      onPageChanged: onSwiped,
       bottomSheet: (page) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
