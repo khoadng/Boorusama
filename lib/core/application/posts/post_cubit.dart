@@ -8,11 +8,15 @@ import 'package:boorusama/core/domain/error.dart';
 abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
   PostCubit({
     required this.initial,
+    this.fetchDebounceDuration = const Duration(seconds: 1),
   }) : super(initial);
 
   Future<List<T>> Function() get refresher;
   Future<List<T>> Function(int page) get fetcher;
   final PostState<T, E> initial;
+
+  var _lastFetchTime = DateTime.fromMillisecondsSinceEpoch(0);
+  final Duration fetchDebounceDuration;
 
   void refresh() async {
     if (state.refreshing) return;
@@ -51,15 +55,21 @@ abstract class PostCubit<T, E> extends Cubit<PostState<T, E>> {
   void fetch() async {
     if (state.loading) return;
 
+    final now = DateTime.now();
+    if (now.difference(_lastFetchTime) < fetchDebounceDuration) return;
+    _lastFetchTime = now;
+
     try {
       emit(state.copyWith(
         loading: true,
       ));
 
-      final data = await fetcher(state.page + 1);
+      final nextPage = state.page + 1;
+      final data = await fetcher(nextPage);
 
       emit(state.copyWith(
         loading: false,
+        page: nextPage,
         hasMore: data.isNotEmpty,
         data: [
           ...state.data,
