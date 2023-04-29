@@ -69,6 +69,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     required this.onTap,
     this.physics,
     this.cacheManager,
+    this.imageBuilder,
   });
 
   final List<T> posts;
@@ -76,6 +77,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
   final CacheManager? cacheManager;
+  final Widget Function(T item)? imageBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -96,14 +98,16 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: GestureDetector(
                   onTap: () => onTap(index),
-                  child: BooruImage(
-                    aspectRatio: 0.6,
-                    imageUrl: post.isAnimated
-                        ? post.thumbnailImageUrl
-                        : post.sampleImageUrl,
-                    placeholderUrl: post.thumbnailImageUrl,
-                    fit: BoxFit.cover,
-                  ),
+                  child: imageBuilder != null
+                      ? imageBuilder!(post)
+                      : BooruImage(
+                          aspectRatio: 0.6,
+                          imageUrl: post.isAnimated
+                              ? post.thumbnailImageUrl
+                              : post.sampleImageUrl,
+                          placeholderUrl: post.thumbnailImageUrl,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               );
             },

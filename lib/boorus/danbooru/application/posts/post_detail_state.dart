@@ -24,6 +24,7 @@ class PostDetailState extends Equatable {
     required this.recommends,
     required this.pools,
     required this.notes,
+    required this.children,
   });
 
   factory PostDetailState.initial() => PostDetailState(
@@ -40,6 +41,7 @@ class PostDetailState extends Equatable {
         recommends: const [],
         pools: const [],
         notes: const [],
+        children: const [],
       );
 
   final List<PostDetailTag> tags;
@@ -55,6 +57,7 @@ class PostDetailState extends Equatable {
   final List<Recommend<DanbooruPost>> recommends;
   final List<Pool> pools;
   final List<Note> notes;
+  final List<DanbooruPost> children;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -74,6 +77,7 @@ class PostDetailState extends Equatable {
     List<Recommend<DanbooruPost>>? recommends,
     List<Pool>? pools,
     List<Note>? notes,
+    List<DanbooruPost>? children,
   }) =>
       PostDetailState(
         id: id ?? this.id,
@@ -90,6 +94,7 @@ class PostDetailState extends Equatable {
         enableOverlay: enableOverlay ?? this.enableOverlay,
         pools: pools ?? this.pools,
         notes: notes ?? this.notes,
+        children: children ?? this.children,
       );
 
   @override
@@ -108,6 +113,7 @@ class PostDetailState extends Equatable {
         recommends,
         pools,
         notes,
+        children,
       ];
 }
 

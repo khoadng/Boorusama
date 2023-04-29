@@ -46,6 +46,16 @@ class _PostDetailPoolFetch extends PostDetailEvent {
   List<Object?> get props => [postId];
 }
 
+class _PostDetailParentChildFetch extends PostDetailEvent {
+  const _PostDetailParentChildFetch(this.parentId, this.query);
+
+  final int parentId;
+  final String query;
+
+  @override
+  List<Object?> get props => [parentId];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required NoteRepository noteRepository,
@@ -76,6 +86,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           recommends: const [],
           pools: const [],
           notes: const [],
+          children: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
         )) {
     on<PostDetailIndexChanged>(
@@ -94,10 +105,25 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           recommends: [],
           pools: [],
           notes: [],
+          children: [],
         ));
 
         if (post.isTranslated) {
           add(_PostDetailNoteFetch(post.id));
+        }
+
+        if (post.hasParentOrChildren) {
+          if (post.hasParent) {
+            add(_PostDetailParentChildFetch(
+              post.parentId!,
+              'parent:${post.parentId}',
+            ));
+          } else {
+            add(_PostDetailParentChildFetch(
+              post.id,
+              'parent:${post.id}',
+            ));
+          }
         }
 
         add(_PostDetailPoolFetch(post.id));
@@ -192,6 +218,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final notes = await noteRepository.getNotesFrom(event.postId);
 
       emit(state.copyWith(notes: notes));
+    });
+
+    on<_PostDetailParentChildFetch>((event, emit) async {
+      final posts = await postRepository.getPosts(event.query, 1);
+
+      emit(state.copyWith(children: posts));
     });
   }
 

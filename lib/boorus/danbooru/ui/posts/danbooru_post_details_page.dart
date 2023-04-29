@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/related_posts_section.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -246,6 +247,15 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                 ),
               ),
               BlocBuilder<PostDetailBloc, PostDetailState>(
+                buildWhen: (previous, current) =>
+                    previous.children != current.children,
+                builder: (context, state) => state.children.isNotEmpty
+                    ? RelatedPostsSection(posts: state.children)
+                    : const SliverToBoxAdapter(
+                        child: SizedBox.shrink(),
+                      ),
+              ),
+              BlocBuilder<PostDetailBloc, PostDetailState>(
                 builder: (context, state) {
                   final artists = state.recommends
                       .where((element) => element.type == RecommendType.artist)
@@ -419,16 +429,34 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
           child: DanbooruPostActionToolbar(post: post),
         ),
         const Divider(height: 8, thickness: 1),
+        if (post.hasWebSource)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: SourceSection(post: post),
+          ),
+        const Divider(height: 8, thickness: 1),
+        TagsTile(post: post),
+        const Divider(height: 8, thickness: 1),
+        FileDetailsSection(post: post),
+        const Divider(height: 8, thickness: 1),
         BlocBuilder<ArtistCommentaryCubit, ArtistCommentaryState>(
-            builder: (context, state) =>
-                state.commentaryMap.lookup(post.id).fold(
-                      () => const SizedBox.shrink(),
-                      (commentary) => ArtistSection(
-                        artistCommentary: commentary,
-                        artistTags: post.artistTags,
-                        source: post.source,
-                      ),
-                    )),
+          builder: (context, state) => AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: state.commentaryMap.lookup(post.id).fold(
+                  () => const SizedBox.shrink(),
+                  (commentary) => ArtistSection(
+                    artistCommentary: commentary,
+                    artistTags: post.artistTags,
+                    source: post.source,
+                  ),
+                ),
+            crossFadeState: state.commentaryMap.lookup(post.id).fold(
+                  () => CrossFadeState.showFirst,
+                  (_) => CrossFadeState.showSecond,
+                ),
+            duration: const Duration(milliseconds: 80),
+          ),
+        ),
         BlocBuilder<CommentsCubit, CommentsState>(
           builder: (context, state) {
             return Padding(
@@ -445,25 +473,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
             );
           },
         ),
-        if (post.hasParentOrChildren)
-          ParentChildTile(
-            data: getParentChildData(post),
-            onTap: (data) => goToParentChildPage(
-              context,
-              data.parentId,
-              data.tagQueryForDataFetching,
-            ),
-          ),
-        if (!post.hasParentOrChildren) const Divider(height: 8, thickness: 1),
-        TagsTile(post: post),
         const Divider(height: 8, thickness: 1),
-        FileDetailsSection(
-          post: post,
-        ),
-        if (post.hasWebSource)
-          SourceSection(
-            post: post,
-          ),
       ],
     ];
   }
