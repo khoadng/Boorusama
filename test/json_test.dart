@@ -1,8 +1,8 @@
 // Package imports:
-import 'package:fpdart/fpdart.dart';
 import 'package:test/test.dart';
 
 // Project imports:
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/utils/json_utils.dart';
 
 void main() {

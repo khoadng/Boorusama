@@ -2,11 +2,11 @@
 import 'dart:convert';
 
 // Package imports:
-import 'package:fpdart/fpdart.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/utils/json_utils.dart';
 
 class SettingsRepositoryHive implements SettingsRepository {

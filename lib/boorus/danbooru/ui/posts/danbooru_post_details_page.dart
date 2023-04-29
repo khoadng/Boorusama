@@ -5,7 +5,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fpdart/fpdart.dart' hide State;
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -44,6 +43,7 @@ import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/recommend_character_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
+import 'package:boorusama/functional.dart';
 
 Widget providePostDetailPageDependencies(
   BuildContext context,

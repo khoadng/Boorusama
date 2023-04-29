@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fpdart/fpdart.dart' hide State;
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
@@ -11,6 +10,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
+import 'package:boorusama/functional.dart';
 
 class AddBooruPage extends StatefulWidget {
   const AddBooruPage({super.key, required this.setCurrentBooruOnSubmit});

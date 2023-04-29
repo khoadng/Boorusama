@@ -1,9 +1,9 @@
 // Package imports:
-import 'package:fpdart/fpdart.dart';
 import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/functional.dart';
 
 void main() {
   group('mapBooruUrlToUri', () {

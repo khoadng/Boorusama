@@ -1,5 +1,5 @@
-// Package imports:
-import 'package:fpdart/fpdart.dart';
+// Project imports:
+import 'package:boorusama/functional.dart';
 
 Either<E, T> validateSequentiallyUntilError<T, E>(
   T value,
