@@ -34,6 +34,7 @@ import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
@@ -171,7 +172,7 @@ class DanbooruProvider extends StatelessWidget {
       repo: ArtistCommentaryRepositoryApi(api, currentBooruConfigRepo),
     );
 
-    final poolRepo = PoolRepositoryApi(api, currentBooruConfigRepo);
+    final poolRepo = PoolCacher(PoolRepositoryApi(api, currentBooruConfigRepo));
 
     final blacklistedTagRepo = BlacklistedTagsRepositoryImpl(
       userRepo,
