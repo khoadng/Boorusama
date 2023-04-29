@@ -823,6 +823,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.4.0"
+  fpdart:
+    dependency: "direct main"
+    description:
+      name: fpdart
+      sha256: "40dfb6f837ed1a24bc379083b564c196e6d771d713c9641cc30402a1fb989926"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   frontend_server_client:
     dependency: transitive
     description:

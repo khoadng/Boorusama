@@ -410,31 +410,9 @@ void goToAddBooruPage(
   BuildContext context, {
   bool setCurrentBooruOnSubmit = false,
 }) {
-  final bloc = context.read<ManageBooruBloc>();
-  final currentBooruBloc = context.read<CurrentBooruBloc>();
-  final settings = context.read<SettingsCubit>().state.settings;
-
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
-    child: AddBooruPage.of(
-      context,
-      booruFactory: context.read<BooruFactory>(),
-      onSubmit: (config) {
-        bloc.add(
-          ManageBooruAdded(
-            config: config,
-            onSuccess: (booruConfig) {
-              if (setCurrentBooruOnSubmit) {
-                currentBooruBloc.add(CurrentBooruChanged(
-                  booruConfig: booruConfig,
-                  settings: settings,
-                ));
-              }
-            },
-          ),
-        );
-      },
-    ),
+    child: AddBooruPage(setCurrentBooruOnSubmit: setCurrentBooruOnSubmit),
   ));
 }
 

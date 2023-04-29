@@ -10,8 +10,8 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
+import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 
 class ManageBooruPage extends StatelessWidget {
   const ManageBooruPage({
@@ -59,17 +59,11 @@ class ManageBooruPage extends StatelessWidget {
                       : null,
                   onTap: () => showMaterialModalBottomSheet(
                     context: context,
-                    builder: (_) => AddBooruPage.of(
+                    builder: (_) => ConfigBooruPage.of(
                       context,
                       booruFactory: context.read<BooruFactory>(),
                       initialConfig: config,
-                      onSubmit: (newConfig) {
-                        context.read<ManageBooruBloc>().add(ManageBooruUpdated(
-                              config: newConfig,
-                              oldConfig: config,
-                              id: config.id,
-                            ));
-                      },
+                      url: config.url,
                     ),
                   ),
                 );
