@@ -65,12 +65,19 @@ const savedSearchHelpUrl =
     'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
+  final logger = ConsoleLogger();
+  final stopwatch = Stopwatch()..start();
+  logger.logI('Start up', 'App Start up');
+  logger.logI('Start up', 'Initialize Flutter Widgets');
+
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!isWeb()) {
     final dbDirectory = isAndroid()
         ? await getApplicationDocumentsDirectory()
         : await getApplicationSupportDirectory();
+
+    logger.logI('Start up', 'Initialize Hive');
 
     Hive
       ..init(dbDirectory.path)
@@ -90,12 +97,12 @@ void main() async {
     });
   }
 
+  logger.logI('Start up', 'Initialize Booru data');
+
   final booruFactory = BooruFactory.from(
     await loadBooruList(),
     await loadBooruSaltList(),
   );
-
-  final logger = ConsoleLogger();
 
   final settingRepository = SettingsRepositoryLoggerInterceptor(
     SettingsRepositoryHive(
@@ -103,6 +110,8 @@ void main() async {
     ),
     logger: logger,
   );
+
+  logger.logI('Start up', 'Initialize booru configs ');
 
   Box<String> booruConfigBox;
   if (await Hive.boxExists('booru_configs')) {
@@ -120,12 +129,15 @@ void main() async {
   }
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
+  logger.logI('Start up', 'Initialize settings');
+
   final settings =
       await settingRepository.load().run().then((value) => value.fold(
             (l) => Settings.defaultSettings,
             (r) => r,
           ));
 
+  logger.logI('Start up', 'Initialize meta tags');
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
     userMetatagBox = await Hive.openBox<String>('user_metatags');
@@ -144,28 +156,35 @@ void main() async {
   }
   final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
 
+  logger.logI('Start up', 'Initialize search history');
+
   final searchHistoryBox =
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
   final searchHistoryRepo = SearchHistoryRepositoryHive(
     db: searchHistoryBox,
   );
 
+  logger.logI('Start up', 'Initialize favorite tags');
   final favoriteTagsBox =
       await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
   final favoriteTagsRepo = FavoriteTagRepositoryHive(
     favoriteTagsBox,
   );
 
+  logger.logI('Start up', 'Initialize global blacklisted tags');
   final globalBlacklistedTags = HiveBlacklistedTagRepository();
   await globalBlacklistedTags.init();
 
+  logger.logI('Start up', 'Initialize bookmarks');
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
+  logger.logI('Start up', 'Initialize app info and package info');
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
+  logger.logI('Start up', 'Initialize device info');
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
@@ -187,6 +206,8 @@ void main() async {
     initializationSettings,
     onDidReceiveNotificationResponse: _localNotificatonHandler,
   );
+
+  logger.logI('Start up', 'Initialize downloader');
 
   final downloader = await createDownloader(
     settings.downloadMethod,
@@ -223,7 +244,10 @@ void main() async {
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
 
+  logger.logI('Start up', 'Initialize I18n');
   await ensureI18nInitialized();
+
+  logger.logI('Start up', 'Initialize Analytics');
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
@@ -232,6 +256,10 @@ void main() async {
     booruFactory: booruFactory,
     booruUserIdentityProvider: booruUserIdProvider,
   );
+
+  logger.logI('Start up',
+      'Initializtion done in ${stopwatch.elapsed.inMilliseconds}ms');
+  stopwatch.stop();
 
   void run() {
     runApp(
