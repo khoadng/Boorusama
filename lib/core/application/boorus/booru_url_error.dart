@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:fpdart/fpdart.dart';
 
+// Project imports:
 import 'uri_utils.dart';
 
 enum BooruUrlError {

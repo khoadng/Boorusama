@@ -16,7 +16,11 @@ class CurrentBooruRepositorySettings implements CurrentBooruConfigRepository {
 
   @override
   Future<BooruConfig?> get() async {
-    final settings = await settingsRepository.load();
+    final settings =
+        await settingsRepository.load().run().then((value) => value.fold(
+              (l) => Settings.defaultSettings,
+              (r) => r,
+            ));
     final userBoorus = await userBooruRepository.getAll();
 
     return userBoorus

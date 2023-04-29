@@ -96,7 +96,13 @@ class _AppearancePageState extends State<AppearancePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final settings = await context.read<SettingsRepository>().load();
+      final settings =
+          await context.read<SettingsRepository>().load().run().then(
+                (value) => value.fold(
+                  (l) => Settings.defaultSettings,
+                  (r) => r,
+                ),
+              );
       _spacingSliderValue.value = settings.imageGridSpacing;
       _borderRadiusSliderValue.value = settings.imageBorderRadius;
     });

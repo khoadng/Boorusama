@@ -95,7 +95,6 @@ void main() async {
 
   final settingRepository = SettingsRepositoryHive(
     Hive.openBox('settings'),
-    Settings.defaultSettings,
   );
 
   Box<String> booruConfigBox;
@@ -105,12 +104,20 @@ void main() async {
     booruConfigBox = await Hive.openBox<String>('booru_configs');
     final id = await booruConfigBox
         .add(HiveBooruConfigRepository.defaultValue(booruFactory));
-    final settings = await settingRepository.load();
+    final settings =
+        await settingRepository.load().run().then((value) => value.fold(
+              (l) => Settings.defaultSettings,
+              (r) => r,
+            ));
     await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
   }
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
-  final settings = await settingRepository.load();
+  final settings =
+      await settingRepository.load().run().then((value) => value.fold(
+            (l) => Settings.defaultSettings,
+            (r) => r,
+          ));
 
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
