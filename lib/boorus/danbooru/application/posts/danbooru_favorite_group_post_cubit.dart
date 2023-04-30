@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/posts/transformer.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
@@ -82,29 +81,9 @@ class DanbooruFavoriteGroupPostCubit with DanbooruPostTransformMixin {
   PostVoteCubit postVoteCubit;
   Queue<int> _ids;
 
-  Future<List<DanbooruPost>> Function(int page) get fetcher =>
-      (page) => _fetch().then(transform);
-
-  Future<List<DanbooruPost>> Function() get refresher =>
-      () => _fetch().then(transform);
-
-  Future<List<DanbooruPost>> refreshPost() async => refresher();
-  Future<List<DanbooruPost>> fetchPost(int page) async => fetcher(page);
-
-  void moveAndInsert({
-    required int fromIndex,
-    required int toIndex,
-    void Function()? onSuccess,
-  }) {
-    // final data = [...state.data];
-    // final item = data.removeAt(fromIndex);
-    // data.insert(toIndex, item);
-    // onSuccess?.call();
-
-    // emit(state.copyWith(
-    //   data: data,
-    // ));
-  }
+  Future<List<DanbooruPost>> refreshPost() async => _fetch().then(transform);
+  Future<List<DanbooruPost>> fetchPost(int page) async =>
+      _fetch().then(transform);
 
   //FIXME: should move to widget page
   void remove(List<int> postIds) {

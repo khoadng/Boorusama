@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 class DateTimeSelector extends StatelessWidget {

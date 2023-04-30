@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/danbooru_explore_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/home/danbooru_home_page.dart';
@@ -86,46 +84,10 @@ class _HomePageState extends State<HomePage> {
                 booru: booru,
                 sourceComposer: DanbooruImageSourceComposer(booru),
                 builder: (context) {
-                  final exploreHotDetailsBloc = ExploreHotDetailBloc();
-                  final exploreMostViewedDetailsBloc =
-                      ExploreMostViewedDetailBloc();
-                  final explorePopularDetailsBloc = ExplorePopularDetailBloc();
-
                   return CustomContextMenuOverlay(
-                    child: MultiRepositoryProvider(
-                      providers: [
-                        RepositoryProvider(
-                          create: (context) => DanbooruHotExplorePostCubit(
-                            context: context,
-                            exploreDetailBloc: exploreHotDetailsBloc,
-                          ),
-                        ),
-                        RepositoryProvider(
-                          create: (context) => DanbooruPopularExplorePostCubit(
-                            context: context,
-                            exploreDetailBloc: explorePopularDetailsBloc,
-                          ),
-                        ),
-                        RepositoryProvider(
-                          create: (context) =>
-                              DanbooruMostViewedExplorePostCubit(
-                            context: context,
-                            exploreDetailBloc: exploreMostViewedDetailsBloc,
-                          ),
-                        ),
-                      ],
-                      child: MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: exploreHotDetailsBloc),
-                          BlocProvider.value(
-                              value: exploreMostViewedDetailsBloc),
-                          BlocProvider.value(value: explorePopularDetailsBloc),
-                        ],
-                        child: DanbooruHomePage(
-                          onMenuTap: _onMenuTap,
-                          key: ValueKey(config?.id),
-                        ),
-                      ),
+                    child: DanbooruHomePage(
+                      onMenuTap: _onMenuTap,
+                      key: ValueKey(config?.id),
                     ),
                   );
                 },

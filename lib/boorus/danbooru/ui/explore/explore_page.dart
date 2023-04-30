@@ -1,4 +1,11 @@
 // Flutter imports:
+import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/boorus/current_booru_config_repository.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,7 +13,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -84,61 +90,255 @@ Widget mapToCarousel(
         );
 }
 
-class _MostViewedExplore extends StatelessWidget {
+class _MostViewedExplore extends StatefulWidget {
   const _MostViewedExplore();
 
   @override
-  Widget build(BuildContext context) {
-    return const SizedBox.shrink(); //FIXME: remove this
-    // return ExploreSection(
-    //   date: DateTime.now(),
-    //   title: 'explore.most_viewed'.tr(),
-    //   category: ExploreCategory.mostViewed,
-    //   builder: (_) => mapToCarousel(context, state.data),
-    // );
-  }
+  State<_MostViewedExplore> createState() => _MostViewedExploreState();
 }
 
-class _HotExplore extends StatelessWidget {
+class _MostViewedExploreState extends State<_MostViewedExplore>
+    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
+  late final controller = PostGridController<DanbooruPost>(
+    fetcher: (_) => context
+        .read<ExploreRepository>()
+        .getMostViewedPosts(DateTime.now())
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getMostViewedPosts(DateTime.now())
+        .then((transform)),
+  );
+
+  var posts = <DanbooruPost>[];
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onControllerChange);
+    controller.refresh();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(_onControllerChange);
+    controller.dispose();
+  }
+
+  void _onControllerChange() {
+    if (controller.items.isNotEmpty) {
+      setState(() {
+        posts = controller.items;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExploreSection(
+      controller: controller,
+      date: DateTime.now(),
+      title: 'explore.most_viewed'.tr(),
+      category: ExploreCategory.mostViewed,
+      builder: (_) => mapToCarousel(context, posts),
+    );
+  }
+
+  @override
+  BlacklistedTagsRepository get blacklistedTagsRepository =>
+      context.read<BlacklistedTagsRepository>();
+
+  @override
+  BooruUserIdentityProvider get booruUserIdentityProvider =>
+      context.read<BooruUserIdentityProvider>();
+
+  @override
+  CurrentBooruConfigRepository get currentBooruConfigRepository =>
+      context.read<CurrentBooruConfigRepository>();
+
+  @override
+  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
+
+  @override
+  PoolRepository get poolRepository => context.read<PoolRepository>();
+
+  @override
+  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
+
+  @override
+  PostVoteRepository get postVoteRepository =>
+      context.read<PostVoteRepository>();
+
+  @override
+  PostPreviewPreloader? get previewPreloader =>
+      context.read<PostPreviewPreloader>();
+}
+
+class _HotExplore extends StatefulWidget {
   const _HotExplore();
 
   @override
-  Widget build(BuildContext context) {
-    // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
-    return const SizedBox.shrink(); //FIXME: remove this
-
-    // return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
-    //   builder: (context, state) {
-    //     return ExploreSection(
-    //       date: DateTime.now(),
-    //       title: 'explore.hot'.tr(),
-    //       category: ExploreCategory.hot,
-    //       builder: (_) => mapToCarousel(context, state.data),
-    //     );
-    //   },
-    // );
-  }
+  State<_HotExplore> createState() => _HotExploreState();
 }
 
-class _PopularExplore extends StatelessWidget {
-  const _PopularExplore();
+class _HotExploreState extends State<_HotExplore>
+    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
+  late final controller = PostGridController<DanbooruPost>(
+    fetcher: (page) =>
+        context.read<ExploreRepository>().getHotPosts(page).then((transform)),
+    refresher: () =>
+        context.read<ExploreRepository>().getHotPosts(1).then((transform)),
+  );
+
+  var posts = <DanbooruPost>[];
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onControllerChange);
+    controller.refresh();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(_onControllerChange);
+    controller.dispose();
+  }
+
+  void _onControllerChange() {
+    if (controller.items.isNotEmpty) {
+      setState(() {
+        posts = controller.items;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.shrink(); //FIXME: remove this
-
-    // return BlocBuilder<DanbooruPopularExplorePostCubit,
-    //     DanbooruExplorePostState>(
-    //   builder: (context, state) {
-    //     return ExploreSection(
-    //       date: DateTime.now(),
-    //       title: 'explore.popular'.tr(),
-    //       category: ExploreCategory.popular,
-    //       builder: (_) => mapToCarousel(context, state.data),
-    //     );
-    //   },
-    // );
+    return ExploreSection(
+      controller: controller,
+      date: DateTime.now(),
+      title: 'explore.hot'.tr(),
+      category: ExploreCategory.hot,
+      builder: (_) => mapToCarousel(context, posts),
+    );
   }
+
+  @override
+  BlacklistedTagsRepository get blacklistedTagsRepository =>
+      context.read<BlacklistedTagsRepository>();
+
+  @override
+  BooruUserIdentityProvider get booruUserIdentityProvider =>
+      context.read<BooruUserIdentityProvider>();
+
+  @override
+  CurrentBooruConfigRepository get currentBooruConfigRepository =>
+      context.read<CurrentBooruConfigRepository>();
+
+  @override
+  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
+
+  @override
+  PoolRepository get poolRepository => context.read<PoolRepository>();
+
+  @override
+  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
+
+  @override
+  PostVoteRepository get postVoteRepository =>
+      context.read<PostVoteRepository>();
+
+  @override
+  PostPreviewPreloader? get previewPreloader =>
+      context.read<PostPreviewPreloader>();
+}
+
+class _PopularExplore extends StatefulWidget {
+  const _PopularExplore();
+
+  @override
+  State<_PopularExplore> createState() => _PopularExploreState();
+}
+
+class _PopularExploreState extends State<_PopularExplore>
+    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
+  late final controller = PostGridController<DanbooruPost>(
+    fetcher: (page) => context
+        .read<ExploreRepository>()
+        .getPopularPosts(DateTime.now(), page, TimeScale.day)
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getPopularPosts(DateTime.now(), 1, TimeScale.day)
+        .then((transform)),
+  );
+
+  var posts = <DanbooruPost>[];
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onControllerChange);
+    controller.refresh();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(_onControllerChange);
+    controller.dispose();
+  }
+
+  void _onControllerChange() {
+    if (controller.items.isNotEmpty) {
+      setState(() {
+        posts = controller.items;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExploreSection(
+      controller: controller,
+      date: DateTime.now(),
+      title: 'explore.popular'.tr(),
+      category: ExploreCategory.popular,
+      builder: (_) => mapToCarousel(context, posts),
+    );
+  }
+
+  @override
+  BlacklistedTagsRepository get blacklistedTagsRepository =>
+      context.read<BlacklistedTagsRepository>();
+
+  @override
+  BooruUserIdentityProvider get booruUserIdentityProvider =>
+      context.read<BooruUserIdentityProvider>();
+
+  @override
+  CurrentBooruConfigRepository get currentBooruConfigRepository =>
+      context.read<CurrentBooruConfigRepository>();
+
+  @override
+  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
+
+  @override
+  PoolRepository get poolRepository => context.read<PoolRepository>();
+
+  @override
+  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
+
+  @override
+  PostVoteRepository get postVoteRepository =>
+      context.read<PostVoteRepository>();
+
+  @override
+  PostPreviewPreloader? get previewPreloader =>
+      context.read<PostPreviewPreloader>();
 }
 
 class _ExploreList extends StatefulWidget {

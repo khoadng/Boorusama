@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,7 +17,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -395,29 +395,8 @@ void goToExploreDetailPage(
   DateTime? date,
   String title,
   ExploreCategory category,
+  PostGridController<DanbooruPost> controller,
 ) {
-  final a = () {
-    switch (category) {
-      case ExploreCategory.popular:
-        return context.read<DanbooruPopularExplorePostCubit>();
-      case ExploreCategory.mostViewed:
-        return context.read<DanbooruMostViewedExplorePostCubit>();
-      case ExploreCategory.hot:
-        return context.read<DanbooruHotExplorePostCubit>();
-    }
-  }();
-
-  final b = () {
-    switch (category) {
-      case ExploreCategory.popular:
-        return context.read<ExplorePopularDetailBloc>();
-      case ExploreCategory.mostViewed:
-        return context.read<ExploreMostViewedDetailBloc>();
-      case ExploreCategory.hot:
-        return context.read<ExploreHotDetailBloc>();
-    }
-  }();
-
   if (isMobilePlatform()) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -439,24 +418,17 @@ void goToExploreDetailPage(
               context,
               booru: state.booru!,
               builder: (dcontext) {
-                return RepositoryProvider(
-                  create: (context) => a,
-                  child: MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(value: b),
-                    ],
-                    child: CustomContextMenuOverlay(
-                      child: ExploreDetailPage(
-                        title: Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        category: category,
-                      ),
+                return CustomContextMenuOverlay(
+                  child: ExploreDetailPage(
+                    controller: controller,
+                    title: Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
+                    category: category,
                   ),
                 );
               },
@@ -469,29 +441,17 @@ void goToExploreDetailPage(
     showDesktopFullScreenWindow(
       context,
       builder: (context) {
-        final exploreDetailsBloc = ExploreDetailBloc(
-          initialDate: date,
-          category: category,
-        );
-
-        return RepositoryProvider(
-          create: (context) => a,
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: exploreDetailsBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: ExploreDetailPage(
-                title: Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(fontWeight: FontWeight.w700),
-                ),
-                category: category,
-              ),
+        return CustomContextMenuOverlay(
+          child: ExploreDetailPage(
+            controller: controller,
+            title: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
+            category: category,
           ),
         );
       },

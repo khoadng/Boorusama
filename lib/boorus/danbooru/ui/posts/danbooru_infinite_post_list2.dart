@@ -40,6 +40,7 @@ class DanbooruInfinitePostList2 extends StatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.controller,
+    this.refreshAtStart = true,
   });
 
   final VoidCallback? onLoadMore;
@@ -50,6 +51,8 @@ class DanbooruInfinitePostList2 extends StatefulWidget {
 
   final bool extendBody;
   final double? extendBodyHeight;
+
+  final bool refreshAtStart;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -103,6 +106,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList2> {
           buildWhen: (previous, current) => current is FavoritePostListSuccess,
           builder: (context, favoriteState) {
             return PostGrid(
+              refreshAtStart: widget.refreshAtStart,
               controller: widget.controller,
               scrollController: _autoScrollController,
               sliverHeaderBuilder: widget.sliverHeaderBuilder,

@@ -35,6 +35,7 @@ class PostGrid<T> extends StatefulWidget {
     required this.bodyBuilder,
     this.multiSelectController,
     required this.controller,
+    this.refreshAtStart = true,
   });
 
   final VoidCallback? onLoadMore;
@@ -45,6 +46,8 @@ class PostGrid<T> extends StatefulWidget {
 
   final bool extendBody;
   final double? extendBodyHeight;
+
+  final bool refreshAtStart;
 
   final ItemWidgetBuilder<T> itemBuilder;
   final FooterBuilder<T>? footerBuilder;
@@ -100,7 +103,9 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
     _autoScrollController.addListener(_onScroll);
     _isOnTop.addListener(_onTopReached);
     widget.controller.addListener(_onControllerChange);
-    widget.controller.refresh();
+    if (widget.refreshAtStart) {
+      widget.controller.refresh();
+    }
   }
 
   @override

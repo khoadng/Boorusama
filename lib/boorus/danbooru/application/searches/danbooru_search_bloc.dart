@@ -1,12 +1,8 @@
-// Package imports:
-import 'package:rxdart/rxdart.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/core/application/search.dart';
 
 class SearchRelatedTagSelected extends SearchEvent {
