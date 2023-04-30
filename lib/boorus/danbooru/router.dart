@@ -222,10 +222,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
             context,
             booru: state.booru!,
             builder: (dcontext) => RepositoryProvider(
-              create: (context) => DanbooruPostCubit.of(
-                dcontext,
-                extra: DanbooruPostExtra(tag: () => 'pool:${pool.id}'),
-              ),
+              create: (context) => DanbooruPostCubit.of(dcontext),
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider.value(
@@ -336,13 +333,7 @@ Widget provideSearchPageDependencies(
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               );
 
-              final postCubit = DanbooruPostCubit.of(
-                context,
-                extra: DanbooruPostExtra(
-                  tag: () => tagSearchBloc.state.selectedTags.join(' '),
-                  limit: settingsState.settings.postsPerPage,
-                ),
-              );
+              final postCubit = DanbooruPostCubit.of(context);
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
                     context.read<SearchHistoryRepository>(),
@@ -368,6 +359,7 @@ Widget provideSearchPageDependencies(
                       value: BlocProvider.of<ThemeBloc>(context),
                     ),
                     BlocProvider.value(value: searchHistorySuggestions),
+                    BlocProvider.value(value: tagSearchBloc),
                     BlocProvider<SearchBloc>(
                       create: (context) => DanbooruSearchBloc(
                         initial: DisplayState.options,
@@ -536,10 +528,7 @@ Widget provideSavedSearchPageDependecies(
         context,
         booru: state.booru!,
         builder: (dcontext) => RepositoryProvider(
-          create: (context) => DanbooruPostCubit.of(
-            dcontext,
-            extra: DanbooruPostExtra(tag: () => SavedSearch.all().toQuery()),
-          ),
+          create: (context) => DanbooruPostCubit.of(dcontext),
           child: MultiBlocProvider(
             providers: [
               BlocProvider(

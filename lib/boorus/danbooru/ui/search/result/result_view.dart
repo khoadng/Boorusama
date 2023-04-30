@@ -1,8 +1,11 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Package imports:
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
@@ -91,7 +94,19 @@ class _InfiniteScroll extends StatefulWidget {
 class _InfiniteScrollState extends State<_InfiniteScroll>
     with DanbooruPostCubitMixin {
   late final controller = PostGridController<DanbooruPost>(
-      fetcher: fetchPost, refresher: refreshPost);
+    fetcher: (page) => fetchPost(
+        page,
+        DanbooruPostExtra(
+          tag: () => context.read<TagSearchBloc>().state.selectedTags.join(' '),
+          limit: context.read<SettingsCubit>().state.settings.postsPerPage,
+        )),
+    refresher: () => refreshPost(
+      DanbooruPostExtra(
+        tag: () => context.read<TagSearchBloc>().state.selectedTags.join(' '),
+        limit: context.read<SettingsCubit>().state.settings.postsPerPage,
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -103,7 +118,6 @@ class _InfiniteScrollState extends State<_InfiniteScroll>
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(
       controller: controller,
-      onLoadMore: () => {},
       sliverHeaderBuilder: (context) => [
         ...widget.headerBuilder?.call() ?? [],
         const SliverToBoxAdapter(child: RelatedTagSection()),

@@ -31,10 +31,7 @@ class FavoritesPage extends StatefulWidget {
           booru: state.booru!,
           builder: (dContext) {
             return RepositoryProvider(
-              create: (context) => DanbooruPostCubit.of(
-                dContext,
-                extra: DanbooruPostExtra(tag: () => 'ordfav:$username'),
-              ),
+              create: (context) => DanbooruPostCubit.of(dContext),
               child: MultiBlocProvider(
                 providers: [],
                 child: CustomContextMenuOverlay(
@@ -57,7 +54,11 @@ class FavoritesPage extends StatefulWidget {
 class _FavoritesPageState extends State<FavoritesPage>
     with DanbooruPostCubitMixin {
   late final controller = PostGridController<DanbooruPost>(
-      fetcher: fetchPost, refresher: refreshPost);
+    fetcher: (page) => fetchPost(
+        page, DanbooruPostExtra(tag: () => 'ordfav:${widget.username}')),
+    refresher: () =>
+        refreshPost(DanbooruPostExtra(tag: () => 'ordfav:${widget.username}')),
+  );
 
   @override
   void dispose() {
@@ -69,7 +70,6 @@ class _FavoritesPageState extends State<FavoritesPage>
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(
       controller: controller,
-      onLoadMore: () => {},
       sliverHeaderBuilder: (context) => [
         SliverAppBar(
           title: const Text('profile.favorites').tr(),

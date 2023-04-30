@@ -30,7 +30,6 @@ class DanbooruHomePage extends StatefulWidget {
 
 class _HomePageState extends State<DanbooruHomePage> {
   final viewIndex = ValueNotifier(0);
-  final selectedTag = ValueNotifier('');
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +55,9 @@ class _HomePageState extends State<DanbooruHomePage> {
                     RepositoryProvider(
                       create: (context) => DanbooruPostCubit.of(
                         context,
-                        extra: DanbooruPostExtra(tag: () => selectedTag.value),
                       ),
                       child: _LatestView(
                         onMenuTap: widget.onMenuTap,
-                        onSelectedTagChanged: (tag) => selectedTag.value = tag,
                       ),
                     ),
                     const _ExplorePage(),
@@ -96,18 +93,15 @@ class _ExplorePage extends StatelessWidget {
 class _LatestView extends StatelessWidget {
   const _LatestView({
     required this.onMenuTap,
-    required this.onSelectedTagChanged,
   });
 
   final void Function()? onMenuTap;
-  final void Function(String tag) onSelectedTagChanged;
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<NetworkBloc>().state;
 
     return LatestView(
-      onSelectedTagChanged: onSelectedTagChanged,
       onMenuTap: onMenuTap,
       useAppBarPadding: state is NetworkConnectedState,
     );

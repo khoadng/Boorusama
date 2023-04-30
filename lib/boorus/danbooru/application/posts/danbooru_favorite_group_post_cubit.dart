@@ -25,21 +25,8 @@ mixin DanbooruFavoriteGroupPostCubitMixin<T extends StatefulWidget>
     on State<T> {
   Future<List<DanbooruPost>> refresh() =>
       context.read<DanbooruFavoriteGroupPostCubit>().refreshPost();
-
   Future<List<DanbooruPost>> fetch(int page) =>
       context.read<DanbooruFavoriteGroupPostCubit>().fetchPost(page);
-
-  //FIXME: should move to widget page
-  void moveAndInsert({
-    required int fromIndex,
-    required int toIndex,
-    void Function()? onSuccess,
-  }) =>
-      context.read<DanbooruFavoriteGroupPostCubit>().moveAndInsert(
-            fromIndex: fromIndex,
-            toIndex: toIndex,
-            onSuccess: onSuccess,
-          );
   void remove(List<int> ids) =>
       context.read<DanbooruFavoriteGroupPostCubit>().remove(ids);
 }

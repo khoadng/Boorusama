@@ -40,7 +40,18 @@ class _PoolDetailPageState extends State<PoolDetailPage>
     with DanbooruPostCubitMixin {
   final RefreshController refreshController = RefreshController();
   late final controller = PostGridController<DanbooruPost>(
-      fetcher: fetchPost, refresher: refreshPost);
+    fetcher: (page) => fetchPost(
+      page,
+      DanbooruPostExtra(
+        tag: () => 'pool:${widget.pool.id}',
+      ),
+    ),
+    refresher: () => refreshPost(
+      DanbooruPostExtra(
+        tag: () => 'pool:${widget.pool.id}',
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -52,7 +63,6 @@ class _PoolDetailPageState extends State<PoolDetailPage>
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(
       controller: controller,
-      onLoadMore: () => {},
       sliverHeaderBuilder: (context) => [
         SliverAppBar(
           title: const Text('pool.pool').tr(),

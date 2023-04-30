@@ -24,12 +24,10 @@ class LatestView extends StatefulWidget {
     super.key,
     this.onMenuTap,
     this.useAppBarPadding,
-    required this.onSelectedTagChanged,
   });
 
   final VoidCallback? onMenuTap;
   final bool? useAppBarPadding;
-  final void Function(String tag) onSelectedTagChanged;
 
   @override
   State<LatestView> createState() => _LatestViewState();
@@ -41,13 +39,20 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
   late final _postGridController = PostGridController<DanbooruPost>(
-    fetcher: fetchPost,
-    refresher: refreshPost,
-  );
+      fetcher: (page) => fetchPost(
+            page,
+            DanbooruPostExtra(
+              tag: () => _selectedTag.value,
+            ),
+          ),
+      refresher: () => refreshPost(
+            DanbooruPostExtra(
+              tag: () => _selectedTag.value,
+            ),
+          ));
 
   void _sendRefresh(String tag) {
     _autoScrollController.jumpTo(0);
-    // refresh();
     _postGridController.refresh();
   }
 
@@ -60,7 +65,6 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
         .listen((tag) {
-      widget.onSelectedTagChanged(tag);
       _sendRefresh(tag);
     }).addTo(_compositeSubscription);
   }
@@ -79,10 +83,6 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(
       controller: _postGridController,
-      onLoadMore: () => {},
-      onRefresh: () {
-        // _sendRefresh(_selectedTag.value);
-      },
       scrollController: _autoScrollController,
       sliverHeaderBuilder: (context) => [
         _AppBar(
@@ -102,8 +102,6 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
           ),
         ),
       ],
-      // refresher: () => refreshPost(),
-      // fetcher: (page) => fetchPost(page),
     );
   }
 }

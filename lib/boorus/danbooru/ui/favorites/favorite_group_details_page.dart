@@ -212,16 +212,16 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                         onLoadMore: () => controller.fetchMore(),
                         enableRefresh: false,
                         enableLoadMore: hasMore,
-                        builder: (context, controller) {
+                        builder: (context, scrollController) {
                           final count =
                               _sizeToGridCount(Screen.of(context).size);
 
                           return ReorderableGridView.builder(
-                            controller: controller,
+                            controller: scrollController,
                             dragEnabled: editing,
                             itemCount: items.length,
                             onReorder: (oldIndex, newIndex) {
-                              moveAndInsert(
+                              controller.moveAndInsert(
                                 fromIndex: oldIndex,
                                 toIndex: newIndex,
                                 onSuccess: () {

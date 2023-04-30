@@ -33,7 +33,16 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
   late final controller = PostGridController<DanbooruPost>(
-      fetcher: fetchPost, refresher: refreshPost);
+    fetcher: (page) => fetchPost(
+      page,
+      DanbooruPostExtra(tag: () => savedSearches.value),
+    ),
+    refresher: () => refreshPost(
+      DanbooruPostExtra(tag: () => savedSearches.value),
+    ),
+  );
+  final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
+
   @override
   void initState() {
     super.initState();
@@ -73,14 +82,11 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
       listenWhen: (previous, current) =>
           previous.selectedSearch != current.selectedSearch,
       listener: (context, state) {
-        _sendRefresh(state.selectedSearch);
+        savedSearches.value = state.selectedSearch.toQuery();
+        controller.refresh();
       },
       child: DanbooruInfinitePostList2(
         controller: controller,
-        // onRefresh: () {
-        //   _sendRefresh(savedSearchState.selectedSearch);
-        // },
-        onLoadMore: () {},
         sliverHeaderBuilder: (context) => [
           SliverAppBar(
             title: const Text('saved_search.saved_search_feed').tr(),
@@ -251,11 +257,6 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
           },
         );
     }
-  }
-
-  void _sendRefresh(SavedSearch search) {
-    refreshPost();
-    // refresh();
   }
 }
 

@@ -43,7 +43,6 @@ class DanbooruPostExtra extends Equatable {
 
 class DanbooruPostCubit with DanbooruPostTransformMixin {
   DanbooruPostCubit({
-    required this.extra,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.currentBooruConfigRepository,
@@ -55,12 +54,7 @@ class DanbooruPostCubit with DanbooruPostTransformMixin {
     PostPreviewPreloader? previewPreloader,
   });
 
-  factory DanbooruPostCubit.of(
-    BuildContext context, {
-    required DanbooruPostExtra extra,
-  }) =>
-      DanbooruPostCubit(
-        extra: extra,
+  factory DanbooruPostCubit.of(BuildContext context) => DanbooruPostCubit(
         postRepository: context.read<DanbooruPostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
@@ -91,36 +85,28 @@ class DanbooruPostCubit with DanbooruPostTransformMixin {
   @override
   PostVoteCubit postVoteCubit;
 
-  DanbooruPostExtra extra;
-
-  Future<List<DanbooruPost>> Function(int page) get fetcher =>
-      (page) => postRepository
+  Future<List<DanbooruPost>> refreshPost(DanbooruPostExtra extra) async =>
+      postRepository
+          .getPosts(
+            extra.tag(),
+            1,
+            limit: extra.limit,
+          )
+          .then(transform);
+  Future<List<DanbooruPost>> fetchPost(
+          int page, DanbooruPostExtra extra) async =>
+      postRepository
           .getPosts(
             extra.tag(),
             page,
             limit: extra.limit,
           )
           .then(transform);
-
-  Future<List<DanbooruPost>> Function() get refresher => () => postRepository
-      .getPosts(
-        extra.tag(),
-        1,
-        limit: extra.limit,
-      )
-      .then(transform);
-
-  Future<List<DanbooruPost>> refreshPost() async => refresher();
-  Future<List<DanbooruPost>> fetchPost(int page) async => fetcher(page);
-
-  // void setTags(String tags) => emit(state.copyWith(
-  //       extra: state.extra.copyWith(tag: () => tags),
-  //     ));
 }
 
 mixin DanbooruPostCubitMixin<T extends StatefulWidget> on State<T> {
-  Future<List<DanbooruPost>> refreshPost() =>
-      context.read<DanbooruPostCubit>().refreshPost();
-  Future<List<DanbooruPost>> fetchPost(int page) =>
-      context.read<DanbooruPostCubit>().fetchPost(page);
+  Future<List<DanbooruPost>> refreshPost(DanbooruPostExtra extra) =>
+      context.read<DanbooruPostCubit>().refreshPost(extra);
+  Future<List<DanbooruPost>> fetchPost(int page, DanbooruPostExtra extra) =>
+      context.read<DanbooruPostCubit>().fetchPost(page, extra);
 }

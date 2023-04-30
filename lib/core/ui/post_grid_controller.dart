@@ -53,4 +53,19 @@ class PostGridController<T> extends ChangeNotifier {
     _loading = false;
     notifyListeners();
   }
+
+  // Moves and inserts an item
+  void moveAndInsert({
+    required int fromIndex,
+    required int toIndex,
+    void Function()? onSuccess,
+  }) {
+    final data = [..._items];
+    final item = data.removeAt(fromIndex);
+    data.insert(toIndex, item);
+    onSuccess?.call();
+
+    _items = data;
+    notifyListeners();
+  }
 }
