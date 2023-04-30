@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
 import 'package:boorusama/core/utils.dart';
@@ -30,7 +32,8 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
     with DanbooruPostCubitMixin {
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
-
+  late final controller = PostGridController<DanbooruPost>(
+      fetcher: fetchPost, refresher: refreshPost);
   @override
   void initState() {
     super.initState();
@@ -71,51 +74,41 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
       listener: (context, state) {
         _sendRefresh(state.selectedSearch);
       },
-      child: BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-        builder: (context, state) {
-          return DanbooruInfinitePostList(
-            refreshing: state.refreshing,
-            loading: state.loading,
-            hasMore: state.hasMore,
-            error: state.error,
-            data: state.data,
-            onRefresh: () {
-              _sendRefresh(savedSearchState.selectedSearch);
-            },
-            onLoadMore: () {
-              fetch();
-            },
-            sliverHeaderBuilder: (context) => [
-              SliverAppBar(
-                title: const Text('saved_search.saved_search_feed').tr(),
-                floating: true,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                actions: [
-                  IconButton(
-                    onPressed: () => goToSavedSearchEditPage(context),
-                    icon: const Icon(Icons.settings),
-                  ),
-                ],
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  height: 50,
-                  child: _buildTags(
-                    savedSearchState.savedSearches,
-                    savedSearchState.selectedSearch,
-                    savedSearchState.status,
-                  ),
-                ),
+      child: DanbooruInfinitePostList2(
+        controller: controller,
+        // onRefresh: () {
+        //   _sendRefresh(savedSearchState.selectedSearch);
+        // },
+        onLoadMore: () {},
+        sliverHeaderBuilder: (context) => [
+          SliverAppBar(
+            title: const Text('saved_search.saved_search_feed').tr(),
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              IconButton(
+                onPressed: () => goToSavedSearchEditPage(context),
+                icon: const Icon(Icons.settings),
               ),
             ],
-          );
-        },
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 16,
+              ),
+              height: 50,
+              child: _buildTags(
+                savedSearchState.savedSearches,
+                savedSearchState.selectedSearch,
+                savedSearchState.status,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -259,7 +252,10 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
     }
   }
 
-  void _sendRefresh(SavedSearch search) => refresh();
+  void _sendRefresh(SavedSearch search) {
+    refreshPost();
+    // refresh();
+  }
 }
 
 class _ExampleContainer extends StatelessWidget {

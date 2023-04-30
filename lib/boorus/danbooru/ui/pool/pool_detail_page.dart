@@ -2,6 +2,9 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,7 +18,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -37,72 +39,66 @@ class PoolDetailPage extends StatefulWidget {
 class _PoolDetailPageState extends State<PoolDetailPage>
     with DanbooruPostCubitMixin {
   final RefreshController refreshController = RefreshController();
+  late final controller = PostGridController<DanbooruPost>(
+      fetcher: fetchPost, refresher: refreshPost);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      builder: (context, state) {
-        return DanbooruInfinitePostList(
-          refreshing: state.refreshing,
-          loading: state.loading,
-          hasMore: state.hasMore,
-          error: state.error,
-          data: state.data,
-          onLoadMore: () => fetch(),
-          sliverHeaderBuilder: (context) => [
-            SliverAppBar(
-              title: const Text('pool.pool').tr(),
-              floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    goToBulkDownloadPage(
-                      context,
-                      ['pool:${widget.pool.id}'],
-                    );
-                  },
-                  icon: const Icon(Icons.download),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: ListTile(
-                title: Text(
-                  widget.pool.name.removeUnderscoreWithSpace(),
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                subtitle: Text(
-                  '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                    widget.pool.updatedAt,
-                    locale: Localizations.localeOf(context).languageCode,
-                  )}',
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
-                builder: (context, state) {
-                  return state.status == LoadStatus.success &&
-                          state.description.isNotEmpty
-                      ? Html(
-                          onLinkTap: (url, context, attributes, element) =>
-                              _onHtmlLinkTapped(
-                            attributes,
-                            url,
-                            state.descriptionEndpointRefUrl,
-                          ),
-                          data: state.description,
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
+    return DanbooruInfinitePostList2(
+      controller: controller,
+      onLoadMore: () => {},
+      sliverHeaderBuilder: (context) => [
+        SliverAppBar(
+          title: const Text('pool.pool').tr(),
+          floating: true,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                goToBulkDownloadPage(
+                  context,
+                  ['pool:${widget.pool.id}'],
+                );
+              },
+              icon: const Icon(Icons.download),
             ),
           ],
-        );
-      },
+        ),
+        SliverToBoxAdapter(
+          child: ListTile(
+            title: Text(
+              widget.pool.name.removeUnderscoreWithSpace(),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            subtitle: Text(
+              '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                widget.pool.updatedAt,
+                locale: Localizations.localeOf(context).languageCode,
+              )}',
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
+            builder: (context, state) {
+              return state.status == LoadStatus.success &&
+                      state.description.isNotEmpty
+                  ? Html(
+                      onLinkTap: (url, context, attributes, element) =>
+                          _onHtmlLinkTapped(
+                        attributes,
+                        url,
+                        state.descriptionEndpointRefUrl,
+                      ),
+                      data: state.description,
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
+        ),
+      ],
     );
   }
 }

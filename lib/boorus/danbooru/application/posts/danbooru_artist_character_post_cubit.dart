@@ -45,11 +45,9 @@ class DanbooruArtistChararacterExtra extends Equatable {
   }
 }
 
-class DanbooruArtistCharacterPostCubit
-    extends PostCubit<DanbooruPost, DanbooruArtistChararacterExtra>
-    with DanbooruPostTransformMixin {
+class DanbooruArtistCharacterPostCubit with DanbooruPostTransformMixin {
   DanbooruArtistCharacterPostCubit({
-    required DanbooruArtistChararacterExtra extra,
+    required this.extra,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.currentBooruConfigRepository,
@@ -59,7 +57,7 @@ class DanbooruArtistCharacterPostCubit
     PostPreviewPreloader? previewPreloader,
     required this.postVoteCubit,
     required this.favoriteCubit,
-  }) : super(initial: PostState.initial(extra));
+  });
 
   factory DanbooruArtistCharacterPostCubit.of(
     BuildContext context, {
@@ -97,28 +95,33 @@ class DanbooruArtistCharacterPostCubit
   @override
   PostVoteCubit postVoteCubit;
 
-  @override
+  final DanbooruArtistChararacterExtra extra;
+
   Future<List<DanbooruPost>> Function(int page) get fetcher =>
       (page) => postRepository
           .getPosts(
-            _extraToTagString(state.extra),
+            _extraToTagString(extra),
             page,
           )
           .then(transform);
 
-  @override
   Future<List<DanbooruPost>> Function() get refresher => () => postRepository
       .getPosts(
-        _extraToTagString(state.extra),
+        _extraToTagString(extra),
         1,
       )
       .then(transform);
 
-  void changeCategory(TagFilterCategory category) => emit(state.copyWith(
-        extra: state.extra.copyWith(
-          category: category,
-        ),
-      ));
+  Future<List<DanbooruPost>> refreshPost() async => refresher();
+  Future<List<DanbooruPost>> fetchPost(int page) async => fetcher(page);
+
+  //FIXME: move to widget page
+  // void changeCategory(TagFilterCategory category) => emit(state.copyWith(
+  //       extra: state.extra.copyWith(
+  //         category: category,
+  //       ),
+  //     ));
+  void changeCategory(TagFilterCategory category) {}
 }
 
 String _extraToTagString(DanbooruArtistChararacterExtra extra) => [
@@ -129,17 +132,28 @@ String _extraToTagString(DanbooruArtistChararacterExtra extra) => [
 String? _tagFilterCategoryToString(TagFilterCategory category) =>
     category == TagFilterCategory.popular ? "order:score" : null;
 
-mixin DanbooruArtistCharacterPostCubitMixin on StatelessWidget {
-  void refresh(BuildContext context) =>
-      context.read<DanbooruArtistCharacterPostCubit>().refresh();
-  void fetch(BuildContext context) =>
-      context.read<DanbooruArtistCharacterPostCubit>().fetch();
+mixin DanbooruArtistCharacterPostStatelessCubitMixin on StatelessWidget {
   void changeCategory(
     BuildContext context,
     TagFilterCategory category,
   ) {
     final cubit = context.read<DanbooruArtistCharacterPostCubit>();
     cubit.changeCategory(category);
-    cubit.refresh();
+  }
+}
+
+mixin DanbooruArtistCharacterPostCubitMixin<T extends StatefulWidget>
+    on State<T> {
+  Future<List<DanbooruPost>> refreshPost() =>
+      context.read<DanbooruArtistCharacterPostCubit>().refreshPost();
+
+  Future<List<DanbooruPost>> fetchPost(int page) =>
+      context.read<DanbooruArtistCharacterPostCubit>().fetchPost(page);
+
+  void changeCategory(
+    TagFilterCategory category,
+  ) {
+    final cubit = context.read<DanbooruArtistCharacterPostCubit>();
+    cubit.changeCategory(category);
   }
 }

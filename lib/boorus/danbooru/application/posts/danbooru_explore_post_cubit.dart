@@ -21,11 +21,9 @@ import 'package:boorusama/core/domain/tags.dart';
 
 typedef DanbooruExplorePostState = PostState<DanbooruPost, ExploreDetailsData>;
 
-class DanbooruExplorePostCubit
-    extends PostCubit<DanbooruPost, ExploreDetailsData>
-    with DanbooruPostTransformMixin {
+class DanbooruExplorePostCubit with DanbooruPostTransformMixin {
   DanbooruExplorePostCubit({
-    required ExploreDetailsData exploreDetailsData,
+    required this.extra,
     required this.exploreRepository,
     required this.blacklistedTagsRepository,
     required this.currentBooruConfigRepository,
@@ -36,16 +34,17 @@ class DanbooruExplorePostCubit
     required ExploreDetailBloc exploreDetailBloc,
     required this.favoriteCubit,
     required this.postVoteCubit,
-  }) : super(initial: PostState.initial(exploreDetailsData)) {
-    exploreDetailBloc.stream
-        .distinct()
-        .listen((event) => emit(state.copyWith(
-                extra: ExploreDetailsData(
-              scale: event.scale,
-              date: event.date,
-              category: event.category,
-            ))))
-        .addTo(compositeSubscription);
+  }) {
+    //FIXME: move to widget page
+    // exploreDetailBloc.stream
+    //     .distinct()
+    //     .listen((event) => emit(state.copyWith(
+    //             extra: ExploreDetailsData(
+    //           scale: event.scale,
+    //           date: event.date,
+    //           category: event.category,
+    //         ))))
+    //     .addTo(compositeSubscription);
   }
 
   factory DanbooruExplorePostCubit.of(
@@ -53,7 +52,7 @@ class DanbooruExplorePostCubit
     required ExploreDetailBloc exploreDetailBloc,
   }) =>
       DanbooruExplorePostCubit(
-        exploreDetailsData: ExploreDetailsData(
+        extra: ExploreDetailsData(
           scale: TimeScale.day,
           date: DateTime.now(),
           category: ExploreCategory.popular,
@@ -89,17 +88,19 @@ class DanbooruExplorePostCubit
   @override
   PostVoteCubit postVoteCubit;
 
-  final CompositeSubscription compositeSubscription = CompositeSubscription();
+  final ExploreDetailsData extra;
 
-  @override
-  Future<void> close() {
-    compositeSubscription.dispose();
-    return super.close();
-  }
+  // final CompositeSubscription compositeSubscription = CompositeSubscription();
+
+  // @override
+  // Future<void> close() {
+  //   compositeSubscription.dispose();
+  //   return super.close();
+  // }
 
   @override
   Future<List<DanbooruPost>> Function(int page) get fetcher => (page) {
-        final explore = state.extra;
+        final explore = extra;
 
         if (explore.category == ExploreCategory.mostViewed && page > 1) {
           return Future.value([]);
@@ -114,8 +115,11 @@ class DanbooruExplorePostCubit
   @override
   Future<List<DanbooruPost>> Function() get refresher =>
       () => _mapExploreDataToPostFuture(
-            explore: state.extra,
+            explore: extra,
           ).then(transform);
+
+  Future<List<DanbooruPost>> refreshPost() async => refresher();
+  Future<List<DanbooruPost>> fetchPost(int page) async => fetcher(page);
 
   Future<List<DanbooruPost>> _mapExploreDataToPostFuture({
     required ExploreDetailsData explore,
@@ -136,11 +140,12 @@ class DanbooruExplorePostCubit
   }
 }
 
-mixin DanbooruExploreCubitStatelessMixin on StatelessWidget {
-  void refresh(BuildContext context) =>
-      context.read<DanbooruExplorePostCubit>().refresh();
-  void fetch(BuildContext context) =>
-      context.read<DanbooruExplorePostCubit>().fetch();
+mixin DanbooruExploreCubitMixin<T extends StatefulWidget> on State<T> {
+  Future<List<DanbooruPost>> refreshPost() =>
+      context.read<DanbooruExplorePostCubit>().refreshPost();
+
+  Future<List<DanbooruPost>> fetchPost(int page) =>
+      context.read<DanbooruExplorePostCubit>().fetchPost(page);
 }
 
 class ExploreDetailsData extends Equatable {
@@ -175,7 +180,7 @@ class DanbooruPopularExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: ExploreDetailsData(
+          extra: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.popular,
@@ -198,7 +203,7 @@ class DanbooruHotExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: ExploreDetailsData(
+          extra: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.hot,
@@ -221,7 +226,7 @@ class DanbooruMostViewedExplorePostCubit extends DanbooruExplorePostCubit {
     required BuildContext context,
     required super.exploreDetailBloc,
   }) : super(
-          exploreDetailsData: ExploreDetailsData(
+          extra: ExploreDetailsData(
             scale: TimeScale.day,
             date: DateTime.now(),
             category: ExploreCategory.mostViewed,

@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tags.dart';
@@ -38,10 +40,15 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
   final ValueNotifier<String> _selectedTag = ValueNotifier('');
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
+  late final _postGridController = PostGridController<DanbooruPost>(
+    fetcher: fetchPost,
+    refresher: refreshPost,
+  );
 
   void _sendRefresh(String tag) {
     _autoScrollController.jumpTo(0);
-    refresh();
+    // refresh();
+    _postGridController.refresh();
   }
 
   @override
@@ -64,44 +71,39 @@ class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
     _compositeSubscription.dispose();
     _selectedTagStream.close();
     _selectedTag.dispose();
+    _postGridController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      builder: (context, state) {
-        return DanbooruInfinitePostList(
-          refreshing: state.refreshing,
-          loading: state.loading,
-          hasMore: state.hasMore,
-          error: state.error,
-          data: state.data,
-          onLoadMore: () => fetch(),
-          onRefresh: () {
-            _sendRefresh(_selectedTag.value);
-          },
-          scrollController: _autoScrollController,
-          sliverHeaderBuilder: (context) => [
-            _AppBar(
-              onMenuTap: widget.onMenuTap,
-              primary: widget.useAppBarPadding,
-            ),
-            SliverToBoxAdapter(
-              child: ValueListenableBuilder<String>(
-                valueListenable: _selectedTag,
-                builder: (context, value, child) => _MostSearchTagSection(
-                  selected: value,
-                  onSelected: (search) {
-                    _selectedTag.value =
-                        search.keyword == value ? '' : search.keyword;
-                  },
-                ),
-              ),
-            ),
-          ],
-        );
+    return DanbooruInfinitePostList2(
+      controller: _postGridController,
+      onLoadMore: () => {},
+      onRefresh: () {
+        // _sendRefresh(_selectedTag.value);
       },
+      scrollController: _autoScrollController,
+      sliverHeaderBuilder: (context) => [
+        _AppBar(
+          onMenuTap: widget.onMenuTap,
+          primary: widget.useAppBarPadding,
+        ),
+        SliverToBoxAdapter(
+          child: ValueListenableBuilder<String>(
+            valueListenable: _selectedTag,
+            builder: (context, value, child) => _MostSearchTagSection(
+              selected: value,
+              onSelected: (search) {
+                _selectedTag.value =
+                    search.keyword == value ? '' : search.keyword;
+              },
+            ),
+          ),
+        ),
+      ],
+      // refresher: () => refreshPost(),
+      // fetcher: (page) => fetchPost(page),
     );
   }
 }

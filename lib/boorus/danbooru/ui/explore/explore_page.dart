@@ -89,17 +89,13 @@ class _MostViewedExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruMostViewedExplorePostCubit,
-        DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.most_viewed'.tr(),
-          category: ExploreCategory.mostViewed,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
-    );
+    return const SizedBox.shrink(); //FIXME: remove this
+    // return ExploreSection(
+    //   date: DateTime.now(),
+    //   title: 'explore.most_viewed'.tr(),
+    //   category: ExploreCategory.mostViewed,
+    //   builder: (_) => mapToCarousel(context, state.data),
+    // );
   }
 }
 
@@ -109,17 +105,18 @@ class _HotExplore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
+    return const SizedBox.shrink(); //FIXME: remove this
 
-    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.hot'.tr(),
-          category: ExploreCategory.hot,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
-    );
+    // return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
+    //   builder: (context, state) {
+    //     return ExploreSection(
+    //       date: DateTime.now(),
+    //       title: 'explore.hot'.tr(),
+    //       category: ExploreCategory.hot,
+    //       builder: (_) => mapToCarousel(context, state.data),
+    //     );
+    //   },
+    // );
   }
 }
 
@@ -128,17 +125,19 @@ class _PopularExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPopularExplorePostCubit,
-        DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.popular'.tr(),
-          category: ExploreCategory.popular,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
-    );
+    return const SizedBox.shrink(); //FIXME: remove this
+
+    // return BlocBuilder<DanbooruPopularExplorePostCubit,
+    //     DanbooruExplorePostState>(
+    //   builder: (context, state) {
+    //     return ExploreSection(
+    //       date: DateTime.now(),
+    //       title: 'explore.popular'.tr(),
+    //       category: ExploreCategory.popular,
+    //       builder: (_) => mapToCarousel(context, state.data),
+    //     );
+    //   },
+    // );
   }
 }
 

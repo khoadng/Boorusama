@@ -53,11 +53,11 @@ class _HomePageState extends State<DanbooruHomePage> {
                 builder: (context, index, _) => AnimatedIndexedStack(
                   index: index,
                   children: [
-                    BlocProvider(
+                    RepositoryProvider(
                       create: (context) => DanbooruPostCubit.of(
                         context,
                         extra: DanbooruPostExtra(tag: () => selectedTag.value),
-                      )..refresh(),
+                      ),
                       child: _LatestView(
                         onMenuTap: widget.onMenuTap,
                         onSelectedTagChanged: (tag) => selectedTag.value = tag,

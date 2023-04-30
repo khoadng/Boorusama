@@ -41,10 +41,9 @@ class DanbooruPostExtra extends Equatable {
   }
 }
 
-class DanbooruPostCubit extends PostCubit<DanbooruPost, DanbooruPostExtra>
-    with DanbooruPostTransformMixin {
+class DanbooruPostCubit with DanbooruPostTransformMixin {
   DanbooruPostCubit({
-    required DanbooruPostExtra extra,
+    required this.extra,
     required this.postRepository,
     required this.blacklistedTagsRepository,
     required this.currentBooruConfigRepository,
@@ -54,7 +53,7 @@ class DanbooruPostCubit extends PostCubit<DanbooruPost, DanbooruPostExtra>
     required this.favoriteCubit,
     required this.postVoteCubit,
     PostPreviewPreloader? previewPreloader,
-  }) : super(initial: PostState.initial(extra));
+  });
 
   factory DanbooruPostCubit.of(
     BuildContext context, {
@@ -92,37 +91,36 @@ class DanbooruPostCubit extends PostCubit<DanbooruPost, DanbooruPostExtra>
   @override
   PostVoteCubit postVoteCubit;
 
-  @override
+  DanbooruPostExtra extra;
+
   Future<List<DanbooruPost>> Function(int page) get fetcher =>
       (page) => postRepository
           .getPosts(
-            state.extra.tag(),
+            extra.tag(),
             page,
-            limit: state.extra.limit,
+            limit: extra.limit,
           )
           .then(transform);
 
-  @override
   Future<List<DanbooruPost>> Function() get refresher => () => postRepository
       .getPosts(
-        state.extra.tag(),
+        extra.tag(),
         1,
-        limit: state.extra.limit,
+        limit: extra.limit,
       )
       .then(transform);
 
-  void setTags(String tags) => emit(state.copyWith(
-        extra: state.extra.copyWith(tag: () => tags),
-      ));
+  Future<List<DanbooruPost>> refreshPost() async => refresher();
+  Future<List<DanbooruPost>> fetchPost(int page) async => fetcher(page);
+
+  // void setTags(String tags) => emit(state.copyWith(
+  //       extra: state.extra.copyWith(tag: () => tags),
+  //     ));
 }
 
 mixin DanbooruPostCubitMixin<T extends StatefulWidget> on State<T> {
-  void refresh() => context.read<DanbooruPostCubit>().refresh();
-  void fetch() => context.read<DanbooruPostCubit>().fetch();
-}
-
-mixin DanbooruPostCubitStatelessMixin on StatelessWidget {
-  void refresh(BuildContext context) =>
-      context.read<DanbooruPostCubit>().refresh();
-  void fetch(BuildContext context) => context.read<DanbooruPostCubit>().fetch();
+  Future<List<DanbooruPost>> refreshPost() =>
+      context.read<DanbooruPostCubit>().refreshPost();
+  Future<List<DanbooruPost>> fetchPost(int page) =>
+      context.read<DanbooruPostCubit>().fetchPost(page);
 }

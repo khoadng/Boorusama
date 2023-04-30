@@ -1,5 +1,5 @@
 export 'posts/artist_commentary_placeholder.dart';
-export 'posts/danbooru_infinite_post_list.dart';
+export 'posts/danbooru_infinite_post_list2.dart';
 export 'posts/danbooru_more_action_button.dart';
 export 'posts/danbooru_multi_selection_actions.dart';
 export 'posts/danbooru_post_action_toolbar.dart';
@@ -7,7 +7,6 @@ export 'posts/danbooru_post_context_menu.dart';
 export 'posts/danbooru_post_details_page.dart';
 export 'posts/information_section.dart';
 export 'posts/parent_child_data.dart';
-export 'posts/parent_child_post_page.dart';
 export 'posts/parent_child_tile.dart';
 export 'posts/pool_tiles.dart';
 export 'posts/post_detail_page_desktop.dart';

@@ -2,6 +2,8 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -47,7 +49,30 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
+  late final controller =
+      PostGridController<DanbooruPost>(fetcher: fetch, refresher: refresh);
   int rowCountEditMode = 2;
+
+  List<DanbooruPost> items = [];
+  bool refreshing = false;
+  bool loading = false;
+  bool hasMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onControllerChanged);
+    controller.refresh();
+  }
+
+  void _onControllerChanged() {
+    setState(() {
+      items = controller.items;
+      hasMore = controller.hasMore;
+      loading = controller.loading;
+      refreshing = controller.refreshing;
+    });
+  }
 
   void _aggregate() {
     final ids = widget.group.postIds;
@@ -75,13 +100,13 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
   @override
   void dispose() {
     super.dispose();
+    controller.removeListener(_onControllerChanged);
+    controller.dispose();
     scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final state =
-        context.select((DanbooruFavoriteGroupPostCubit bloc) => bloc.state);
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
@@ -144,7 +169,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
             ),
         ],
       ),
-      body: state.refreshing
+      body: refreshing
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -184,9 +209,9 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                     builder: (context, favoriteState) {
                       return InfiniteLoadList(
                         scrollController: scrollController,
-                        onLoadMore: () => fetch(),
+                        onLoadMore: () => controller.fetchMore(),
                         enableRefresh: false,
-                        enableLoadMore: state.hasMore,
+                        enableLoadMore: hasMore,
                         builder: (context, controller) {
                           final count =
                               _sizeToGridCount(Screen.of(context).size);
@@ -194,7 +219,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                           return ReorderableGridView.builder(
                             controller: controller,
                             dragEnabled: editing,
-                            itemCount: state.data.length,
+                            itemCount: items.length,
                             onReorder: (oldIndex, newIndex) {
                               moveAndInsert(
                                 fromIndex: oldIndex,
@@ -217,7 +242,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                               crossAxisSpacing: 4,
                             ),
                             itemBuilder: (context, index) {
-                              final post = state.data[index];
+                              final post = items[index];
 
                               var isFaved = false;
                               if (favoriteState is FavoritePostListSuccess) {
@@ -260,7 +285,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                       onTap: !editing
                                           ? () => goToDetailPage(
                                                 context: context,
-                                                posts: state.data,
+                                                posts: items,
                                                 initialIndex: index,
                                                 scrollController:
                                                     scrollController,

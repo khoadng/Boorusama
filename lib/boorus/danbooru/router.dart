@@ -118,24 +118,24 @@ Widget provideArtistPageDependencies(
         context,
         booru: state.booru!,
         builder: (dcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => DanbooruArtistCharacterPostCubit.of(
-                  dcontext,
-                  extra: DanbooruArtistChararacterExtra(
-                    category: TagFilterCategory.newest,
-                    tag: artist,
-                  ),
-                )..refresh(),
+          return RepositoryProvider(
+            create: (context) => DanbooruArtistCharacterPostCubit.of(
+              dcontext,
+              extra: DanbooruArtistChararacterExtra(
+                category: TagFilterCategory.newest,
+                tag: artist,
               ),
-              BlocProvider.value(
-                value: dcontext.read<ArtistBloc>()
-                  ..add(ArtistFetched(name: artist)),
+            ),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: dcontext.read<ArtistBloc>()
+                    ..add(ArtistFetched(name: artist)),
+                ),
+              ],
+              child: CustomContextMenuOverlay(
+                child: page,
               ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
             ),
           );
         },
@@ -181,24 +181,24 @@ Widget provideCharacterPageDependencies(
         context,
         booru: state.booru!,
         builder: (dcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => DanbooruArtistCharacterPostCubit.of(
-                  dcontext,
-                  extra: DanbooruArtistChararacterExtra(
-                    category: TagFilterCategory.newest,
-                    tag: character,
-                  ),
-                )..refresh(),
+          return RepositoryProvider(
+            create: (context) => DanbooruArtistCharacterPostCubit.of(
+              dcontext,
+              extra: DanbooruArtistChararacterExtra(
+                category: TagFilterCategory.newest,
+                tag: character,
               ),
-              BlocProvider.value(
-                value: dcontext.read<WikiBloc>()
-                  ..add(WikiFetched(tag: character)),
+            ),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: dcontext.read<WikiBloc>()
+                    ..add(WikiFetched(tag: character)),
+                ),
+              ],
+              child: CustomContextMenuOverlay(
+                child: page,
               ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
             ),
           );
         },
@@ -221,26 +221,26 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
           return DanbooruProvider.of(
             context,
             booru: state.booru!,
-            builder: (dcontext) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: PoolDescriptionBloc(
-                    endpoint: state.booru!.url,
-                    poolDescriptionRepository:
-                        dcontext.read<PoolDescriptionRepository>(),
-                  )..add(PoolDescriptionFetched(poolId: pool.id)),
-                ),
-                BlocProvider(
-                  create: (_) => DanbooruPostCubit.of(
-                    dcontext,
-                    extra: DanbooruPostExtra(tag: () => 'pool:${pool.id}'),
-                  )..refresh(),
-                ),
-              ],
-              child: CustomContextMenuOverlay(
-                child: PoolDetailPage(
-                  pool: pool,
-                  postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+            builder: (dcontext) => RepositoryProvider(
+              create: (context) => DanbooruPostCubit.of(
+                dcontext,
+                extra: DanbooruPostExtra(tag: () => 'pool:${pool.id}'),
+              ),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: PoolDescriptionBloc(
+                      endpoint: state.booru!.url,
+                      poolDescriptionRepository:
+                          dcontext.read<PoolDescriptionRepository>(),
+                    )..add(PoolDescriptionFetched(poolId: pool.id)),
+                  ),
+                ],
+                child: CustomContextMenuOverlay(
+                  child: PoolDetailPage(
+                    pool: pool,
+                    postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+                  ),
                 ),
               ),
             ),
@@ -248,40 +248,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
         },
       );
     },
-  ));
-}
-
-void goToParentChildPage(
-  BuildContext context,
-  int parentId,
-  String tagQueryForDataFetching,
-) {
-  Navigator.of(context).push(PageTransition(
-    type: PageTransitionType.bottomToTop,
-    settings: const RouteSettings(
-      name: RouterPageConstant.parentChild,
-    ),
-    child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => DanbooruPostCubit.of(
-                  dcontext,
-                  extra: DanbooruPostExtra(tag: () => tagQueryForDataFetching),
-                )..refresh(),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: ParentChildPostPage(parentPostId: parentId),
-            ),
-          ),
-        );
-      },
-    ),
   ));
 }
 
@@ -389,36 +355,39 @@ Widget provideSearchPageDependencies(
                     context.read<SearchHistoryRepository>(),
               );
 
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(value: searchHistoryCubit),
-                  BlocProvider.value(
-                    value: context.read<FavoriteTagBloc>()
-                      ..add(const FavoriteTagFetched()),
-                  ),
-                  BlocProvider.value(value: postCubit),
-                  BlocProvider.value(
-                    value: BlocProvider.of<ThemeBloc>(context),
-                  ),
-                  BlocProvider.value(value: searchHistorySuggestions),
-                  BlocProvider<SearchBloc>(
-                    create: (context) => DanbooruSearchBloc(
-                      initial: DisplayState.options,
-                      metatags: context.read<TagInfo>().metatags,
-                      tagSearchBloc: tagSearchBloc,
-                      searchHistoryBloc: searchHistoryCubit,
-                      relatedTagBloc: relatedTagBloc,
-                      searchHistorySuggestionsBloc: searchHistorySuggestions,
-                      postCubit: postCubit,
-                      postCountRepository: context.read<PostCountRepository>(),
-                      initialQuery: tag,
-                      booruType: state.booru!.booruType,
+              return RepositoryProvider.value(
+                value: postCubit,
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: searchHistoryCubit),
+                    BlocProvider.value(
+                      value: context.read<FavoriteTagBloc>()
+                        ..add(const FavoriteTagFetched()),
                     ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<ThemeBloc>(context),
+                    ),
+                    BlocProvider.value(value: searchHistorySuggestions),
+                    BlocProvider<SearchBloc>(
+                      create: (context) => DanbooruSearchBloc(
+                        initial: DisplayState.options,
+                        metatags: context.read<TagInfo>().metatags,
+                        tagSearchBloc: tagSearchBloc,
+                        searchHistoryBloc: searchHistoryCubit,
+                        relatedTagBloc: relatedTagBloc,
+                        searchHistorySuggestionsBloc: searchHistorySuggestions,
+                        postCubit: postCubit,
+                        postCountRepository:
+                            context.read<PostCountRepository>(),
+                        initialQuery: tag,
+                        booruType: state.booru!.booruType,
+                      ),
+                    ),
+                    BlocProvider.value(value: relatedTagBloc),
+                  ],
+                  child: CustomContextMenuOverlay(
+                    child: childBuilder(context, settingsState.settings),
                   ),
-                  BlocProvider.value(value: relatedTagBloc),
-                ],
-                child: CustomContextMenuOverlay(
-                  child: childBuilder(context, settingsState.settings),
                 ),
               );
             },
@@ -478,23 +447,23 @@ void goToExploreDetailPage(
               context,
               booru: state.booru!,
               builder: (dcontext) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: b),
-                    BlocProvider(
-                      create: (_) => a,
-                    ),
-                  ],
-                  child: CustomContextMenuOverlay(
-                    child: ExploreDetailPage(
-                      title: Text(
-                        title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(fontWeight: FontWeight.w700),
+                return RepositoryProvider(
+                  create: (context) => a,
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: b),
+                    ],
+                    child: CustomContextMenuOverlay(
+                      child: ExploreDetailPage(
+                        title: Text(
+                          title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        category: category,
                       ),
-                      category: category,
                     ),
                   ),
                 );
@@ -513,26 +482,23 @@ void goToExploreDetailPage(
           category: category,
         );
 
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: exploreDetailsBloc),
-            BlocProvider(
-              create: (_) => DanbooruExplorePostCubit.of(
-                context,
-                exploreDetailBloc: exploreDetailsBloc,
-              )..refresh(),
-            ),
-          ],
-          child: CustomContextMenuOverlay(
-            child: ExploreDetailPage(
-              title: Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(fontWeight: FontWeight.w700),
+        return RepositoryProvider(
+          create: (context) => a,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: exploreDetailsBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: ExploreDetailPage(
+                title: Text(
+                  title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.w700),
+                ),
+                category: category,
               ),
-              category: category,
             ),
           ),
         );
@@ -569,23 +535,22 @@ Widget provideSavedSearchPageDependecies(
       return DanbooruProvider.of(
         context,
         booru: state.booru!,
-        builder: (dcontext) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (_) => DanbooruPostCubit.of(
-                dcontext,
-                extra:
-                    DanbooruPostExtra(tag: () => SavedSearch.all().toQuery()),
-              )..refresh(),
+        builder: (dcontext) => RepositoryProvider(
+          create: (context) => DanbooruPostCubit.of(
+            dcontext,
+            extra: DanbooruPostExtra(tag: () => SavedSearch.all().toQuery()),
+          ),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => SavedSearchFeedBloc(
+                  savedSearchBloc: dcontext.read<SavedSearchBloc>(),
+                )..add(const SavedSearchFeedRefreshed()),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
             ),
-            BlocProvider(
-              create: (_) => SavedSearchFeedBloc(
-                savedSearchBloc: dcontext.read<SavedSearchBloc>(),
-              )..add(const SavedSearchFeedRefreshed()),
-            ),
-          ],
-          child: CustomContextMenuOverlay(
-            child: page,
           ),
         ),
       );
@@ -1168,20 +1133,20 @@ void goToFavoriteGroupDetailsPage(
         return DanbooruProvider.of(
           context,
           booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => DanbooruFavoriteGroupPostCubit.of(
-                  dcontext,
-                  ids: () => group.postIds,
-                )..refresh(),
-              ),
-              BlocProvider.value(value: bloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: FavoriteGroupDetailsPage(
-                group: group,
-                postIds: QueueList.from(group.postIds.skip(60)),
+          builder: (dcontext) => RepositoryProvider(
+            create: (context) => DanbooruFavoriteGroupPostCubit.of(
+              dcontext,
+              ids: () => group.postIds,
+            ),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: bloc),
+              ],
+              child: CustomContextMenuOverlay(
+                child: FavoriteGroupDetailsPage(
+                  group: group,
+                  postIds: QueueList.from(group.postIds.skip(60)),
+                ),
               ),
             ),
           ),

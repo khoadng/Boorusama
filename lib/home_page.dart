@@ -92,34 +92,39 @@ class _HomePageState extends State<HomePage> {
                   final explorePopularDetailsBloc = ExplorePopularDetailBloc();
 
                   return CustomContextMenuOverlay(
-                    child: MultiBlocProvider(
+                    child: MultiRepositoryProvider(
                       providers: [
-                        BlocProvider.value(value: exploreHotDetailsBloc),
-                        BlocProvider.value(value: exploreMostViewedDetailsBloc),
-                        BlocProvider.value(value: explorePopularDetailsBloc),
-                        BlocProvider(
+                        RepositoryProvider(
                           create: (context) => DanbooruHotExplorePostCubit(
                             context: context,
                             exploreDetailBloc: exploreHotDetailsBloc,
-                          )..refresh(),
+                          ),
                         ),
-                        BlocProvider(
+                        RepositoryProvider(
                           create: (context) => DanbooruPopularExplorePostCubit(
                             context: context,
                             exploreDetailBloc: explorePopularDetailsBloc,
-                          )..refresh(),
+                          ),
                         ),
-                        BlocProvider(
+                        RepositoryProvider(
                           create: (context) =>
                               DanbooruMostViewedExplorePostCubit(
                             context: context,
                             exploreDetailBloc: exploreMostViewedDetailsBloc,
-                          )..refresh(),
+                          ),
                         ),
                       ],
-                      child: DanbooruHomePage(
-                        onMenuTap: _onMenuTap,
-                        key: ValueKey(config?.id),
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: exploreHotDetailsBloc),
+                          BlocProvider.value(
+                              value: exploreMostViewedDetailsBloc),
+                          BlocProvider.value(value: explorePopularDetailsBloc),
+                        ],
+                        child: DanbooruHomePage(
+                          onMenuTap: _onMenuTap,
+                          key: ValueKey(config?.id),
+                        ),
                       ),
                     ),
                   );

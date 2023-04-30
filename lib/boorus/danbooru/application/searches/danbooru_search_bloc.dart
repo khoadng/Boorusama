@@ -44,14 +44,14 @@ class DanbooruSearchBloc extends SearchBloc {
 
   @override
   void onBackToOptions() {
-    postCubit.reset();
+    // postCubit.reset();
   }
 
   @override
   void onSearch(String query) {
     relatedTagBloc.add(RelatedTagRequested(query: query));
-    postCubit.setTags(query);
-    postCubit.refresh();
+    // postCubit.setTags(query);
+    // postCubit.refresh();
   }
 
   @override
@@ -60,19 +60,20 @@ class DanbooruSearchBloc extends SearchBloc {
 
   @override
   void onInit() {
-    postCubit.stream
-        .map((event) =>
-            event.data.isEmpty && !event.refreshing && !event.hasMore)
-        .distinct()
-        .where((empty) => empty)
-        .listen((event) => add(const SearchNoData()))
-        .addTo(compositeSubscription);
+    // postCubit.stream
+    //     .map((event) =>
+    //         event.data.isEmpty && !event.refreshing && !event.hasMore)
+    //     .distinct()
+    //     .where((empty) => empty)
+    //     .listen((event) => add(const SearchNoData()))
+    //     .addTo(compositeSubscription);
 
-    postCubit.stream
-        .map((event) => event.error)
-        .distinct()
-        .where((error) => error != null)
-        .listen((error) => add(SearchError(translateBooruError(error!))))
-        .addTo(compositeSubscription);
+    // postCubit.stream
+    //     .map((event) => event.error)
+    //     .distinct()
+    //     .where((error) => error != null)
+    //     .listen((error) => add(SearchError(translateBooruError(error!))))
+    //     .addTo(compositeSubscription);
+    //FIXME: this is a hack to make sure that the postCubit is initialized
   }
 }
