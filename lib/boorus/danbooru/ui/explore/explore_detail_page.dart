@@ -34,6 +34,12 @@ class _ExploreDetailPageState extends State<ExploreDetailPage>
       fetcher: fetchPost, refresher: refreshPost);
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = context.watch<ExploreDetailBloc>().state;
 

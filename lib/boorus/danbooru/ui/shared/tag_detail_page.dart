@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -30,14 +31,30 @@ class TagDetailPage extends StatefulWidget {
 class _TagDetailPageState extends State<TagDetailPage>
     with DanbooruArtistCharacterPostCubitMixin {
   late final controller = PostGridController<DanbooruPost>(
-      fetcher: fetchPost, refresher: refreshPost);
+    fetcher: (page) => fetchPost(
+        page,
+        DanbooruArtistChararacterExtra(
+          category: selectedCategory.value,
+          tag: widget.tagName,
+        )),
+    refresher: () => refreshPost(DanbooruArtistChararacterExtra(
+      category: selectedCategory.value,
+      tag: widget.tagName,
+    )),
+  );
+
+  final selectedCategory = ValueNotifier(TagFilterCategory.newest);
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(
       controller: controller,
-      onLoadMore: () => {},
-      // onRefresh: () => refresh(context),
       sliverHeaderBuilder: (context) => [
         if (widget.includeHeaders)
           SliverAppBar(
@@ -73,7 +90,10 @@ class _TagDetailPageState extends State<TagDetailPage>
           padding: const EdgeInsets.only(bottom: 10),
           sliver: SliverToBoxAdapter(
             child: CategoryToggleSwitch(
-              onToggle: (category) => changeCategory(category),
+              onToggle: (category) {
+                selectedCategory.value = category;
+                controller.refresh();
+              },
             ),
           ),
         ),

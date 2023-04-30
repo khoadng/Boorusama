@@ -31,7 +31,7 @@ import 'package:boorusama/utils/double_utils.dart';
 class DanbooruInfinitePostList2 extends StatefulWidget {
   const DanbooruInfinitePostList2({
     super.key,
-    required this.onLoadMore,
+    this.onLoadMore,
     this.onRefresh,
     this.sliverHeaderBuilder,
     this.scrollController,
@@ -42,7 +42,7 @@ class DanbooruInfinitePostList2 extends StatefulWidget {
     required this.controller,
   });
 
-  final VoidCallback onLoadMore;
+  final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;

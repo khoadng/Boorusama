@@ -58,6 +58,13 @@ class _FavoritesPageState extends State<FavoritesPage>
     with DanbooruPostCubitMixin {
   late final controller = PostGridController<DanbooruPost>(
       fetcher: fetchPost, refresher: refreshPost);
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DanbooruInfinitePostList2(

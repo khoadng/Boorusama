@@ -51,6 +51,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
   void dispose() {
     _compositeSubscription.dispose();
     _selectedSearchStream.close();
+    controller.dispose();
     super.dispose();
   }
 

@@ -21,7 +21,7 @@ typedef ItemWidgetBuilder<T> = Widget Function(
 class PostGrid<T> extends StatefulWidget {
   const PostGrid({
     super.key,
-    required this.onLoadMore,
+    this.onLoadMore,
     this.onRefresh,
     this.sliverHeaderBuilder,
     this.scrollController,
@@ -37,7 +37,7 @@ class PostGrid<T> extends StatefulWidget {
     required this.controller,
   });
 
-  final VoidCallback onLoadMore;
+  final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
@@ -148,7 +148,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
     }
     _isOnTop.value = _isTop;
     if (_isBottom && hasMore) {
-      widget.onLoadMore.call();
+      widget.onLoadMore?.call();
       widget.controller.fetchMore();
     }
   }
