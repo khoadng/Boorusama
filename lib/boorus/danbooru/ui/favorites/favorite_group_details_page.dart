@@ -313,7 +313,8 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                         padding: const EdgeInsets.all(4),
                                         icon: const Icon(Icons.close),
                                         onPressed: () {
-                                          remove([post.id]);
+                                          controller
+                                              .remove([post.id], (e) => e.id);
                                           commands.add([true, 0, 0, post.id]);
                                         },
                                       ),

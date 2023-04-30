@@ -69,4 +69,12 @@ class PostGridController<T> extends ChangeNotifier {
     _items = data;
     notifyListeners();
   }
+
+  void remove(List<int> postIds, int Function(T item) itemIdExtractor) {
+    final data = [..._items]
+      ..removeWhere((e) => postIds.contains(itemIdExtractor(e)));
+
+    _items = data;
+    notifyListeners();
+  }
 }

@@ -26,8 +26,6 @@ mixin DanbooruFavoriteGroupPostCubitMixin<T extends StatefulWidget>
       context.read<DanbooruFavoriteGroupPostCubit>().refreshPost();
   Future<List<DanbooruPost>> fetch(int page) =>
       context.read<DanbooruFavoriteGroupPostCubit>().fetchPost(page);
-  void remove(List<int> ids) =>
-      context.read<DanbooruFavoriteGroupPostCubit>().remove(ids);
 }
 
 class DanbooruFavoriteGroupPostCubit with DanbooruPostTransformMixin {
@@ -84,15 +82,6 @@ class DanbooruFavoriteGroupPostCubit with DanbooruPostTransformMixin {
   Future<List<DanbooruPost>> refreshPost() async => _fetch().then(transform);
   Future<List<DanbooruPost>> fetchPost(int page) async =>
       _fetch().then(transform);
-
-  //FIXME: should move to widget page
-  void remove(List<int> postIds) {
-    // final data = [...state.data]..removeWhere((e) => postIds.contains(e.id));
-
-    // emit(state.copyWith(
-    //   data: data,
-    // ));
-  }
 
   Future<List<DanbooruPost>> _fetch() async {
     final ids = _ids.dequeue(20);
