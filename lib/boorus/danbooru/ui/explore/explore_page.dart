@@ -1,10 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/boorus/current_booru_config_repository.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +14,7 @@ import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
+import 'explore_mixins.dart';
 import 'explore_section.dart';
 
 const double _kMaxHeight = 250;
@@ -98,8 +93,11 @@ class _MostViewedExplore extends StatefulWidget {
 }
 
 class _MostViewedExploreState extends State<_MostViewedExplore>
-    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
-  late final controller = PostGridController<DanbooruPost>(
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
+        PostExplorerServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
     fetcher: (_) => context
         .read<ExploreRepository>()
         .getMostViewedPosts(DateTime.now())
@@ -109,30 +107,6 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
         .getMostViewedPosts(DateTime.now())
         .then((transform)),
   );
-
-  var posts = <DanbooruPost>[];
-
-  @override
-  void initState() {
-    super.initState();
-    controller.addListener(_onControllerChange);
-    controller.refresh();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_onControllerChange);
-    controller.dispose();
-  }
-
-  void _onControllerChange() {
-    if (controller.items.isNotEmpty) {
-      setState(() {
-        posts = controller.items;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,33 +120,7 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
   }
 
   @override
-  BlacklistedTagsRepository get blacklistedTagsRepository =>
-      context.read<BlacklistedTagsRepository>();
-
-  @override
-  BooruUserIdentityProvider get booruUserIdentityProvider =>
-      context.read<BooruUserIdentityProvider>();
-
-  @override
-  CurrentBooruConfigRepository get currentBooruConfigRepository =>
-      context.read<CurrentBooruConfigRepository>();
-
-  @override
-  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
-
-  @override
-  PoolRepository get poolRepository => context.read<PoolRepository>();
-
-  @override
-  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
-
-  @override
-  PostVoteRepository get postVoteRepository =>
-      context.read<PostVoteRepository>();
-
-  @override
-  PostPreviewPreloader? get previewPreloader =>
-      context.read<PostPreviewPreloader>();
+  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _HotExplore extends StatefulWidget {
@@ -183,37 +131,16 @@ class _HotExplore extends StatefulWidget {
 }
 
 class _HotExploreState extends State<_HotExplore>
-    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
-  late final controller = PostGridController<DanbooruPost>(
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_HotExplore, DanbooruPost>,
+        PostExplorerServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) =>
         context.read<ExploreRepository>().getHotPosts(page).then((transform)),
     refresher: () =>
         context.read<ExploreRepository>().getHotPosts(1).then((transform)),
   );
-
-  var posts = <DanbooruPost>[];
-
-  @override
-  void initState() {
-    super.initState();
-    controller.addListener(_onControllerChange);
-    controller.refresh();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_onControllerChange);
-    controller.dispose();
-  }
-
-  void _onControllerChange() {
-    if (controller.items.isNotEmpty) {
-      setState(() {
-        posts = controller.items;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,33 +154,7 @@ class _HotExploreState extends State<_HotExplore>
   }
 
   @override
-  BlacklistedTagsRepository get blacklistedTagsRepository =>
-      context.read<BlacklistedTagsRepository>();
-
-  @override
-  BooruUserIdentityProvider get booruUserIdentityProvider =>
-      context.read<BooruUserIdentityProvider>();
-
-  @override
-  CurrentBooruConfigRepository get currentBooruConfigRepository =>
-      context.read<CurrentBooruConfigRepository>();
-
-  @override
-  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
-
-  @override
-  PoolRepository get poolRepository => context.read<PoolRepository>();
-
-  @override
-  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
-
-  @override
-  PostVoteRepository get postVoteRepository =>
-      context.read<PostVoteRepository>();
-
-  @override
-  PostPreviewPreloader? get previewPreloader =>
-      context.read<PostPreviewPreloader>();
+  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _PopularExplore extends StatefulWidget {
@@ -264,8 +165,11 @@ class _PopularExplore extends StatefulWidget {
 }
 
 class _PopularExploreState extends State<_PopularExplore>
-    with DanbooruPostCubitMixin, DanbooruPostTransformMixin {
-  late final controller = PostGridController<DanbooruPost>(
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_PopularExplore, DanbooruPost>,
+        PostExplorerServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) => context
         .read<ExploreRepository>()
         .getPopularPosts(DateTime.now(), page, TimeScale.day)
@@ -275,30 +179,6 @@ class _PopularExploreState extends State<_PopularExplore>
         .getPopularPosts(DateTime.now(), 1, TimeScale.day)
         .then((transform)),
   );
-
-  var posts = <DanbooruPost>[];
-
-  @override
-  void initState() {
-    super.initState();
-    controller.addListener(_onControllerChange);
-    controller.refresh();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_onControllerChange);
-    controller.dispose();
-  }
-
-  void _onControllerChange() {
-    if (controller.items.isNotEmpty) {
-      setState(() {
-        posts = controller.items;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -312,33 +192,7 @@ class _PopularExploreState extends State<_PopularExplore>
   }
 
   @override
-  BlacklistedTagsRepository get blacklistedTagsRepository =>
-      context.read<BlacklistedTagsRepository>();
-
-  @override
-  BooruUserIdentityProvider get booruUserIdentityProvider =>
-      context.read<BooruUserIdentityProvider>();
-
-  @override
-  CurrentBooruConfigRepository get currentBooruConfigRepository =>
-      context.read<CurrentBooruConfigRepository>();
-
-  @override
-  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
-
-  @override
-  PoolRepository get poolRepository => context.read<PoolRepository>();
-
-  @override
-  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
-
-  @override
-  PostVoteRepository get postVoteRepository =>
-      context.read<PostVoteRepository>();
-
-  @override
-  PostPreviewPreloader? get previewPreloader =>
-      context.read<PostPreviewPreloader>();
+  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _ExploreList extends StatefulWidget {
