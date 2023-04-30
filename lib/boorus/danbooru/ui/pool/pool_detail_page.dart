@@ -2,9 +2,6 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,8 +15,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {

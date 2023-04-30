@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/post_grid.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -24,6 +22,8 @@ import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
+import 'package:boorusama/core/ui/post_grid.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';

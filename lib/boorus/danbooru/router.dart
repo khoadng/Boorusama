@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -41,7 +40,9 @@ import 'package:boorusama/boorus/danbooru/ui/characters/character_page_desktop.d
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_update_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_hot_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_most_viewed_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_popular_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_group_details_page.dart';
@@ -390,74 +391,14 @@ Widget provideSearchPageDependencies(
   );
 }
 
-void goToExploreDetailPage(
-  BuildContext context,
-  DateTime? date,
-  String title,
-  ExploreCategory category,
-  PostGridController<DanbooruPost> controller,
-) {
-  if (isMobilePlatform()) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        settings: RouteSettings(
-          name: () {
-            switch (category) {
-              case ExploreCategory.popular:
-                return RouterPageConstant.explorePopular;
-              case ExploreCategory.mostViewed:
-                return RouterPageConstant.exploreMostViewed;
-              case ExploreCategory.hot:
-                return RouterPageConstant.exploreHot;
-            }
-          }(),
-        ),
-        builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dcontext) {
-                return CustomContextMenuOverlay(
-                  child: ExploreDetailPage(
-                    controller: controller,
-                    title: Text(
-                      title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    category: category,
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (context) {
-        return CustomContextMenuOverlay(
-          child: ExploreDetailPage(
-            controller: controller,
-            title: Text(
-              title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-            category: category,
-          ),
-        );
-      },
-    );
-  }
-}
+void goToExplorePopularPage(BuildContext context) =>
+    Navigator.of(context).push(ExplorePopularPage.routeOf(context));
+
+void goToExploreHotPage(BuildContext context) =>
+    Navigator.of(context).push(ExploreHotPage.routeOf(context));
+
+void goToExploreMostViewedPage(BuildContext context) =>
+    Navigator.of(context).push(ExploreMostViewedPage.routeOf(context));
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {

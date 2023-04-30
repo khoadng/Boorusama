@@ -1,19 +1,19 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/boorus/current_booru_config_repository.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/domain/boorus/current_booru_config_repository.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
+import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 mixin PostExplorerServiceProviderMixin<T extends StatefulWidget> on State<T> {
   BlacklistedTagsRepository get blacklistedTagsRepository =>

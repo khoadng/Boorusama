@@ -1,3 +1,4 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
 typedef ItemFetcher<T> = Future<List<T>> Function(int page);

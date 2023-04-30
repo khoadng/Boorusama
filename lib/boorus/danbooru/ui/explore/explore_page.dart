@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
 import 'explore_mixins.dart';
@@ -111,11 +111,9 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      controller: controller,
-      date: DateTime.now(),
       title: 'explore.most_viewed'.tr(),
-      category: ExploreCategory.mostViewed,
       builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExploreMostViewedPage(context),
     );
   }
 
@@ -145,11 +143,9 @@ class _HotExploreState extends State<_HotExplore>
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      controller: controller,
-      date: DateTime.now(),
       title: 'explore.hot'.tr(),
-      category: ExploreCategory.hot,
       builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExploreHotPage(context),
     );
   }
 
@@ -183,11 +179,9 @@ class _PopularExploreState extends State<_PopularExplore>
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      controller: controller,
-      date: DateTime.now(),
       title: 'explore.popular'.tr(),
-      category: ExploreCategory.popular,
       builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExplorePopularPage(context),
     );
   }
 

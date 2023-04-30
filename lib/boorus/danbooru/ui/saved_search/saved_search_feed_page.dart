@@ -1,7 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,9 +9,12 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';

@@ -12,7 +12,6 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/multi_select_widget.dart';
-
 import 'post_grid_controller.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
