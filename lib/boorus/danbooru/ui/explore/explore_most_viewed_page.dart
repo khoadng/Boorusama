@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores/explore_utils.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_mixins.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -49,16 +49,15 @@ class ExploreMostViewedPage extends StatefulWidget {
 
 class _ExploreDetailPageState extends State<ExploreMostViewedPage>
     with DanbooruPostTransformMixin, PostExplorerServiceProviderMixin {
-  final AutoScrollController _scrollController = AutoScrollController();
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (_) => context
         .read<ExploreRepository>()
         .getMostViewedPosts(exploreDetails.value.date)
-        .then((transform)),
+        .then(transform),
     refresher: () => context
         .read<ExploreRepository>()
         .getMostViewedPosts(exploreDetails.value.date)
-        .then((transform)),
+        .then(transform),
   );
 
   late final exploreDetails = ValueNotifier(
@@ -80,7 +79,6 @@ class _ExploreDetailPageState extends State<ExploreMostViewedPage>
     super.dispose();
     exploreDetails.removeListener(_onExploreDetailsChanged);
     _controller.dispose();
-    _scrollController.dispose();
   }
 
   void _onExploreDetailsChanged() {
@@ -89,47 +87,32 @@ class _ExploreDetailPageState extends State<ExploreMostViewedPage>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ExploreDetailsData>(
-      valueListenable: exploreDetails,
-      builder: (_, data, __) => Column(
-        children: [
-          Expanded(
-            child: DanbooruInfinitePostList2(
-              controller: _controller,
-              scrollController: _scrollController,
-              onLoadMore: () {},
-              sliverHeaderBuilder: (context) => [
-                SliverAppBar(
-                  title: Text(
-                    'explore.most_viewed'.tr(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  floating: true,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Expanded(
+          child: DanbooruInfinitePostList2(
+            controller: _controller,
+            sliverHeaderBuilder: (context) => [
+              ExploreSliverAppBar(
+                title: 'explore.most_viewed'.tr(),
+              ),
+            ],
           ),
-          Container(
-            color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-            child: DateTimeSelector(
-              onDateChanged: (date) => {
-                exploreDetails.value = exploreDetails.value.copyWith(
-                  date: date,
-                )
-              },
+        ),
+        Container(
+          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          child: ValueListenableBuilder<ExploreDetailsData>(
+            valueListenable: exploreDetails,
+            builder: (_, data, __) => DateTimeSelector(
+              onDateChanged: (date) => exploreDetails.value =
+                  exploreDetails.value.copyWith(date: date),
               date: data.date,
               scale: data.scale,
               backgroundColor: Colors.transparent,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
