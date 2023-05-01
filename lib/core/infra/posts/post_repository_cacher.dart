@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
+import 'package:boorusama/functional.dart';
 
 class PostRepositoryCacher implements PostRepository {
   PostRepositoryCacher({
@@ -12,25 +13,19 @@ class PostRepositoryCacher implements PostRepository {
   final Cacher<String, List<Post>> cache;
 
   @override
-  Future<List<Post>> getPostsFromTags(
+  PostsOrError getPostsFromTags(
     String tags,
     int page, {
     int? limit,
-  }) async {
+  }) {
     final name = "$tags-$page-$limit";
 
-    final item = cache.get(name);
-
-    if (item != null) return item;
-
-    final fresh = await repository.getPostsFromTags(
-      tags,
-      page,
-      limit: limit,
-    );
-
-    await cache.put(name, fresh);
-
-    return fresh;
+    return cache.get(name).toOption().fold(
+          () => repository.getPostsFromTags(tags, page).map((r) {
+            cache.put(name, r);
+            return r;
+          }),
+          (t) => TaskEither.of(t),
+        );
   }
 }

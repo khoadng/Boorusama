@@ -230,16 +230,30 @@ class _SmallLayout extends StatefulWidget {
 
 class _SmallLayoutState extends State<_SmallLayout> {
   late final controller = PostGridController<Post>(
-    fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+    fetcher: (page) => context
+        .read<PostRepository>()
+        .getPostsFromTags(
           context.read<TagSearchBloc>().state.selectedTags.join(' '),
           page,
           limit: context.read<SettingsCubit>().state.settings.postsPerPage,
-        ),
-    refresher: () => context.read<PostRepository>().getPostsFromTags(
+        )
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
+    refresher: () => context
+        .read<PostRepository>()
+        .getPostsFromTags(
           context.read<TagSearchBloc>().state.selectedTags.join(' '),
           1,
           limit: context.read<SettingsCubit>().state.settings.postsPerPage,
-        ),
+        )
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
   );
 
   @override

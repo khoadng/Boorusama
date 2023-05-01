@@ -29,7 +29,9 @@ class GelbooruArtistPage extends StatefulWidget {
 
 class _GelbooruArtistPageState extends State<GelbooruArtistPage> {
   late final controller = PostGridController<Post>(
-    fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+    fetcher: (page) => context
+        .read<PostRepository>()
+        .getPostsFromTags(
           queryFromTagFilterCategory(
             category: selectedCategory.value,
             tag: widget.tagName,
@@ -38,8 +40,15 @@ class _GelbooruArtistPageState extends State<GelbooruArtistPage> {
                 : none(),
           ),
           page,
-        ),
-    refresher: () => context.read<PostRepository>().getPostsFromTags(
+        )
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
+    refresher: () => context
+        .read<PostRepository>()
+        .getPostsFromTags(
           queryFromTagFilterCategory(
             category: selectedCategory.value,
             tag: widget.tagName,
@@ -48,7 +57,12 @@ class _GelbooruArtistPageState extends State<GelbooruArtistPage> {
                 : none(),
           ),
           1,
-        ),
+        )
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
   );
 
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);

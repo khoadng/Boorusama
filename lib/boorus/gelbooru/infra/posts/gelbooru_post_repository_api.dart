@@ -6,9 +6,13 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/domain/posts/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/domain/utils.dart';
+import 'package:boorusama/core/application/posts/filter.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/functional.dart';
 import 'post_dto.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) {
@@ -30,7 +34,16 @@ List<Post> parsePost(HttpResponse<dynamic> value) {
   }).toList();
 }
 
-class GelbooruPostRepositoryApi implements PostRepository {
+Either<BooruError, List<Post>> tryParsePosts(HttpResponse<dynamic> response) =>
+    Either.tryCatch(
+      () => parsePost(response),
+      (error, stackTrace) =>
+          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+    );
+
+class GelbooruPostRepositoryApi
+    with BlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    implements PostRepository {
   const GelbooruPostRepositoryApi({
     required this.api,
     required this.currentBooruConfigRepository,
@@ -38,41 +51,41 @@ class GelbooruPostRepositoryApi implements PostRepository {
   });
 
   final GelbooruApi api;
+  @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
   final BlacklistedTagRepository blacklistedTagRepository;
 
+  List<String> getTags(BooruConfig config, String tags) {
+    final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);
+
+    return [
+      ...tags.split(' '),
+      if (tag != null) tag,
+    ];
+  }
+
   @override
-  Future<List<Post>> getPostsFromTags(
+  PostsOrError getPostsFromTags(
     String tags,
     int page, {
     int? limit,
-  }) async {
-    final config = await currentBooruConfigRepository.get();
-    final tag = booruFilterConfigToGelbooruTag(config?.ratingFilter);
-
-    final blacklist = await blacklistedTagRepository.getBlacklist();
-    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    return api
-        .getPosts(
-          config?.apiKey,
-          config?.login,
-          'dapi',
-          'post',
-          'index',
-          [
-            ...tags.split(' '),
-            if (tag != null) tag,
-          ].join(' '),
-          '1',
-          (page - 1).toString(),
-        )
-        .then(parsePost)
-        .then((posts) => posts
-            .where((post) =>
-                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-            .toList());
-  }
+  }) =>
+      tryGetBooruConfig()
+          .flatMap((config) => tryParseResponse(
+                fetcher: () => api.getPosts(
+                  config.apiKey,
+                  config.login,
+                  'dapi',
+                  'post',
+                  'index',
+                  getTags(config, tags).join(' '),
+                  '1',
+                  (page - 1).toString(),
+                ),
+              ))
+          .flatMap((response) => TaskEither.fromEither(tryParsePosts(response)))
+          .flatMap(tryFilterBlacklistedTags);
 }
 
 Post postDtoToPost(PostDto dto) {

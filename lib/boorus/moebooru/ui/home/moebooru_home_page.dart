@@ -35,9 +35,22 @@ class _MoebooruHomePageState extends State<MoebooruHomePage> {
   final AutoScrollController _autoScrollController = AutoScrollController();
   final viewIndex = ValueNotifier(0);
   late final controller = PostGridController<Post>(
-    fetcher: (page) =>
-        context.read<PostRepository>().getPostsFromTags('', page),
-    refresher: () => context.read<PostRepository>().getPostsFromTags('', 1),
+    fetcher: (page) => context
+        .read<PostRepository>()
+        .getPostsFromTags('', page)
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
+    refresher: () => context
+        .read<PostRepository>()
+        .getPostsFromTags('', 1)
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
   );
 
   @override

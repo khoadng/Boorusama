@@ -33,9 +33,22 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final AutoScrollController _autoScrollController = AutoScrollController();
   late final controller = PostGridController<Post>(
-    fetcher: (page) =>
-        context.read<PostRepository>().getPostsFromTags('', page),
-    refresher: () => context.read<PostRepository>().getPostsFromTags('', 1),
+    fetcher: (page) => context
+        .read<PostRepository>()
+        .getPostsFromTags('', page)
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
+    refresher: () => context
+        .read<PostRepository>()
+        .getPostsFromTags('', 1)
+        .run()
+        .then((value) => value.fold(
+              (l) => <Post>[],
+              (r) => r,
+            )),
   );
 
   @override

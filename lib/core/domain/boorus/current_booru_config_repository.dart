@@ -18,3 +18,10 @@ TaskEither<BooruError, BooruConfig> tryGetBooruConfigFrom(
             BooruError(error: AppError(type: AppErrorType.booruConfigNotFound)),
           )
         : TaskEither.right(r));
+
+mixin CurrentBooruConfigRepositoryMixin {
+  CurrentBooruConfigRepository get currentBooruConfigRepository;
+
+  TaskEither<BooruError, BooruConfig> tryGetBooruConfig() =>
+      tryGetBooruConfigFrom(currentBooruConfigRepository);
+}

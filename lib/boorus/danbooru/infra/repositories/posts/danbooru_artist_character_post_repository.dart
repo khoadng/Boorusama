@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 import 'package:boorusama/functional.dart';
 
@@ -43,9 +43,6 @@ class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
       repository.getPostsFromIds(ids);
 
   @override
-  Future<List<Post>> getPostsFromTags(String tags, int page, {int? limit}) =>
-      getPosts(tags, page, limit: limit).run().then((value) => value.fold(
-            (l) => [],
-            (r) => r,
-          ));
+  PostsOrError getPostsFromTags(String tags, int page, {int? limit}) =>
+      getPosts(tags, page, limit: limit);
 }

@@ -102,18 +102,10 @@ class PostRepositoryApi implements DanbooruPostRepository {
       );
 
   @override
-  Future<List<Post>> getPostsFromTags(
+  PostsOrError getPostsFromTags(
     String tags,
     int page, {
     int? limit,
   }) =>
-      getPosts(
-        tags,
-        page,
-        limit: limit,
-        includeInvalid: true,
-      ).run().then((value) => value.fold(
-            (l) => [],
-            (r) => r,
-          ));
+      getPosts(tags, page, limit: limit, includeInvalid: true);
 }

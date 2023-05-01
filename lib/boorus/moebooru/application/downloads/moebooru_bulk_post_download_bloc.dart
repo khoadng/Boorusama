@@ -18,11 +18,17 @@ class MoebooruBulkPostDownloadBloc extends DownloadBloc<String, Post> {
   }) : super(
           itemFetcher: (page, tag, emit, state) async {
             try {
-              return await postRepository.getPostsFromTags(
-                tag,
-                page,
-                limit: 100,
-              );
+              return await postRepository
+                  .getPostsFromTags(
+                    tag,
+                    page,
+                    limit: 100,
+                  )
+                  .run()
+                  .then((value) => value.fold(
+                        (l) => <Post>[],
+                        (r) => r,
+                      ));
             } catch (e) {
               if (e is BooruError) {
                 emit(state.copyWith(errorMessage: errorTranslator(e)));
