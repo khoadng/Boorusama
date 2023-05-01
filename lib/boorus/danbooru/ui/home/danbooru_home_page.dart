@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/home/latest_posts_view.dart';
 import 'package:boorusama/core/application/networking.dart';
@@ -30,7 +29,6 @@ class DanbooruHomePage extends StatefulWidget {
 
 class _HomePageState extends State<DanbooruHomePage> {
   final viewIndex = ValueNotifier(0);
-  final selectedTag = ValueNotifier('');
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +51,8 @@ class _HomePageState extends State<DanbooruHomePage> {
                 builder: (context, index, _) => AnimatedIndexedStack(
                   index: index,
                   children: [
-                    BlocProvider(
-                      create: (context) => DanbooruPostCubit.of(
-                        context,
-                        extra: DanbooruPostExtra(tag: () => selectedTag.value),
-                      )..refresh(),
-                      child: _LatestView(
-                        onMenuTap: widget.onMenuTap,
-                        onSelectedTagChanged: (tag) => selectedTag.value = tag,
-                      ),
+                    _LatestView(
+                      onMenuTap: widget.onMenuTap,
                     ),
                     const _ExplorePage(),
                     const OtherFeaturesPage(),
@@ -96,18 +87,15 @@ class _ExplorePage extends StatelessWidget {
 class _LatestView extends StatelessWidget {
   const _LatestView({
     required this.onMenuTap,
-    required this.onSelectedTagChanged,
   });
 
   final void Function()? onMenuTap;
-  final void Function(String tag) onSelectedTagChanged;
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<NetworkBloc>().state;
 
     return LatestView(
-      onSelectedTagChanged: onSelectedTagChanged,
       onMenuTap: onMenuTap,
       useAppBarPadding: state is NetworkConnectedState,
     );

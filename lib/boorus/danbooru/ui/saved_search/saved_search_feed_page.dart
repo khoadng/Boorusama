@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
@@ -26,10 +26,10 @@ class SavedSearchFeedPage extends StatefulWidget {
   State<SavedSearchFeedPage> createState() => _SavedSearchFeedPageState();
 }
 
-class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
-    with DanbooruPostCubitMixin {
+class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
+  final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
 
   @override
   void initState() {
@@ -65,57 +65,49 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
     BuildContext context,
     SavedSearchFeedState savedSearchState,
   ) {
-    return BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(
-      listenWhen: (previous, current) =>
-          previous.selectedSearch != current.selectedSearch,
-      listener: (context, state) {
-        _sendRefresh(state.selectedSearch);
-      },
-      child: BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-        builder: (context, state) {
-          return DanbooruInfinitePostList(
-            refreshing: state.refreshing,
-            loading: state.loading,
-            hasMore: state.hasMore,
-            error: state.error,
-            data: state.data,
-            onRefresh: () {
-              _sendRefresh(savedSearchState.selectedSearch);
-            },
-            onLoadMore: () {
-              fetch();
-            },
-            sliverHeaderBuilder: (context) => [
-              SliverAppBar(
-                title: const Text('saved_search.saved_search_feed').tr(),
-                floating: true,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                actions: [
-                  IconButton(
-                    onPressed: () => goToSavedSearchEditPage(context),
-                    icon: const Icon(Icons.settings),
-                  ),
-                ],
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  height: 50,
-                  child: _buildTags(
-                    savedSearchState.savedSearches,
-                    savedSearchState.selectedSearch,
-                    savedSearchState.status,
-                  ),
+    return DanbooruPostScope(
+      fetcher: (page) => context
+          .read<DanbooruPostRepository>()
+          .getPosts(savedSearches.value, page),
+      builder: (context, controller, errors) =>
+          BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(
+        listener: (context, state) {
+          savedSearches.value = state.selectedSearch.toQuery();
+          controller.refresh();
+        },
+        child: DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: const Text('saved_search.saved_search_feed').tr(),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              actions: [
+                IconButton(
+                  onPressed: () => goToSavedSearchEditPage(context),
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 16,
+                ),
+                height: 50,
+                child: _buildTags(
+                  savedSearchState.savedSearches,
+                  savedSearchState.selectedSearch,
+                  savedSearchState.status,
                 ),
               ),
-            ],
-          );
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -258,8 +250,6 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
         );
     }
   }
-
-  void _sendRefresh(SavedSearch search) => refresh();
 }
 
 class _ExampleContainer extends StatelessWidget {

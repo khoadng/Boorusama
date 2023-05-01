@@ -1,12 +1,7 @@
-// Package imports:
-import 'package:rxdart/rxdart.dart';
-
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/core/application/search.dart';
 
 class SearchRelatedTagSelected extends SearchEvent {
@@ -23,7 +18,6 @@ class SearchRelatedTagSelected extends SearchEvent {
 class DanbooruSearchBloc extends SearchBloc {
   DanbooruSearchBloc({
     required super.initial,
-    required this.postCubit,
     required super.tagSearchBloc,
     required this.relatedTagBloc,
     required super.searchHistoryBloc,
@@ -38,20 +32,19 @@ class DanbooruSearchBloc extends SearchBloc {
     });
   }
 
-  final DanbooruPostCubit postCubit;
   final RelatedTagBloc relatedTagBloc;
   final PostCountRepository postCountRepository;
 
   @override
   void onBackToOptions() {
-    postCubit.reset();
+    // postCubit.reset();
   }
 
   @override
   void onSearch(String query) {
     relatedTagBloc.add(RelatedTagRequested(query: query));
-    postCubit.setTags(query);
-    postCubit.refresh();
+    // postCubit.setTags(query);
+    // postCubit.refresh();
   }
 
   @override
@@ -60,19 +53,20 @@ class DanbooruSearchBloc extends SearchBloc {
 
   @override
   void onInit() {
-    postCubit.stream
-        .map((event) =>
-            event.data.isEmpty && !event.refreshing && !event.hasMore)
-        .distinct()
-        .where((empty) => empty)
-        .listen((event) => add(const SearchNoData()))
-        .addTo(compositeSubscription);
+    // postCubit.stream
+    //     .map((event) =>
+    //         event.data.isEmpty && !event.refreshing && !event.hasMore)
+    //     .distinct()
+    //     .where((empty) => empty)
+    //     .listen((event) => add(const SearchNoData()))
+    //     .addTo(compositeSubscription);
 
-    postCubit.stream
-        .map((event) => event.error)
-        .distinct()
-        .where((error) => error != null)
-        .listen((error) => add(SearchError(translateBooruError(error!))))
-        .addTo(compositeSubscription);
+    // postCubit.stream
+    //     .map((event) => event.error)
+    //     .distinct()
+    //     .where((error) => error != null)
+    //     .listen((error) => add(SearchError(translateBooruError(error!))))
+    //     .addTo(compositeSubscription);
+    //FIXME: this is a hack to make sure that the postCubit is initialized
   }
 }

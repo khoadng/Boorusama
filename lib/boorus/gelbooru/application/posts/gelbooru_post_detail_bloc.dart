@@ -104,7 +104,7 @@ class GelbooruPostDetailBloc
 
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository.getPostsFromTags(tag, 1);
+          : await postRepository.getPostsFromTagsOrEmpty(tag, 1);
 
       tagCache[tag] = posts;
 

@@ -15,7 +15,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/danbooru_favorite_group_post_mixin.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
@@ -24,6 +26,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -43,11 +46,43 @@ class FavoriteGroupDetailsPage extends StatefulWidget {
 }
 
 class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
-    with DanbooruFavoriteGroupPostCubitMixin {
+    with
+        DanbooruPostTransformMixin,
+        DanbooruPostServiceProviderMixin,
+        DanbooruFavoriteGroupPostMixin {
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
+  late final controller = PostGridController<DanbooruPost>(
+    fetcher: (page) => getPostsFromIdQueue(widget.postIds).then(transform),
+    refresher: () => getPostsFromIdQueue(widget.postIds).then(transform),
+  );
   int rowCountEditMode = 2;
+
+  List<DanbooruPost> items = [];
+  bool refreshing = false;
+  bool loading = false;
+  bool hasMore = false;
+
+  @override
+  DanbooruPostRepository get postRepository =>
+      context.read<DanbooruPostRepository>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onControllerChanged);
+    controller.refresh();
+  }
+
+  void _onControllerChanged() {
+    setState(() {
+      items = controller.items;
+      hasMore = controller.hasMore;
+      loading = controller.loading;
+      refreshing = controller.refreshing;
+    });
+  }
 
   void _aggregate() {
     final ids = widget.group.postIds;
@@ -75,13 +110,13 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
   @override
   void dispose() {
     super.dispose();
+    controller.removeListener(_onControllerChanged);
+    controller.dispose();
     scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final state =
-        context.select((DanbooruFavoriteGroupPostCubit bloc) => bloc.state);
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
@@ -144,7 +179,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
             ),
         ],
       ),
-      body: state.refreshing
+      body: refreshing
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -184,19 +219,19 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                     builder: (context, favoriteState) {
                       return InfiniteLoadList(
                         scrollController: scrollController,
-                        onLoadMore: () => fetch(),
+                        onLoadMore: () => controller.fetchMore(),
                         enableRefresh: false,
-                        enableLoadMore: state.hasMore,
-                        builder: (context, controller) {
+                        enableLoadMore: hasMore,
+                        builder: (context, scrollController) {
                           final count =
                               _sizeToGridCount(Screen.of(context).size);
 
                           return ReorderableGridView.builder(
-                            controller: controller,
+                            controller: scrollController,
                             dragEnabled: editing,
-                            itemCount: state.data.length,
+                            itemCount: items.length,
                             onReorder: (oldIndex, newIndex) {
-                              moveAndInsert(
+                              controller.moveAndInsert(
                                 fromIndex: oldIndex,
                                 toIndex: newIndex,
                                 onSuccess: () {
@@ -217,7 +252,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                               crossAxisSpacing: 4,
                             ),
                             itemBuilder: (context, index) {
-                              final post = state.data[index];
+                              final post = items[index];
 
                               var isFaved = false;
                               if (favoriteState is FavoritePostListSuccess) {
@@ -260,7 +295,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                       onTap: !editing
                                           ? () => goToDetailPage(
                                                 context: context,
-                                                posts: state.data,
+                                                posts: items,
                                                 initialIndex: index,
                                                 scrollController:
                                                     scrollController,
@@ -288,7 +323,8 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
                                         padding: const EdgeInsets.all(4),
                                         icon: const Icon(Icons.close),
                                         onPressed: () {
-                                          remove([post.id]);
+                                          controller
+                                              .remove([post.id], (e) => e.id);
                                           commands.add([true, 0, 0, post.id]);
                                         },
                                       ),

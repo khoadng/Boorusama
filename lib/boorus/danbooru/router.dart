@@ -16,7 +16,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -41,7 +40,9 @@ import 'package:boorusama/boorus/danbooru/ui/characters/character_page_desktop.d
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/comment_update_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_hot_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_most_viewed_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/explore/explore_popular_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_group_details_page.dart';
@@ -120,15 +121,6 @@ Widget provideArtistPageDependencies(
         builder: (dcontext) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (_) => DanbooruArtistCharacterPostCubit.of(
-                  dcontext,
-                  extra: DanbooruArtistChararacterExtra(
-                    category: TagFilterCategory.newest,
-                    tag: artist,
-                  ),
-                )..refresh(),
-              ),
               BlocProvider.value(
                 value: dcontext.read<ArtistBloc>()
                   ..add(ArtistFetched(name: artist)),
@@ -183,15 +175,6 @@ Widget provideCharacterPageDependencies(
         builder: (dcontext) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (_) => DanbooruArtistCharacterPostCubit.of(
-                  dcontext,
-                  extra: DanbooruArtistChararacterExtra(
-                    category: TagFilterCategory.newest,
-                    tag: character,
-                  ),
-                )..refresh(),
-              ),
               BlocProvider.value(
                 value: dcontext.read<WikiBloc>()
                   ..add(WikiFetched(tag: character)),
@@ -230,12 +213,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
                         dcontext.read<PoolDescriptionRepository>(),
                   )..add(PoolDescriptionFetched(poolId: pool.id)),
                 ),
-                BlocProvider(
-                  create: (_) => DanbooruPostCubit.of(
-                    dcontext,
-                    extra: DanbooruPostExtra(tag: () => 'pool:${pool.id}'),
-                  )..refresh(),
-                ),
               ],
               child: CustomContextMenuOverlay(
                 child: PoolDetailPage(
@@ -248,40 +225,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
         },
       );
     },
-  ));
-}
-
-void goToParentChildPage(
-  BuildContext context,
-  int parentId,
-  String tagQueryForDataFetching,
-) {
-  Navigator.of(context).push(PageTransition(
-    type: PageTransitionType.bottomToTop,
-    settings: const RouteSettings(
-      name: RouterPageConstant.parentChild,
-    ),
-    child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => DanbooruPostCubit.of(
-                  dcontext,
-                  extra: DanbooruPostExtra(tag: () => tagQueryForDataFetching),
-                )..refresh(),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: ParentChildPostPage(parentPostId: parentId),
-            ),
-          ),
-        );
-      },
-    ),
   ));
 }
 
@@ -370,13 +313,6 @@ Widget provideSearchPageDependencies(
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               );
 
-              final postCubit = DanbooruPostCubit.of(
-                context,
-                extra: DanbooruPostExtra(
-                  tag: () => tagSearchBloc.state.selectedTags.join(' '),
-                  limit: settingsState.settings.postsPerPage,
-                ),
-              );
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
                     context.read<SearchHistoryRepository>(),
@@ -396,11 +332,11 @@ Widget provideSearchPageDependencies(
                     value: context.read<FavoriteTagBloc>()
                       ..add(const FavoriteTagFetched()),
                   ),
-                  BlocProvider.value(value: postCubit),
                   BlocProvider.value(
                     value: BlocProvider.of<ThemeBloc>(context),
                   ),
                   BlocProvider.value(value: searchHistorySuggestions),
+                  BlocProvider.value(value: tagSearchBloc),
                   BlocProvider<SearchBloc>(
                     create: (context) => DanbooruSearchBloc(
                       initial: DisplayState.options,
@@ -409,7 +345,6 @@ Widget provideSearchPageDependencies(
                       searchHistoryBloc: searchHistoryCubit,
                       relatedTagBloc: relatedTagBloc,
                       searchHistorySuggestionsBloc: searchHistorySuggestions,
-                      postCubit: postCubit,
                       postCountRepository: context.read<PostCountRepository>(),
                       initialQuery: tag,
                       booruType: state.booru!.booruType,
@@ -429,117 +364,14 @@ Widget provideSearchPageDependencies(
   );
 }
 
-void goToExploreDetailPage(
-  BuildContext context,
-  DateTime? date,
-  String title,
-  ExploreCategory category,
-) {
-  final a = () {
-    switch (category) {
-      case ExploreCategory.popular:
-        return context.read<DanbooruPopularExplorePostCubit>();
-      case ExploreCategory.mostViewed:
-        return context.read<DanbooruMostViewedExplorePostCubit>();
-      case ExploreCategory.hot:
-        return context.read<DanbooruHotExplorePostCubit>();
-    }
-  }();
+void goToExplorePopularPage(BuildContext context) =>
+    Navigator.of(context).push(ExplorePopularPage.routeOf(context));
 
-  final b = () {
-    switch (category) {
-      case ExploreCategory.popular:
-        return context.read<ExplorePopularDetailBloc>();
-      case ExploreCategory.mostViewed:
-        return context.read<ExploreMostViewedDetailBloc>();
-      case ExploreCategory.hot:
-        return context.read<ExploreHotDetailBloc>();
-    }
-  }();
+void goToExploreHotPage(BuildContext context) =>
+    Navigator.of(context).push(ExploreHotPage.routeOf(context));
 
-  if (isMobilePlatform()) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        settings: RouteSettings(
-          name: () {
-            switch (category) {
-              case ExploreCategory.popular:
-                return RouterPageConstant.explorePopular;
-              case ExploreCategory.mostViewed:
-                return RouterPageConstant.exploreMostViewed;
-              case ExploreCategory.hot:
-                return RouterPageConstant.exploreHot;
-            }
-          }(),
-        ),
-        builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dcontext) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: b),
-                    BlocProvider(
-                      create: (_) => a,
-                    ),
-                  ],
-                  child: CustomContextMenuOverlay(
-                    child: ExploreDetailPage(
-                      title: Text(
-                        title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      category: category,
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (context) {
-        final exploreDetailsBloc = ExploreDetailBloc(
-          initialDate: date,
-          category: category,
-        );
-
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: exploreDetailsBloc),
-            BlocProvider(
-              create: (_) => DanbooruExplorePostCubit.of(
-                context,
-                exploreDetailBloc: exploreDetailsBloc,
-              )..refresh(),
-            ),
-          ],
-          child: CustomContextMenuOverlay(
-            child: ExploreDetailPage(
-              title: Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
-              category: category,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+void goToExploreMostViewedPage(BuildContext context) =>
+    Navigator.of(context).push(ExploreMostViewedPage.routeOf(context));
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {
@@ -571,13 +403,6 @@ Widget provideSavedSearchPageDependecies(
         booru: state.booru!,
         builder: (dcontext) => MultiBlocProvider(
           providers: [
-            BlocProvider(
-              create: (_) => DanbooruPostCubit.of(
-                dcontext,
-                extra:
-                    DanbooruPostExtra(tag: () => SavedSearch.all().toQuery()),
-              )..refresh(),
-            ),
             BlocProvider(
               create: (_) => SavedSearchFeedBloc(
                 savedSearchBloc: dcontext.read<SavedSearchBloc>(),
@@ -1170,18 +995,12 @@ void goToFavoriteGroupDetailsPage(
           booru: state.booru!,
           builder: (dcontext) => MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (_) => DanbooruFavoriteGroupPostCubit.of(
-                  dcontext,
-                  ids: () => group.postIds,
-                )..refresh(),
-              ),
               BlocProvider.value(value: bloc),
             ],
             child: CustomContextMenuOverlay(
               child: FavoriteGroupDetailsPage(
                 group: group,
-                postIds: QueueList.from(group.postIds.skip(60)),
+                postIds: QueueList.from(group.postIds),
               ),
             ),
           ),

@@ -10,13 +10,12 @@ import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-mixin DanbooruPostTransformMixin<T, E> on PostCubit<T, E> {
+mixin DanbooruPostTransformMixin<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
   CurrentBooruConfigRepository get currentBooruConfigRepository;
   PostVoteRepository get postVoteRepository;

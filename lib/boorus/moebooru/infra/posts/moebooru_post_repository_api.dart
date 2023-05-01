@@ -6,10 +6,15 @@ import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_post.dart';
 import 'package:boorusama/boorus/moebooru/domain/utils.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/functional.dart';
 
 List<MoebooruPost> parsePost(
   HttpResponse<dynamic> value,
@@ -19,45 +24,62 @@ List<MoebooruPost> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();
 
-class MoebooruPostRepositoryApi implements PostRepository {
-  final MoebooruApi _api;
-  final BlacklistedTagRepository _blacklistedTagRepository;
-  final CurrentBooruConfigRepository _currentBooruConfigRepository;
+Either<BooruError, List<MoebooruPost>> tryParsePosts(
+        HttpResponse<dynamic> response) =>
+    Either.tryCatch(
+      () => parsePost(response),
+      (error, stackTrace) =>
+          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+    );
 
+class MoebooruPostRepositoryApi
+    with
+        BlacklistedTagFilterMixin,
+        CurrentBooruConfigRepositoryMixin,
+        SettingsRepositoryMixin
+    implements PostRepository {
   MoebooruPostRepositoryApi(
     this._api,
-    this._blacklistedTagRepository,
-    this._currentBooruConfigRepository,
+    this.blacklistedTagRepository,
+    this.currentBooruConfigRepository,
+    this.settingsRepository,
   );
 
+  final MoebooruApi _api;
   @override
-  Future<List<Post>> getPostsFromTags(
+  final BlacklistedTagRepository blacklistedTagRepository;
+  @override
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
+  final SettingsRepository settingsRepository;
+
+  List<String> getTags(BooruConfig config, String tags) {
+    final tag = booruFilterConfigToMoebooruTag(config.ratingFilter);
+
+    return [
+      ...tags.split(' '),
+      if (tag != null) tag,
+    ];
+  }
+
+  @override
+  PostsOrError getPostsFromTags(
     String tags,
     int page, {
     int? limit,
-  }) async {
-    final config = await _currentBooruConfigRepository.get();
-    final tag = booruFilterConfigToMoebooruTag(config?.ratingFilter);
-    final blacklist = await _blacklistedTagRepository.getBlacklist();
-    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    return _api
-        .getPosts(
-          config?.login,
-          config?.apiKey,
-          page,
-          [
-            ...tags.split(' '),
-            if (tag != null) tag,
-          ].join(' '),
-          limit ?? 60,
-        )
-        .then(parsePost)
-        .then((posts) => posts
-            .where((post) =>
-                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-            .toList());
-  }
+  }) =>
+      tryGetBooruConfig()
+          .flatMap((config) => tryParseResponse(
+                fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+                      config.login,
+                      config.apiKey,
+                      page,
+                      getTags(config, tags).join(' '),
+                      limit ?? lim,
+                    )),
+              ))
+          .flatMap((response) => TaskEither.fromEither(tryParsePosts(response)))
+          .flatMap(tryFilterBlacklistedTags);
 }
 
 MoebooruPost postDtoToPost(PostDto postDto) {

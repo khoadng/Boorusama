@@ -6,14 +6,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
+import 'explore_mixins.dart';
 import 'explore_section.dart';
 
 const double _kMaxHeight = 250;
@@ -84,62 +86,142 @@ Widget mapToCarousel(
         );
 }
 
-class _MostViewedExplore extends StatelessWidget {
+class _MostViewedExplore extends StatefulWidget {
   const _MostViewedExplore();
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruMostViewedExplorePostCubit,
-        DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.most_viewed'.tr(),
-          category: ExploreCategory.mostViewed,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
-    );
-  }
+  State<_MostViewedExplore> createState() => _MostViewedExploreState();
 }
 
-class _HotExplore extends StatelessWidget {
+class _MostViewedExploreState extends State<_MostViewedExplore>
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
+        DanbooruPostServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
+    fetcher: (_) => context
+        .read<ExploreRepository>()
+        .getMostViewedPosts(DateTime.now())
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getMostViewedPosts(DateTime.now())
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ExploreSection(
+      title: 'explore.most_viewed'.tr(),
+      builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExploreMostViewedPage(context),
+    );
+  }
+
+  @override
+  PostGridController<DanbooruPost> get controller => _controller;
+}
+
+class _HotExplore extends StatefulWidget {
   const _HotExplore();
 
   @override
-  Widget build(BuildContext context) {
-    // final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
-
-    return BlocBuilder<DanbooruHotExplorePostCubit, DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.hot'.tr(),
-          category: ExploreCategory.hot,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
-    );
-  }
+  State<_HotExplore> createState() => _HotExploreState();
 }
 
-class _PopularExplore extends StatelessWidget {
-  const _PopularExplore();
+class _HotExploreState extends State<_HotExplore>
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_HotExplore, DanbooruPost>,
+        DanbooruPostServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
+    fetcher: (page) => context
+        .read<ExploreRepository>()
+        .getHotPosts(page)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getHotPosts(1)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+  );
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPopularExplorePostCubit,
-        DanbooruExplorePostState>(
-      builder: (context, state) {
-        return ExploreSection(
-          date: DateTime.now(),
-          title: 'explore.popular'.tr(),
-          category: ExploreCategory.popular,
-          builder: (_) => mapToCarousel(context, state.data),
-        );
-      },
+    return ExploreSection(
+      title: 'explore.hot'.tr(),
+      builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExploreHotPage(context),
     );
   }
+
+  @override
+  PostGridController<DanbooruPost> get controller => _controller;
+}
+
+class _PopularExplore extends StatefulWidget {
+  const _PopularExplore();
+
+  @override
+  State<_PopularExplore> createState() => _PopularExploreState();
+}
+
+class _PopularExploreState extends State<_PopularExplore>
+    with
+        DanbooruPostTransformMixin,
+        PostExplorerMixin<_PopularExplore, DanbooruPost>,
+        DanbooruPostServiceProviderMixin {
+  late final _controller = PostGridController<DanbooruPost>(
+    fetcher: (page) => context
+        .read<ExploreRepository>()
+        .getPopularPosts(DateTime.now(), page, TimeScale.day)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getPopularPosts(DateTime.now(), 1, TimeScale.day)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ExploreSection(
+      title: 'explore.popular'.tr(),
+      builder: (_) => mapToCarousel(context, posts),
+      onPressed: () => goToExplorePopularPage(context),
+    );
+  }
+
+  @override
+  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _ExploreList extends StatefulWidget {

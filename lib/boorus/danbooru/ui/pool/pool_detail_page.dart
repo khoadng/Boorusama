@@ -8,19 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PoolDetailPage extends StatefulWidget {
+class PoolDetailPage extends StatelessWidget {
   const PoolDetailPage({
     super.key,
     required this.pool,
@@ -31,78 +30,68 @@ class PoolDetailPage extends StatefulWidget {
   final Queue<int> postIds;
 
   @override
-  State<PoolDetailPage> createState() => _PoolDetailPageState();
-}
-
-class _PoolDetailPageState extends State<PoolDetailPage>
-    with DanbooruPostCubitMixin {
-  final RefreshController refreshController = RefreshController();
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      builder: (context, state) {
-        return DanbooruInfinitePostList(
-          refreshing: state.refreshing,
-          loading: state.loading,
-          hasMore: state.hasMore,
-          error: state.error,
-          data: state.data,
-          onLoadMore: () => fetch(),
-          sliverHeaderBuilder: (context) => [
-            SliverAppBar(
-              title: const Text('pool.pool').tr(),
-              floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    goToBulkDownloadPage(
-                      context,
-                      ['pool:${widget.pool.id}'],
-                    );
-                  },
-                  icon: const Icon(Icons.download),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: ListTile(
-                title: Text(
-                  widget.pool.name.removeUnderscoreWithSpace(),
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                subtitle: Text(
-                  '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                    widget.pool.updatedAt,
-                    locale: Localizations.localeOf(context).languageCode,
-                  )}',
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
-                builder: (context, state) {
-                  return state.status == LoadStatus.success &&
-                          state.description.isNotEmpty
-                      ? Html(
-                          onLinkTap: (url, context, attributes, element) =>
-                              _onHtmlLinkTapped(
-                            attributes,
-                            url,
-                            state.descriptionEndpointRefUrl,
-                          ),
-                          data: state.description,
-                        )
-                      : const SizedBox.shrink();
+    return DanbooruPostScope(
+      fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
+            'pool:${pool.id}',
+            page,
+          ),
+      builder: (context, controller, errors) => DanbooruInfinitePostList(
+        errors: errors,
+        controller: controller,
+        sliverHeaderBuilder: (context) => [
+          SliverAppBar(
+            title: const Text('pool.pool').tr(),
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  goToBulkDownloadPage(
+                    context,
+                    ['pool:${pool.id}'],
+                  );
                 },
+                icon: const Icon(Icons.download),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: ListTile(
+              title: Text(
+                pool.name.removeUnderscoreWithSpace(),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              subtitle: Text(
+                '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                  pool.updatedAt,
+                  locale: Localizations.localeOf(context).languageCode,
+                )}',
               ),
             ),
-          ],
-        );
-      },
+          ),
+          SliverToBoxAdapter(
+            child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
+              builder: (context, state) {
+                return state.status == LoadStatus.success &&
+                        state.description.isNotEmpty
+                    ? Html(
+                        onLinkTap: (url, context, attributes, element) =>
+                            _onHtmlLinkTapped(
+                          attributes,
+                          url,
+                          state.descriptionEndpointRefUrl,
+                        ),
+                        data: state.description,
+                      )
+                    : const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

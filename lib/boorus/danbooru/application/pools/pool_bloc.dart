@@ -178,7 +178,13 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
       for (var e in poolCoverIds) e: DanbooruPost.empty(),
     };
 
-    final posts = await postRepository.getPostsFromIds(poolCoverIds);
+    final posts = await postRepository
+        .getPostsFromIds(poolCoverIds)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ));
 
     for (final p in posts) {
       poolCoveridsMap[p.id] = p;

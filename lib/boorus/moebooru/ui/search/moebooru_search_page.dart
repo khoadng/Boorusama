@@ -5,18 +5,18 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/moebooru/application/posts/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
@@ -212,7 +212,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
-class _SmallLayout extends StatefulWidget {
+class _SmallLayout extends StatelessWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
@@ -224,20 +224,6 @@ class _SmallLayout extends StatefulWidget {
   final bool autoFocus;
 
   @override
-  State<_SmallLayout> createState() => _SmallLayoutState();
-}
-
-class _SmallLayoutState extends State<_SmallLayout>
-    with MoebooruPostCubitMixin {
-  final scrollController = AutoScrollController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final displayState =
         context.select((SearchBloc bloc) => bloc.state.displayState);
@@ -247,9 +233,9 @@ class _SmallLayoutState extends State<_SmallLayout>
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
-            autofocus: widget.autoFocus,
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            autofocus: autoFocus,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -258,9 +244,9 @@ class _SmallLayoutState extends State<_SmallLayout>
                   const _SelectedTagList(),
                   const _Divider(),
                   _LandingView(
-                    onFocusRequest: () => widget.focus.requestFocus(),
+                    onFocusRequest: () => focus.requestFocus(),
                     onTextChanged: (text) =>
-                        _onTextChanged(widget.queryEditingController, text),
+                        _onTextChanged(queryEditingController, text),
                   ),
                 ],
               ),
@@ -271,8 +257,8 @@ class _SmallLayoutState extends State<_SmallLayout>
         return Scaffold(
           appBar: _AppBar(
             autofocus: true,
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -281,7 +267,7 @@ class _SmallLayoutState extends State<_SmallLayout>
                 const _Divider(),
                 Expanded(
                   child: _TagSuggestionItems(
-                    queryEditingController: widget.queryEditingController,
+                    queryEditingController: queryEditingController,
                   ),
                 ),
               ],
@@ -291,8 +277,8 @@ class _SmallLayoutState extends State<_SmallLayout>
       case DisplayState.error:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -307,8 +293,8 @@ class _SmallLayoutState extends State<_SmallLayout>
       case DisplayState.noResult:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -321,58 +307,54 @@ class _SmallLayoutState extends State<_SmallLayout>
           ),
         );
       case DisplayState.result:
-        return BlocBuilder<MoebooruPostCubit, MoebooruPostState>(
-          builder: (context, state) {
-            return MoebooruInfinitePostList(
-              refreshing: state.refreshing,
-              loading: state.loading,
-              hasMore: state.hasMore,
-              error: state.error,
-              data: state.data,
-              onLoadMore: fetch,
-              onRefresh: () => refresh(),
-              scrollController: scrollController,
-              sliverHeaderBuilder: (context) => [
-                SliverAppBar(
-                  titleSpacing: 0,
-                  toolbarHeight: kToolbarHeight * 1.9,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  title: SizedBox(
-                    height: kToolbarHeight * 1.85,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SearchBar(
-                            enabled: false,
-                            onTap: () => context
-                                .read<SearchBloc>()
-                                .add(const SearchGoToSuggestionsRequested()),
-                            leading: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.read<SearchBloc>().add(
-                                    const SearchGoBackToSearchOptionsRequested(),
-                                  ),
-                            ),
+        return PostScope(
+          fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+                context.read<TagSearchBloc>().state.selectedTags.join(' '),
+                page,
+              ),
+          builder: (context, controller, errors) => MoebooruInfinitePostList(
+            errors: errors,
+            controller: controller,
+            sliverHeaderBuilder: (context) => [
+              SliverAppBar(
+                titleSpacing: 0,
+                toolbarHeight: kToolbarHeight * 1.9,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                title: SizedBox(
+                  height: kToolbarHeight * 1.85,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: SearchBar(
+                          enabled: false,
+                          onTap: () => context
+                              .read<SearchBloc>()
+                              .add(const SearchGoToSuggestionsRequested()),
+                          leading: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () => context.read<SearchBloc>().add(
+                                  const SearchGoBackToSearchOptionsRequested(),
+                                ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        const _SelectedTagList(),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 10),
+                      const _SelectedTagList(),
+                    ],
                   ),
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
                 ),
-                const SliverToBoxAdapter(child: _Divider(height: 7)),
-              ],
-            );
-          },
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+              ),
+              const SliverToBoxAdapter(child: _Divider(height: 7)),
+            ],
+          ),
         );
     }
   }

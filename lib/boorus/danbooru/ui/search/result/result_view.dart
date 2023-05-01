@@ -7,8 +7,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -70,8 +72,7 @@ class _ResultViewState extends State<ResultView> {
   }
 }
 
-class _InfiniteScroll extends StatelessWidget
-    with DanbooruPostCubitStatelessMixin {
+class _InfiniteScroll extends StatelessWidget {
   const _InfiniteScroll({
     required this.scrollController,
     required this.refreshController,
@@ -86,25 +87,28 @@ class _InfiniteScroll extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DanbooruPostCubit, DanbooruPostState>(
-      builder: (context, state) {
-        return DanbooruInfinitePostList(
-          refreshing: state.refreshing,
-          loading: state.loading,
-          hasMore: state.hasMore,
-          error: state.error,
-          data: state.data,
-          onLoadMore: () => fetch(context),
-          onRefresh: () {
-            refresh(context);
-          },
-          sliverHeaderBuilder: (context) => [
-            ...headerBuilder?.call() ?? [],
-            const SliverToBoxAdapter(child: RelatedTagSection()),
-            const SliverToBoxAdapter(child: ResultHeader()),
-          ],
-        );
-      },
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) => BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settingsState) {
+          return DanbooruPostScope(
+            fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
+                  state.selectedTags.join(' '),
+                  page,
+                ),
+            builder: (context, controller, errors) {
+              return DanbooruInfinitePostList(
+                controller: controller,
+                errors: errors,
+                sliverHeaderBuilder: (context) => [
+                  ...headerBuilder?.call() ?? [],
+                  const SliverToBoxAdapter(child: RelatedTagSection()),
+                  const SliverToBoxAdapter(child: ResultHeader()),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

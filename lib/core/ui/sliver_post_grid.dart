@@ -41,10 +41,6 @@ class SliverPostGrid extends StatelessWidget {
       ),
       sliver: Builder(
         builder: (context) {
-          if (refreshing) {
-            return const _Placeholder(usePlaceholder: true);
-          }
-
           if (error != null) {
             final message = translateBooruError(error!);
 
@@ -82,6 +78,48 @@ class SliverPostGrid extends StatelessWidget {
                       );
                     case AppErrorType.unknown:
                       return ErrorBox(errorMessage: message);
+                    case AppErrorType.failedToLoadBooruConfig:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'Failed to load booru config',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.booruConfigNotFound:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'Booru config not found',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
+                    case AppErrorType.loadDataFromServerFailed:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48, bottom: 16),
+                            child: Text(
+                              'Failed to load data from server',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          Text(message).tr(),
+                        ],
+                      );
                   }
                 },
                 serverError: (err) => Padding(
@@ -102,6 +140,10 @@ class SliverPostGrid extends StatelessWidget {
                 unknownError: (context) => ErrorBox(errorMessage: message),
               ),
             );
+          }
+
+          if (refreshing) {
+            return const _Placeholder(usePlaceholder: true);
           }
 
           if (data.isEmpty) {

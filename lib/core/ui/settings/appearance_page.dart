@@ -88,21 +88,20 @@ String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
   }
 }
 
-class _AppearancePageState extends State<AppearancePage> {
+class _AppearancePageState extends State<AppearancePage>
+    with SettingsRepositoryMixin {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
+
+  @override
+  SettingsRepository get settingsRepository =>
+      context.read<SettingsRepository>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final settings =
-          await context.read<SettingsRepository>().load().run().then(
-                (value) => value.fold(
-                  (l) => Settings.defaultSettings,
-                  (r) => r,
-                ),
-              );
+      final settings = await getOrDefault();
       _spacingSliderValue.value = settings.imageGridSpacing;
       _borderRadiusSliderValue.value = settings.imageBorderRadius;
     });

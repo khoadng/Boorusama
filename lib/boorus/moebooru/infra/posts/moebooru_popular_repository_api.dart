@@ -6,10 +6,13 @@ import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_popular_repository.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_post.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/functional.dart';
 import 'moebooru_post_repository_api.dart';
 
 List<MoebooruPost> parsePost(
@@ -20,82 +23,66 @@ List<MoebooruPost> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();
 
-class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
-  final MoebooruApi _api;
-  final BlacklistedTagRepository _blacklistedTagRepository;
-  final CurrentBooruConfigRepository _currentBooruConfigRepository;
-
+class MoebooruPopularRepositoryApi
+    with BlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(
     this._api,
-    this._blacklistedTagRepository,
-    this._currentBooruConfigRepository,
+    this.blacklistedTagRepository,
+    this.currentBooruConfigRepository,
   );
 
+  final MoebooruApi _api;
   @override
-  Future<List<Post>> getPopularPostsByDay(DateTime dateTime) async {
-    final config = await _currentBooruConfigRepository.get();
-    final blacklist = await _blacklistedTagRepository.getBlacklist();
-    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    return _api
-        .getPopularPostsByDay(
-          config?.login,
-          config?.apiKey,
-          dateTime.day,
-          dateTime.month,
-          dateTime.year,
-        )
-        .then(parsePost)
-        .then((posts) => posts
-            .where((post) =>
-                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-            .toList());
-  }
+  final BlacklistedTagRepository blacklistedTagRepository;
+  @override
+  final CurrentBooruConfigRepository currentBooruConfigRepository;
 
   @override
-  Future<List<Post>> getPopularPostsByMonth(DateTime dateTime) async {
-    final config = await _currentBooruConfigRepository.get();
-    final blacklist = await _blacklistedTagRepository.getBlacklist();
-    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    return _api
-        .getPopularPostsByMonth(
-          config?.login,
-          config?.apiKey,
-          dateTime.month,
-          dateTime.year,
-        )
-        .then(parsePost)
-        .then((posts) => posts
-            .where((post) =>
-                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-            .toList());
-  }
+  PostsOrError getPopularPostsByDay(DateTime dateTime) => tryGetBooruConfig()
+      .flatMap((config) => tryParseResponse(
+            fetcher: () => _api.getPopularPostsByDay(
+              config.login,
+              config.apiKey,
+              dateTime.day,
+              dateTime.month,
+              dateTime.year,
+            ),
+          ))
+      .flatMap(
+          (response) => TaskEither.fromEither(Either.of(parsePost(response))))
+      .flatMap(tryFilterBlacklistedTags);
 
   @override
-  Future<List<Post>> getPopularPostsByWeek(DateTime dateTime) async {
-    final config = await _currentBooruConfigRepository.get();
-    final blacklist = await _blacklistedTagRepository.getBlacklist();
-    final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    return _api
-        .getPopularPostsByWeek(
-          config?.login,
-          config?.apiKey,
-          dateTime.day,
-          dateTime.month,
-          dateTime.year,
-        )
-        .then(parsePost)
-        .then((posts) => posts
-            .where((post) =>
-                !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-            .toList());
-  }
+  PostsOrError getPopularPostsByMonth(DateTime dateTime) => tryGetBooruConfig()
+      .flatMap((config) => tryParseResponse(
+          fetcher: () => _api.getPopularPostsByMonth(
+                config.login,
+                config.apiKey,
+                dateTime.month,
+                dateTime.year,
+              )))
+      .flatMap(
+          (response) => TaskEither.fromEither(Either.of(parsePost(response))))
+      .flatMap(tryFilterBlacklistedTags);
 
   @override
-  Future<List<Post>> getPopularPostsRecent(MoebooruTimePeriod period) async {
-    return [];
+  PostsOrError getPopularPostsByWeek(DateTime dateTime) => tryGetBooruConfig()
+      .flatMap((config) => tryParseResponse(
+          fetcher: () => _api.getPopularPostsByWeek(
+                config.login,
+                config.apiKey,
+                dateTime.day,
+                dateTime.month,
+                dateTime.year,
+              )))
+      .flatMap(
+          (response) => TaskEither.fromEither(Either.of(parsePost(response))))
+      .flatMap(tryFilterBlacklistedTags);
+
+  @override
+  PostsOrError getPopularPostsRecent(MoebooruTimePeriod period) {
+    return TaskEither.of([]);
     // final config = await _currentBooruConfigRepository.get();
     // final blacklist = await _blacklistedTagRepository.getBlacklist();
     // final blacklistedTags = blacklist.map((tag) => tag.name).toSet();

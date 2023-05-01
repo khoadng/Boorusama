@@ -18,7 +18,7 @@ class GelbooruBulkPostDownloadBloc extends DownloadBloc<String, Post> {
   }) : super(
           itemFetcher: (page, tag, emit, state) async {
             try {
-              return await postRepository.getPostsFromTags(
+              return await postRepository.getPostsFromTagsOrEmpty(
                 tag,
                 page,
                 limit: 100,

@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/datetime_selector.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/moebooru/application/popular/moebooru_popular_cubit.dart';
+import 'package:boorusama/boorus/moebooru/domain/posts.dart';
+import 'package:boorusama/boorus/moebooru/ui/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/ui/posts/post_scope.dart';
 
 class MoebooruPopularPage extends StatefulWidget {
   const MoebooruPopularPage({
@@ -22,61 +23,61 @@ class MoebooruPopularPage extends StatefulWidget {
   State<MoebooruPopularPage> createState() => _MoebooruPopularPageState();
 }
 
-class _MoebooruPopularPageState extends State<MoebooruPopularPage>
-    with MoebooruPopularPostCubitMixin {
-  final RefreshController _refreshController = RefreshController();
-  final AutoScrollController _scrollController = AutoScrollController();
+class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
+  final selectedDate = ValueNotifier(DateTime.now());
+  final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    _scrollController.dispose();
-    super.dispose();
+  PostsOrError _typeToData(MoebooruPopularType type, int page) {
+    final repo = context.read<MoebooruPopularRepository>();
+    switch (type) {
+      case MoebooruPopularType.recent:
+        return repo.getPopularPostsRecent(MoebooruTimePeriod.day);
+      case MoebooruPopularType.day:
+        return repo.getPopularPostsByDay(selectedDate.value);
+      case MoebooruPopularType.week:
+        return repo.getPopularPostsByWeek(selectedDate.value);
+      case MoebooruPopularType.month:
+        return repo.getPopularPostsByMonth(selectedDate.value);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: BlocBuilder<MoebooruPopularPostCubit,
-                  MoebooruPopularPostState>(
-                builder: (context, state) {
-                  return DateTimeSelector(
-                    onDateChanged: changeDate,
-                    date: state.extra.dateTime,
-                    scale: _convertToTimeScale(state.extra.popularType),
-                    backgroundColor: Colors.transparent,
-                  );
+        child: PostScope(
+          fetcher: (page) => _typeToData(selectedPopular.value, page),
+          builder: (context, controller, errors) => Column(
+            children: [
+              Container(
+                color:
+                    Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                child: DateTimeSelector(
+                  onDateChanged: (date) {
+                    selectedDate.value = date;
+                    controller.refresh();
+                  },
+                  date: selectedDate.value,
+                  scale: _convertToTimeScale(selectedPopular.value),
+                  backgroundColor: Colors.transparent,
+                ),
+              ),
+              TimeScaleToggleSwitch(
+                onToggle: (category) {
+                  selectedPopular.value =
+                      _convertToMoebooruPopularType(category);
                 },
               ),
-            ),
-            TimeScaleToggleSwitch(
-                onToggle: (category) =>
-                    changePopularType(_convertToMoebooruPopularType(category))),
-            const SizedBox(height: 12),
-            Expanded(
-              child: BlocBuilder<MoebooruPopularPostCubit,
-                  MoebooruPopularPostState>(
-                builder: (context, state) {
-                  return MoebooruInfinitePostList(
-                    refreshing: state.refreshing,
-                    loading: state.loading,
-                    hasMore: state.hasMore,
-                    error: state.error,
-                    data: state.data,
-                    scrollController: _scrollController,
-                    onRefresh: () => refresh(),
-                    sliverHeaderBuilder: (context) => [],
-                    onLoadMore: fetch,
-                  );
-                },
+              const SizedBox(height: 12),
+              Expanded(
+                child: MoebooruInfinitePostList(
+                  errors: errors,
+                  controller: controller,
+                  sliverHeaderBuilder: (context) => [],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

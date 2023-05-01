@@ -17,21 +17,19 @@ class DanbooruBulkDownloadBloc extends DownloadBloc<String, DanbooruPost> {
     required String? Function(BooruError e) errorTranslator,
     super.onDownloadDone,
   }) : super(
-          itemFetcher: (page, tag, emit, state) async {
-            try {
-              return await postRepository.getPosts(
-                tag,
-                page,
-                limit: 100,
-                includeInvalid: true,
-              );
-            } catch (e) {
-              if (e is BooruError) {
-                emit(state.copyWith(errorMessage: errorTranslator(e)));
-              }
-
-              return [];
-            }
+          itemFetcher: (page, tag, emit, state) {
+            return postRepository
+                .getPosts(tag, page, limit: 100, includeInvalid: true)
+                .run()
+                .then(
+                  (value) => value.fold(
+                    (e) {
+                      emit(state.copyWith(errorMessage: errorTranslator(e)));
+                      return [];
+                    },
+                    (r) => r,
+                  ),
+                );
           },
           totalFetcher: (tag) async {
             final count = await postCountRepository.count(tag.split(' '));
