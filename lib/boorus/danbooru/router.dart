@@ -222,23 +222,20 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
           return DanbooruProvider.of(
             context,
             booru: state.booru!,
-            builder: (dcontext) => RepositoryProvider(
-              create: (context) => DanbooruPostCubit.of(dcontext),
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(
-                    value: PoolDescriptionBloc(
-                      endpoint: state.booru!.url,
-                      poolDescriptionRepository:
-                          dcontext.read<PoolDescriptionRepository>(),
-                    )..add(PoolDescriptionFetched(poolId: pool.id)),
-                  ),
-                ],
-                child: CustomContextMenuOverlay(
-                  child: PoolDetailPage(
-                    pool: pool,
-                    postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-                  ),
+            builder: (dcontext) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: PoolDescriptionBloc(
+                    endpoint: state.booru!.url,
+                    poolDescriptionRepository:
+                        dcontext.read<PoolDescriptionRepository>(),
+                  )..add(PoolDescriptionFetched(poolId: pool.id)),
+                ),
+              ],
+              child: CustomContextMenuOverlay(
+                child: PoolDetailPage(
+                  pool: pool,
+                  postIds: QueueList.from(pool.postIds.reversed.skip(20)),
                 ),
               ),
             ),
@@ -334,7 +331,6 @@ Widget provideSearchPageDependencies(
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               );
 
-              final postCubit = DanbooruPostCubit.of(context);
               final searchHistoryCubit = SearchHistoryBloc(
                 searchHistoryRepository:
                     context.read<SearchHistoryRepository>(),
@@ -347,40 +343,35 @@ Widget provideSearchPageDependencies(
                     context.read<SearchHistoryRepository>(),
               );
 
-              return RepositoryProvider.value(
-                value: postCubit,
-                child: MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: searchHistoryCubit),
-                    BlocProvider.value(
-                      value: context.read<FavoriteTagBloc>()
-                        ..add(const FavoriteTagFetched()),
-                    ),
-                    BlocProvider.value(
-                      value: BlocProvider.of<ThemeBloc>(context),
-                    ),
-                    BlocProvider.value(value: searchHistorySuggestions),
-                    BlocProvider.value(value: tagSearchBloc),
-                    BlocProvider<SearchBloc>(
-                      create: (context) => DanbooruSearchBloc(
-                        initial: DisplayState.options,
-                        metatags: context.read<TagInfo>().metatags,
-                        tagSearchBloc: tagSearchBloc,
-                        searchHistoryBloc: searchHistoryCubit,
-                        relatedTagBloc: relatedTagBloc,
-                        searchHistorySuggestionsBloc: searchHistorySuggestions,
-                        postCubit: postCubit,
-                        postCountRepository:
-                            context.read<PostCountRepository>(),
-                        initialQuery: tag,
-                        booruType: state.booru!.booruType,
-                      ),
-                    ),
-                    BlocProvider.value(value: relatedTagBloc),
-                  ],
-                  child: CustomContextMenuOverlay(
-                    child: childBuilder(context, settingsState.settings),
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: searchHistoryCubit),
+                  BlocProvider.value(
+                    value: context.read<FavoriteTagBloc>()
+                      ..add(const FavoriteTagFetched()),
                   ),
+                  BlocProvider.value(
+                    value: BlocProvider.of<ThemeBloc>(context),
+                  ),
+                  BlocProvider.value(value: searchHistorySuggestions),
+                  BlocProvider.value(value: tagSearchBloc),
+                  BlocProvider<SearchBloc>(
+                    create: (context) => DanbooruSearchBloc(
+                      initial: DisplayState.options,
+                      metatags: context.read<TagInfo>().metatags,
+                      tagSearchBloc: tagSearchBloc,
+                      searchHistoryBloc: searchHistoryCubit,
+                      relatedTagBloc: relatedTagBloc,
+                      searchHistorySuggestionsBloc: searchHistorySuggestions,
+                      postCountRepository: context.read<PostCountRepository>(),
+                      initialQuery: tag,
+                      booruType: state.booru!.booruType,
+                    ),
+                  ),
+                  BlocProvider.value(value: relatedTagBloc),
+                ],
+                child: CustomContextMenuOverlay(
+                  child: childBuilder(context, settingsState.settings),
                 ),
               );
             },
@@ -428,19 +419,16 @@ Widget provideSavedSearchPageDependecies(
       return DanbooruProvider.of(
         context,
         booru: state.booru!,
-        builder: (dcontext) => RepositoryProvider(
-          create: (context) => DanbooruPostCubit.of(dcontext),
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => SavedSearchFeedBloc(
-                  savedSearchBloc: dcontext.read<SavedSearchBloc>(),
-                )..add(const SavedSearchFeedRefreshed()),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
+        builder: (dcontext) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => SavedSearchFeedBloc(
+                savedSearchBloc: dcontext.read<SavedSearchBloc>(),
+              )..add(const SavedSearchFeedRefreshed()),
             ),
+          ],
+          child: CustomContextMenuOverlay(
+            child: page,
           ),
         ),
       );

@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
@@ -29,18 +29,24 @@ class SavedSearchFeedPage extends StatefulWidget {
 }
 
 class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
-    with DanbooruPostCubitMixin {
+    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
   late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => fetchPost(
-      page,
-      DanbooruPostExtra(tag: () => savedSearches.value),
-    ),
-    refresher: () => refreshPost(
-      DanbooruPostExtra(tag: () => savedSearches.value),
-    ),
-  );
+      fetcher: (page) => context
+          .read<DanbooruPostRepository>()
+          .getPosts(
+            savedSearches.value,
+            page,
+          )
+          .then(transform),
+      refresher: () => context
+          .read<DanbooruPostRepository>()
+          .getPosts(
+            savedSearches.value,
+            1,
+          )
+          .then(transform));
   final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
 
   @override

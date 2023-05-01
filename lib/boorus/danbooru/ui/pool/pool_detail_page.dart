@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
@@ -37,20 +37,23 @@ class PoolDetailPage extends StatefulWidget {
 }
 
 class _PoolDetailPageState extends State<PoolDetailPage>
-    with DanbooruPostCubitMixin {
+    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
   final RefreshController refreshController = RefreshController();
   late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => fetchPost(
-      page,
-      DanbooruPostExtra(
-        tag: () => 'pool:${widget.pool.id}',
-      ),
-    ),
-    refresher: () => refreshPost(
-      DanbooruPostExtra(
-        tag: () => 'pool:${widget.pool.id}',
-      ),
-    ),
+    fetcher: (page) => context
+        .read<DanbooruPostRepository>()
+        .getPosts(
+          'pool:${widget.pool.id}',
+          page,
+        )
+        .then(transform),
+    refresher: () => context
+        .read<DanbooruPostRepository>()
+        .getPosts(
+          'pool:${widget.pool.id}',
+          1,
+        )
+        .then(transform),
   );
 
   @override

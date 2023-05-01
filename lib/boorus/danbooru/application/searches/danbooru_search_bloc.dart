@@ -1,5 +1,4 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
@@ -19,7 +18,6 @@ class SearchRelatedTagSelected extends SearchEvent {
 class DanbooruSearchBloc extends SearchBloc {
   DanbooruSearchBloc({
     required super.initial,
-    required this.postCubit,
     required super.tagSearchBloc,
     required this.relatedTagBloc,
     required super.searchHistoryBloc,
@@ -34,7 +32,6 @@ class DanbooruSearchBloc extends SearchBloc {
     });
   }
 
-  final DanbooruPostCubit postCubit;
   final RelatedTagBloc relatedTagBloc;
   final PostCountRepository postCountRepository;
 

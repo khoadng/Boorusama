@@ -17,3 +17,4 @@ export 'posts/post_stats_tile.dart';
 export 'posts/post_tag_list.dart';
 export 'posts/simple_post_tag_list.dart';
 export 'posts/slide_show_config_bottom_modal.dart';
+export 'posts/post_service_provider_mixin.dart';

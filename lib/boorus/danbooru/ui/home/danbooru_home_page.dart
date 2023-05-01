@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/home/latest_posts_view.dart';
 import 'package:boorusama/core/application/networking.dart';
@@ -52,13 +51,8 @@ class _HomePageState extends State<DanbooruHomePage> {
                 builder: (context, index, _) => AnimatedIndexedStack(
                   index: index,
                   children: [
-                    RepositoryProvider(
-                      create: (context) => DanbooruPostCubit.of(
-                        context,
-                      ),
-                      child: _LatestView(
-                        onMenuTap: widget.onMenuTap,
-                      ),
+                    _LatestView(
+                      onMenuTap: widget.onMenuTap,
                     ),
                     const _ExplorePage(),
                     const OtherFeaturesPage(),

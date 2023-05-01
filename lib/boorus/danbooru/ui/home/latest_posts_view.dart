@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -33,23 +33,21 @@ class LatestView extends StatefulWidget {
   State<LatestView> createState() => _LatestViewState();
 }
 
-class _LatestViewState extends State<LatestView> with DanbooruPostCubitMixin {
+class _LatestViewState extends State<LatestView>
+    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
   final AutoScrollController _autoScrollController = AutoScrollController();
   final ValueNotifier<String> _selectedTag = ValueNotifier('');
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
   late final _postGridController = PostGridController<DanbooruPost>(
-      fetcher: (page) => fetchPost(
-            page,
-            DanbooruPostExtra(
-              tag: () => _selectedTag.value,
-            ),
-          ),
-      refresher: () => refreshPost(
-            DanbooruPostExtra(
-              tag: () => _selectedTag.value,
-            ),
-          ));
+      fetcher: (page) => context
+          .read<DanbooruPostRepository>()
+          .getPosts(_selectedTag.value, page)
+          .then(transform),
+      refresher: () => context
+          .read<DanbooruPostRepository>()
+          .getPosts(_selectedTag.value, 1)
+          .then(transform));
 
   void _sendRefresh(String tag) {
     _autoScrollController.jumpTo(0);

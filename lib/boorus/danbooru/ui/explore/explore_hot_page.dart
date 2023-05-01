@@ -11,11 +11,10 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
-import 'explore_mixins.dart';
 
 class ExploreHotPage extends StatefulWidget {
   const ExploreHotPage({
@@ -46,7 +45,7 @@ class ExploreHotPage extends StatefulWidget {
 }
 
 class _ExploreDetailPageState extends State<ExploreHotPage>
-    with DanbooruPostTransformMixin, PostExplorerServiceProviderMixin {
+    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) =>
         context.read<ExploreRepository>().getHotPosts(page).then(transform),

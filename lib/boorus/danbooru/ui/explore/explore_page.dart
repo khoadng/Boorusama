@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
@@ -96,7 +97,7 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
-        PostExplorerServiceProviderMixin {
+        DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (_) => context
         .read<ExploreRepository>()
@@ -132,7 +133,7 @@ class _HotExploreState extends State<_HotExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_HotExplore, DanbooruPost>,
-        PostExplorerServiceProviderMixin {
+        DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) =>
         context.read<ExploreRepository>().getHotPosts(page).then((transform)),
@@ -164,7 +165,7 @@ class _PopularExploreState extends State<_PopularExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_PopularExplore, DanbooruPost>,
-        PostExplorerServiceProviderMixin {
+        DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) => context
         .read<ExploreRepository>()
