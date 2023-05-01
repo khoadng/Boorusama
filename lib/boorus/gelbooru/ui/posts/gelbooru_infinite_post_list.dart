@@ -10,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -39,6 +40,7 @@ class GelbooruInfinitePostList extends StatefulWidget {
     this.extendBodyHeight,
     required this.controller,
     this.refreshAtStart = true,
+    this.errors,
   });
 
   final VoidCallback? onLoadMore;
@@ -52,6 +54,8 @@ class GelbooruInfinitePostList extends StatefulWidget {
 
   final PostGridController<Post> controller;
   final bool refreshAtStart;
+
+  final BooruError? errors;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -194,7 +198,7 @@ class _DanbooruInfinitePostListState extends State<GelbooruInfinitePostList> {
               itemBuilder: itemBuilder,
               settings: state.settings,
               refreshing: refreshing,
-              error: null, //FIXME: error
+              error: widget.errors,
               data: data,
             );
           },
