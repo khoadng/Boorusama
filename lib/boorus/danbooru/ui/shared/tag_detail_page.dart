@@ -39,14 +39,22 @@ class _TagDetailPageState extends State<TagDetailPage>
     fetcher: (page) => context
         .read<DanbooruArtistCharacterPostRepository>()
         .getPosts(
-          queryFromTagFilterCategory(selectedCategory.value, widget.tagName),
+          queryFromTagFilterCategory(
+            category: selectedCategory.value,
+            tag: widget.tagName,
+            builder: tagFilterCategoryToString,
+          ),
           page,
         )
         .then(transform),
     refresher: () => context
         .read<DanbooruArtistCharacterPostRepository>()
         .getPosts(
-          queryFromTagFilterCategory(selectedCategory.value, widget.tagName),
+          queryFromTagFilterCategory(
+            category: selectedCategory.value,
+            tag: widget.tagName,
+            builder: tagFilterCategoryToString,
+          ),
           1,
         )
         .then(transform),

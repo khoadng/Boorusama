@@ -16,6 +16,8 @@ import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/infra/caching/lru_cacher.dart';
+import 'package:boorusama/core/infra/posts/post_repository_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/main.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
@@ -58,10 +60,13 @@ class GelbooruProvider extends StatelessWidget {
       booru: booru,
     );
 
-    final postRepo = GelbooruPostRepositoryApi(
-      currentBooruConfigRepository: currentBooruConfigRepository,
-      api: api,
-      blacklistedTagRepository: globalBlacklistedTagRepo,
+    final postRepo = PostRepositoryCacher(
+      repository: GelbooruPostRepositoryApi(
+        currentBooruConfigRepository: currentBooruConfigRepository,
+        api: api,
+        blacklistedTagRepository: globalBlacklistedTagRepo,
+      ),
+      cache: LruCacher(capacity: 100),
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 

@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/application/search/gelbooru_search_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/artists/gelbooru_artist_page.dart';
@@ -71,13 +70,6 @@ void goToGelbooruSearchPage(
                       context.read<SearchHistoryRepository>(),
                 );
 
-                final postBloc = GelbooruPostCubit(
-                    postRepository: gcontext.read<PostRepository>(),
-                    extra: GelbooruPostExtra(
-                      tag: tag ?? '',
-                      limit: sstate.settings.postsPerPage,
-                    ));
-
                 final searchBloc = GelbooruSearchBloc(
                   initial: DisplayState.options,
                   tagSearchBloc: tagSearchBloc,
@@ -85,7 +77,6 @@ void goToGelbooruSearchPage(
                   searchHistorySuggestionsBloc: searchHistorySuggestions,
                   metatags: gcontext.read<TagInfo>().metatags,
                   booruType: state.booru!.booruType,
-                  postCubit: postBloc,
                   initialQuery: tag,
                 );
 
@@ -95,7 +86,6 @@ void goToGelbooruSearchPage(
                     BlocProvider.value(value: favoriteTagBloc),
                     BlocProvider<SearchBloc>.value(value: searchBloc),
                     BlocProvider.value(value: searchHistorySuggestions),
-                    BlocProvider.value(value: postBloc),
                   ],
                   child: CustomContextMenuOverlay(
                     child: GelbooruSearchPage(
@@ -138,21 +128,8 @@ Widget provideArtistPageDependencies(
         context,
         booru: state.booru!,
         builder: (dcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => GelbooruArtistCharacterPostCubit.of(
-                  dcontext,
-                  extra: GelbooruArtistChararacterExtra(
-                    category: TagFilterCategory.newest,
-                    tag: artist,
-                  ),
-                )..refresh(),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
-            ),
+          return CustomContextMenuOverlay(
+            child: page,
           );
         },
       );

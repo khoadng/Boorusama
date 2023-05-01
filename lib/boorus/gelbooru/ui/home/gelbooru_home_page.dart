@@ -7,11 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
@@ -28,10 +29,20 @@ class GelbooruHomePage extends StatefulWidget {
   State<GelbooruHomePage> createState() => _GelbooruHomePageState();
 }
 
-class _GelbooruHomePageState extends State<GelbooruHomePage>
-    with GelbooruPostCubitMixin {
+class _GelbooruHomePageState extends State<GelbooruHomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final AutoScrollController _autoScrollController = AutoScrollController();
+  late final controller = PostGridController<Post>(
+    fetcher: (page) =>
+        context.read<PostRepository>().getPostsFromTags('', page),
+    refresher: () => context.read<PostRepository>().getPostsFromTags('', 1),
+  );
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,42 +73,30 @@ class _GelbooruHomePageState extends State<GelbooruHomePage>
                         ),
                       ),
                       Expanded(
-                        child:
-                            BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
-                          builder: (context, state) {
-                            return GelbooruInfinitePostList(
-                              refreshing: state.refreshing,
-                              loading: state.loading,
-                              hasMore: state.hasMore,
-                              error: state.error,
-                              data: state.data,
-                              onLoadMore: fetch,
-                              onRefresh: () => refresh(),
-                              scrollController: _autoScrollController,
-                              sliverHeaderBuilder: (context) => [
-                                SliverAppBar(
-                                  backgroundColor:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  toolbarHeight: kToolbarHeight * 1.2,
-                                  title: SearchBar(
-                                    enabled: false,
-                                    leading: widget.onMenuTap != null
-                                        ? IconButton(
-                                            icon: const Icon(Icons.menu),
-                                            onPressed: () =>
-                                                widget.onMenuTap?.call(),
-                                          )
-                                        : null,
-                                    onTap: () =>
-                                        goToGelbooruSearchPage(context),
-                                  ),
-                                  floating: true,
-                                  snap: true,
-                                  automaticallyImplyLeading: false,
-                                ),
-                              ],
-                            );
-                          },
+                        child: GelbooruInfinitePostList(
+                          controller: controller,
+                          scrollController: _autoScrollController,
+                          sliverHeaderBuilder: (context) => [
+                            SliverAppBar(
+                              backgroundColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              toolbarHeight: kToolbarHeight * 1.2,
+                              title: SearchBar(
+                                enabled: false,
+                                leading: widget.onMenuTap != null
+                                    ? IconButton(
+                                        icon: const Icon(Icons.menu),
+                                        onPressed: () =>
+                                            widget.onMenuTap?.call(),
+                                      )
+                                    : null,
+                                onTap: () => goToGelbooruSearchPage(context),
+                              ),
+                              floating: true,
+                              snap: true,
+                              automaticallyImplyLeading: false,
+                            ),
+                          ],
                         ),
                       ),
                     ],

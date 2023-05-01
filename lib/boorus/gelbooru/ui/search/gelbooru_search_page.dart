@@ -5,18 +5,19 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
@@ -227,14 +228,24 @@ class _SmallLayout extends StatefulWidget {
   State<_SmallLayout> createState() => _SmallLayoutState();
 }
 
-class _SmallLayoutState extends State<_SmallLayout>
-    with GelbooruPostCubitMixin {
-  final scrollController = AutoScrollController();
+class _SmallLayoutState extends State<_SmallLayout> {
+  late final controller = PostGridController<Post>(
+    fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+          context.read<TagSearchBloc>().state.selectedTags.join(' '),
+          page,
+          limit: context.read<SettingsCubit>().state.settings.postsPerPage,
+        ),
+    refresher: () => context.read<PostRepository>().getPostsFromTags(
+          context.read<TagSearchBloc>().state.selectedTags.join(' '),
+          1,
+          limit: context.read<SettingsCubit>().state.settings.postsPerPage,
+        ),
+  );
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
-    scrollController.dispose();
   }
 
   @override
@@ -321,58 +332,47 @@ class _SmallLayoutState extends State<_SmallLayout>
           ),
         );
       case DisplayState.result:
-        return BlocBuilder<GelbooruPostCubit, GelbooruPostState>(
-          builder: (context, state) {
-            return GelbooruInfinitePostList(
-              refreshing: state.refreshing,
-              loading: state.loading,
-              hasMore: state.hasMore,
-              error: state.error,
-              data: state.data,
-              onLoadMore: fetch,
-              onRefresh: () => refresh(),
-              scrollController: scrollController,
-              sliverHeaderBuilder: (context) => [
-                SliverAppBar(
-                  titleSpacing: 0,
-                  toolbarHeight: kToolbarHeight * 1.9,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  title: SizedBox(
-                    height: kToolbarHeight * 1.85,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SearchBar(
-                            enabled: false,
-                            onTap: () => context
-                                .read<SearchBloc>()
-                                .add(const SearchGoToSuggestionsRequested()),
-                            leading: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.read<SearchBloc>().add(
-                                    const SearchGoBackToSearchOptionsRequested(),
-                                  ),
-                            ),
-                          ),
+        return GelbooruInfinitePostList(
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              titleSpacing: 0,
+              toolbarHeight: kToolbarHeight * 1.9,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              title: SizedBox(
+                height: kToolbarHeight * 1.85,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SearchBar(
+                        enabled: false,
+                        onTap: () => context
+                            .read<SearchBloc>()
+                            .add(const SearchGoToSuggestionsRequested()),
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => context.read<SearchBloc>().add(
+                                const SearchGoBackToSearchOptionsRequested(),
+                              ),
                         ),
-                        const SizedBox(height: 10),
-                        const _SelectedTagList(),
-                      ],
+                      ),
                     ),
-                  ),
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
+                    const SizedBox(height: 10),
+                    const _SelectedTagList(),
+                  ],
                 ),
-                const SliverToBoxAdapter(child: _Divider(height: 7)),
-              ],
-            );
-          },
+              ),
+              floating: true,
+              snap: true,
+              automaticallyImplyLeading: false,
+            ),
+            const SliverToBoxAdapter(child: _Divider(height: 7)),
+          ],
         );
     }
   }

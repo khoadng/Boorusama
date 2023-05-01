@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/ui/home/danbooru_home_page.dart';
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/application/posts/moebooru_post_cubit.dart';
@@ -99,20 +98,10 @@ class _HomePageState extends State<HomePage> {
                 context,
                 key: gkey,
                 booru: booru,
-                builder: (gcontext) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (_) => GelbooruPostCubit(
-                        postRepository: gcontext.read<PostRepository>(),
-                        extra: const GelbooruPostExtra(tag: ''),
-                      )..refresh(),
-                    ),
-                  ],
-                  child: CustomContextMenuOverlay(
-                    child: GelbooruHomePage(
-                      key: gkey,
-                      onMenuTap: _onMenuTap,
-                    ),
+                builder: (gcontext) => CustomContextMenuOverlay(
+                  child: GelbooruHomePage(
+                    key: gkey,
+                    onMenuTap: _onMenuTap,
                   ),
                 ),
               );
