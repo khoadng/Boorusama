@@ -6,11 +6,12 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/domain/posts/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/domain/utils.dart';
-import 'package:boorusama/core/application/posts/filter.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 import 'post_dto.dart';
@@ -42,12 +43,16 @@ Either<BooruError, List<Post>> tryParsePosts(HttpResponse<dynamic> response) =>
     );
 
 class GelbooruPostRepositoryApi
-    with BlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    with
+        BlacklistedTagFilterMixin,
+        CurrentBooruConfigRepositoryMixin,
+        SettingsRepositoryMixin
     implements PostRepository {
   const GelbooruPostRepositoryApi({
     required this.api,
     required this.currentBooruConfigRepository,
     required this.blacklistedTagRepository,
+    required this.settingsRepository,
   });
 
   final GelbooruApi api;
@@ -55,6 +60,8 @@ class GelbooruPostRepositoryApi
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   @override
   final BlacklistedTagRepository blacklistedTagRepository;
+  @override
+  final SettingsRepository settingsRepository;
 
   List<String> getTags(BooruConfig config, String tags) {
     final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);

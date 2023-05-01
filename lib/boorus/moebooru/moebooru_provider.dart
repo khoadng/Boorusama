@@ -19,6 +19,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/main.dart';
@@ -47,6 +48,7 @@ class MoebooruProvider extends StatelessWidget {
     final dio = context.read<DioProvider>().getDio(booru.url);
     final api = MoebooruApi(dio);
 
+    final settingsRepo = context.read<SettingsRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -65,6 +67,7 @@ class MoebooruProvider extends StatelessWidget {
       api,
       globalBlacklistedTagRepo,
       currentBooruConfigRepository,
+      settingsRepo,
     );
     final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
     final popularRepository = MoebooruPopularRepositoryApi(

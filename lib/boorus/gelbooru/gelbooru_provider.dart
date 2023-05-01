@@ -15,6 +15,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/posts/post_repository_cacher.dart';
@@ -49,6 +50,7 @@ class GelbooruProvider extends StatelessWidget {
     final tagRepo = GelbooruTagRepositoryApi(api);
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
+    final settingsRepo = context.read<SettingsRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -65,6 +67,7 @@ class GelbooruProvider extends StatelessWidget {
         currentBooruConfigRepository: currentBooruConfigRepository,
         api: api,
         blacklistedTagRepository: globalBlacklistedTagRepo,
+        settingsRepository: settingsRepo,
       ),
       cache: LruCacher(capacity: 100),
     );

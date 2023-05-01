@@ -19,3 +19,7 @@ mixin BlacklistedTagFilterMixin {
   ) =>
       tryFilterBlacklisted(posts, blacklistedTagRepository);
 }
+
+List<Post> filterTags(List<Post> posts, Set<String> tags) => posts
+    .where((post) => !tags.intersection(post.tags.toSet()).isNotEmpty)
+    .toList();

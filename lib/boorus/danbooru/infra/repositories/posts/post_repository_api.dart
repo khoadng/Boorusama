@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
@@ -28,19 +29,22 @@ List<DanbooruPost> Function(
           ).map((e) => postDtoToPost(e, urlComposer)).toList()
         : parsePost(value, urlComposer);
 
-class PostRepositoryApi implements DanbooruPostRepository {
+class PostRepositoryApi
+    with SettingsRepositoryMixin
+    implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
     CurrentBooruConfigRepository currentBooruConfigRepository,
     this.urlComposer,
+    this.settingsRepository,
   )   : _api = api,
         _currentUserBooruRepository = currentBooruConfigRepository;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
   final ImageSourceComposer<PostDto> urlComposer;
-
-  static const int _limit = 60;
+  @override
+  final SettingsRepository settingsRepository;
 
   // convert a BooruConfig and an orignal tag list to List<String>
   List<String> getTags(BooruConfig booruConfig, String tags) {
@@ -80,13 +84,13 @@ class PostRepositoryApi implements DanbooruPostRepository {
       tryGetBooruConfigFrom(_currentUserBooruRepository)
           .flatMap(
             (booruConfig) => tryParseResponse(
-              fetcher: () => _api.getPosts(
-                booruConfig.login,
-                booruConfig.apiKey,
-                page,
-                getTags(booruConfig, tags).join(' '),
-                limit ?? _limit,
-              ),
+              fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+                    booruConfig.login,
+                    booruConfig.apiKey,
+                    page,
+                    getTags(booruConfig, tags).join(' '),
+                    limit ?? lim,
+                  )),
             ),
           )
           .flatMap((response) => TaskEither.fromEither(parseData(

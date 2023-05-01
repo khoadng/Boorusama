@@ -16,3 +16,15 @@ abstract class SettingsRepository {
   Future<bool> save(Settings setting);
   SettingsOrError load();
 }
+
+Future<int> getSettingsPostsPerPage(SettingsRepository repository) =>
+    repository.load().run().then((value) => value.fold(
+          (l) => 60,
+          (r) => r.postsPerPage,
+        ));
+
+mixin SettingsRepositoryMixin {
+  SettingsRepository get settingsRepository;
+
+  Future<int> getPostsPerPage() => getSettingsPostsPerPage(settingsRepository);
+}

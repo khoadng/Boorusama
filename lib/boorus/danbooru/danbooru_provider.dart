@@ -139,14 +139,19 @@ class DanbooruProvider extends StatelessWidget {
       api: api,
     );
 
-    final postRepo =
-        PostRepositoryApi(api, currentBooruConfigRepo, sourceComposer);
+    final postRepo = PostRepositoryApi(
+      api,
+      currentBooruConfigRepo,
+      sourceComposer,
+      settingRepository,
+    );
 
     final exploreRepo = ExploreRepositoryApi(
       api: api,
       currentBooruConfigRepository: currentBooruConfigRepo,
       postRepository: postRepo,
       urlComposer: sourceComposer,
+      settingsRepository: settingRepository,
     );
 
     final commentRepo = CommentCacher(

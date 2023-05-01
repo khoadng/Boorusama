@@ -94,7 +94,6 @@ class _InfiniteScroll extends StatelessWidget {
             fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
                   state.selectedTags.join(' '),
                   page,
-                  limit: settingsState.settings.postsPerPage,
                 ),
             builder: (context, controller, errors) {
               return DanbooruInfinitePostList(

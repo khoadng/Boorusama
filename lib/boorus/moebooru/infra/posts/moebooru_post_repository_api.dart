@@ -6,11 +6,12 @@ import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_post.dart';
 import 'package:boorusama/boorus/moebooru/domain/utils.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
-import 'package:boorusama/core/application/posts/filter.dart';
+import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
@@ -32,12 +33,16 @@ Either<BooruError, List<MoebooruPost>> tryParsePosts(
     );
 
 class MoebooruPostRepositoryApi
-    with BlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    with
+        BlacklistedTagFilterMixin,
+        CurrentBooruConfigRepositoryMixin,
+        SettingsRepositoryMixin
     implements PostRepository {
   MoebooruPostRepositoryApi(
     this._api,
     this.blacklistedTagRepository,
     this.currentBooruConfigRepository,
+    this.settingsRepository,
   );
 
   final MoebooruApi _api;
@@ -45,6 +50,8 @@ class MoebooruPostRepositoryApi
   final BlacklistedTagRepository blacklistedTagRepository;
   @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
+  @override
+  final SettingsRepository settingsRepository;
 
   List<String> getTags(BooruConfig config, String tags) {
     final tag = booruFilterConfigToMoebooruTag(config.ratingFilter);
@@ -63,13 +70,13 @@ class MoebooruPostRepositoryApi
   }) =>
       tryGetBooruConfig()
           .flatMap((config) => tryParseResponse(
-                fetcher: () => _api.getPosts(
-                  config.login,
-                  config.apiKey,
-                  page,
-                  getTags(config, tags).join(' '),
-                  limit ?? 60,
-                ),
+                fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+                      config.login,
+                      config.apiKey,
+                      page,
+                      getTags(config, tags).join(' '),
+                      limit ?? lim,
+                    )),
               ))
           .flatMap((response) => TaskEither.fromEither(tryParsePosts(response)))
           .flatMap(tryFilterBlacklistedTags);

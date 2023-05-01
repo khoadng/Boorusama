@@ -5,23 +5,27 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 
-class ExploreRepositoryApi implements ExploreRepository {
+class ExploreRepositoryApi
+    with SettingsRepositoryMixin
+    implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
     required this.currentBooruConfigRepository,
     required this.postRepository,
     required this.urlComposer,
+    required this.settingsRepository,
   });
 
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   final ImageSourceComposer<PostDto> urlComposer;
-
-  static const int _limit = 60;
+  @override
+  final SettingsRepository settingsRepository;
 
   @override
   DanbooruPostsOrError getHotPosts(
@@ -58,14 +62,15 @@ class ExploreRepositoryApi implements ExploreRepository {
   }) =>
       tryGetBooruConfigFrom(currentBooruConfigRepository)
           .flatMap((booruConfig) => tryParseResponse(
-                fetcher: () => api.getPopularPosts(
-                  booruConfig.login,
-                  booruConfig.apiKey,
-                  '${date.year}-${date.month}-${date.day}',
-                  scale.toString().split('.').last,
-                  page,
-                  limit ?? _limit,
-                ),
+                fetcher: () =>
+                    getPostsPerPage().then((lim) => api.getPopularPosts(
+                          booruConfig.login,
+                          booruConfig.apiKey,
+                          '${date.year}-${date.month}-${date.day}',
+                          scale.toString().split('.').last,
+                          page,
+                          limit ?? lim,
+                        )),
               ))
           .flatMap((response) =>
               TaskEither.fromEither(tryParseData(response, urlComposer)));

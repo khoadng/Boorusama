@@ -10,7 +10,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -312,8 +311,6 @@ class _SmallLayout extends StatelessWidget {
           fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
                 context.read<TagSearchBloc>().state.selectedTags.join(' '),
                 page,
-                limit:
-                    context.read<SettingsCubit>().state.settings.postsPerPage,
               ),
           builder: (context, controller, errors) => MoebooruInfinitePostList(
             errors: errors,
