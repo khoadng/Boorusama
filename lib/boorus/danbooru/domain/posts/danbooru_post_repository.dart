@@ -15,3 +15,13 @@ abstract class DanbooruPostRepository implements PostRepository {
   });
   DanbooruPostsOrError getPostsFromIds(List<int> ids);
 }
+
+mixin DanbooruPostRepositoryMixin {
+  DanbooruPostRepository get postRepository;
+
+  Future<List<DanbooruPost>> getPostsOrEmpty(String tags, int page) =>
+      postRepository.getPosts(tags, page).run().then((value) => value.fold(
+            (l) => <DanbooruPost>[],
+            (r) => r,
+          ));
+}

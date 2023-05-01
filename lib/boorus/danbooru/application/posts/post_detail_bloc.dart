@@ -56,10 +56,11 @@ class _PostDetailParentChildFetch extends PostDetailEvent {
   List<Object?> get props => [parentId];
 }
 
-class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
+class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState>
+    with DanbooruPostRepositoryMixin {
   PostDetailBloc({
     required NoteRepository noteRepository,
-    required DanbooruPostRepository postRepository,
+    required this.postRepository,
     required PoolRepository poolRepository,
     required CurrentBooruConfigRepository currentBooruConfigRepository,
     required BooruUserIdentityProvider booruUserIdentityProvider,
@@ -221,13 +222,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<_PostDetailParentChildFetch>((event, emit) async {
-      final posts = await postRepository
-          .getPosts(event.query, 1)
-          .run()
-          .then((value) => value.fold(
-                (l) => <DanbooruPost>[],
-                (r) => r,
-              ));
+      final posts = await getPostsOrEmpty(event.query, 1);
 
       emit(state.copyWith(children: posts));
     });
@@ -246,13 +241,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository
-              .getPosts(tag, 1)
-              .run()
-              .then((value) => value.fold(
-                    (l) => <DanbooruPost>[],
-                    (r) => r,
-                  ));
+          : await getPostsOrEmpty(tag, 1);
 
       tagCache[tag] = posts;
 
@@ -280,13 +269,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       if (state.recommends.any((e) => e.tag == tag)) continue;
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository
-              .getPosts(tag, 1)
-              .run()
-              .then((value) => value.fold(
-                    (l) => <DanbooruPost>[],
-                    (r) => r,
-                  ));
+          : await getPostsOrEmpty(tag, 1);
 
       tagCache[tag] = posts;
 
@@ -303,6 +286,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       ));
     }
   }
+
+  @override
+  DanbooruPostRepository postRepository;
 }
 
 extension PostDetailStateX on PostDetailState {
