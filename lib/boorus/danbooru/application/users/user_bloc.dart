@@ -109,21 +109,33 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
 
     on<_FetchedFavorites>((event, emit) async {
-      final favs = await postRepository.getPosts(
-        'ordfav:${event.username}',
-        1,
-        limit: 20,
-      );
+      final favs = await postRepository
+          .getPosts(
+            'ordfav:${event.username}',
+            1,
+            limit: 20,
+          )
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ));
 
       emit(state.copyWith(favorites: () => favs));
     });
 
     on<_FetchedUploads>((event, emit) async {
-      final ups = await postRepository.getPosts(
-        'user:${event.username}',
-        1,
-        limit: 20,
-      );
+      final ups = await postRepository
+          .getPosts(
+            'user:${event.username}',
+            1,
+            limit: 20,
+          )
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ));
 
       emit(state.copyWith(uploads: () => ups));
     });

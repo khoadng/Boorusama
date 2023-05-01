@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 enum AppErrorType {
+  failedToLoadBooruConfig,
+  booruConfigNotFound,
   cannotReachServer,
   failedToParseJSON,
+  loadDataFromServerFailed,
   unknown,
 }
 

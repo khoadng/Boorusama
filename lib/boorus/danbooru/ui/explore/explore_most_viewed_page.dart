@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores/explore_utils.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
@@ -15,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'datetime_selector.dart';
 
 class ExploreMostViewedPage extends StatefulWidget {
@@ -46,19 +44,7 @@ class ExploreMostViewedPage extends StatefulWidget {
   State<ExploreMostViewedPage> createState() => _ExploreDetailPageState();
 }
 
-class _ExploreDetailPageState extends State<ExploreMostViewedPage>
-    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
-  late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (_) => context
-        .read<ExploreRepository>()
-        .getMostViewedPosts(exploreDetails.value.date)
-        .then(transform),
-    refresher: () => context
-        .read<ExploreRepository>()
-        .getMostViewedPosts(exploreDetails.value.date)
-        .then(transform),
-  );
-
+class _ExploreDetailPageState extends State<ExploreMostViewedPage> {
   late final exploreDetails = ValueNotifier(
     ExploreDetailsData(
       scale: TimeScale.day,
@@ -68,50 +54,41 @@ class _ExploreDetailPageState extends State<ExploreMostViewedPage>
   );
 
   @override
-  void initState() {
-    super.initState();
-    exploreDetails.addListener(_onExploreDetailsChanged);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    exploreDetails.removeListener(_onExploreDetailsChanged);
-    _controller.dispose();
-  }
-
-  void _onExploreDetailsChanged() {
-    _controller.refresh();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: DanbooruInfinitePostList(
-            controller: _controller,
-            sliverHeaderBuilder: (context) => [
-              ExploreSliverAppBar(
-                title: 'explore.most_viewed'.tr(),
+    return ValueListenableBuilder<ExploreDetailsData>(
+      valueListenable: exploreDetails,
+      builder: (_, explore, __) => DanbooruPostScope(
+        fetcher: (page) =>
+            context.read<ExploreRepository>().getMostViewedPosts(explore.date),
+        builder: (context, controller, errors) => Column(
+          children: [
+            Expanded(
+              child: DanbooruInfinitePostList(
+                errors: errors,
+                controller: controller,
+                sliverHeaderBuilder: (context) => [
+                  ExploreSliverAppBar(
+                    title: 'explore.popular'.tr(),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        Container(
-          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-          child: ValueListenableBuilder<ExploreDetailsData>(
-            valueListenable: exploreDetails,
-            builder: (_, data, __) => DateTimeSelector(
-              onDateChanged: (date) => exploreDetails.value =
-                  exploreDetails.value.copyWith(date: date),
-              date: data.date,
-              scale: data.scale,
-              backgroundColor: Colors.transparent,
             ),
-          ),
+            Container(
+              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+              child: DateTimeSelector(
+                onDateChanged: (date) {
+                  exploreDetails.value =
+                      exploreDetails.value.copyWith(date: date);
+                  controller.refresh();
+                },
+                date: explore.date,
+                scale: explore.scale,
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

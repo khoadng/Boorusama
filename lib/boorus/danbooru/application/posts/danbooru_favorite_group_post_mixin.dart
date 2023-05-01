@@ -14,9 +14,15 @@ mixin DanbooruFavoriteGroupPostMixin {
   Future<List<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
     final ids = queue.dequeue(20);
 
-    final posts = await postRepository.getPostsFromIds(
-      ids,
-    );
+    final posts = await postRepository
+        .getPostsFromIds(
+          ids,
+        )
+        .run()
+        .then((value) => value.fold(
+              (l) => [],
+              (r) => r,
+            ));
 
     final orderMap = <int, int>{};
     for (var index = 0; index < ids.length; index++) {

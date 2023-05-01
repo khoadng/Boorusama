@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/related_posts_section.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';

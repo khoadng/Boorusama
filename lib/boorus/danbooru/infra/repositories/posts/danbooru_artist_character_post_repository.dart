@@ -2,50 +2,50 @@
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
+import 'package:boorusama/functional.dart';
 
 class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
   DanbooruArtistCharacterPostRepository({
-    required this.danbooruPostRepository,
+    required this.repository,
     required this.cache,
   });
 
-  final DanbooruPostRepository danbooruPostRepository;
+  final DanbooruPostRepository repository;
   final Cacher<String, List<DanbooruPost>> cache;
 
   @override
-  Future<List<DanbooruPost>> getPosts(
+  DanbooruPostsOrError getPosts(
     String tags,
     int page, {
     int? limit,
     bool? includeInvalid,
-  }) async {
+  }) {
     final name = "$tags-$page-$limit-$includeInvalid";
 
-    final item = cache.get(name);
-
-    if (item != null) return item;
-
-    final fresh = await danbooruPostRepository.getPosts(
-      tags,
-      page,
-      limit: limit,
-      includeInvalid: includeInvalid,
-    );
-
-    await cache.put(name, fresh);
-
-    return fresh;
+    return cache.get(name).toOption().fold(
+          () => repository
+              .getPosts(
+            tags,
+            page,
+            limit: limit,
+            includeInvalid: includeInvalid,
+          )
+              .map((data) {
+            cache.put(name, data);
+            return data;
+          }),
+          (data) => TaskEither.right(data),
+        );
   }
 
   @override
-  Future<List<DanbooruPost>> getPostsFromIds(List<int> ids) =>
-      danbooruPostRepository.getPostsFromIds(ids);
+  DanbooruPostsOrError getPostsFromIds(List<int> ids) =>
+      repository.getPostsFromIds(ids);
 
   @override
   Future<List<Post>> getPostsFromTags(String tags, int page, {int? limit}) =>
-      getPosts(tags, page, limit: limit);
-
-  @override
-  Future<bool> putTag(int postId, String tagString) =>
-      danbooruPostRepository.putTag(postId, tagString);
+      getPosts(tags, page, limit: limit).run().then((value) => value.fold(
+            (l) => [],
+            (r) => r,
+          ));
 }

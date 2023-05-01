@@ -7,12 +7,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -91,42 +89,32 @@ class _InfiniteScroll extends StatefulWidget {
   State<_InfiniteScroll> createState() => _InfiniteScrollState();
 }
 
-class _InfiniteScrollState extends State<_InfiniteScroll>
-    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
-  late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => context
-        .read<DanbooruPostRepository>()
-        .getPosts(
-          context.read<TagSearchBloc>().state.selectedTags.join(' '),
-          page,
-          limit: context.read<SettingsCubit>().state.settings.postsPerPage,
-        )
-        .then(transform),
-    refresher: () => context
-        .read<DanbooruPostRepository>()
-        .getPosts(
-          context.read<TagSearchBloc>().state.selectedTags.join(' '),
-          1,
-          limit: context.read<SettingsCubit>().state.settings.postsPerPage,
-        )
-        .then(transform),
-  );
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
-
+class _InfiniteScrollState extends State<_InfiniteScroll> {
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList(
-      controller: controller,
-      sliverHeaderBuilder: (context) => [
-        ...widget.headerBuilder?.call() ?? [],
-        const SliverToBoxAdapter(child: RelatedTagSection()),
-        const SliverToBoxAdapter(child: ResultHeader()),
-      ],
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) => BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settingsState) {
+          return DanbooruPostScope(
+            fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
+                  state.selectedTags.join(' '),
+                  page,
+                  limit: settingsState.settings.postsPerPage,
+                ),
+            builder: (context, controller, errors) {
+              return DanbooruInfinitePostList(
+                controller: controller,
+                errors: errors,
+                sliverHeaderBuilder: (context) => [
+                  ...widget.headerBuilder?.call() ?? [],
+                  const SliverToBoxAdapter(child: RelatedTagSection()),
+                  const SliverToBoxAdapter(child: ResultHeader()),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

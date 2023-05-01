@@ -46,6 +46,11 @@ class _TagDetailPageState extends State<TagDetailPage>
           ),
           page,
         )
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then(transform),
     refresher: () => context
         .read<DanbooruArtistCharacterPostRepository>()
@@ -57,6 +62,11 @@ class _TagDetailPageState extends State<TagDetailPage>
           ),
           1,
         )
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then(transform),
   );
 

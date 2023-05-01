@@ -46,6 +46,11 @@ class _PoolDetailPageState extends State<PoolDetailPage>
           'pool:${widget.pool.id}',
           page,
         )
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then(transform),
     refresher: () => context
         .read<DanbooruPostRepository>()
@@ -53,6 +58,11 @@ class _PoolDetailPageState extends State<PoolDetailPage>
           'pool:${widget.pool.id}',
           1,
         )
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then(transform),
   );
 

@@ -39,6 +39,11 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
             savedSearches.value,
             page,
           )
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ))
           .then(transform),
       refresher: () => context
           .read<DanbooruPostRepository>()
@@ -46,6 +51,11 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
             savedSearches.value,
             1,
           )
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ))
           .then(transform));
   final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
 

@@ -221,7 +221,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<_PostDetailParentChildFetch>((event, emit) async {
-      final posts = await postRepository.getPosts(event.query, 1);
+      final posts = await postRepository
+          .getPosts(event.query, 1)
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ));
 
       emit(state.copyWith(children: posts));
     });
@@ -240,7 +246,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository.getPosts(tag, 1);
+          : await postRepository
+              .getPosts(tag, 1)
+              .run()
+              .then((value) => value.fold(
+                    (l) => <DanbooruPost>[],
+                    (r) => r,
+                  ));
 
       tagCache[tag] = posts;
 
@@ -268,7 +280,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       if (state.recommends.any((e) => e.tag == tag)) continue;
       final posts = tagCache.containsKey(tag)
           ? tagCache[tag]!
-          : await postRepository.getPosts(tag, 1);
+          : await postRepository
+              .getPosts(tag, 1)
+              .run()
+              .then((value) => value.fold(
+                    (l) => <DanbooruPost>[],
+                    (r) => r,
+                  ));
 
       tagCache[tag] = posts;
 

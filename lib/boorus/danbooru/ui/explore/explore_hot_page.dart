@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
@@ -14,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 class ExploreHotPage extends StatefulWidget {
   const ExploreHotPage({
@@ -44,33 +42,24 @@ class ExploreHotPage extends StatefulWidget {
   State<ExploreHotPage> createState() => _ExploreDetailPageState();
 }
 
-class _ExploreDetailPageState extends State<ExploreHotPage>
-    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
-  late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) =>
-        context.read<ExploreRepository>().getHotPosts(page).then(transform),
-    refresher: () =>
-        context.read<ExploreRepository>().getHotPosts(1).then(transform),
-  );
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+class _ExploreDetailPageState extends State<ExploreHotPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: DanbooruInfinitePostList(
-            controller: _controller,
-            sliverHeaderBuilder: (context) => [
-              ExploreSliverAppBar(
-                title: 'explore.hot'.tr(),
-              ),
-            ],
+          child: DanbooruPostScope(
+            fetcher: (page) =>
+                context.read<ExploreRepository>().getHotPosts(page),
+            builder: (context, controller, errors) => DanbooruInfinitePostList(
+              errors: errors,
+              controller: controller,
+              sliverHeaderBuilder: (context) => [
+                ExploreSliverAppBar(
+                  title: 'explore.hot'.tr(),
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -51,10 +51,20 @@ class _FavoritesPageState extends State<FavoritesPage>
       fetcher: (page) => context
           .read<DanbooruPostRepository>()
           .getPosts('ordfav:${widget.username}', page)
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ))
           .then(transform),
       refresher: () => context
           .read<DanbooruPostRepository>()
           .getPosts('ordfav:${widget.username}', 1)
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ))
           .then(transform));
 
   @override

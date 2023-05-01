@@ -1,18 +1,17 @@
 // Project imports:
-import 'danbooru_post.dart';
-import 'time_scale.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
 abstract class ExploreRepository {
-  Future<List<DanbooruPost>> getPopularPosts(
+  DanbooruPostsOrError getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale, {
     int? limit,
   });
 
-  Future<List<DanbooruPost>> getMostViewedPosts(DateTime date);
+  DanbooruPostsOrError getMostViewedPosts(DateTime date);
 
-  Future<List<DanbooruPost>> getHotPosts(
+  DanbooruPostsOrError getHotPosts(
     int page, {
     int? limit,
   });

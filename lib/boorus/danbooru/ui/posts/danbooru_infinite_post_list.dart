@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -41,6 +42,7 @@ class DanbooruInfinitePostList extends StatefulWidget {
     this.extendBodyHeight,
     required this.controller,
     this.refreshAtStart = true,
+    this.errors,
   });
 
   final VoidCallback? onLoadMore;
@@ -53,6 +55,8 @@ class DanbooruInfinitePostList extends StatefulWidget {
   final double? extendBodyHeight;
 
   final bool refreshAtStart;
+
+  final BooruError? errors;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -218,7 +222,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                   itemBuilder: itemBuilder,
                   settings: state.settings,
                   refreshing: refreshing,
-                  error: null, //FIXME: error handling
+                  error: widget.errors,
                   data: data,
                 );
               },

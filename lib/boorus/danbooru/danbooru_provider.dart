@@ -307,7 +307,7 @@ class DanbooruProvider extends StatelessWidget {
     );
     final postVoteCubit = PostVoteCubit(postVoteRepo);
     final artistCharacterPostRepository = DanbooruArtistCharacterPostRepository(
-      danbooruPostRepository: postRepo,
+      repository: postRepo,
       cache: LruCacher(),
     );
     final commentsCubit = CommentsCubit(

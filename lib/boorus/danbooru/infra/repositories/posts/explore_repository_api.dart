@@ -1,12 +1,11 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
-import 'post_repository_api.dart';
+import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryApi implements ExploreRepository {
   const ExploreRepositoryApi({
@@ -24,67 +23,49 @@ class ExploreRepositoryApi implements ExploreRepository {
   static const int _limit = 60;
 
   @override
-  Future<List<DanbooruPost>> getHotPosts(
+  DanbooruPostsOrError getHotPosts(
     int page, {
     int? limit,
-  }) async {
-    final booruConfig = await currentBooruConfigRepository.get();
-    final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
-    final tags = [
-      'order:rank',
-      if (tag != null) tag,
-    ];
-
-    return postRepository.getPosts(
-      tags.join(' '),
-      page,
-      limit: limit,
-    );
-  }
+  }) =>
+      postRepository.getPosts(
+        'order:rank',
+        page,
+        limit: limit,
+      );
 
   @override
-  Future<List<DanbooruPost>> getMostViewedPosts(
+  DanbooruPostsOrError getMostViewedPosts(
     DateTime date,
   ) =>
-      currentBooruConfigRepository
-          .get()
-          .then(
-            (booruConfig) => api.getMostViewedPosts(
-              booruConfig?.login,
-              booruConfig?.apiKey,
-              '${date.year}-${date.month}-${date.day}',
-            ),
-          )
-          .then((e) => parsePost(e, urlComposer))
-          .catchError((e) {
-        handleError(e);
-
-        return <DanbooruPost>[];
-      });
+      getBooruConfigFrom(currentBooruConfigRepository)
+          .flatMap((booruConfig) => getData(
+                fetcher: () => api.getMostViewedPosts(
+                  booruConfig.login,
+                  booruConfig.apiKey,
+                  '${date.year}-${date.month}-${date.day}',
+                ),
+              ))
+          .flatMap((response) =>
+              TaskEither.fromEither(parseData(response, urlComposer)));
 
   @override
-  Future<List<DanbooruPost>> getPopularPosts(
+  DanbooruPostsOrError getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale, {
     int? limit,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then(
-            (booruConfig) => api.getPopularPosts(
-              booruConfig?.login,
-              booruConfig?.apiKey,
-              '${date.year}-${date.month}-${date.day}',
-              scale.toString().split('.').last,
-              page,
-              limit ?? _limit,
-            ),
-          )
-          .then((e) => parsePost(e, urlComposer))
-          .catchError((e) {
-        handleError(e);
-
-        return <DanbooruPost>[];
-      });
+      getBooruConfigFrom(currentBooruConfigRepository)
+          .flatMap((booruConfig) => getData(
+                fetcher: () => api.getPopularPosts(
+                  booruConfig.login,
+                  booruConfig.apiKey,
+                  '${date.year}-${date.month}-${date.day}',
+                  scale.toString().split('.').last,
+                  page,
+                  limit ?? _limit,
+                ),
+              ))
+          .flatMap((response) =>
+              TaskEither.fromEither(parseData(response, urlComposer)));
 }

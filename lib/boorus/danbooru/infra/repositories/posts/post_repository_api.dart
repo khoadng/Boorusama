@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -6,21 +7,13 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as core;
-import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
-import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
-
-List<DanbooruPost> parsePost(
-  HttpResponse<dynamic> value,
-  ImageSourceComposer<PostDto> urlComposer,
-) =>
-    parse(
-      value: value,
-      converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e, urlComposer)).where(isPostValid).toList();
+import 'package:boorusama/functional.dart';
+import 'common.dart';
+import 'utils.dart';
 
 List<DanbooruPost> Function(
   HttpResponse<dynamic> value,
@@ -49,66 +42,67 @@ class PostRepositoryApi implements DanbooruPostRepository {
 
   static const int _limit = 60;
 
+  // convert a BooruConfig and an orignal tag list to List<String>
+  List<String> getTags(BooruConfig booruConfig, String tags) {
+    final ratingTag = booruFilterConfigToDanbooruTag(booruConfig.ratingFilter);
+    final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
+      booruConfig.deletedItemBehavior,
+    );
+    return [
+      ...splitTag(tags),
+      if (ratingTag != null) ratingTag,
+      if (deletedStatusTag != null) deletedStatusTag,
+    ];
+  }
+
+  // parse HttpResponse<dynamic> to List<DanbooruPost>
+  Either<BooruError, List<DanbooruPost>> parseData(
+    HttpResponse<dynamic> response,
+    bool includeInvalid,
+  ) =>
+      Either.tryCatch(
+        () => parsePostWithOptions(
+          includeInvalid: includeInvalid,
+          urlComposer: urlComposer,
+        ).call(response),
+        (error, stackTrace) => BooruError(
+          error: AppError(type: AppErrorType.failedToParseJSON),
+        ),
+      );
+
   @override
-  Future<List<DanbooruPost>> getPosts(
+  DanbooruPostsOrError getPosts(
     String tags,
     int page, {
     int? limit,
     bool? includeInvalid,
-  }) async {
-    final booruConfig = await _currentUserBooruRepository.get();
-    final tag = booruFilterConfigToDanbooruTag(booruConfig?.ratingFilter);
-    final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
-      booruConfig?.deletedItemBehavior,
-    );
-
-    return _api
-        .getPosts(
-          booruConfig?.login,
-          booruConfig?.apiKey,
-          page,
-          [
-            ...tags.split(' '),
-            if (tag != null) tag,
-            if (deletedStatusTag != null) deletedStatusTag,
-          ].join(' '),
-          limit ?? _limit,
-        )
-        .then(parsePostWithOptions(
-          includeInvalid: includeInvalid ?? false,
-          urlComposer: urlComposer,
-        ))
-        .catchError((e) {
-      handleError(e);
-
-      return <DanbooruPost>[];
-    });
-  }
+  }) =>
+      getBooruConfigFrom(_currentUserBooruRepository)
+          .flatMap(
+            (booruConfig) => getData(
+              fetcher: () => _api.getPosts(
+                booruConfig.login,
+                booruConfig.apiKey,
+                page,
+                getTags(booruConfig, tags).join(' '),
+                limit ?? _limit,
+              ),
+            ),
+          )
+          .flatMap((response) => TaskEither.fromEither(parseData(
+                response,
+                includeInvalid ?? false,
+              )));
 
   @override
-  Future<List<DanbooruPost>> getPostsFromIds(List<int> ids) => getPosts(
+  DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(
         'id:${ids.join(',')}',
         1,
         limit: ids.length,
       );
 
   @override
-  Future<bool> putTag(int postId, String tagString) =>
-      _currentUserBooruRepository
-          .get()
-          .then((booruConfig) => _api.putTag(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                postId,
-                {
-                  'post[tag_string]': tagString,
-                  'post[old_tag_string]': '',
-                },
-              ))
-          .then((value) => value.response.statusCode == 200);
-
-  @override
-  Future<List<core.Post>> getPostsFromTags(
+  Future<List<Post>> getPostsFromTags(
     String tags,
     int page, {
     int? limit,
@@ -118,50 +112,8 @@ class PostRepositoryApi implements DanbooruPostRepository {
         page,
         limit: limit,
         includeInvalid: true,
-      );
-}
-
-List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
-
-DanbooruPost postDtoToPost(
-  PostDto dto,
-  ImageSourceComposer<PostDto> urlComposer,
-) {
-  try {
-    final sources = urlComposer.compose(dto);
-
-    return DanbooruPost(
-      id: dto.id!,
-      thumbnailImageUrl: sources.thumbnail,
-      sampleImageUrl: sources.sample,
-      originalImageUrl: sources.original,
-      copyrightTags: splitTag(dto.copyrightTags),
-      characterTags: splitTag(dto.characterTags),
-      artistTags: splitTag(dto.artistTags),
-      generalTags: splitTag(dto.generalTags),
-      metaTags: splitTag(dto.tagsMeta),
-      tags: splitTag(dto.tags),
-      width: dto.imageWidth.toDouble(),
-      height: dto.imageHeight.toDouble(),
-      format: dto.fileExt,
-      md5: dto.md5 ?? '',
-      lastCommentAt: dto.lastCommentedAt,
-      source: dto.source,
-      createdAt: dto.createdAt,
-      score: dto.score,
-      upScore: dto.upScore,
-      downScore: dto.downScore,
-      favCount: dto.favCount,
-      uploaderId: dto.uploaderId,
-      rating: mapStringToRating(dto.rating),
-      fileSize: dto.fileSize,
-      pixivId: dto.pixivId,
-      isBanned: dto.isBanned,
-      hasChildren: dto.hasChildren,
-      parentId: dto.parentId,
-      hasLarge: dto.hasLarge ?? false,
-    );
-  } catch (e) {
-    return DanbooruPost.empty();
-  }
+      ).run().then((value) => value.fold(
+            (l) => [],
+            (r) => r,
+          ));
 }

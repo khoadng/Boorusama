@@ -12,12 +12,13 @@ class FavoritesCubit extends Cubit<AsyncLoadState<List<DanbooruPost>>> {
 
   final DanbooruPostRepository postRepository;
 
-  void getUserFavoritePosts(String username) {
-    tryAsync<List<DanbooruPost>>(
-      action: () => postRepository.getPosts('ordfav:$username', 1),
-      onLoading: () => emit(const AsyncLoadState.loading()),
-      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-      onSuccess: (posts) async => emit(AsyncLoadState.success(posts)),
-    );
+  Future<void> getUserFavoritePosts(String username) async {
+    emit(const AsyncLoadState.loading());
+    await postRepository.getPosts('ordfav:$username', 1).run().then(
+          (value) => value.fold(
+            (e) => emit(const AsyncLoadState.failure()),
+            (r) => emit(AsyncLoadState.success(r)),
+          ),
+        );
   }
 }

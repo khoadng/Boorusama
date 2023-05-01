@@ -102,10 +102,20 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
     fetcher: (_) => context
         .read<ExploreRepository>()
         .getMostViewedPosts(DateTime.now())
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then((transform)),
     refresher: () => context
         .read<ExploreRepository>()
         .getMostViewedPosts(DateTime.now())
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then((transform)),
   );
 
@@ -135,10 +145,24 @@ class _HotExploreState extends State<_HotExplore>
         PostExplorerMixin<_HotExplore, DanbooruPost>,
         DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) =>
-        context.read<ExploreRepository>().getHotPosts(page).then((transform)),
-    refresher: () =>
-        context.read<ExploreRepository>().getHotPosts(1).then((transform)),
+    fetcher: (page) => context
+        .read<ExploreRepository>()
+        .getHotPosts(page)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
+    refresher: () => context
+        .read<ExploreRepository>()
+        .getHotPosts(1)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
+        .then((transform)),
   );
 
   @override
@@ -170,10 +194,20 @@ class _PopularExploreState extends State<_PopularExplore>
     fetcher: (page) => context
         .read<ExploreRepository>()
         .getPopularPosts(DateTime.now(), page, TimeScale.day)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then((transform)),
     refresher: () => context
         .read<ExploreRepository>()
         .getPopularPosts(DateTime.now(), 1, TimeScale.day)
+        .run()
+        .then((value) => value.fold(
+              (l) => <DanbooruPost>[],
+              (r) => r,
+            ))
         .then((transform)),
   );
 
