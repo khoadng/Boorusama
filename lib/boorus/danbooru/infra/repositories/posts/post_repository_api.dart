@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
