@@ -64,7 +64,7 @@ class _ExploreDetailPageState extends State<ExploreHotPage>
     return Column(
       children: [
         Expanded(
-          child: DanbooruInfinitePostList2(
+          child: DanbooruInfinitePostList(
             controller: _controller,
             sliverHeaderBuilder: (context) => [
               ExploreSliverAppBar(

@@ -91,7 +91,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
         savedSearches.value = state.selectedSearch.toQuery();
         controller.refresh();
       },
-      child: DanbooruInfinitePostList2(
+      child: DanbooruInfinitePostList(
         controller: controller,
         sliverHeaderBuilder: (context) => [
           SliverAppBar(

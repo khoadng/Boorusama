@@ -79,7 +79,7 @@ class _LatestViewState extends State<LatestView>
 
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList2(
+    return DanbooruInfinitePostList(
       controller: _postGridController,
       scrollController: _autoScrollController,
       sliverHeaderBuilder: (context) => [

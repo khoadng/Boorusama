@@ -120,7 +120,7 @@ class _InfiniteScrollState extends State<_InfiniteScroll>
 
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList2(
+    return DanbooruInfinitePostList(
       controller: controller,
       sliverHeaderBuilder: (context) => [
         ...widget.headerBuilder?.call() ?? [],

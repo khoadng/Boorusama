@@ -70,7 +70,7 @@ class _TagDetailPageState extends State<TagDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList2(
+    return DanbooruInfinitePostList(
       controller: controller,
       sliverHeaderBuilder: (context) => [
         if (widget.includeHeaders)

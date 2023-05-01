@@ -28,8 +28,8 @@ import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
-class DanbooruInfinitePostList2 extends StatefulWidget {
-  const DanbooruInfinitePostList2({
+class DanbooruInfinitePostList extends StatefulWidget {
+  const DanbooruInfinitePostList({
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -62,11 +62,11 @@ class DanbooruInfinitePostList2 extends StatefulWidget {
   final PostGridController<DanbooruPost> controller;
 
   @override
-  State<DanbooruInfinitePostList2> createState() =>
+  State<DanbooruInfinitePostList> createState() =>
       _DanbooruInfinitePostListState();
 }
 
-class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList2> {
+class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
   late final AutoScrollController _autoScrollController;
   final _multiSelectController = MultiSelectController<DanbooruPost>();
   var multiSelect = false;

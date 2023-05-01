@@ -64,7 +64,7 @@ class _PoolDetailPageState extends State<PoolDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList2(
+    return DanbooruInfinitePostList(
       controller: controller,
       sliverHeaderBuilder: (context) => [
         SliverAppBar(

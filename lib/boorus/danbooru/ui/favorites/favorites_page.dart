@@ -65,7 +65,7 @@ class _FavoritesPageState extends State<FavoritesPage>
 
   @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList2(
+    return DanbooruInfinitePostList(
       controller: controller,
       sliverHeaderBuilder: (context) => [
         SliverAppBar(
