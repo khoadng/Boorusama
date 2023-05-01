@@ -72,7 +72,7 @@ class _ResultViewState extends State<ResultView> {
   }
 }
 
-class _InfiniteScroll extends StatefulWidget {
+class _InfiniteScroll extends StatelessWidget {
   const _InfiniteScroll({
     required this.scrollController,
     required this.refreshController,
@@ -85,11 +85,6 @@ class _InfiniteScroll extends StatefulWidget {
   final List<Widget> Function()? headerBuilder;
   final Color? backgroundColor;
 
-  @override
-  State<_InfiniteScroll> createState() => _InfiniteScrollState();
-}
-
-class _InfiniteScrollState extends State<_InfiniteScroll> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TagSearchBloc, TagSearchState>(
@@ -106,7 +101,7 @@ class _InfiniteScrollState extends State<_InfiniteScroll> {
                 controller: controller,
                 errors: errors,
                 sliverHeaderBuilder: (context) => [
-                  ...widget.headerBuilder?.call() ?? [],
+                  ...headerBuilder?.call() ?? [],
                   const SliverToBoxAdapter(child: RelatedTagSection()),
                   const SliverToBoxAdapter(child: ResultHeader()),
                 ],

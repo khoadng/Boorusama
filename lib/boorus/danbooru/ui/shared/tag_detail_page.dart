@@ -33,98 +33,68 @@ class TagDetailPage extends StatefulWidget {
   State<TagDetailPage> createState() => _TagDetailPageState();
 }
 
-class _TagDetailPageState extends State<TagDetailPage>
-    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
-  late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => context
-        .read<DanbooruArtistCharacterPostRepository>()
-        .getPosts(
-          queryFromTagFilterCategory(
-            category: selectedCategory.value,
-            tag: widget.tagName,
-            builder: tagFilterCategoryToString,
-          ),
-          page,
-        )
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then(transform),
-    refresher: () => context
-        .read<DanbooruArtistCharacterPostRepository>()
-        .getPosts(
-          queryFromTagFilterCategory(
-            category: selectedCategory.value,
-            tag: widget.tagName,
-            builder: tagFilterCategoryToString,
-          ),
-          1,
-        )
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then(transform),
-  );
-
+class _TagDetailPageState extends State<TagDetailPage> {
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);
 
   @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return DanbooruInfinitePostList(
-      controller: controller,
-      sliverHeaderBuilder: (context) => [
-        if (widget.includeHeaders)
-          SliverAppBar(
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  goToBulkDownloadPage(
-                    context,
-                    [widget.tagName],
-                  );
-                },
-                icon: const Icon(Icons.download),
+    return DanbooruPostScope(
+      fetcher: (page) =>
+          context.read<DanbooruArtistCharacterPostRepository>().getPosts(
+                queryFromTagFilterCategory(
+                  category: selectedCategory.value,
+                  tag: widget.tagName,
+                  builder: tagFilterCategoryToString,
+                ),
+                page,
               ),
-            ],
-          ),
-        if (widget.includeHeaders)
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TagTitleName(tagName: widget.tagName),
-                widget.otherNamesBuilder(context),
+      builder: (context, controller, errors) => DanbooruInfinitePostList(
+        errors: errors,
+        controller: controller,
+        sliverHeaderBuilder: (context) => [
+          if (widget.includeHeaders)
+            SliverAppBar(
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    goToBulkDownloadPage(
+                      context,
+                      [widget.tagName],
+                    );
+                  },
+                  icon: const Icon(Icons.download),
+                ),
               ],
             ),
-          ),
-        if (widget.includeHeaders)
-          const SliverToBoxAdapter(child: SizedBox(height: 50)),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 10),
-          sliver: SliverToBoxAdapter(
-            child: CategoryToggleSwitch(
-              onToggle: (category) {
-                selectedCategory.value = category;
-                controller.refresh();
-              },
+          if (widget.includeHeaders)
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TagTitleName(tagName: widget.tagName),
+                  widget.otherNamesBuilder(context),
+                ],
+              ),
+            ),
+          if (widget.includeHeaders)
+            const SliverToBoxAdapter(child: SizedBox(height: 50)),
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 10),
+            sliver: SliverToBoxAdapter(
+              child: CategoryToggleSwitch(
+                onToggle: (category) {
+                  selectedCategory.value = category;
+                  controller.refresh();
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
