@@ -1,5 +1,3 @@
-export 'posts/danbooru_artist_character_post_cubit.dart';
-export 'posts/danbooru_favorite_group_post_cubit.dart';
 export 'posts/post_detail_bloc.dart';
 export 'posts/post_detail_event.dart';
 export 'posts/post_detail_state.dart';

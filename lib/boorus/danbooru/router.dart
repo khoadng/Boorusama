@@ -119,24 +119,15 @@ Widget provideArtistPageDependencies(
         context,
         booru: state.booru!,
         builder: (dcontext) {
-          return RepositoryProvider(
-            create: (context) => DanbooruArtistCharacterPostCubit.of(
-              dcontext,
-              extra: DanbooruArtistChararacterExtra(
-                category: TagFilterCategory.newest,
-                tag: artist,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: dcontext.read<ArtistBloc>()
+                  ..add(ArtistFetched(name: artist)),
               ),
-            ),
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: dcontext.read<ArtistBloc>()
-                    ..add(ArtistFetched(name: artist)),
-                ),
-              ],
-              child: CustomContextMenuOverlay(
-                child: page,
-              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
             ),
           );
         },
@@ -182,24 +173,15 @@ Widget provideCharacterPageDependencies(
         context,
         booru: state.booru!,
         builder: (dcontext) {
-          return RepositoryProvider(
-            create: (context) => DanbooruArtistCharacterPostCubit.of(
-              dcontext,
-              extra: DanbooruArtistChararacterExtra(
-                category: TagFilterCategory.newest,
-                tag: character,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: dcontext.read<WikiBloc>()
+                  ..add(WikiFetched(tag: character)),
               ),
-            ),
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: dcontext.read<WikiBloc>()
-                    ..add(WikiFetched(tag: character)),
-                ),
-              ],
-              child: CustomContextMenuOverlay(
-                child: page,
-              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
             ),
           );
         },
@@ -1011,20 +993,14 @@ void goToFavoriteGroupDetailsPage(
         return DanbooruProvider.of(
           context,
           booru: state.booru!,
-          builder: (dcontext) => RepositoryProvider(
-            create: (context) => DanbooruFavoriteGroupPostCubit.of(
-              dcontext,
-              ids: () => group.postIds,
-            ),
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: bloc),
-              ],
-              child: CustomContextMenuOverlay(
-                child: FavoriteGroupDetailsPage(
-                  group: group,
-                  postIds: QueueList.from(group.postIds.skip(60)),
-                ),
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: bloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: FavoriteGroupDetailsPage(
+                group: group,
+                postIds: QueueList.from(group.postIds),
               ),
             ),
           ),

@@ -15,6 +15,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/danbooru_favorite_group_post_mixin.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -45,18 +46,27 @@ class FavoriteGroupDetailsPage extends StatefulWidget {
 }
 
 class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage>
-    with DanbooruFavoriteGroupPostCubitMixin {
+    with
+        DanbooruPostTransformMixin,
+        DanbooruPostServiceProviderMixin,
+        DanbooruFavoriteGroupPostMixin {
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
-  late final controller =
-      PostGridController<DanbooruPost>(fetcher: fetch, refresher: refresh);
+  late final controller = PostGridController<DanbooruPost>(
+    fetcher: (page) => getPostsFromIdQueue(widget.postIds).then(transform),
+    refresher: () => getPostsFromIdQueue(widget.postIds).then(transform),
+  );
   int rowCountEditMode = 2;
 
   List<DanbooruPost> items = [];
   bool refreshing = false;
   bool loading = false;
   bool hasMore = false;
+
+  @override
+  DanbooruPostRepository get postRepository =>
+      context.read<DanbooruPostRepository>();
 
   @override
   void initState() {

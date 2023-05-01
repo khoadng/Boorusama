@@ -1,10 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
+// Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts/danbooru_infinite_post_list2.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
@@ -29,18 +34,22 @@ class TagDetailPage extends StatefulWidget {
 }
 
 class _TagDetailPageState extends State<TagDetailPage>
-    with DanbooruArtistCharacterPostCubitMixin {
+    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
   late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => fetchPost(
-        page,
-        DanbooruArtistChararacterExtra(
-          category: selectedCategory.value,
-          tag: widget.tagName,
-        )),
-    refresher: () => refreshPost(DanbooruArtistChararacterExtra(
-      category: selectedCategory.value,
-      tag: widget.tagName,
-    )),
+    fetcher: (page) => context
+        .read<DanbooruArtistCharacterPostRepository>()
+        .getPosts(
+          queryFromTagFilterCategory(selectedCategory.value, widget.tagName),
+          page,
+        )
+        .then(transform),
+    refresher: () => context
+        .read<DanbooruArtistCharacterPostRepository>()
+        .getPosts(
+          queryFromTagFilterCategory(selectedCategory.value, widget.tagName),
+          1,
+        )
+        .then(transform),
   );
 
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);
