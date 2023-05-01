@@ -10,8 +10,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/datetime_selector.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/moebooru/application/popular/moebooru_popular_cubit.dart';
+import 'package:boorusama/boorus/moebooru/domain/posts.dart';
+import 'package:boorusama/boorus/moebooru/ui/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
+import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 class MoebooruPopularPage extends StatefulWidget {
   const MoebooruPopularPage({
@@ -22,15 +25,36 @@ class MoebooruPopularPage extends StatefulWidget {
   State<MoebooruPopularPage> createState() => _MoebooruPopularPageState();
 }
 
-class _MoebooruPopularPageState extends State<MoebooruPopularPage>
-    with MoebooruPopularPostCubitMixin {
+class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
   final RefreshController _refreshController = RefreshController();
   final AutoScrollController _scrollController = AutoScrollController();
+  late final controller = PostGridController<Post>(
+    fetcher: (page) => _typeToData(selectedPopular.value, page),
+    refresher: () => _typeToData(selectedPopular.value, 1),
+  );
+
+  final selectedDate = ValueNotifier(DateTime.now());
+  final selectedPopular = ValueNotifier(MoebooruPopularType.day);
+
+  Future<List<Post>> _typeToData(MoebooruPopularType type, int page) {
+    final repo = context.read<MoebooruPopularRepository>();
+    switch (type) {
+      case MoebooruPopularType.recent:
+        return repo.getPopularPostsRecent(MoebooruTimePeriod.day);
+      case MoebooruPopularType.day:
+        return repo.getPopularPostsByDay(selectedDate.value);
+      case MoebooruPopularType.week:
+        return repo.getPopularPostsByWeek(selectedDate.value);
+      case MoebooruPopularType.month:
+        return repo.getPopularPostsByMonth(selectedDate.value);
+    }
+  }
 
   @override
   void dispose() {
     _refreshController.dispose();
     _scrollController.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -42,38 +66,29 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage>
           children: [
             Container(
               color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: BlocBuilder<MoebooruPopularPostCubit,
-                  MoebooruPopularPostState>(
-                builder: (context, state) {
-                  return DateTimeSelector(
-                    onDateChanged: changeDate,
-                    date: state.extra.dateTime,
-                    scale: _convertToTimeScale(state.extra.popularType),
-                    backgroundColor: Colors.transparent,
-                  );
+              child: DateTimeSelector(
+                onDateChanged: (date) {
+                  selectedDate.value = date;
+                  setState(() {}); // FIXME: fix this
+                  controller.refresh();
                 },
+                date: selectedDate.value,
+                scale: _convertToTimeScale(selectedPopular.value),
+                backgroundColor: Colors.transparent,
               ),
             ),
             TimeScaleToggleSwitch(
-                onToggle: (category) =>
-                    changePopularType(_convertToMoebooruPopularType(category))),
+              onToggle: (category) {
+                selectedPopular.value = _convertToMoebooruPopularType(category);
+                setState(() {}); //FIXME: fix this
+              },
+            ),
             const SizedBox(height: 12),
             Expanded(
-              child: BlocBuilder<MoebooruPopularPostCubit,
-                  MoebooruPopularPostState>(
-                builder: (context, state) {
-                  return MoebooruInfinitePostList(
-                    refreshing: state.refreshing,
-                    loading: state.loading,
-                    hasMore: state.hasMore,
-                    error: state.error,
-                    data: state.data,
-                    scrollController: _scrollController,
-                    onRefresh: () => refresh(),
-                    sliverHeaderBuilder: (context) => [],
-                    onLoadMore: fetch,
-                  );
-                },
+              child: MoebooruInfinitePostList(
+                controller: controller,
+                scrollController: _scrollController,
+                sliverHeaderBuilder: (context) => [],
               ),
             ),
           ],

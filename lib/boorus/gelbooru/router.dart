@@ -86,6 +86,7 @@ void goToGelbooruSearchPage(
                     BlocProvider.value(value: favoriteTagBloc),
                     BlocProvider<SearchBloc>.value(value: searchBloc),
                     BlocProvider.value(value: searchHistorySuggestions),
+                    BlocProvider.value(value: tagSearchBloc),
                   ],
                   child: CustomContextMenuOverlay(
                     child: GelbooruSearchPage(

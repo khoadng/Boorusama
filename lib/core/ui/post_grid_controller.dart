@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
@@ -8,6 +11,7 @@ class PostGridController<T> extends ChangeNotifier {
   PostGridController({
     required this.fetcher,
     required this.refresher,
+    this.debounceDuration = const Duration(milliseconds: 500),
   });
 
   final ItemFetcher<T> fetcher;
@@ -25,6 +29,9 @@ class PostGridController<T> extends ChangeNotifier {
   bool get loading => _loading;
   bool get refreshing => _refreshing;
 
+  Timer? _debounceTimer;
+  final Duration debounceDuration;
+
   // Refreshes the list
   Future<void> refresh() async {
     if (_refreshing) return;
@@ -41,18 +48,24 @@ class PostGridController<T> extends ChangeNotifier {
 
   // Loads more items
   Future<void> fetchMore() async {
-    if (_loading || !_hasMore) return;
-    _loading = true;
-    _page++;
-    notifyListeners();
+    if (_loading ||
+        !_hasMore ||
+        (_debounceTimer != null && _debounceTimer!.isActive)) return;
 
-    final newItems = await fetcher(_page);
-    _hasMore = newItems.isNotEmpty;
-    if (_hasMore) {
-      _items.addAll(newItems);
-    }
-    _loading = false;
-    notifyListeners();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(debounceDuration, () async {
+      _loading = true;
+      _page++;
+      notifyListeners();
+
+      final newItems = await fetcher(_page);
+      _hasMore = newItems.isNotEmpty;
+      if (_hasMore) {
+        _items.addAll(newItems);
+      }
+      _loading = false;
+      notifyListeners();
+    });
   }
 
   // Moves and inserts an item

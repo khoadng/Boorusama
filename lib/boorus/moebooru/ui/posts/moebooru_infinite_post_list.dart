@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -20,8 +19,9 @@ import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/default_multi_selection_actions.dart';
 import 'package:boorusama/core/ui/general_post_context_menu.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
-import 'package:boorusama/core/ui/infinite_post_list.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
+import 'package:boorusama/core/ui/post_grid.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';
@@ -29,7 +29,7 @@ import 'package:boorusama/utils/double_utils.dart';
 class MoebooruInfinitePostList extends StatefulWidget {
   const MoebooruInfinitePostList({
     super.key,
-    required this.onLoadMore,
+    this.onLoadMore,
     this.onRefresh,
     this.sliverHeaderBuilder,
     this.scrollController,
@@ -37,24 +37,18 @@ class MoebooruInfinitePostList extends StatefulWidget {
     this.multiSelectActions,
     this.extendBody = false,
     this.extendBodyHeight,
-    required this.loading,
-    required this.refreshing,
-    required this.hasMore,
-    this.error,
-    required this.data,
+    required this.controller,
+    this.refreshAtStart = true,
   });
 
-  final VoidCallback onLoadMore;
+  final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
 
-  final bool loading;
-  final bool refreshing;
-  final bool hasMore;
-  final BooruError? error;
-  final List<Post> data;
+  final PostGridController<Post> controller;
+  final bool refreshAtStart;
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -105,7 +99,8 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
           previous.settings.imageQuality != current.settings.imageQuality ||
           previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
-        return InfinitePostList(
+        return PostGrid(
+          controller: widget.controller,
           scrollController: _autoScrollController,
           sliverHeaderBuilder: widget.sliverHeaderBuilder,
           footerBuilder: (context, selectedItems) =>
@@ -118,9 +113,8 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
           multiSelectController: _multiSelectController,
           onLoadMore: widget.onLoadMore,
           onRefresh: widget.onRefresh,
-          hasMore: widget.hasMore,
-          itemBuilder: (context, index) {
-            final post = widget.data[index];
+          itemBuilder: (context, items, index) {
+            final post = items[index];
 
             return ContextMenuRegion(
               isEnabled: !multiSelect,
@@ -137,7 +131,7 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                       ? () {
                           goToMoebooruDetailsPage(
                             context: context,
-                            posts: widget.data,
+                            posts: items,
                             initialPage: index,
                             scrollController: _autoScrollController,
                           );
@@ -194,17 +188,15 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
               ),
             );
           },
-          items: widget.data,
-          bodyBuilder: (context, itemBuilder) {
+          bodyBuilder: (context, itemBuilder, refreshing, data) {
             return SliverPostGrid(
               itemBuilder: itemBuilder,
               settings: state.settings,
-              refreshing: widget.refreshing,
-              error: widget.error,
-              data: widget.data,
+              refreshing: refreshing,
+              error: null, //FIXME: error
+              data: data,
             );
           },
-          loading: widget.loading,
         );
       },
     );

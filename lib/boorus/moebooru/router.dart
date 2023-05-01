@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/posts/moebooru_post_cubit.dart';
 import 'package:boorusama/boorus/moebooru/application/search/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
@@ -56,13 +55,6 @@ void goToMoebooruSearchPage(
                       context.read<SearchHistoryRepository>(),
                 );
 
-                final postBloc = MoebooruPostCubit(
-                    postRepository: gcontext.read<PostRepository>(),
-                    extra: MoebooruPostExtra(
-                      tag: tag ?? '',
-                      limit: sstate.settings.postsPerPage,
-                    ));
-
                 final searchBloc = MoebooruSearchBloc(
                   initial: DisplayState.options,
                   tagSearchBloc: tagSearchBloc,
@@ -70,7 +62,6 @@ void goToMoebooruSearchPage(
                   searchHistorySuggestionsBloc: searchHistorySuggestions,
                   metatags: gcontext.read<TagInfo>().metatags,
                   booruType: state.booru!.booruType,
-                  postCubit: postBloc,
                   initialQuery: tag,
                 );
 
@@ -80,7 +71,7 @@ void goToMoebooruSearchPage(
                     BlocProvider.value(value: favoriteTagBloc),
                     BlocProvider<SearchBloc>.value(value: searchBloc),
                     BlocProvider.value(value: searchHistorySuggestions),
-                    BlocProvider.value(value: postBloc),
+                    BlocProvider.value(value: tagSearchBloc),
                   ],
                   child: CustomContextMenuOverlay(
                     child: MoebooruSearchPage(
