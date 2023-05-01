@@ -27,4 +27,8 @@ mixin SettingsRepositoryMixin {
   SettingsRepository get settingsRepository;
 
   Future<int> getPostsPerPage() => getSettingsPostsPerPage(settingsRepository);
+  Future<Settings> getOrDefault() => settingsRepository
+      .load()
+      .run()
+      .then((value) => value.fold((l) => Settings.defaultSettings, (r) => r));
 }
