@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/common.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
+import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryApi implements ExploreRepository {
@@ -37,8 +38,8 @@ class ExploreRepositoryApi implements ExploreRepository {
   DanbooruPostsOrError getMostViewedPosts(
     DateTime date,
   ) =>
-      getBooruConfigFrom(currentBooruConfigRepository)
-          .flatMap((booruConfig) => getData(
+      tryGetBooruConfigFrom(currentBooruConfigRepository)
+          .flatMap((booruConfig) => tryParseResponse(
                 fetcher: () => api.getMostViewedPosts(
                   booruConfig.login,
                   booruConfig.apiKey,
@@ -46,7 +47,7 @@ class ExploreRepositoryApi implements ExploreRepository {
                 ),
               ))
           .flatMap((response) =>
-              TaskEither.fromEither(parseData(response, urlComposer)));
+              TaskEither.fromEither(tryParseData(response, urlComposer)));
 
   @override
   DanbooruPostsOrError getPopularPosts(
@@ -55,8 +56,8 @@ class ExploreRepositoryApi implements ExploreRepository {
     TimeScale scale, {
     int? limit,
   }) =>
-      getBooruConfigFrom(currentBooruConfigRepository)
-          .flatMap((booruConfig) => getData(
+      tryGetBooruConfigFrom(currentBooruConfigRepository)
+          .flatMap((booruConfig) => tryParseResponse(
                 fetcher: () => api.getPopularPosts(
                   booruConfig.login,
                   booruConfig.apiKey,
@@ -67,5 +68,5 @@ class ExploreRepositoryApi implements ExploreRepository {
                 ),
               ))
           .flatMap((response) =>
-              TaskEither.fromEither(parseData(response, urlComposer)));
+              TaskEither.fromEither(tryParseData(response, urlComposer)));
 }

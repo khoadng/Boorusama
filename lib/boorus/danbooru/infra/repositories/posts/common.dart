@@ -1,47 +1,14 @@
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/functional.dart';
 import 'utils.dart';
-
-typedef DataFetcher = Future<HttpResponse<dynamic>> Function();
-
-TaskEither<BooruError, BooruConfig> getBooruConfigFrom(
-        CurrentBooruConfigRepository configRepository) =>
-    TaskEither.tryCatch(
-      () => configRepository.get(),
-      (error, stackTrace) => BooruError(
-          error: AppError(type: AppErrorType.failedToLoadBooruConfig)),
-    ).flatMap((r) => r == null
-        ? TaskEither.left(
-            BooruError(error: AppError(type: AppErrorType.booruConfigNotFound)),
-          )
-        : TaskEither.right(r));
-
-TaskEither<BooruError, HttpResponse<dynamic>> getData({
-  required DataFetcher fetcher,
-}) =>
-    TaskEither.tryCatch(
-      () => fetcher(),
-      (error, stackTrace) => error is DioError
-          ? BooruError(
-              error: error.response
-                  .toEither(
-                      () => AppError(type: AppErrorType.cannotReachServer))
-                  .map((response) => ServerError(
-                        httpStatusCode: response.statusCode,
-                      )))
-          : BooruError(
-              error: AppError(type: AppErrorType.loadDataFromServerFailed)),
-    );
 
 List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
@@ -52,7 +19,7 @@ List<DanbooruPost> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e, urlComposer)).where(isPostValid).toList();
 
-Either<BooruError, List<DanbooruPost>> parseData(
+Either<BooruError, List<DanbooruPost>> tryParseData(
   HttpResponse<dynamic> response,
   ImageSourceComposer<PostDto> urlComposer,
 ) =>

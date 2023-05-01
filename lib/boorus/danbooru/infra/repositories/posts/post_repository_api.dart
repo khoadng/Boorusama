@@ -10,6 +10,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 import 'common.dart';
 import 'utils.dart';
@@ -76,9 +77,9 @@ class PostRepositoryApi implements DanbooruPostRepository {
     int? limit,
     bool? includeInvalid,
   }) =>
-      getBooruConfigFrom(_currentUserBooruRepository)
+      tryGetBooruConfigFrom(_currentUserBooruRepository)
           .flatMap(
-            (booruConfig) => getData(
+            (booruConfig) => tryParseResponse(
               fetcher: () => _api.getPosts(
                 booruConfig.login,
                 booruConfig.apiKey,
