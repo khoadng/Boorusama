@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -14,7 +12,7 @@ import 'package:boorusama/boorus/moebooru/domain/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
+import 'package:boorusama/core/ui/posts/post_scope.dart';
 
 class MoebooruPopularPage extends StatefulWidget {
   const MoebooruPopularPage({
@@ -26,17 +24,10 @@ class MoebooruPopularPage extends StatefulWidget {
 }
 
 class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
-  final RefreshController _refreshController = RefreshController();
-  final AutoScrollController _scrollController = AutoScrollController();
-  late final controller = PostGridController<Post>(
-    fetcher: (page) => _typeToData(selectedPopular.value, page),
-    refresher: () => _typeToData(selectedPopular.value, 1),
-  );
-
   final selectedDate = ValueNotifier(DateTime.now());
   final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
-  Future<List<Post>> _typeToData(MoebooruPopularType type, int page) {
+  PostsOrError _typeToData(MoebooruPopularType type, int page) {
     final repo = context.read<MoebooruPopularRepository>();
     switch (type) {
       case MoebooruPopularType.recent:
@@ -51,47 +42,42 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
   }
 
   @override
-  void dispose() {
-    _refreshController.dispose();
-    _scrollController.dispose();
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: DateTimeSelector(
-                onDateChanged: (date) {
-                  selectedDate.value = date;
-                  setState(() {}); // FIXME: fix this
-                  controller.refresh();
+        child: PostScope(
+          fetcher: (page) => _typeToData(selectedPopular.value, page),
+          builder: (context, controller, errors) => Column(
+            children: [
+              Container(
+                color:
+                    Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                child: DateTimeSelector(
+                  onDateChanged: (date) {
+                    selectedDate.value = date;
+                    controller.refresh();
+                  },
+                  date: selectedDate.value,
+                  scale: _convertToTimeScale(selectedPopular.value),
+                  backgroundColor: Colors.transparent,
+                ),
+              ),
+              TimeScaleToggleSwitch(
+                onToggle: (category) {
+                  selectedPopular.value =
+                      _convertToMoebooruPopularType(category);
                 },
-                date: selectedDate.value,
-                scale: _convertToTimeScale(selectedPopular.value),
-                backgroundColor: Colors.transparent,
               ),
-            ),
-            TimeScaleToggleSwitch(
-              onToggle: (category) {
-                selectedPopular.value = _convertToMoebooruPopularType(category);
-                setState(() {}); //FIXME: fix this
-              },
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: MoebooruInfinitePostList(
-                controller: controller,
-                scrollController: _scrollController,
-                sliverHeaderBuilder: (context) => [],
+              const SizedBox(height: 12),
+              Expanded(
+                child: MoebooruInfinitePostList(
+                  errors: errors,
+                  controller: controller,
+                  sliverHeaderBuilder: (context) => [],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/router.dart';
@@ -14,7 +13,7 @@ import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
+import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 
@@ -32,32 +31,7 @@ class MoebooruHomePage extends StatefulWidget {
 
 class _MoebooruHomePageState extends State<MoebooruHomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final AutoScrollController _autoScrollController = AutoScrollController();
   final viewIndex = ValueNotifier(0);
-  late final controller = PostGridController<Post>(
-    fetcher: (page) => context
-        .read<PostRepository>()
-        .getPostsFromTags('', page)
-        .run()
-        .then((value) => value.fold(
-              (l) => <Post>[],
-              (r) => r,
-            )),
-    refresher: () => context
-        .read<PostRepository>()
-        .getPostsFromTags('', 1)
-        .run()
-        .then((value) => value.fold(
-              (l) => <Post>[],
-              (r) => r,
-            )),
-  );
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,30 +57,36 @@ class _MoebooruHomePageState extends State<MoebooruHomePage> {
                     builder: (context, index, _) => AnimatedIndexedStack(
                       index: index,
                       children: [
-                        MoebooruInfinitePostList(
-                          controller: controller,
-                          scrollController: _autoScrollController,
-                          sliverHeaderBuilder: (context) => [
-                            SliverAppBar(
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              toolbarHeight: kToolbarHeight * 1.2,
-                              title: SearchBar(
-                                enabled: false,
-                                leading: widget.onMenuTap != null
-                                    ? IconButton(
-                                        icon: const Icon(Icons.menu),
-                                        onPressed: () =>
-                                            widget.onMenuTap?.call(),
-                                      )
-                                    : null,
-                                onTap: () => goToMoebooruSearchPage(context),
+                        PostScope(
+                          fetcher: (page) => context
+                              .read<PostRepository>()
+                              .getPostsFromTags('', page),
+                          builder: (context, controller, errors) =>
+                              MoebooruInfinitePostList(
+                            errors: errors,
+                            controller: controller,
+                            sliverHeaderBuilder: (context) => [
+                              SliverAppBar(
+                                backgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                toolbarHeight: kToolbarHeight * 1.2,
+                                title: SearchBar(
+                                  enabled: false,
+                                  leading: widget.onMenuTap != null
+                                      ? IconButton(
+                                          icon: const Icon(Icons.menu),
+                                          onPressed: () =>
+                                              widget.onMenuTap?.call(),
+                                        )
+                                      : null,
+                                  onTap: () => goToMoebooruSearchPage(context),
+                                ),
+                                floating: true,
+                                snap: true,
+                                automaticallyImplyLeading: false,
                               ),
-                              floating: true,
-                              snap: true,
-                              automaticallyImplyLeading: false,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const MoebooruPopularPage()
                       ],

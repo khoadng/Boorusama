@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/domain/error.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -39,6 +40,7 @@ class MoebooruInfinitePostList extends StatefulWidget {
     this.extendBodyHeight,
     required this.controller,
     this.refreshAtStart = true,
+    this.errors,
   });
 
   final VoidCallback? onLoadMore;
@@ -52,6 +54,8 @@ class MoebooruInfinitePostList extends StatefulWidget {
 
   final bool extendBody;
   final double? extendBodyHeight;
+
+  final BooruError? errors;
 
   final Widget Function(
     List<Post> selectedPosts,
@@ -193,7 +197,7 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
               itemBuilder: itemBuilder,
               settings: state.settings,
               refreshing: refreshing,
-              error: null, //FIXME: error
+              error: widget.errors,
               data: data,
             );
           },

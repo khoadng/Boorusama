@@ -4,8 +4,8 @@ import 'package:boorusama/core/domain/posts.dart';
 enum MoebooruTimePeriod { day, week, month, year }
 
 abstract class MoebooruPopularRepository {
-  Future<List<Post>> getPopularPostsRecent(MoebooruTimePeriod period);
-  Future<List<Post>> getPopularPostsByDay(DateTime dateTime);
-  Future<List<Post>> getPopularPostsByWeek(DateTime dateTime);
-  Future<List<Post>> getPopularPostsByMonth(DateTime dateTime);
+  PostsOrError getPopularPostsRecent(MoebooruTimePeriod period);
+  PostsOrError getPopularPostsByDay(DateTime dateTime);
+  PostsOrError getPopularPostsByWeek(DateTime dateTime);
+  PostsOrError getPopularPostsByMonth(DateTime dateTime);
 }
