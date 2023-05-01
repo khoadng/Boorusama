@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -32,33 +31,12 @@ class LatestView extends StatefulWidget {
 }
 
 class _LatestViewState extends State<LatestView> {
-  final AutoScrollController _autoScrollController = AutoScrollController();
-  final ValueNotifier<String> _selectedTag = ValueNotifier('');
-  final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
-  final CompositeSubscription _compositeSubscription = CompositeSubscription();
-
-  void _sendRefresh(String tag) {
-    _autoScrollController.jumpTo(0);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedTag.addListener(() => _selectedTagStream.add(_selectedTag.value));
-
-    _selectedTagStream
-        .debounceTime(const Duration(milliseconds: 250))
-        .distinct()
-        .listen((tag) {
-      _sendRefresh(tag);
-    }).addTo(_compositeSubscription);
-  }
+  final _autoScrollController = AutoScrollController();
+  final _selectedTag = ValueNotifier('');
 
   @override
   void dispose() {
     _autoScrollController.dispose();
-    _compositeSubscription.dispose();
-    _selectedTagStream.close();
     _selectedTag.dispose();
     super.dispose();
   }
@@ -87,6 +65,8 @@ class _LatestViewState extends State<LatestView> {
                   onSelected: (search) {
                     _selectedTag.value =
                         search.keyword == value ? '' : search.keyword;
+                    controller.refresh();
+                    _autoScrollController.jumpTo(0);
                   },
                 ),
               ),
