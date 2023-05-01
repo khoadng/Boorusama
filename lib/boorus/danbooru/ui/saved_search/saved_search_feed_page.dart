@@ -7,14 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';
@@ -28,35 +26,9 @@ class SavedSearchFeedPage extends StatefulWidget {
   State<SavedSearchFeedPage> createState() => _SavedSearchFeedPageState();
 }
 
-class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
-    with DanbooruPostTransformMixin, DanbooruPostServiceProviderMixin {
+class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
-  late final controller = PostGridController<DanbooruPost>(
-      fetcher: (page) => context
-          .read<DanbooruPostRepository>()
-          .getPosts(
-            savedSearches.value,
-            page,
-          )
-          .run()
-          .then((value) => value.fold(
-                (l) => <DanbooruPost>[],
-                (r) => r,
-              ))
-          .then(transform),
-      refresher: () => context
-          .read<DanbooruPostRepository>()
-          .getPosts(
-            savedSearches.value,
-            1,
-          )
-          .run()
-          .then((value) => value.fold(
-                (l) => <DanbooruPost>[],
-                (r) => r,
-              ))
-          .then(transform));
   final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
 
   @override
@@ -76,7 +48,6 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
   void dispose() {
     _compositeSubscription.dispose();
     _selectedSearchStream.close();
-    controller.dispose();
     super.dispose();
   }
 
@@ -94,44 +65,49 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage>
     BuildContext context,
     SavedSearchFeedState savedSearchState,
   ) {
-    return BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(
-      listenWhen: (previous, current) =>
-          previous.selectedSearch != current.selectedSearch,
-      listener: (context, state) {
-        savedSearches.value = state.selectedSearch.toQuery();
-        controller.refresh();
-      },
-      child: DanbooruInfinitePostList(
-        controller: controller,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            title: const Text('saved_search.saved_search_feed').tr(),
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            actions: [
-              IconButton(
-                onPressed: () => goToSavedSearchEditPage(context),
-                icon: const Icon(Icons.settings),
-              ),
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 16,
-              ),
-              height: 50,
-              child: _buildTags(
-                savedSearchState.savedSearches,
-                savedSearchState.selectedSearch,
-                savedSearchState.status,
+    return DanbooruPostScope(
+      fetcher: (page) => context
+          .read<DanbooruPostRepository>()
+          .getPosts(savedSearches.value, page),
+      builder: (context, controller, errors) =>
+          BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(
+        listener: (context, state) {
+          savedSearches.value = state.selectedSearch.toQuery();
+          controller.refresh();
+        },
+        child: DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: const Text('saved_search.saved_search_feed').tr(),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              actions: [
+                IconButton(
+                  onPressed: () => goToSavedSearchEditPage(context),
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 16,
+                ),
+                height: 50,
+                child: _buildTags(
+                  savedSearchState.savedSearches,
+                  savedSearchState.selectedSearch,
+                  savedSearchState.status,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
