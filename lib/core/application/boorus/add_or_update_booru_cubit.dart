@@ -15,8 +15,10 @@ class AddOrUpdateBooruCubit extends Cubit<AddOrUpdateBooruState> {
   AddOrUpdateBooruCubit({
     required this.booruFactory,
     BooruConfig? initialConfig,
+    bool unverifiedBooru = false,
   }) : super(initialConfig == null
             ? AddOrUpdateBooruState.initial(booruFactory)
+                .copyWith(unverifiedBooru: unverifiedBooru)
             : AddOrUpdateBooruState.fromConfig(
                 config: initialConfig,
                 factory: booruFactory,
@@ -33,13 +35,22 @@ class AddOrUpdateBooruCubit extends Cubit<AddOrUpdateBooruState> {
   }
 
   void changeUrl(String newUrl) {
-    final booruType = getBooruType(newUrl, booruFactory.booruData);
-    final booru = booruFactory.from(type: booruType);
-
     emit(state.copyWith(
       url: newUrl,
+    ));
+  }
+
+  void changeBooru(BooruType booruType) {
+    final booru = booruFactory.from(type: booruType);
+    emit(state.copyWith(
       selectedBooru: booru,
     ));
+  }
+
+  void changeBooruEngine(BooruEngine? engine) {
+    if (engine == null) return;
+    final booru = booruEngineToBooruType(engine);
+    changeBooru(booru);
   }
 
   void changeRatingFilter(BooruConfigRatingFilter? ratingFilter) {
@@ -86,4 +97,7 @@ mixin AddOrUpdateBooruCubitMixin<T extends StatefulWidget> on State<T> {
 
   void changeRatingFilter(BooruConfigRatingFilter? ratingFilter) =>
       addOrUpdateBooruCubit.changeRatingFilter(ratingFilter);
+
+  void changeBooruEngine(BooruEngine? engine) =>
+      addOrUpdateBooruCubit.changeBooruEngine(engine);
 }

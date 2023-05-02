@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/infra/utils.dart';
 
 class BooruConfig extends Equatable {
   const BooruConfig({
@@ -97,4 +98,11 @@ extension BooruConfigNullX on BooruConfig? {
 extension BooruConfigX on BooruConfig {
   Booru createBooruFrom(BooruFactory factory) =>
       factory.from(type: intToBooruType(booruId));
+
+  bool isUnverified(Booru booru) => booru.url != url;
+
+  String getIconUrl({
+    int? size,
+  }) =>
+      getFavicon(url, size: size);
 }

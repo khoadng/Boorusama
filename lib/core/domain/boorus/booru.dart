@@ -89,6 +89,12 @@ enum BooruType {
   sakugabooru,
 }
 
+enum BooruEngine {
+  danbooru,
+  gelbooru,
+  moebooru,
+}
+
 enum LoginType {
   loginAndApiKey,
   loginAndPasswordHashed,
@@ -224,4 +230,15 @@ BooruType stringToBooruType(String value) {
 BooruType getBooruType(String url, List<BooruData> booruDataList) {
   return stringToBooruType(
       booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
+}
+
+BooruType booruEngineToBooruType(BooruEngine engine) {
+  switch (engine) {
+    case BooruEngine.danbooru:
+      return BooruType.danbooru;
+    case BooruEngine.gelbooru:
+      return BooruType.gelbooru;
+    case BooruEngine.moebooru:
+      return BooruType.yandere;
+  }
 }

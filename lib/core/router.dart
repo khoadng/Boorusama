@@ -449,8 +449,10 @@ void goToQuickSearchPage(
               case BooruType.aibooru:
                 return DanbooruProvider.create(
                   context,
-                  booru: state.booru!,
-                  sourceComposer: DanbooruImageSourceComposer(state.booru!),
+                  booruConfig: state.booruConfig!,
+                  sourceComposer: state.booruConfig!.isUnverified(state.booru!)
+                      ? UnknownImageSourceComposer()
+                      : DanbooruImageSourceComposer(),
                   builder: (dcontext) => isMobile
                       ? SimpleTagSearchView(
                           onSubmitted: onSubmitted,
@@ -479,7 +481,7 @@ void goToQuickSearchPage(
               case BooruType.gelbooru:
                 return GelbooruProvider.create(
                   context,
-                  booru: state.booru!,
+                  booruConfig: state.booruConfig!,
                   builder: (gcontext) => isMobile
                       ? SimpleTagSearchView(
                           onSubmitted: (_, text) =>
@@ -516,7 +518,7 @@ void goToQuickSearchPage(
               case BooruType.sakugabooru:
                 return MoebooruProvider.create(
                   context,
-                  booru: state.booru!,
+                  booruConfig: state.booruConfig!,
                   builder: (gcontext) => isMobile
                       ? SimpleTagSearchView(
                           onSubmitted: (_, text) =>
@@ -612,7 +614,7 @@ Future<void> goToBulkDownloadPage(
             case BooruType.sakugabooru:
               return MoebooruProvider.create(
                 context,
-                booru: state.booru!,
+                booruConfig: state.booruConfig!,
                 builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(
@@ -631,8 +633,10 @@ Future<void> goToBulkDownloadPage(
             case BooruType.aibooru:
               return DanbooruProvider.create(
                 context,
-                booru: state.booru!,
-                sourceComposer: DanbooruImageSourceComposer(state.booru!),
+                booruConfig: state.booruConfig!,
+                sourceComposer: state.booruConfig!.isUnverified(state.booru!)
+                    ? UnknownImageSourceComposer()
+                    : DanbooruImageSourceComposer(),
                 builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(
@@ -648,7 +652,7 @@ Future<void> goToBulkDownloadPage(
             case BooruType.gelbooru:
               return GelbooruProvider.create(
                 context,
-                booru: state.booru!,
+                booruConfig: state.booruConfig!,
                 builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<BulkDownloadManagerBloc<Post>>(

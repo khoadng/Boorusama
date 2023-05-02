@@ -52,20 +52,28 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
               Container(
                 color:
                     Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-                child: DateTimeSelector(
-                  onDateChanged: (date) {
-                    selectedDate.value = date;
-                    controller.refresh();
-                  },
-                  date: selectedDate.value,
-                  scale: _convertToTimeScale(selectedPopular.value),
-                  backgroundColor: Colors.transparent,
+                child: ValueListenableBuilder<DateTime>(
+                  valueListenable: selectedDate,
+                  builder: (context, d, __) =>
+                      ValueListenableBuilder<MoebooruPopularType>(
+                    valueListenable: selectedPopular,
+                    builder: (_, type, __) => DateTimeSelector(
+                      onDateChanged: (date) {
+                        selectedDate.value = date;
+                        controller.refresh();
+                      },
+                      date: d,
+                      scale: _convertToTimeScale(type),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
                 ),
               ),
               TimeScaleToggleSwitch(
                 onToggle: (category) {
                   selectedPopular.value =
                       _convertToMoebooruPopularType(category);
+                  controller.refresh();
                 },
               ),
               const SizedBox(height: 12),

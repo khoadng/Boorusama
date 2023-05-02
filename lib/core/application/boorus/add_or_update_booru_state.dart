@@ -15,6 +15,7 @@ class AddOrUpdateBooruState extends Equatable {
   final BooruConfigRatingFilter ratingFilter;
   final bool revealKey;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
+  final bool unverifiedBooru;
 
   const AddOrUpdateBooruState({
     required this.login,
@@ -25,6 +26,7 @@ class AddOrUpdateBooruState extends Equatable {
     required this.ratingFilter,
     required this.revealKey,
     required this.deletedItemBehavior,
+    required this.unverifiedBooru,
   });
 
   factory AddOrUpdateBooruState.initial(BooruFactory factory) =>
@@ -37,6 +39,7 @@ class AddOrUpdateBooruState extends Equatable {
         ratingFilter: BooruConfigRatingFilter.hideNSFW,
         revealKey: false,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
+        unverifiedBooru: false,
       );
 
   factory AddOrUpdateBooruState.fromConfig({
@@ -52,6 +55,7 @@ class AddOrUpdateBooruState extends Equatable {
         ratingFilter: config.ratingFilter,
         revealKey: false,
         deletedItemBehavior: config.deletedItemBehavior,
+        unverifiedBooru: false,
       );
 
   AddOrUpdateBooruState copyWith({
@@ -63,6 +67,7 @@ class AddOrUpdateBooruState extends Equatable {
     BooruConfigRatingFilter? ratingFilter,
     bool? revealKey,
     BooruConfigDeletedItemBehavior? deletedItemBehavior,
+    bool? unverifiedBooru,
   }) =>
       AddOrUpdateBooruState(
         login: login ?? this.login,
@@ -73,6 +78,7 @@ class AddOrUpdateBooruState extends Equatable {
         ratingFilter: ratingFilter ?? this.ratingFilter,
         revealKey: revealKey ?? this.revealKey,
         deletedItemBehavior: deletedItemBehavior ?? this.deletedItemBehavior,
+        unverifiedBooru: unverifiedBooru ?? this.unverifiedBooru,
       );
 
   @override
@@ -85,6 +91,7 @@ class AddOrUpdateBooruState extends Equatable {
         ratingFilter,
         revealKey,
         deletedItemBehavior,
+        unverifiedBooru,
       ];
 }
 

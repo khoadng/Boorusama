@@ -18,7 +18,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   static String defaultValue(BooruFactory factory) =>
       jsonEncode(BooruConfigData.anonymous(
         booru: BooruType.safebooru,
-        name: 'My config',
+        name: 'Default booru',
         filter: BooruConfigRatingFilter.none,
         url: factory.from(type: BooruType.safebooru).url,
       ));

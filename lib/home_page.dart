@@ -78,13 +78,15 @@ class _HomePageState extends State<HomePage> {
             case BooruType.testbooru:
               return DanbooruProvider.create(
                 context,
-                booru: booru,
-                sourceComposer: DanbooruImageSourceComposer(booru),
+                booruConfig: config!,
+                sourceComposer: config.isUnverified(booru)
+                    ? UnknownImageSourceComposer()
+                    : DanbooruImageSourceComposer(),
                 builder: (context) {
                   return CustomContextMenuOverlay(
                     child: DanbooruHomePage(
                       onMenuTap: _onMenuTap,
-                      key: ValueKey(config?.id),
+                      key: ValueKey(config.id),
                     ),
                   );
                 },
@@ -95,7 +97,7 @@ class _HomePageState extends State<HomePage> {
               return GelbooruProvider.create(
                 context,
                 key: gkey,
-                booru: booru,
+                booruConfig: config!,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: GelbooruHomePage(
                     key: gkey,
@@ -111,7 +113,7 @@ class _HomePageState extends State<HomePage> {
               return MoebooruProvider.create(
                 context,
                 key: gkey,
-                booru: booru,
+                booruConfig: config!,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: MoebooruHomePage(
                     key: gkey,

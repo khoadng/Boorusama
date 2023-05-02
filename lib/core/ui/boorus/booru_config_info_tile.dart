@@ -33,7 +33,7 @@ class BooruConfigInfoTile extends StatelessWidget {
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BooruLogo(booru: booru),
+          BooruLogo(booru: config),
         ],
       ),
       selected: selected ?? false,

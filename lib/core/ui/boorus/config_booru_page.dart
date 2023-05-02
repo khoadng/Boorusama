@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 
 class ConfigBooruPage extends StatefulWidget {
   const ConfigBooruPage({
@@ -28,18 +30,23 @@ class ConfigBooruPage extends StatefulWidget {
     BuildContext context, {
     required BooruFactory booruFactory,
     BooruConfig? initialConfig,
+    required BooruType booru,
     required String url,
     bool setCurrentBooruOnSubmit = false,
+    bool unverifiedBooru = false,
   }) {
     final cubit = AddOrUpdateBooruCubit(
       booruFactory: booruFactory,
       initialConfig: initialConfig,
+      unverifiedBooru: unverifiedBooru,
     );
     final bloc = context.read<ManageBooruBloc>();
     final settings = context.read<SettingsCubit>().state.settings;
     final currentBooruBloc = context.read<CurrentBooruBloc>();
     return BlocProvider(
-      create: (context) => cubit..changeUrl(url),
+      create: (context) => cubit
+        ..changeBooru(booru)
+        ..changeUrl(url),
       child: ConfigBooruPage(
         onSubmit: (newConfig) {
           bloc.add(
@@ -90,10 +97,11 @@ class _AddBooruPageState extends State<ConfigBooruPage>
   final nameController = TextEditingController();
   final urlController = TextEditingController();
 
+  final _engine = ValueNotifier<BooruEngine?>(null);
+
   @override
   void initState() {
     super.initState();
-    //FIXME: handle url
     urlController.text = widget.url;
 
     if (widget.initial != null) {
@@ -159,16 +167,61 @@ class _AddBooruPageState extends State<ConfigBooruPage>
                       .copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
-              Card(
-                  child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(selectedBooru.booruType.stringify()),
-              )),
+              BlocSelector<AddOrUpdateBooruCubit, AddOrUpdateBooruState, bool>(
+                selector: (state) => state.unverifiedBooru,
+                builder: (context, unverified) {
+                  return !unverified
+                      ? Card(
+                          child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(selectedBooru.booruType.stringify()),
+                        ))
+                      : WarningContainer(
+                          contentBuilder: (context) => const Text(
+                              'This booru is not offically supported yet. It probally won\'t work.'));
+                },
+              ),
               const SizedBox(height: 8),
               const Divider(
                 thickness: 2,
                 endIndent: 16,
                 indent: 16,
+              ),
+              BlocSelector<AddOrUpdateBooruCubit, AddOrUpdateBooruState, bool>(
+                selector: (state) => state.unverifiedBooru,
+                builder: (context, unverified) {
+                  return unverified
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
+                          ),
+                          child: ListTile(
+                            title: const Text('Booru engine (*)'),
+                            trailing: ValueListenableBuilder<BooruEngine?>(
+                              valueListenable: _engine,
+                              builder: (_, engine, __) =>
+                                  OptionDropDownButton<BooruEngine?>(
+                                value: engine,
+                                onChanged: (value) {
+                                  _engine.value = value;
+                                  context
+                                      .read<AddOrUpdateBooruCubit>()
+                                      .changeBooruEngine(value);
+                                },
+                                items: BooruEngine.values
+                                    .map((value) =>
+                                        DropdownMenuItem<BooruEngine>(
+                                          value: value,
+                                          child: Text(value.name.sentenceCase),
+                                        ))
+                                    .toList(),
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox();
+                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -178,7 +231,7 @@ class _AddBooruPageState extends State<ConfigBooruPage>
                 child: LoginField(
                   validator: (p0) => null,
                   controller: nameController,
-                  labelText: 'Name',
+                  labelText: 'Config Name (*)',
                   onChanged: changeConfigName,
                 ),
               ),

@@ -64,6 +64,9 @@ class ManageBooruPage extends StatelessWidget {
                       booruFactory: context.read<BooruFactory>(),
                       initialConfig: config,
                       url: config.url,
+                      unverifiedBooru:
+                          intToBooruType(config.booruId) == BooruType.unknown,
+                      booru: intToBooruType(config.booruId),
                     ),
                   ),
                 );

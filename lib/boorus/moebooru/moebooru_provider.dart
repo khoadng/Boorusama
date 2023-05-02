@@ -41,11 +41,11 @@ class MoebooruProvider extends StatelessWidget {
 
   factory MoebooruProvider.create(
     BuildContext context, {
-    required Booru booru,
+    required BooruConfig booruConfig,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = context.read<DioProvider>().getDio(booru.url);
+    final dio = context.read<DioProvider>().getDio(booruConfig.url);
     final api = MoebooruApi(dio);
 
     final settingsRepo = context.read<SettingsRepository>();
@@ -57,7 +57,7 @@ class MoebooruProvider extends StatelessWidget {
         context.read<CurrentBooruConfigRepository>();
     final authenticationCubit = AuthenticationCubit(
       currentBooruConfigRepository: currentBooruConfigRepository,
-      booru: booru,
+      booruConfig: booruConfig,
     );
     final tagSummaryRepository = MoebooruTagSummaryRepository(api);
     final autocompleteRepo = MoebooruAutocompleteRepository(

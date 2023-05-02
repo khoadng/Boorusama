@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';
@@ -24,8 +24,6 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
   @override
   Widget build(BuildContext context) {
-    final factory = context.read<BooruFactory>();
-
     return WillPopScope(
       onWillPop: () async {
         if (edit) {
@@ -105,10 +103,12 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                               Positioned(
                                 top: 5,
                                 left: 5,
-                                child: BooruLogo(
-                                    booru: factory.from(
-                                        type:
-                                            intToBooruType(bookmark.booruId))),
+                                child: BlocBuilder<CurrentBooruBloc,
+                                    CurrentBooruState>(
+                                  builder: (context, state) {
+                                    return BooruLogo(booru: state.booruConfig!);
+                                  },
+                                ),
                               ),
                               if (edit)
                                 Positioned(

@@ -94,12 +94,18 @@ class _AddBooruPageState extends State<AddBooruPage> {
                     (e) => const SizedBox.shrink(),
                     (uri) => ElevatedButton(
                         onPressed: () {
+                          final booruFactoru = context.read<BooruFactory>();
+                          final booruType = getBooruType(
+                              uri.toString(), booruFactoru.booruData);
                           Navigator.of(context).pop();
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => ConfigBooruPage.of(
                                     context,
-                                    booruFactory: context.read<BooruFactory>(),
+                                    booruFactory: booruFactoru,
                                     url: uri.toString(),
+                                    booru: booruType,
+                                    unverifiedBooru:
+                                        booruType == BooruType.unknown,
                                     setCurrentBooruOnSubmit:
                                         widget.setCurrentBooruOnSubmit,
                                   )));

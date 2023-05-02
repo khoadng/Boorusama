@@ -84,13 +84,11 @@ class DanbooruProvider extends StatelessWidget {
     required this.commentRepo,
     required this.popularSearchRepo,
     required this.favoriteTagsRepo,
-    required this.booru,
     required this.tagInfo,
     required this.trendingTagCubit,
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
-    // required this.exploreBloc,
     required this.currentUserBloc,
     required this.authenticationCubit,
     required this.poolOverviewBloc,
@@ -110,11 +108,11 @@ class DanbooruProvider extends StatelessWidget {
 
   factory DanbooruProvider.create(
     BuildContext context, {
-    required Booru booru,
+    required BooruConfig booruConfig,
     required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
-    final dio = context.read<DioProvider>().getDio(booru.url);
+    final dio = context.read<DioProvider>().getDio(booruConfig.url);
     final tagInfo = context.read<TagInfo>();
     final api = DanbooruApi(dio);
 
@@ -199,7 +197,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final poolDescriptionRepo = PoolDescriptionRepositoryApi(
       dio: dio,
-      endpoint: booru.url,
+      endpoint: booruConfig.url,
     );
 
     final postVoteRepo = PostVoteApiRepositoryApi(
@@ -225,7 +223,9 @@ class DanbooruProvider extends StatelessWidget {
 
     final trendingTagCubit = TrendingTagCubit(
       popularSearchRepo,
-      booru.booruType == BooruType.safebooru ? tagInfo.r18Tags.toSet() : {},
+      intToBooruType(booruConfig.id) == BooruType.safebooru
+          ? tagInfo.r18Tags.toSet()
+          : {},
     )..getTags();
 
     final blacklistedTagsBloc = BlacklistedTagsBloc(
@@ -233,22 +233,6 @@ class DanbooruProvider extends StatelessWidget {
       blacklistedTagsRepository: blacklistedTagRepo,
       booruUserIdentityProvider: booruUserIdentityProvider,
     )..add(const BlacklistedTagRequested());
-
-    // PostBloc create() => PostBloc(
-    //       postRepository: postRepo,
-    //       blacklistedTagsRepository: blacklistedTagRepo,
-    //       favoritePostRepository: favoriteRepo,
-    //       postVoteRepository: postVoteRepo,
-    //       poolRepository: poolRepo,
-    //       currentBooruConfigRepository: currentBooruConfigRepo,
-    //     );
-
-    // final exploreBloc = ExploreBloc(
-    //   exploreRepository: exploreRepo,
-    //   popular: create(),
-    //   hot: create(),
-    //   mostViewed: create(),
-    // )..add(const ExploreFetched());
 
     final currentUserBloc = CurrentUserBloc(
       userRepository: userRepo,
@@ -258,7 +242,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final authenticationCubit = AuthenticationCubit(
       currentBooruConfigRepository: currentBooruConfigRepo,
-      booru: booru,
+      booruConfig: booruConfig,
     )..logIn();
 
     final poolOverviewBloc = PoolOverviewBloc()
@@ -348,12 +332,10 @@ class DanbooruProvider extends StatelessWidget {
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
-      booru: booru,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
-      // exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
       authenticationCubit: authenticationCubit,
       poolOverviewBloc: poolOverviewBloc,
@@ -456,12 +438,10 @@ class DanbooruProvider extends StatelessWidget {
       popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
-      booru: booru,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
-      // exploreBloc: exploreBloc,
       currentUserBloc: currentUserBloc,
       authenticationCubit: authenticationCubit,
       poolOverviewBloc: poolOverviewBloc,
@@ -515,7 +495,6 @@ class DanbooruProvider extends StatelessWidget {
 
   final TrendingTagCubit trendingTagCubit;
   final BlacklistedTagsBloc blacklistedTagsBloc;
-  // final ExploreBloc exploreBloc;
   final CurrentUserBloc currentUserBloc;
   final AuthenticationCubit authenticationCubit;
   final PoolOverviewBloc poolOverviewBloc;
@@ -531,7 +510,6 @@ class DanbooruProvider extends StatelessWidget {
   final PostVoteCubit postVoteCubit;
   final CommentsCubit commentsCubit;
 
-  final Booru booru;
   final TagInfo tagInfo;
 
   @override
@@ -581,7 +559,6 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: artistBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
-          // BlocProvider.value(value: exploreBloc),
           BlocProvider.value(value: currentUserBloc),
           BlocProvider.value(value: postVoteCubit),
           BlocProvider.value(value: commentsCubit),

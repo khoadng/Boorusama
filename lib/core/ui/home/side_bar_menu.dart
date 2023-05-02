@@ -49,11 +49,13 @@ class SideBarMenu extends StatelessWidget {
                         ? ListTile(
                             horizontalTitleGap: 0,
                             minLeadingWidth: 28,
-                            leading: BooruLogo(booru: state.booru!),
+                            leading: BooruLogo(booru: state.booruConfig!),
                             title: Wrap(
                               children: [
                                 Text(
-                                  state.booru!.booruType.stringify(),
+                                  state.booruConfig!.isUnverified(state.booru!)
+                                      ? state.booruConfig!.url
+                                      : state.booru!.booruType.stringify(),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 18,

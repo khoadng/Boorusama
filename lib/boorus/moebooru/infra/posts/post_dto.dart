@@ -60,7 +60,7 @@ class PostDto extends Equatable {
       author: json['author'],
       change: json['change'],
       source: json['source'],
-      score: json['score'],
+      score: json['score'] is int ? json['score'] : int.tryParse(json['score']),
       md5: json['md5'],
       fileSize: json['file_size'],
       fileExt: json['file_ext'],

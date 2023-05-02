@@ -1,12 +1,9 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 
 class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
-  DanbooruImageSourceComposer(this.booru);
-
-  final Booru booru;
+  DanbooruImageSourceComposer();
 
   @override
   ImageSource compose(PostDto post) {
@@ -28,5 +25,22 @@ class DanbooruImageSourceComposer implements ImageSourceComposer<PostDto> {
     return preview.isNotEmpty
         ? preview.replaceAll('180x180', '720x720').replaceAll('.jpg', '.webp')
         : sample;
+  }
+}
+
+class UnknownImageSourceComposer implements ImageSourceComposer<PostDto> {
+  UnknownImageSourceComposer();
+
+  @override
+  ImageSource compose(PostDto post) {
+    return ImageSource(
+      thumbnail: post.previewFileUrl ?? '',
+      sample: _getSample(post),
+      original: post.fileUrl ?? '',
+    );
+  }
+
+  String _getSample(PostDto post) {
+    return post.largeFileUrl ?? '';
   }
 }
