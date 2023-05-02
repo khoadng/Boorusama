@@ -38,21 +38,6 @@ class SearchWithRawTagRequested extends SearchEvent {
   List<Object?> get props => [tag];
 }
 
-class SearchNoData extends SearchEvent {
-  const SearchNoData();
-  @override
-  List<Object?> get props => [];
-}
-
-class SearchError extends SearchEvent {
-  const SearchError(this.message);
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
-}
-
 class SearchGoBackToSearchOptionsRequested extends SearchEvent {
   const SearchGoBackToSearchOptionsRequested();
   @override

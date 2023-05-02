@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -19,8 +18,6 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
-import 'package:boorusama/core/ui/search/empty_view.dart';
-import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list.dart';
@@ -77,17 +74,6 @@ class _SearchPageState extends State<GelbooruSearchPage> {
         ),
       ),
     );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView();
-
-  @override
-  Widget build(BuildContext context) {
-    final error = context.select((SearchBloc bloc) => bloc.state.error);
-
-    return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
   }
 }
 
@@ -272,38 +258,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
                     queryEditingController: widget.queryEditingController,
                   ),
                 ),
-              ],
-            ),
-          ),
-        );
-      case DisplayState.error:
-        return Scaffold(
-          appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
-          ),
-          body: SafeArea(
-            child: Column(
-              children: const [
-                _SelectedTagList(),
-                _Divider(),
-                Expanded(child: _ErrorView()),
-              ],
-            ),
-          ),
-        );
-      case DisplayState.noResult:
-        return Scaffold(
-          appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                const _SelectedTagList(),
-                const _Divider(),
-                Expanded(child: EmptyView(text: 'search.no_result'.tr())),
               ],
             ),
           ),

@@ -19,8 +19,6 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/search/empty_view.dart';
-import 'package:boorusama/core/ui/search/error_view.dart';
 import 'package:boorusama/core/ui/search/full_history_view.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
@@ -233,10 +231,6 @@ class _LargeLayout extends StatelessWidget {
                                 backgroundColor:
                                     Theme.of(context).colorScheme.background,
                               );
-                            case DisplayState.noResult:
-                              return EmptyView(text: 'search.no_result'.tr());
-                            case DisplayState.error:
-                              return const _ErrorView();
                           }
                         },
                       ),
@@ -268,17 +262,6 @@ class _SearchButton extends StatelessWidget {
         icon: const Icon(Icons.search),
       ),
     );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView();
-
-  @override
-  Widget build(BuildContext context) {
-    final error = context.select((SearchBloc bloc) => bloc.state.error);
-
-    return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
   }
 }
 

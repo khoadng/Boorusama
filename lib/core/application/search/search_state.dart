@@ -4,8 +4,6 @@ enum DisplayState {
   options,
   suggestion,
   result,
-  noResult,
-  error,
 }
 
 @immutable

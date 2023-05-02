@@ -42,6 +42,7 @@ class DanbooruSearchBloc extends SearchBloc {
 
   @override
   void onSearch(String query) {
+    //FIXME: remove a tag when in result state won't refresh the post list
     relatedTagBloc.add(RelatedTagRequested(query: query));
     // postCubit.setTags(query);
     // postCubit.refresh();
@@ -50,23 +51,4 @@ class DanbooruSearchBloc extends SearchBloc {
   @override
   Future<int?> fetchPostCount(List<String> tags) =>
       postCountRepository.count(tags);
-
-  @override
-  void onInit() {
-    // postCubit.stream
-    //     .map((event) =>
-    //         event.data.isEmpty && !event.refreshing && !event.hasMore)
-    //     .distinct()
-    //     .where((empty) => empty)
-    //     .listen((event) => add(const SearchNoData()))
-    //     .addTo(compositeSubscription);
-
-    // postCubit.stream
-    //     .map((event) => event.error)
-    //     .distinct()
-    //     .where((error) => error != null)
-    //     .listen((error) => add(SearchError(translateBooruError(error!))))
-    //     .addTo(compositeSubscription);
-    //FIXME: this is a hack to make sure that the postCubit is initialized
-  }
 }

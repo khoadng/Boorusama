@@ -142,17 +142,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
     });
 
-    on<SearchNoData>((event, emit) {
-      emit(state.copyWith(displayState: DisplayState.noResult));
-    });
-
-    on<SearchError>((event, emit) {
-      emit(state.copyWith(
-        displayState: DisplayState.error,
-        error: () => event.message,
-      ));
-    });
-
     on<_SearchRequested>((event, emit) async {
       searchHistoryBloc.add(sh.SearchHistoryAdded(event.query));
 

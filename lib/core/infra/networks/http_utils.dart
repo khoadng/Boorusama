@@ -15,12 +15,12 @@ TaskEither<BooruError, HttpResponse<dynamic>> tryParseResponse({
       () => fetcher(),
       (error, stackTrace) => error is DioError
           ? BooruError(
-              error: error.response
-                  .toEither(
-                      () => AppError(type: AppErrorType.cannotReachServer))
-                  .map((response) => ServerError(
-                        httpStatusCode: response.statusCode,
-                      )))
+              error: error.response.toOption().fold(
+                    () => AppError(type: AppErrorType.cannotReachServer),
+                    (response) => ServerError(
+                      httpStatusCode: response.statusCode,
+                    ),
+                  ))
           : BooruError(
               error: AppError(type: AppErrorType.loadDataFromServerFailed)),
     );
