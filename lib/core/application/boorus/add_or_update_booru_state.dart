@@ -108,8 +108,12 @@ extension AddOrUpdateBooruStateExtensions on AddOrUpdateBooruState {
   bool supportRatingFilter() => selectedBooru.booruType != BooruType.safebooru;
   bool supportHideDeleted() => selectedBooru.booruType != BooruType.gelbooru;
 
+  bool _shouldGenetateHashedPassword() =>
+      selectedBooru.loginType == LoginType.loginAndPasswordHashed &&
+      apiKey.isNotEmpty;
+
   AddNewBooruConfig createNewBooruConfig(BooruFactory booruFactory) {
-    final key = selectedBooru.loginType == LoginType.loginAndPasswordHashed
+    final key = _shouldGenetateHashedPassword()
         ? hashBooruPasswordSHA1(
             booru: selectedBooru,
             booruFactory: booruFactory,

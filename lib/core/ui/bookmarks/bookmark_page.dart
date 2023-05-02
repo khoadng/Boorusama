@@ -74,6 +74,12 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
               case BookmarkStatus.loading:
                 return const Center(child: CircularProgressIndicator());
               case BookmarkStatus.success:
+                if (state.bookmarks.isEmpty) {
+                  return const Center(
+                    child: Text('No bookmarks'),
+                  );
+                }
+
                 return CustomScrollView(
                   slivers: [
                     SliverMasonryGrid.count(

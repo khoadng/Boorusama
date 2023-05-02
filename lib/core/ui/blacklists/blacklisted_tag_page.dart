@@ -37,6 +37,11 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
               child: CircularProgressIndicator(),
             );
           } else if (state is BlacklistLoaded) {
+            if (state.tags.isEmpty) {
+              return const Center(
+                child: Text('No blacklisted tags'),
+              );
+            }
             return ListView.builder(
               itemCount: state.tags.length,
               itemBuilder: (context, index) {
