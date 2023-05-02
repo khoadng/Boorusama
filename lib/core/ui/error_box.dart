@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:lottie/lottie.dart';
 
 class ErrorBox extends StatelessWidget {
   const ErrorBox({
@@ -11,36 +12,30 @@ class ErrorBox extends StatelessWidget {
     this.child,
   });
 
-  factory ErrorBox.retryable({
-    required void Function() onRetry,
-  }) =>
-      ErrorBox(
-        child: ElevatedButton.icon(
-          onPressed: onRetry,
-          icon: const Icon(Icons.refresh),
-          label: const Text('Refresh'),
-        ),
-      );
-
   final Widget? child;
   final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 2,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 50),
+        Lottie.asset(
+          'assets/animations/server-error.json',
+          width: MediaQuery.of(context).size.width,
+          height: 400,
+          fit: BoxFit.contain,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
             errorMessage ?? 'generic.errors.unknown',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ).tr(),
-          const SizedBox(height: 5),
-          child ?? const SizedBox.shrink(),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

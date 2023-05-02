@@ -21,28 +21,46 @@ class AppError extends Error with EquatableMixin {
   final AppErrorType type;
 
   void when({
+    void Function()? failedToLoadBooruConfig,
+    void Function()? booruConfigNotFound,
     void Function()? cannotReachServer,
     void Function()? failedToParseJSON,
+    void Function()? loadDataFromServerFailed,
     void Function()? unknown,
   }) {
-    if (type == AppErrorType.cannotReachServer) {
+    if (type == AppErrorType.failedToLoadBooruConfig) {
+      failedToLoadBooruConfig?.call();
+    } else if (type == AppErrorType.booruConfigNotFound) {
+      booruConfigNotFound?.call();
+    } else if (type == AppErrorType.cannotReachServer) {
       cannotReachServer?.call();
     } else if (type == AppErrorType.failedToParseJSON) {
       failedToParseJSON?.call();
+    } else if (type == AppErrorType.loadDataFromServerFailed) {
+      loadDataFromServerFailed?.call();
     } else {
       unknown?.call();
     }
   }
 
   T? mapWhen<T>({
+    T Function()? failedToLoadBooruConfig,
+    T Function()? booruConfigNotFound,
     T Function()? cannotReachServer,
     T Function()? failedToParseJSON,
+    T Function()? loadDataFromServerFailed,
     T Function()? unknown,
   }) {
-    if (type == AppErrorType.cannotReachServer) {
+    if (type == AppErrorType.failedToLoadBooruConfig) {
+      return failedToLoadBooruConfig?.call();
+    } else if (type == AppErrorType.booruConfigNotFound) {
+      return booruConfigNotFound?.call();
+    } else if (type == AppErrorType.cannotReachServer) {
       return cannotReachServer?.call();
     } else if (type == AppErrorType.failedToParseJSON) {
       return failedToParseJSON?.call();
+    } else if (type == AppErrorType.loadDataFromServerFailed) {
+      return loadDataFromServerFailed?.call();
     } else {
       return unknown?.call();
     }

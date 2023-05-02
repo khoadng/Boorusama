@@ -9,6 +9,10 @@ String translateBooruError(BooruError error) =>
                 'Cannot reach server, please check your connection',
             failedToParseJSON: () =>
                 'Failed to parse data, please report this issue to the developer',
+            failedToLoadBooruConfig: () => 'Failed to load booru config',
+            loadDataFromServerFailed: () =>
+                'Failed to load data from server, please try again later',
+            booruConfigNotFound: () => 'Booru config not found',
             unknown: () => 'generic.errors.unknown',
           ) ??
           'generic.errors.unknown',
