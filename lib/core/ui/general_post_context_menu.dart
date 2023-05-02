@@ -47,7 +47,7 @@ class GeneralPostContextMenu extends StatelessWidget {
           ),
           ContextMenuButtonConfig(
             'Add to Bookmark',
-            onPressed: () => context.read<BookmarkCubit>().addBookmark(
+            onPressed: () => context.read<BookmarkCubit>().addBookmarkWithToast(
                   post.sampleImageUrl,
                   booru!,
                   post,

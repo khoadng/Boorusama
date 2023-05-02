@@ -44,7 +44,7 @@ class GelbooruMoreActionButton extends StatelessWidget {
                   download(post);
                   break;
                 case 'add_to_bookmark':
-                  context.read<BookmarkCubit>().addBookmark(
+                  context.read<BookmarkCubit>().addBookmarkWithToast(
                         post.sampleImageUrl,
                         booru!,
                         post,

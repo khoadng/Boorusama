@@ -124,7 +124,7 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                                     icon: const Icon(Icons.close),
                                     onPressed: () => context
                                         .read<BookmarkCubit>()
-                                        .removeBookmark(bookmark),
+                                        .removeBookmarkWithToast(bookmark),
                                   ),
                                 ),
                             ],

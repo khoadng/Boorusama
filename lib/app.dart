@@ -20,6 +20,7 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/home_page.dart';
+import 'package:oktoast/oktoast.dart';
 import 'boorus/danbooru/router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -42,60 +43,62 @@ class _AppState extends State<App> {
     return Portal(
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
-            builder: (context, child) => ConditionalParentWidget(
-              condition: isDesktopPlatform(),
-              conditionalBuilder: (child) => Column(
-                children: [
-                  WindowTitleBarBox(
-                    child: Row(
-                      children: [
-                        Expanded(child: MoveWindow()),
-                        const WindowButtons(),
-                      ],
+          return OKToast(
+            child: MaterialApp(
+              builder: (context, child) => ConditionalParentWidget(
+                condition: isDesktopPlatform(),
+                conditionalBuilder: (child) => Column(
+                  children: [
+                    WindowTitleBarBox(
+                      child: Row(
+                        children: [
+                          Expanded(child: MoveWindow()),
+                          const WindowButtons(),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: child,
-                  ),
-                ],
+                    Expanded(
+                      child: child,
+                    ),
+                  ],
+                ),
+                child: ScrollConfiguration(
+                  behavior: AppScrollBehavior(),
+                  child: child!,
+                ),
               ),
-              child: ScrollConfiguration(
-                behavior: AppScrollBehavior(),
-                child: child!,
-              ),
-            ),
-            theme: AppTheme.lightTheme,
-            darkTheme: state.theme == ThemeMode.amoledDark
-                ? AppTheme.darkAmoledTheme
-                : AppTheme.darkTheme,
-            themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            debugShowCheckedModeBanner: false,
-            title: context.read<AppInfoProvider>().appInfo.appName,
-            navigatorKey: navigatorKey,
-            navigatorObservers: isAnalyticsEnabled(widget.settings)
-                ? [
-                    getAnalyticsObserver(),
-                  ]
-                : [],
-            home: ConditionalParentWidget(
-              condition: canRate(),
-              conditionalBuilder: (child) =>
-                  createAppRatingWidget(child: child),
-              child: CallbackShortcuts(
-                bindings: {
-                  const SingleActivator(
-                    LogicalKeyboardKey.keyF,
-                    control: true,
-                  ): () => goToSearchPage(context),
-                },
-                child: const CustomContextMenuOverlay(
-                  child: Focus(
-                    autofocus: true,
-                    child: HomePage(),
+              theme: AppTheme.lightTheme,
+              darkTheme: state.theme == ThemeMode.amoledDark
+                  ? AppTheme.darkAmoledTheme
+                  : AppTheme.darkTheme,
+              themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              debugShowCheckedModeBanner: false,
+              title: context.read<AppInfoProvider>().appInfo.appName,
+              navigatorKey: navigatorKey,
+              navigatorObservers: isAnalyticsEnabled(widget.settings)
+                  ? [
+                      getAnalyticsObserver(),
+                    ]
+                  : [],
+              home: ConditionalParentWidget(
+                condition: canRate(),
+                conditionalBuilder: (child) =>
+                    createAppRatingWidget(child: child),
+                child: CallbackShortcuts(
+                  bindings: {
+                    const SingleActivator(
+                      LogicalKeyboardKey.keyF,
+                      control: true,
+                    ): () => goToSearchPage(context),
+                  },
+                  child: const CustomContextMenuOverlay(
+                    child: Focus(
+                      autofocus: true,
+                      child: HomePage(),
+                    ),
                   ),
                 ),
               ),

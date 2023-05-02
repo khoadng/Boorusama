@@ -18,6 +18,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
   final double width;
   @override
   final double height;
+  final String md5;
 
   bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
 
@@ -32,6 +33,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
     required this.sourceUrl,
     required this.width,
     required this.height,
+    required this.md5,
   });
 
   @override
@@ -46,6 +48,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
         sourceUrl,
         width,
         height,
+        md5,
       ];
 
   Bookmark copyWith({
@@ -59,6 +62,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
     String? sourceUrl,
     double? width,
     double? height,
+    String? md5,
   }) {
     return Bookmark(
       id: id ?? this.id,
@@ -71,6 +75,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
       sourceUrl: sourceUrl ?? this.sourceUrl,
       width: width ?? this.width,
       height: height ?? this.height,
+      md5: md5 ?? this.md5,
     );
   }
 }
