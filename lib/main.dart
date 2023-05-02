@@ -407,7 +407,7 @@ class DioProvider {
 
   final Directory dir;
   final UserAgentGenerator generator;
-  final LoggerService loggerService;
+  final l.LoggerService loggerService;
 
   Dio getDio(String baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }
