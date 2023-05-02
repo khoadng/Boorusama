@@ -43,36 +43,34 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: _selectedTag,
-      builder: (_, tags, __) => DanbooruPostScope(
-        fetcher: (page) =>
-            context.read<DanbooruPostRepository>().getPosts(tags, page),
-        builder: (context, controller, errors) => DanbooruInfinitePostList(
-          errors: errors,
-          controller: controller,
-          scrollController: _autoScrollController,
-          sliverHeaderBuilder: (context) => [
-            _AppBar(
-              onMenuTap: widget.onMenuTap,
-              primary: widget.useAppBarPadding,
-            ),
-            SliverToBoxAdapter(
-              child: ValueListenableBuilder<String>(
-                valueListenable: _selectedTag,
-                builder: (context, value, child) => _MostSearchTagSection(
-                  selected: value,
-                  onSelected: (search) {
-                    _selectedTag.value =
-                        search.keyword == value ? '' : search.keyword;
-                    controller.refresh();
-                    _autoScrollController.jumpTo(0);
-                  },
-                ),
+    return DanbooruPostScope(
+      fetcher: (page) => context
+          .read<DanbooruPostRepository>()
+          .getPosts(_selectedTag.value, page),
+      builder: (context, controller, errors) => DanbooruInfinitePostList(
+        errors: errors,
+        controller: controller,
+        scrollController: _autoScrollController,
+        sliverHeaderBuilder: (context) => [
+          _AppBar(
+            onMenuTap: widget.onMenuTap,
+            primary: widget.useAppBarPadding,
+          ),
+          SliverToBoxAdapter(
+            child: ValueListenableBuilder<String>(
+              valueListenable: _selectedTag,
+              builder: (context, value, child) => _MostSearchTagSection(
+                selected: value,
+                onSelected: (search) {
+                  _selectedTag.value =
+                      search.keyword == value ? '' : search.keyword;
+                  controller.refresh();
+                  _autoScrollController.jumpTo(0);
+                },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

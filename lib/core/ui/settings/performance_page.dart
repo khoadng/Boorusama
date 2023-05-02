@@ -3,10 +3,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -72,6 +74,18 @@ class _PerformancePageState extends State<PerformancePage> {
                   }).toList(),
                 ),
               ),
+            ),
+            BlocBuilder<CacheCubit, int>(
+              builder: (context, size) {
+                return ListTile(
+                  title: const Text('Cache Size'),
+                  subtitle: Text(filesize(size)),
+                  trailing: ElevatedButton(
+                    onPressed: () => context.read<CacheCubit>().clearAppCache(),
+                    child: const Text('Clear'),
+                  ),
+                );
+              },
             ),
           ],
         ),

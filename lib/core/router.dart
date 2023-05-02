@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
@@ -123,8 +124,13 @@ void goToSettingsDownload(BuildContext context, Widget oldWidget) {
   );
 }
 
-void goToSettingsPerformance(BuildContext context, Widget oldWidget) {
-  Navigator.of(context).push(
+Future<void> goToSettingsPerformance(
+  BuildContext context,
+  Widget oldWidget,
+) async {
+  final navigator = Navigator.of(context);
+  context.read<CacheCubit>().calculateCacheSize();
+  await navigator.push(
     ParallaxSlideInPageRoute(
       enterWidget: const PerformancePage(),
       oldWidget: oldWidget,

@@ -23,6 +23,7 @@ import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -351,6 +352,7 @@ void main() async {
                     bookmarkRepository: context.read<BookmarkRepository>())
                   ..getAllBookmarks(),
               ),
+              BlocProvider(create: (context) => CacheCubit()),
             ],
             child: MultiBlocListener(
               listeners: [
