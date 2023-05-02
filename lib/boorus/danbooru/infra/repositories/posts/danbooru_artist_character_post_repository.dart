@@ -25,15 +25,15 @@ class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
     return cache.get(name).toOption().fold(
           () => repository
               .getPosts(
-            tags,
-            page,
-            limit: limit,
-            includeInvalid: includeInvalid,
-          )
-              .map((data) {
-            cache.put(name, data);
-            return data;
-          }),
+                tags,
+                page,
+                limit: limit,
+                includeInvalid: includeInvalid,
+              )
+              .flatMap((r) => TaskEither(() async {
+                    await cache.put(name, r);
+                    return Either.of(r);
+                  })),
           (data) => TaskEither.right(data),
         );
   }

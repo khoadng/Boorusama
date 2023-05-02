@@ -98,13 +98,6 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
         context.select((AuthenticationCubit cubit) => cubit.state);
 
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.imageBorderRadius !=
-              current.settings.imageBorderRadius ||
-          previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing ||
-          previous.settings.imageQuality != current.settings.imageQuality ||
-          previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
         return BlocBuilder<FavoritePostCubit, FavoritePostState>(
           buildWhen: (previous, current) => current is FavoritePostListSuccess,

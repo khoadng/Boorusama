@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_arti
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/tags.dart';
 
 class TagDetailPage extends StatefulWidget {
@@ -65,6 +66,7 @@ class _TagDetailPageState extends State<TagDetailPage> {
                   },
                   icon: const Icon(Icons.download),
                 ),
+                const PostGridConfigIconButton(),
               ],
             ),
           if (widget.includeHeaders)

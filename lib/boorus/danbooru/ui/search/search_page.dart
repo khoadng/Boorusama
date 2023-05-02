@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/display.dart';
@@ -36,14 +37,10 @@ class SearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
-    this.autoFocusSearchBar = true,
-    required this.pagination,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
-  final bool autoFocusSearchBar;
-  final bool pagination;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -89,15 +86,11 @@ class _SearchPageState extends State<SearchPage> {
         child: Screen.of(context).size != ScreenSize.small
             ? _LargeLayout(
                 focus: focus,
-                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
-                pagination: widget.pagination,
               )
             : _SmallLayout(
                 focus: focus,
-                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
-                pagination: widget.pagination,
               ),
       ),
     );
@@ -108,14 +101,10 @@ class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     required this.focus,
     required this.queryEditingController,
-    this.autoFocus = true,
-    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
-  final bool autoFocus;
-  final bool pagination;
 
   @override
   Widget build(BuildContext context) {
@@ -173,9 +162,7 @@ class _LargeLayout extends StatelessWidget {
                       child: Text('Your result will appear here'),
                     );
                   case DisplayState.result:
-                    return ResultView(
-                      pagination: pagination,
-                    );
+                    return const ResultView();
                   case DisplayState.noResult:
                     return EmptyView(text: 'search.no_result'.tr());
                   case DisplayState.error:
@@ -310,12 +297,10 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
     this.focusNode,
-    this.autofocus = false,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
-  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -325,10 +310,14 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: _SearchBar(
-        autofocus: autofocus,
-        focusNode: focusNode,
-        queryEditingController: queryEditingController,
+      title: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          return _SearchBar(
+            autofocus: state.settings.autoFocusSearchBar,
+            focusNode: focusNode,
+            queryEditingController: queryEditingController,
+          );
+        },
       ),
     );
   }
@@ -341,14 +330,10 @@ class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
-    this.autoFocus = true,
-    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
-  final bool autoFocus;
-  final bool pagination;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -373,7 +358,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
-            autofocus: widget.autoFocus,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
@@ -396,7 +380,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
-            autofocus: true,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
@@ -448,7 +431,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
         );
       case DisplayState.result:
         return ResultView(
-          pagination: widget.pagination,
           scrollController: scrollController,
           headerBuilder: () => [
             SliverAppBar(

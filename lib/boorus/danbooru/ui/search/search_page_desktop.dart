@@ -39,12 +39,10 @@ class SearchPageDesktop extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
-    required this.pagination,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
-  final bool pagination;
 
   @override
   State<SearchPageDesktop> createState() => _SearchPageDesktopState();
@@ -98,7 +96,6 @@ class _SearchPageDesktopState extends State<SearchPageDesktop> {
         child: _LargeLayout(
           focus: focus,
           queryEditingController: queryEditingController,
-          pagination: widget.pagination,
         ),
       ),
     );
@@ -109,12 +106,10 @@ class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     required this.focus,
     required this.queryEditingController,
-    required this.pagination,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
-  final bool pagination;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +230,6 @@ class _LargeLayout extends StatelessWidget {
                             case DisplayState.suggestion:
                             case DisplayState.result:
                               return ResultView(
-                                pagination: pagination,
                                 backgroundColor:
                                     Theme.of(context).colorScheme.background,
                               );

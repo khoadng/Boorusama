@@ -10,12 +10,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
@@ -33,12 +35,10 @@ class GelbooruSearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
-    this.autoFocusSearchBar = true,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
-  final bool autoFocusSearchBar;
 
   @override
   State<GelbooruSearchPage> createState() => _SearchPageState();
@@ -73,7 +73,6 @@ class _SearchPageState extends State<GelbooruSearchPage> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: _SmallLayout(
           focus: focus,
-          autoFocus: widget.autoFocusSearchBar,
           queryEditingController: queryEditingController,
         ),
       ),
@@ -185,12 +184,10 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
     this.focusNode,
-    this.autofocus = false,
   });
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -200,10 +197,14 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: _SearchBar(
-        autofocus: autofocus,
-        focusNode: focusNode,
-        queryEditingController: queryEditingController,
+      title: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          return _SearchBar(
+            autofocus: state.settings.autoFocusSearchBar,
+            focusNode: focusNode,
+            queryEditingController: queryEditingController,
+          );
+        },
       ),
     );
   }
@@ -216,12 +217,10 @@ class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
-    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final TextEditingController queryEditingController;
-  final bool autoFocus;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -238,7 +237,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
-            autofocus: widget.autoFocus,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
@@ -261,7 +259,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
-            autofocus: true,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
@@ -312,62 +309,81 @@ class _SmallLayoutState extends State<_SmallLayout> {
           ),
         );
       case DisplayState.result:
-        return BlocBuilder<TagSearchBloc, TagSearchState>(
-          builder: (context, state) {
-            return PostScope(
-              fetcher: (page) =>
-                  context.read<PostRepository>().getPostsFromTags(
-                        state.selectedTags.join(' '),
-                        page,
-                      ),
-              builder: (context, controller, errors) =>
-                  GelbooruInfinitePostList(
-                errors: errors,
-                controller: controller,
-                sliverHeaderBuilder: (context) => [
-                  SliverAppBar(
-                    titleSpacing: 0,
-                    toolbarHeight: kToolbarHeight * 1.9,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                    title: SizedBox(
-                      height: kToolbarHeight * 1.85,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: SearchBar(
-                              enabled: false,
-                              onTap: () => context
-                                  .read<SearchBloc>()
-                                  .add(const SearchGoToSuggestionsRequested()),
-                              leading: IconButton(
-                                icon: const Icon(Icons.arrow_back),
-                                onPressed: () => context.read<SearchBloc>().add(
-                                      const SearchGoBackToSearchOptionsRequested(),
-                                    ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const _SelectedTagList(),
-                        ],
-                      ),
-                    ),
-                    floating: true,
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                  ),
-                  const SliverToBoxAdapter(child: _Divider(height: 7)),
-                ],
-              ),
-            );
-          },
-        );
+        return const _ResultView();
     }
+  }
+}
+
+class _ResultView extends StatelessWidget {
+  const _ResultView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) {
+        return PostScope(
+          fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+                state.selectedTags.join(' '),
+                page,
+              ),
+          builder: (context, controller, errors) => GelbooruInfinitePostList(
+            errors: errors,
+            controller: controller,
+            sliverHeaderBuilder: (context) => [
+              SliverAppBar(
+                titleSpacing: 0,
+                toolbarHeight: kToolbarHeight * 1.9,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                title: SizedBox(
+                  height: kToolbarHeight * 1.85,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: SearchBar(
+                          enabled: false,
+                          onTap: () => context
+                              .read<SearchBloc>()
+                              .add(const SearchGoToSuggestionsRequested()),
+                          leading: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () => context.read<SearchBloc>().add(
+                                  const SearchGoBackToSearchOptionsRequested(),
+                                ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const _SelectedTagList(),
+                    ],
+                  ),
+                ),
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+              ),
+              const SliverToBoxAdapter(child: _Divider(height: 7)),
+              SliverToBoxAdapter(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Spacer(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: PostGridConfigIconButton(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 

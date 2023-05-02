@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/functional.dart';
 import 'settings.dart';
 
@@ -23,12 +24,16 @@ Future<int> getSettingsPostsPerPage(SettingsRepository repository) =>
           (r) => r.postsPerPage,
         ));
 
+Future<Settings> getSettingsOrDefault(SettingsRepository repository) =>
+    repository.load().run().then((value) => value.fold(
+          (l) => Settings.defaultSettings,
+          (r) => r,
+        ));
+
 mixin SettingsRepositoryMixin {
   SettingsRepository get settingsRepository;
 
   Future<int> getPostsPerPage() => getSettingsPostsPerPage(settingsRepository);
-  Future<Settings> getOrDefault() => settingsRepository
-      .load()
-      .run()
-      .then((value) => value.fold((l) => Settings.defaultSettings, (r) => r));
+
+  Future<Settings> getOrDefault() => getSettingsOrDefault(settingsRepository);
 }

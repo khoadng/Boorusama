@@ -63,7 +63,6 @@ import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/display.dart';
@@ -71,7 +70,6 @@ import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
@@ -269,10 +267,7 @@ void goToSearchPage(
       child: provideSearchPageDependencies(
         context,
         tag,
-        (context, settings) => SearchPage(
-          pagination: settings.contentOrganizationCategory ==
-              ContentOrganizationCategory.pagination,
-          autoFocusSearchBar: settings.autoFocusSearchBar,
+        (context) => SearchPage(
           metatags: context.read<TagInfo>().metatags,
           metatagHighlightColor: Theme.of(context).colorScheme.primary,
         ),
@@ -284,9 +279,7 @@ void goToSearchPage(
       builder: (_) => provideSearchPageDependencies(
         context,
         tag,
-        (context, settings) => SearchPageDesktop(
-          pagination: settings.contentOrganizationCategory ==
-              ContentOrganizationCategory.pagination,
+        (context) => SearchPageDesktop(
           metatags: context.read<TagInfo>().metatags,
           metatagHighlightColor: Theme.of(context).colorScheme.primary,
         ),
@@ -298,7 +291,7 @@ void goToSearchPage(
 Widget provideSearchPageDependencies(
   BuildContext context,
   String? tag,
-  Widget Function(BuildContext context, Settings settings) childBuilder,
+  Widget Function(BuildContext context) childBuilder,
 ) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (_, state) {
@@ -306,57 +299,51 @@ Widget provideSearchPageDependencies(
         context,
         booru: state.booru!,
         builder: (context) {
-          return BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (_, settingsState) {
-              final tagSearchBloc = TagSearchBloc(
-                tagInfo: context.read<TagInfo>(),
-                autocompleteRepository: context.read<AutocompleteRepository>(),
-              );
+          final tagSearchBloc = TagSearchBloc(
+            tagInfo: context.read<TagInfo>(),
+            autocompleteRepository: context.read<AutocompleteRepository>(),
+          );
 
-              final searchHistoryCubit = SearchHistoryBloc(
-                searchHistoryRepository:
-                    context.read<SearchHistoryRepository>(),
-              );
-              final relatedTagBloc = RelatedTagBloc(
-                relatedTagRepository: context.read<RelatedTagRepository>(),
-              );
-              final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-                searchHistoryRepository:
-                    context.read<SearchHistoryRepository>(),
-              );
+          final searchHistoryCubit = SearchHistoryBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
+          final relatedTagBloc = RelatedTagBloc(
+            relatedTagRepository: context.read<RelatedTagRepository>(),
+          );
+          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
 
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(value: searchHistoryCubit),
-                  BlocProvider.value(
-                    value: context.read<FavoriteTagBloc>()
-                      ..add(const FavoriteTagFetched()),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<ThemeBloc>(context),
-                  ),
-                  BlocProvider.value(value: searchHistorySuggestions),
-                  BlocProvider.value(value: tagSearchBloc),
-                  BlocProvider<SearchBloc>(
-                    create: (context) => DanbooruSearchBloc(
-                      initial: DisplayState.options,
-                      metatags: context.read<TagInfo>().metatags,
-                      tagSearchBloc: tagSearchBloc,
-                      searchHistoryBloc: searchHistoryCubit,
-                      relatedTagBloc: relatedTagBloc,
-                      searchHistorySuggestionsBloc: searchHistorySuggestions,
-                      postCountRepository: context.read<PostCountRepository>(),
-                      initialQuery: tag,
-                      booruType: state.booru!.booruType,
-                    ),
-                  ),
-                  BlocProvider.value(value: relatedTagBloc),
-                ],
-                child: CustomContextMenuOverlay(
-                  child: childBuilder(context, settingsState.settings),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: searchHistoryCubit),
+              BlocProvider.value(
+                value: context.read<FavoriteTagBloc>()
+                  ..add(const FavoriteTagFetched()),
+              ),
+              BlocProvider.value(
+                value: BlocProvider.of<ThemeBloc>(context),
+              ),
+              BlocProvider.value(value: searchHistorySuggestions),
+              BlocProvider.value(value: tagSearchBloc),
+              BlocProvider<SearchBloc>(
+                create: (context) => DanbooruSearchBloc(
+                  initial: DisplayState.options,
+                  metatags: context.read<TagInfo>().metatags,
+                  tagSearchBloc: tagSearchBloc,
+                  searchHistoryBloc: searchHistoryCubit,
+                  relatedTagBloc: relatedTagBloc,
+                  searchHistorySuggestionsBloc: searchHistorySuggestions,
+                  postCountRepository: context.read<PostCountRepository>(),
+                  initialQuery: tag,
+                  booruType: state.booru!.booruType,
                 ),
-              );
-            },
+              ),
+              BlocProvider.value(value: relatedTagBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: childBuilder(context),
+            ),
           );
         },
       );

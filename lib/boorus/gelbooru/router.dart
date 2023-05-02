@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/gelbooru/ui/search/gelbooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -41,65 +40,54 @@ void goToGelbooruSearchPage(
   BuildContext context, {
   String? tag,
 }) {
+  final booru = context.read<CurrentBooruBloc>().state.booru!;
+
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.fade,
-    child: BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (_, sstate) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return GelbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (gcontext) {
-                final tagInfo = gcontext.read<TagInfo>();
-                final searchHistoryBloc = SearchHistoryBloc(
-                  searchHistoryRepository:
-                      gcontext.read<SearchHistoryRepository>(),
-                )..add(const SearchHistoryFetched());
-                final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
-                  ..add(const FavoriteTagFetched());
+    child: GelbooruProvider.of(
+      context,
+      booru: booru,
+      builder: (gcontext) {
+        final tagInfo = gcontext.read<TagInfo>();
+        final searchHistoryBloc = SearchHistoryBloc(
+          searchHistoryRepository: gcontext.read<SearchHistoryRepository>(),
+        )..add(const SearchHistoryFetched());
+        final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
+          ..add(const FavoriteTagFetched());
 
-                final tagSearchBloc = TagSearchBloc(
-                  tagInfo: gcontext.read<TagInfo>(),
-                  autocompleteRepository:
-                      gcontext.read<AutocompleteRepository>(),
-                );
+        final tagSearchBloc = TagSearchBloc(
+          tagInfo: gcontext.read<TagInfo>(),
+          autocompleteRepository: gcontext.read<AutocompleteRepository>(),
+        );
 
-                final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-                  searchHistoryRepository:
-                      context.read<SearchHistoryRepository>(),
-                );
+        final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+          searchHistoryRepository: context.read<SearchHistoryRepository>(),
+        );
 
-                final searchBloc = GelbooruSearchBloc(
-                  initial: DisplayState.options,
-                  tagSearchBloc: tagSearchBloc,
-                  searchHistoryBloc: searchHistoryBloc,
-                  searchHistorySuggestionsBloc: searchHistorySuggestions,
-                  metatags: gcontext.read<TagInfo>().metatags,
-                  booruType: state.booru!.booruType,
-                  initialQuery: tag,
-                );
+        final searchBloc = GelbooruSearchBloc(
+          initial: DisplayState.options,
+          tagSearchBloc: tagSearchBloc,
+          searchHistoryBloc: searchHistoryBloc,
+          searchHistorySuggestionsBloc: searchHistorySuggestions,
+          metatags: gcontext.read<TagInfo>().metatags,
+          booruType: booru.booruType,
+          initialQuery: tag,
+        );
 
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: searchHistoryBloc),
-                    BlocProvider.value(value: favoriteTagBloc),
-                    BlocProvider<SearchBloc>.value(value: searchBloc),
-                    BlocProvider.value(value: searchHistorySuggestions),
-                    BlocProvider.value(value: tagSearchBloc),
-                  ],
-                  child: CustomContextMenuOverlay(
-                    child: GelbooruSearchPage(
-                      autoFocusSearchBar: sstate.settings.autoFocusSearchBar,
-                      metatags: tagInfo.metatags,
-                      metatagHighlightColor:
-                          Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: searchHistoryBloc),
+            BlocProvider.value(value: favoriteTagBloc),
+            BlocProvider<SearchBloc>.value(value: searchBloc),
+            BlocProvider.value(value: searchHistorySuggestions),
+            BlocProvider.value(value: tagSearchBloc),
+          ],
+          child: CustomContextMenuOverlay(
+            child: GelbooruSearchPage(
+              metatags: tagInfo.metatags,
+              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            ),
+          ),
         );
       },
     ),

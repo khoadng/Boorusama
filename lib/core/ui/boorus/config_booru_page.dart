@@ -13,6 +13,7 @@ import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
+import 'package:boorusama/core/ui/option_dropdown_button.dart';
 
 class ConfigBooruPage extends StatefulWidget {
   const ConfigBooruPage({
@@ -243,30 +244,16 @@ class _AddBooruPageState extends State<ConfigBooruPage>
                     if (supportContentFilter)
                       ListTile(
                         title: const Text('Content filtering'),
-                        trailing: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<BooruConfigRatingFilter>(
-                                isDense: true,
-                                value: ratingFilter,
-                                icon: const Padding(
-                                  padding: EdgeInsets.only(left: 5, top: 2),
-                                  child: FaIcon(FontAwesomeIcons.angleDown,
-                                      size: 16),
-                                ),
-                                onChanged: changeRatingFilter,
-                                items: BooruConfigRatingFilter.values
-                                    .map((value) => DropdownMenuItem<
-                                            BooruConfigRatingFilter>(
-                                          value: value,
-                                          child:
-                                              Text(value.getFilterRatingTerm()),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ),
+                        trailing: OptionDropDownButton<BooruConfigRatingFilter>(
+                          value: ratingFilter,
+                          onChanged: changeRatingFilter,
+                          items: BooruConfigRatingFilter.values
+                              .map((value) =>
+                                  DropdownMenuItem<BooruConfigRatingFilter>(
+                                    value: value,
+                                    child: Text(value.getFilterRatingTerm()),
+                                  ))
+                              .toList(),
                         ),
                       ),
                     const SizedBox(height: 16),

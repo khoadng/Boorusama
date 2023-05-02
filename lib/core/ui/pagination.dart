@@ -9,9 +9,11 @@ const _maxSelectablePage = 4;
 List<int> generatePage({
   required int current,
   required int? total,
-  required int itemPerPage,
+  required int? itemPerPage,
 }) {
-  final maxPage = total != null ? (total / itemPerPage).ceil() : null;
+  final maxPage = total != null && itemPerPage != null
+      ? (total / itemPerPage).ceil()
+      : null;
 
   if (current < _maxSelectablePage) {
     return List.generate(
@@ -33,7 +35,7 @@ class PageSelector extends StatelessWidget {
     super.key,
     required this.currentPage,
     this.totalResults,
-    required this.itemPerPage,
+    this.itemPerPage,
     this.onPrevious,
     this.onNext,
     required this.onPageSelect,
@@ -41,7 +43,7 @@ class PageSelector extends StatelessWidget {
 
   final int currentPage;
   final int? totalResults;
-  final int itemPerPage;
+  final int? itemPerPage;
   final VoidCallback? onPrevious;
   final VoidCallback? onNext;
   final void Function(int page) onPageSelect;

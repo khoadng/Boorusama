@@ -10,12 +10,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search/empty_view.dart';
 import 'package:boorusama/core/ui/search/error_view.dart';
@@ -33,12 +35,10 @@ class MoebooruSearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
-    this.autoFocusSearchBar = true,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
-  final bool autoFocusSearchBar;
 
   @override
   State<MoebooruSearchPage> createState() => _SearchPageState();
@@ -73,7 +73,6 @@ class _SearchPageState extends State<MoebooruSearchPage> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: _SmallLayout(
           focus: focus,
-          autoFocus: widget.autoFocusSearchBar,
           queryEditingController: queryEditingController,
         ),
       ),
@@ -185,12 +184,10 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
     this.focusNode,
-    this.autofocus = false,
   });
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +198,6 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
       title: _SearchBar(
-        autofocus: autofocus,
         focusNode: focusNode,
         queryEditingController: queryEditingController,
       ),
@@ -216,12 +212,10 @@ class _SmallLayout extends StatelessWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
-    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final TextEditingController queryEditingController;
-  final bool autoFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +227,6 @@ class _SmallLayout extends StatelessWidget {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
-            autofocus: autoFocus,
             focusNode: focus,
             queryEditingController: queryEditingController,
           ),
@@ -256,7 +249,6 @@ class _SmallLayout extends StatelessWidget {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
-            autofocus: true,
             focusNode: focus,
             queryEditingController: queryEditingController,
           ),
@@ -353,6 +345,18 @@ class _SmallLayout extends StatelessWidget {
                 automaticallyImplyLeading: false,
               ),
               const SliverToBoxAdapter(child: _Divider(height: 7)),
+              SliverToBoxAdapter(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Spacer(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: PostGridConfigIconButton(),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         );
@@ -432,48 +436,50 @@ class _SearchBar extends StatelessWidget {
   const _SearchBar({
     required this.queryEditingController,
     this.focusNode,
-    this.autofocus = false,
   });
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
-    return SearchBar(
-      autofocus: autofocus,
-      focus: focusNode,
-      queryEditingController: queryEditingController,
-      leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
-        selector: (state) => state.displayState,
-        builder: (context, state) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => state != DisplayState.options
-                ? context
-                    .read<SearchBloc>()
-                    .add(const SearchGoBackToSearchOptionsRequested())
-                : Navigator.of(context).pop(),
-          );
-        },
-      ),
-      trailing: BlocSelector<SearchBloc, SearchState, String>(
-        selector: (state) => state.currentQuery,
-        builder: (context, query) => query.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => context
-                    .read<SearchBloc>()
-                    .add(const SearchQueryChanged(query: '')),
-              )
-            : const SizedBox.shrink(),
-      ),
-      onChanged: (value) {
-        context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return SearchBar(
+          autofocus: state.settings.autoFocusSearchBar,
+          focus: focusNode,
+          queryEditingController: queryEditingController,
+          leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
+            selector: (state) => state.displayState,
+            builder: (context, state) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => state != DisplayState.options
+                    ? context
+                        .read<SearchBloc>()
+                        .add(const SearchGoBackToSearchOptionsRequested())
+                    : Navigator.of(context).pop(),
+              );
+            },
+          ),
+          trailing: BlocSelector<SearchBloc, SearchState, String>(
+            selector: (state) => state.currentQuery,
+            builder: (context, query) => query.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => context
+                        .read<SearchBloc>()
+                        .add(const SearchQueryChanged(query: '')),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          onChanged: (value) {
+            context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+          },
+          onSubmitted: (value) =>
+              context.read<SearchBloc>().add(const SearchQuerySubmitted()),
+        );
       },
-      onSubmitted: (value) =>
-          context.read<SearchBloc>().add(const SearchQuerySubmitted()),
     );
   }
 }

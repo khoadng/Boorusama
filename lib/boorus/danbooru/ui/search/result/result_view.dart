@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -20,13 +21,11 @@ class ResultView extends StatefulWidget {
     this.headerBuilder,
     this.scrollController,
     this.backgroundColor,
-    required this.pagination,
   });
 
   final List<Widget> Function()? headerBuilder;
   final AutoScrollController? scrollController;
   final Color? backgroundColor;
-  final bool pagination;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -48,45 +47,6 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    return !widget.pagination
-        ? _InfiniteScroll(
-            backgroundColor: widget.backgroundColor,
-            scrollController: scrollController,
-            refreshController: refreshController,
-            headerBuilder: widget.headerBuilder,
-          )
-        : Scaffold(
-            body: CustomScrollView(
-            slivers: [
-              if (widget.headerBuilder != null) ...widget.headerBuilder!.call(),
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                  child: Center(
-                      child: Text(
-                          'Pagination is temporarily disabled. Please change to infinite scroll in Settings')),
-                ),
-              )
-            ],
-          ));
-  }
-}
-
-class _InfiniteScroll extends StatelessWidget {
-  const _InfiniteScroll({
-    required this.scrollController,
-    required this.refreshController,
-    this.headerBuilder,
-    this.backgroundColor,
-  });
-
-  final AutoScrollController scrollController;
-  final RefreshController refreshController;
-  final List<Widget> Function()? headerBuilder;
-  final Color? backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
     return BlocBuilder<TagSearchBloc, TagSearchState>(
       builder: (context, state) => BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
@@ -100,9 +60,19 @@ class _InfiniteScroll extends StatelessWidget {
                 controller: controller,
                 errors: errors,
                 sliverHeaderBuilder: (context) => [
-                  ...headerBuilder?.call() ?? [],
+                  ...widget.headerBuilder?.call() ?? [],
                   const SliverToBoxAdapter(child: RelatedTagSection()),
-                  const SliverToBoxAdapter(child: ResultHeader()),
+                  SliverToBoxAdapter(
+                      child: Row(
+                    children: const [
+                      ResultHeader(),
+                      Spacer(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: PostGridConfigIconButton(),
+                      ),
+                    ],
+                  )),
                 ],
               );
             },

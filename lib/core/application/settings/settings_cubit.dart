@@ -22,3 +22,39 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
   }
 }
+
+mixin SettingsCubitMixin {
+  SettingsCubit get settingsCubit;
+
+  Future<void> setGridSize(GridSize size) async {
+    final settings =
+        await getSettingsOrDefault(settingsCubit.settingRepository);
+    await settingsCubit.update(
+      settings.copyWith(
+        gridSize: size,
+      ),
+    );
+  }
+
+  // set image list
+  Future<void> setImageListType(ImageListType imageListType) async {
+    final settings =
+        await getSettingsOrDefault(settingsCubit.settingRepository);
+    await settingsCubit.update(
+      settings.copyWith(
+        imageListType: imageListType,
+      ),
+    );
+  }
+
+  // set page mode
+  Future<void> setPageMode(ContentOrganizationCategory pageMode) async {
+    final settings =
+        await getSettingsOrDefault(settingsCubit.settingRepository);
+    await settingsCubit.update(
+      settings.copyWith(
+        contentOrganizationCategory: pageMode,
+      ),
+    );
+  }
+}

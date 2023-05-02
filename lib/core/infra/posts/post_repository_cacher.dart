@@ -20,12 +20,17 @@ class PostRepositoryCacher implements PostRepository {
   }) {
     final name = "$tags-$page-$limit";
 
-    return cache.get(name).toOption().fold(
-          () => repository.getPostsFromTags(tags, page).map((r) {
-            cache.put(name, r);
-            return r;
-          }),
-          (t) => TaskEither.of(t),
-        );
+    // Check if the data exists in the cache
+    if (cache.exist(name)) {
+      return TaskEither.of(cache.get(name)!);
+    }
+
+    // If data is not in the cache, retrieve it from the repository and update the cache
+    return repository
+        .getPostsFromTags(tags, page)
+        .flatMap((r) => TaskEither(() async {
+              await cache.put(name, r);
+              return Either.of(r);
+            }));
   }
 }

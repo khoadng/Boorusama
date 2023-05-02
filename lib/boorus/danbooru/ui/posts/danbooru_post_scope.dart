@@ -1,11 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 typedef DanbooruPostFetcher = DanbooruPostsOrError Function(int page);
@@ -51,6 +56,14 @@ class _DanbooruPostScopeState extends State<DanbooruPostScope>
   late final _controller = PostGridController<DanbooruPost>(
     fetcher: (page) => fetchPosts(page).then(transform),
     refresher: () => fetchPosts(1).then(transform),
+    pageMode: context
+                .read<SettingsCubit>()
+                .state
+                .settings
+                .contentOrganizationCategory ==
+            ContentOrganizationCategory.infiniteScroll
+        ? PageMode.infinite
+        : PageMode.paginated,
   );
 
   @override
@@ -64,10 +77,18 @@ class _DanbooruPostScopeState extends State<DanbooruPostScope>
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(
-      context,
-      _controller,
-      errors,
+    return BlocListener<SettingsCubit, SettingsState>(
+      listener: (context, state) {
+        _controller.setPageMode(state.settings.contentOrganizationCategory ==
+                ContentOrganizationCategory.infiniteScroll
+            ? PageMode.infinite
+            : PageMode.paginated);
+      },
+      child: widget.builder(
+        context,
+        _controller,
+        errors,
+      ),
     );
   }
 }

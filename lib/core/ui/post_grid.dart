@@ -12,6 +12,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/multi_select_widget.dart';
+import 'package:boorusama/core/ui/pagination.dart';
 import 'post_grid_controller.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
@@ -80,11 +81,14 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
   final ValueNotifier<bool> _isOnTop = ValueNotifier(false);
   var multiSelect = false;
 
+  PostGridController<T> get controller => widget.controller;
+
   var page = 1;
   var hasMore = true;
   var loading = false;
   var refreshing = false;
   var items = <T>[];
+  late var pageMode = controller.pageMode;
 
   @override
   void initState() {
@@ -101,9 +105,9 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
 
     _autoScrollController.addListener(_onScroll);
     _isOnTop.addListener(_onTopReached);
-    widget.controller.addListener(_onControllerChange);
+    controller.addListener(_onControllerChange);
     if (widget.refreshAtStart) {
-      widget.controller.refresh();
+      controller.refresh();
     }
   }
 
@@ -126,10 +130,12 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
 
   void _onControllerChange() {
     setState(() {
-      items = widget.controller.items;
-      hasMore = widget.controller.hasMore;
-      loading = widget.controller.loading;
-      refreshing = widget.controller.refreshing;
+      items = controller.items;
+      hasMore = controller.hasMore;
+      loading = controller.loading;
+      refreshing = controller.refreshing;
+      pageMode = controller.pageMode;
+      page = controller.page;
     });
   }
 
@@ -151,9 +157,9 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
         break;
     }
     _isOnTop.value = _isTop;
-    if (_isBottom && hasMore) {
+    if (controller.pageMode == PageMode.infinite && _isBottom && hasMore) {
       widget.onLoadMore?.call();
-      widget.controller.fetchMore();
+      controller.fetchMore();
     }
   }
 
@@ -239,7 +245,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                     onRefresh: () async {
                       widget.onRefresh?.call();
                       _multiSelectController.clearSelected();
-                      await widget.controller.refresh();
+                      await controller.refresh();
                     },
                     child: ImprovedScrolling(
                       scrollController: _autoScrollController,
@@ -251,13 +257,31 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                           if (!multiSelect &&
                               widget.sliverHeaderBuilder != null)
                             ...widget.sliverHeaderBuilder!(context),
+                          if (pageMode == PageMode.paginated)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                child: PageSelector(
+                                  currentPage: page,
+                                  onPrevious: controller.hasPreviousPage()
+                                      ? () => controller.goToPreviousPage()
+                                      : null,
+                                  onNext: controller.hasNextPage()
+                                      ? () => controller.goToNextPage()
+                                      : null,
+                                  onPageSelect: (page) =>
+                                      controller.jumpToPage(page),
+                                ),
+                              ),
+                            ),
                           widget.bodyBuilder(
                             context,
                             (c, idx) => widget.itemBuilder(c, items, idx),
                             refreshing,
                             items,
                           ),
-                          if (loading)
+                          if (pageMode == PageMode.infinite && loading)
                             const SliverPadding(
                               padding: EdgeInsets.symmetric(vertical: 20),
                               sliver: SliverToBoxAdapter(
