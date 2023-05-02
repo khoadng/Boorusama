@@ -1,0 +1,15 @@
+// empty logger that log nothing on release mode
+
+// Project imports:
+import 'package:boorusama/core/infra/loggers.dart';
+
+class EmptyLogger implements LoggerService {
+  @override
+  void logE(String serviceName, String message) {}
+
+  @override
+  void logI(String serviceName, String message) {}
+
+  @override
+  void logW(String serviceName, String message) {}
+}

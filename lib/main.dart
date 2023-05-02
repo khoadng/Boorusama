@@ -48,7 +48,7 @@ import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/downloads.dart';
 import 'package:boorusama/core/infra/infra.dart';
-import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/infra/loggers.dart' as l;
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
@@ -66,7 +66,7 @@ const savedSearchHelpUrl =
     'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
-  final logger = ConsoleLogger();
+  final logger = await l.logger();
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
   logger.logI('Start up', 'Initialize Flutter Widgets');
