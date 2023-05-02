@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/core/application/bookmarks/bookmark_file_name_generator.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -349,8 +350,9 @@ void main() async {
               ),
               BlocProvider(
                 create: (context) => BookmarkCubit(
-                    bookmarkRepository: context.read<BookmarkRepository>())
-                  ..getAllBookmarks(),
+                  bookmarkRepository: context.read<BookmarkRepository>(),
+                  fileNameGenerator: BookmarkFileNameGenerator(),
+                )..getAllBookmarks(),
               ),
               BlocProvider(create: (context) => CacheCubit()),
             ],

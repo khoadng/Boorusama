@@ -32,6 +32,9 @@ class BookmarkHiveObject extends HiveObject {
   @HiveField(8)
   double? height;
 
+  @HiveField(9)
+  String? md5;
+
   BookmarkHiveObject({
     required this.booruId,
     required this.createdAt,
@@ -42,5 +45,6 @@ class BookmarkHiveObject extends HiveObject {
     required this.sourceUrl,
     required this.width,
     required this.height,
+    required this.md5,
   });
 }

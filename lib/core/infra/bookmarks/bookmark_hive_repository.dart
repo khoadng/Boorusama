@@ -24,6 +24,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
       sourceUrl: post.getLink(booru.url),
       width: post.width,
       height: post.height,
+      md5: post.md5,
     );
     await _box.add(favoriteHiveObject);
     return favoriteHiveObjectToFavorite(favoriteHiveObject);
@@ -64,6 +65,7 @@ Bookmark favoriteHiveObjectToFavorite(BookmarkHiveObject hiveObject) {
     sourceUrl: hiveObject.sourceUrl!,
     width: hiveObject.width!,
     height: hiveObject.height!,
+    md5: hiveObject.md5!,
   );
 }
 
@@ -78,5 +80,6 @@ BookmarkHiveObject favoriteToHiveObject(Bookmark favorite) {
     sourceUrl: favorite.sourceUrl,
     width: favorite.width,
     height: favorite.height,
+    md5: favorite.md5,
   );
 }
