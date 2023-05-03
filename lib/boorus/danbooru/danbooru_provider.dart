@@ -36,6 +36,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_re
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repository_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
@@ -144,12 +145,17 @@ class DanbooruProvider extends StatelessWidget {
       settingRepository,
     );
 
-    final exploreRepo = ExploreRepositoryApi(
-      api: api,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      postRepository: postRepo,
-      urlComposer: sourceComposer,
-      settingsRepository: settingRepository,
+    final exploreRepo = ExploreRepositoryCacher(
+      repository: ExploreRepositoryApi(
+        api: api,
+        currentBooruConfigRepository: currentBooruConfigRepo,
+        postRepository: postRepo,
+        urlComposer: sourceComposer,
+        settingsRepository: settingRepository,
+      ),
+      popularStaleDuration: const Duration(minutes: 20),
+      mostViewedStaleDuration: const Duration(hours: 1),
+      hotStaleDuration: const Duration(minutes: 5),
     );
 
     final commentRepo = CommentCacher(
