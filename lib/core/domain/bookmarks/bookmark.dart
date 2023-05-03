@@ -22,6 +22,20 @@ class Bookmark extends Equatable with ImageInfoMixin {
 
   bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
 
+  static Bookmark empty = Bookmark(
+    id: -1,
+    booruId: -10,
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    thumbnailUrl: '',
+    sampleUrl: '',
+    originalUrl: '',
+    sourceUrl: '',
+    width: -1,
+    height: -1,
+    md5: '',
+  );
+
   const Bookmark({
     required this.id,
     required this.booruId,

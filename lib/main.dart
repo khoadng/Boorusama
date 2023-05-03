@@ -359,7 +359,7 @@ void main() async {
                 create: (context) => BookmarkCubit(
                   bookmarkRepository: context.read<BookmarkRepository>(),
                   downloadService: dioDownloadService,
-                )..getAllBookmarks(),
+                )..getAllBookmarksWithToast(),
               ),
               BlocProvider(create: (context) => CacheCubit()),
             ],

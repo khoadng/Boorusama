@@ -384,7 +384,7 @@ void goToSettingPage(BuildContext context) {
 }
 
 void goToBookmarkPage(BuildContext context) {
-  context.read<BookmarkCubit>().getAllBookmarks();
+  context.read<BookmarkCubit>().getAllBookmarksWithToast();
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (_) => const BookmarkPage()));
 }

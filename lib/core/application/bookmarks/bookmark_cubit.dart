@@ -50,16 +50,16 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   final DownloadService2 downloadService;
 
   Future<void> getAllBookmarks({
-    void Function()? onError,
+    void Function(BookmarkGetError error)? onError,
   }) async {
     emit(state.copyWith(status: BookmarkStatus.loading));
-    try {
-      final bookmarks = await bookmarkRepository.getAllBookmarks();
-      emit(
-          state.copyWith(bookmarks: bookmarks, status: BookmarkStatus.success));
-    } catch (e) {
-      onError?.call();
-    }
+    bookmarkRepository.getAllBookmarks().run().then((value) => value.match(
+          (error) => onError?.call(error),
+          (bookmarks) => emit(state.copyWith(
+            bookmarks: bookmarks,
+            status: BookmarkStatus.success,
+          )),
+        ));
   }
 
   Future<void> addBookmark(
@@ -169,6 +169,6 @@ extension BookmarkCubitToastX on BookmarkCubit {
       );
 
   Future<void> getAllBookmarksWithToast() => getAllBookmarks(
-        onError: () => showErrorToast('Failed to load bookmarks'),
+        onError: (error) => showErrorToast('Failed to load bookmarks: $error'),
       );
 }
