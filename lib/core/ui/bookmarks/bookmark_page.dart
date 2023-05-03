@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';
@@ -89,69 +90,63 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
 
                 return CustomScrollView(
                   slivers: [
-                    SliverMasonryGrid.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      childCount: state.bookmarks.length,
-                      itemBuilder: (context, index) {
-                        final bookmark = state.bookmarks[index];
+                    BlocBuilder<SettingsCubit, SettingsState>(
+                      builder: (context, settingsState) {
+                        return SliverMasonryGrid.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing:
+                              settingsState.settings.imageGridSpacing,
+                          crossAxisSpacing:
+                              settingsState.settings.imageGridSpacing,
+                          childCount: state.bookmarks.length,
+                          itemBuilder: (context, index) {
+                            final bookmark = state.bookmarks[index];
 
-                        return GestureDetector(
-                          onTap: () => goToBookmarkDetailsPage(
-                            context: context,
-                            bookmarks: state.bookmarks,
-                            initialIndex: index,
-                          ),
-                          child: Stack(
-                            children: [
-                              BooruImage(
-                                aspectRatio: bookmark.aspectRatio,
-                                fit: BoxFit.cover,
-                                imageUrl: bookmark.isVideo
-                                    ? bookmark.thumbnailUrl
-                                    : bookmark.sampleUrl,
-                                placeholderUrl: bookmark.thumbnailUrl,
+                            return GestureDetector(
+                              onTap: () => goToBookmarkDetailsPage(
+                                context: context,
+                                bookmarks: state.bookmarks,
+                                initialIndex: index,
                               ),
-                              Positioned(
-                                top: 5,
-                                left: 5,
-                                child: BlocBuilder<CurrentBooruBloc,
-                                    CurrentBooruState>(
-                                  builder: (context, state) {
-                                    return BooruLogo(booru: state.booruConfig!);
-                                  },
-                                ),
-                              ),
-                              if (edit)
-                                Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: CircularIconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () => context
-                                        .read<BookmarkCubit>()
-                                        .removeBookmarkWithToast(bookmark),
+                              child: Stack(
+                                children: [
+                                  BooruImage(
+                                    borderRadius: BorderRadius.circular(
+                                        settingsState
+                                            .settings.imageBorderRadius),
+                                    aspectRatio: bookmark.aspectRatio,
+                                    fit: BoxFit.cover,
+                                    imageUrl: bookmark.isVideo
+                                        ? bookmark.thumbnailUrl
+                                        : bookmark.sampleUrl,
+                                    placeholderUrl: bookmark.thumbnailUrl,
                                   ),
-                                ),
-                              // Positioned(
-                              //   top: 5,
-                              //   left: 5,
-                              //   child: CircularIconButton(
-                              //     icon: const Icon(Icons.download),
-                              //     onPressed: () => context
-                              //         .read<DioDownloadService>()
-                              //         .download(
-                              //           url: bookmark.originalUrl,
-                              //           fileNameBuilder: () =>
-                              //               bookmark.md5 +
-                              //               extension(bookmark.originalUrl),
-                              //         )
-                              //         .run(),
-                              //   ),
-                              // ),
-                            ],
-                          ),
+                                  Positioned(
+                                    top: 5,
+                                    left: 5,
+                                    child: BlocBuilder<CurrentBooruBloc,
+                                        CurrentBooruState>(
+                                      builder: (context, state) {
+                                        return BooruLogo(
+                                            booru: state.booruConfig!);
+                                      },
+                                    ),
+                                  ),
+                                  if (edit)
+                                    Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      child: CircularIconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () => context
+                                            .read<BookmarkCubit>()
+                                            .removeBookmarkWithToast(bookmark),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
                         );
                       },
                     )
