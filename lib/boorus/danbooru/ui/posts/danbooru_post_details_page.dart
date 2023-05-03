@@ -88,11 +88,7 @@ Widget providePostDetailPageDependencies(
                           context.read<CurrentBooruConfigRepository>(),
                       postVoteRepository: context.read<PostVoteRepository>(),
                       tags: tags,
-                      onPostChanged: (post) {
-                        // if (postBloc != null && !postBloc.isClosed) {
-                        //   postBloc.add(PostUpdated(post: post));
-                        // }
-                      },
+                      fireIndexChangedAtStart: false,
                       tagCache: {},
                     ),
                   ),
@@ -227,6 +223,10 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
               builder: (_, progress, __) =>
                   BooruVideoProgressBar(progress: progress),
             ),
+          Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: InformationSection(post: posts[page]),
+          ),
           DanbooruPostActionToolbar(post: posts[page]),
         ],
       ),

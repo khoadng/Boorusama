@@ -69,11 +69,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState>
     required int initialIndex,
     required List<DanbooruPost> posts,
     required Map<String, List<DanbooruPost>> tagCache,
-    void Function(
-      DanbooruPost post,
-    )?
-        onPostChanged,
-    double Function()? idGenerator,
     bool fireIndexChangedAtStart = true,
     DetailsDisplay defaultDetailsStyle = DetailsDisplay.postFocus,
   }) : super(PostDetailState(
