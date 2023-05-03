@@ -49,7 +49,7 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
   }) : super(const BookmarkState());
 
   final BookmarkRepository bookmarkRepository;
-  final DownloadService2 downloadService;
+  final DownloadService downloadService;
   @override
   final SettingsRepository settingsRepository;
 

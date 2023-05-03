@@ -6,10 +6,8 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/downloads.dart';
-import 'package:boorusama/core/infra/downloads.dart';
 
-class MockBulkDownloader extends Mock
-    implements FlutterDownloaderBulkDownloader {}
+class MockBulkDownloader extends Mock implements BulkDownloader {}
 
 Stream<DownloadData> _downloadStream({
   required int times,

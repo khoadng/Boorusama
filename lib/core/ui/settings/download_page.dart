@@ -14,7 +14,6 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
-import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class DownloadPage extends StatefulWidget {
@@ -61,37 +60,6 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ListTile(
-              subtitle: const Text('download.alternative_method_reason').tr(),
-              title: const Text('download.alternative_method_title').tr(),
-              trailing: Switch(
-                activeColor: Theme.of(context).colorScheme.primary,
-                value:
-                    settings.downloadMethod != DownloadMethod.flutterDownloader,
-                onChanged: (value) {
-                  changed.value = true;
-                  context.read<SettingsCubit>().update(settings.copyWith(
-                        downloadMethod: value
-                            ? DownloadMethod.imageGallerySaver
-                            : DownloadMethod.flutterDownloader,
-                      ));
-                },
-              ),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: changed,
-              builder: (context, value, _) => value
-                  ? WarningContainer(
-                      contentBuilder: (context) =>
-                          const Text('download.app_restart_request').tr(),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            const Divider(
-              thickness: 2,
-              endIndent: 16,
-              indent: 16,
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(

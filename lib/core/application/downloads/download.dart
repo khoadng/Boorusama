@@ -18,7 +18,11 @@ DownloadPathOrError downloadUrl({
   required DownloadFileNameBuilder fileNameBuilder,
 }) =>
     tryGetDownloadDirectory()
-        .mapLeft(_mapDownloadDirectoryErrorToDownloadError)
+        .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
+              error,
+              fileNameBuilder(),
+              none(),
+            ))
         .flatMap((dir) => joinDownloadPath(fileNameBuilder(), dir))
         .flatMap((path) => _wrapWithNotification(
               downloadWithDio(dio, url: url, path: path),
@@ -34,7 +38,11 @@ DownloadPathOrError downloadUrlCustomLocation({
   required DownloadFileNameBuilder fileNameBuilder,
 }) =>
     tryGetCustomDownloadDirectory(path)
-        .mapLeft(_mapDownloadDirectoryErrorToDownloadError)
+        .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
+              error,
+              fileNameBuilder(),
+              some(path),
+            ))
         .flatMap((dir) => joinDownloadPath(fileNameBuilder(), dir))
         .flatMap((path) => _wrapWithNotification(
               downloadWithDio(dio, url: url, path: path),
@@ -42,7 +50,6 @@ DownloadPathOrError downloadUrlCustomLocation({
               path: path,
             ));
 
-// download using dio
 DownloadPathOrError downloadWithDio(
   Dio dio, {
   required String url,
@@ -51,23 +58,51 @@ DownloadPathOrError downloadWithDio(
     TaskEither.tryCatch(
       () async => dio.download(url, path).then((value) => path),
       (error, stackTrace) {
-        // check if permission denied
+        final fileName = basename(path);
         if (error is FileSystemException) {
-          if (error.osError != null && error.osError!.errorCode == 13) {
-            return DownloadError.restrictedDirectory;
-          } else if (error.osError != null && error.osError!.errorCode == 1) {
-            return DownloadError.needElevatedPermission;
-          } else if (error.osError != null && error.osError!.errorCode == 30) {
-            return DownloadError.readOnlyDirectory;
-          } else if (error.osError != null && error.osError!.errorCode == 36) {
-            return DownloadError.fileNameTooLong;
+          if (error.osError?.errorCode == 13) {
+            return DownloadError(
+              errorType: DownloadErrorType.restrictedDirectory,
+              savedPath: some(path),
+              fileName: fileName,
+            );
+          } else if (error.osError?.errorCode == 1) {
+            return DownloadError(
+              errorType: DownloadErrorType.needElevatedPermission,
+              savedPath: some(path),
+              fileName: fileName,
+            );
+          } else if (error.osError?.errorCode == 30) {
+            return DownloadError(
+              errorType: DownloadErrorType.readOnlyDirectory,
+              savedPath: some(path),
+              fileName: fileName,
+            );
+          } else if (error.osError?.errorCode == 36) {
+            return DownloadError(
+              errorType: DownloadErrorType.fileNameTooLong,
+              savedPath: some(path),
+              fileName: fileName,
+            );
           } else if (error is PathNotFoundException) {
-            return DownloadError.directoryNotFound;
+            return DownloadError(
+              errorType: DownloadErrorType.directoryNotFound,
+              savedPath: some(path),
+              fileName: fileName,
+            );
           } else {
-            return DownloadError.failedToCreateFile;
+            return DownloadError(
+              errorType: DownloadErrorType.failedToCreateFile,
+              savedPath: some(path),
+              fileName: fileName,
+            );
           }
         } else {
-          return DownloadError.httpRequestError;
+          return DownloadError(
+            errorType: DownloadErrorType.httpRequestError,
+            savedPath: some(path),
+            fileName: fileName,
+          );
         }
       },
     );
@@ -99,16 +134,40 @@ DownloadPathOrError _wrapWithNotification(
 
 DownloadError _mapDownloadDirectoryErrorToDownloadError(
   DownloadDirectoryError error,
+  String fileName,
+  Option<String> savedPath,
 ) {
   switch (error) {
     case DownloadDirectoryError.directoryNotFound:
-      return DownloadError.directoryNotFound;
+      return DownloadError(
+        errorType: DownloadErrorType.directoryNotFound,
+        savedPath: savedPath,
+        fileName: fileName,
+      );
     case DownloadDirectoryError.unImplementedPlatform:
     case DownloadDirectoryError.webPlatformNotSupported:
-      return DownloadError.platformNotSupported;
+      return DownloadError(
+        errorType: DownloadErrorType.platformNotSupported,
+        savedPath: savedPath,
+        fileName: fileName,
+      );
     case DownloadDirectoryError.permissionDenied:
-      return DownloadError.restrictedDirectory;
+      return DownloadError(
+        errorType: DownloadErrorType.restrictedDirectory,
+        savedPath: savedPath,
+        fileName: fileName,
+      );
     case DownloadDirectoryError.unknownError:
-      return DownloadError.unknownError;
+      return DownloadError(
+        errorType: DownloadErrorType.unknownError,
+        savedPath: savedPath,
+        fileName: fileName,
+      );
+    default:
+      return DownloadError(
+        errorType: DownloadErrorType.unknownError,
+        savedPath: savedPath,
+        fileName: fileName,
+      );
   }
 }

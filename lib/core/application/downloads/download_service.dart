@@ -9,24 +9,12 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads/download.dart';
-import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/functional.dart';
 import 'notification.dart';
 
-abstract class DownloadService<T> {
-  Future<void> download(
-    T item, {
-    String? path,
-    String? folderName,
-    required FileNameGenerator fileNameGenerator,
-  });
-  Future<void> init();
-  void dispose();
-}
-
-enum DownloadError {
+enum DownloadErrorType {
   directoryNotFound,
   platformNotSupported,
   restrictedDirectory,
@@ -38,10 +26,22 @@ enum DownloadError {
   unknownError,
 }
 
+class DownloadError {
+  DownloadError({
+    required this.errorType,
+    required this.savedPath,
+    required this.fileName,
+  });
+
+  final DownloadErrorType errorType;
+  final Option<String> savedPath;
+  final String fileName;
+}
+
 typedef DownloadPathOrError = TaskEither<DownloadError, String>;
 typedef DownloadFileNameBuilder = String Function();
 
-abstract class DownloadService2 {
+abstract class DownloadService {
   DownloadPathOrError download({
     required String url,
     required DownloadFileNameBuilder fileNameBuilder,
@@ -54,7 +54,7 @@ abstract class DownloadService2 {
   });
 }
 
-extension DownloadWithSettingsX on DownloadService2 {
+extension DownloadWithSettingsX on DownloadService {
   DownloadPathOrError downloadWithSettings(
     Settings settings, {
     required String url,
@@ -75,49 +75,35 @@ extension DownloadWithSettingsX on DownloadService2 {
 }
 
 class Downloader {
-  static DownloadService2 of(BuildContext context) =>
-      context.read<DownloadService2>();
+  static DownloadService of(BuildContext context) =>
+      context.read<DownloadService>();
 }
 
 // map DownloadError to message
-String mapDownloadErrorToMessage(
-  DownloadError error,
-  String? path, {
-  String? fileName,
-}) {
-  switch (error) {
-    case DownloadError.directoryNotFound:
-      return path == null
-          ? 'Download directory not found'
-          : 'Directory $path not found';
-    case DownloadError.platformNotSupported:
+String mapDownloadErrorToMessage(DownloadError error) {
+  switch (error.errorType) {
+    case DownloadErrorType.directoryNotFound:
+      return 'Directory ${error.savedPath} not found';
+    case DownloadErrorType.platformNotSupported:
       return 'Platform not supported';
-    case DownloadError.restrictedDirectory:
-      return path == null
-          ? 'Restricted directory, cannot download to this directory'
-          : 'Restricted directory, cannot download to $path';
-    case DownloadError.httpRequestError:
+    case DownloadErrorType.restrictedDirectory:
+      return 'Restricted directory, cannot download to  ${error.savedPath}';
+    case DownloadErrorType.httpRequestError:
       return 'Http request error, failed to download';
-    case DownloadError.unknownError:
+    case DownloadErrorType.unknownError:
       return 'Unknown error';
-    case DownloadError.failedToCreateFile:
+    case DownloadErrorType.failedToCreateFile:
       return 'Failed to create file';
-    case DownloadError.needElevatedPermission:
-      return path == null
-          ? 'Need elevated permission in order to download'
-          : 'Need elevated permission in order to download to $path';
-    case DownloadError.readOnlyDirectory:
-      return path == null
-          ? 'Read only directory, cannot download to this directory'
-          : 'Read only directory, cannot download to $path';
-    case DownloadError.fileNameTooLong:
-      return fileName == null
-          ? 'File name too long'
-          : 'File name is too long, total length is ${fileName.length}';
+    case DownloadErrorType.needElevatedPermission:
+      return 'Need elevated permission in order to download to  ${error.savedPath}';
+    case DownloadErrorType.readOnlyDirectory:
+      return 'Read only directory, cannot download to  ${error.savedPath}';
+    case DownloadErrorType.fileNameTooLong:
+      return 'File name is too long, total length is  ${error.fileName.length}';
   }
 }
 
-class DioDownloadService implements DownloadService2 {
+class DioDownloadService implements DownloadService {
   DioDownloadService(this.dio, this.notifications);
 
   final Dio dio;
@@ -133,12 +119,9 @@ class DioDownloadService implements DownloadService2 {
         notifications: notifications,
         url: url,
         fileNameBuilder: fileNameBuilder,
-      ).flatMap(_reloadMediaIfAndroid).mapLeft((error) => _notifyFailure(
-            notifications,
-            error,
-            null,
-            fileName: fileNameBuilder(),
-          ));
+      )
+          .flatMap(_reloadMediaIfAndroid)
+          .mapLeft((error) => _notifyFailure(notifications, error));
 
   @override
   DownloadPathOrError downloadCustomLocation({
@@ -152,12 +135,9 @@ class DioDownloadService implements DownloadService2 {
         path: path,
         url: url,
         fileNameBuilder: fileNameBuilder,
-      ).flatMap(_reloadMediaIfAndroid).mapLeft((error) => _notifyFailure(
-            notifications,
-            error,
-            path,
-            fileName: fileNameBuilder(),
-          ));
+      )
+          .flatMap(_reloadMediaIfAndroid)
+          .mapLeft((error) => _notifyFailure(notifications, error));
 }
 
 DownloadPathOrError _reloadMediaIfAndroid(String path) => TaskEither(() async {
@@ -170,10 +150,7 @@ DownloadPathOrError _reloadMediaIfAndroid(String path) => TaskEither(() async {
 DownloadError _notifyFailure(
   DownloadNotifications notifications,
   DownloadError error,
-  String? path, {
-  String? fileName,
-}) {
-  notifications
-      .showFailed(mapDownloadErrorToMessage(error, path, fileName: fileName));
+) {
+  notifications.showFailed(mapDownloadErrorToMessage(error));
   return error;
 }

@@ -43,7 +43,6 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter_download_manager.git
       ref: dio
-  flutter_downloader: ^1.10.2
   flutter_hooks: ^0.18.4
   flutter_html:
     git:

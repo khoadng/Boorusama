@@ -31,11 +31,6 @@ enum DetailsDisplay {
   imageFocus,
 }
 
-enum DownloadMethod {
-  flutterDownloader,
-  imageGallerySaver,
-}
-
 enum ContentOrganizationCategory {
   infiniteScroll,
   pagination,

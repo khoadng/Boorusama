@@ -5,17 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
@@ -47,7 +43,6 @@ import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
 import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
-import 'package:boorusama/core/infra/downloads.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart' as l;
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -197,26 +192,7 @@ void main() async {
     appName: appInfo.appInfo.appName,
   );
 
-  //TODO: this notification is only used for download feature
-  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-    iOS: DarwinInitializationSettings(),
-    macOS: DarwinInitializationSettings(),
-  );
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: _localNotificatonHandler,
-  );
-
   logger.logI('Start up', 'Initialize downloader');
-
-  final downloader = await createDownloader(
-    settings.downloadMethod,
-    deviceInfo,
-    flutterLocalNotificationsPlugin,
-    userAgentGenerator,
-  );
 
   if (isWindows()) WindowsVideoPlayer.registerWith();
 
@@ -279,7 +255,8 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
-            RepositoryProvider<DownloadService>.value(value: downloader),
+            RepositoryProvider<DownloadService>.value(
+                value: dioDownloadService),
             RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<FavoriteTagRepository>.value(
               value: favoriteTagsRepo,
@@ -385,27 +362,6 @@ void main() async {
   }
 
   run();
-}
-
-Future<void> _localNotificatonHandler(NotificationResponse response) async {
-  if (response.payload == null) return;
-  if (isIOS()) {
-    //TODO: update usage for iOS
-    final uri = Uri.parse('photos-redirect://');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
-  } else if (isAndroid()) {
-    final intent = AndroidIntent(
-      action: 'action_view',
-      type: 'image/*',
-      //TODO: download path is hard-coded
-      data: Uri.parse('/storage/emulated/0/Pictures/${response.payload}')
-          .toString(),
-      flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
-    );
-    await intent.launch();
-  }
 }
 
 class DioProvider {

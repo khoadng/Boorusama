@@ -679,14 +679,6 @@ packages:
       url: "https://github.com/khoadng/flutter_download_manager.git"
     source: git
     version: "0.5.5"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      sha256: "6f2836668f33d0cd3ed275c3198d30967c42af53fa9b18c6b0edbf5fc12b599a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.10.2"
   flutter_hooks:
     dependency: "direct main"
     description:
