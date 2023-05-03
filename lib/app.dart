@@ -7,6 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
@@ -42,60 +43,62 @@ class _AppState extends State<App> {
     return Portal(
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
-            builder: (context, child) => ConditionalParentWidget(
-              condition: isDesktopPlatform(),
-              conditionalBuilder: (child) => Column(
-                children: [
-                  WindowTitleBarBox(
-                    child: Row(
-                      children: [
-                        Expanded(child: MoveWindow()),
-                        const WindowButtons(),
-                      ],
+          return OKToast(
+            child: MaterialApp(
+              builder: (context, child) => ConditionalParentWidget(
+                condition: isDesktopPlatform(),
+                conditionalBuilder: (child) => Column(
+                  children: [
+                    WindowTitleBarBox(
+                      child: Row(
+                        children: [
+                          Expanded(child: MoveWindow()),
+                          const WindowButtons(),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: child,
-                  ),
-                ],
+                    Expanded(
+                      child: child,
+                    ),
+                  ],
+                ),
+                child: ScrollConfiguration(
+                  behavior: AppScrollBehavior(),
+                  child: child!,
+                ),
               ),
-              child: ScrollConfiguration(
-                behavior: AppScrollBehavior(),
-                child: child!,
-              ),
-            ),
-            theme: AppTheme.lightTheme,
-            darkTheme: state.theme == ThemeMode.amoledDark
-                ? AppTheme.darkAmoledTheme
-                : AppTheme.darkTheme,
-            themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            debugShowCheckedModeBanner: false,
-            title: context.read<AppInfoProvider>().appInfo.appName,
-            navigatorKey: navigatorKey,
-            navigatorObservers: isAnalyticsEnabled(widget.settings)
-                ? [
-                    getAnalyticsObserver(),
-                  ]
-                : [],
-            home: ConditionalParentWidget(
-              condition: canRate(),
-              conditionalBuilder: (child) =>
-                  createAppRatingWidget(child: child),
-              child: CallbackShortcuts(
-                bindings: {
-                  const SingleActivator(
-                    LogicalKeyboardKey.keyF,
-                    control: true,
-                  ): () => goToSearchPage(context),
-                },
-                child: const CustomContextMenuOverlay(
-                  child: Focus(
-                    autofocus: true,
-                    child: HomePage(),
+              theme: AppTheme.lightTheme,
+              darkTheme: state.theme == ThemeMode.amoledDark
+                  ? AppTheme.darkAmoledTheme
+                  : AppTheme.darkTheme,
+              themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              debugShowCheckedModeBanner: false,
+              title: context.read<AppInfoProvider>().appInfo.appName,
+              navigatorKey: navigatorKey,
+              navigatorObservers: isAnalyticsEnabled(widget.settings)
+                  ? [
+                      getAnalyticsObserver(),
+                    ]
+                  : [],
+              home: ConditionalParentWidget(
+                condition: canRate(),
+                conditionalBuilder: (child) =>
+                    createAppRatingWidget(child: child),
+                child: CallbackShortcuts(
+                  bindings: {
+                    const SingleActivator(
+                      LogicalKeyboardKey.keyF,
+                      control: true,
+                    ): () => goToSearchPage(context),
+                  },
+                  child: const CustomContextMenuOverlay(
+                    child: Focus(
+                      autofocus: true,
+                      child: HomePage(),
+                    ),
                   ),
                 ),
               ),

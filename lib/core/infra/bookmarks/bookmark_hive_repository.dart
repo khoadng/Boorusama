@@ -6,6 +6,8 @@ import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
+import 'package:boorusama/functional.dart';
+import 'bookmark_convert.dart';
 
 class BookmarkHiveRepository implements BookmarkRepository {
   const BookmarkHiveRepository(this._box);
@@ -24,9 +26,14 @@ class BookmarkHiveRepository implements BookmarkRepository {
       sourceUrl: post.getLink(booru.url),
       width: post.width,
       height: post.height,
+      md5: post.md5,
     );
     await _box.add(favoriteHiveObject);
-    return favoriteHiveObjectToFavorite(favoriteHiveObject);
+
+    return tryMapBookmarkHiveObjectToBookmark(favoriteHiveObject).fold(
+      (l) => Bookmark.empty,
+      (r) => r,
+    );
   }
 
   @override
@@ -45,38 +52,8 @@ class BookmarkHiveRepository implements BookmarkRepository {
   }
 
   @override
-  Future<List<Bookmark>> getAllBookmarks() async {
-    return _box.values
-        .map((hiveObject) => favoriteHiveObjectToFavorite(hiveObject))
-        .toList();
-  }
-}
-
-Bookmark favoriteHiveObjectToFavorite(BookmarkHiveObject hiveObject) {
-  return Bookmark(
-    id: hiveObject.key,
-    booruId: hiveObject.booruId!,
-    createdAt: hiveObject.createdAt!,
-    updatedAt: hiveObject.updatedAt!,
-    thumbnailUrl: hiveObject.thumbnailUrl!,
-    sampleUrl: hiveObject.sampleUrl!,
-    originalUrl: hiveObject.originalUrl!,
-    sourceUrl: hiveObject.sourceUrl!,
-    width: hiveObject.width!,
-    height: hiveObject.height!,
-  );
-}
-
-BookmarkHiveObject favoriteToHiveObject(Bookmark favorite) {
-  return BookmarkHiveObject(
-    booruId: favorite.booruId,
-    createdAt: favorite.createdAt,
-    updatedAt: favorite.updatedAt,
-    thumbnailUrl: favorite.thumbnailUrl,
-    sampleUrl: favorite.sampleUrl,
-    originalUrl: favorite.originalUrl,
-    sourceUrl: favorite.sourceUrl,
-    width: favorite.width,
-    height: favorite.height,
-  );
+  BookmarksOrError getAllBookmarks() => TaskEither.fromEither(
+          tryGetBoxValues(_box).mapLeft(mapBoxErrorToBookmarkGetError))
+      .flatMap((objects) =>
+          TaskEither.fromEither(tryMapBookmarkHiveObjectsToBookmarks(objects)));
 }

@@ -70,6 +70,7 @@ dependencies:
     git:
       url: https://github.com/hilalbaig/number_inc_dec.git
       ref: f66ee872727172ce2fe57f118d569339d54c384d
+  oktoast: ^3.3.1
   package_info_plus: ^3.0.2
   page_transition: ^2.0.9
   path: ^1.8.2

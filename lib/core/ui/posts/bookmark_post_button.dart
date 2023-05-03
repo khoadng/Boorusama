@@ -30,7 +30,7 @@ class BookmarkPostButton extends StatelessWidget {
             return isBookmarked
                 ? IconButton(
                     onPressed: () {
-                      context.read<BookmarkCubit>().removeBookmark(
+                      context.read<BookmarkCubit>().removeBookmarkWithToast(
                             bookmarkState.getBookmark(
                                 post, state.booru!.booruType)!,
                           );
@@ -42,7 +42,7 @@ class BookmarkPostButton extends StatelessWidget {
                   )
                 : IconButton(
                     onPressed: () {
-                      context.read<BookmarkCubit>().addBookmark(
+                      context.read<BookmarkCubit>().addBookmarkWithToast(
                             "",
                             state.booru!,
                             post,
