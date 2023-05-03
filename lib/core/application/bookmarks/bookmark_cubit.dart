@@ -9,6 +9,7 @@ import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/toast.dart';
 
 enum BookmarkStatus { initial, loading, success, failure }
@@ -40,14 +41,17 @@ class BookmarkState extends Equatable {
   List<Object?> get props => [bookmarks, status, error];
 }
 
-class BookmarkCubit extends Cubit<BookmarkState> {
+class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
   BookmarkCubit({
     required this.bookmarkRepository,
     required this.downloadService,
+    required this.settingsRepository,
   }) : super(const BookmarkState());
 
   final BookmarkRepository bookmarkRepository;
   final DownloadService2 downloadService;
+  @override
+  final SettingsRepository settingsRepository;
 
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
@@ -119,10 +123,13 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   }
 
   Future<void> downloadAllBookmarks() async {
+    final settings = await getOrDefault();
     final tasks = state.bookmarks
         .map((bookmark) => downloadService
-            .download(
+            .downloadWithSettings(
+              settings,
               url: bookmark.originalUrl,
+              folderName: "Bookmarks",
               fileNameBuilder: () =>
                   bookmark.md5 + extension(bookmark.originalUrl),
             )

@@ -24,6 +24,13 @@ TaskEither<DownloadDirectoryError, Directory> tryGetDownloadDirectory() =>
                 .mapLeft(_mapDirectoryErrorToDownloadDirectoryError)
             : TaskEither.left(DownloadDirectoryError.unImplementedPlatform);
 
+TaskEither<DownloadDirectoryError, Directory> tryGetCustomDownloadDirectory(
+        String path) =>
+    isWeb()
+        ? TaskEither.left(DownloadDirectoryError.webPlatformNotSupported)
+        : tryGetDirectory(path)
+            .mapLeft(_mapDirectoryErrorToDownloadDirectoryError);
+
 bool _isSupportedPlatforms() => isAndroid() || isIOS() || isWindows();
 
 // map DirectoryError to DownloadDirectoryError

@@ -357,6 +357,7 @@ void main() async {
               ),
               BlocProvider(
                 create: (context) => BookmarkCubit(
+                  settingsRepository: settingRepository,
                   bookmarkRepository: context.read<BookmarkRepository>(),
                   downloadService: dioDownloadService,
                 )..getAllBookmarksWithToast(),
