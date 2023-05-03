@@ -7,6 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
@@ -20,7 +21,6 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/home_page.dart';
-import 'package:oktoast/oktoast.dart';
 import 'boorus/danbooru/router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();

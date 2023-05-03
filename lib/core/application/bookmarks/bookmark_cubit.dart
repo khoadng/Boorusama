@@ -1,17 +1,15 @@
 // Package imports:
-import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/ui/toast.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:boorusama/core/ui/toast.dart';
 
 enum BookmarkStatus { initial, loading, success, failure }
 
@@ -45,13 +43,11 @@ class BookmarkState extends Equatable {
 class BookmarkCubit extends Cubit<BookmarkState> {
   BookmarkCubit({
     required this.bookmarkRepository,
-    // required this.downloadService,
-    required this.fileNameGenerator,
+    required this.downloadService,
   }) : super(const BookmarkState());
 
   final BookmarkRepository bookmarkRepository;
-  // final DownloadService<Bookmark> downloadService;
-  final FileNameGenerator<Bookmark> fileNameGenerator;
+  final DownloadService2 downloadService;
 
   Future<void> getAllBookmarks({
     void Function()? onError,
@@ -123,12 +119,16 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   }
 
   Future<void> downloadAllBookmarks() async {
-    //FIXME: fix download all bookmarks
-    // final tasks = state.bookmarks
-    //     .map((e) =>
-    //         downloadService.download(e, fileNameGenerator: fileNameGenerator))
-    //     .toList();
-    // await Future.wait(tasks);
+    final tasks = state.bookmarks
+        .map((bookmark) => downloadService
+            .download(
+              url: bookmark.originalUrl,
+              fileNameBuilder: () =>
+                  bookmark.md5 + extension(bookmark.originalUrl),
+            )
+            .run())
+        .toList();
+    await Future.wait(tasks);
   }
 }
 

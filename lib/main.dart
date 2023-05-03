@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/core/application/bookmarks/bookmark_file_name_generator.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -28,6 +27,7 @@ import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -259,6 +259,13 @@ void main() async {
     booruUserIdentityProvider: booruUserIdProvider,
   );
 
+  final downloadNotifications = await DownloadNotifications.create();
+
+  final dioDownloadService = DioDownloadService(
+    dioProvider.getDio(null),
+    downloadNotifications,
+  );
+
   logger.logI('Start up',
       'Initializtion done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
@@ -351,7 +358,7 @@ void main() async {
               BlocProvider(
                 create: (context) => BookmarkCubit(
                   bookmarkRepository: context.read<BookmarkRepository>(),
-                  fileNameGenerator: BookmarkFileNameGenerator(),
+                  downloadService: dioDownloadService,
                 )..getAllBookmarks(),
               ),
               BlocProvider(create: (context) => CacheCubit()),
@@ -411,5 +418,5 @@ class DioProvider {
   final UserAgentGenerator generator;
   final l.LoggerService loggerService;
 
-  Dio getDio(String baseUrl) => dio(dir, baseUrl, generator, loggerService);
+  Dio getDio(String? baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }

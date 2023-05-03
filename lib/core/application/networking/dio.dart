@@ -13,12 +13,12 @@ import 'package:boorusama/core/infra/networks/dio_logger_interceptor.dart';
 
 Dio dio(
   Directory dir,
-  String baseUrl,
+  String? baseUrl,
   UserAgentGenerator generator,
   LoggerService logger,
 ) {
   final dio = Dio(BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: baseUrl ?? '',
     headers: {
       'User-Agent': generator.generate(),
     },

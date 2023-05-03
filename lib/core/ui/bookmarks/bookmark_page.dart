@@ -54,6 +54,9 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                     case 'edit':
                       startEditMode();
                       break;
+                    case 'download_all':
+                      context.read<BookmarkCubit>().downloadAllBookmarks();
+                      break;
                     default:
                   }
                 },
@@ -62,6 +65,10 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                     const PopupMenuItem(
                       value: 'edit',
                       child: Text('Edit'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'download_all',
+                      child: Text('Download All'),
                     ),
                   ];
                 },
@@ -127,6 +134,22 @@ class _BookmarkPageState extends State<BookmarkPage> with EditableMixin {
                                         .removeBookmarkWithToast(bookmark),
                                   ),
                                 ),
+                              // Positioned(
+                              //   top: 5,
+                              //   left: 5,
+                              //   child: CircularIconButton(
+                              //     icon: const Icon(Icons.download),
+                              //     onPressed: () => context
+                              //         .read<DioDownloadService>()
+                              //         .download(
+                              //           url: bookmark.originalUrl,
+                              //           fileNameBuilder: () =>
+                              //               bookmark.md5 +
+                              //               extension(bookmark.originalUrl),
+                              //         )
+                              //         .run(),
+                              //   ),
+                              // ),
                             ],
                           ),
                         );
