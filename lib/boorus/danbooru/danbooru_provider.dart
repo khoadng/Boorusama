@@ -52,6 +52,7 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/main.dart';
 import 'infra/dtos/post_dto.dart';
 
