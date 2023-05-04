@@ -235,7 +235,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
           children: [
             _buildScrollContent(),
             _buildNavigationButtonGroup(theme, context),
-            _buildTopRightButtonGroup(),
+            _buildTopRightButtonGroup(theme),
             _buildBottomSheet(),
           ],
         ),
@@ -369,7 +369,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     );
   }
 
-  Widget _buildTopRightButtonGroup() {
+  Widget _buildTopRightButtonGroup(ThemeMode theme) {
     return ValueListenableBuilder<bool>(
       valueListenable: _controller.hideOverlay,
       builder: (_, hide, __) => !hide
@@ -381,8 +381,47 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
               child: Transform.translate(
                 offset: Offset(0, _topRightButtonGroupOffset),
                 child: ButtonBar(
-                  children: widget
-                      .topRightButtonsBuilder(controller.currentPage.value),
+                  children: [
+                    ValueListenableBuilder<bool>(
+                      valueListenable: isExpanded,
+                      builder: (context, expanded, child) => expanded
+                          ? CircularIconButton(
+                              icon: theme == ThemeMode.light
+                                  ? Icon(
+                                      Icons.home,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    )
+                                  : const Icon(Icons.keyboard_double_arrow_up),
+                              onPressed: () =>
+                                  controller.animateViewportOffsetTo(
+                                      ViewportOffset.shrunk,
+                                      curve: Curves.easeOut,
+                                      duration:
+                                          const Duration(milliseconds: 50)),
+                            )
+                          : CircularIconButton(
+                              icon: theme == ThemeMode.light
+                                  ? Icon(
+                                      Icons.home,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    )
+                                  : const Icon(
+                                      Icons.keyboard_double_arrow_down),
+                              onPressed: () =>
+                                  controller.animateViewportOffsetTo(
+                                      ViewportOffset.expanded,
+                                      curve: Curves.easeOut,
+                                      duration:
+                                          const Duration(milliseconds: 50)),
+                            ),
+                    ),
+                    ...widget
+                        .topRightButtonsBuilder(controller.currentPage.value),
+                  ],
                 ),
               ),
             )
