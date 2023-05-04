@@ -1,6 +1,5 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/search.dart';
 
@@ -22,7 +21,6 @@ class DanbooruSearchBloc extends SearchBloc {
     required this.relatedTagBloc,
     required super.searchHistoryBloc,
     required super.searchHistorySuggestionsBloc,
-    required this.postCountRepository,
     required super.metatags,
     required super.booruType,
     super.initialQuery,
@@ -33,7 +31,6 @@ class DanbooruSearchBloc extends SearchBloc {
   }
 
   final RelatedTagBloc relatedTagBloc;
-  final PostCountRepository postCountRepository;
 
   @override
   void onBackToOptions() {
@@ -47,8 +44,4 @@ class DanbooruSearchBloc extends SearchBloc {
     // postCubit.setTags(query);
     // postCubit.refresh();
   }
-
-  @override
-  Future<int?> fetchPostCount(List<String> tags) =>
-      postCountRepository.count(tags);
 }

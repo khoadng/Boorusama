@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/application/search/moebooru_search_bloc.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/search/moebooru_search_page.dart';
@@ -49,7 +48,7 @@ void goToMoebooruSearchPage(
               searchHistoryRepository: context.read<SearchHistoryRepository>(),
             );
 
-            final searchBloc = MoebooruSearchBloc(
+            final searchBloc = SearchBloc(
               initial: DisplayState.options,
               tagSearchBloc: tagSearchBloc,
               searchHistoryBloc: searchHistoryBloc,

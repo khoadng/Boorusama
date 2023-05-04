@@ -36,6 +36,7 @@ class PostGrid<T> extends StatefulWidget {
     this.multiSelectController,
     required this.controller,
     this.refreshAtStart = true,
+    this.enablePullToRefresh = true,
   });
 
   final VoidCallback? onLoadMore;
@@ -48,6 +49,7 @@ class PostGrid<T> extends StatefulWidget {
   final double? extendBodyHeight;
 
   final bool refreshAtStart;
+  final bool enablePullToRefresh;
 
   final ItemWidgetBuilder<T> itemBuilder;
   final FooterBuilder<T>? footerBuilder;
@@ -241,7 +243,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                   ),
                   body: RefreshIndicator(
                     notificationPredicate:
-                        widget.onRefresh != null ? (_) => true : (_) => false,
+                        widget.enablePullToRefresh ? (_) => true : (_) => false,
                     onRefresh: () async {
                       widget.onRefresh?.call();
                       _multiSelectController.clearSelected();

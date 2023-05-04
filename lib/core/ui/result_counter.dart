@@ -1,29 +1,19 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Project imports:
-import 'package:boorusama/core/application/search.dart';
-
 class ResultCounter extends StatelessWidget {
   const ResultCounter({
     super.key,
+    required this.count,
+    required this.loading,
   });
+
+  final bool loading;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    final count = context.select((SearchBloc bloc) => bloc.state.totalResults);
-
-    if (count == null) return const SizedBox.shrink();
-
-    if (count > 0) {
-      return Text(
-        '$count Results',
-        style: Theme.of(context).textTheme.titleLarge,
-      );
-    } else if (count < 0) {
+    if (loading) {
       return Row(
         children: [
           Text(
@@ -37,6 +27,13 @@ class ResultCounter extends StatelessWidget {
             child: CircularProgressIndicator.adaptive(),
           ),
         ],
+      );
+    }
+
+    if (count > 0) {
+      return Text(
+        '$count Results',
+        style: Theme.of(context).textTheme.titleLarge,
       );
     } else {
       return Text(

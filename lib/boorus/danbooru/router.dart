@@ -334,7 +334,6 @@ Widget provideSearchPageDependencies(
                   searchHistoryBloc: searchHistoryCubit,
                   relatedTagBloc: relatedTagBloc,
                   searchHistorySuggestionsBloc: searchHistorySuggestions,
-                  postCountRepository: context.read<PostCountRepository>(),
                   initialQuery: tag,
                   booruType: state.booru!.booruType,
                 ),

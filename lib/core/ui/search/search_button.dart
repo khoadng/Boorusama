@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
@@ -20,11 +21,18 @@ class SearchButton extends StatelessWidget {
 
     return ConditionalRenderWidget(
       condition: allowSearch,
-      childBuilder: (context) => FloatingActionButton(
-        onPressed: () =>
-            context.read<SearchBloc>().add(const SearchRequested()),
-        heroTag: null,
-        child: const Icon(Icons.search),
+      childBuilder: (context) => BlocBuilder<TagSearchBloc, TagSearchState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            onPressed: () {
+              context.read<SearchBloc>().add(const SearchRequested());
+              context.read<PostCountCubit>().getPostCount(
+                  state.selectedTags.map((e) => e.toString()).toList());
+            },
+            heroTag: null,
+            child: const Icon(Icons.search),
+          );
+        },
       ),
     );
   }

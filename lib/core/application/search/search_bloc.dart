@@ -30,7 +30,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           displayState: initial,
           tagSearchState: tagSearchBloc.state,
           metatags: metatags,
-          totalResults: 0,
         )) {
     on<SearchQueryChanged>((event, emit) {
       if (event.query.isEmpty) {
@@ -147,16 +146,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       onSearch(event.query);
 
-      emit(state.copyWith(totalResults: () => -1));
-
       final tags = event.query.split(' ');
       if (booruType == BooruType.safebooru) {
         tags.add('rating:g');
       }
-
-      final totalResults = await fetchPostCount(tags);
-
-      emit(state.copyWith(totalResults: () => totalResults));
     });
 
     on<_CopyState>((event, emit) {
@@ -199,8 +192,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   void onInit() {}
   // ignore: no-empty-block
   void onBackToOptions() {}
-
-  Future<int?> fetchPostCount(List<String> tags) async => null;
 }
 
 class _CopyState extends SearchEvent {

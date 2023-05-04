@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/application/search/gelbooru_search_bloc.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
@@ -64,7 +63,7 @@ void goToGelbooruSearchPage(
           searchHistoryRepository: context.read<SearchHistoryRepository>(),
         );
 
-        final searchBloc = GelbooruSearchBloc(
+        final searchBloc = SearchBloc(
           initial: DisplayState.options,
           tagSearchBloc: tagSearchBloc,
           searchHistoryBloc: searchHistoryBloc,

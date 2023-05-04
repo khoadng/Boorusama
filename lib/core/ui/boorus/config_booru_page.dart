@@ -49,27 +49,27 @@ class ConfigBooruPage extends StatefulWidget {
         ..changeUrl(url),
       child: ConfigBooruPage(
         onSubmit: (newConfig) {
-          bloc.add(
-            ManageBooruAdded(
-              config: newConfig,
-              onSuccess: (booruConfig) {
-                if (initialConfig == null) {
+          if (initialConfig == null) {
+            bloc.add(
+              ManageBooruAdded(
+                config: newConfig,
+                onSuccess: (booruConfig) {
                   if (setCurrentBooruOnSubmit) {
                     currentBooruBloc.add(CurrentBooruChanged(
                       booruConfig: booruConfig,
                       settings: settings,
                     ));
                   }
-                } else {
-                  bloc.add(ManageBooruUpdated(
-                    config: newConfig,
-                    oldConfig: initialConfig,
-                    id: initialConfig.id,
-                  ));
-                }
-              },
-            ),
-          );
+                },
+              ),
+            );
+          } else {
+            bloc.add(ManageBooruUpdated(
+              config: newConfig,
+              oldConfig: initialConfig,
+              id: initialConfig.id,
+            ));
+          }
         },
         initial: initialConfig,
         booruFactory: booruFactory,

@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
@@ -18,9 +16,11 @@ class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({
     super.key,
     required this.relatedTag,
+    required this.onSelected,
   });
 
   final RelatedTag relatedTag;
+  final void Function(RelatedTagItem item) onSelected;
 
   @override
   State<RelatedTagHeader> createState() => _RelatedTagHeaderState();
@@ -38,7 +38,10 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...tags.take(10).map((item) => _RelatedTagChip(relatedTag: item)),
+          ...tags.take(10).map((item) => _RelatedTagChip(
+                relatedTag: item,
+                onPressed: () => widget.onSelected(item),
+              )),
           const VerticalDivider(
             indent: 12,
             endIndent: 12,
@@ -60,9 +63,11 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
 class _RelatedTagChip extends StatelessWidget {
   const _RelatedTagChip({
     required this.relatedTag,
+    required this.onPressed,
   });
 
   final RelatedTagItem relatedTag;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +75,7 @@ class _RelatedTagChip extends StatelessWidget {
 
     return RelatedTagButton(
       backgroundColor: getTagColor(relatedTag.category, theme),
-      onPressed: () => context
-          .read<SearchBloc>()
-          .add(SearchRelatedTagSelected(tag: relatedTag)),
+      onPressed: onPressed,
       label: Text(
         relatedTag.tag.removeUnderscoreWithSpace(),
         overflow: TextOverflow.fade,
