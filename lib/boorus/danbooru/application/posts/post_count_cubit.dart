@@ -20,17 +20,29 @@ class PostCountCubit extends Cubit<PostCountState> {
   final PostCountRepository repository;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final BooruFactory booruFactory;
+  final Duration cacheDuration;
+
+  // Store timestamps for cache keys
+  final Map<String, DateTime> _postCountTimestamps = {};
 
   PostCountCubit({
     required this.repository,
     required this.currentBooruConfigRepository,
     required this.booruFactory,
+    this.cacheDuration = const Duration(minutes: 1),
   }) : super(PostCountState.initial());
 
   Future<void> getPostCount(List<String> tags) async {
     try {
       final cacheKey = generatePostCountKey(tags);
-      if (state.postCounts.containsKey(cacheKey)) return;
+
+      // Check if the cache is still valid.
+      final cacheTimestamp = _postCountTimestamps[cacheKey];
+      if (cacheTimestamp != null &&
+          DateTime.now().difference(cacheTimestamp) < cacheDuration &&
+          state.postCounts.containsKey(cacheKey)) {
+        return;
+      }
 
       final config = await currentBooruConfigRepository.get();
       if (config == null) return;
@@ -48,6 +60,9 @@ class PostCountCubit extends Cubit<PostCountState> {
         ...state.postCounts,
         cacheKey: postCount,
       }));
+
+      // Update the timestamp for the cache key
+      _postCountTimestamps[cacheKey] = DateTime.now();
     } catch (e) {
       if (kDebugMode) {
         print(e);
