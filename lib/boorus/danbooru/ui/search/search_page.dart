@@ -8,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
@@ -106,7 +107,14 @@ class _LargeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: const SearchButton(),
+      floatingActionButton: BlocBuilder<TagSearchBloc, TagSearchState>(
+        builder: (context, state) {
+          return SearchButton(
+            onSearch: () => context.read<PostCountCubit>().getPostCount(
+                state.selectedTags.map((e) => e.toString()).toList()),
+          );
+        },
+      ),
       body: Row(
         children: [
           ConstrainedBox(
@@ -338,7 +346,14 @@ class _SmallLayoutState extends State<_SmallLayout> {
     switch (displayState) {
       case DisplayState.options:
         return Scaffold(
-          floatingActionButton: const SearchButton(),
+          floatingActionButton: BlocBuilder<TagSearchBloc, TagSearchState>(
+            builder: (context, state) {
+              return SearchButton(
+                onSearch: () => context.read<PostCountCubit>().getPostCount(
+                    state.selectedTags.map((e) => e.toString()).toList()),
+              );
+            },
+          ),
           appBar: _AppBar(
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
