@@ -205,33 +205,22 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     );
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
-      tagStore.addTags(event.tags
-          .split(' ')
-          .map((tag) => TagSearchItem.fromString(tag, tagInfo))
-          .toList());
+      tagStore.addTags(event.tags.split(' ').toList());
     });
 
     on<TagSearchNewRawStringTagSelected>((event, emit) {
-      tagStore.addTag(TagSearchItem.fromString(
-        '${filterOperatorToString(state.operator)}${event.tag}',
-        tagInfo,
-      ));
+      tagStore.addTag('${filterOperatorToString(state.operator)}${event.tag}');
     });
 
     on<TagSearchNewRawStringTagsSelected>((event, emit) {
       tagStore.addTags(event.tags
-          .map((tag) => TagSearchItem.fromString(
-                '${filterOperatorToString(state.operator)}$tag',
-                tagInfo,
-              ))
+          .map((tag) => '${filterOperatorToString(state.operator)}$tag')
           .toList());
     });
 
     on<TagSearchNewTagSelected>((event, emit) {
-      tagStore.addTag(TagSearchItem.fromString(
-        '${filterOperatorToString(state.operator)}${event.tag.value}',
-        tagInfo,
-      ));
+      tagStore.addTag(
+          '${filterOperatorToString(state.operator)}${event.tag.value}');
     });
 
     on<TagSearchCleared>((event, emit) => emit(state.copyWith(
@@ -248,10 +237,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchSubmitted>((event, emit) {
       if (state.query.isEmpty) return;
-      tagStore.addTag(TagSearchItem.fromString(
-        state.query,
-        tagInfo,
-      ));
+      tagStore.addTag(state.query);
     });
 
     on<TagSearchSelectedTagCleared>((event, emit) {
