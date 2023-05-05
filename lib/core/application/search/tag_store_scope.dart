@@ -1,13 +1,15 @@
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'tag_store.dart';
 
 class TagStoreScope extends StatefulWidget {
-  final Widget Function(TagStore tagStore) builder;
-
   const TagStoreScope({
     Key? key,
     required this.builder,
   }) : super(key: key);
+
+  final Widget Function(TagStore tagStore) builder;
 
   static TagStore of(BuildContext context) {
     final _TagStoreScopeState? tagStoreScopeState =
@@ -18,17 +20,11 @@ class TagStoreScope extends StatefulWidget {
   }
 
   @override
-  _TagStoreScopeState createState() => _TagStoreScopeState();
+  State<TagStoreScope> createState() => _TagStoreScopeState();
 }
 
 class _TagStoreScopeState extends State<TagStoreScope> {
-  late final TagStore tagStore;
-
-  @override
-  void initState() {
-    super.initState();
-    tagStore = TagStore();
-  }
+  late final TagStore tagStore = TagStore(context.read<TagInfo>());
 
   @override
   void dispose() {
