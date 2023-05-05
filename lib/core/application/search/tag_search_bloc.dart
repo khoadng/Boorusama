@@ -205,22 +205,31 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     );
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
-      tagStore.addTags(event.tags.split(' ').toList());
+      tagStore.addTags(
+        event.tags.split(' ').toList(),
+        operator: state.operator,
+      );
     });
 
     on<TagSearchNewRawStringTagSelected>((event, emit) {
-      tagStore.addTag('${filterOperatorToString(state.operator)}${event.tag}');
+      tagStore.addTag(
+        event.tag,
+        operator: state.operator,
+      );
     });
 
     on<TagSearchNewRawStringTagsSelected>((event, emit) {
-      tagStore.addTags(event.tags
-          .map((tag) => '${filterOperatorToString(state.operator)}$tag')
-          .toList());
+      tagStore.addTags(
+        event.tags.toList(),
+        operator: state.operator,
+      );
     });
 
     on<TagSearchNewTagSelected>((event, emit) {
       tagStore.addTag(
-          '${filterOperatorToString(state.operator)}${event.tag.value}');
+        event.tag.value,
+        operator: state.operator,
+      );
     });
 
     on<TagSearchCleared>((event, emit) => emit(state.copyWith(
@@ -237,7 +246,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchSubmitted>((event, emit) {
       if (state.query.isEmpty) return;
-      tagStore.addTag(state.query);
+      tagStore.addTag(
+        state.query,
+        operator: state.operator,
+      );
     });
 
     on<TagSearchSelectedTagCleared>((event, emit) {

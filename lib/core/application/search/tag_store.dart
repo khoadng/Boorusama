@@ -1,4 +1,4 @@
-import 'package:boorusama/core/application/search/tag_search_item.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -12,16 +12,24 @@ class TagStore {
   List<TagSearchItem> get currentTags => _tagsSubject.value;
 
   TagSearchItem _toItem(String tag) => TagSearchItem.fromString(tag, tagInfo);
+  String _applyOperator(String tag, FilterOperator operator) =>
+      '${filterOperatorToString(operator)}$tag';
 
-  void addTag(String tag) {
+  void addTag(
+    String tag, {
+    FilterOperator operator = FilterOperator.none,
+  }) {
     final updatedTags = List<TagSearchItem>.from(currentTags)
-      ..add(_toItem(tag));
+      ..add(_toItem(_applyOperator(tag, operator)));
     _tagsSubject.add(updatedTags);
   }
 
-  void addTags(List<String> tags) {
+  void addTags(
+    List<String> tags, {
+    FilterOperator operator = FilterOperator.none,
+  }) {
     final updatedTags = List<TagSearchItem>.from(currentTags)
-      ..addAll(tags.map(_toItem));
+      ..addAll(tags.map((tag) => _applyOperator(tag, operator)).map(_toItem));
     _tagsSubject.add(updatedTags);
   }
 
