@@ -9,6 +9,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -353,7 +354,7 @@ void main() async {
                   },
                 ),
               ],
-              child: App(settings: settings),
+              child: ProviderScope(child: App(settings: settings)),
             ),
           ),
         ),

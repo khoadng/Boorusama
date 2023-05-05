@@ -1,11 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -316,7 +317,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
-class _SmallLayout extends StatefulWidget {
+class _SmallLayout extends ConsumerWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
@@ -326,20 +327,7 @@ class _SmallLayout extends StatefulWidget {
   final RichTextController queryEditingController;
 
   @override
-  State<_SmallLayout> createState() => _SmallLayoutState();
-}
-
-class _SmallLayoutState extends State<_SmallLayout> {
-  final scrollController = AutoScrollController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    scrollController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final displayState =
         context.select((SearchBloc bloc) => bloc.state.displayState);
 
@@ -349,14 +337,16 @@ class _SmallLayoutState extends State<_SmallLayout> {
           floatingActionButton: BlocBuilder<TagSearchBloc, TagSearchState>(
             builder: (context, state) {
               return SearchButton(
-                onSearch: () => context.read<PostCountCubit>().getPostCount(
-                    state.selectedTags.map((e) => e.toString()).toList()),
+                onSearch: () {
+                  ref.read(postCountStateProvider.notifier).getPostCount(
+                      state.selectedTags.map((e) => e.toString()).toList());
+                },
               );
             },
           ),
           appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -365,9 +355,9 @@ class _SmallLayoutState extends State<_SmallLayout> {
                   const _SelectedTagList(),
                   const _Divider(),
                   _LandingView(
-                    onFocusRequest: () => widget.focus.requestFocus(),
+                    onFocusRequest: () => focus.requestFocus(),
                     onTextChanged: (text) =>
-                        _onTextChanged(widget.queryEditingController, text),
+                        _onTextChanged(queryEditingController, text),
                   ),
                 ],
               ),
@@ -377,8 +367,8 @@ class _SmallLayoutState extends State<_SmallLayout> {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
+            focusNode: focus,
+            queryEditingController: queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -387,7 +377,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
                 const _Divider(),
                 Expanded(
                   child: _TagSuggestionItems(
-                    queryEditingController: widget.queryEditingController,
+                    queryEditingController: queryEditingController,
                   ),
                 ),
               ],
@@ -397,7 +387,6 @@ class _SmallLayoutState extends State<_SmallLayout> {
 
       case DisplayState.result:
         return ResultView(
-          scrollController: scrollController,
           headerBuilder: () => [
             SliverAppBar(
               titleSpacing: 0,

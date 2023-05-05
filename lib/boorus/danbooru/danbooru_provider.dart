@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/posts/post_count_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -54,6 +55,7 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'infra/dtos/post_dto.dart';
 
 class DanbooruProvider extends StatelessWidget {
@@ -581,8 +583,49 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: commentsCubit),
           BlocProvider.value(value: postCountCubit),
         ],
-        child: Builder(builder: builder),
+        child: ProviderScope(
+          overrides: [
+            postCountRepoProvider.overrideWithValue(postCountRepo),
+            currentBooruConfigRepoProvider
+                .overrideWithValue(currentBooruConfigRepo),
+            booruFactoryProvider
+                .overrideWithValue(context.read<BooruFactory>()),
+          ],
+          child: Builder(builder: builder),
+        ),
       ),
     );
   }
 }
+
+final postCountRepoProvider =
+    Provider<PostCountRepository>((ref) => throw UnimplementedError());
+
+final currentBooruConfigRepoProvider =
+    Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());
+
+final booruFactoryProvider =
+    Provider<BooruFactory>((ref) => throw UnimplementedError());
+
+final postCountStateProvider =
+    StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
+  final postCountRepo = ref.watch(postCountRepoProvider);
+  final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruFactory = ref.watch(booruFactoryProvider);
+
+  return PostCountNotifier(
+    repository: postCountRepo,
+    currentBooruConfigRepository: currentBooruConfigRepo,
+    booruFactory: booruFactory,
+  );
+}, dependencies: [
+  postCountRepoProvider,
+  currentBooruConfigRepoProvider,
+  booruFactoryProvider,
+]);
+
+final postCountProvider = Provider<PostCountState>((ref) {
+  return ref.watch(postCountStateProvider);
+}, dependencies: [
+  postCountStateProvider,
+]);

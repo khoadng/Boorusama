@@ -1,8 +1,10 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -17,7 +19,7 @@ import 'package:boorusama/functional.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
-class ResultView extends StatefulWidget {
+class ResultView extends ConsumerStatefulWidget {
   const ResultView({
     super.key,
     this.headerBuilder,
@@ -30,10 +32,10 @@ class ResultView extends StatefulWidget {
   final Color? backgroundColor;
 
   @override
-  State<ResultView> createState() => _ResultViewState();
+  ConsumerState<ResultView> createState() => _ResultViewState();
 }
 
-class _ResultViewState extends State<ResultView> {
+class _ResultViewState extends ConsumerState<ResultView> {
   final refreshController = RefreshController();
   late final scrollController =
       widget.scrollController ?? AutoScrollController();
@@ -49,9 +51,13 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
+    final postCountState = ref.watch(postCountProvider);
+
     return BlocBuilder<TagSearchBloc, TagSearchState>(
       builder: (context, state) => BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
+          final tags = state.selectedTags.map((e) => e.toString()).toList();
+
           return DanbooruPostScope(
             fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
                   state.selectedTags.join(' '),
@@ -67,29 +73,18 @@ class _ResultViewState extends State<ResultView> {
                   SliverToBoxAdapter(
                       child: Row(
                     children: [
-                      BlocBuilder<PostCountCubit, PostCountState>(
-                        builder: (context, postCountState) {
-                          final tags = state.selectedTags
-                              .map((e) => e.toString())
-                              .toList();
-                          if (postCountState.isLoading(tags)) {
-                            return const ResultHeader(count: 0, loading: true);
-                          } else if (postCountState.isEmpty(tags)) {
-                            return const SizedBox.shrink();
-                          } else {
-                            return postCountState
-                                .getPostCount(tags)
-                                .toOption()
-                                .fold(
-                                  () => const SizedBox.shrink(),
-                                  (count) => ResultHeader(
-                                    count: count,
-                                    loading: false,
-                                  ),
-                                );
-                          }
-                        },
-                      ),
+                      if (postCountState.isLoading(tags))
+                        const ResultHeader(count: 0, loading: true)
+                      else if (postCountState.isEmpty(tags))
+                        const SizedBox.shrink()
+                      else
+                        postCountState.getPostCount(tags).toOption().fold(
+                              () => const SizedBox.shrink(),
+                              (count) => ResultHeader(
+                                count: count,
+                                loading: false,
+                              ),
+                            ),
                       const Spacer(),
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
