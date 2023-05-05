@@ -205,12 +205,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     );
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
-      event.tags.split(' ').forEach(
-          (tag) => tagStore.addTag(TagSearchItem.fromString(tag, tagInfo)));
-      emit(state.copyWith(
-        query: '',
-        suggestionTags: [],
-      ));
+      tagStore.addTags(event.tags
+          .split(' ')
+          .map((tag) => TagSearchItem.fromString(tag, tagInfo))
+          .toList());
     });
 
     on<TagSearchNewRawStringTagSelected>((event, emit) {
@@ -218,33 +216,21 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         '${filterOperatorToString(state.operator)}${event.tag}',
         tagInfo,
       ));
-      emit(state.copyWith(
-        query: '',
-        suggestionTags: [],
-      ));
     });
 
     on<TagSearchNewRawStringTagsSelected>((event, emit) {
-      for (var tag in event.tags) {
-        tagStore.addTag(TagSearchItem.fromString(
-          '${filterOperatorToString(state.operator)}$tag',
-          tagInfo,
-        ));
-      }
-      emit(state.copyWith(
-        query: '',
-        suggestionTags: [],
-      ));
+      tagStore.addTags(event.tags
+          .map((tag) => TagSearchItem.fromString(
+                '${filterOperatorToString(state.operator)}$tag',
+                tagInfo,
+              ))
+          .toList());
     });
 
     on<TagSearchNewTagSelected>((event, emit) {
       tagStore.addTag(TagSearchItem.fromString(
         '${filterOperatorToString(state.operator)}${event.tag.value}',
         tagInfo,
-      ));
-      emit(state.copyWith(
-        query: '',
-        suggestionTags: [],
       ));
     });
 
@@ -266,10 +252,6 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         state.query,
         tagInfo,
       ));
-      emit(state.copyWith(
-        query: '',
-        suggestionTags: [],
-      ));
     });
 
     on<TagSearchSelectedTagCleared>((event, emit) {
@@ -287,7 +269,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     on<_Init>((event, emit) async {
       await emit.forEach(
         tagStore.tagsStream,
-        onData: (data) => state.copyWith(selectedTags: data),
+        onData: (data) {
+          return state.copyWith(
+            query: '',
+            suggestionTags: [],
+            selectedTags: data,
+          );
+        },
       );
     });
 

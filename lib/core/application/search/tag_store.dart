@@ -18,6 +18,11 @@ class TagStore {
     _tagsSubject.add(updatedTags);
   }
 
+  void addTags(List<TagSearchItem> tags) {
+    final updatedTags = List<TagSearchItem>.from(currentTags)..addAll(tags);
+    _tagsSubject.add(updatedTags);
+  }
+
   // Remove a tag from the list
   void removeTag(TagSearchItem tag) {
     final updatedTags = List<TagSearchItem>.from(currentTags)..remove(tag);
