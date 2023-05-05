@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -295,56 +296,59 @@ Widget provideSearchPageDependencies(
 ) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (context) {
-          final tagSearchBloc = TagSearchBloc(
-            tagInfo: context.read<TagInfo>(),
-            autocompleteRepository: context.read<AutocompleteRepository>(),
-          );
+      return TagStoreScope(
+        builder: (tagStore) => DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (context) {
+            final tagSearchBloc = TagSearchBloc(
+              tagStore: tagStore,
+              tagInfo: context.read<TagInfo>(),
+              autocompleteRepository: context.read<AutocompleteRepository>(),
+            );
 
-          final searchHistoryCubit = SearchHistoryBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
-          final relatedTagBloc = RelatedTagBloc(
-            relatedTagRepository: context.read<RelatedTagRepository>(),
-          );
-          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
+            final searchHistoryCubit = SearchHistoryBloc(
+              searchHistoryRepository: context.read<SearchHistoryRepository>(),
+            );
+            final relatedTagBloc = RelatedTagBloc(
+              relatedTagRepository: context.read<RelatedTagRepository>(),
+            );
+            final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+              searchHistoryRepository: context.read<SearchHistoryRepository>(),
+            );
 
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: searchHistoryCubit),
-              BlocProvider.value(
-                value: context.read<FavoriteTagBloc>()
-                  ..add(const FavoriteTagFetched()),
-              ),
-              BlocProvider.value(
-                value: BlocProvider.of<ThemeBloc>(context),
-              ),
-              BlocProvider.value(value: searchHistorySuggestions),
-              BlocProvider.value(value: tagSearchBloc),
-              BlocProvider<SearchBloc>(
-                create: (context) => DanbooruSearchBloc(
-                  initial: DisplayState.options,
-                  metatags: context.read<TagInfo>().metatags,
-                  tagSearchBloc: tagSearchBloc,
-                  searchHistoryBloc: searchHistoryCubit,
-                  relatedTagBloc: relatedTagBloc,
-                  searchHistorySuggestionsBloc: searchHistorySuggestions,
-                  initialQuery: tag,
-                  booruType: state.booru!.booruType,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: searchHistoryCubit),
+                BlocProvider.value(
+                  value: context.read<FavoriteTagBloc>()
+                    ..add(const FavoriteTagFetched()),
                 ),
+                BlocProvider.value(
+                  value: BlocProvider.of<ThemeBloc>(context),
+                ),
+                BlocProvider.value(value: searchHistorySuggestions),
+                BlocProvider.value(value: tagSearchBloc),
+                BlocProvider<SearchBloc>(
+                  create: (context) => DanbooruSearchBloc(
+                    initial: DisplayState.options,
+                    metatags: context.read<TagInfo>().metatags,
+                    tagSearchBloc: tagSearchBloc,
+                    searchHistoryBloc: searchHistoryCubit,
+                    relatedTagBloc: relatedTagBloc,
+                    searchHistorySuggestionsBloc: searchHistorySuggestions,
+                    initialQuery: tag,
+                    booruType: state.booru!.booruType,
+                  ),
+                ),
+                BlocProvider.value(value: relatedTagBloc),
+              ],
+              child: CustomContextMenuOverlay(
+                child: childBuilder(context),
               ),
-              BlocProvider.value(value: relatedTagBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: childBuilder(context),
-            ),
-          );
-        },
+            );
+          },
+        ),
       );
     },
   );
@@ -505,22 +509,25 @@ void goToBlacklistedTagsSearchPage(
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => TagSearchBloc(
-                  tagInfo: dcontext.read<TagInfo>(),
-                  autocompleteRepository:
-                      dcontext.read<AutocompleteRepository>(),
+        return TagStoreScope(
+          builder: (tagStore) => DanbooruProvider.of(
+            context,
+            booru: state.booru!,
+            builder: (dcontext) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => TagSearchBloc(
+                    tagStore: tagStore,
+                    tagInfo: dcontext.read<TagInfo>(),
+                    autocompleteRepository:
+                        dcontext.read<AutocompleteRepository>(),
+                  ),
                 ),
+              ],
+              child: BlacklistedTagsSearchPage(
+                initialTags: initialTags,
+                onSelectedDone: onSelectDone,
               ),
-            ],
-            child: BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
             ),
           ),
         );

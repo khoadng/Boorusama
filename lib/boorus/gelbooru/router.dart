@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -43,52 +44,55 @@ void goToGelbooruSearchPage(
 
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.fade,
-    child: GelbooruProvider.of(
-      context,
-      booru: booru,
-      builder: (gcontext) {
-        final tagInfo = gcontext.read<TagInfo>();
-        final searchHistoryBloc = SearchHistoryBloc(
-          searchHistoryRepository: gcontext.read<SearchHistoryRepository>(),
-        )..add(const SearchHistoryFetched());
-        final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
-          ..add(const FavoriteTagFetched());
+    child: TagStoreScope(
+      builder: (tagStore) => GelbooruProvider.of(
+        context,
+        booru: booru,
+        builder: (gcontext) {
+          final tagInfo = gcontext.read<TagInfo>();
+          final searchHistoryBloc = SearchHistoryBloc(
+            searchHistoryRepository: gcontext.read<SearchHistoryRepository>(),
+          )..add(const SearchHistoryFetched());
+          final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
+            ..add(const FavoriteTagFetched());
 
-        final tagSearchBloc = TagSearchBloc(
-          tagInfo: gcontext.read<TagInfo>(),
-          autocompleteRepository: gcontext.read<AutocompleteRepository>(),
-        );
+          final tagSearchBloc = TagSearchBloc(
+            tagStore: tagStore,
+            tagInfo: gcontext.read<TagInfo>(),
+            autocompleteRepository: gcontext.read<AutocompleteRepository>(),
+          );
 
-        final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-          searchHistoryRepository: context.read<SearchHistoryRepository>(),
-        );
+          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
 
-        final searchBloc = SearchBloc(
-          initial: DisplayState.options,
-          tagSearchBloc: tagSearchBloc,
-          searchHistoryBloc: searchHistoryBloc,
-          searchHistorySuggestionsBloc: searchHistorySuggestions,
-          metatags: gcontext.read<TagInfo>().metatags,
-          booruType: booru.booruType,
-          initialQuery: tag,
-        );
+          final searchBloc = SearchBloc(
+            initial: DisplayState.options,
+            tagSearchBloc: tagSearchBloc,
+            searchHistoryBloc: searchHistoryBloc,
+            searchHistorySuggestionsBloc: searchHistorySuggestions,
+            metatags: gcontext.read<TagInfo>().metatags,
+            booruType: booru.booruType,
+            initialQuery: tag,
+          );
 
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: searchHistoryBloc),
-            BlocProvider.value(value: favoriteTagBloc),
-            BlocProvider<SearchBloc>.value(value: searchBloc),
-            BlocProvider.value(value: searchHistorySuggestions),
-            BlocProvider.value(value: tagSearchBloc),
-          ],
-          child: CustomContextMenuOverlay(
-            child: GelbooruSearchPage(
-              metatags: tagInfo.metatags,
-              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: searchHistoryBloc),
+              BlocProvider.value(value: favoriteTagBloc),
+              BlocProvider<SearchBloc>.value(value: searchBloc),
+              BlocProvider.value(value: searchHistorySuggestions),
+              BlocProvider.value(value: tagSearchBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: GelbooruSearchPage(
+                metatags: tagInfo.metatags,
+                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     ),
   ));
 }

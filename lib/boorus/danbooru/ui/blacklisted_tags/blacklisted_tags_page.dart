@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -37,21 +38,27 @@ class BlacklistedTagsPage extends StatelessWidget {
             body: Row(children: [
               SizedBox(
                 width: 300,
-                child: MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => TagSearchBloc(
-                        tagInfo: context.read<TagInfo>(),
-                        autocompleteRepository:
-                            context.read<AutocompleteRepository>(),
+                child: TagStoreScope(
+                  builder: (tagStore) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => TagSearchBloc(
+                          tagStore: tagStore,
+                          tagInfo: context.read<TagInfo>(),
+                          autocompleteRepository:
+                              context.read<AutocompleteRepository>(),
+                        ),
                       ),
-                    ),
-                  ],
-                  child: BlacklistedTagsSearchPage(onSelectedDone: (tagItems) {
-                    context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
-                          tag: tagItems.map((e) => e.toString()).join(' '),
-                        ));
-                  }),
+                    ],
+                    child:
+                        BlacklistedTagsSearchPage(onSelectedDone: (tagItems) {
+                      context
+                          .read<BlacklistedTagsBloc>()
+                          .add(BlacklistedTagAdded(
+                            tag: tagItems.map((e) => e.toString()).join(' '),
+                          ));
+                    }),
+                  ),
                 ),
               ),
               const VerticalDivider(),

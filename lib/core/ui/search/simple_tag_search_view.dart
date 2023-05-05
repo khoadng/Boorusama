@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -76,66 +77,69 @@ class SimpleTagSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TagSearchBloc(
-        autocompleteRepository: context.read<AutocompleteRepository>(),
-        tagInfo: context.read<TagInfo>(),
-      ),
-      child: BlocBuilder<TagSearchBloc, TagSearchState>(
-        builder: (context, state) {
-          final tags = ensureValidTag
-              ? state.suggestionTags.where((e) => e.category != null).toList()
-              : state.suggestionTags;
+    return TagStoreScope(
+      builder: (tagStore) => BlocProvider(
+        create: (context) => TagSearchBloc(
+          tagStore: tagStore,
+          autocompleteRepository: context.read<AutocompleteRepository>(),
+          tagInfo: context.read<TagInfo>(),
+        ),
+        child: BlocBuilder<TagSearchBloc, TagSearchState>(
+          builder: (context, state) {
+            final tags = ensureValidTag
+                ? state.suggestionTags.where((e) => e.category != null).toList()
+                : state.suggestionTags;
 
-          return Scaffold(
-            backgroundColor: Theme.of(context).cardColor,
-            floatingActionButton: floatingActionButton?.call(state.query),
-            body: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                  child: SearchBar(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    leading: backButton,
-                    autofocus: true,
-                    onSubmitted: (text) => onSubmitted?.call(context, text),
-                    onChanged: (value) {
-                      context
-                          .read<TagSearchBloc>()
-                          .add(TagSearchChanged(value));
-                    },
+            return Scaffold(
+              backgroundColor: Theme.of(context).cardColor,
+              floatingActionButton: floatingActionButton?.call(state.query),
+              body: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: SearchBar(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      leading: backButton,
+                      autofocus: true,
+                      onSubmitted: (text) => onSubmitted?.call(context, text),
+                      onChanged: (value) {
+                        context
+                            .read<TagSearchBloc>()
+                            .add(TagSearchChanged(value));
+                      },
+                    ),
                   ),
-                ),
-                if (tags.isNotEmpty)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TagSuggestionItems(
-                        textColorBuilder: textColorBuilder,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        tags: tags,
-                        onItemTap: (tag) {
-                          if (closeOnSelected) {
-                            Navigator.of(context).pop();
-                          }
-                          onSelected(tag);
-                        },
-                        currentQuery: state.query,
+                  if (tags.isNotEmpty)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TagSuggestionItems(
+                          textColorBuilder: textColorBuilder,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.background,
+                          tags: tags,
+                          onItemTap: (tag) {
+                            if (closeOnSelected) {
+                              Navigator.of(context).pop();
+                            }
+                            onSelected(tag);
+                          },
+                          currentQuery: state.query,
+                        ),
+                      ),
+                    )
+                  else
+                    const Expanded(
+                      child: Center(
+                        child: SizedBox.shrink(),
                       ),
                     ),
-                  )
-                else
-                  const Expanded(
-                    child: Center(
-                      child: SizedBox.shrink(),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

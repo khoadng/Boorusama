@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -157,10 +158,20 @@ class TagSearchDone extends TagSearchEvent {
   List<Object?> get props => [];
 }
 
+class _Init extends TagSearchEvent {
+  const _Init();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
+  final TagStore tagStore;
+
   TagSearchBloc({
     required AutocompleteRepository autocompleteRepository,
     required TagInfo tagInfo,
+    required this.tagStore,
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
@@ -194,55 +205,44 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     );
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
+      event.tags.split(' ').forEach(
+          (tag) => tagStore.addTag(TagSearchItem.fromString(tag, tagInfo)));
       emit(state.copyWith(
-        selectedTags: {
-          ...state.selectedTags,
-          ...event.tags
-              .split(' ')
-              .map((e) => TagSearchItem.fromString(e, tagInfo)),
-        }.toList(),
         query: '',
         suggestionTags: [],
       ));
     });
 
     on<TagSearchNewRawStringTagSelected>((event, emit) {
+      tagStore.addTag(TagSearchItem.fromString(
+        '${filterOperatorToString(state.operator)}${event.tag}',
+        tagInfo,
+      ));
       emit(state.copyWith(
-        selectedTags: {
-          ...state.selectedTags,
-          TagSearchItem.fromString(
-            '${filterOperatorToString(state.operator)}${event.tag}',
-            tagInfo,
-          ),
-        }.toList(),
         query: '',
         suggestionTags: [],
       ));
     });
 
     on<TagSearchNewRawStringTagsSelected>((event, emit) {
+      for (var tag in event.tags) {
+        tagStore.addTag(TagSearchItem.fromString(
+          '${filterOperatorToString(state.operator)}$tag',
+          tagInfo,
+        ));
+      }
       emit(state.copyWith(
-        selectedTags: {
-          ...state.selectedTags,
-          ...event.tags.map((tag) => TagSearchItem.fromString(
-                '${filterOperatorToString(state.operator)}$tag',
-                tagInfo,
-              )),
-        }.toList(),
         query: '',
         suggestionTags: [],
       ));
     });
 
     on<TagSearchNewTagSelected>((event, emit) {
+      tagStore.addTag(TagSearchItem.fromString(
+        '${filterOperatorToString(state.operator)}${event.tag.value}',
+        tagInfo,
+      ));
       emit(state.copyWith(
-        selectedTags: {
-          ...state.selectedTags,
-          TagSearchItem.fromString(
-            '${filterOperatorToString(state.operator)}${event.tag.value}',
-            tagInfo,
-          ),
-        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -253,22 +253,20 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           suggestionTags: [],
         )));
 
-    on<TagSearchSelectedTagRemoved>((event, emit) => emit(state.copyWith(
-          selectedTags: [...state.selectedTags]..remove(event.tag),
-        )));
+    on<TagSearchSelectedTagRemoved>((event, emit) {
+      tagStore.removeTag(event.tag);
+      emit(state); // Emit the current state as it doesn't need to be changed.
+    });
 
     on<TagSearchDone>((event, emit) => emit(state.copyWith(isDone: true)));
 
     on<TagSearchSubmitted>((event, emit) {
       if (state.query.isEmpty) return;
+      tagStore.addTag(TagSearchItem.fromString(
+        state.query,
+        tagInfo,
+      ));
       emit(state.copyWith(
-        selectedTags: {
-          ...state.selectedTags,
-          TagSearchItem.fromString(
-            state.query,
-            tagInfo,
-          ),
-        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -285,6 +283,15 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         suggestionTags: [],
       ));
     });
+
+    on<_Init>((event, emit) async {
+      await emit.forEach(
+        tagStore.tagsStream,
+        onData: (data) => state.copyWith(selectedTags: data),
+      );
+    });
+
+    add(const _Init());
   }
 }
 

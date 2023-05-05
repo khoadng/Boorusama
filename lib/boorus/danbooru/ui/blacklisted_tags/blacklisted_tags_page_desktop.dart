@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -36,19 +37,22 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(width: 12),
-            MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => TagSearchBloc(
-                    tagInfo: context.read<TagInfo>(),
-                    autocompleteRepository:
-                        context.read<AutocompleteRepository>(),
+            TagStoreScope(
+              builder: (tagStore) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => TagSearchBloc(
+                      tagStore: tagStore,
+                      tagInfo: context.read<TagInfo>(),
+                      autocompleteRepository:
+                          context.read<AutocompleteRepository>(),
+                    ),
                   ),
+                ],
+                child: ElevatedButton(
+                  onPressed: () => _showEditView(context),
+                  child: const Text('Add tag'),
                 ),
-              ],
-              child: ElevatedButton(
-                onPressed: () => _showEditView(context),
-                child: const Text('Add tag'),
               ),
             ),
             const Spacer(),
@@ -121,23 +125,26 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       width: min(MediaQuery.of(context).size.width * 0.65, 700),
       height: min(MediaQuery.of(context).size.height * 0.7, 500),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => TagSearchBloc(
-              tagInfo: context.read<TagInfo>(),
-              autocompleteRepository: context.read<AutocompleteRepository>(),
+      builder: (context) => TagStoreScope(
+        builder: (tagStore) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => TagSearchBloc(
+                tagStore: tagStore,
+                tagInfo: context.read<TagInfo>(),
+                autocompleteRepository: context.read<AutocompleteRepository>(),
+              ),
             ),
+          ],
+          child: BlacklistedTagsSearchPage(
+            initialTags: initialTags,
+            onSelectedDone: (tagItems) {
+              bloc.add(BlacklistedTagAdded(
+                tag: tagItems.map((e) => e.toString()).join(' '),
+              ));
+              Navigator.of(context).pop();
+            },
           ),
-        ],
-        child: BlacklistedTagsSearchPage(
-          initialTags: initialTags,
-          onSelectedDone: (tagItems) {
-            bloc.add(BlacklistedTagAdded(
-              tag: tagItems.map((e) => e.toString()).join(' '),
-            ));
-            Navigator.of(context).pop();
-          },
         ),
       ),
     );
