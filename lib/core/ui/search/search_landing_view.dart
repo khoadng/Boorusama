@@ -1,12 +1,14 @@
 // Flutter imports:
-import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/ui/search/search_history_section.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({

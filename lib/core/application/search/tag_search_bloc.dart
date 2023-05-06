@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/search/tag_store.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -7,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/search/tag_store.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';

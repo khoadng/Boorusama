@@ -1,6 +1,9 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final suggestionsProvider =
     NotifierProvider.autoDispose<SuggestionsNotifier, List<AutocompleteData>>(

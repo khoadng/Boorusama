@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/ui/search/user_data_metatags_section.dart';
 import 'package:boorusama/core/utils.dart';

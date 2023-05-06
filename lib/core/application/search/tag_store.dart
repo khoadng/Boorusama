@@ -1,6 +1,9 @@
+// Package imports:
+import 'package:rxdart/rxdart.dart';
+
+// Project imports:
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:rxdart/rxdart.dart';
 
 class TagStore {
   TagStore(this.tagInfo);

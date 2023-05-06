@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';

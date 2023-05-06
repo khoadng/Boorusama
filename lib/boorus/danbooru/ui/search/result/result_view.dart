@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -11,8 +9,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts/post_count_cubit.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/functional.dart';

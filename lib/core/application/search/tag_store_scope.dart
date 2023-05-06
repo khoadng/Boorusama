@@ -1,6 +1,11 @@
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'tag_store.dart';
 
 class TagStoreScope extends StatefulWidget {

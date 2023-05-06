@@ -1,7 +1,10 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final selectedTagsProvider =
     StateNotifierProvider<SelectedTagsNotifier, List<TagSearchItem>>((ref) {

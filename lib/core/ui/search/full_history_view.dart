@@ -1,16 +1,16 @@
 // Flutter imports:
-import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({

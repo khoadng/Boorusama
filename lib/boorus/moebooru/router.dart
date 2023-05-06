@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/search/moebooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';

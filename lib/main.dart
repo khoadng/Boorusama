@@ -2,9 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:stack_trace/stack_trace.dart' as stack_trace;
 
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -15,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
@@ -59,6 +58,7 @@ import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'app.dart';
 
 const savedSearchHelpUrl =

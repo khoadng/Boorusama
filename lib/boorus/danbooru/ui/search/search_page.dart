@@ -1,9 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/search_provider.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
-import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -13,7 +8,12 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/core/application/search/search_notifier.dart';
+import 'package:boorusama/core/application/search/search_provider.dart';
+import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';

@@ -1,10 +1,13 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search/search_provider.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum DisplayState {
   options,
