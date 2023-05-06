@@ -15,9 +15,7 @@ import 'package:boorusama/core/application/search/search_provider.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
@@ -100,81 +98,6 @@ class _SelectedTagList extends ConsumerWidget {
   }
 }
 
-class _LandingView extends ConsumerWidget {
-  const _LandingView({
-    this.onFocusRequest,
-    required this.onTextChanged,
-    required this.metatags,
-  });
-
-  final VoidCallback? onFocusRequest;
-  final void Function(String text) onTextChanged;
-  final List<Metatag> metatags;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SearchLandingView(
-      onAddTagRequest: () {
-        final bloc = context.read<FavoriteTagBloc>();
-        goToQuickSearchPage(
-          context,
-          onSubmitted: (context, text) {
-            Navigator.of(context).pop();
-            bloc.add(FavoriteTagAdded(tag: text));
-          },
-          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
-        );
-      },
-      trendingBuilder: (context) => TrendingSection(
-        onTagTap: (value) {
-          _onTagTap(context, value, ref);
-        },
-      ),
-      onHistoryTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        ref.searchNotifier.tapTag(value);
-      },
-      onTagTap: (value) {
-        _onTagTap(context, value, ref);
-      },
-      onHistoryRemoved: (value) => _onHistoryRemoved(ref, value),
-      onHistoryCleared: () => _onHistoryCleared(ref),
-      onFullHistoryRequested: () {
-        goToSearchHistoryPage(
-          context,
-          onClear: () => _onHistoryCleared(ref),
-          onRemove: (value) => _onHistoryRemoved(ref, value),
-          onTap: (value) => _onHistoryTap(context, value, ref),
-        );
-      },
-      metatagsBuilder: (context) => DanbooruMetatagsSection(
-        metatags: metatags,
-        onOptionTap: (value) {
-          ref.read(searchProvider.notifier).tapRawMetaTag(value);
-          onFocusRequest?.call();
-          onTextChanged.call('$value:');
-        },
-      ),
-    );
-  }
-
-  void _onTagTap(BuildContext context, String value, WidgetRef ref) {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    ref.searchNotifier.tapTag(value);
-  }
-
-  void _onHistoryTap(BuildContext context, String value, WidgetRef ref) {
-    Navigator.of(context).pop();
-    ref.searchNotifier.tapTag(value);
-  }
-
-  void _onHistoryCleared(WidgetRef ref) => ref.searchNotifier.clearHistories();
-
-  void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
-      ref.searchNotifier.removeHistory(value);
-}
-
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
@@ -250,11 +173,20 @@ class _SmallLayout extends ConsumerWidget {
                 children: [
                   const _SelectedTagList(),
                   const _Divider(),
-                  _LandingView(
-                    metatags: metatags,
-                    onFocusRequest: () => focus.requestFocus(),
-                    onTextChanged: (text) =>
-                        _onTextChanged(queryEditingController, text),
+                  SearchLandingView(
+                    trendingBuilder: (context) => TrendingSection(
+                      onTagTap: (value) {
+                        ref.searchNotifier.tapTag(value);
+                      },
+                    ),
+                    metatagsBuilder: (context) => DanbooruMetatagsSection(
+                      metatags: metatags,
+                      onOptionTap: (value) {
+                        ref.read(searchProvider.notifier).tapRawMetaTag(value);
+                        focus.requestFocus();
+                        _onTextChanged(queryEditingController, '$value:');
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -2,35 +2,29 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/search/search_notifier.dart';
 import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/ui/search/search_history_section.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
-    required this.onHistoryTap,
-    required this.onTagTap,
-    required this.onHistoryRemoved,
-    required this.onHistoryCleared,
-    required this.onFullHistoryRequested,
+    this.onHistoryTap,
     this.metatagsBuilder,
     this.trendingBuilder,
-    required this.onAddTagRequest,
   });
 
-  final ValueChanged<String> onHistoryTap;
-  final ValueChanged<SearchHistory> onHistoryRemoved;
-  final VoidCallback onFullHistoryRequested;
-  final VoidCallback onHistoryCleared;
-  final ValueChanged<String> onTagTap;
+  final ValueChanged<String>? onHistoryTap;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
-  final VoidCallback onAddTagRequest;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -83,19 +77,41 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                 const Divider(thickness: 1),
               ],
               FavoriteTagsSection(
-                onAddTagRequest: () => widget.onAddTagRequest(),
-                onTagTap: widget.onTagTap,
+                onAddTagRequest: () {
+                  final bloc = context.read<FavoriteTagBloc>();
+                  goToQuickSearchPage(
+                    context,
+                    onSubmitted: (context, text) {
+                      Navigator.of(context).pop();
+                      bloc.add(FavoriteTagAdded(tag: text));
+                    },
+                    onSelected: (tag) =>
+                        bloc.add(FavoriteTagAdded(tag: tag.value)),
+                  );
+                },
+                onTagTap: (value) {
+                  _onTagTap(value, ref);
+                },
               ),
               if (widget.trendingBuilder != null) ...[
                 widget.trendingBuilder!.call(context),
               ],
               SearchHistorySection(
                 histories: histories.histories,
-                onHistoryTap: (history) => widget.onHistoryTap.call(history),
-                onHistoryRemoved: (history) =>
-                    widget.onHistoryRemoved.call(history),
-                onHistoryCleared: () => widget.onHistoryCleared.call(),
-                onFullHistoryRequested: widget.onFullHistoryRequested,
+                onHistoryTap: (history) {
+                  _onTagTap(history, ref);
+                  widget.onHistoryTap?.call(history);
+                },
+                onHistoryRemoved: (value) => _onHistoryRemoved(ref, value),
+                onHistoryCleared: () => _onHistoryCleared(ref),
+                onFullHistoryRequested: () {
+                  goToSearchHistoryPage(
+                    context,
+                    onClear: () => _onHistoryCleared(ref),
+                    onRemove: (value) => _onHistoryRemoved(ref, value),
+                    onTap: (value) => _onHistoryTap(context, value, ref),
+                  );
+                },
               ),
             ],
           ),
@@ -103,4 +119,19 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
       ),
     );
   }
+
+  void _onTagTap(String value, WidgetRef ref) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    ref.searchNotifier.tapTag(value);
+  }
+
+  void _onHistoryTap(BuildContext context, String value, WidgetRef ref) {
+    Navigator.of(context).pop();
+    ref.searchNotifier.tapTag(value);
+  }
+
+  void _onHistoryCleared(WidgetRef ref) => ref.searchNotifier.clearHistories();
+
+  void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
+      ref.searchNotifier.removeHistory(value);
 }

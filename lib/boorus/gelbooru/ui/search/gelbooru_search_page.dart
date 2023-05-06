@@ -10,10 +10,8 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
@@ -98,73 +96,6 @@ class _SelectedTagList extends StatelessWidget {
   }
 }
 
-class _LandingView extends StatelessWidget {
-  const _LandingView({
-    this.onFocusRequest,
-    required this.onTextChanged,
-  });
-
-  final VoidCallback? onFocusRequest;
-  final void Function(String text) onTextChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SearchLandingView(
-      onAddTagRequest: () {
-        final bloc = context.read<FavoriteTagBloc>();
-        goToQuickSearchPage(
-          context,
-          onSubmitted: (context, text) {
-            Navigator.of(context).pop();
-            bloc.add(FavoriteTagAdded(tag: text));
-          },
-          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
-        );
-      },
-      onHistoryTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(
-              SearchHistoryTagSelected(
-                tag: value,
-              ),
-            );
-      },
-      onTagTap: (value) {
-        _onTagTap(context, value);
-      },
-      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
-      onHistoryCleared: () => _onHistoryCleared(context),
-      onFullHistoryRequested: () {
-        final searchBloc = context.read<SearchBloc>();
-
-        goToSearchHistoryPage(
-          context,
-          onClear: () => _onHistoryCleared(context),
-          onRemove: (value) => _onHistoryRemoved(context, value),
-          onTap: (value) => _onHistoryTap(context, value, searchBloc),
-        );
-      },
-    );
-  }
-
-  void _onTagTap(BuildContext context, String value) {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
-  }
-
-  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
-    Navigator.of(context).pop();
-    bloc.add(SearchHistoryTagSelected(tag: value));
-  }
-
-  void _onHistoryCleared(BuildContext context) =>
-      context.read<SearchBloc>().add(const SearchHistoryCleared());
-
-  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
-      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-}
-
 // ignore: prefer_mixin
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
@@ -229,14 +160,10 @@ class _SmallLayoutState extends State<_SmallLayout> {
           body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
-                children: [
-                  const _SelectedTagList(),
-                  const _Divider(),
-                  _LandingView(
-                    onFocusRequest: () => widget.focus.requestFocus(),
-                    onTextChanged: (text) =>
-                        _onTextChanged(widget.queryEditingController, text),
-                  ),
+                children: const [
+                  _SelectedTagList(),
+                  _Divider(),
+                  SearchLandingView(),
                 ],
               ),
             ),
@@ -339,15 +266,6 @@ class _ResultView extends StatelessWidget {
       },
     );
   }
-}
-
-void _onTextChanged(
-  TextEditingController controller,
-  String text,
-) {
-  controller
-    ..text = text
-    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }
 
 class _TagSuggestionItems extends StatelessWidget {
