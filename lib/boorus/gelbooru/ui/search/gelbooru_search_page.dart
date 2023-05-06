@@ -16,8 +16,6 @@ import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
@@ -32,12 +30,10 @@ import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
 class GelbooruSearchPage extends ConsumerStatefulWidget {
   const GelbooruSearchPage({
     super.key,
-    required this.metatags,
     required this.metatagHighlightColor,
     this.initialQuery,
   });
 
-  final List<Metatag> metatags;
   final Color metatagHighlightColor;
   final String? initialQuery;
 
@@ -53,7 +49,6 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
         context,
         booru: booru,
         builder: (gcontext) {
-          final tagInfo = gcontext.read<TagInfo>();
           final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
             ..add(const FavoriteTagFetched());
 
@@ -67,7 +62,6 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
                   selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
                 ],
                 child: GelbooruSearchPage(
-                  metatags: tagInfo.metatags,
                   metatagHighlightColor: Theme.of(context).colorScheme.primary,
                   initialQuery: tag,
                 ),
@@ -84,10 +78,9 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
-  late final _tags = widget.metatags.map((e) => e.name).join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
-      RegExp('($_tags)+:'): TextStyle(
+      ref.read(searchMetatagStringRegexProvider): TextStyle(
         fontWeight: FontWeight.w800,
         color: widget.metatagHighlightColor,
       ),
