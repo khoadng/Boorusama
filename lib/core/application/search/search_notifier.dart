@@ -106,5 +106,6 @@ mixin SearchHistoryNotifierMixin<T> on AutoDisposeNotifier<T> {
 }
 
 extension SearchNotifierX on WidgetRef {
+  @Deprecated('This is bad practice')
   SearchNotifier get searchNotifier => read(searchProvider.notifier);
 }
