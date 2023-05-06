@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/utils/string_utils.dart';
 
 final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
@@ -30,4 +31,12 @@ final allowSearchProvider = Provider.autoDispose<bool>((ref) {
 }, dependencies: [
   searchProvider,
   selectedTagsProvider,
+]);
+
+final searchMetatagStringRegexProvider = Provider<RegExp>((ref) {
+  final metatags = ref.watch(metatagsProvider);
+  final metatagString = metatags.map((e) => e.name).join('|');
+  return RegExp('($metatagString)+:');
+}, dependencies: [
+  metatagsProvider,
 ]);

@@ -16,8 +16,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/ui/search/search_app_bar.dart';
@@ -33,12 +32,10 @@ import 'result/result_view.dart';
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({
     super.key,
-    required this.metatags,
     required this.metatagHighlightColor,
     this.initialQuery,
   });
 
-  final List<Metatag> metatags;
   final Color metatagHighlightColor;
   final String? initialQuery;
 
@@ -73,7 +70,6 @@ class SearchPage extends ConsumerStatefulWidget {
                             .overrideWith(SelectedTagsNotifier.new),
                       ],
                       child: SearchPage(
-                        metatags: context.read<TagInfo>().metatags,
                         metatagHighlightColor:
                             Theme.of(context).colorScheme.primary,
                         initialQuery: tag,
@@ -92,10 +88,9 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
-  late final _tags = widget.metatags.map((e) => e.name).join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
-      RegExp('($_tags)+:'): TextStyle(
+      ref.read(searchMetatagStringRegexProvider): TextStyle(
         fontWeight: FontWeight.w800,
         color: widget.metatagHighlightColor,
       ),
@@ -127,6 +122,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final metatags = ref.watch(metatagsProvider);
     // listen to query provider
     ref.listen(
       sanitizedQueryProvider,
@@ -175,7 +171,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           },
                         ),
                         metatagsBuilder: (context) => DanbooruMetatagsSection(
-                          metatags: widget.metatags,
+                          metatags: metatags,
                           onOptionTap: (value) {
                             ref
                                 .read(searchProvider.notifier)
