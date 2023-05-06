@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/searches.dart';
@@ -23,6 +22,7 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/core/ui/search/search_app_bar.dart';
 import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_divider.dart';
@@ -165,7 +165,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       .getPostCount(rawTags);
                 },
               ),
-              appBar: _AppBar(
+              appBar: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: queryEditingController,
               ),
@@ -199,7 +199,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             );
           case DisplayState.suggestion:
             return Scaffold(
-              appBar: _AppBar(
+              appBar: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: queryEditingController,
               ),
@@ -254,39 +254,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       }),
     );
   }
-}
-
-class _AppBar extends StatelessWidget with PreferredSizeWidget {
-  const _AppBar({
-    required this.queryEditingController,
-    this.focusNode,
-  });
-
-  final RichTextController queryEditingController;
-  final FocusNode? focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shadowColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      toolbarHeight: kToolbarHeight * 1.2,
-      title: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SearchBarWithData(
-            autofocus: state.settings.autoFocusSearchBar,
-            focusNode: focusNode,
-            queryEditingController: queryEditingController,
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
 void _onTextChanged(
