@@ -2,9 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/filter_operator.dart';
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/utils/string_utils.dart';
 
 final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');

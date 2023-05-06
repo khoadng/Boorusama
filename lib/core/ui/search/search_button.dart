@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/search_provider.dart';
+import 'package:boorusama/core/application/search.dart';
 
 class SearchButton extends ConsumerWidget {
   const SearchButton({

@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 

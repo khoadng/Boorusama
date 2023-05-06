@@ -12,9 +12,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/search_provider.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -58,9 +56,6 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
         booru: booru,
         builder: (gcontext) {
           final tagInfo = gcontext.read<TagInfo>();
-          final searchHistoryBloc = SearchHistoryBloc(
-            searchHistoryRepository: gcontext.read<SearchHistoryRepository>(),
-          )..add(const SearchHistoryFetched());
           final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
             ..add(const FavoriteTagFetched());
 
@@ -70,7 +65,6 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
 
           return MultiBlocProvider(
             providers: [
-              BlocProvider.value(value: searchHistoryBloc),
               BlocProvider.value(value: favoriteTagBloc),
               BlocProvider.value(value: searchHistorySuggestions),
             ],

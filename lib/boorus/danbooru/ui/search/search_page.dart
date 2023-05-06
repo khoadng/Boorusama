@@ -13,9 +13,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search/search_provider.dart';
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -55,10 +53,6 @@ class SearchPage extends ConsumerStatefulWidget {
               context,
               booru: state.booru!,
               builder: (context) {
-                final searchHistoryCubit = SearchHistoryBloc(
-                  searchHistoryRepository:
-                      context.read<SearchHistoryRepository>(),
-                );
                 final relatedTagBloc = RelatedTagBloc(
                   relatedTagRepository: context.read<RelatedTagRepository>(),
                 );
@@ -69,7 +63,6 @@ class SearchPage extends ConsumerStatefulWidget {
 
                 return MultiBlocProvider(
                   providers: [
-                    BlocProvider.value(value: searchHistoryCubit),
                     BlocProvider.value(
                       value: context.read<FavoriteTagBloc>()
                         ..add(const FavoriteTagFetched()),

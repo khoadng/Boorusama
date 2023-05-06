@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/search_notifier.dart';
-import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/router.dart';
