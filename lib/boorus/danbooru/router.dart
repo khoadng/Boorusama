@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -17,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
@@ -57,12 +57,11 @@ import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/search/tag_store_scope.dart';
+import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
@@ -263,9 +262,15 @@ void goToSearchPage(
       child: provideSearchPageDependencies(
         context,
         tag,
-        (context) => SearchPage(
-          metatags: context.read<TagInfo>().metatags,
-          metatagHighlightColor: Theme.of(context).colorScheme.primary,
+        (context) => ProviderScope(
+          overrides: [
+            selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
+          ],
+          child: SearchPage(
+            metatags: context.read<TagInfo>().metatags,
+            metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            initialQuery: tag,
+          ),
         ),
       ),
     ));
@@ -292,40 +297,38 @@ Widget provideSearchPageDependencies(
 ) {
   return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (_, state) {
-      return TagStoreScope(
-        builder: (tagStore) => DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (context) {
-            final searchHistoryCubit = SearchHistoryBloc(
-              searchHistoryRepository: context.read<SearchHistoryRepository>(),
-            );
-            final relatedTagBloc = RelatedTagBloc(
-              relatedTagRepository: context.read<RelatedTagRepository>(),
-            );
-            final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-              searchHistoryRepository: context.read<SearchHistoryRepository>(),
-            );
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (context) {
+          final searchHistoryCubit = SearchHistoryBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
+          final relatedTagBloc = RelatedTagBloc(
+            relatedTagRepository: context.read<RelatedTagRepository>(),
+          );
+          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
 
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: searchHistoryCubit),
-                BlocProvider.value(
-                  value: context.read<FavoriteTagBloc>()
-                    ..add(const FavoriteTagFetched()),
-                ),
-                BlocProvider.value(
-                  value: BlocProvider.of<ThemeBloc>(context),
-                ),
-                BlocProvider.value(value: searchHistorySuggestions),
-                BlocProvider.value(value: relatedTagBloc),
-              ],
-              child: CustomContextMenuOverlay(
-                child: childBuilder(context),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: searchHistoryCubit),
+              BlocProvider.value(
+                value: context.read<FavoriteTagBloc>()
+                  ..add(const FavoriteTagFetched()),
               ),
-            );
-          },
-        ),
+              BlocProvider.value(
+                value: BlocProvider.of<ThemeBloc>(context),
+              ),
+              BlocProvider.value(value: searchHistorySuggestions),
+              BlocProvider.value(value: relatedTagBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: childBuilder(context),
+            ),
+          );
+        },
       );
     },
   );
@@ -487,26 +490,12 @@ void goToBlacklistedTagsSearchPage(
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
       builder: (_, state) {
-        return TagStoreScope(
-          builder: (tagStore) => DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (dcontext) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (_) => TagSearchBloc(
-                    tagStore: tagStore,
-                    tagInfo: dcontext.read<TagInfo>(),
-                    autocompleteRepository:
-                        dcontext.read<AutocompleteRepository>(),
-                  ),
-                ),
-              ],
-              child: BlacklistedTagsSearchPage(
-                initialTags: initialTags,
-                onSelectedDone: onSelectDone,
-              ),
-            ),
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => BlacklistedTagsSearchPage(
+            initialTags: initialTags,
+            onSelectedDone: onSelectDone,
           ),
         );
       },
@@ -656,7 +645,6 @@ void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
 }) {
-  final bloc = context.read<SearchBloc>();
   final page = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
       final booru = state.booru ?? safebooru();
@@ -667,7 +655,8 @@ void goToRelatedTagsPage(
           booru.url,
           tag,
         ),
-        onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+        // onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+        onAddToSearch: (tag) {}, //FIXME: implement this
       );
     },
   );

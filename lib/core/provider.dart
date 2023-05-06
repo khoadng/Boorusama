@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
@@ -16,3 +17,6 @@ final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 
 final searchHistoryRepoProvider =
     Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
+
+final autocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) => throw UnimplementedError());

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
-import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -13,37 +12,36 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search/search_notifier.dart';
 import 'package:boorusama/core/application/search/search_provider.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
-import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
+import 'package:boorusama/core/ui/search/search_button.dart';
+import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
-import 'package:boorusama/core/ui/search/selected_tag_list.dart';
-import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/tag_suggestion_items.dart';
+import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
-import 'package:boorusama/core/application/search_history.dart'
-    hide SearchHistoryCleared;
-
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
+    this.initialQuery,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
+  final String? initialQuery;
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   late final _tags = widget.metatags.map((e) => e.name).join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
@@ -55,12 +53,23 @@ class _SearchPageState extends State<SearchPage> {
     // ignore: no-empty-block
     onMatch: (List<String> match) {},
   );
-  final compositeSubscription = CompositeSubscription();
   final focus = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialQuery != null) {
+        ref
+            .read(searchProvider.notifier)
+            .skipToResultWithTag(widget.initialQuery!);
+      }
+    });
+  }
+
+  @override
   void dispose() {
-    compositeSubscription.dispose();
     queryEditingController.dispose();
     focus.dispose();
     super.dispose();
@@ -68,32 +77,124 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    // listen to query provider
+    ref.listen(
+      sanitizedQueryProvider,
+      (prev, curr) {
+        if (prev != curr) {
+          final displayState = ref.read(searchProvider);
+          if (curr.isEmpty && displayState != DisplayState.result) {
+            queryEditingController.clear();
+          }
+        }
+      },
+    );
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: _SmallLayout(
-        focus: focus,
-        metatags: widget.metatags,
-        queryEditingController: queryEditingController,
-      ),
-    );
-  }
-}
+      child: Builder(builder: (context) {
+        final displayState = ref.watch(searchProvider);
+        final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
 
-class _SelectedTagList extends ConsumerWidget {
-  const _SelectedTagList();
+        switch (displayState) {
+          case DisplayState.options:
+            return Scaffold(
+              floatingActionButton: SearchButton(
+                onSearch: () {
+                  final tags = ref.read(selectedTagsProvider);
+                  final rawTags = tags.map((e) => e.toString()).toList();
+                  ref
+                      .read(postCountStateProvider.notifier)
+                      .getPostCount(rawTags);
+                },
+              ),
+              appBar: _AppBar(
+                focusNode: focus,
+                queryEditingController: queryEditingController,
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SelectedTagListWithData(),
+                      const SearchDivider(),
+                      SearchLandingView(
+                        trendingBuilder: (context) => TrendingSection(
+                          onTagTap: (value) {
+                            ref.read(searchProvider.notifier).tapTag(value);
+                          },
+                        ),
+                        metatagsBuilder: (context) => DanbooruMetatagsSection(
+                          metatags: widget.metatags,
+                          onOptionTap: (value) {
+                            ref
+                                .read(searchProvider.notifier)
+                                .tapRawMetaTag(value);
+                            focus.requestFocus();
+                            _onTextChanged(queryEditingController, '$value:');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          case DisplayState.suggestion:
+            return Scaffold(
+              appBar: _AppBar(
+                focusNode: focus,
+                queryEditingController: queryEditingController,
+              ),
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    const SelectedTagListWithData(),
+                    const SearchDivider(),
+                    Expanded(
+                      child: TagSuggestionItemsWithData(
+                        textColorBuilder: (tag) =>
+                            generateDanbooruAutocompleteTagColor(tag, theme),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(selectedTagsProvider);
-
-    return SelectedTagList(
-      tags: tags,
-      onClear: () => ref.selectedTagsNotifier.clear(),
-      onDelete: (tag) => ref.searchNotifier.removeSelectedTag(tag),
-      onBulkDownload: (tags) => goToBulkDownloadPage(
-        context,
-        tags.map((e) => e.toString()).toList(),
-      ),
+          case DisplayState.result:
+            return ResultView(
+              headerBuilder: () => [
+                SliverAppBar(
+                  titleSpacing: 0,
+                  toolbarHeight: kToolbarHeight * 1.9,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  title: SizedBox(
+                    height: kToolbarHeight * 1.85,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        SizedBox(height: 8),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: SearchBarResulView(),
+                        ),
+                        SizedBox(height: 10),
+                        SelectedTagListWithData(),
+                      ],
+                    ),
+                  ),
+                  floating: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                ),
+                const SliverToBoxAdapter(child: SearchDivider(height: 7)),
+              ],
+            );
+        }
+      }),
     );
   }
 }
@@ -117,7 +218,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       toolbarHeight: kToolbarHeight * 1.2,
       title: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
-          return _SearchBar(
+          return SearchBarWithData(
             autofocus: state.settings.autoFocusSearchBar,
             focusNode: focusNode,
             queryEditingController: queryEditingController,
@@ -131,153 +232,6 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
-class _SmallLayout extends ConsumerWidget {
-  const _SmallLayout({
-    required this.focus,
-    required this.queryEditingController,
-    required this.metatags,
-  });
-
-  final FocusNode focus;
-  final RichTextController queryEditingController;
-  final List<Metatag> metatags;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final displayState = ref.watch(searchProvider);
-
-    // listen to query provider
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          final displayState = ref.read(searchProvider);
-          if (curr.isEmpty && displayState != DisplayState.result) {
-            queryEditingController.clear();
-          }
-        }
-      },
-    );
-
-    switch (displayState) {
-      case DisplayState.options:
-        return Scaffold(
-          floatingActionButton: const _SearchButton(),
-          appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
-          ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const _SelectedTagList(),
-                  const _Divider(),
-                  SearchLandingView(
-                    trendingBuilder: (context) => TrendingSection(
-                      onTagTap: (value) {
-                        ref.searchNotifier.tapTag(value);
-                      },
-                    ),
-                    metatagsBuilder: (context) => DanbooruMetatagsSection(
-                      metatags: metatags,
-                      onOptionTap: (value) {
-                        ref.read(searchProvider.notifier).tapRawMetaTag(value);
-                        focus.requestFocus();
-                        _onTextChanged(queryEditingController, '$value:');
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      case DisplayState.suggestion:
-        return Scaffold(
-          appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                const _SelectedTagList(),
-                const _Divider(),
-                Expanded(
-                  child: _TagSuggestionItems(
-                    queryEditingController: queryEditingController,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-
-      case DisplayState.result:
-        return ResultView(
-          headerBuilder: () => [
-            SliverAppBar(
-              titleSpacing: 0,
-              toolbarHeight: kToolbarHeight * 1.9,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              title: SizedBox(
-                height: kToolbarHeight * 1.85,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SearchBar(
-                        enabled: false,
-                        onTap: () => ref.searchNotifier.goToSuggestions(),
-                        leading: IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () => ref.searchNotifier.resetToOptions(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const _SelectedTagList(),
-                  ],
-                ),
-              ),
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-            ),
-            const SliverToBoxAdapter(child: _Divider(height: 7)),
-          ],
-        );
-    }
-  }
-}
-
-class _SearchButton extends ConsumerWidget {
-  const _SearchButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final allowSearch = ref.watch(allowSearchProvider);
-
-    return allowSearch
-        ? FloatingActionButton(
-            onPressed: () {
-              ref.searchNotifier.search();
-              final tags = ref.read(selectedTagsProvider);
-              final rawTags = tags.map((e) => e.toString()).toList();
-              ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
-            },
-            heroTag: null,
-            child: const Icon(Icons.search),
-          )
-        : const SizedBox.shrink();
-  }
-}
-
 void _onTextChanged(
   TextEditingController controller,
   String text,
@@ -285,99 +239,4 @@ void _onTextChanged(
   controller
     ..text = text
     ..selection = TextSelection.collapsed(offset: controller.text.length);
-}
-
-class _TagSuggestionItems extends ConsumerWidget {
-  const _TagSuggestionItems({
-    required this.queryEditingController,
-  });
-
-  final TextEditingController queryEditingController;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentQuery = ref.watch(searchQueryProvider);
-    final suggestionTags = ref.watch(suggestionsProvider);
-    final histories = context
-        .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-
-    return SliverTagSuggestionItemsWithHistory(
-      tags: suggestionTags,
-      histories: histories,
-      currentQuery: currentQuery,
-      onHistoryDeleted: (history) {
-        ref.searchNotifier.removeHistory(history.searchHistory);
-      },
-      onHistoryTap: (history) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        ref.searchNotifier.tapTag(history.tag);
-      },
-      onItemTap: (tag) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        ref.searchNotifier.tapTag(tag.value);
-      },
-      textColorBuilder: (tag) =>
-          generateDanbooruAutocompleteTagColor(tag, theme),
-    );
-  }
-}
-
-class _Divider extends ConsumerWidget {
-  const _Divider({
-    this.height,
-  });
-
-  final double? height;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(selectedTagsProvider);
-    return tags.isNotEmpty
-        ? Divider(height: height ?? 15, thickness: 1)
-        : const SizedBox.shrink();
-  }
-}
-
-class _SearchBar extends ConsumerWidget {
-  const _SearchBar({
-    required this.queryEditingController,
-    this.focusNode,
-    this.autofocus = false,
-  });
-
-  final RichTextController queryEditingController;
-  final FocusNode? focusNode;
-  final bool autofocus;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final displayState = ref.watch(searchProvider);
-    final currentQuery = ref.watch(searchQueryProvider);
-
-    return SearchBar(
-      autofocus: autofocus,
-      focus: focusNode,
-      queryEditingController: queryEditingController,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => displayState != DisplayState.options
-            ? ref.searchNotifier.resetToOptions()
-            : Navigator.of(context).pop(),
-      ),
-      trailing: currentQuery.isNotEmpty
-          ? IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () =>
-                  ref.read(searchQueryProvider.notifier).state = '',
-            )
-          : const SizedBox.shrink(),
-      onChanged: (value) {
-        ref.read(searchQueryProvider.notifier).state = value;
-      },
-      onSubmitted: (value) {
-        ref.searchNotifier.submit(value);
-      },
-    );
-  }
 }

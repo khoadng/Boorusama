@@ -22,11 +22,12 @@ final searchProvider =
     selectedTagsProvider,
     searchQueryProvider,
     searchHistoryProvider,
+    suggestionsProvider,
   ],
 );
 
 class SearchNotifier extends AutoDisposeNotifier<DisplayState>
-    with SearchHistoryNotifierMixin, SuggestionsNotifierMixin {
+    with SearchHistoryNotifierMixin {
   SearchNotifier() : super();
 
   @override
@@ -35,7 +36,7 @@ class SearchNotifier extends AutoDisposeNotifier<DisplayState>
       sanitizedQueryProvider,
       (previous, next) {
         if (previous != next) {
-          loadSuggestions(next);
+          ref.read(suggestionsProvider.notifier).getSuggestions(next);
         }
       },
     );
@@ -63,6 +64,13 @@ class SearchNotifier extends AutoDisposeNotifier<DisplayState>
   void submit(String value) {
     _selectedTags.addTag(value);
     resetToOptions();
+  }
+
+  void skipToResultWithTag(String tag) {
+    _selectedTags.clear();
+    _selectedTags.addTag(tag);
+    _sh.addHistory(_rawSelectedTagString);
+    goToResult();
   }
 
   void search() {
@@ -108,9 +116,4 @@ mixin SearchHistoryNotifierMixin<T> on AutoDisposeNotifier<T> {
       ref.read(searchHistoryProvider.notifier).clearHistories();
   void removeHistory(SearchHistory history) =>
       ref.read(searchHistoryProvider.notifier).removeHistory(history.query);
-}
-
-extension SearchNotifierX on WidgetRef {
-  @Deprecated('This is bad practice')
-  SearchNotifier get searchNotifier => read(searchProvider.notifier);
 }

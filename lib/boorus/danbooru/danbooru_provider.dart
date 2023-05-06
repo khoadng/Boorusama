@@ -599,9 +599,6 @@ class DanbooruProvider extends StatelessWidget {
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());
 
-final autocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
-
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
   final postCountRepo = ref.watch(postCountRepoProvider);

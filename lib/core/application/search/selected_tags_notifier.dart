@@ -7,24 +7,26 @@ import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/provider.dart';
 
 final selectedTagsProvider =
-    StateNotifierProvider<SelectedTagsNotifier, List<TagSearchItem>>((ref) {
-  final tagInfo = ref.watch(tagInfoProvider);
-  return SelectedTagsNotifier(tagInfo);
-}, dependencies: [
-  tagInfoProvider,
-]);
+    NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
+        () => throw UnimplementedError(),
+        dependencies: [
+      tagInfoProvider,
+    ]);
 
-final selectedRawTagStringProvider = Provider<List<String>>((ref) {
+final selectedRawTagStringProvider = Provider.autoDispose<List<String>>((ref) {
   final selectedTags = ref.watch(selectedTagsProvider);
   return selectedTags.map((tag) => tag.toString()).toList();
 }, dependencies: [
   selectedTagsProvider,
 ]);
 
-class SelectedTagsNotifier extends StateNotifier<List<TagSearchItem>> {
-  SelectedTagsNotifier(this.tagInfo) : super([]);
+class SelectedTagsNotifier extends AutoDisposeNotifier<List<TagSearchItem>> {
+  SelectedTagsNotifier() : super();
 
-  final TagInfo tagInfo;
+  @override
+  List<TagSearchItem> build() {
+    return [];
+  }
 
   TagSearchItem _toItem(String tag) => TagSearchItem.fromString(tag, tagInfo);
   String _applyOperator(String tag, FilterOperator operator) =>
@@ -56,9 +58,6 @@ class SelectedTagsNotifier extends StateNotifier<List<TagSearchItem>> {
   void clear() {
     state = [];
   }
-}
 
-extension SelectedTagsNofifierX on WidgetRef {
-  SelectedTagsNotifier get selectedTagsNotifier =>
-      read(selectedTagsProvider.notifier);
+  TagInfo get tagInfo => ref.read(tagInfoProvider);
 }

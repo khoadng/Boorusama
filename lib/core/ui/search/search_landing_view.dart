@@ -122,16 +122,17 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   void _onTagTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    ref.searchNotifier.tapTag(value);
+    ref.read(searchProvider.notifier).tapTag(value);
   }
 
   void _onHistoryTap(BuildContext context, String value, WidgetRef ref) {
     Navigator.of(context).pop();
-    ref.searchNotifier.tapTag(value);
+    ref.read(searchProvider.notifier).tapTag(value);
   }
 
-  void _onHistoryCleared(WidgetRef ref) => ref.searchNotifier.clearHistories();
+  void _onHistoryCleared(WidgetRef ref) =>
+      ref.read(searchProvider.notifier).clearHistories();
 
   void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
-      ref.searchNotifier.removeHistory(value);
+      ref.read(searchProvider.notifier).removeHistory(value);
 }

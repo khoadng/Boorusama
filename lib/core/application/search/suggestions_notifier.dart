@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/provider.dart';
 
 final suggestionsProvider =
     NotifierProvider.autoDispose<SuggestionsNotifier, List<AutocompleteData>>(
@@ -31,11 +31,6 @@ class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>> {
       return;
     }
 
-    state = await ref.read(autocompleteRepoProvider).getAutocomplete(query);
+    state = await ref.watch(autocompleteRepoProvider).getAutocomplete(query);
   }
-}
-
-mixin SuggestionsNotifierMixin<T> on AutoDisposeNotifier<T> {
-  void loadSuggestions(String query) =>
-      ref.read(suggestionsProvider.notifier).getSuggestions(query);
 }
