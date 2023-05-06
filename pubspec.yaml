@@ -33,7 +33,7 @@ dependencies:
   filesize: ^2.0.1
   firebase_analytics: ^10.2.1
   firebase_core: ^2.10.0
-  firebase_crashlytics: ^3.1.2
+  firebase_crashlytics: ^3.2.0
   firebase_performance: ^0.9.1+1
   flutter:
     sdk: flutter
