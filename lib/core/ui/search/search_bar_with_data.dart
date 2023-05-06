@@ -52,21 +52,3 @@ class SearchBarWithData extends ConsumerWidget {
     );
   }
 }
-
-class SearchBarResulView extends ConsumerWidget {
-  const SearchBarResulView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SearchBar(
-      enabled: false,
-      onTap: () => ref.read(searchProvider.notifier).goToSuggestions(),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => ref.read(searchProvider.notifier).resetToOptions(),
-      ),
-    );
-  }
-}

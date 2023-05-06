@@ -24,7 +24,7 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search/search_app_bar.dart';
-import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
+import 'package:boorusama/core/ui/search/search_app_bar_result_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
@@ -209,31 +209,7 @@ class _ResultView extends ConsumerWidget {
         errors: errors,
         controller: controller,
         sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            titleSpacing: 0,
-            toolbarHeight: kToolbarHeight * 1.9,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            title: SizedBox(
-              height: kToolbarHeight * 1.85,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: SearchBarResulView(),
-                  ),
-                  SizedBox(height: 10),
-                  SelectedTagListWithData(),
-                ],
-              ),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
+          const SearchAppBarResultView(),
           const SliverToBoxAdapter(child: SearchDivider(height: 7)),
           SliverToBoxAdapter(
             child: Row(

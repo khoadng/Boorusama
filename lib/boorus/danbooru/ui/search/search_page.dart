@@ -23,7 +23,7 @@ import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/core/ui/search/search_app_bar.dart';
-import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
+import 'package:boorusama/core/ui/search/search_app_bar_result_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
 import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
@@ -222,31 +222,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           case DisplayState.result:
             return ResultView(
               headerBuilder: () => [
-                SliverAppBar(
-                  titleSpacing: 0,
-                  toolbarHeight: kToolbarHeight * 1.9,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  title: SizedBox(
-                    height: kToolbarHeight * 1.85,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        SizedBox(height: 8),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: SearchBarResulView(),
-                        ),
-                        SizedBox(height: 10),
-                        SelectedTagListWithData(),
-                      ],
-                    ),
-                  ),
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
-                ),
+                const SearchAppBarResultView(),
                 const SliverToBoxAdapter(child: SearchDivider(height: 7)),
               ],
             );
