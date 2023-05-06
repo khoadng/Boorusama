@@ -12,7 +12,8 @@ enum DisplayState {
   result,
 }
 
-final searchProvider = NotifierProvider<SearchNotifier, DisplayState>(
+final searchProvider =
+    NotifierProvider.autoDispose<SearchNotifier, DisplayState>(
   SearchNotifier.new,
   dependencies: [
     selectedTagsProvider,
@@ -21,7 +22,7 @@ final searchProvider = NotifierProvider<SearchNotifier, DisplayState>(
   ],
 );
 
-class SearchNotifier extends Notifier<DisplayState>
+class SearchNotifier extends AutoDisposeNotifier<DisplayState>
     with SearchHistoryNotifierMixin, SuggestionsNotifierMixin {
   SearchNotifier() : super();
 
@@ -97,7 +98,7 @@ class SearchNotifier extends Notifier<DisplayState>
       ref.read(selectedTagsProvider).map((e) => e.toString()).join(' ');
 }
 
-mixin SearchHistoryNotifierMixin<T> on Notifier<T> {
+mixin SearchHistoryNotifierMixin<T> on AutoDisposeNotifier<T> {
   void clearHistories() =>
       ref.read(searchHistoryProvider.notifier).clearHistories();
   void removeHistory(SearchHistory history) =>

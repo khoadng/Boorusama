@@ -1,31 +1,38 @@
-import 'dart:async';
-
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final suggestionsProvider =
-    AsyncNotifierProvider<SuggestionsNotifier, List<AutocompleteData>>(
+    NotifierProvider.autoDispose<SuggestionsNotifier, List<AutocompleteData>>(
   SuggestionsNotifier.new,
   dependencies: [autocompleteRepoProvider],
 );
 
-class SuggestionsNotifier extends AsyncNotifier<List<AutocompleteData>> {
+final suggestionsQuickSearchProvider =
+    NotifierProvider.autoDispose<SuggestionsNotifier, List<AutocompleteData>>(
+  SuggestionsNotifier.new,
+  dependencies: [autocompleteRepoProvider],
+);
+
+class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>> {
   SuggestionsNotifier() : super();
 
   @override
-  FutureOr<List<AutocompleteData>> build() {
+  List<AutocompleteData> build() {
     return [];
   }
 
-  Future<void> getSuggestions(String query) async {
-    final data =
-        await ref.read(autocompleteRepoProvider).getAutocomplete(query);
-    state = AsyncData(data);
+  void getSuggestions(String query) async {
+    if (query.isEmpty) {
+      state = [];
+      return;
+    }
+
+    state = await ref.read(autocompleteRepoProvider).getAutocomplete(query);
   }
 }
 
-mixin SuggestionsNotifierMixin<T> on Notifier<T> {
+mixin SuggestionsNotifierMixin<T> on AutoDisposeNotifier<T> {
   void loadSuggestions(String query) =>
       ref.read(suggestionsProvider.notifier).getSuggestions(query);
 }

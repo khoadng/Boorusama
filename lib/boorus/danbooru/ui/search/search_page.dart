@@ -363,26 +363,23 @@ class _TagSuggestionItems extends ConsumerWidget {
         .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
 
-    return suggestionTags.maybeWhen(
-      data: (data) => SliverTagSuggestionItemsWithHistory(
-        tags: data,
-        histories: histories,
-        currentQuery: currentQuery,
-        onHistoryDeleted: (history) {
-          ref.searchNotifier.removeHistory(history.searchHistory);
-        },
-        onHistoryTap: (history) {
-          FocusManager.instance.primaryFocus?.unfocus();
-          ref.searchNotifier.tapTag(history.tag);
-        },
-        onItemTap: (tag) {
-          FocusManager.instance.primaryFocus?.unfocus();
-          ref.searchNotifier.tapTag(tag.value);
-        },
-        textColorBuilder: (tag) =>
-            generateDanbooruAutocompleteTagColor(tag, theme),
-      ),
-      orElse: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+    return SliverTagSuggestionItemsWithHistory(
+      tags: suggestionTags,
+      histories: histories,
+      currentQuery: currentQuery,
+      onHistoryDeleted: (history) {
+        ref.searchNotifier.removeHistory(history.searchHistory);
+      },
+      onHistoryTap: (history) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        ref.searchNotifier.tapTag(history.tag);
+      },
+      onItemTap: (tag) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        ref.searchNotifier.tapTag(tag.value);
+      },
+      textColorBuilder: (tag) =>
+          generateDanbooruAutocompleteTagColor(tag, theme),
     );
   }
 }

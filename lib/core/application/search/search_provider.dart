@@ -4,25 +4,25 @@ import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/utils/string_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final searchQueryProvider = StateProvider<String>((ref) => '');
+final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
 
-final sanitizedQueryProvider = Provider<String>((ref) {
+final sanitizedQueryProvider = Provider.autoDispose<String>((ref) {
   final query = ref.watch(searchQueryProvider);
   return query.trimLeft().replaceAll(' ', '_');
 });
 
-final filterOperatorProvider = Provider<FilterOperator>((ref) {
+final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
   final query = ref.watch(sanitizedQueryProvider);
   return stringToFilterOperator(query.getFirstCharacter());
 });
 
-final shouldNotFetchSuggestionsProvider = Provider<bool>((ref) {
+final shouldNotFetchSuggestionsProvider = Provider.autoDispose<bool>((ref) {
   final query = ref.watch(sanitizedQueryProvider);
   final operator = ref.watch(filterOperatorProvider);
   return query.length == 1 && operator != FilterOperator.none;
 });
 
-final allowSearchProvider = Provider<bool>((ref) {
+final allowSearchProvider = Provider.autoDispose<bool>((ref) {
   final displayState = ref.watch(searchProvider);
   final selectedTags = ref.watch(selectedTagsProvider);
 
