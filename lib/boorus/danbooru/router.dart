@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:boorusama/core/application/search/tag_store_scope.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +31,6 @@ import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/characters/character_page_desktop.dart';
@@ -465,17 +461,18 @@ void goToBlacklistedTagPage(BuildContext context) {
         page: const BlacklistedTagsPage(),
       ),
     ));
-  } else {
-    showDesktopDialogWindow(
-      context,
-      width: min(MediaQuery.of(context).size.width * 0.8, 700),
-      height: min(MediaQuery.of(context).size.height * 0.8, 600),
-      builder: (_) => provideBlacklistedTagPageDependencies(
-        context,
-        page: const BlacklistedTagsPageDesktop(),
-      ),
-    );
   }
+  // else {
+  // showDesktopDialogWindow(
+  //   context,
+  //   width: min(MediaQuery.of(context).size.width * 0.8, 700),
+  //   height: min(MediaQuery.of(context).size.height * 0.8, 600),
+  //   builder: (_) => provideBlacklistedTagPageDependencies(
+  //     context,
+  //     page: const BlacklistedTagsPageDesktop(),
+  //   ),
+  // );
+  // }
 }
 
 Widget provideBlacklistedTagPageDependencies(
