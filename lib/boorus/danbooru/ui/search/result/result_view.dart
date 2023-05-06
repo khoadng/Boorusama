@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -12,7 +13,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/post_count_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/functional.dart';
@@ -52,52 +52,49 @@ class _ResultViewState extends ConsumerState<ResultView> {
   @override
   Widget build(BuildContext context) {
     final postCountState = ref.watch(postCountProvider);
+    final selectedTags = ref.watch(selectedRawTagStringProvider);
 
-    return BlocBuilder<TagSearchBloc, TagSearchState>(
-      builder: (context, state) => BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, settingsState) {
-          final tags = state.selectedTags.map((e) => e.toString()).toList();
-
-          return DanbooruPostScope(
-            fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
-                  state.selectedTags.join(' '),
-                  page,
-                ),
-            builder: (context, controller, errors) {
-              return DanbooruInfinitePostList(
-                controller: controller,
-                errors: errors,
-                sliverHeaderBuilder: (context) => [
-                  ...widget.headerBuilder?.call() ?? [],
-                  const SliverToBoxAdapter(child: RelatedTagSection()),
-                  SliverToBoxAdapter(
-                      child: Row(
-                    children: [
-                      if (postCountState.isLoading(tags))
-                        const ResultHeader(count: 0, loading: true)
-                      else if (postCountState.isEmpty(tags))
-                        const SizedBox.shrink()
-                      else
-                        postCountState.getPostCount(tags).toOption().fold(
-                              () => const SizedBox.shrink(),
-                              (count) => ResultHeader(
-                                count: count,
-                                loading: false,
-                              ),
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, settingsState) {
+        return DanbooruPostScope(
+          fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
+                selectedTags.join(' '),
+                page,
+              ),
+          builder: (context, controller, errors) {
+            return DanbooruInfinitePostList(
+              controller: controller,
+              errors: errors,
+              sliverHeaderBuilder: (context) => [
+                ...widget.headerBuilder?.call() ?? [],
+                const SliverToBoxAdapter(child: RelatedTagSection()),
+                SliverToBoxAdapter(
+                    child: Row(
+                  children: [
+                    if (postCountState.isLoading(selectedTags))
+                      const ResultHeader(count: 0, loading: true)
+                    else if (postCountState.isEmpty(selectedTags))
+                      const SizedBox.shrink()
+                    else
+                      postCountState.getPostCount(selectedTags).toOption().fold(
+                            () => const SizedBox.shrink(),
+                            (count) => ResultHeader(
+                              count: count,
+                              loading: false,
                             ),
-                      const Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
-                    ],
-                  )),
-                ],
-              );
-            },
-          );
-        },
-      ),
+                          ),
+                    const Spacer(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: PostGridConfigIconButton(),
+                    ),
+                  ],
+                )),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -590,6 +590,9 @@ class DanbooruProvider extends StatelessWidget {
                 .overrideWithValue(currentBooruConfigRepo),
             booruFactoryProvider
                 .overrideWithValue(context.read<BooruFactory>()),
+            tagInfoProvider.overrideWithValue(tagInfo),
+            autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
+            searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -606,6 +609,14 @@ final currentBooruConfigRepoProvider =
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
+
+final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
+
+final autocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
+
+final searchHistoryRepoProvider =
+    Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
