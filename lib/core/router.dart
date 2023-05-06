@@ -40,7 +40,6 @@ import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
 import 'package:boorusama/core/ui/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
-import 'application/search_history.dart';
 import 'application/tags.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
@@ -311,59 +310,49 @@ void goToSearchHistoryPage(
   required Function(SearchHistory history) onRemove,
   required Function(String history) onTap,
 }) {
-  final bloc = context.read<SearchHistoryBloc>();
-
   showMaterialModalBottomSheet(
     context: context,
     settings: const RouteSettings(
       name: RouterPageConstant.searchHistories,
     ),
     duration: const Duration(milliseconds: 200),
-    builder: (_) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
-      bloc: bloc,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('search.history.history').tr(),
-            actions: [
-              TextButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: const Text('Are you sure?').tr(),
-                    actions: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onBackground,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('generic.action.cancel').tr(),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          onClear();
-                        },
-                        child: const Text('generic.action.ok').tr(),
-                      ),
-                    ],
+    builder: (_) => Scaffold(
+      appBar: AppBar(
+        title: const Text('search.history.history').tr(),
+        actions: [
+          TextButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: const Text('Are you sure?').tr(),
+                actions: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          Theme.of(context).colorScheme.onBackground,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('generic.action.cancel').tr(),
                   ),
-                ),
-                child: const Text('search.history.clear').tr(),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onClear();
+                    },
+                    child: const Text('generic.action.ok').tr(),
+                  ),
+                ],
               ),
-            ],
+            ),
+            child: const Text('search.history.clear').tr(),
           ),
-          body: FullHistoryView(
-            scrollController: ModalScrollController.of(context),
-            onHistoryTap: (value) => onTap(value),
-            onHistoryRemoved: (value) => onRemove(value),
-            onHistoryFiltered: (value) =>
-                bloc.add(SearchHistoryFiltered(value)),
-            histories: state.filteredhistories,
-          ),
-        );
-      },
+        ],
+      ),
+      body: FullHistoryView(
+        scrollController: ModalScrollController.of(context),
+        onHistoryTap: (value) => onTap(value),
+        onHistoryRemoved: (value) => onRemove(value),
+      ),
     ),
   );
 }

@@ -249,7 +249,10 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
         RepaintBoundary(child: media),
       if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
       if (expanded) ...[
-        TagsTile(post: post),
+        TagsTile(
+          post: post,
+          onTagTap: (tag) => goToGelbooruSearchPage(context, tag: tag.rawName),
+        ),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(
           post: post,

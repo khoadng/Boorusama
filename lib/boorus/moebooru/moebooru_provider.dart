@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
@@ -22,6 +23,7 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/main.dart';
 
 class MoebooruProvider extends StatelessWidget {
@@ -151,8 +153,13 @@ class MoebooruProvider extends StatelessWidget {
         providers: [
           BlocProvider.value(value: authenticationCubit),
         ],
-        child: Builder(
-          builder: builder,
+        child: ProviderScope(
+          overrides: [
+            autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
+          ],
+          child: Builder(
+            builder: builder,
+          ),
         ),
       ),
     );

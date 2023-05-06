@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
@@ -22,6 +23,7 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/posts/post_repository_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/infra/tags.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/main.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
 import 'infra/tags/gelbooru_tag_repository_api.dart';
@@ -159,8 +161,13 @@ class GelbooruProvider extends StatelessWidget {
           BlocProvider.value(value: authenticationCubit),
           BlocProvider.value(value: tagBloc),
         ],
-        child: Builder(
-          builder: builder,
+        child: ProviderScope(
+          overrides: [
+            autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
+          ],
+          child: Builder(
+            builder: builder,
+          ),
         ),
       ),
     );

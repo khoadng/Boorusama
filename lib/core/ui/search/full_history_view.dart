@@ -4,43 +4,44 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/search/search_history_notifier.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
 
-class FullHistoryView extends StatelessWidget {
+class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
     super.key,
     required this.onHistoryTap,
-    required this.onHistoryFiltered,
     required this.onHistoryRemoved,
-    required this.histories,
     this.scrollController,
     this.useAppbar = true,
   });
 
   final ValueChanged<String> onHistoryTap;
-  final ValueChanged<String> onHistoryFiltered;
   final void Function(SearchHistory item) onHistoryRemoved;
-  final List<SearchHistory> histories;
   final bool useAppbar;
   final ScrollController? scrollController;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final histories = ref.watch(searchHistoryProvider);
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: SearchBar(
-            onChanged: onHistoryFiltered,
+            onChanged: (value) =>
+                ref.read(searchHistoryProvider.notifier).filterHistories(value),
           ),
         ),
         Expanded(
           child: ImplicitlyAnimatedList<SearchHistory>(
-            items: histories,
+            items: histories.filteredHistories,
             controller: scrollController,
             areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
             insertDuration: const Duration(milliseconds: 250),
