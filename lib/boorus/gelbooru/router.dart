@@ -32,7 +32,7 @@ void goToGelbooruSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context).push(GelbooruSearchPage.routeOf(context));
+    Navigator.of(context).push(GelbooruSearchPage.routeOf(context, tag: tag));
 
 void goToGelbooruArtistPage(BuildContext context, String artist) {
   Navigator.of(context).push(MaterialPageRoute(
