@@ -1,16 +1,14 @@
 // Flutter imports:
+import 'package:boorusama/core/application/search_history/search_history_notifier.dart';
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // Project imports:
-import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/ui/search/search_history_section.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchLandingView extends StatefulWidget {
+class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
     required this.onHistoryTap,
@@ -33,10 +31,10 @@ class SearchLandingView extends StatefulWidget {
   final VoidCallback onAddTagRequest;
 
   @override
-  State<SearchLandingView> createState() => _SearchLandingViewState();
+  ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
 }
 
-class _SearchLandingViewState extends State<SearchLandingView>
+class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     with TickerProviderStateMixin {
   late final animationController = AnimationController(
     vsync: this,
@@ -65,6 +63,8 @@ class _SearchLandingViewState extends State<SearchLandingView>
 
   @override
   Widget build(BuildContext context) {
+    final histories = ref.watch(searchHistoryProvider);
+
     return FadeTransition(
       opacity: animationController,
       child: SingleChildScrollView(
@@ -87,18 +87,13 @@ class _SearchLandingViewState extends State<SearchLandingView>
               if (widget.trendingBuilder != null) ...[
                 widget.trendingBuilder!.call(context),
               ],
-              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
-                builder: (context, state) {
-                  return SearchHistorySection(
-                    histories: state.histories,
-                    onHistoryTap: (history) =>
-                        widget.onHistoryTap.call(history),
-                    onHistoryRemoved: (history) =>
-                        widget.onHistoryRemoved.call(history),
-                    onHistoryCleared: () => widget.onHistoryCleared.call(),
-                    onFullHistoryRequested: widget.onFullHistoryRequested,
-                  );
-                },
+              SearchHistorySection(
+                histories: histories.histories,
+                onHistoryTap: (history) => widget.onHistoryTap.call(history),
+                onHistoryRemoved: (history) =>
+                    widget.onHistoryRemoved.call(history),
+                onHistoryCleared: () => widget.onHistoryCleared.call(),
+                onFullHistoryRequested: widget.onFullHistoryRequested,
               ),
             ],
           ),

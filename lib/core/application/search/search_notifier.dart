@@ -52,6 +52,8 @@ class SearchNotifier extends AutoDisposeNotifier<DisplayState>
       },
     );
 
+    _sh.fetchHistories();
+
     return DisplayState.options;
   }
 

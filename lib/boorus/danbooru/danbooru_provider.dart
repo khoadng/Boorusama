@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/posts/post_count_notifier.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -586,13 +587,7 @@ class DanbooruProvider extends StatelessWidget {
         child: ProviderScope(
           overrides: [
             postCountRepoProvider.overrideWithValue(postCountRepo),
-            currentBooruConfigRepoProvider
-                .overrideWithValue(currentBooruConfigRepo),
-            booruFactoryProvider
-                .overrideWithValue(context.read<BooruFactory>()),
-            tagInfoProvider.overrideWithValue(tagInfo),
             autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
-            searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -604,19 +599,8 @@ class DanbooruProvider extends StatelessWidget {
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());
 
-final currentBooruConfigRepoProvider =
-    Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());
-
-final booruFactoryProvider =
-    Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
-
 final autocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
-
-final searchHistoryRepoProvider =
-    Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {

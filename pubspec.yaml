@@ -93,6 +93,7 @@ dependencies:
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1
   share_plus: ^6.3.4
+  stack_trace: ^1.11.0
   timeago: ^3.3.0
   toggle_switch: ^2.1.0
   tuple: ^2.0.1

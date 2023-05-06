@@ -1,5 +1,5 @@
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final searchHistoryProvider =

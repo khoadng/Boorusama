@@ -1,6 +1,6 @@
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final selectedTagsProvider =

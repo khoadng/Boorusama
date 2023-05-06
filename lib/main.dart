@@ -2,7 +2,9 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
 
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -243,6 +245,12 @@ void main() async {
     downloadNotifications,
   );
 
+  FlutterError.demangleStackTrace = (StackTrace stack) {
+    if (stack is stack_trace.Trace) return stack.vmTrace;
+    if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
+    return stack;
+  };
+
   logger.logI('Start up',
       'Initializtion done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
@@ -354,7 +362,17 @@ void main() async {
                   },
                 ),
               ],
-              child: ProviderScope(child: App(settings: settings)),
+              child: ProviderScope(
+                overrides: [
+                  searchHistoryRepoProvider
+                      .overrideWithValue(searchHistoryRepo),
+                  currentBooruConfigRepoProvider
+                      .overrideWithValue(currentBooruRepo),
+                  booruFactoryProvider.overrideWithValue(booruFactory),
+                  tagInfoProvider.overrideWithValue(tagInfo),
+                ],
+                child: App(settings: settings),
+              ),
             ),
           ),
         ),
