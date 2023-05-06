@@ -17,13 +17,6 @@ final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
   return stringToFilterOperator(query.getFirstCharacter());
 });
 
-//FIXME: use this
-final shouldNotFetchSuggestionsProvider = Provider.autoDispose<bool>((ref) {
-  final query = ref.watch(sanitizedQueryProvider);
-  final operator = ref.watch(filterOperatorProvider);
-  return query.length == 1 && operator != FilterOperator.none;
-});
-
 final allowSearchProvider = Provider.autoDispose<bool>((ref) {
   final displayState = ref.watch(searchProvider);
   final selectedTags = ref.watch(selectedTagsProvider);
