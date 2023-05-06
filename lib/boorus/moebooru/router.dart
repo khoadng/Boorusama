@@ -12,14 +12,12 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/search/moebooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 void goToMoebooruSearchPage(
