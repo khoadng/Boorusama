@@ -54,7 +54,6 @@ import 'package:boorusama/boorus/danbooru/ui/saved_search/saved_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/search/search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
@@ -270,19 +269,20 @@ void goToSearchPage(
         ),
       ),
     ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => provideSearchPageDependencies(
-        context,
-        tag,
-        (context) => SearchPageDesktop(
-          metatags: context.read<TagInfo>().metatags,
-          metatagHighlightColor: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
   }
+  // else {
+  // showDesktopFullScreenWindow(
+  //   context,
+  //   builder: (_) => provideSearchPageDependencies(
+  //     context,
+  //     tag,
+  //     (context) => SearchPageDesktop(
+  //       metatags: context.read<TagInfo>().metatags,
+  //       metatagHighlightColor: Theme.of(context).colorScheme.primary,
+  //     ),
+  //   ),
+  // );
+  // }
 }
 
 Widget provideSearchPageDependencies(
@@ -297,12 +297,6 @@ Widget provideSearchPageDependencies(
           context,
           booru: state.booru!,
           builder: (context) {
-            final tagSearchBloc = TagSearchBloc(
-              tagStore: tagStore,
-              tagInfo: context.read<TagInfo>(),
-              autocompleteRepository: context.read<AutocompleteRepository>(),
-            );
-
             final searchHistoryCubit = SearchHistoryBloc(
               searchHistoryRepository: context.read<SearchHistoryRepository>(),
             );
@@ -324,19 +318,6 @@ Widget provideSearchPageDependencies(
                   value: BlocProvider.of<ThemeBloc>(context),
                 ),
                 BlocProvider.value(value: searchHistorySuggestions),
-                BlocProvider.value(value: tagSearchBloc),
-                BlocProvider<SearchBloc>(
-                  create: (context) => DanbooruSearchBloc(
-                    initial: DisplayState.options,
-                    metatags: context.read<TagInfo>().metatags,
-                    tagSearchBloc: tagSearchBloc,
-                    searchHistoryBloc: searchHistoryCubit,
-                    relatedTagBloc: relatedTagBloc,
-                    searchHistorySuggestionsBloc: searchHistorySuggestions,
-                    initialQuery: tag,
-                    booruType: state.booru!.booruType,
-                  ),
-                ),
                 BlocProvider.value(value: relatedTagBloc),
               ],
               child: CustomContextMenuOverlay(

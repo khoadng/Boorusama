@@ -74,6 +74,7 @@ class _SearchPageState extends State<SearchPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: _SmallLayout(
         focus: focus,
+        metatags: widget.metatags,
         queryEditingController: queryEditingController,
       ),
     );
@@ -103,10 +104,12 @@ class _LandingView extends ConsumerWidget {
   const _LandingView({
     this.onFocusRequest,
     required this.onTextChanged,
+    required this.metatags,
   });
 
   final VoidCallback? onFocusRequest;
   final void Function(String text) onTextChanged;
+  final List<Metatag> metatags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -145,6 +148,7 @@ class _LandingView extends ConsumerWidget {
         );
       },
       metatagsBuilder: (context) => DanbooruMetatagsSection(
+        metatags: metatags,
         onOptionTap: (value) {
           ref.read(searchProvider.notifier).tapRawMetaTag(value);
           onFocusRequest?.call();
@@ -208,10 +212,12 @@ class _SmallLayout extends ConsumerWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
+    required this.metatags,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final List<Metatag> metatags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -245,6 +251,7 @@ class _SmallLayout extends ConsumerWidget {
                   const _SelectedTagList(),
                   const _Divider(),
                   _LandingView(
+                    metatags: metatags,
                     onFocusRequest: () => focus.requestFocus(),
                     onTextChanged: (text) =>
                         _onTextChanged(queryEditingController, text),
