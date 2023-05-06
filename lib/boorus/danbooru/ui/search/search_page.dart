@@ -14,10 +14,8 @@ import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/search_history.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -56,10 +54,6 @@ class SearchPage extends ConsumerStatefulWidget {
                 final relatedTagBloc = RelatedTagBloc(
                   relatedTagRepository: context.read<RelatedTagRepository>(),
                 );
-                final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-                  searchHistoryRepository:
-                      context.read<SearchHistoryRepository>(),
-                );
 
                 return MultiBlocProvider(
                   providers: [
@@ -70,7 +64,6 @@ class SearchPage extends ConsumerStatefulWidget {
                     BlocProvider.value(
                       value: BlocProvider.of<ThemeBloc>(context),
                     ),
-                    BlocProvider.value(value: searchHistorySuggestions),
                     BlocProvider.value(value: relatedTagBloc),
                   ],
                   child: CustomContextMenuOverlay(

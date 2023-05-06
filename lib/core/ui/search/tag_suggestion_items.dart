@@ -23,17 +23,9 @@ class TagSuggestionItemsWithData extends ConsumerWidget {
     // final histories = context
     //     .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
 
-    return SliverTagSuggestionItemsWithHistory(
+    return TagSuggestionItems(
       tags: suggestionTags,
-      histories: const [], //FIXME: histories,
       currentQuery: currentQuery,
-      onHistoryDeleted: (history) {
-        ref.read(searchProvider.notifier).removeHistory(history.searchHistory);
-      },
-      onHistoryTap: (history) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        ref.read(searchProvider.notifier).tapTag(history.tag);
-      },
       onItemTap: (tag) {
         FocusManager.instance.primaryFocus?.unfocus();
         ref.read(searchProvider.notifier).tapTag(tag.value);
