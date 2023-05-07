@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/ui/video_progress_bar.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 // Class to store duration and position of video
 class VideoProgress extends Equatable {
@@ -40,7 +41,7 @@ class BooruVideoProgressBar extends StatelessWidget {
           const SizedBox(
             width: 8,
           ),
-          Text(_formatDuration(progress.position)),
+          Text(formatDurationForMedia(progress.position)),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -64,29 +65,12 @@ class BooruVideoProgressBar extends StatelessWidget {
               ),
             ),
           ),
-          Text(_formatDuration(progress.duration)),
+          Text(formatDurationForMedia(progress.duration)),
           const SizedBox(
             width: 8,
           ),
         ],
       ),
     );
-  }
-}
-
-// convert miliseconds to string with format 0:12
-String _formatDuration(Duration duration) {
-  final seconds = duration.inSeconds % 60;
-  final minutes = duration.inMinutes % 60;
-  final hours = duration.inHours;
-
-  final secondsStr = seconds.toString().padLeft(2, '0');
-  final minutesStr = minutes.toString();
-  final hoursStr = hours.toString();
-
-  if (hours > 0) {
-    return '$hoursStr:$minutesStr:$secondsStr';
-  } else {
-    return '$minutesStr:$secondsStr';
   }
 }

@@ -90,6 +90,7 @@ DanbooruPost postDtoToPost(
       hasChildren: dto.hasChildren ?? false,
       parentId: dto.parentId,
       hasLarge: dto.hasLarge ?? false,
+      duration: dto.mediaAsset?.duration ?? 0,
     );
   } catch (e) {
     return DanbooruPost.empty();

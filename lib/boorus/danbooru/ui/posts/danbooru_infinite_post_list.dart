@@ -165,6 +165,8 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                       isTranslated: post.isTranslated,
                       hasComments: post.hasComment,
                       hasParentOrChildren: post.hasParentOrChildren,
+                      duration: post.duration,
+                      hasSound: post.hasSound,
                       image:
                           state.settings.imageListType == ImageListType.masonry
                               ? BooruImage(

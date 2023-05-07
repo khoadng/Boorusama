@@ -9,12 +9,18 @@ import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/domain/posts/source_mixin.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/domain/video.dart';
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];
 
 class DanbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, SourceMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        SourceMixin,
+        VideoInfoMixin
     implements base.Post {
   const DanbooruPost({
     required this.id,
@@ -46,6 +52,7 @@ class DanbooruPost extends Equatable
     required this.hasChildren,
     required this.parentId,
     required this.hasLarge,
+    required this.duration,
   })  : _source = source,
         _sampleImageUrl = sampleImageUrl,
         _thumbnailImageUrl = thumbnailImageUrl;
@@ -80,6 +87,7 @@ class DanbooruPost extends Equatable
         hasChildren: false,
         hasLarge: false,
         parentId: null,
+        duration: 0,
       );
 
   final String _thumbnailImageUrl;
@@ -133,6 +141,8 @@ class DanbooruPost extends Equatable
   final bool hasChildren;
   final int? parentId;
   final bool hasLarge;
+  @override
+  final double duration;
 
   DanbooruPost copyWith({
     int? id,
@@ -186,6 +196,7 @@ class DanbooruPost extends Equatable
         hasChildren: hasChildren ?? this.hasChildren,
         hasLarge: hasLarge,
         parentId: parentId ?? this.parentId,
+        duration: duration,
       );
 
   @override
@@ -206,6 +217,9 @@ class DanbooruPost extends Equatable
 
   @override
   String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
+
+  @override
+  bool get hasSound => metaTags.contains('sound');
 
   bool get hasCensoredTags {
     final tagSet = tags.toSet();

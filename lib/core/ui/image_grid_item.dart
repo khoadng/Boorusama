@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 class AutoScrollOptions {
   const AutoScrollOptions({
@@ -34,6 +35,8 @@ class ImageGridItem extends StatelessWidget {
     this.onFavToggle,
     this.isFaved,
     this.hideOverlay = false,
+    this.duration,
+    this.hasSound = false,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -48,6 +51,8 @@ class ImageGridItem extends StatelessWidget {
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
   final bool hideOverlay;
+  final double? duration;
+  final bool hasSound;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +109,41 @@ class ImageGridItem extends StatelessWidget {
         spacing: 1,
         children: [
           if (isAnimated ?? false)
-            const _OverlayIcon(icon: Icons.play_circle_outline, size: 20),
+            if (duration == null)
+              const _OverlayIcon(icon: Icons.play_circle_outline, size: 20)
+            else
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                height: 25,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: const BorderRadius.all(Radius.circular(4)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        formatDurationForMedia(
+                            Duration(seconds: duration!.round())),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    hasSound
+                        ? const Icon(
+                            Icons.volume_up_rounded,
+                            color: Colors.white70,
+                            size: 18,
+                          )
+                        : const Icon(
+                            Icons.volume_off_rounded,
+                            color: Colors.white70,
+                            size: 18,
+                          ),
+                  ],
+                ),
+              ),
           if (isTranslated ?? false)
             const _OverlayIcon(icon: Icons.g_translate_outlined, size: 20),
           if (hasComments ?? false)
