@@ -27,20 +27,22 @@ mixin SourceMixin {
 }
 
 String _getHost(Uri uri) {
-  if (uri.host.contains('artstation.com')) return 'artstation.com';
-  if (uri.host.contains('discordapp.com')) return 'discordapp.com';
-  if (uri.host.contains('kym-cdn.com')) return 'knowyourmeme.com';
-  if (uri.host.contains('images-wixmp')) return 'deviantart.com';
-  if (uri.host.contains('fantia.jp')) return 'fantia.jp';
-  if (uri.host.contains('hentai-foundry.com')) return 'hentai-foundry.com';
-  if (uri.host.contains('exhentai.org')) return 'e-hentai.org';
-  if (uri.host.contains('ngfiles.com')) return 'newgrounds.com';
-  if (uri.host.contains('i.pximg.net')) return 'pixiv.net';
+  if (uri.host.contains('artstation.com')) return 'https://artstation.com';
+  if (uri.host.contains('discordapp.com')) return 'https://discordapp.com';
+  if (uri.host.contains('kym-cdn.com')) return 'https://knowyourmeme.com';
+  if (uri.host.contains('images-wixmp')) return 'https://deviantart.com';
+  if (uri.host.contains('fantia.jp')) return 'https://fantia.jp';
+  if (uri.host.contains('hentai-foundry.com')) {
+    return 'https://hentai-foundry.com';
+  }
+  if (uri.host.contains('exhentai.org')) return 'https://e-hentai.org';
+  if (uri.host.contains('ngfiles.com')) return 'https://newgrounds.com';
+  if (uri.host.contains('i.pximg.net')) return 'https://pixiv.net';
   if (uri.host.contains('lofter.com')) {
     return 'https://www.lofter.com/favicon.ico';
   }
 
-  return uri.host;
+  return '${uri.scheme}://${uri.host}';
 }
 
 bool _useIco(Uri uri) {

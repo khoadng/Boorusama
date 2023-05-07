@@ -14,6 +14,7 @@ export 'package:tuple/tuple.dart' show Tuple3, Tuple4, Tuple5, Tuple6, Tuple7;
 // In project exports:
 export 'package:boorusama/utils/fp/file.dart';
 export 'package:boorusama/utils/fp/hive.dart';
+export 'package:boorusama/utils/fp/url.dart';
 
 /// A type alias for the `State` class from the `fpdart` library.
 typedef FpState<S, A> = fpdart.State<S, A>;

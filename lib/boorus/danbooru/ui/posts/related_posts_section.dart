@@ -60,7 +60,7 @@ class RelatedPostsSection extends StatelessWidget {
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
                             child: post.hasWebSource
-                                ? WebsiteLogo(url: post.source!.toString())
+                                ? WebsiteLogo(url: post.sourceHost!)
                                 : const SizedBox.shrink(),
                           ),
                         ),

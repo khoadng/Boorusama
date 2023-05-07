@@ -214,22 +214,27 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
       intitialIndex: widget.intitialIndex,
       onExit: widget.onExit,
       onPageChanged: onSwiped,
-      bottomSheet: (page) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (posts[page].isVideo)
-            ValueListenableBuilder<VideoProgress>(
-              valueListenable: videoProgress,
-              builder: (_, progress, __) =>
-                  BooruVideoProgressBar(progress: progress),
+      bottomSheet: (page) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (posts[page].isVideo)
+              ValueListenableBuilder<VideoProgress>(
+                valueListenable: videoProgress,
+                builder: (_, progress, __) =>
+                    BooruVideoProgressBar(progress: progress),
+              ),
+            Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: InformationSection(
+                post: posts[page],
+                showSource: true,
+              ),
             ),
-          Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: InformationSection(post: posts[page]),
-          ),
-          DanbooruPostActionToolbar(post: posts[page]),
-        ],
-      ),
+            DanbooruPostActionToolbar(post: posts[page]),
+          ],
+        );
+      },
       targetSwipeDownBuilder: (context, page) => PostMediaItem(
         post: posts[page],
       ),

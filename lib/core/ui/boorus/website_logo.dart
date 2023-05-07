@@ -28,8 +28,8 @@ class WebsiteLogo extends StatelessWidget {
       ),
       child: CachedNetworkImage(
         fit: BoxFit.cover,
-        fadeInDuration: const Duration(milliseconds: 100),
-        fadeOutDuration: const Duration(milliseconds: 200),
+        fadeInDuration: const Duration(milliseconds: 50),
+        fadeOutDuration: const Duration(milliseconds: 50),
         imageUrl: isIcoUrl ? url : getFavicon(url),
       ),
     );

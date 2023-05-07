@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -16,6 +15,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
 import 'package:boorusama/core/ui/touch_count_recognizer.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
+import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
