@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
-class ExploreHotPage extends StatefulWidget {
+class ExploreHotPage extends StatelessWidget {
   const ExploreHotPage({
     super.key,
   });
@@ -38,11 +38,6 @@ class ExploreHotPage extends StatefulWidget {
         ),
       );
 
-  @override
-  State<ExploreHotPage> createState() => _ExploreDetailPageState();
-}
-
-class _ExploreDetailPageState extends State<ExploreHotPage> {
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:jiffy/jiffy.dart';
 
 // Project imports:
@@ -9,33 +8,6 @@ enum ExploreCategory {
   popular,
   mostViewed,
   hot,
-}
-
-class ExploreDetailsData extends Equatable {
-  final TimeScale scale;
-  final DateTime date;
-  final ExploreCategory category;
-
-  const ExploreDetailsData({
-    required this.scale,
-    required this.date,
-    required this.category,
-  });
-
-  ExploreDetailsData copyWith({
-    TimeScale? scale,
-    DateTime? date,
-    ExploreCategory? category,
-  }) {
-    return ExploreDetailsData(
-      scale: scale ?? this.scale,
-      date: date ?? this.date,
-      category: category ?? this.category,
-    );
-  }
-
-  @override
-  List<Object?> get props => [scale, date, category];
 }
 
 extension DateTimeX on DateTime {

@@ -4,19 +4,22 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores/explore_utils.dart';
+import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'datetime_selector.dart';
 
-class ExploreMostViewedPage extends StatefulWidget {
+class ExploreMostViewedPage extends ConsumerWidget {
   const ExploreMostViewedPage({
     super.key,
   });
@@ -31,8 +34,13 @@ class ExploreMostViewedPage extends StatefulWidget {
               context,
               booru: state.booru!,
               builder: (dcontext) {
-                return const CustomContextMenuOverlay(
-                  child: ExploreMostViewedPage(),
+                return CustomContextMenuOverlay(
+                  child: ProviderScope(
+                    overrides: [
+                      dateProvider.overrideWith((ref) => DateTime.now()),
+                    ],
+                    child: const ExploreMostViewedPage(),
+                  ),
                 );
               },
             );
@@ -41,54 +49,68 @@ class ExploreMostViewedPage extends StatefulWidget {
       );
 
   @override
-  State<ExploreMostViewedPage> createState() => _ExploreDetailPageState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final date = ref.watch(dateProvider);
+
+    return DanbooruPostScope(
+      fetcher: (page) =>
+          context.read<ExploreRepository>().getMostViewedPosts(date),
+      builder: (context, controller, errors) => _MostViewedContent(
+        controller: controller,
+        errors: errors,
+      ),
+    );
+  }
 }
 
-class _ExploreDetailPageState extends State<ExploreMostViewedPage> {
-  late final exploreDetails = ValueNotifier(
-    ExploreDetailsData(
-      scale: TimeScale.day,
-      date: DateTime.now(),
-      category: ExploreCategory.mostViewed,
-    ),
-  );
+class _MostViewedContent extends ConsumerWidget {
+  const _MostViewedContent({
+    required this.controller,
+    this.errors,
+  });
+
+  final PostGridController<DanbooruPost> controller;
+  final BooruError? errors;
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<ExploreDetailsData>(
-      valueListenable: exploreDetails,
-      builder: (_, explore, __) => DanbooruPostScope(
-        fetcher: (page) =>
-            context.read<ExploreRepository>().getMostViewedPosts(explore.date),
-        builder: (context, controller, errors) => Column(
-          children: [
-            Expanded(
-              child: DanbooruInfinitePostList(
-                errors: errors,
-                controller: controller,
-                sliverHeaderBuilder: (context) => [
-                  ExploreSliverAppBar(
-                    title: 'explore.popular'.tr(),
-                  ),
-                ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    final date = ref.watch(dateProvider);
+
+    ref.listen(
+      dateProvider,
+      (previous, next) {
+        if (previous != next) {
+          // Delay 100ms, this is a hack
+          Future.delayed(const Duration(milliseconds: 100), () {
+            controller.refresh();
+          });
+        }
+      },
+    );
+
+    return Column(
+      children: [
+        Expanded(
+          child: DanbooruInfinitePostList(
+            errors: errors,
+            controller: controller,
+            sliverHeaderBuilder: (context) => [
+              ExploreSliverAppBar(
+                title: 'explore.most_viewed'.tr(),
               ),
-            ),
-            Container(
-              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: DateTimeSelector(
-                onDateChanged: (date) {
-                  exploreDetails.value =
-                      exploreDetails.value.copyWith(date: date);
-                  controller.refresh();
-                },
-                date: explore.date,
-                scale: explore.scale,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+        Container(
+          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          child: DateTimeSelector(
+            onDateChanged: (date) =>
+                ref.read(dateProvider.notifier).state = date,
+            date: date,
+            backgroundColor: Colors.transparent,
+          ),
+        ),
+      ],
     );
   }
 }

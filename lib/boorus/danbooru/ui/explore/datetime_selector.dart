@@ -14,7 +14,7 @@ class DateTimeSelector extends StatelessWidget {
     super.key,
     required this.onDateChanged,
     required this.date,
-    required this.scale,
+    this.scale = TimeScale.day,
     this.backgroundColor,
   });
 
