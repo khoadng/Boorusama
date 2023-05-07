@@ -2,38 +2,32 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
-class SearchButton extends StatelessWidget {
+class SearchButton extends ConsumerWidget {
   const SearchButton({
     super.key,
+    this.onSearch,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final allowSearch =
-        context.select((SearchBloc bloc) => bloc.state.allowSearch);
+  final VoidCallback? onSearch;
 
-    return ConditionalRenderWidget(
-      condition: allowSearch,
-      childBuilder: (context) => BlocBuilder<TagSearchBloc, TagSearchState>(
-        builder: (context, state) {
-          return FloatingActionButton(
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allowSearch = ref.watch(allowSearchProvider);
+
+    return allowSearch
+        ? FloatingActionButton(
             onPressed: () {
-              context.read<SearchBloc>().add(const SearchRequested());
-              context.read<PostCountCubit>().getPostCount(
-                  state.selectedTags.map((e) => e.toString()).toList());
+              onSearch?.call();
+              ref.read(searchProvider.notifier).search();
             },
             heroTag: null,
             child: const Icon(Icons.search),
-          );
-        },
-      ),
-    );
+          )
+        : const SizedBox.shrink();
   }
 }

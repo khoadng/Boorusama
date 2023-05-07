@@ -9,9 +9,11 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
@@ -56,6 +58,7 @@ import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'app.dart';
 
 const savedSearchHelpUrl =
@@ -242,6 +245,12 @@ void main() async {
     downloadNotifications,
   );
 
+  FlutterError.demangleStackTrace = (StackTrace stack) {
+    if (stack is stack_trace.Trace) return stack.vmTrace;
+    if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
+    return stack;
+  };
+
   logger.logI('Start up',
       'Initializtion done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
@@ -353,7 +362,17 @@ void main() async {
                   },
                 ),
               ],
-              child: App(settings: settings),
+              child: ProviderScope(
+                overrides: [
+                  searchHistoryRepoProvider
+                      .overrideWithValue(searchHistoryRepo),
+                  currentBooruConfigRepoProvider
+                      .overrideWithValue(currentBooruRepo),
+                  booruFactoryProvider.overrideWithValue(booruFactory),
+                  tagInfoProvider.overrideWithValue(tagInfo),
+                ],
+                child: App(settings: settings),
+              ),
             ),
           ),
         ),

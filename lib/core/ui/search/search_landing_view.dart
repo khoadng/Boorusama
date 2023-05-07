@@ -3,40 +3,33 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search_history.dart';
+import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/ui/search/search_history_section.dart';
 
-class SearchLandingView extends StatefulWidget {
+class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
-    required this.onHistoryTap,
-    required this.onTagTap,
-    required this.onHistoryRemoved,
-    required this.onHistoryCleared,
-    required this.onFullHistoryRequested,
+    this.onHistoryTap,
     this.metatagsBuilder,
     this.trendingBuilder,
-    required this.onAddTagRequest,
   });
 
-  final ValueChanged<String> onHistoryTap;
-  final ValueChanged<SearchHistory> onHistoryRemoved;
-  final VoidCallback onFullHistoryRequested;
-  final VoidCallback onHistoryCleared;
-  final ValueChanged<String> onTagTap;
+  final ValueChanged<String>? onHistoryTap;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
-  final VoidCallback onAddTagRequest;
 
   @override
-  State<SearchLandingView> createState() => _SearchLandingViewState();
+  ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
 }
 
-class _SearchLandingViewState extends State<SearchLandingView>
+class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     with TickerProviderStateMixin {
   late final animationController = AnimationController(
     vsync: this,
@@ -65,6 +58,8 @@ class _SearchLandingViewState extends State<SearchLandingView>
 
   @override
   Widget build(BuildContext context) {
+    final histories = ref.watch(searchHistoryProvider);
+
     return FadeTransition(
       opacity: animationController,
       child: SingleChildScrollView(
@@ -81,22 +76,39 @@ class _SearchLandingViewState extends State<SearchLandingView>
                 const Divider(thickness: 1),
               ],
               FavoriteTagsSection(
-                onAddTagRequest: () => widget.onAddTagRequest(),
-                onTagTap: widget.onTagTap,
+                onAddTagRequest: () {
+                  final bloc = context.read<FavoriteTagBloc>();
+                  goToQuickSearchPage(
+                    context,
+                    onSubmitted: (context, text) {
+                      Navigator.of(context).pop();
+                      bloc.add(FavoriteTagAdded(tag: text));
+                    },
+                    onSelected: (tag) =>
+                        bloc.add(FavoriteTagAdded(tag: tag.value)),
+                  );
+                },
+                onTagTap: (value) {
+                  _onTagTap(value, ref);
+                },
               ),
               if (widget.trendingBuilder != null) ...[
                 widget.trendingBuilder!.call(context),
               ],
-              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
-                builder: (context, state) {
-                  return SearchHistorySection(
-                    histories: state.histories,
-                    onHistoryTap: (history) =>
-                        widget.onHistoryTap.call(history),
-                    onHistoryRemoved: (history) =>
-                        widget.onHistoryRemoved.call(history),
-                    onHistoryCleared: () => widget.onHistoryCleared.call(),
-                    onFullHistoryRequested: widget.onFullHistoryRequested,
+              SearchHistorySection(
+                histories: histories.histories,
+                onHistoryTap: (history) {
+                  _onTagTap(history, ref);
+                  widget.onHistoryTap?.call(history);
+                },
+                onHistoryRemoved: (value) => _onHistoryRemoved(ref, value),
+                onHistoryCleared: () => _onHistoryCleared(ref),
+                onFullHistoryRequested: () {
+                  goToSearchHistoryPage(
+                    context,
+                    onClear: () => _onHistoryCleared(ref),
+                    onRemove: (value) => _onHistoryRemoved(ref, value),
+                    onTap: (value) => _onHistoryTap(context, value, ref),
                   );
                 },
               ),
@@ -106,4 +118,20 @@ class _SearchLandingViewState extends State<SearchLandingView>
       ),
     );
   }
+
+  void _onTagTap(String value, WidgetRef ref) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    ref.read(searchProvider.notifier).tapTag(value);
+  }
+
+  void _onHistoryTap(BuildContext context, String value, WidgetRef ref) {
+    Navigator.of(context).pop();
+    ref.read(searchProvider.notifier).tapTag(value);
+  }
+
+  void _onHistoryCleared(WidgetRef ref) =>
+      ref.read(searchProvider.notifier).clearHistories();
+
+  void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
+      ref.read(searchProvider.notifier).removeHistory(value);
 }

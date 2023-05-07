@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_count_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
@@ -52,6 +54,8 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/infra/tags.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/main.dart';
 import 'infra/dtos/post_dto.dart';
 
@@ -580,8 +584,40 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: commentsCubit),
           BlocProvider.value(value: postCountCubit),
         ],
-        child: Builder(builder: builder),
+        child: ProviderScope(
+          overrides: [
+            postCountRepoProvider.overrideWithValue(postCountRepo),
+            autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
+          ],
+          child: Builder(builder: builder),
+        ),
       ),
     );
   }
 }
+
+final postCountRepoProvider =
+    Provider<PostCountRepository>((ref) => throw UnimplementedError());
+
+final postCountStateProvider =
+    StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
+  final postCountRepo = ref.watch(postCountRepoProvider);
+  final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruFactory = ref.watch(booruFactoryProvider);
+
+  return PostCountNotifier(
+    repository: postCountRepo,
+    currentBooruConfigRepository: currentBooruConfigRepo,
+    booruFactory: booruFactory,
+  );
+}, dependencies: [
+  postCountRepoProvider,
+  currentBooruConfigRepoProvider,
+  booruFactoryProvider,
+]);
+
+final postCountProvider = Provider<PostCountState>((ref) {
+  return ref.watch(postCountStateProvider);
+}, dependencies: [
+  postCountStateProvider,
+]);

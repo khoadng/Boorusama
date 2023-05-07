@@ -3,52 +3,108 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
+import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
+import 'package:boorusama/core/ui/search/search_app_bar.dart';
+import 'package:boorusama/core/ui/search/search_app_bar_result_view.dart';
 import 'package:boorusama/core/ui/search/search_button.dart';
+import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
-import 'package:boorusama/core/ui/search/selected_tag_list.dart';
-import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/tag_suggestion_items.dart';
+import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
 
-import 'package:boorusama/core/application/search_history.dart'
-    hide SearchHistoryCleared;
-
-class GelbooruSearchPage extends StatefulWidget {
+class GelbooruSearchPage extends ConsumerStatefulWidget {
   const GelbooruSearchPage({
     super.key,
-    required this.metatags,
     required this.metatagHighlightColor,
+    this.initialQuery,
   });
 
-  final List<Metatag> metatags;
   final Color metatagHighlightColor;
+  final String? initialQuery;
+
+  static Route<T> routeOf<T>(
+    BuildContext context, {
+    String? tag,
+  }) {
+    final booru = context.read<CurrentBooruBloc>().state.booru!;
+
+    return PageTransition(
+      type: PageTransitionType.fade,
+      child: GelbooruProvider.of(
+        context,
+        booru: booru,
+        builder: (gcontext) {
+          final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
+            ..add(const FavoriteTagFetched());
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: favoriteTagBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: ProviderScope(
+                overrides: [
+                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
+                ],
+                child: GelbooruSearchPage(
+                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                  initialQuery: tag,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
-  State<GelbooruSearchPage> createState() => _SearchPageState();
+  ConsumerState<GelbooruSearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<GelbooruSearchPage> {
-  late final queryEditingController = TextEditingController();
-  final compositeSubscription = CompositeSubscription();
+class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
+  late final queryEditingController = RichTextController(
+    patternMatchMap: {
+      ref.read(searchMetatagStringRegexProvider): TextStyle(
+        fontWeight: FontWeight.w800,
+        color: widget.metatagHighlightColor,
+      ),
+    },
+    // ignore: no-empty-block
+    onMatch: (List<String> match) {},
+  );
   final focus = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialQuery != null) {
+        ref
+            .read(searchProvider.notifier)
+            .skipToResultWithTag(widget.initialQuery!);
+      }
+    });
+  }
+
+  @override
   void dispose() {
-    compositeSubscription.dispose();
     queryEditingController.dispose();
     focus.dispose();
     super.dispose();
@@ -56,405 +112,105 @@ class _SearchPageState extends State<GelbooruSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<SearchBloc, SearchState>(
-          listenWhen: (previous, current) =>
-              previous.currentQuery.isNotEmpty && current.currentQuery.isEmpty,
-          listener: (context, state) {
+    final displayState = ref.watch(searchProvider);
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
+    ref.listen(
+      sanitizedQueryProvider,
+      (prev, curr) {
+        if (prev != curr) {
+          final displayState = ref.read(searchProvider);
+          if (curr.isEmpty && displayState != DisplayState.result) {
             queryEditingController.clear();
-          },
-        ),
-      ],
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: _SmallLayout(
-          focus: focus,
-          queryEditingController: queryEditingController,
-        ),
-      ),
-    );
-  }
-}
-
-class _SelectedTagList extends StatelessWidget {
-  const _SelectedTagList();
-
-  @override
-  Widget build(BuildContext context) {
-    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
-
-    return SelectedTagList(
-      tags: tags,
-      onClear: () =>
-          context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
-      onDelete: (tag) =>
-          context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
-      onBulkDownload: (tags) => goToBulkDownloadPage(
-        context,
-        tags.map((e) => e.toString()).toList(),
-      ),
-    );
-  }
-}
-
-class _LandingView extends StatelessWidget {
-  const _LandingView({
-    this.onFocusRequest,
-    required this.onTextChanged,
-  });
-
-  final VoidCallback? onFocusRequest;
-  final void Function(String text) onTextChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SearchLandingView(
-      onAddTagRequest: () {
-        final bloc = context.read<FavoriteTagBloc>();
-        goToQuickSearchPage(
-          context,
-          onSubmitted: (context, text) {
-            Navigator.of(context).pop();
-            bloc.add(FavoriteTagAdded(tag: text));
-          },
-          onSelected: (tag) => bloc.add(FavoriteTagAdded(tag: tag.value)),
-        );
+          }
+        }
       },
-      onHistoryTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(
-              SearchHistoryTagSelected(
-                tag: value,
+    );
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Builder(builder: (context) {
+        switch (displayState) {
+          case DisplayState.options:
+            return Scaffold(
+              floatingActionButton: const SearchButton(),
+              appBar: SearchAppBar(
+                focusNode: focus,
+                queryEditingController: queryEditingController,
               ),
-            );
-      },
-      onTagTap: (value) {
-        _onTagTap(context, value);
-      },
-      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
-      onHistoryCleared: () => _onHistoryCleared(context),
-      onFullHistoryRequested: () {
-        final searchBloc = context.read<SearchBloc>();
-
-        goToSearchHistoryPage(
-          context,
-          onClear: () => _onHistoryCleared(context),
-          onRemove: (value) => _onHistoryRemoved(context, value),
-          onTap: (value) => _onHistoryTap(context, value, searchBloc),
-        );
-      },
-    );
-  }
-
-  void _onTagTap(BuildContext context, String value) {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
-  }
-
-  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
-    Navigator.of(context).pop();
-    bloc.add(SearchHistoryTagSelected(tag: value));
-  }
-
-  void _onHistoryCleared(BuildContext context) =>
-      context.read<SearchBloc>().add(const SearchHistoryCleared());
-
-  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
-      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-}
-
-// ignore: prefer_mixin
-class _AppBar extends StatelessWidget with PreferredSizeWidget {
-  const _AppBar({
-    required this.queryEditingController,
-    this.focusNode,
-  });
-
-  final TextEditingController queryEditingController;
-  final FocusNode? focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shadowColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      toolbarHeight: kToolbarHeight * 1.2,
-      title: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return _SearchBar(
-            autofocus: state.settings.autoFocusSearchBar,
-            focusNode: focusNode,
-            queryEditingController: queryEditingController,
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
-}
-
-class _SmallLayout extends StatefulWidget {
-  const _SmallLayout({
-    required this.focus,
-    required this.queryEditingController,
-  });
-
-  final FocusNode focus;
-  final TextEditingController queryEditingController;
-
-  @override
-  State<_SmallLayout> createState() => _SmallLayoutState();
-}
-
-class _SmallLayoutState extends State<_SmallLayout> {
-  @override
-  Widget build(BuildContext context) {
-    final displayState =
-        context.select((SearchBloc bloc) => bloc.state.displayState);
-
-    switch (displayState) {
-      case DisplayState.options:
-        return Scaffold(
-          floatingActionButton: const SearchButton(),
-          appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
-          ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const _SelectedTagList(),
-                  const _Divider(),
-                  _LandingView(
-                    onFocusRequest: () => widget.focus.requestFocus(),
-                    onTextChanged: (text) =>
-                        _onTextChanged(widget.queryEditingController, text),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      case DisplayState.suggestion:
-        return Scaffold(
-          appBar: _AppBar(
-            focusNode: widget.focus,
-            queryEditingController: widget.queryEditingController,
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                const _SelectedTagList(),
-                const _Divider(),
-                Expanded(
-                  child: _TagSuggestionItems(
-                    queryEditingController: widget.queryEditingController,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      case DisplayState.result:
-        return const _ResultView();
-    }
-  }
-}
-
-class _ResultView extends StatelessWidget {
-  const _ResultView();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<TagSearchBloc, TagSearchState>(
-      builder: (context, state) {
-        return PostScope(
-          fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
-                state.selectedTags.join(' '),
-                page,
-              ),
-          builder: (context, controller, errors) => GelbooruInfinitePostList(
-            errors: errors,
-            controller: controller,
-            sliverHeaderBuilder: (context) => [
-              SliverAppBar(
-                titleSpacing: 0,
-                toolbarHeight: kToolbarHeight * 1.9,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                title: SizedBox(
-                  height: kToolbarHeight * 1.85,
+              body: SafeArea(
+                child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SearchBar(
-                          enabled: false,
-                          onTap: () => context
-                              .read<SearchBloc>()
-                              .add(const SearchGoToSuggestionsRequested()),
-                          leading: IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: () => context.read<SearchBloc>().add(
-                                  const SearchGoBackToSearchOptionsRequested(),
-                                ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const _SelectedTagList(),
+                    children: const [
+                      SelectedTagListWithData(),
+                      SearchDivider(),
+                      SearchLandingView(),
                     ],
                   ),
                 ),
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
               ),
-              const SliverToBoxAdapter(child: _Divider(height: 7)),
-              SliverToBoxAdapter(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Spacer(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: PostGridConfigIconButton(),
+            );
+          case DisplayState.suggestion:
+            return Scaffold(
+              appBar: SearchAppBar(
+                focusNode: focus,
+                queryEditingController: queryEditingController,
+              ),
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    const SelectedTagListWithData(),
+                    const SearchDivider(),
+                    Expanded(
+                      child: TagSuggestionItemsWithData(
+                        textColorBuilder: (tag) =>
+                            generateGelbooruAutocompleteTagColor(tag, theme),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
+            );
+          case DisplayState.result:
+            return const _ResultView();
+        }
+      }),
+    );
+  }
+}
+
+class _ResultView extends ConsumerWidget {
+  const _ResultView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedTags = ref.watch(selectedRawTagStringProvider);
+
+    return PostScope(
+      fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+            selectedTags.join(' '),
+            page,
           ),
-        );
-      },
-    );
-  }
-}
-
-void _onTextChanged(
-  TextEditingController controller,
-  String text,
-) {
-  controller
-    ..text = text
-    ..selection = TextSelection.collapsed(offset: controller.text.length);
-}
-
-class _TagSuggestionItems extends StatelessWidget {
-  const _TagSuggestionItems({
-    required this.queryEditingController,
-  });
-
-  final TextEditingController queryEditingController;
-
-  @override
-  Widget build(BuildContext context) {
-    final suggestionTags =
-        context.select((SearchBloc bloc) => bloc.state.suggestionTags);
-    final currentQuery =
-        context.select((SearchBloc bloc) => bloc.state.currentQuery);
-    final histories = context
-        .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
-
-    return SliverTagSuggestionItemsWithHistory(
-      tags: suggestionTags,
-      histories: histories,
-      currentQuery: currentQuery,
-      onHistoryDeleted: (history) {
-        context
-            .read<SearchBloc>()
-            .add(SearchHistoryDeleted(history: history.searchHistory));
-      },
-      onHistoryTap: (history) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context
-            .read<SearchBloc>()
-            .add(SearchHistoryTagSelected(tag: history.tag));
-      },
-      onItemTap: (tag) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
-      },
-      textColorBuilder: (tag) =>
-          generateDanbooruAutocompleteTagColor(tag, theme),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  const _Divider({
-    this.height,
-  });
-
-  final double? height;
-
-  @override
-  Widget build(BuildContext context) {
-    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
-
-    return tags.isNotEmpty
-        ? Divider(height: height ?? 15, thickness: 1)
-        : const SizedBox.shrink();
-  }
-}
-
-class _SearchBar extends StatelessWidget {
-  const _SearchBar({
-    required this.queryEditingController,
-    this.focusNode,
-    this.autofocus = false,
-  });
-
-  final TextEditingController queryEditingController;
-  final FocusNode? focusNode;
-  final bool autofocus;
-
-  @override
-  Widget build(BuildContext context) {
-    return SearchBar(
-      autofocus: autofocus,
-      focus: focusNode,
-      queryEditingController: queryEditingController,
-      leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
-        selector: (state) => state.displayState,
-        builder: (context, state) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => state != DisplayState.options
-                ? context
-                    .read<SearchBloc>()
-                    .add(const SearchGoBackToSearchOptionsRequested())
-                : Navigator.of(context).pop(),
-          );
-        },
+      builder: (context, controller, errors) => GelbooruInfinitePostList(
+        errors: errors,
+        controller: controller,
+        sliverHeaderBuilder: (context) => [
+          const SearchAppBarResultView(),
+          const SliverToBoxAdapter(child: SearchDivider(height: 7)),
+          SliverToBoxAdapter(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Spacer(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: PostGridConfigIconButton(),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      trailing: BlocSelector<SearchBloc, SearchState, String>(
-        selector: (state) => state.currentQuery,
-        builder: (context, query) => query.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => context
-                    .read<SearchBloc>()
-                    .add(const SearchQueryChanged(query: '')),
-              )
-            : const SizedBox.shrink(),
-      ),
-      onChanged: (value) {
-        context.read<SearchBloc>().add(SearchQueryChanged(query: value));
-      },
-      onSubmitted: (value) =>
-          context.read<SearchBloc>().add(const SearchQuerySubmitted()),
     );
   }
 }

@@ -16,19 +16,25 @@ DownloadPathOrError downloadUrl({
   required DownloadNotifications notifications,
   required String url,
   required DownloadFileNameBuilder fileNameBuilder,
+  bool enableNotification = true,
 }) =>
-    tryGetDownloadDirectory()
-        .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
-              error,
-              fileNameBuilder(),
-              none(),
-            ))
-        .flatMap((dir) => joinDownloadPath(fileNameBuilder(), dir))
-        .flatMap((path) => _wrapWithNotification(
-              downloadWithDio(dio, url: url, path: path),
-              notifications: notifications,
-              path: path,
-            ));
+    TaskEither.Do(($) async {
+      final dir = await $(tryGetDownloadDirectory()
+          .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
+                error,
+                fileNameBuilder(),
+                none(),
+              )));
+
+      final path = await $(joinDownloadPath(fileNameBuilder(), dir));
+
+      return _wrapWithNotification(
+        () => $(downloadWithDio(dio, url: url, path: path)),
+        notifications: notifications,
+        path: path,
+        enableNotification: enableNotification,
+      );
+    });
 
 DownloadPathOrError downloadUrlCustomLocation({
   required Dio dio,
@@ -36,19 +42,25 @@ DownloadPathOrError downloadUrlCustomLocation({
   required String path,
   required String url,
   required DownloadFileNameBuilder fileNameBuilder,
+  bool enableNotification = true,
 }) =>
-    tryGetCustomDownloadDirectory(path)
-        .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
-              error,
-              fileNameBuilder(),
-              some(path),
-            ))
-        .flatMap((dir) => joinDownloadPath(fileNameBuilder(), dir))
-        .flatMap((path) => _wrapWithNotification(
-              downloadWithDio(dio, url: url, path: path),
-              notifications: notifications,
-              path: path,
-            ));
+    TaskEither.Do(($) async {
+      final dir = await $(tryGetCustomDownloadDirectory(path)
+          .mapLeft((error) => _mapDownloadDirectoryErrorToDownloadError(
+                error,
+                fileNameBuilder(),
+                none(),
+              )));
+
+      final filePath = await $(joinDownloadPath(fileNameBuilder(), dir));
+
+      return _wrapWithNotification(
+        () => $(downloadWithDio(dio, url: url, path: filePath)),
+        notifications: notifications,
+        path: path,
+        enableNotification: enableNotification,
+      );
+    });
 
 DownloadPathOrError downloadWithDio(
   Dio dio, {
@@ -113,23 +125,24 @@ DownloadPathOrError joinDownloadPath(
 ) =>
     TaskEither.fromEither(Either.of(join(directory.path, fileName)));
 
-DownloadPathOrError _wrapWithNotification(
-  DownloadPathOrError fn, {
+Future<String> _wrapWithNotification(
+  Future<String> Function() fn, {
   required DownloadNotifications notifications,
   required String path,
   bool enableNotification = true,
-}) {
+}) async {
   final fileName = path.split('/').last;
 
   if (enableNotification) {
-    notifications.showInProgress(fileName);
+    await notifications.showInProgress(fileName);
   }
-  return fn.map((r) {
-    if (enableNotification) {
-      notifications.showCompleted(fileName);
-    }
-    return r;
-  });
+
+  final result = await fn();
+  if (enableNotification) {
+    await notifications.showCompleted(fileName);
+  }
+
+  return result;
 }
 
 DownloadError _mapDownloadDirectoryErrorToDownloadError(

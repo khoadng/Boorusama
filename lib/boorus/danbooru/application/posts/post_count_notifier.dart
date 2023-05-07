@@ -1,22 +1,17 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
-part 'post_count_state.dart';
-
 String generatePostCountKey(List<String> tags) => tags.join('+');
 
-class PostCountCubit extends Cubit<PostCountState> {
+class PostCountNotifier extends StateNotifier<PostCountState> {
   final PostCountRepository repository;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final BooruFactory booruFactory;
@@ -25,7 +20,7 @@ class PostCountCubit extends Cubit<PostCountState> {
   // Store timestamps for cache keys
   final Map<String, DateTime> _postCountTimestamps = {};
 
-  PostCountCubit({
+  PostCountNotifier({
     required this.repository,
     required this.currentBooruConfigRepository,
     required this.booruFactory,
@@ -56,10 +51,10 @@ class PostCountCubit extends Cubit<PostCountState> {
       ];
 
       final postCount = await repository.count(newTags);
-      emit(PostCountState({
+      state = PostCountState({
         ...state.postCounts,
         cacheKey: postCount,
-      }));
+      });
 
       // Update the timestamp for the cache key
       _postCountTimestamps[cacheKey] = DateTime.now();

@@ -11,12 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'blacklisted_tags_search_page.dart';
 
 class BlacklistedTagsPage extends StatelessWidget {
   const BlacklistedTagsPage({
@@ -25,61 +20,33 @@ class BlacklistedTagsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Screen.of(context).size == ScreenSize.small
-        ? Scaffold(
-            appBar: AppBar(
-              title: const Text('blacklisted_tags.blacklisted_tags').tr(),
-              actions: [_buildAddTagButton()],
-            ),
-            body: const SafeArea(child: BlacklistedTagsList()),
-          )
-        : Scaffold(
-            body: Row(children: [
-              SizedBox(
-                width: 300,
-                child: MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => TagSearchBloc(
-                        tagInfo: context.read<TagInfo>(),
-                        autocompleteRepository:
-                            context.read<AutocompleteRepository>(),
-                      ),
-                    ),
-                  ],
-                  child: BlacklistedTagsSearchPage(onSelectedDone: (tagItems) {
-                    context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
-                          tag: tagItems.map((e) => e.toString()).join(' '),
-                        ));
-                  }),
-                ),
-              ),
-              const VerticalDivider(),
-              const Expanded(child: BlacklistedTagsList()),
-            ]),
-          );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('blacklisted_tags.blacklisted_tags').tr(),
+        actions: [
+          _buildAddTagButton(context),
+        ],
+      ),
+      body: const SafeArea(child: BlacklistedTagsList()),
+    );
   }
 
-  Widget _buildAddTagButton() {
-    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
-      builder: (context, state) {
-        return IconButton(
-          onPressed: () {
-            final bloc = context.read<BlacklistedTagsBloc>();
+  Widget _buildAddTagButton(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        final bloc = context.read<BlacklistedTagsBloc>();
 
-            goToBlacklistedTagsSearchPage(
-              context,
-              onSelectDone: (tagItems) {
-                bloc.add(BlacklistedTagAdded(
-                  tag: tagItems.map((e) => e.toString()).join(' '),
-                ));
-                Navigator.of(context).pop();
-              },
-            );
+        goToBlacklistedTagsSearchPage(
+          context,
+          onSelectDone: (tagItems) {
+            bloc.add(BlacklistedTagAdded(
+              tag: tagItems.map((e) => e.toString()).join(' '),
+            ));
+            Navigator.of(context).pop();
           },
-          icon: const FaIcon(FontAwesomeIcons.plus),
         );
       },
+      icon: const FaIcon(FontAwesomeIcons.plus),
     );
   }
 }

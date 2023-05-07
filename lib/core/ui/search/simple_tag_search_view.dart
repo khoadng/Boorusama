@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -54,7 +53,9 @@ void showSimpleTagSearchView(
   }
 }
 
-class SimpleTagSearchView extends StatelessWidget {
+final _queryProvider = StateProvider.autoDispose<String>((ref) => "");
+
+class SimpleTagSearchView extends ConsumerWidget {
   const SimpleTagSearchView({
     super.key,
     required this.onSelected,
@@ -75,67 +76,57 @@ class SimpleTagSearchView extends StatelessWidget {
   final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TagSearchBloc(
-        autocompleteRepository: context.read<AutocompleteRepository>(),
-        tagInfo: context.read<TagInfo>(),
-      ),
-      child: BlocBuilder<TagSearchBloc, TagSearchState>(
-        builder: (context, state) {
-          final tags = ensureValidTag
-              ? state.suggestionTags.where((e) => e.category != null).toList()
-              : state.suggestionTags;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final suggestionTags = ref.watch(suggestionsQuickSearchProvider);
+    final query = ref.watch(_queryProvider);
+    final tags = ensureValidTag
+        ? suggestionTags.where((e) => e.category != null).toList()
+        : suggestionTags;
 
-          return Scaffold(
-            backgroundColor: Theme.of(context).cardColor,
-            floatingActionButton: floatingActionButton?.call(state.query),
-            body: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                  child: SearchBar(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    leading: backButton,
-                    autofocus: true,
-                    onSubmitted: (text) => onSubmitted?.call(context, text),
-                    onChanged: (value) {
-                      context
-                          .read<TagSearchBloc>()
-                          .add(TagSearchChanged(value));
-                    },
+    return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
+      floatingActionButton: floatingActionButton?.call(query),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            child: SearchBar(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              leading: backButton,
+              autofocus: true,
+              onSubmitted: (text) => onSubmitted?.call(context, text),
+              onChanged: (value) {
+                ref.read(_queryProvider.notifier).state = value;
+                ref
+                    .read(suggestionsQuickSearchProvider.notifier)
+                    .getSuggestions(value);
+              },
+            ),
+          ),
+          tags.isNotEmpty
+              ? Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: TagSuggestionItems(
+                      textColorBuilder: textColorBuilder,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      tags: tags,
+                      onItemTap: (tag) {
+                        if (closeOnSelected) {
+                          Navigator.of(context).pop();
+                        }
+                        onSelected(tag);
+                      },
+                      currentQuery: query,
+                    ),
+                  ),
+                )
+              : const Expanded(
+                  child: Center(
+                    child: SizedBox.shrink(),
                   ),
                 ),
-                if (tags.isNotEmpty)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TagSuggestionItems(
-                        textColorBuilder: textColorBuilder,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        tags: tags,
-                        onItemTap: (tag) {
-                          if (closeOnSelected) {
-                            Navigator.of(context).pop();
-                          }
-                          onSelected(tag);
-                        },
-                        currentQuery: state.query,
-                      ),
-                    ),
-                  )
-                else
-                  const Expanded(
-                    child: Center(
-                      child: SizedBox.shrink(),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
+        ],
       ),
     );
   }

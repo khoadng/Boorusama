@@ -20,7 +20,6 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags/tag_repository.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
@@ -78,11 +77,6 @@ class GelbooruPostDetailPage extends StatefulWidget {
                       )..add(PostDetailRequested(index: initialIndex))),
               BlocProvider.value(value: gcontext.read<ThemeBloc>()),
               BlocProvider.value(value: shareCubit),
-              BlocProvider(
-                create: (_) => TagBloc(
-                  tagRepository: gcontext.read<TagRepository>(),
-                ),
-              ),
             ],
             child: GelbooruPostDetailPage(
               posts: posts,
@@ -255,7 +249,10 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
         RepaintBoundary(child: media),
       if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
       if (expanded) ...[
-        TagsTile(post: post),
+        TagsTile(
+          post: post,
+          onTagTap: (tag) => goToGelbooruSearchPage(context, tag: tag.rawName),
+        ),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(
           post: post,

@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -9,7 +6,6 @@ import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -20,8 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/searches/danbooru_search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -33,7 +27,6 @@ import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/characters/character_page_desktop.dart';
@@ -57,20 +50,13 @@ import 'package:boorusama/boorus/danbooru/ui/saved_search/saved_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/search/search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/search_history.dart';
-import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
@@ -260,95 +246,8 @@ Future<void> goToDetailPage({
 void goToSearchPage(
   BuildContext context, {
   String? tag,
-}) {
-  if (isMobilePlatform()) {
-    Navigator.of(context).push(PageTransition(
-      type: PageTransitionType.fade,
-      child: provideSearchPageDependencies(
-        context,
-        tag,
-        (context) => SearchPage(
-          metatags: context.read<TagInfo>().metatags,
-          metatagHighlightColor: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => provideSearchPageDependencies(
-        context,
-        tag,
-        (context) => SearchPageDesktop(
-          metatags: context.read<TagInfo>().metatags,
-          metatagHighlightColor: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-}
-
-Widget provideSearchPageDependencies(
-  BuildContext context,
-  String? tag,
-  Widget Function(BuildContext context) childBuilder,
-) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (context) {
-          final tagSearchBloc = TagSearchBloc(
-            tagInfo: context.read<TagInfo>(),
-            autocompleteRepository: context.read<AutocompleteRepository>(),
-          );
-
-          final searchHistoryCubit = SearchHistoryBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
-          final relatedTagBloc = RelatedTagBloc(
-            relatedTagRepository: context.read<RelatedTagRepository>(),
-          );
-          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
-            searchHistoryRepository: context.read<SearchHistoryRepository>(),
-          );
-
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: searchHistoryCubit),
-              BlocProvider.value(
-                value: context.read<FavoriteTagBloc>()
-                  ..add(const FavoriteTagFetched()),
-              ),
-              BlocProvider.value(
-                value: BlocProvider.of<ThemeBloc>(context),
-              ),
-              BlocProvider.value(value: searchHistorySuggestions),
-              BlocProvider.value(value: tagSearchBloc),
-              BlocProvider<SearchBloc>(
-                create: (context) => DanbooruSearchBloc(
-                  initial: DisplayState.options,
-                  metatags: context.read<TagInfo>().metatags,
-                  tagSearchBloc: tagSearchBloc,
-                  searchHistoryBloc: searchHistoryCubit,
-                  relatedTagBloc: relatedTagBloc,
-                  searchHistorySuggestionsBloc: searchHistorySuggestions,
-                  initialQuery: tag,
-                  booruType: state.booru!.booruType,
-                ),
-              ),
-              BlocProvider.value(value: relatedTagBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: childBuilder(context),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+}) =>
+    Navigator.of(context).push(SearchPage.routeOf(context, tag: tag));
 
 void goToExplorePopularPage(BuildContext context) =>
     Navigator.of(context).push(ExplorePopularPage.routeOf(context));
@@ -461,17 +360,18 @@ void goToBlacklistedTagPage(BuildContext context) {
         page: const BlacklistedTagsPage(),
       ),
     ));
-  } else {
-    showDesktopDialogWindow(
-      context,
-      width: min(MediaQuery.of(context).size.width * 0.8, 700),
-      height: min(MediaQuery.of(context).size.height * 0.8, 600),
-      builder: (_) => provideBlacklistedTagPageDependencies(
-        context,
-        page: const BlacklistedTagsPageDesktop(),
-      ),
-    );
   }
+  // else {
+  // showDesktopDialogWindow(
+  //   context,
+  //   width: min(MediaQuery.of(context).size.width * 0.8, 700),
+  //   height: min(MediaQuery.of(context).size.height * 0.8, 600),
+  //   builder: (_) => provideBlacklistedTagPageDependencies(
+  //     context,
+  //     page: const BlacklistedTagsPageDesktop(),
+  //   ),
+  // );
+  // }
 }
 
 Widget provideBlacklistedTagPageDependencies(
@@ -508,20 +408,9 @@ void goToBlacklistedTagsSearchPage(
         return DanbooruProvider.of(
           context,
           booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => TagSearchBloc(
-                  tagInfo: dcontext.read<TagInfo>(),
-                  autocompleteRepository:
-                      dcontext.read<AutocompleteRepository>(),
-                ),
-              ),
-            ],
-            child: BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
+          builder: (dcontext) => BlacklistedTagsSearchPage(
+            initialTags: initialTags,
+            onSelectedDone: onSelectDone,
           ),
         );
       },
@@ -671,7 +560,6 @@ void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
 }) {
-  final bloc = context.read<SearchBloc>();
   final page = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
     builder: (context, state) {
       final booru = state.booru ?? safebooru();
@@ -682,7 +570,8 @@ void goToRelatedTagsPage(
           booru.url,
           tag,
         ),
-        onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+        // onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+        onAddToSearch: (tag) {}, //FIXME: implement this
       );
     },
   );
