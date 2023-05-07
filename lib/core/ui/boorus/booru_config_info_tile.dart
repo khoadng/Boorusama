@@ -29,6 +29,7 @@ class BooruConfigInfoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      visualDensity: VisualDensity.compact,
       horizontalTitleGap: 0,
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,

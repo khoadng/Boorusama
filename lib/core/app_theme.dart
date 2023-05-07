@@ -67,7 +67,6 @@ class AppTheme {
     ).copyWith(background: const Color.fromARGB(255, 36, 36, 36)),
     floatingActionButtonTheme:
         ThemeData.dark().floatingActionButtonTheme.copyWith(
-              backgroundColor: ThemeData.dark().colorScheme.background,
               foregroundColor: Colors.white,
             ),
   );
@@ -82,7 +81,6 @@ class AppTheme {
     ),
     floatingActionButtonTheme:
         ThemeData.dark().floatingActionButtonTheme.copyWith(
-              backgroundColor: ThemeData.dark().colorScheme.background,
               foregroundColor: Colors.white,
             ),
     drawerTheme: ThemeData.dark()
