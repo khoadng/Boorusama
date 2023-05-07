@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
@@ -137,6 +138,13 @@ class _InteractiveBooruImageState extends State<InteractiveBooruImage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.imageUrl.isEmpty) {
+      return AspectRatio(
+        aspectRatio: widget.aspectRatio,
+        child: const ImagePlaceHolder(),
+      );
+    }
+
     return InteractiveImage(
       useOriginalSize: false,
       onTap: widget.onTap,

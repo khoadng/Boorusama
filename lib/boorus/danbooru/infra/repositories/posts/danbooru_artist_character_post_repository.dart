@@ -18,9 +18,8 @@ class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
     String tags,
     int page, {
     int? limit,
-    bool? includeInvalid,
   }) {
-    final name = "$tags-$page-$limit-$includeInvalid";
+    final name = "$tags-$page-$limit";
 
     return cache.get(name).toOption().fold(
           () => repository
@@ -28,7 +27,6 @@ class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
                 tags,
                 page,
                 limit: limit,
-                includeInvalid: includeInvalid,
               )
               .flatMap((r) => TaskEither(() async {
                     await cache.put(name, r);

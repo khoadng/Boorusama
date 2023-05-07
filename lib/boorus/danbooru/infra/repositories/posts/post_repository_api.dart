@@ -10,24 +10,10 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 import 'common.dart';
 import 'utils.dart';
-
-List<DanbooruPost> Function(
-  HttpResponse<dynamic> value,
-) parsePostWithOptions({
-  required bool includeInvalid,
-  required ImageSourceComposer<PostDto> urlComposer,
-}) =>
-    (value) => includeInvalid
-        ? parse(
-            value: value,
-            converter: (item) => PostDto.fromJson(item),
-          ).map((e) => postDtoToPost(e, urlComposer)).toList()
-        : parsePost(value, urlComposer);
 
 class PostRepositoryApi
     with SettingsRepositoryMixin
@@ -59,16 +45,11 @@ class PostRepositoryApi
     ];
   }
 
-  // parse HttpResponse<dynamic> to List<DanbooruPost>
   Either<BooruError, List<DanbooruPost>> parseData(
     HttpResponse<dynamic> response,
-    bool includeInvalid,
   ) =>
       Either.tryCatch(
-        () => parsePostWithOptions(
-          includeInvalid: includeInvalid,
-          urlComposer: urlComposer,
-        ).call(response),
+        () => parsePost(response, urlComposer),
         (error, stackTrace) => BooruError(
           error: AppError(type: AppErrorType.failedToParseJSON),
         ),
@@ -79,7 +60,6 @@ class PostRepositoryApi
     String tags,
     int page, {
     int? limit,
-    bool? includeInvalid,
   }) =>
       tryGetBooruConfigFrom(_currentUserBooruRepository)
           .flatMap(
@@ -93,10 +73,7 @@ class PostRepositoryApi
                   )),
             ),
           )
-          .flatMap((response) => TaskEither.fromEither(parseData(
-                response,
-                includeInvalid ?? false,
-              )));
+          .flatMap((response) => TaskEither.fromEither(parseData(response)));
 
   @override
   DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(
@@ -111,5 +88,5 @@ class PostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      getPosts(tags, page, limit: limit, includeInvalid: true);
+      getPosts(tags, page, limit: limit);
 }

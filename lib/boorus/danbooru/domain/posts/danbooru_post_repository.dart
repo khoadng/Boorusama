@@ -11,7 +11,6 @@ abstract class DanbooruPostRepository implements PostRepository {
     String tags,
     int page, {
     int? limit,
-    bool? includeInvalid,
   });
   DanbooruPostsOrError getPostsFromIds(List<int> ids);
 }

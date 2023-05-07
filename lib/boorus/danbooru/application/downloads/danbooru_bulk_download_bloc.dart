@@ -18,10 +18,7 @@ class DanbooruBulkDownloadBloc extends DownloadBloc<String, DanbooruPost> {
     super.onDownloadDone,
   }) : super(
           itemFetcher: (page, tag, emit, state) {
-            return postRepository
-                .getPosts(tag, page, limit: 100, includeInvalid: true)
-                .run()
-                .then(
+            return postRepository.getPosts(tag, page, limit: 100).run().then(
                   (value) => value.fold(
                     (e) {
                       emit(state.copyWith(errorMessage: errorTranslator(e)));

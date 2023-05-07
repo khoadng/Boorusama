@@ -17,7 +17,7 @@ List<DanbooruPost> parsePost(
     parse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e, urlComposer)).where(isPostValid).toList();
+    ).map((e) => postDtoToPost(e, urlComposer)).toList();
 
 Either<BooruError, List<DanbooruPost>> tryParseData(
   HttpResponse<dynamic> response,
