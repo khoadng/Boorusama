@@ -7,7 +7,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_image_source_composer.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
-import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryApi
     with SettingsRepositoryMixin
@@ -50,8 +49,7 @@ class ExploreRepositoryApi
                   '${date.year}-${date.month}-${date.day}',
                 ),
               ))
-          .flatMap((response) =>
-              TaskEither.fromEither(tryParseData(response, urlComposer)));
+          .flatMap((response) => tryParseData(response, urlComposer));
 
   @override
   DanbooruPostsOrError getPopularPosts(
@@ -72,6 +70,5 @@ class ExploreRepositoryApi
                           limit ?? lim,
                         )),
               ))
-          .flatMap((response) =>
-              TaskEither.fromEither(tryParseData(response, urlComposer)));
+          .flatMap((response) => tryParseData(response, urlComposer));
 }

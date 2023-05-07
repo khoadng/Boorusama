@@ -1,17 +1,12 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
-import 'package:boorusama/functional.dart';
 import 'common.dart';
 import 'utils.dart';
 
@@ -45,16 +40,6 @@ class PostRepositoryApi
     ];
   }
 
-  Either<BooruError, List<DanbooruPost>> parseData(
-    HttpResponse<dynamic> response,
-  ) =>
-      Either.tryCatch(
-        () => parsePost(response, urlComposer),
-        (error, stackTrace) => BooruError(
-          error: AppError(type: AppErrorType.failedToParseJSON),
-        ),
-      );
-
   @override
   DanbooruPostsOrError getPosts(
     String tags,
@@ -73,7 +58,7 @@ class PostRepositoryApi
                   )),
             ),
           )
-          .flatMap((response) => TaskEither.fromEither(parseData(response)));
+          .flatMap((response) => tryParseData(response, urlComposer));
 
   @override
   DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(

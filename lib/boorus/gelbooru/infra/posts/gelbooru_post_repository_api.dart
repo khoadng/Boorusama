@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:path/path.dart' as path;
 import 'package:retrofit/retrofit.dart';
@@ -15,6 +18,12 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 import 'post_dto.dart';
+
+class ParsePostArguments {
+  final HttpResponse<dynamic> value;
+
+  ParsePostArguments(this.value);
+}
 
 List<Post> parsePost(HttpResponse<dynamic> value) {
   final dtos = <PostDto>[];
@@ -35,9 +44,16 @@ List<Post> parsePost(HttpResponse<dynamic> value) {
   }).toList();
 }
 
-Either<BooruError, List<Post>> tryParsePosts(HttpResponse<dynamic> response) =>
-    Either.tryCatch(
-      () => parsePost(response),
+List<Post> _parsePostInIsolate(ParsePostArguments arguments) =>
+    parsePost(arguments.value);
+
+Future<List<Post>> parsePostAsync(HttpResponse<dynamic> value) =>
+    compute(_parsePostInIsolate, ParsePostArguments(value));
+
+TaskEither<BooruError, List<Post>> tryParsePosts(
+        HttpResponse<dynamic> response) =>
+    TaskEither.tryCatch(
+      () => parsePostAsync(response),
       (error, stackTrace) =>
           BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
     );
@@ -91,7 +107,7 @@ class GelbooruPostRepositoryApi
                   (page - 1).toString(),
                 ),
               ))
-          .flatMap((response) => TaskEither.fromEither(tryParsePosts(response)))
+          .flatMap(tryParsePosts)
           .flatMap(tryFilterBlacklistedTags);
 }
 

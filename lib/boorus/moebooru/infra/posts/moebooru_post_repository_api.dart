@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
@@ -16,6 +19,19 @@ import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/functional.dart';
 
+class ParseMoebooruPostArguments {
+  final HttpResponse<dynamic> value;
+
+  ParseMoebooruPostArguments(this.value);
+}
+
+List<MoebooruPost> _parseMoebooruPostInIsolate(
+        ParseMoebooruPostArguments arguments) =>
+    parsePost(arguments.value);
+
+Future<List<MoebooruPost>> parsePostAsync(HttpResponse<dynamic> value) =>
+    compute(_parseMoebooruPostInIsolate, ParseMoebooruPostArguments(value));
+
 List<MoebooruPost> parsePost(
   HttpResponse<dynamic> value,
 ) =>
@@ -24,10 +40,10 @@ List<MoebooruPost> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();
 
-Either<BooruError, List<MoebooruPost>> tryParsePosts(
+TaskEither<BooruError, List<MoebooruPost>> tryParsePosts(
         HttpResponse<dynamic> response) =>
-    Either.tryCatch(
-      () => parsePost(response),
+    TaskEither.tryCatch(
+      () => parsePostAsync(response),
       (error, stackTrace) =>
           BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
     );
@@ -78,7 +94,7 @@ class MoebooruPostRepositoryApi
                       limit ?? lim,
                     )),
               ))
-          .flatMap((response) => TaskEither.fromEither(tryParsePosts(response)))
+          .flatMap(tryParsePosts)
           .flatMap(tryFilterBlacklistedTags);
 }
 

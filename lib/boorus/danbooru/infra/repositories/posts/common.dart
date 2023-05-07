@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:retrofit/dio.dart';
 
@@ -10,6 +13,22 @@ import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/functional.dart';
 import 'utils.dart';
 
+class ParsePostArguments {
+  final HttpResponse<dynamic> value;
+  final ImageSourceComposer<PostDto> urlComposer;
+
+  ParsePostArguments(this.value, this.urlComposer);
+}
+
+List<DanbooruPost> _parsePostInIsolate(ParsePostArguments arguments) =>
+    parsePost(arguments.value, arguments.urlComposer);
+
+Future<List<DanbooruPost>> parsePostAsync(
+  HttpResponse<dynamic> value,
+  ImageSourceComposer<PostDto> urlComposer,
+) =>
+    compute(_parsePostInIsolate, ParsePostArguments(value, urlComposer));
+
 List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
   ImageSourceComposer<PostDto> urlComposer,
@@ -19,15 +38,12 @@ List<DanbooruPost> parsePost(
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e, urlComposer)).toList();
 
-Either<BooruError, List<DanbooruPost>> tryParseData(
+TaskEither<BooruError, List<DanbooruPost>> tryParseData(
   HttpResponse<dynamic> response,
   ImageSourceComposer<PostDto> urlComposer,
 ) =>
-    Either.tryCatch(
-      () => parsePost(
-        response,
-        urlComposer,
-      ),
+    TaskEither.tryCatch(
+      () => parsePostAsync(response, urlComposer),
       (error, stackTrace) => BooruError(
         error: AppError(type: AppErrorType.failedToParseJSON),
       ),
