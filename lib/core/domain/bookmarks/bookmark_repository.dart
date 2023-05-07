@@ -14,6 +14,7 @@ typedef BookmarksOrError = TaskEither<BookmarkGetError, List<Bookmark>>;
 
 abstract class BookmarkRepository {
   Future<Bookmark> addBookmark(Booru booru, Post post);
+  Future<List<Bookmark>> addBookmarks(Booru booru, List<Post> posts);
   Future<void> removeBookmark(Bookmark favorite);
   Future<void> updateBookmark(Bookmark favorite);
   BookmarksOrError getAllBookmarks();

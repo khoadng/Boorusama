@@ -56,4 +56,11 @@ class BookmarkHiveRepository implements BookmarkRepository {
           tryGetBoxValues(_box).mapLeft(mapBoxErrorToBookmarkGetError))
       .flatMap((objects) =>
           TaskEither.fromEither(tryMapBookmarkHiveObjectsToBookmarks(objects)));
+
+  @override
+  Future<List<Bookmark>> addBookmarks(Booru booru, List<Post> posts) async {
+    final futures = posts.map((post) => addBookmark(booru, post));
+    final bookmarks = await Future.wait(futures);
+    return bookmarks.toList();
+  }
 }

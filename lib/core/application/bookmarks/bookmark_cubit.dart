@@ -66,6 +66,25 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
         ));
   }
 
+  // add bookmarks
+  Future<void> addBookmarks(
+    List<Post> posts,
+    Booru booru, {
+    void Function()? onSuccess,
+    void Function()? onError,
+  }) async {
+    emit(state.copyWith(status: BookmarkStatus.loading));
+    try {
+      final bookmarks = await bookmarkRepository.addBookmarks(booru, posts);
+      onSuccess?.call();
+      emit(state.copyWith(
+          bookmarks: [...state.bookmarks, ...bookmarks],
+          status: BookmarkStatus.success));
+    } catch (e) {
+      onError?.call();
+    }
+  }
+
   Future<void> addBookmark(
     String url,
     Booru booru,
@@ -159,19 +178,27 @@ extension BookmarkCubitToastX on BookmarkCubit {
         url,
         booru,
         post,
-        onSuccess: () => showSuccessToast('Bookmark added successfully'),
+        onSuccess: () => showSuccessToast('Bookmark added'),
         onError: () => showErrorToast('Failed to add bookmark'),
+      );
+
+  Future<void> addBookmarksWithToast(Booru booru, List<Post> posts) =>
+      addBookmarks(
+        posts,
+        booru,
+        onSuccess: () => showSuccessToast('${posts.length} bookmarks added'),
+        onError: () => showErrorToast('Failed to add bookmarks'),
       );
 
   Future<void> removeBookmarkWithToast(Bookmark bookmark) => removeBookmark(
         bookmark,
-        onSuccess: () => showSuccessToast('Bookmark removed successfully'),
+        onSuccess: () => showSuccessToast('Bookmark removed'),
         onError: () => showErrorToast('Failed to remove bookmark'),
       );
 
   Future<void> updateBookmarkWithToast(Bookmark bookmark) => updateBookmark(
         bookmark,
-        onSuccess: () => showSuccessToast('Bookmark updated successfully'),
+        onSuccess: () => showSuccessToast('Bookmark updated'),
         onError: () => showErrorToast('Failed to update bookmark'),
       );
 

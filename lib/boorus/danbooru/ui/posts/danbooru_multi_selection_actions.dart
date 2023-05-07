@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/ui/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class DanbooruMultiSelectionActions extends StatelessWidget {
@@ -42,6 +43,10 @@ class DanbooruMultiSelectionActions extends StatelessWidget {
                 : null,
             icon: const Icon(Icons.download),
           ),
+        ),
+        AddBookmarksButton(
+          posts: selectedPosts,
+          onPressed: endMultiSelect,
         ),
         if (authenticationState is Authenticated)
           IconButton(
