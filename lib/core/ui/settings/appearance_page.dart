@@ -70,24 +70,6 @@ String _imageListToString(ImageListType imageListType) {
   }
 }
 
-String _detailsDisplayToString(DetailsDisplay details) {
-  switch (details) {
-    case DetailsDisplay.imageFocus:
-      return 'settings.details_style.image_focused';
-    case DetailsDisplay.postFocus:
-      return 'settings.details_style.post_focused';
-  }
-}
-
-String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
-  switch (behavior) {
-    case ActionBarDisplayBehavior.staticAtBottom:
-      return 'settings.image_detail.action_bar_display_behavior.static_at_bottom';
-    case ActionBarDisplayBehavior.scrolling:
-      return 'settings.image_detail.action_bar_display_behavior.scrolling';
-  }
-}
-
 class _AppearancePageState extends State<AppearancePage>
     with SettingsRepositoryMixin {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
@@ -174,7 +156,6 @@ class _AppearancePageState extends State<AppearancePage>
                   .update(settings.copyWith(imageQuality: value)),
               optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
             ),
-
             const SizedBox(
               height: 10,
             ),
@@ -195,7 +176,6 @@ class _AppearancePageState extends State<AppearancePage>
               ),
             ),
             const SizedBox(height: 10),
-
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
@@ -208,59 +188,6 @@ class _AppearancePageState extends State<AppearancePage>
                   _buildBorderRadiusSlider(settings),
                 ],
               ),
-            ),
-
-            const Divider(thickness: 1),
-            // SettingsHeader(
-            //   label: 'settings.image_viewer.image_viewer'.tr(),
-            // ),
-            // ListTile(
-            //   title: const Text('settings.image_viewer.full_res_as_default')
-            //       .tr(),
-            //   subtitle: state.settings.imageQualityInFullView ==
-            //           ImageQuality.original
-            //       ? const Text('settings.image_viewer.full_res_notice').tr()
-            //       : null,
-            //   trailing: Switch(
-            //     activeColor: Theme.of(context).colorScheme.primary,
-            //     value: state.settings.imageQualityInFullView ==
-            //         ImageQuality.original,
-            //     onChanged: (value) {
-            //       context
-            //           .read<SettingsCubit>()
-            //           .update(state.settings.copyWith(
-            //             imageQualityInFullView: value
-            //                 ? ImageQuality.original
-            //                 : ImageQuality.automatic,
-            //           ));
-            //     },
-            //   ),
-            // ),
-            // const Divider(thickness: 1),
-            SettingsHeader(
-              label: 'settings.image_detail.image_detail'.tr(),
-            ),
-            SettingsTile<ActionBarDisplayBehavior>(
-              title: const Text(
-                'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior',
-              ).tr(),
-              selectedOption: settings.actionBarDisplayBehavior,
-              onChanged: (value) => context.read<SettingsCubit>().update(
-                    settings.copyWith(actionBarDisplayBehavior: value),
-                  ),
-              items: ActionBarDisplayBehavior.values,
-              optionBuilder: (value) =>
-                  Text(_actionBarDisplayBehaviorToString(value)).tr(),
-            ),
-            SettingsTile<DetailsDisplay>(
-              title: const Text('settings.details_style.details_style').tr(),
-              selectedOption: settings.detailsDisplay,
-              items: DetailsDisplay.values,
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(detailsDisplay: value)),
-              optionBuilder: (value) =>
-                  Text(_detailsDisplayToString(value)).tr(),
             ),
           ],
         ),
