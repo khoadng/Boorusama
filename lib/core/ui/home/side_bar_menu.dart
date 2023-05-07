@@ -12,7 +12,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';
-import 'package:boorusama/core/ui/home/current_booru_action_sheet.dart';
+import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
@@ -93,8 +93,7 @@ class SideBarMenu extends StatelessWidget {
                             trailing: IconButton(
                               onPressed: () => showMaterialModalBottomSheet(
                                 context: context,
-                                builder: (context) =>
-                                    const CurrentBooruActionSheet(),
+                                builder: (context) => const SwitchBooruModal(),
                               ),
                               icon: const Icon(Icons.more_vert),
                             ),

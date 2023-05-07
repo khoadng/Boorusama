@@ -10,6 +10,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
 class SwitchBooruModal extends StatelessWidget {
@@ -31,52 +32,62 @@ class SwitchBooruModal extends StatelessWidget {
     final booruFactory = context.read<BooruFactory>();
 
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: Material(
-        color: Colors.transparent,
-        child: configs != null
-            ? MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: Column(
-                  children: [
-                    BooruConfigInfoTile(
-                      booru: currentConfig!.createBooruFrom(booruFactory),
-                      config: currentConfig,
-                      isCurrent: true,
-                    ),
-                    const Divider(),
-                    Expanded(
-                      child: ListView.builder(
-                        controller: ModalScrollController.of(context),
-                        itemCount: configs.length,
-                        itemBuilder: (context, index) {
-                          final config = configs[index];
-                          final booru = config.createBooruFrom(booruFactory);
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: configs != null
+          ? MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: Column(
+                children: [
+                  BooruConfigInfoTile(
+                    booru: currentConfig!.createBooruFrom(booruFactory),
+                    config: currentConfig,
+                    isCurrent: true,
+                  ),
+                  const Divider(),
+                  ListTile(
+                    horizontalTitleGap: 8,
+                    visualDensity: VisualDensity.compact,
+                    title: const Text('Add new booru'),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      goToAddBooruPage(
+                        context,
+                        setCurrentBooruOnSubmit: true,
+                      );
+                    },
+                    leading: const Icon(Icons.add),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: ModalScrollController.of(context),
+                      itemCount: configs.length,
+                      itemBuilder: (context, index) {
+                        final config = configs[index];
+                        final booru = config.createBooruFrom(booruFactory);
 
-                          return BooruConfigInfoTile(
-                            booru: booru,
-                            config: config,
-                            isCurrent: false,
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              context
-                                  .read<CurrentBooruBloc>()
-                                  .add(CurrentBooruChanged(
-                                    booruConfig: config,
-                                    settings: settings,
-                                  ));
-                            },
-                          );
-                        },
-                      ),
+                        return BooruConfigInfoTile(
+                          booru: booru,
+                          config: config,
+                          isCurrent: false,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                            context
+                                .read<CurrentBooruBloc>()
+                                .add(CurrentBooruChanged(
+                                  booruConfig: config,
+                                  settings: settings,
+                                ));
+                          },
+                        );
+                      },
                     ),
-                  ],
-                ),
-              )
-            : const SizedBox.shrink(),
-      ),
+                  ),
+                ],
+              ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
