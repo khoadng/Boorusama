@@ -109,6 +109,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ref
             .read(searchProvider.notifier)
             .skipToResultWithTag(widget.initialQuery!);
+
+        ref
+            .read(postCountStateProvider.notifier)
+            .getPostCount([widget.initialQuery!]);
       }
     });
   }
