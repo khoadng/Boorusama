@@ -13,7 +13,6 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
-import 'package:boorusama/core/ui/touch_count_recognizer.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
 
@@ -123,17 +122,11 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;
-  late AnimationController _bottomSheetAnimationController;
   var _keepBottomSheetDown = false;
   var _pageSwipe = true;
 
   @override
   void initState() {
-    _bottomSheetAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 120),
-    );
-
     isSwipingDown.addListener(_updateShouldSlideDown);
     isExpanded.addListener(_updateShouldSlideDown);
 
@@ -168,7 +161,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   @override
   void dispose() {
     controller.dispose();
-    _bottomSheetAnimationController.dispose();
 
     isSwipingDown.removeListener(_updateShouldSlideDown);
     isExpanded.removeListener(_updateShouldSlideDown);
@@ -181,26 +173,27 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (!_controller.pageSwipe ||
-        !_controller.swipeDownToDismiss ||
-        expanded ||
-        _multiTouch) return;
+    if (!_controller.pageSwipe || !_controller.swipeDownToDismiss || expanded) {
+      return;
+    }
 
     handlePointerMove(event);
 
+    //TODO: opmitize this
     if (isSwipingDown.value) {
       setState(() {
-        _navigationButtonGroupOffset = -dragDistance > 0 ? 0 : -dragDistance;
-        _topRightButtonGroupOffset = -dragDistance > 0 ? 0 : -dragDistance;
+        _navigationButtonGroupOffset =
+            -dragDistance.value > 0 ? 0 : -dragDistance.value;
+        _topRightButtonGroupOffset =
+            -dragDistance.value > 0 ? 0 : -dragDistance.value;
       });
     }
   }
 
   void _handlePointerUp(PointerUpEvent event, bool expanded) {
-    if (expanded ||
-        _multiTouch ||
-        !_controller.pageSwipe ||
-        !_controller.swipeDownToDismiss) return;
+    if (expanded || !_controller.pageSwipe || !_controller.swipeDownToDismiss) {
+      return;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!mounted) return;
@@ -219,8 +212,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     Navigator.of(context).pop();
     widget.onExit(controller.currentPage.value);
   }
-
-  var _multiTouch = false;
 
   @override
   Widget build(BuildContext context) {
@@ -272,6 +263,26 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     );
   }
 
+  Widget _buildBottomSheet() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: widget.bottomSheet != null
+          ? ValueListenableBuilder(
+              valueListenable: _shouldSlideDownNotifier,
+              builder: (context, shouldSlideDown, _) =>
+                  ValueListenableBuilder<int>(
+                valueListenable: controller.currentPage,
+                builder: (_, page, __) => _BottomSheet(
+                  shouldSlideDown: shouldSlideDown,
+                  bottomSheet: widget.bottomSheet,
+                  page: page,
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildScrollContent() {
     return ValueListenableBuilder<int>(
       valueListenable: controller.currentPage,
@@ -279,64 +290,65 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
         valueListenable: isExpanded,
         builder: (context, expanded, _) {
           if (isSwipingDown.value && !expanded) {
-            return Transform.translate(
-              offset: Offset(dragDistanceX, dragDistance),
-              child: Listener(
-                onPointerMove: (event) => _handlePointerMove(event, expanded),
-                onPointerUp: (event) => _handlePointerUp(event, expanded),
-                child: Transform.scale(
-                  scale: scale,
-                  child: widget.targetSwipeDownBuilder(
-                    context,
-                    currentPage,
+            return ValueListenableBuilder<double>(
+              valueListenable: dragDistance,
+              builder: (context, dd, child) => ValueListenableBuilder<double>(
+                valueListenable: dragDistanceX,
+                builder: (context, ddx, child) => Transform.translate(
+                  offset: Offset(ddx, dd),
+                  child: Listener(
+                    onPointerMove: (event) =>
+                        _handlePointerMove(event, expanded),
+                    onPointerUp: (event) => _handlePointerUp(event, expanded),
+                    child: Transform.scale(
+                      scale: scale,
+                      child: widget.targetSwipeDownBuilder(
+                        context,
+                        currentPage,
+                      ),
+                    ),
                   ),
                 ),
               ),
             );
           } else {
-            return Transform.translate(
-              offset: Offset(dragDistanceX, dragDistance),
-              child: RawGestureDetector(
-                gestures: <Type, GestureRecognizerFactory>{
-                  TouchCountRecognizer: GestureRecognizerFactoryWithHandlers<
-                      TouchCountRecognizer>(
-                    () => TouchCountRecognizer((multiTouch) {
-                      setState(() {
-                        _multiTouch = multiTouch;
-                      });
-                    }),
-                    (TouchCountRecognizer instance) {},
-                  ),
-                },
-                child: Listener(
-                  onPointerMove: (event) => _handlePointerMove(event, expanded),
-                  onPointerUp: (event) => _handlePointerUp(event, expanded),
-                  child: ExprollablePageView(
-                    controller: controller,
-                    onViewportChanged: (metrics) {
-                      isExpanded.value = metrics.isExpanded;
-                      if (isExpanded.value) {
-                        widget.onExpanded?.call(currentPage);
-                      }
-                    },
-                    onPageChanged: widget.onPageChanged,
-                    physics: _pageSwipe
-                        ? const DefaultPageViewScrollPhysics()
-                        : const NeverScrollableScrollPhysics(),
-                    itemCount: widget.pageCount,
-                    itemBuilder: (context, page) {
-                      return ValueListenableBuilder<bool>(
-                        valueListenable: isExpanded,
-                        builder: (context, value, child) =>
-                            widget.expandedBuilder(
-                          context,
-                          page,
-                          currentPage,
-                          value,
-                          _pageSwipe,
-                        ),
-                      );
-                    },
+            return ValueListenableBuilder<double>(
+              valueListenable: dragDistance,
+              builder: (context, dd, child) => ValueListenableBuilder<double>(
+                valueListenable: dragDistanceX,
+                builder: (context, ddx, child) => Transform.translate(
+                  offset: Offset(ddx, dd),
+                  child: Listener(
+                    onPointerMove: (event) =>
+                        _handlePointerMove(event, expanded),
+                    onPointerUp: (event) => _handlePointerUp(event, expanded),
+                    child: ExprollablePageView(
+                      controller: controller,
+                      onViewportChanged: (metrics) {
+                        isExpanded.value = metrics.isExpanded;
+                        if (isExpanded.value) {
+                          widget.onExpanded?.call(currentPage);
+                        }
+                      },
+                      onPageChanged: widget.onPageChanged,
+                      physics: _pageSwipe
+                          ? const DefaultPageViewScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                      itemCount: widget.pageCount,
+                      itemBuilder: (context, page) {
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: isExpanded,
+                          builder: (context, value, child) =>
+                              widget.expandedBuilder(
+                            context,
+                            page,
+                            currentPage,
+                            value,
+                            _pageSwipe,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -442,45 +454,73 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
           : const SizedBox.shrink(),
     );
   }
+}
 
-  Widget _buildBottomSheet() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: widget.bottomSheet != null
-          ? ValueListenableBuilder<bool>(
-              valueListenable: _shouldSlideDownNotifier,
-              builder: (context, shouldSlideDown, _) {
-                // If shouldSlideDown is true, slide down the bottom sheet, otherwise slide it up.
-                final targetOffset =
-                    shouldSlideDown ? const Offset(0, 1) : const Offset(0, 0);
+class _BottomSheet extends StatefulWidget {
+  const _BottomSheet({
+    this.bottomSheet,
+    required this.shouldSlideDown,
+    required this.page,
+  });
 
-                // Animate the bottom sheet to the target position.
-                _bottomSheetAnimationController.animateTo(
-                  shouldSlideDown ? 0 : 1,
-                  duration: const Duration(milliseconds: 120),
-                  curve: Curves.easeInOut,
-                );
+  final Widget? Function(int page)? bottomSheet;
+  final bool shouldSlideDown;
+  final int page;
 
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 1),
-                    end: targetOffset,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: _bottomSheetAnimationController,
-                      curve: Curves.easeOut,
-                    ),
-                  ),
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: controller.currentPage,
-                    builder: (context, page, child) =>
-                        widget.bottomSheet?.call(page) ??
-                        const SizedBox.shrink(),
-                  ),
-                );
-              },
-            )
-          : const SizedBox.shrink(),
+  @override
+  __BottomSheetState createState() => __BottomSheetState();
+}
+
+class __BottomSheetState extends State<_BottomSheet>
+    with TickerProviderStateMixin {
+  late AnimationController _animController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+    );
+
+    _animController.animateTo(
+      1,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animController.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _BottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.shouldSlideDown != widget.shouldSlideDown) {
+      _animController.animateTo(
+        widget.shouldSlideDown ? 0 : 1,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: Tween(
+        begin: const Offset(0, 1),
+        end: widget.shouldSlideDown ? const Offset(0, 1) : const Offset(0, 0),
+      ).animate(
+        CurvedAnimation(
+          parent: _animController,
+          curve: Curves.easeOut,
+        ),
+      ),
+      child: widget.bottomSheet?.call(widget.page) ?? const SizedBox.shrink(),
     );
   }
 }

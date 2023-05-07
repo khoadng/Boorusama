@@ -367,6 +367,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
     int currentPage,
   ) {
     final post = posts[page];
+    final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
         ? extension(post.sampleImageUrl) == '.webm'
             ? EmbeddedWebViewWebm(
@@ -412,7 +413,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
           );
 
     return [
-      if (!expanded)
+      if (!expandedOnCurrentPage)
         SizedBox(
           height: MediaQuery.of(context).size.height -
               MediaQuery.of(context).viewPadding.top,
@@ -422,8 +423,9 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
         BooruImage(imageUrl: post.thumbnailImageUrl)
       else
         RepaintBoundary(child: media),
-      if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
-      if (expanded) ...[
+      if (!expandedOnCurrentPage)
+        SizedBox(height: MediaQuery.of(context).size.height),
+      if (expandedOnCurrentPage) ...[
         BlocBuilder<PostDetailBloc, PostDetailState>(
           buildWhen: (previous, current) => previous.pools != current.pools,
           builder: (context, state) {

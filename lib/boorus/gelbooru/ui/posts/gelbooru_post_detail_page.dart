@@ -209,6 +209,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
     int currentPage,
   ) {
     final post = posts[page];
+    final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
         ? extension(post.sampleImageUrl) == '.webm'
             ? EmbeddedWebViewWebm(
@@ -237,7 +238,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
           );
 
     return [
-      if (!expanded)
+      if (!expandedOnCurrentPage)
         SizedBox(
           height: MediaQuery.of(context).size.height -
               MediaQuery.of(context).viewPadding.top,
@@ -247,8 +248,9 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
         BooruImage(imageUrl: post.thumbnailImageUrl)
       else
         RepaintBoundary(child: media),
-      if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
-      if (expanded) ...[
+      if (!expandedOnCurrentPage)
+        SizedBox(height: MediaQuery.of(context).size.height),
+      if (expandedOnCurrentPage) ...[
         TagsTile(
           post: post,
           onTagTap: (tag) => goToGelbooruSearchPage(context, tag: tag.rawName),

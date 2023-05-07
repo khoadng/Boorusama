@@ -166,6 +166,7 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
     int currentPage,
   ) {
     final post = posts[page];
+    final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
         ? extension(post.sampleImageUrl) == '.webm'
             ? EmbeddedWebViewWebm(
@@ -194,7 +195,7 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
           );
 
     return [
-      if (!expanded)
+      if (!expandedOnCurrentPage)
         SizedBox(
           height: MediaQuery.of(context).size.height -
               MediaQuery.of(context).viewPadding.top,
@@ -204,8 +205,9 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
         BooruImage(imageUrl: post.thumbnailImageUrl)
       else
         RepaintBoundary(child: media),
-      if (!expanded) SizedBox(height: MediaQuery.of(context).size.height),
-      if (expanded) ...[
+      if (!expandedOnCurrentPage)
+        SizedBox(height: MediaQuery.of(context).size.height),
+      if (expandedOnCurrentPage) ...[
         Padding(
           padding: const EdgeInsets.all(8),
           child: BasicTagList(

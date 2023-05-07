@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
   final _isSwipingDown = ValueNotifier(false);
   double _dragStartPosition = 0.0;
-  double _dragDistance = 0.0;
+  final _dragDistance = ValueNotifier(0.0);
   double _dragStartXPosition = 0.0;
-  double _dragDistanceX = 0.0;
+  final _dragDistanceX = ValueNotifier(0.0);
   double _scale = 1.0;
 
   void handlePointerMove(PointerMoveEvent event) {
@@ -19,14 +19,13 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
     }
 
     if (_isSwipingDown.value) {
-      setState(() {
-        _dragDistance = event.position.dy - _dragStartPosition;
-        _dragDistanceX = event.position.dx - _dragStartXPosition;
-        double scaleValue = 1 -
-            (_dragDistance.abs() / MediaQuery.of(context).size.height) * 0.5;
-        scaleValue = scaleValue.clamp(0.8, 1.0);
-        _scale = scaleValue;
-      });
+      _dragDistance.value = event.position.dy - _dragStartPosition;
+      _dragDistanceX.value = event.position.dx - _dragStartXPosition;
+      double scaleValue = 1 -
+          (_dragDistance.value.abs() / MediaQuery.of(context).size.height) *
+              0.5;
+      scaleValue = scaleValue.clamp(0.8, 1.0);
+      _scale = scaleValue;
     }
   }
 
@@ -42,13 +41,13 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
       return 1.0;
     }
     double opacity =
-        1 - (_dragDistance.abs() / MediaQuery.of(context).size.height);
+        1 - (_dragDistance.value.abs() / MediaQuery.of(context).size.height);
     return opacity.clamp(0.0, 1.0);
   }
 
   double get scale => _scale;
-  double get dragDistance => _dragDistance;
-  double get dragDistanceX => _dragDistanceX;
+  ValueNotifier<double> get dragDistance => _dragDistance;
+  ValueNotifier<double> get dragDistanceX => _dragDistanceX;
   ValueNotifier<bool> get isSwipingDown => _isSwipingDown;
 
   Function() get popper;
