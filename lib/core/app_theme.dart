@@ -33,7 +33,8 @@ class AppTheme {
     expansionTileTheme: ThemeData.light().expansionTileTheme.copyWith(
           textColor: Colors.black,
           iconColor: Colors.black,
-        ), colorScheme: const ColorScheme.light(
+        ),
+    colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
     ).copyWith(background: const Color.fromARGB(255, 240, 240, 240)),
@@ -59,10 +60,16 @@ class AppTheme {
     expansionTileTheme: ThemeData.dark().expansionTileTheme.copyWith(
           textColor: Colors.white,
           iconColor: Colors.white,
-        ), colorScheme: const ColorScheme.dark(
+        ),
+    colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
     ).copyWith(background: const Color.fromARGB(255, 36, 36, 36)),
+    floatingActionButtonTheme:
+        ThemeData.dark().floatingActionButtonTheme.copyWith(
+              backgroundColor: ThemeData.dark().colorScheme.background,
+              foregroundColor: Colors.white,
+            ),
   );
 
   static final darkAmoledTheme = ThemeData.dark().copyWith(
@@ -74,7 +81,10 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme:
-        const FloatingActionButtonThemeData(foregroundColor: Colors.white),
+        ThemeData.dark().floatingActionButtonTheme.copyWith(
+              backgroundColor: ThemeData.dark().colorScheme.background,
+              foregroundColor: Colors.white,
+            ),
     drawerTheme: ThemeData.dark()
         .drawerTheme
         .copyWith(backgroundColor: const Color.fromARGB(255, 18, 18, 18)),
@@ -98,7 +108,8 @@ class AppTheme {
     expansionTileTheme: ThemeData.dark().expansionTileTheme.copyWith(
           textColor: Colors.white,
           iconColor: Colors.white,
-        ), colorScheme: const ColorScheme.dark(
+        ),
+    colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(255, 86, 99, 233),
       secondary: Color.fromARGB(255, 86, 99, 233),
     ).copyWith(background: const Color.fromARGB(255, 18, 18, 18)),
