@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -112,6 +113,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   );
   var isExpanded = ValueNotifier(false);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
+  final _scrollNotification = ValueNotifier<ScrollNotification?>(null);
 
   //details page contorller
   late final _controller = widget.controller ?? DetailsPageController();
@@ -229,15 +231,42 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
         await _onBackButtonPressed();
         return false;
       },
-      child: Scaffold(
-        backgroundColor: Colors.black.withOpacity(calculateBackgroundOpacity()),
-        body: Stack(
-          children: [
-            _buildScrollContent(),
-            _buildNavigationButtonGroup(theme, context),
-            _buildTopRightButtonGroup(),
-            _buildBottomSheet(),
-          ],
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          _scrollNotification.value = notification;
+          return false;
+        },
+        child: Scaffold(
+          floatingActionButton: ValueListenableBuilder<bool>(
+            valueListenable: isExpanded,
+            builder: (context, expanded, child) => expanded
+                ? ValueListenableBuilder<ScrollNotification?>(
+                    valueListenable: _scrollNotification,
+                    builder: (_, notification, __) => HideOnScroll(
+                      scrollNotification: notification,
+                      child: FloatingActionButton.small(
+                        onPressed: () {
+                          controller.animateViewportOffsetTo(
+                              ViewportOffset.shrunk,
+                              curve: Curves.easeOut,
+                              duration: const Duration(milliseconds: 150));
+                        },
+                        child: const Icon(Icons.keyboard_arrow_up),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          backgroundColor:
+              Colors.black.withOpacity(calculateBackgroundOpacity()),
+          body: Stack(
+            children: [
+              _buildScrollContent(),
+              _buildNavigationButtonGroup(theme, context),
+              _buildTopRightButtonGroup(theme),
+              _buildBottomSheet(),
+            ],
+          ),
         ),
       ),
     );
@@ -369,7 +398,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     );
   }
 
-  Widget _buildTopRightButtonGroup() {
+  Widget _buildTopRightButtonGroup(ThemeMode theme) {
     return ValueListenableBuilder<bool>(
       valueListenable: _controller.hideOverlay,
       builder: (_, hide, __) => !hide
@@ -381,8 +410,32 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
               child: Transform.translate(
                 offset: Offset(0, _topRightButtonGroupOffset),
                 child: ButtonBar(
-                  children: widget
-                      .topRightButtonsBuilder(controller.currentPage.value),
+                  children: [
+                    ValueListenableBuilder<bool>(
+                      valueListenable: isExpanded,
+                      builder: (context, expanded, child) => expanded
+                          ? const SizedBox.shrink()
+                          : CircularIconButton(
+                              icon: theme == ThemeMode.light
+                                  ? Icon(
+                                      Icons.home,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    )
+                                  : const Icon(
+                                      Icons.keyboard_double_arrow_down),
+                              onPressed: () =>
+                                  controller.animateViewportOffsetTo(
+                                      ViewportOffset.expanded,
+                                      curve: Curves.easeOut,
+                                      duration:
+                                          const Duration(milliseconds: 150)),
+                            ),
+                    ),
+                    ...widget
+                        .topRightButtonsBuilder(controller.currentPage.value),
+                  ],
                 ),
               ),
             )
