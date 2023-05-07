@@ -1,1 +1,5 @@
-List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
+List<String> splitTag(String? tags) => tags == null
+    ? []
+    : tags.isEmpty
+        ? []
+        : tags.split(' ');
