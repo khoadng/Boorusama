@@ -88,7 +88,7 @@ class PostDto {
       hasLarge: json['has_large'],
       hasVisibleChildren: json['has_visible_children'],
       mediaAsset: json['media_asset'] != null
-          ? MediaAsset.fromJson(json['media_asset'])
+          ? MediaAssetDto.fromJson(json['media_asset'])
           : null,
       tagStringGeneral: json['tag_string_general'],
       tagStringCharacter: json['tag_string_character'],
@@ -138,7 +138,7 @@ class PostDto {
   final int? tagCountMeta;
   final bool? hasLarge;
   final bool? hasVisibleChildren;
-  final MediaAsset? mediaAsset;
+  final MediaAssetDto? mediaAsset;
   final String? tagStringGeneral;
   final String? tagStringCharacter;
   final String? tagStringCopyright;
@@ -149,8 +149,8 @@ class PostDto {
   final String? previewFileUrl;
 }
 
-class MediaAsset {
-  MediaAsset({
+class MediaAssetDto {
+  MediaAssetDto({
     this.id,
     this.createdAt,
     this.updatedAt,
@@ -167,8 +167,8 @@ class MediaAsset {
     this.variants,
   });
 
-  factory MediaAsset.fromJson(Map<String, dynamic> json) {
-    return MediaAsset(
+  factory MediaAssetDto.fromJson(Map<String, dynamic> json) {
+    return MediaAssetDto(
       id: json['id'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
@@ -184,7 +184,7 @@ class MediaAsset {
       pixelHash: json['pixel_hash'],
       variants: json['variants'] != null
           ? (json['variants'] as List)
-              .map((variant) => Variant.fromJson(variant))
+              .map((variant) => VariantDto.fromJson(variant))
               .toList()
           : null,
     );
@@ -203,11 +203,11 @@ class MediaAsset {
   final String? fileKey;
   final bool? isPublic;
   final String? pixelHash;
-  final List<Variant>? variants;
+  final List<VariantDto>? variants;
 }
 
-class Variant {
-  Variant({
+class VariantDto {
+  VariantDto({
     this.type,
     this.url,
     this.width,
@@ -215,8 +215,8 @@ class Variant {
     this.fileExt,
   });
 
-  factory Variant.fromJson(Map<String, dynamic> json) {
-    return Variant(
+  factory VariantDto.fromJson(Map<String, dynamic> json) {
+    return VariantDto(
       type: json['type'],
       url: json['url'],
       width: json['width'],

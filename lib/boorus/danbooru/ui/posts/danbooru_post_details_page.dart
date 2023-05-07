@@ -277,6 +277,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                     onHeaderTap: (index) =>
                         goToArtistPage(context, artists[index].tag),
                     recommends: artists,
+                    imageUrl: (item) => item.url720x720,
                   );
                 },
               ),
@@ -296,6 +297,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                       hero: false,
                     ),
                     recommends: characters,
+                    imageUrl: (item) => item.url720x720,
                   );
                 },
               ),
@@ -387,8 +389,8 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                 useHero: page == currentPage,
                 heroTag: "${post.id}_hero",
                 aspectRatio: post.aspectRatio,
-                imageUrl: post.sampleLargeImageUrl,
-                placeholderImageUrl: post.thumbnailImageUrl,
+                imageUrl: post.urlSample,
+                placeholderImageUrl: post.url360x360,
                 onTap: onImageTap,
                 onCached: widget.onCachedImagePathUpdate,
                 previewCacheManager: context.read<PreviewImageCacheManager>(),
@@ -420,7 +422,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
           child: RepaintBoundary(child: media),
         )
       else if (post.isVideo)
-        BooruImage(imageUrl: post.thumbnailImageUrl)
+        BooruImage(imageUrl: post.url720x720)
       else
         RepaintBoundary(child: media),
       if (!expandedOnCurrentPage)

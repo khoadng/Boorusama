@@ -184,7 +184,7 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
             useHero: page == currentPage,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleLargeImageUrl,
+            imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
             onCached: widget.onCachedImagePathUpdate,

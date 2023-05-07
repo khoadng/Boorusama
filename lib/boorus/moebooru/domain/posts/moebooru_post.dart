@@ -14,7 +14,6 @@ class MoebooruPost extends Equatable
     this.source,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
-    required this.sampleLargeImageUrl,
     required this.originalImageUrl,
     required this.rating,
     required this.hasComment,
@@ -38,8 +37,6 @@ class MoebooruPost extends Equatable
   final String thumbnailImageUrl;
   @override
   final String sampleImageUrl;
-  @override
-  final String sampleLargeImageUrl;
   @override
   final String originalImageUrl;
   @override

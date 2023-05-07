@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cu
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -171,7 +172,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                           state.settings.imageListType == ImageListType.masonry
                               ? BooruImage(
                                   aspectRatio: post.aspectRatio,
-                                  imageUrl: getImageUrlForDisplay(
+                                  imageUrl: mapImageQualityToThumbnailUrl(
                                     post,
                                     getImageQuality(
                                       size: state.settings.gridSize,
@@ -191,7 +192,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                                       (constraints.maxWidth * 2).toIntOrNull(),
                                 )
                               : BooruImageLegacy(
-                                  imageUrl: getImageUrlForDisplay(
+                                  imageUrl: mapImageQualityToThumbnailUrl(
                                     post,
                                     getImageQuality(
                                       size: state.settings.gridSize,

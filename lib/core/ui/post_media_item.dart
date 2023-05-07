@@ -63,7 +63,7 @@ class PostMediaItem extends StatelessWidget {
             useHero: useHero,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleLargeImageUrl,
+            imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onTap,
             onCached: onCached,

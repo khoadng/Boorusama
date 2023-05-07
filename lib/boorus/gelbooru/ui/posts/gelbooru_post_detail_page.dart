@@ -172,6 +172,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
                         initialIndex: postIndex,
                       ),
                       recommends: artists,
+                      imageUrl: (item) => item.thumbnailImageUrl,
                     );
                   },
                 )
@@ -227,7 +228,7 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
             useHero: page == currentPage,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleLargeImageUrl,
+            imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
             onCached: widget.onCachedImagePathUpdate,

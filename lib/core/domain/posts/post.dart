@@ -6,7 +6,6 @@ abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
-  String get sampleLargeImageUrl;
   String get originalImageUrl;
   List<String> get tags;
   Rating get rating;

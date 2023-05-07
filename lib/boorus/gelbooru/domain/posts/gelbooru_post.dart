@@ -85,9 +85,6 @@ class GelbooruPost extends Equatable
       _sampleImageUrl.isEmpty ? originalImageUrl : _sampleImageUrl;
 
   @override
-  String get sampleLargeImageUrl => sampleImageUrl;
-
-  @override
   final String? source;
 
   @override

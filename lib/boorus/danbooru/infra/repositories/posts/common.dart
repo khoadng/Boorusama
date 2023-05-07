@@ -6,6 +6,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_variant.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -91,8 +92,18 @@ DanbooruPost postDtoToPost(
       parentId: dto.parentId,
       hasLarge: dto.hasLarge ?? false,
       duration: dto.mediaAsset?.duration ?? 0,
+      variants:
+          dto.mediaAsset?.variants?.map(variantDtoToVariant).toList() ?? [],
     );
   } catch (e) {
     return DanbooruPost.empty();
   }
 }
+
+PostVariant variantDtoToVariant(VariantDto dto) => PostVariant(
+      url: dto.url ?? '',
+      width: dto.width ?? 0,
+      height: dto.height ?? 0,
+      type: mapStringToPostQualityType(dto.type),
+      fileExt: dto.fileExt ?? 'jpg',
+    );

@@ -1,7 +1,9 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/post_variant.dart';
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
@@ -24,8 +26,8 @@ class DanbooruPost extends Equatable
     implements base.Post {
   const DanbooruPost({
     required this.id,
-    required String thumbnailImageUrl,
-    required String sampleImageUrl,
+    required this.thumbnailImageUrl,
+    required this.sampleImageUrl,
     required this.originalImageUrl,
     required this.copyrightTags,
     required this.characterTags,
@@ -53,9 +55,8 @@ class DanbooruPost extends Equatable
     required this.parentId,
     required this.hasLarge,
     required this.duration,
-  })  : _source = source,
-        _sampleImageUrl = sampleImageUrl,
-        _thumbnailImageUrl = thumbnailImageUrl;
+    required this.variants,
+  }) : _source = source;
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
@@ -88,25 +89,15 @@ class DanbooruPost extends Equatable
         hasLarge: false,
         parentId: null,
         duration: 0,
+        variants: const [],
       );
-
-  final String _thumbnailImageUrl;
-  final String _sampleImageUrl;
 
   @override
   final int id;
   @override
-  String get thumbnailImageUrl => _thumbnailImageUrl;
+  final String thumbnailImageUrl;
   @override
-  String get sampleImageUrl {
-    if (isAnimated) return _sampleImageUrl;
-
-    return _thumbnailImageUrl.isNotEmpty ? _sampleImageUrl : _thumbnailImageUrl;
-  }
-
-  @override
-  String get sampleLargeImageUrl => _sampleImageUrl;
-
+  final String sampleImageUrl;
   @override
   final String originalImageUrl;
   final List<String> copyrightTags;
@@ -143,6 +134,7 @@ class DanbooruPost extends Equatable
   final bool hasLarge;
   @override
   final double duration;
+  final List<PostVariant> variants;
 
   DanbooruPost copyWith({
     int? id,
@@ -168,8 +160,8 @@ class DanbooruPost extends Equatable
   }) =>
       DanbooruPost(
         id: id ?? this.id,
-        thumbnailImageUrl: _thumbnailImageUrl,
-        sampleImageUrl: sampleImageUrl ?? _sampleImageUrl,
+        thumbnailImageUrl: thumbnailImageUrl,
+        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
         originalImageUrl: originalImageUrl ?? this.originalImageUrl,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
@@ -197,6 +189,7 @@ class DanbooruPost extends Equatable
         hasLarge: hasLarge,
         parentId: parentId ?? this.parentId,
         duration: duration,
+        variants: variants,
       );
 
   @override
@@ -248,6 +241,21 @@ class DanbooruPost extends Equatable
 bool isPostValid(DanbooruPost post) => post.id != 0 && post.viewable;
 
 extension PostX on DanbooruPost {
+  String get url180x180 =>
+      variants.firstWhereOrNull((e) => e.is180x180)?.url ?? thumbnailImageUrl;
+
+  String get url360x360 =>
+      variants.firstWhereOrNull((e) => e.is360x360)?.url ?? thumbnailImageUrl;
+
+  String get url720x720 =>
+      variants.firstWhereOrNull((e) => e.is720x720)?.url ?? thumbnailImageUrl;
+
+  String get urlSample =>
+      variants.firstWhereOrNull((e) => e.isSample)?.url ?? sampleImageUrl;
+
+  String get urlOriginal =>
+      variants.firstWhereOrNull((e) => e.isOriginal)?.url ?? originalImageUrl;
+
   List<Tag> extractTags() {
     final tags = <Tag>[];
 

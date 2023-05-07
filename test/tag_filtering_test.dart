@@ -39,6 +39,7 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       parentId: null,
       hasLarge: false,
       duration: 0,
+      variants: const [],
     );
 
 void main() {

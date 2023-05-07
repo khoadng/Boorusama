@@ -103,7 +103,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     id: postDto.id ?? 0,
     thumbnailImageUrl: postDto.previewUrl ?? '',
     sampleImageUrl: postDto.sampleUrl ?? '',
-    sampleLargeImageUrl: postDto.jpegUrl ?? '',
     originalImageUrl: postDto.fileUrl ?? '',
     tags: postDto.tags != null ? postDto.tags!.split(' ') : [],
     source: postDto.source,

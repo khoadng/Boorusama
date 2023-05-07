@@ -11,11 +11,13 @@ class RecommendArtistList<T extends Post> extends StatelessWidget {
     required this.recommends,
     required this.onHeaderTap,
     required this.onTap,
+    required this.imageUrl,
   });
 
   final List<Recommend<T>> recommends;
   final void Function(int index) onHeaderTap;
   final void Function(int recommendIndex, int postIndex) onTap;
+  final String Function(T item) imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class RecommendArtistList<T extends Post> extends StatelessWidget {
             ),
             posts: r.posts,
             onTap: (postIdx) => onTap(index, postIdx),
+            imageUrl: imageUrl,
           );
         },
         childCount: recommends.length,

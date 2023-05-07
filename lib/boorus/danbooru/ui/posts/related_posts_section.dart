@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
@@ -36,7 +35,7 @@ class RelatedPostsSection extends StatelessWidget {
             PreviewPostList(
                 cacheManager: context.read<PreviewImageCacheManager>(),
                 posts: posts,
-                imageQuality: ImageQuality.automatic,
+                imageUrl: (item) => item.url720x720,
                 imageBuilder: (post) => Stack(
                       children: [
                         BooruImage(

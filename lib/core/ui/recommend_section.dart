@@ -17,12 +17,14 @@ class RecommendPostSection<T extends Post> extends StatelessWidget {
     required this.header,
     required this.onTap,
     this.grid = true,
+    required this.imageUrl,
   });
 
   final List<T> posts;
   final Widget header;
   final void Function(int index) onTap;
   final bool grid;
+  final String Function(T item) imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +39,14 @@ class RecommendPostSection<T extends Post> extends StatelessWidget {
                   ? PreviewPostGrid<T>(
                       cacheManager: context.read<PreviewImageCacheManager>(),
                       posts: posts,
-                      imageQuality: state.settings.imageQuality,
                       onTap: onTap,
+                      imageUrl: imageUrl,
                     )
                   : PreviewPostList<T>(
                       cacheManager: context.read<PreviewImageCacheManager>(),
                       posts: posts,
-                      imageQuality: state.settings.imageQuality,
                       onTap: onTap,
+                      imageUrl: imageUrl,
                     ),
             ),
           ],
