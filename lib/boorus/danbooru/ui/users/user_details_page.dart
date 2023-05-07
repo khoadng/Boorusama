@@ -277,7 +277,7 @@ class _PreviewList extends StatelessWidget {
                     ),
                     child: BooruImage(
                       borderRadius: BorderRadius.zero,
-                      imageUrl: post.thumbnailImageUrl,
+                      imageUrl: post.url720x720,
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
@@ -25,7 +26,7 @@ class DanbooruPostContextMenu extends StatelessWidget {
     required this.hasAccount,
   });
 
-  final Post post;
+  final DanbooruPost post;
   final void Function()? onMultiSelect;
   final bool hasAccount;
 

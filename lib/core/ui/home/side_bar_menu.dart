@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists/blacklisted_tag_page.dart';
@@ -91,10 +92,17 @@ class SideBarMenu extends StatelessWidget {
                                 ? Text(state.booruConfig!.login ?? 'Unknown')
                                 : null,
                             trailing: IconButton(
-                              onPressed: () => showMaterialModalBottomSheet(
-                                context: context,
-                                builder: (context) => const SwitchBooruModal(),
-                              ),
+                              onPressed: () {
+                                context
+                                    .read<ManageBooruBloc>()
+                                    .add(const ManageBooruFetched());
+
+                                showMaterialModalBottomSheet(
+                                  context: context,
+                                  builder: (context) =>
+                                      const SwitchBooruModal(),
+                                );
+                              },
                               icon: const Icon(Icons.more_vert),
                             ),
                           )

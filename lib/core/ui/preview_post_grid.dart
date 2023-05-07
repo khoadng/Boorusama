@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/image_grid_item.dart';
 
 class PreviewPostGrid<T extends Post> extends StatelessWidget {
   const PreviewPostGrid({
@@ -43,10 +44,12 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
           itemBuilder: (context, index) {
             final post = posts[index];
 
-            return GestureDetector(
-              onTap: () => onTap(index),
-              child: LayoutBuilder(
-                builder: (context, constraints) => BooruImage(
+            return LayoutBuilder(
+              builder: (context, constraints) => ImageGridItem(
+                onTap: () => onTap(index),
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                image: BooruImage(
                   imageUrl: imageUrl(post),
                   placeholderUrl: post.thumbnailImageUrl,
                   fit: BoxFit.cover,
@@ -95,17 +98,18 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  child: imageBuilder != null
-                      ? imageBuilder!(post)
-                      : BooruImage(
-                          aspectRatio: 0.6,
-                          imageUrl: imageUrl(post),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                ),
+                child: ImageGridItem(
+                    isAnimated: post.isAnimated,
+                    isTranslated: post.isTranslated,
+                    onTap: () => onTap(index),
+                    image: imageBuilder != null
+                        ? imageBuilder!(post)
+                        : BooruImage(
+                            aspectRatio: 0.6,
+                            imageUrl: imageUrl(post),
+                            placeholderUrl: post.thumbnailImageUrl,
+                            fit: BoxFit.cover,
+                          )),
               );
             },
           ),

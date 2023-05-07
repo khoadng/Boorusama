@@ -11,8 +11,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
@@ -23,7 +23,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
     required this.posts,
   });
 
-  final List<Post> posts;
+  final List<DanbooruPost> posts;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                 itemBuilder: (_, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: BooruImage(
-                    imageUrl: posts[index].isAnimated
-                        ? posts[index].thumbnailImageUrl
-                        : posts[index].sampleImageUrl,
+                    imageUrl: posts[index].url720x720,
                     aspectRatio: posts[index].aspectRatio,
                   ),
                 ),

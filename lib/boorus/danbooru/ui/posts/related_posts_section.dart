@@ -40,9 +40,7 @@ class RelatedPostsSection extends StatelessWidget {
                       children: [
                         BooruImage(
                           aspectRatio: 0.6,
-                          imageUrl: post.isAnimated
-                              ? post.thumbnailImageUrl
-                              : post.sampleImageUrl,
+                          imageUrl: post.url720x720,
                           placeholderUrl: post.thumbnailImageUrl,
                           fit: BoxFit.cover,
                         ),

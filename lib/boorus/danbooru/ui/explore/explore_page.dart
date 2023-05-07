@@ -265,9 +265,7 @@ class _ExploreListState extends State<_ExploreList> {
                 children: [
                   BooruImage(
                     aspectRatio: post.aspectRatio,
-                    imageUrl: post.isAnimated
-                        ? post.thumbnailImageUrl
-                        : post.sampleImageUrl,
+                    imageUrl: post.url720x720,
                     placeholderUrl: post.thumbnailImageUrl,
                   ),
                   Positioned.fill(

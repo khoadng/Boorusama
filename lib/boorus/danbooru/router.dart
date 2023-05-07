@@ -56,7 +56,6 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
@@ -887,7 +886,7 @@ void goToFavoriteGroupDetailsPage(
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
   BuildContext context,
-  List<Post> posts,
+  List<DanbooruPost> posts,
 ) {
   return showMaterialModalBottomSheet<bool>(
     context: context,
