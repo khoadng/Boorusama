@@ -128,7 +128,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                 return ContextMenuRegion(
                   isEnabled: !multiSelect,
                   contextMenu: DanbooruPostContextMenu(
-                    hasAccount: false,
+                    hasAccount: authState is Authenticated,
                     onMultiSelect: () {
                       _multiSelectController.enableMultiSelect();
                     },
@@ -147,7 +147,7 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                             }
                           : null,
                       isFaved: isFaved,
-                      enableFav: authState is Authenticated,
+                      enableFav: !multiSelect && authState is Authenticated,
                       onFavToggle: (isFaved) async {
                         final favoritePostCubit =
                             context.read<FavoritePostCubit>();

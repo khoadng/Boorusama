@@ -279,7 +279,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                             ),
                           widget.bodyBuilder(
                             context,
-                            (c, idx) => widget.itemBuilder(c, items, idx),
+                            itemBuilder,
                             refreshing,
                             items,
                           ),
