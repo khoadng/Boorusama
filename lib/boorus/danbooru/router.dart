@@ -10,14 +10,12 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
-import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -67,110 +65,27 @@ import 'router_page_constant.dart';
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => provideArtistPageDependencies(
-        context,
-        artist: artist,
-        page: DanbooruArtistPage(
-          artistName: artist,
-          backgroundImageUrl: '',
-        ),
-      ),
+      builder: (_) => DanbooruArtistPage.of(context, artist),
     ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (_) => provideArtistPageDependencies(
-        context,
-        artist: artist,
-        page: DanbooruArtistPage(
-          artistName: artist,
-          backgroundImageUrl: '',
-        ),
-      ),
+      builder: (_) => DanbooruArtistPage.of(context, artist),
     );
   }
-}
-
-Widget provideArtistPageDependencies(
-  BuildContext context, {
-  required String artist,
-  required Widget page,
-}) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (dcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: dcontext.read<ArtistBloc>()
-                  ..add(ArtistFetched(name: artist)),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
-            ),
-          );
-        },
-      );
-    },
-  );
 }
 
 void goToCharacterPage(BuildContext context, String tag) {
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => provideCharacterPageDependencies(
-        context,
-        character: tag,
-        page: CharacterPage(
-          characterName: tag,
-          backgroundImageUrl: '',
-        ),
-      ),
+      builder: (_) => CharacterPage.of(context, tag),
     ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => provideCharacterPageDependencies(
-        context,
-        character: tag,
-        page: CharacterPageDesktop(
-          characterName: tag,
-        ),
-      ),
+      builder: (_) => CharacterPageDesktop.of(context, tag),
     );
   }
-}
-
-Widget provideCharacterPageDependencies(
-  BuildContext context, {
-  required String character,
-  required Widget page,
-}) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (dcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: dcontext.read<WikiBloc>()
-                  ..add(WikiFetched(tag: character)),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: page,
-            ),
-          );
-        },
-      );
-    },
-  );
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
@@ -181,33 +96,7 @@ void goToFavoritesPage(BuildContext context, String? username) {
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) {
-      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (dcontext) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: PoolDescriptionBloc(
-                    endpoint: state.booru!.url,
-                    poolDescriptionRepository:
-                        dcontext.read<PoolDescriptionRepository>(),
-                  )..add(PoolDescriptionFetched(poolId: pool.id)),
-                ),
-              ],
-              child: CustomContextMenuOverlay(
-                child: PoolDetailPage(
-                  pool: pool,
-                  postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    },
+    builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
 
@@ -260,46 +149,14 @@ void goToExploreMostViewedPage(BuildContext context) =>
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => provideSavedSearchPageDependecies(
-        context,
-        page: const SavedSearchFeedPage(),
-      ),
+      builder: (_) => SavedSearchFeedPage.of(context),
     ));
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (_) => provideSavedSearchPageDependecies(
-        context,
-        page: const SavedSearchFeedPage(),
-      ),
+      builder: (_) => SavedSearchFeedPage.of(context),
     );
   }
-}
-
-Widget provideSavedSearchPageDependecies(
-  BuildContext context, {
-  required Widget page,
-}) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (dcontext) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (_) => SavedSearchFeedBloc(
-                savedSearchBloc: dcontext.read<SavedSearchBloc>(),
-              )..add(const SavedSearchFeedRefreshed()),
-            ),
-          ],
-          child: CustomContextMenuOverlay(
-            child: page,
-          ),
-        ),
-      );
-    },
-  );
 }
 
 void goToSavedSearchEditPage(BuildContext context) {

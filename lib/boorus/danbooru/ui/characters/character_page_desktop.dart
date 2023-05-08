@@ -10,6 +10,8 @@ import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 
+import 'character_page.dart';
+
 class CharacterPageDesktop extends StatelessWidget {
   const CharacterPageDesktop({
     super.key,
@@ -17,6 +19,16 @@ class CharacterPageDesktop extends StatelessWidget {
   });
 
   final String characterName;
+
+  static Widget of(BuildContext context, String tag) {
+    return provideCharacterPageDependencies(
+      context,
+      character: tag,
+      page: CharacterPageDesktop(
+        characterName: tag,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

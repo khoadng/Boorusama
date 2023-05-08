@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -21,6 +24,29 @@ class SavedSearchFeedPage extends StatefulWidget {
   const SavedSearchFeedPage({
     super.key,
   });
+
+  static Widget of(BuildContext context) {
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => SavedSearchFeedBloc(
+                  savedSearchBloc: dcontext.read<SavedSearchBloc>(),
+                )..add(const SavedSearchFeedRefreshed()),
+              ),
+            ],
+            child: const CustomContextMenuOverlay(
+              child: SavedSearchFeedPage(),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   State<SavedSearchFeedPage> createState() => _SavedSearchFeedPageState();

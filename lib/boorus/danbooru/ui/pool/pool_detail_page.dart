@@ -2,6 +2,11 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,7 +17,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
@@ -28,6 +32,37 @@ class PoolDetailPage extends StatelessWidget {
 
   final Pool pool;
   final Queue<int> postIds;
+
+  static Widget of(
+    BuildContext context, {
+    required Pool pool,
+  }) {
+    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+      builder: (_, state) {
+        return DanbooruProvider.of(
+          context,
+          booru: state.booru!,
+          builder: (dcontext) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: PoolDescriptionBloc(
+                  endpoint: state.booru!.url,
+                  poolDescriptionRepository:
+                      dcontext.read<PoolDescriptionRepository>(),
+                )..add(PoolDescriptionFetched(poolId: pool.id)),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: PoolDetailPage(
+                pool: pool,
+                postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +15,34 @@ import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 
+Widget provideCharacterPageDependencies(
+  BuildContext context, {
+  required String character,
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: dcontext.read<WikiBloc>()
+                  ..add(WikiFetched(tag: character)),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 class CharacterPage extends StatelessWidget {
   const CharacterPage({
     super.key,
@@ -21,6 +52,17 @@ class CharacterPage extends StatelessWidget {
 
   final String characterName;
   final String backgroundImageUrl;
+
+  static Widget of(BuildContext context, String tag) {
+    return provideCharacterPageDependencies(
+      context,
+      character: tag,
+      page: CharacterPage(
+        characterName: tag,
+        backgroundImageUrl: '',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
