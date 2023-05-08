@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +15,34 @@ import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 
+Widget provideArtistPageDependencies(
+  BuildContext context, {
+  required String artist,
+  required Widget page,
+}) {
+  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
+    builder: (_, state) {
+      return DanbooruProvider.of(
+        context,
+        booru: state.booru!,
+        builder: (dcontext) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: dcontext.read<ArtistBloc>()
+                  ..add(ArtistFetched(name: artist)),
+              ),
+            ],
+            child: CustomContextMenuOverlay(
+              child: page,
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 class DanbooruArtistPage extends StatelessWidget {
   const DanbooruArtistPage({
     super.key,
@@ -21,6 +52,17 @@ class DanbooruArtistPage extends StatelessWidget {
 
   final String artistName;
   final String backgroundImageUrl;
+
+  static Widget of(BuildContext context, String tag) {
+    return provideArtistPageDependencies(
+      context,
+      artist: tag,
+      page: DanbooruArtistPage(
+        artistName: tag,
+        backgroundImageUrl: '',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
