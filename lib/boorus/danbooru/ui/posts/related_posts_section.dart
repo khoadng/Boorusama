@@ -45,29 +45,26 @@ class RelatedPostsSection extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            margin: const EdgeInsets.all(1),
-                            width: 25,
-                            height: 25,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                            ),
-                            child: post.hasWebSource
-                                ? WebsiteLogo(url: post.sourceHost!)
-                                : const SizedBox.shrink(),
-                          ),
-                        ),
-                        Align(
                           alignment: Alignment.bottomLeft,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                margin: const EdgeInsets.all(1),
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.7),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(4)),
+                                ),
+                                child: post.hasWebSource
+                                    ? WebsiteLogo(url: post.sourceHost!)
+                                    : const SizedBox.shrink(),
+                              ),
                               Container(
                                 padding: const EdgeInsets.all(4),
                                 margin: const EdgeInsets.all(1),

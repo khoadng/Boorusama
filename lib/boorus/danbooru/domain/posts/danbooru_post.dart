@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,6 +10,7 @@ import 'package:boorusama/core/domain/posts/post.dart' as base;
 import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/domain/posts/source_mixin.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/video.dart';
 
