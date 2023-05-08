@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 

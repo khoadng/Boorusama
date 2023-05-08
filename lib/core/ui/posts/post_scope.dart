@@ -1,12 +1,14 @@
 // Flutter imports:
-import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 typedef PostFetcher = PostsOrError Function(int page);
 

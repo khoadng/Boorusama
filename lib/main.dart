@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -30,6 +29,7 @@ import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';

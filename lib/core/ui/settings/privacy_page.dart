@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PrivacyPage extends ConsumerWidget {
   const PrivacyPage({

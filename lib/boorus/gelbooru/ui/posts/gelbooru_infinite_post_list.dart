@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,6 +15,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/default_multi_selection_actions.dart';

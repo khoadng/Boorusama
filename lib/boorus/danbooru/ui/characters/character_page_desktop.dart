@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
-
 import 'character_page.dart';
 
 class CharacterPageDesktop extends StatelessWidget {
