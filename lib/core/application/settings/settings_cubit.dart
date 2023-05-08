@@ -45,13 +45,14 @@ extension SettingsCubitRiverpodX on SettingsCubit {
 mixin SettingsCubitMixin {
   SettingsCubit get settingsCubit;
 
-  Future<void> setGridSize(GridSize size) async {
+  Future<void> setGridSize(GridSize size, WidgetRef ref) async {
     final settings =
         await getSettingsOrDefault(settingsCubit.settingRepository);
-    await settingsCubit.update(
+    await settingsCubit.updateAndSyncWithRiverpod(
       settings.copyWith(
         gridSize: size,
       ),
+      ref,
     );
   }
 

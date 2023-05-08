@@ -45,7 +45,7 @@ class _PostGridConfigIconButtonState<T>
               ref,
             );
           },
-          onGridChanged: (grid) => setGridSize(grid),
+          onGridChanged: (grid) => setGridSize(grid, ref),
           onImageListChanged: (imageListType) =>
               setImageListType(imageListType, ref),
         ),
