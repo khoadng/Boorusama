@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
   int get id;
@@ -16,4 +17,19 @@ abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);
+}
+
+extension PostImageX on Post {
+  String thumbnailFromSettings(Settings settings) {
+    switch (settings.imageQuality) {
+      case ImageQuality.automatic:
+        return thumbnailImageUrl;
+      case ImageQuality.low:
+        return thumbnailImageUrl;
+      case ImageQuality.high:
+        return sampleImageUrl;
+      case ImageQuality.original:
+        return originalImageUrl;
+    }
+  }
 }

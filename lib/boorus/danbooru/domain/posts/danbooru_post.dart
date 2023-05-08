@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
@@ -211,9 +212,6 @@ class DanbooruPost extends Equatable
   @override
   String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
 
-  @override
-  bool get hasSound => metaTags.contains('sound');
-
   bool get hasCensoredTags {
     final tagSet = tags.toSet();
 
@@ -280,5 +278,30 @@ extension PostX on DanbooruPost {
     }
 
     return tags;
+  }
+}
+
+extension DanbooruPostVideoX on DanbooruPost {
+  bool get hasSound => metaTags.contains('sound');
+  String get videoUrl => sampleImageUrl;
+  String get videoThumbnailUrl => url720x720;
+}
+
+extension DanbooruPostImageX on DanbooruPost {
+  String thumbnailFromImageQuality(ImageQuality quality) {
+    switch (quality) {
+      case ImageQuality.low:
+        return url360x360;
+      case ImageQuality.high:
+        return url720x720;
+      case ImageQuality.original:
+        return urlSample;
+      case ImageQuality.automatic:
+        return url720x720;
+    }
+  }
+
+  String thumbnailFromSettings(Settings settings) {
+    return thumbnailFromImageQuality(settings.imageQuality);
   }
 }

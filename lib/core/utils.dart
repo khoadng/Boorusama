@@ -107,16 +107,6 @@ Future<bool> launchExternalUrl(
   return true;
 }
 
-ImageQuality getImageQuality({
-  required ImageQuality presetImageQuality,
-  GridSize? size,
-}) {
-  if (presetImageQuality != ImageQuality.automatic) return presetImageQuality;
-  if (size == GridSize.small) return ImageQuality.low;
-
-  return ImageQuality.high;
-}
-
 extension StringX on String {
   String removeUnderscoreWithSpace() => replaceAll('_', ' ');
 }

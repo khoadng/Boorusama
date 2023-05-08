@@ -378,38 +378,43 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                 onVisibilityChanged: onVisibilityChanged,
               )
             : BooruVideo(
-                url: post.sampleImageUrl,
+                url: post.videoUrl,
                 aspectRatio: post.aspectRatio,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
               )
         : BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
-              return InteractiveBooruImage(
-                useHero: page == currentPage,
-                heroTag: "${post.id}_hero",
-                aspectRatio: post.aspectRatio,
-                imageUrl: post.urlSample,
-                placeholderImageUrl: post.url360x360,
-                onTap: onImageTap,
-                onCached: widget.onCachedImagePathUpdate,
-                previewCacheManager: context.read<PreviewImageCacheManager>(),
-                imageOverlayBuilder: (constraints) => [
-                  if (expanded)
-                    ...state.notes
-                        .map((e) => e.adjustNoteCoordFor(
-                              posts[page],
-                              widthConstraint: constraints.maxWidth,
-                              heightConstraint: constraints.maxHeight,
-                            ))
-                        .map((e) => PostNote(
-                              coordinate: e.coordinate,
-                              content: e.content,
-                            )),
-                ],
-                width: post.width,
-                height: post.height,
-                onZoomUpdated: onZoomUpdated,
+              return BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, sstate) {
+                  return InteractiveBooruImage(
+                    useHero: page == currentPage,
+                    heroTag: "${post.id}_hero",
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: post.thumbnailFromSettings(sstate.settings),
+                    placeholderImageUrl: post.thumbnailImageUrl,
+                    onTap: onImageTap,
+                    onCached: widget.onCachedImagePathUpdate,
+                    previewCacheManager:
+                        context.read<PreviewImageCacheManager>(),
+                    imageOverlayBuilder: (constraints) => [
+                      if (expanded)
+                        ...state.notes
+                            .map((e) => e.adjustNoteCoordFor(
+                                  posts[page],
+                                  widthConstraint: constraints.maxWidth,
+                                  heightConstraint: constraints.maxHeight,
+                                ))
+                            .map((e) => PostNote(
+                                  coordinate: e.coordinate,
+                                  content: e.content,
+                                )),
+                    ],
+                    width: post.width,
+                    height: post.height,
+                    onZoomUpdated: onZoomUpdated,
+                  );
+                },
               );
             },
           );
@@ -422,7 +427,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
           child: RepaintBoundary(child: media),
         )
       else if (post.isVideo)
-        BooruImage(imageUrl: post.url720x720)
+        BooruImage(imageUrl: post.videoThumbnailUrl)
       else
         RepaintBoundary(child: media),
       if (!expandedOnCurrentPage)
