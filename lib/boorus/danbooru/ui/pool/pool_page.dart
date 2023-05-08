@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
@@ -16,16 +15,11 @@ import 'pool_options_header.dart';
 import 'pool_search_button.dart';
 import 'sliver_pool_grid.dart';
 
-class PoolPage extends StatefulWidget {
+class PoolPage extends StatelessWidget {
   const PoolPage({
     super.key,
   });
 
-  @override
-  State<PoolPage> createState() => _PoolPageState();
-}
-
-class _PoolPageState extends State<PoolPage> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -105,13 +99,8 @@ class _PostList extends StatelessWidget {
                   return const SliverToBoxAdapter(child: NoDataBox());
                 }
 
-                return BlocBuilder<SettingsCubit, SettingsState>(
-                  builder: (context, settingsState) {
-                    return SliverPoolGrid(
-                      pools: state.pools,
-                      spacing: settingsState.settings.imageGridSpacing,
-                    );
-                  },
+                return SliverPoolGrid(
+                  pools: state.pools,
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(

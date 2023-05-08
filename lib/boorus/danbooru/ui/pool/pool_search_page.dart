@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
@@ -127,13 +126,8 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
                   return const SliverToBoxAdapter(child: NoDataBox());
                 }
 
-                return BlocBuilder<SettingsCubit, SettingsState>(
-                  builder: (context, settingsState) {
-                    return SliverPoolGrid(
-                      pools: state.pools,
-                      spacing: settingsState.settings.imageGridSpacing,
-                    );
-                  },
+                return SliverPoolGrid(
+                  pools: state.pools,
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(

@@ -1,23 +1,27 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:boorusama/core/display.dart';
 import 'pool_grid_item.dart';
 
-class SliverPoolGrid extends StatelessWidget {
+class SliverPoolGrid extends ConsumerWidget {
   const SliverPoolGrid({
     super.key,
     required this.pools,
-    required this.spacing,
   });
 
   final List<PoolItem> pools;
-  final double spacing;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final spacing = ref.watch(gridSpacingSettingsProvider);
+
     return SliverGrid(
       gridDelegate: _gridSizeToGridDelegate(
         spacing: spacing,
