@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -13,13 +14,13 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
-class SwitchBooruModal extends StatelessWidget {
+class SwitchBooruModal extends ConsumerWidget {
   const SwitchBooruModal({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final currentConfig =
         context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
     final configs = context
@@ -79,6 +80,15 @@ class SwitchBooruModal extends StatelessWidget {
                                   booruConfig: config,
                                   settings: settings,
                                 ));
+                            //FIXME: create common method to update settings when booru is changed
+                            context
+                                .read<SettingsCubit>()
+                                .updateAndSyncWithRiverpod(
+                                  settings.copyWith(
+                                    currentBooruConfigId: config.id,
+                                  ),
+                                  ref,
+                                );
                           },
                         );
                       },

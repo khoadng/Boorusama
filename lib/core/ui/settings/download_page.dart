@@ -15,8 +15,9 @@ import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DownloadPage extends StatefulWidget {
+class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({
     super.key,
     this.hasAppBar = true,
@@ -25,10 +26,11 @@ class DownloadPage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<DownloadPage> createState() => _DownloadPageState();
+  ConsumerState<DownloadPage> createState() => _DownloadPageState();
 }
 
-class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
+class _DownloadPageState extends ConsumerState<DownloadPage>
+    with DownloadMixin {
   final changed = ValueNotifier(false);
   String? path;
 
@@ -139,7 +141,10 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
-      bloc.update(settings.copyWith(downloadPath: selectedDirectory));
+      bloc.updateAndSyncWithRiverpod(
+        settings.copyWith(downloadPath: selectedDirectory),
+        ref,
+      );
       setState(() {
         path = selectedDirectory;
       });

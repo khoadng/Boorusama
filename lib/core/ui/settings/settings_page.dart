@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -132,15 +133,15 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-class _LargeLayout extends StatefulWidget {
+class _LargeLayout extends ConsumerStatefulWidget {
   const _LargeLayout();
 
   @override
-  State<_LargeLayout> createState() => _LargeLayoutState();
+  ConsumerState<_LargeLayout> createState() => _LargeLayoutState();
 }
 
 //TODO: refactor this when having more settings, this is a terrible design.
-class _LargeLayoutState extends State<_LargeLayout> {
+class _LargeLayoutState extends ConsumerState<_LargeLayout> {
   final currentTab = ValueNotifier(0);
   @override
   Widget build(BuildContext context) {
@@ -245,7 +246,9 @@ class _LargeLayoutState extends State<_LargeLayout> {
                                 value: settings.safeMode,
                                 onChanged: (value) => context
                                     .read<SettingsCubit>()
-                                    .update(settings.copyWith(safeMode: value)),
+                                    .updateAndSyncWithRiverpod(
+                                        settings.copyWith(safeMode: value),
+                                        ref),
                               ),
                             ),
                           ],

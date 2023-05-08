@@ -10,10 +10,11 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_tile.dart';
 
-class AppearancePage extends StatefulWidget {
+class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
     super.key,
     this.hasAppBar = true,
@@ -22,7 +23,7 @@ class AppearancePage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<AppearancePage> createState() => _AppearancePageState();
+  ConsumerState<AppearancePage> createState() => _AppearancePageState();
 }
 
 String _themeModeToString(ThemeMode theme) {
@@ -70,7 +71,7 @@ String _imageListToString(ImageListType imageListType) {
   }
 }
 
-class _AppearancePageState extends State<AppearancePage>
+class _AppearancePageState extends ConsumerState<AppearancePage>
     with SettingsRepositoryMixin {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
@@ -112,9 +113,11 @@ class _AppearancePageState extends State<AppearancePage>
               title: const Text('settings.theme.theme').tr(),
               selectedOption: settings.themeMode,
               items: [...ThemeMode.values]..remove(ThemeMode.system),
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(themeMode: value)),
+              onChanged: (value) =>
+                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                        settings.copyWith(themeMode: value),
+                        ref,
+                      ),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
             const Divider(thickness: 1),
@@ -123,18 +126,22 @@ class _AppearancePageState extends State<AppearancePage>
               title: const Text('settings.image_grid.grid_size.grid_size').tr(),
               selectedOption: settings.gridSize,
               items: GridSize.values,
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(gridSize: value)),
+              onChanged: (value) =>
+                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                        settings.copyWith(gridSize: value),
+                        ref,
+                      ),
               optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
             ),
             SettingsTile<ImageListType>(
               title: const Text('settings.image_list.image_list').tr(),
               selectedOption: settings.imageListType,
               items: ImageListType.values,
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(imageListType: value)),
+              onChanged: (value) =>
+                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                        settings.copyWith(imageListType: value),
+                        ref,
+                      ),
               optionBuilder: (value) => Text(_imageListToString(value)).tr(),
             ),
             SettingsTile<ImageQuality>(
@@ -151,9 +158,11 @@ class _AppearancePageState extends State<AppearancePage>
                   : null,
               selectedOption: settings.imageQuality,
               items: [...ImageQuality.values]..remove(ImageQuality.original),
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(imageQuality: value)),
+              onChanged: (value) =>
+                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                        settings.copyWith(imageQuality: value),
+                        ref,
+                      ),
               optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
             ),
             const SizedBox(
@@ -204,9 +213,11 @@ class _AppearancePageState extends State<AppearancePage>
           divisions: 10,
           max: 10,
           value: value,
-          onChangeEnd: (value) => context
-              .read<SettingsCubit>()
-              .update(settings.copyWith(imageBorderRadius: value)),
+          onChangeEnd: (value) =>
+              context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                    settings.copyWith(imageBorderRadius: value),
+                    ref,
+                  ),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
         );
       },
@@ -222,9 +233,11 @@ class _AppearancePageState extends State<AppearancePage>
           divisions: 10,
           max: 10,
           value: value,
-          onChangeEnd: (value) => context
-              .read<SettingsCubit>()
-              .update(settings.copyWith(imageGridSpacing: value)),
+          onChangeEnd: (value) =>
+              context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                    settings.copyWith(imageGridSpacing: value),
+                    ref,
+                  ),
           onChanged: (value) => _spacingSliderValue.value = value,
         );
       },

@@ -10,9 +10,10 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'widgets/settings_tile.dart';
 
-class SearchSettingsPage extends StatefulWidget {
+class SearchSettingsPage extends ConsumerStatefulWidget {
   const SearchSettingsPage({
     super.key,
     this.hasAppBar = true,
@@ -21,10 +22,10 @@ class SearchSettingsPage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<SearchSettingsPage> createState() => _SearchSettingsPageState();
+  ConsumerState<SearchSettingsPage> createState() => _SearchSettingsPageState();
 }
 
-class _SearchSettingsPageState extends State<SearchSettingsPage> {
+class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settings =
@@ -52,9 +53,12 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
                   activeColor: Theme.of(context).colorScheme.primary,
                   value: settings.autoFocusSearchBar,
                   onChanged: (value) {
-                    context.read<SettingsCubit>().update(settings.copyWith(
-                          autoFocusSearchBar: value,
-                        ));
+                    context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                          settings.copyWith(
+                            autoFocusSearchBar: value,
+                          ),
+                          ref,
+                        );
                   },
                 ),
               ),
@@ -68,9 +72,11 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
                     ).tr()
                   : null,
               items: const [...ContentOrganizationCategory.values],
-              onChanged: (value) => context.read<SettingsCubit>().update(
-                    settings.copyWith(contentOrganizationCategory: value),
-                  ),
+              onChanged: (value) =>
+                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                        settings.copyWith(contentOrganizationCategory: value),
+                        ref,
+                      ),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
           ],

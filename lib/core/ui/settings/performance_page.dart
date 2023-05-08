@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -12,7 +13,7 @@ import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
-class PerformancePage extends StatefulWidget {
+class PerformancePage extends ConsumerStatefulWidget {
   const PerformancePage({
     super.key,
     this.hasAppBar = true,
@@ -21,10 +22,10 @@ class PerformancePage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<PerformancePage> createState() => _PerformancePageState();
+  ConsumerState<PerformancePage> createState() => _PerformancePageState();
 }
 
-class _PerformancePageState extends State<PerformancePage> {
+class _PerformancePageState extends ConsumerState<PerformancePage> {
   @override
   Widget build(BuildContext context) {
     final settings =
@@ -60,9 +61,10 @@ class _PerformancePageState extends State<PerformancePage> {
                   ),
                   onChanged: (newValue) {
                     if (newValue != null) {
-                      context
-                          .read<SettingsCubit>()
-                          .update(settings.copyWith(postsPerPage: newValue));
+                      context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                            settings.copyWith(postsPerPage: newValue),
+                            ref,
+                          );
                     }
                   },
                   items: getPostsPerPagePossibleValue()

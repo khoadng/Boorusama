@@ -9,8 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PrivacyPage extends StatelessWidget {
+class PrivacyPage extends ConsumerWidget {
   const PrivacyPage({
     super.key,
     this.hasAppBar = true,
@@ -19,7 +20,7 @@ class PrivacyPage extends StatelessWidget {
   final bool hasAppBar;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final settings =
         context.select((SettingsCubit cubit) => cubit.state.settings);
 
@@ -40,11 +41,14 @@ class PrivacyPage extends StatelessWidget {
               value:
                   settings.dataCollectingStatus == DataCollectingStatus.allow,
               onChanged: (value) {
-                context.read<SettingsCubit>().update(settings.copyWith(
-                      dataCollectingStatus: value
-                          ? DataCollectingStatus.allow
-                          : DataCollectingStatus.prohibit,
-                    ));
+                context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                      settings.copyWith(
+                        dataCollectingStatus: value
+                            ? DataCollectingStatus.allow
+                            : DataCollectingStatus.prohibit,
+                      ),
+                      ref,
+                    );
               },
             ),
           ),

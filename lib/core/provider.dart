@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -25,3 +27,13 @@ final searchHistoryRepoProvider =
 
 final autocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
+
+final settingsProvider = AsyncNotifierProvider<SettingsNotifier, Settings>(
+  SettingsNotifier.new,
+  dependencies: [
+    settingsRepoProvider,
+  ],
+);
+
+final settingsRepoProvider =
+    Provider<SettingsRepository>((ref) => throw UnimplementedError());

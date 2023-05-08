@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 
@@ -60,7 +59,6 @@ class CurrentBooruChanged extends CurrentBooruEvent {
 
 class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
   CurrentBooruBloc({
-    required SettingsCubit settingsCubit,
     required BooruFactory booruFactory,
     required BooruConfigRepository userBooruRepository,
   }) : super(CurrentBooruState.initial()) {
@@ -83,10 +81,6 @@ class CurrentBooruBloc extends Bloc<CurrentBooruEvent, CurrentBooruState> {
     });
 
     on<CurrentBooruChanged>((event, emit) async {
-      await settingsCubit.update(event.settings.copyWith(
-        currentBooruConfigId: event.booruConfig.id,
-      ));
-
       final booru =
           booruFactory.from(type: intToBooruType(event.booruConfig.booruId));
 

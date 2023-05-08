@@ -315,7 +315,6 @@ void main() async {
               ),
               BlocProvider.value(
                 value: CurrentBooruBloc(
-                  settingsCubit: settingsCubit,
                   booruFactory: booruFactory,
                   userBooruRepository: booruUserRepo,
                 )..add(CurrentBooruFetched(settings)),
@@ -370,6 +369,7 @@ void main() async {
                       .overrideWithValue(currentBooruRepo),
                   booruFactoryProvider.overrideWithValue(booruFactory),
                   tagInfoProvider.overrideWithValue(tagInfo),
+                  settingsRepoProvider.overrideWithValue(settingRepository),
                 ],
                 child: App(settings: settings),
               ),

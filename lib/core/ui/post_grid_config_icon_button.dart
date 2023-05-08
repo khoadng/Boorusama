@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
@@ -11,16 +12,16 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 
-class PostGridConfigIconButton<T> extends StatefulWidget {
+class PostGridConfigIconButton<T> extends ConsumerStatefulWidget {
   const PostGridConfigIconButton({super.key});
 
   @override
-  State<PostGridConfigIconButton<T>> createState() =>
+  ConsumerState<PostGridConfigIconButton<T>> createState() =>
       _PostGridConfigIconButtonState();
 }
 
 class _PostGridConfigIconButtonState<T>
-    extends State<PostGridConfigIconButton<T>> with SettingsCubitMixin {
+    extends ConsumerState<PostGridConfigIconButton<T>> with SettingsCubitMixin {
   @override
   SettingsCubit get settingsCubit => context.read<SettingsCubit>();
 
@@ -37,13 +38,16 @@ class _PostGridConfigIconButtonState<T>
               : PageMode.paginated,
           imageListType: settingsCubit.state.settings.imageListType,
           onModeChanged: (mode) {
-            setPageMode(mode == PageMode.infinite
-                ? ContentOrganizationCategory.infiniteScroll
-                : ContentOrganizationCategory.pagination);
+            setPageMode(
+              mode == PageMode.infinite
+                  ? ContentOrganizationCategory.infiniteScroll
+                  : ContentOrganizationCategory.pagination,
+              ref,
+            );
           },
           onGridChanged: (grid) => setGridSize(grid),
           onImageListChanged: (imageListType) =>
-              setImageListType(imageListType),
+              setImageListType(imageListType, ref),
         ),
       ),
       icon: const Icon(Icons.settings),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
@@ -17,7 +18,7 @@ import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
-class ConfigBooruPage extends StatefulWidget {
+class ConfigBooruPage extends ConsumerStatefulWidget {
   const ConfigBooruPage({
     super.key,
     required this.onSubmit,
@@ -48,7 +49,7 @@ class ConfigBooruPage extends StatefulWidget {
         ..changeBooru(booru)
         ..changeUrl(url),
       child: ConfigBooruPage(
-        onSubmit: (newConfig) {
+        onSubmit: (newConfig, ref) {
           if (initialConfig == null) {
             bloc.add(
               ManageBooruAdded(
@@ -59,6 +60,13 @@ class ConfigBooruPage extends StatefulWidget {
                       booruConfig: booruConfig,
                       settings: settings,
                     ));
+                    //FIXME: create common method to update settings when booru is changed
+                    context.read<SettingsCubit>().updateAndSyncWithRiverpod(
+                          settings.copyWith(
+                            currentBooruConfigId: booruConfig.id,
+                          ),
+                          ref,
+                        );
                   }
                 },
               ),
@@ -80,6 +88,8 @@ class ConfigBooruPage extends StatefulWidget {
 
   final void Function(
     AddNewBooruConfig config,
+    //FIXME: this is a hack
+    WidgetRef ref,
   ) onSubmit;
 
   final BooruConfig? initial;
@@ -87,10 +97,10 @@ class ConfigBooruPage extends StatefulWidget {
   final String url;
 
   @override
-  State<ConfigBooruPage> createState() => _AddBooruPageState();
+  ConsumerState<ConfigBooruPage> createState() => _AddBooruPageState();
 }
 
-class _AddBooruPageState extends State<ConfigBooruPage>
+class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
     with AddOrUpdateBooruCubitMixin {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
@@ -322,10 +332,12 @@ class _AddBooruPageState extends State<ConfigBooruPage>
                           onPressed: allowSubmit
                               ? () {
                                   Navigator.of(context).pop();
-                                  widget.onSubmit
-                                      .call(state.createNewBooruConfig(
-                                    widget.booruFactory,
-                                  ));
+                                  widget.onSubmit.call(
+                                    state.createNewBooruConfig(
+                                      widget.booruFactory,
+                                    ),
+                                    ref,
+                                  );
                                 }
                               : null,
                           child: const Text('OK'),
