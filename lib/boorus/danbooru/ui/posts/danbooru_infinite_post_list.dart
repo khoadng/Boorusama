@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cu
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -27,7 +26,6 @@ import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
 class DanbooruInfinitePostList extends StatefulWidget {
@@ -168,47 +166,35 @@ class _DanbooruInfinitePostListState extends State<DanbooruInfinitePostList> {
                       hasParentOrChildren: post.hasParentOrChildren,
                       duration: post.duration,
                       hasSound: post.hasSound,
-                      image:
-                          state.settings.imageListType == ImageListType.masonry
-                              ? BooruImage(
-                                  aspectRatio: post.aspectRatio,
-                                  imageUrl: mapImageQualityToThumbnailUrl(
-                                    post,
-                                    getImageQuality(
-                                      size: state.settings.gridSize,
-                                      presetImageQuality:
-                                          state.settings.imageQuality,
-                                    ),
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                    state.settings.imageBorderRadius,
-                                  ),
-                                  placeholderUrl: post.thumbnailImageUrl,
-                                  previewCacheManager:
-                                      context.read<PreviewImageCacheManager>(),
-                                  cacheHeight:
-                                      (constraints.maxHeight * 2).toIntOrNull(),
-                                  cacheWidth:
-                                      (constraints.maxWidth * 2).toIntOrNull(),
-                                )
-                              : BooruImageLegacy(
-                                  imageUrl: mapImageQualityToThumbnailUrl(
-                                    post,
-                                    getImageQuality(
-                                      size: state.settings.gridSize,
-                                      presetImageQuality:
-                                          state.settings.imageQuality,
-                                    ),
-                                  ),
-                                  placeholderUrl: post.thumbnailImageUrl,
-                                  borderRadius: BorderRadius.circular(
-                                    state.settings.imageBorderRadius,
-                                  ),
-                                  cacheHeight:
-                                      (constraints.maxHeight * 2).toIntOrNull(),
-                                  cacheWidth:
-                                      (constraints.maxWidth * 2).toIntOrNull(),
-                                ),
+                      image: state.settings.imageListType ==
+                              ImageListType.masonry
+                          ? BooruImage(
+                              aspectRatio: post.aspectRatio,
+                              imageUrl:
+                                  post.thumbnailFromSettings(state.settings),
+                              borderRadius: BorderRadius.circular(
+                                state.settings.imageBorderRadius,
+                              ),
+                              placeholderUrl: post.thumbnailImageUrl,
+                              previewCacheManager:
+                                  context.read<PreviewImageCacheManager>(),
+                              cacheHeight:
+                                  (constraints.maxHeight * 2).toIntOrNull(),
+                              cacheWidth:
+                                  (constraints.maxWidth * 2).toIntOrNull(),
+                            )
+                          : BooruImageLegacy(
+                              imageUrl:
+                                  post.thumbnailFromSettings(state.settings),
+                              placeholderUrl: post.thumbnailImageUrl,
+                              borderRadius: BorderRadius.circular(
+                                state.settings.imageBorderRadius,
+                              ),
+                              cacheHeight:
+                                  (constraints.maxHeight * 2).toIntOrNull(),
+                              cacheWidth:
+                                  (constraints.maxWidth * 2).toIntOrNull(),
+                            ),
                     ),
                   ),
                 );

@@ -24,7 +24,6 @@ import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
 class MoebooruInfinitePostList extends StatefulWidget {
@@ -148,13 +147,7 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                   image: state.settings.imageListType == ImageListType.masonry
                       ? BooruImage(
                           aspectRatio: post.aspectRatio,
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: state.settings.gridSize,
-                              presetImageQuality: state.settings.imageQuality,
-                            ),
-                          ),
+                          imageUrl: post.thumbnailFromSettings(state.settings),
                           borderRadius: BorderRadius.circular(
                             state.settings.imageBorderRadius,
                           ),
@@ -166,13 +159,7 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
                           cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                         )
                       : BooruImageLegacy(
-                          imageUrl: getImageUrlForDisplay(
-                            post,
-                            getImageQuality(
-                              size: state.settings.gridSize,
-                              presetImageQuality: state.settings.imageQuality,
-                            ),
-                          ),
+                          imageUrl: post.thumbnailFromSettings(state.settings),
                           placeholderUrl: post.thumbnailImageUrl,
                           borderRadius: BorderRadius.circular(
                             state.settings.imageBorderRadius,
