@@ -144,6 +144,7 @@ class _DanbooruInfinitePostListState
                             posts: items,
                             initialIndex: index,
                             scrollController: _autoScrollController,
+                            settings: ref.read(settingsProvider),
                           );
                         }
                       : null,

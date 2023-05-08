@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -30,6 +31,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
@@ -46,6 +48,7 @@ import 'package:boorusama/functional.dart';
 
 Widget providePostDetailPageDependencies(
   BuildContext context,
+  Settings settings,
   List<DanbooruPost> posts,
   int initialIndex,
   List<PostDetailTag> tags,
@@ -58,47 +61,42 @@ Widget providePostDetailPageDependencies(
         context,
         booru: state.booru!,
         builder: (context) {
-          return BlocSelector<SettingsCubit, SettingsState, Settings>(
-            selector: (state) => state.settings,
-            builder: (_, settings) {
-              final shareCubit = PostShareCubit.of(context)
-                ..updateInformation(posts[initialIndex]);
+          final shareCubit = PostShareCubit.of(context)
+            ..updateInformation(posts[initialIndex]);
 
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(
-                    value: context.read<AuthenticationCubit>(),
-                  ),
-                  BlocProvider.value(value: context.read<ThemeBloc>()),
-                  BlocProvider(
-                    create: (context) => shareCubit,
-                  ),
-                  BlocProvider(
-                    create: (context) => PostDetailBloc(
-                      booruUserIdentityProvider:
-                          context.read<BooruUserIdentityProvider>(),
-                      noteRepository: context.read<NoteRepository>(),
-                      defaultDetailsStyle: settings.detailsDisplay,
-                      posts: posts,
-                      initialIndex: initialIndex,
-                      postRepository:
-                          context.read<DanbooruArtistCharacterPostRepository>(),
-                      poolRepository: context.read<PoolRepository>(),
-                      currentBooruConfigRepository:
-                          context.read<CurrentBooruConfigRepository>(),
-                      postVoteRepository: context.read<PostVoteRepository>(),
-                      tags: tags,
-                      fireIndexChangedAtStart: false,
-                      tagCache: {},
-                    ),
-                  ),
-                ],
-                child: RepositoryProvider.value(
-                  value: context.read<TagRepository>(),
-                  child: childBuilder(shareCubit),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: context.read<AuthenticationCubit>(),
+              ),
+              BlocProvider.value(value: context.read<ThemeBloc>()),
+              BlocProvider(
+                create: (context) => shareCubit,
+              ),
+              BlocProvider(
+                create: (context) => PostDetailBloc(
+                  booruUserIdentityProvider:
+                      context.read<BooruUserIdentityProvider>(),
+                  noteRepository: context.read<NoteRepository>(),
+                  defaultDetailsStyle: settings.detailsDisplay,
+                  posts: posts,
+                  initialIndex: initialIndex,
+                  postRepository:
+                      context.read<DanbooruArtistCharacterPostRepository>(),
+                  poolRepository: context.read<PoolRepository>(),
+                  currentBooruConfigRepository:
+                      context.read<CurrentBooruConfigRepository>(),
+                  postVoteRepository: context.read<PostVoteRepository>(),
+                  tags: tags,
+                  fireIndexChangedAtStart: false,
+                  tagCache: {},
                 ),
-              );
-            },
+              ),
+            ],
+            child: RepositoryProvider.value(
+              value: context.read<TagRepository>(),
+              child: childBuilder(shareCubit),
+            ),
           );
         },
       );
@@ -106,7 +104,7 @@ Widget providePostDetailPageDependencies(
   );
 }
 
-class DanbooruPostDetailsPage extends StatefulWidget {
+class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
     required this.posts,
@@ -124,6 +122,7 @@ class DanbooruPostDetailsPage extends StatefulWidget {
 
   static MaterialPageRoute routeOf(
     BuildContext context, {
+    required Settings settings,
     required List<DanbooruPost> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
@@ -131,6 +130,7 @@ class DanbooruPostDetailsPage extends StatefulWidget {
   }) {
     final page = providePostDetailPageDependencies(
       context,
+      settings,
       posts,
       initialIndex,
       posts
@@ -180,11 +180,12 @@ class DanbooruPostDetailsPage extends StatefulWidget {
   }
 
   @override
-  State<DanbooruPostDetailsPage> createState() =>
+  ConsumerState<DanbooruPostDetailsPage> createState() =>
       _DanbooruPostDetailsPageState();
 }
 
-class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
+class _DanbooruPostDetailsPageState
+    extends ConsumerState<DanbooruPostDetailsPage>
     with PostDetailsPageMixin<DanbooruPostDetailsPage, DanbooruPost> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !posts[widget.intitialIndex].isVideo);
@@ -273,6 +274,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                       context: context,
                       posts: artists[recommendIndex].posts,
                       initialIndex: postIndex,
+                      settings: ref.read(settingsProvider),
                     ),
                     onHeaderTap: (index) =>
                         goToArtistPage(context, artists[index].tag),
@@ -295,6 +297,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage>
                       posts: characters[recommendIndex].posts,
                       initialIndex: postIndex,
                       hero: false,
+                      settings: ref.read(settingsProvider),
                     ),
                     recommends: characters,
                     imageUrl: (item) => item.url720x720,

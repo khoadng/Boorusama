@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:recase/recase.dart';
 
@@ -12,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'user_level_colors.dart';
 
@@ -228,7 +230,7 @@ class _StatsButton extends StatelessWidget {
   }
 }
 
-class _PreviewList extends StatelessWidget {
+class _PreviewList extends ConsumerWidget {
   const _PreviewList({
     required this.title,
     required this.posts,
@@ -240,7 +242,7 @@ class _PreviewList extends StatelessWidget {
   final void Function() onViewMore;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ListTile(
@@ -274,6 +276,7 @@ class _PreviewList extends StatelessWidget {
                       context: context,
                       posts: posts.toList(),
                       initialIndex: index,
+                      settings: ref.read(settingsProvider),
                     ),
                     child: BooruImage(
                       borderRadius: BorderRadius.zero,

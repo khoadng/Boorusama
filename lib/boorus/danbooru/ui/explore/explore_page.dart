@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -11,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -21,7 +23,7 @@ import 'explore_section.dart';
 const double _kMaxHeight = 250;
 const _padding = EdgeInsets.symmetric(horizontal: 2);
 
-class ExplorePage extends StatelessWidget {
+class ExplorePage extends ConsumerWidget {
   const ExplorePage({
     super.key,
     this.useAppBarPadding = true,
@@ -30,7 +32,7 @@ class ExplorePage extends StatelessWidget {
   final bool useAppBarPadding;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: Screen.of(context).size == ScreenSize.small
           ? EdgeInsets.zero
@@ -59,18 +61,20 @@ class ExplorePage extends StatelessWidget {
 Widget mapToCarousel(
   BuildContext context,
   List<DanbooruPost> posts,
+  WidgetRef ref,
 ) {
   return posts.isNotEmpty
       ? _ExploreList(
           posts: posts,
           onTap: (index) {
             goToDetailPage(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-              hero: false,
-              // postBloc: explore.bloc,
-            );
+                context: context,
+                posts: posts,
+                initialIndex: index,
+                hero: false,
+                settings: ref.read(settingsProvider)
+                // postBloc: explore.bloc,
+                );
           },
         )
       : SizedBox(
@@ -86,14 +90,14 @@ Widget mapToCarousel(
         );
 }
 
-class _MostViewedExplore extends StatefulWidget {
+class _MostViewedExplore extends ConsumerStatefulWidget {
   const _MostViewedExplore();
 
   @override
-  State<_MostViewedExplore> createState() => _MostViewedExploreState();
+  ConsumerState<_MostViewedExplore> createState() => _MostViewedExploreState();
 }
 
-class _MostViewedExploreState extends State<_MostViewedExplore>
+class _MostViewedExploreState extends ConsumerState<_MostViewedExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
@@ -123,7 +127,7 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => mapToCarousel(context, posts),
+      builder: (_) => mapToCarousel(context, posts, ref),
       onPressed: () => goToExploreMostViewedPage(context),
     );
   }
@@ -132,14 +136,14 @@ class _MostViewedExploreState extends State<_MostViewedExplore>
   PostGridController<DanbooruPost> get controller => _controller;
 }
 
-class _HotExplore extends StatefulWidget {
+class _HotExplore extends ConsumerStatefulWidget {
   const _HotExplore();
 
   @override
-  State<_HotExplore> createState() => _HotExploreState();
+  ConsumerState<_HotExplore> createState() => _HotExploreState();
 }
 
-class _HotExploreState extends State<_HotExplore>
+class _HotExploreState extends ConsumerState<_HotExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_HotExplore, DanbooruPost>,
@@ -169,7 +173,7 @@ class _HotExploreState extends State<_HotExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => mapToCarousel(context, posts),
+      builder: (_) => mapToCarousel(context, posts, ref),
       onPressed: () => goToExploreHotPage(context),
     );
   }
@@ -178,14 +182,14 @@ class _HotExploreState extends State<_HotExplore>
   PostGridController<DanbooruPost> get controller => _controller;
 }
 
-class _PopularExplore extends StatefulWidget {
+class _PopularExplore extends ConsumerStatefulWidget {
   const _PopularExplore();
 
   @override
-  State<_PopularExplore> createState() => _PopularExploreState();
+  ConsumerState<_PopularExplore> createState() => _PopularExploreState();
 }
 
-class _PopularExploreState extends State<_PopularExplore>
+class _PopularExploreState extends ConsumerState<_PopularExplore>
     with
         DanbooruPostTransformMixin,
         PostExplorerMixin<_PopularExplore, DanbooruPost>,
@@ -215,7 +219,7 @@ class _PopularExploreState extends State<_PopularExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => mapToCarousel(context, posts),
+      builder: (_) => mapToCarousel(context, posts, ref),
       onPressed: () => goToExplorePopularPage(context),
     );
   }
