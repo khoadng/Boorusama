@@ -1,15 +1,16 @@
 // Flutter imports:
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
@@ -26,7 +27,7 @@ import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
-class MoebooruInfinitePostList extends StatefulWidget {
+class MoebooruInfinitePostList extends ConsumerStatefulWidget {
   const MoebooruInfinitePostList({
     super.key,
     this.onLoadMore,
@@ -62,11 +63,12 @@ class MoebooruInfinitePostList extends StatefulWidget {
   )? multiSelectActions;
 
   @override
-  State<MoebooruInfinitePostList> createState() =>
+  ConsumerState<MoebooruInfinitePostList> createState() =>
       _MoebooruInfinitePostListState();
 }
 
-class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
+class _MoebooruInfinitePostListState
+    extends ConsumerState<MoebooruInfinitePostList> {
   late final AutoScrollController _autoScrollController;
   final _multiSelectController = MultiSelectController<Post>();
   var multiSelect = false;
@@ -93,94 +95,88 @@ class _MoebooruInfinitePostListState extends State<MoebooruInfinitePostList> {
     final authState =
         context.select((AuthenticationCubit cubit) => cubit.state);
 
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        return PostGrid(
-          controller: widget.controller,
-          scrollController: _autoScrollController,
-          sliverHeaderBuilder: widget.sliverHeaderBuilder,
-          footerBuilder: (context, selectedItems) =>
-              DefaultMultiSelectionActions(
-            selectedPosts: selectedItems,
-            endMultiSelect: () {
-              _multiSelectController.disableMultiSelect();
-            },
-          ),
-          multiSelectController: _multiSelectController,
-          onLoadMore: widget.onLoadMore,
-          onRefresh: widget.onRefresh,
-          itemBuilder: (context, items, index) {
-            final post = items[index];
+    final settings = ref.watch(settingsProvider);
 
-            return ContextMenuRegion(
-              isEnabled: !multiSelect,
-              contextMenu: GeneralPostContextMenu(
-                hasAccount: false,
-                onMultiSelect: () {
-                  _multiSelectController.enableMultiSelect();
-                },
-                post: post,
+    return PostGrid(
+      controller: widget.controller,
+      scrollController: _autoScrollController,
+      sliverHeaderBuilder: widget.sliverHeaderBuilder,
+      footerBuilder: (context, selectedItems) => DefaultMultiSelectionActions(
+        selectedPosts: selectedItems,
+        endMultiSelect: () {
+          _multiSelectController.disableMultiSelect();
+        },
+      ),
+      multiSelectController: _multiSelectController,
+      onLoadMore: widget.onLoadMore,
+      onRefresh: widget.onRefresh,
+      itemBuilder: (context, items, index) {
+        final post = items[index];
+
+        return ContextMenuRegion(
+          isEnabled: !multiSelect,
+          contextMenu: GeneralPostContextMenu(
+            hasAccount: false,
+            onMultiSelect: () {
+              _multiSelectController.enableMultiSelect();
+            },
+            post: post,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => ImageGridItem(
+              onTap: !multiSelect
+                  ? () {
+                      goToMoebooruDetailsPage(
+                        context: context,
+                        posts: items,
+                        initialPage: index,
+                        scrollController: _autoScrollController,
+                      );
+                    }
+                  : null,
+              isFaved: false,
+              enableFav: authState is Authenticated,
+              onFavToggle: (isFaved) async {},
+              autoScrollOptions: AutoScrollOptions(
+                controller: _autoScrollController,
+                index: index,
               ),
-              child: LayoutBuilder(
-                builder: (context, constraints) => ImageGridItem(
-                  onTap: !multiSelect
-                      ? () {
-                          goToMoebooruDetailsPage(
-                            context: context,
-                            posts: items,
-                            initialPage: index,
-                            scrollController: _autoScrollController,
-                          );
-                        }
-                      : null,
-                  isFaved: false,
-                  enableFav: authState is Authenticated,
-                  onFavToggle: (isFaved) async {},
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  image: state.settings.imageListType == ImageListType.masonry
-                      ? BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: post.thumbnailFromSettings(state.settings),
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          previewCacheManager:
-                              context.read<PreviewImageCacheManager>(),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        )
-                      : BooruImageLegacy(
-                          imageUrl: post.thumbnailFromSettings(state.settings),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        ),
-                ),
-              ),
-            );
-          },
-          bodyBuilder: (context, itemBuilder, refreshing, data) {
-            return SliverPostGrid(
-              itemBuilder: itemBuilder,
-              settings: state.settings,
-              refreshing: refreshing,
-              error: widget.errors,
-              data: data,
-            );
-          },
+              isAnimated: post.isAnimated,
+              isTranslated: post.isTranslated,
+              hasComments: post.hasComment,
+              hasParentOrChildren: post.hasParentOrChildren,
+              image: settings.imageListType == ImageListType.masonry
+                  ? BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: post.thumbnailFromSettings(settings),
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      placeholderUrl: post.thumbnailImageUrl,
+                      previewCacheManager:
+                          context.read<PreviewImageCacheManager>(),
+                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                    )
+                  : BooruImageLegacy(
+                      imageUrl: post.thumbnailFromSettings(settings),
+                      placeholderUrl: post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                    ),
+            ),
+          ),
+        );
+      },
+      bodyBuilder: (context, itemBuilder, refreshing, data) {
+        return SliverPostGrid(
+          itemBuilder: itemBuilder,
+          refreshing: refreshing,
+          error: widget.errors,
+          data: data,
         );
       },
     );

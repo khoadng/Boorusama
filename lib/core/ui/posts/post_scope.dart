@@ -1,15 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // Project imports:
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 typedef PostFetcher = PostsOrError Function(int page);
 
@@ -28,7 +25,7 @@ mixin PostFetcherMixin<T extends StatefulWidget> on State<T> {
           ));
 }
 
-class PostScope extends StatefulWidget {
+class PostScope extends ConsumerStatefulWidget {
   const PostScope({
     super.key,
     required this.fetcher,
@@ -43,21 +40,14 @@ class PostScope extends StatefulWidget {
   ) builder;
 
   @override
-  State<PostScope> createState() => _PostScopeState();
+  ConsumerState<PostScope> createState() => _PostScopeState();
 }
 
-class _PostScopeState extends State<PostScope> with PostFetcherMixin {
+class _PostScopeState extends ConsumerState<PostScope> with PostFetcherMixin {
   late final _controller = PostGridController<Post>(
     fetcher: (page) => fetchPosts(page),
     refresher: () => fetchPosts(1),
-    pageMode: context
-                .read<SettingsCubit>()
-                .state
-                .settings
-                .contentOrganizationCategory ==
-            ContentOrganizationCategory.infiniteScroll
-        ? PageMode.infinite
-        : PageMode.paginated,
+    pageMode: ref.read(pageModeSettingsProvider),
   );
 
   @override
@@ -71,18 +61,17 @@ class _PostScopeState extends State<PostScope> with PostFetcherMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SettingsCubit, SettingsState>(
-      listener: (context, state) {
-        _controller.setPageMode(state.settings.contentOrganizationCategory ==
-                ContentOrganizationCategory.infiniteScroll
-            ? PageMode.infinite
-            : PageMode.paginated);
+    ref.listen(
+      pageModeSettingsProvider,
+      (previous, next) {
+        _controller.setPageMode(next);
       },
-      child: widget.builder(
-        context,
-        _controller,
-        errors,
-      ),
+    );
+
+    return widget.builder(
+      context,
+      _controller,
+      errors,
     );
   }
 }

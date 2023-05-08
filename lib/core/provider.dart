@@ -28,8 +28,8 @@ final searchHistoryRepoProvider =
 final autocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
 
-final settingsProvider = AsyncNotifierProvider<SettingsNotifier, Settings>(
-  SettingsNotifier.new,
+final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
+  () => throw UnimplementedError(),
   dependencies: [
     settingsRepoProvider,
   ],

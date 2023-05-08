@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -370,6 +371,8 @@ void main() async {
                   booruFactoryProvider.overrideWithValue(booruFactory),
                   tagInfoProvider.overrideWithValue(tagInfo),
                   settingsRepoProvider.overrideWithValue(settingRepository),
+                  settingsProvider
+                      .overrideWith(() => SettingsNotifier(settings)),
                 ],
                 child: App(settings: settings),
               ),

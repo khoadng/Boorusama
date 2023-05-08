@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -71,29 +72,21 @@ String _imageListToString(ImageListType imageListType) {
   }
 }
 
-class _AppearancePageState extends ConsumerState<AppearancePage>
-    with SettingsRepositoryMixin {
+class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
 
   @override
-  SettingsRepository get settingsRepository =>
-      context.read<SettingsRepository>();
-
-  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final settings = await getOrDefault();
-      _spacingSliderValue.value = settings.imageGridSpacing;
-      _borderRadiusSliderValue.value = settings.imageBorderRadius;
-    });
+    final settings = ref.read(settingsProvider);
+    _spacingSliderValue.value = settings.imageGridSpacing;
+    _borderRadiusSliderValue.value = settings.imageBorderRadius;
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,

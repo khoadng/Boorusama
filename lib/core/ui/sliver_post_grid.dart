@@ -1,14 +1,14 @@
 // Flutter imports:
+import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -17,9 +17,8 @@ import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/utils.dart';
 
-class SliverPostGrid extends StatelessWidget {
+class SliverPostGrid extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;
-  final Settings settings;
   final bool refreshing;
   final BooruError? error;
   final List<Post> data;
@@ -30,11 +29,14 @@ class SliverPostGrid extends StatelessWidget {
     required this.refreshing,
     required this.error,
     required this.data,
-    required this.settings,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imageListType = ref.watch(imageListTypeSettingsProvider);
+    final gridSize = ref.watch(gridSizeSettingsProvider);
+    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
@@ -75,12 +77,12 @@ class SliverPostGrid extends StatelessWidget {
             return const SliverToBoxAdapter(child: NoDataBox());
           }
 
-          switch (settings.imageListType) {
+          switch (imageListType) {
             case ImageListType.standard:
               return SliverGrid(
                 gridDelegate: gridSizeToGridDelegate(
-                  size: settings.gridSize,
-                  spacing: settings.imageGridSpacing,
+                  size: gridSize,
+                  spacing: imageGridSpacing,
                   screenWidth: MediaQuery.of(context).size.width,
                 ),
                 delegate: SliverChildBuilderDelegate(
@@ -91,8 +93,8 @@ class SliverPostGrid extends StatelessWidget {
 
             case ImageListType.masonry:
               final payload = gridSizeToGridData(
-                size: settings.gridSize,
-                spacing: settings.imageGridSpacing,
+                size: gridSize,
+                spacing: imageGridSpacing,
                 screenWidth: MediaQuery.of(context).size.width,
               );
               final crossAxisCount = payload.first;
@@ -122,83 +124,71 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridSize =
-        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
-
     return usePlaceholder
-        ? SliverPostGridPlaceHolder(gridSize: gridSize)
+        ? const SliverPostGridPlaceHolder()
         : const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           );
   }
 }
 
-class SliverPostGridPlaceHolder extends StatelessWidget {
+class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
-    this.gridSize = GridSize.normal,
   });
 
-  final GridSize gridSize;
-
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.imageBorderRadius !=
-              current.settings.imageBorderRadius ||
-          previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing ||
-          previous.settings.imageListType != current.settings.imageListType,
-      builder: (context, state) {
-        switch (state.settings.imageListType) {
-          case ImageListType.standard:
-            return SliverGrid(
-              gridDelegate: gridSizeToGridDelegate(
-                size: gridSize,
-                spacing: state.settings.imageGridSpacing,
-                screenWidth: MediaQuery.of(context).size.width,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, _) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(
-                        state.settings.imageBorderRadius,
-                      ),
-                    ),
-                  );
-                },
-                childCount: 100,
-              ),
-            );
-          case ImageListType.masonry:
-            final data = gridSizeToGridData(
-              size: gridSize,
-              spacing: state.settings.imageGridSpacing,
-              screenWidth: MediaQuery.of(context).size.width,
-            );
-            final crossAxisCount = data.first;
-            final mainAxisSpacing = data[1];
-            final crossAxisSpacing = data[2];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imageListType = ref.watch(imageListTypeSettingsProvider);
+    final gridSize = ref.watch(gridSizeSettingsProvider);
+    final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
+    final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
 
-            return SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: mainAxisSpacing,
-              crossAxisSpacing: crossAxisSpacing,
-              childCount: 100,
-              itemBuilder: (context, index) {
-                return createRandomPlaceholderContainer(
-                  context,
-                  borderRadius:
-                      BorderRadius.circular(state.settings.imageBorderRadius),
-                );
-              },
+    switch (imageListType) {
+      case ImageListType.standard:
+        return SliverGrid(
+          gridDelegate: gridSizeToGridDelegate(
+            size: gridSize,
+            spacing: imageGridSpacing,
+            screenWidth: MediaQuery.of(context).size.width,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, _) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(
+                    imageBorderRadius,
+                  ),
+                ),
+              );
+            },
+            childCount: 100,
+          ),
+        );
+      case ImageListType.masonry:
+        final data = gridSizeToGridData(
+          size: gridSize,
+          spacing: imageGridSpacing,
+          screenWidth: MediaQuery.of(context).size.width,
+        );
+        final crossAxisCount = data.first;
+        final mainAxisSpacing = data[1];
+        final crossAxisSpacing = data[2];
+
+        return SliverMasonryGrid.count(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: mainAxisSpacing,
+          crossAxisSpacing: crossAxisSpacing,
+          childCount: 100,
+          itemBuilder: (context, index) {
+            return createRandomPlaceholderContainer(
+              context,
+              borderRadius: BorderRadius.circular(imageBorderRadius),
             );
-        }
-      },
-    );
+          },
+        );
+    }
   }
 }
 
