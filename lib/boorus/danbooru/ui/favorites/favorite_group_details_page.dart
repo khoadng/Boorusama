@@ -118,8 +118,7 @@ class _FavoriteGroupDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+    final authState = ref.watch(authenticationProvider);
 
     return Scaffold(
       floatingActionButton: editing

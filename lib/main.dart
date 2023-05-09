@@ -18,6 +18,7 @@ import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -353,6 +354,8 @@ void main() async {
                 settingsProvider.overrideWith(() => SettingsNotifier(settings)),
                 booruUserIdentityProviderProvider
                     .overrideWithValue(booruUserIdProvider),
+                authenticationProvider
+                    .overrideWith(() => AuthenticationNotifier()),
               ],
               child: App(settings: settings),
             ),

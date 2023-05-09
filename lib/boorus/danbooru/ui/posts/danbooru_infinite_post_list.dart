@@ -95,8 +95,7 @@ class _DanbooruInfinitePostListState
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+    final authState = ref.watch(authenticationProvider);
 
     final settings = ref.watch(settingsProvider);
 
@@ -210,7 +209,7 @@ class _DanbooruInfinitePostListState
 }
 
 // ignore: prefer-single-widget-per-file
-class FavoriteGroupMultiSelectionActions extends StatelessWidget {
+class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
   const FavoriteGroupMultiSelectionActions({
     super.key,
     required this.selectedPosts,
@@ -223,9 +222,8 @@ class FavoriteGroupMultiSelectionActions extends StatelessWidget {
   final void Function() onRemoveFromFavGroup;
 
   @override
-  Widget build(BuildContext context) {
-    final authenticationState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authenticationState = ref.watch(authenticationProvider);
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,

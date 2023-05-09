@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
@@ -23,7 +24,7 @@ import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PostTagList extends StatelessWidget {
+class PostTagList extends ConsumerWidget {
   const PostTagList({
     super.key,
     this.maxTagWidth,
@@ -32,26 +33,25 @@ class PostTagList extends StatelessWidget {
   final double? maxTagWidth;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) {
-        return BlocBuilder<TagBloc, TagState>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              final widgets = <Widget>[];
-              for (final g in state.tags!) {
-                widgets
-                  ..add(_TagBlockTitle(
-                    title: g.groupName,
-                    isFirstBlock: g.groupName == state.tags!.first.groupName,
-                  ))
-                  ..add(_buildTags(
-                    context,
-                    authState,
-                    g.tags,
-                    onAddToBlacklisted: (tag) => context
-                        .read<BlacklistedTagsBloc>()
-                        .add(BlacklistedTagAdded(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authenticationProvider);
+
+    return BlocBuilder<TagBloc, TagState>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final widgets = <Widget>[];
+          for (final g in state.tags!) {
+            widgets
+              ..add(_TagBlockTitle(
+                title: g.groupName,
+                isFirstBlock: g.groupName == state.tags!.first.groupName,
+              ))
+              ..add(_buildTags(
+                context,
+                authState,
+                g.tags,
+                onAddToBlacklisted: (tag) =>
+                    context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
                           tag: tag.rawName,
                           onFailure: (message) => showSimpleSnackBar(
                             context: context,
@@ -63,23 +63,21 @@ class PostTagList extends StatelessWidget {
                             content: const Text('Blacklisted tags updated'),
                           ),
                         )),
-                  ));
-              }
+              ));
+          }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ...widgets,
-                ],
-              );
-            } else {
-              return const Padding(
-                padding: EdgeInsets.all(8),
-                child: Center(child: CircularProgressIndicator.adaptive()),
-              );
-            }
-          },
-        );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...widgets,
+            ],
+          );
+        } else {
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          );
+        }
       },
     );
   }

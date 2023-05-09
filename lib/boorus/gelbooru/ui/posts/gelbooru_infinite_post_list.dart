@@ -92,8 +92,7 @@ class _DanbooruInfinitePostListState
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+    final authState = ref.watch(authenticationProvider);
     final settings = ref.watch(settingsProvider);
 
     return PostGrid(

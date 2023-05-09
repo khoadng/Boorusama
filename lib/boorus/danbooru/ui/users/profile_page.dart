@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
@@ -13,13 +14,13 @@ import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text('profile.profile'.tr()),
@@ -27,7 +28,7 @@ class ProfilePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              context.read<AuthenticationCubit>().logOut();
+              ref.read(authenticationProvider.notifier).logOut();
               goToHomePage(context, replace: true);
             },
           ),

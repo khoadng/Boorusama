@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -58,9 +57,6 @@ Widget providePostDetailPageDependencies(
 
           return MultiBlocProvider(
             providers: [
-              BlocProvider.value(
-                value: context.read<AuthenticationCubit>(),
-              ),
               BlocProvider.value(value: context.read<ThemeBloc>()),
               BlocProvider(
                 create: (context) => shareCubit,

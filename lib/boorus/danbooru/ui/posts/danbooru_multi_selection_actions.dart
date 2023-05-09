@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -11,7 +11,7 @@ import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/ui/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class DanbooruMultiSelectionActions extends StatelessWidget {
+class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({
     super.key,
     required this.selectedPosts,
@@ -22,9 +22,8 @@ class DanbooruMultiSelectionActions extends StatelessWidget {
   final void Function() endMultiSelect;
 
   @override
-  Widget build(BuildContext context) {
-    final authenticationState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authenticationState = ref.watch(authenticationProvider);
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/gelbooru/infra/autocompletes/gelbooru_autocomplete_repository_api.dart';
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
@@ -37,7 +36,6 @@ class GelbooruProvider extends StatelessWidget {
     required this.userMetatagRepository,
     required this.searchHistoryRepository,
     required this.favoriteTagRepository,
-    required this.authenticationCubit,
     required this.fileNameGenerator,
     required this.tagBloc,
   });
@@ -61,10 +59,6 @@ class GelbooruProvider extends StatelessWidget {
     final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
     final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
-    final authenticationCubit = AuthenticationCubit(
-      currentBooruConfigRepository: currentBooruConfigRepository,
-      booruConfig: booruConfig,
-    );
 
     final postRepo = GelbooruPostRepositoryApi(
       currentBooruConfigRepository: currentBooruConfigRepository,
@@ -89,7 +83,6 @@ class GelbooruProvider extends StatelessWidget {
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
-      authenticationCubit: authenticationCubit,
       fileNameGenerator: fileNameGenerator,
       tagBloc: tagBloc,
     );
@@ -110,7 +103,6 @@ class GelbooruProvider extends StatelessWidget {
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
 
-    final authenticationCubit = context.read<AuthenticationCubit>();
     final tagBloc = context.read<TagBloc>();
 
     return GelbooruProvider(
@@ -122,7 +114,6 @@ class GelbooruProvider extends StatelessWidget {
       userMetatagRepository: userMetatagsRepo,
       searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
-      authenticationCubit: authenticationCubit,
       fileNameGenerator: fileNameGenerator,
       tagBloc: tagBloc,
     );
@@ -137,7 +128,6 @@ class GelbooruProvider extends StatelessWidget {
   final FileNameGenerator fileNameGenerator;
   final Widget Function(BuildContext context) builder;
 
-  final AuthenticationCubit authenticationCubit;
   final TagBloc tagBloc;
 
   @override
@@ -154,7 +144,6 @@ class GelbooruProvider extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: authenticationCubit),
           BlocProvider.value(value: tagBloc),
         ],
         child: ProviderScope(
