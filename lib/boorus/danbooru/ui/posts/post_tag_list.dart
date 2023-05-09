@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -13,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
@@ -35,6 +35,7 @@ class PostTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
+    final booru = ref.watch(currentBooruProvider);
 
     return BlocBuilder<TagBloc, TagState>(
       builder: (context, state) {
@@ -48,6 +49,7 @@ class PostTagList extends ConsumerWidget {
               ))
               ..add(_buildTags(
                 context,
+                booru,
                 authState,
                 g.tags,
                 onAddToBlacklisted: (tag) =>
@@ -84,65 +86,60 @@ class PostTagList extends ConsumerWidget {
 
   Widget _buildTags(
     BuildContext context,
+    Booru booru,
     AuthenticationState authenticationState,
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (context, state) {
-        final booru = state.booru ?? safebooru();
+    return Tags(
+      alignment: WrapAlignment.start,
+      runSpacing: isMobilePlatform() ? 0 : 4,
+      itemCount: tags.length,
+      itemBuilder: (index) {
+        final tag = tags[index];
 
-        return Tags(
-          alignment: WrapAlignment.start,
-          runSpacing: isMobilePlatform() ? 0 : 4,
-          itemCount: tags.length,
-          itemBuilder: (index) {
-            final tag = tags[index];
-
-            return ContextMenu<String>(
-              items: [
-                PopupMenuItem(
-                  value: 'wiki',
-                  child: const Text('post.detail.open_wiki').tr(),
-                ),
-                PopupMenuItem(
-                  value: 'add_to_favorites',
-                  child: const Text('post.detail.add_to_favorites').tr(),
-                ),
-                if (authenticationState is Authenticated)
-                  PopupMenuItem(
-                    value: 'blacklist',
-                    child: const Text('post.detail.add_to_blacklist').tr(),
-                  ),
-                if (authenticationState is Authenticated)
-                  PopupMenuItem(
-                    value: 'copy_and_move_to_saved_search',
-                    child: const Text(
-                      'post.detail.copy_and_open_saved_search',
-                    ).tr(),
-                  ),
-              ],
-              onSelected: (value) {
-                if (value == 'blacklist') {
-                  onAddToBlacklisted(tag);
-                } else if (value == 'wiki') {
-                  launchWikiPage(booru.url, tag.rawName);
-                } else if (value == 'copy_and_move_to_saved_search') {
-                  Clipboard.setData(
-                    ClipboardData(text: tag.rawName),
-                  ).then((value) => goToSavedSearchEditPage(context));
-                } else if (value == 'add_to_favorites') {
-                  context
-                      .read<FavoriteTagBloc>()
-                      .add(FavoriteTagAdded(tag: tag.rawName));
-                }
-              },
-              child: GestureDetector(
-                onTap: () => goToSearchPage(context, tag: tag.rawName),
-                child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
+        return ContextMenu<String>(
+          items: [
+            PopupMenuItem(
+              value: 'wiki',
+              child: const Text('post.detail.open_wiki').tr(),
+            ),
+            PopupMenuItem(
+              value: 'add_to_favorites',
+              child: const Text('post.detail.add_to_favorites').tr(),
+            ),
+            if (authenticationState is Authenticated)
+              PopupMenuItem(
+                value: 'blacklist',
+                child: const Text('post.detail.add_to_blacklist').tr(),
               ),
-            );
+            if (authenticationState is Authenticated)
+              PopupMenuItem(
+                value: 'copy_and_move_to_saved_search',
+                child: const Text(
+                  'post.detail.copy_and_open_saved_search',
+                ).tr(),
+              ),
+          ],
+          onSelected: (value) {
+            if (value == 'blacklist') {
+              onAddToBlacklisted(tag);
+            } else if (value == 'wiki') {
+              launchWikiPage(booru.url, tag.rawName);
+            } else if (value == 'copy_and_move_to_saved_search') {
+              Clipboard.setData(
+                ClipboardData(text: tag.rawName),
+              ).then((value) => goToSavedSearchEditPage(context));
+            } else if (value == 'add_to_favorites') {
+              context
+                  .read<FavoriteTagBloc>()
+                  .add(FavoriteTagAdded(tag: tag.rawName));
+            }
           },
+          child: GestureDetector(
+            onTap: () => goToSearchPage(context, tag: tag.rawName),
+            child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
+          ),
         );
       },
     );

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,8 +12,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
@@ -27,12 +26,8 @@ class DanbooruMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final endpoint = context.select(
-      (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
-    );
+    final booru = ref.watch(currentBooruProvider);
     final authenticationState = ref.watch(authenticationProvider);
-
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -50,7 +45,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'add_to_bookmark':
                   context.read<BookmarkCubit>().addBookmarkWithToast(
                         post.sampleImageUrl,
-                        booru!,
+                        booru,
                         post,
                       );
                   break;
@@ -62,7 +57,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
-                    post.getUriLink(endpoint),
+                    post.getUriLink(booru.url),
                   );
                   break;
                 case 'view_original':

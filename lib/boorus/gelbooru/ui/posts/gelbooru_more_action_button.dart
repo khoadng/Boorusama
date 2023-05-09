@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,14 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GelbooruMoreActionButton extends StatelessWidget {
+class GelbooruMoreActionButton extends ConsumerWidget {
   const GelbooruMoreActionButton({
     super.key,
     required this.post,
@@ -23,12 +23,8 @@ class GelbooruMoreActionButton extends StatelessWidget {
   final Post post;
 
   @override
-  Widget build(BuildContext context) {
-    final endpoint = context.select(
-      (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
-    );
-
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -46,13 +42,13 @@ class GelbooruMoreActionButton extends StatelessWidget {
                 case 'add_to_bookmark':
                   context.read<BookmarkCubit>().addBookmarkWithToast(
                         post.sampleImageUrl,
-                        booru!,
+                        booru,
                         post,
                       );
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
-                    post.getUriLink(endpoint),
+                    post.getUriLink(booru.url),
                   );
                   break;
                 case 'view_original':

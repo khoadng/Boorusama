@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,9 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/booru_config_notifier.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
@@ -21,13 +20,11 @@ class SwitchBooruModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentConfig =
-        context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
+    final currentConfig = ref.watch(currentBooruConfigProvider);
     final configs = ref
         .watch(booruConfigProvider)
-        .where((c) => c.id != currentConfig?.id)
+        .where((c) => c.id != currentConfig.id)
         .toList();
-    final settings = ref.watch(settingsProvider);
     final booruFactory = context.read<BooruFactory>();
 
     return SizedBox(
@@ -38,7 +35,7 @@ class SwitchBooruModal extends ConsumerWidget {
         child: Column(
           children: [
             BooruConfigInfoTile(
-              booru: currentConfig!.createBooruFrom(booruFactory),
+              booru: currentConfig.createBooruFrom(booruFactory),
               config: currentConfig,
               isCurrent: true,
             ),
@@ -71,10 +68,9 @@ class SwitchBooruModal extends ConsumerWidget {
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
-                      context.read<CurrentBooruBloc>().add(CurrentBooruChanged(
-                            booruConfig: config,
-                            settings: settings,
-                          ));
+                      ref
+                          .read(currentBooruConfigProvider.notifier)
+                          .update(config);
                     },
                   );
                 },

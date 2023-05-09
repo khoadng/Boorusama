@@ -1,6 +1,7 @@
 // ignore: prefer-single-widget-per-file
 
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,12 +15,11 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class DanbooruPostContextMenu extends StatelessWidget {
+class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
     super.key,
     required this.post,
@@ -32,8 +32,8 @@ class DanbooruPostContextMenu extends StatelessWidget {
   final bool hasAccount;
 
   @override
-  Widget build(BuildContext context) {
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -55,7 +55,7 @@ class DanbooruPostContextMenu extends StatelessWidget {
             'Add to Bookmark',
             onPressed: () => context.read<BookmarkCubit>().addBookmarkWithToast(
                   post.sampleImageUrl,
-                  booru!,
+                  booru,
                   post,
                 ),
           ),

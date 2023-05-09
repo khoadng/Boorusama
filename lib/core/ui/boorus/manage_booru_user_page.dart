@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,7 +9,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/booru_config_notifier.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
@@ -23,8 +23,7 @@ class ManageBooruPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(booruConfigProvider);
-    final currentConfig =
-        context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
+    final currentConfig = ref.watch(currentBooruConfigProvider);
 
     final booruFactory = context.read<BooruFactory>();
 
@@ -39,7 +38,7 @@ class ManageBooruPage extends ConsumerWidget {
         itemBuilder: (context, index) {
           final config = configs[index];
           final booru = config.createBooruFrom(booruFactory);
-          final isCurrent = currentConfig?.id == config.id;
+          final isCurrent = currentConfig.id == config.id;
 
           return BooruConfigInfoTile(
             booru: booru,

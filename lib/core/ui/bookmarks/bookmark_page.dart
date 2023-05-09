@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,7 +9,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -28,6 +28,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -123,12 +124,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                               Positioned(
                                 top: 5,
                                 left: 5,
-                                child: BlocBuilder<CurrentBooruBloc,
-                                    CurrentBooruState>(
-                                  builder: (context, state) {
-                                    return BooruLogo(booru: state.booruConfig!);
-                                  },
-                                ),
+                                child: BooruLogo(booru: booruConfig),
                               ),
                               if (edit)
                                 Positioned(

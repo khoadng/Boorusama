@@ -50,10 +50,8 @@ import 'package:boorusama/boorus/danbooru/ui/search/result/related_tag_action_sh
 import 'package:boorusama/boorus/danbooru/ui/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
 import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
@@ -373,20 +371,14 @@ void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
 }) {
-  final page = BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (context, state) {
-      final booru = state.booru ?? safebooru();
-
-      return RelatedTagActionSheet(
-        relatedTag: relatedTag,
-        onOpenWiki: (tag) => launchWikiPage(
-          booru.url,
-          tag,
-        ),
-        // onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
-        onAddToSearch: (tag) {}, //FIXME: implement this
-      );
-    },
+  final page = RelatedTagActionSheet(
+    relatedTag: relatedTag,
+    onOpenWiki: (tag) => launchWikiPage(
+      "", //FIXME: implement this
+      tag,
+    ),
+    // onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+    onAddToSearch: (tag) {}, //FIXME: implement this
   );
   if (Screen.of(context).size == ScreenSize.small) {
     showBarModalBottomSheet(

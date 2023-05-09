@@ -11,7 +11,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -40,34 +39,27 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return MoebooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (gcontext) {
-              final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
-                ..add(const FavoriteTagFetched());
+      child: MoebooruProvider.of(
+        context,
+        builder: (gcontext) {
+          final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
+            ..add(const FavoriteTagFetched());
 
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(value: favoriteTagBloc),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: favoriteTagBloc),
+            ],
+            child: CustomContextMenuOverlay(
+              child: ProviderScope(
+                overrides: [
+                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
                 ],
-                child: CustomContextMenuOverlay(
-                  child: ProviderScope(
-                    overrides: [
-                      selectedTagsProvider
-                          .overrideWith(SelectedTagsNotifier.new),
-                    ],
-                    child: MoebooruSearchPage(
-                      metatagHighlightColor:
-                          Theme.of(context).colorScheme.primary,
-                      initialQuery: tag,
-                    ),
-                  ),
+                child: MoebooruSearchPage(
+                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                  initialQuery: tag,
                 ),
-              );
-            },
+              ),
+            ),
           );
         },
       ),

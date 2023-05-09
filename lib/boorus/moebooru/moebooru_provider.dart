@@ -88,8 +88,6 @@ class MoebooruProvider extends StatelessWidget {
 
   factory MoebooruProvider.of(
     BuildContext context, {
-    // ignore: avoid_unused_constructor_parameters
-    required Booru booru,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {

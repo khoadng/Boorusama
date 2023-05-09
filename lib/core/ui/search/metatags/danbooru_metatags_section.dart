@@ -1,18 +1,19 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/ui/search/user_data_metatags_section.dart';
 import 'package:boorusama/core/utils.dart';
 
-class DanbooruMetatagsSection extends StatelessWidget {
+class DanbooruMetatagsSection extends ConsumerWidget {
   const DanbooruMetatagsSection({
     super.key,
     this.onOptionTap,
@@ -23,15 +24,15 @@ class DanbooruMetatagsSection extends StatelessWidget {
   final List<Metatag> metatags;
 
   @override
-  Widget build(BuildContext context) {
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
 
     return UserDataMetatagsSection(
       onOptionTap: onOptionTap,
       metatags: metatags,
       onHelpRequest: () {
         launchExternalUrl(
-          Uri.parse(booru!.cheatsheet),
+          Uri.parse(booru.cheatsheet),
           mode: LaunchMode.platformDefault,
         );
       },

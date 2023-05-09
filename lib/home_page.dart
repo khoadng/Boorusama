@@ -1,8 +1,8 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -14,9 +14,7 @@ import 'package:boorusama/boorus/gelbooru/ui/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/home.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/home/side_bar_menu.dart';
 
@@ -41,35 +39,12 @@ class _HomePageState extends ConsumerState<HomePage> {
         popOnSelect: true,
         padding: EdgeInsets.zero,
       ),
-      body: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (context, state) {
-          final booru = state.booru;
-          final config = state.booruConfig;
+      body: Builder(
+        builder: (context) {
+          final config = ref.watch(currentBooruConfigProvider);
+          final booru = ref.watch(currentBooruProvider);
           //FIXME: This is a hack to make sure that the authentication notifier is initialized
           ref.read(authenticationProvider.notifier).logIn();
-
-          if (booru == null) {
-            return Scaffold(
-              body: SafeArea(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("You haven't add any booru yet"),
-                      ElevatedButton.icon(
-                        onPressed: () => goToAddBooruPage(
-                          context,
-                          setCurrentBooruOnSubmit: true,
-                        ),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
 
           switch (booru.booruType) {
             case BooruType.unknown:
@@ -83,7 +58,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               return DanbooruProvider.create(
                 context,
                 ref: ref,
-                booruConfig: config!,
+                booruConfig: config,
                 sourceComposer: config.isUnverified(booru)
                     ? UnknownImageSourceComposer()
                     : DanbooruImageSourceComposer(),
@@ -97,12 +72,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               );
             case BooruType.gelbooru:
-              final gkey = ValueKey(config?.id);
+              final gkey = ValueKey(config.id);
 
               return GelbooruProvider.create(
                 context,
                 key: gkey,
-                booruConfig: config!,
+                booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: GelbooruHomePage(
                     key: gkey,
@@ -113,12 +88,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.konachan:
             case BooruType.yandere:
             case BooruType.sakugabooru:
-              final gkey = ValueKey(config?.id);
+              final gkey = ValueKey(config.id);
 
               return MoebooruProvider.create(
                 context,
                 key: gkey,
-                booruConfig: config!,
+                booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: MoebooruHomePage(
                     key: gkey,

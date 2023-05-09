@@ -90,8 +90,6 @@ class GelbooruProvider extends StatelessWidget {
 
   factory GelbooruProvider.of(
     BuildContext context, {
-    // ignore: avoid_unused_constructor_parameters
-    required Booru booru,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {

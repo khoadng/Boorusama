@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -58,12 +57,9 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     required int initialIndex,
     AutoScrollController? scrollController,
   }) {
-    final booru = context.read<CurrentBooruBloc>().state.booru!;
-
     return MaterialPageRoute(
       builder: (_) => GelbooruProvider.of(
         context,
-        booru: booru,
         builder: (gcontext) {
           final shareCubit = PostShareCubit.of(context)
             ..updateInformation(posts[initialIndex]);

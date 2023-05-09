@@ -24,7 +24,6 @@ import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dar
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
@@ -221,6 +220,8 @@ void main() async {
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
 
+  final initialConfig = await currentBooruRepo.get();
+
   logger.logI('Start up', 'Initialize I18n');
   await ensureI18nInitialized();
 
@@ -304,12 +305,6 @@ void main() async {
                 lazy: false,
               ),
               BlocProvider.value(
-                value: CurrentBooruBloc(
-                  booruFactory: booruFactory,
-                  userBooruRepository: booruUserRepo,
-                )..add(CurrentBooruFetched(settings)),
-              ),
-              BlocProvider.value(
                 value: favoriteTagBloc..add(const FavoriteTagFetched()),
               ),
               BlocProvider(
@@ -350,8 +345,8 @@ void main() async {
                 authenticationProvider
                     .overrideWith(() => AuthenticationNotifier()),
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-                currentBooruConfigProvider
-                    .overrideWith(() => CurrentBooruConfigNotifier()),
+                currentBooruConfigProvider.overrideWith(
+                    () => CurrentBooruConfigNotifier(initialConfig!)),
               ],
               child: App(settings: settings),
             ),

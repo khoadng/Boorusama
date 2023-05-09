@@ -9,7 +9,6 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
@@ -80,37 +79,32 @@ class _DownloadTagSelectionViewState
                               .read<BulkDownloadManagerBloc>()
                               .add(BulkDownloadManagerTagRemoved(tag: e)),
                         )),
-                    BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-                      builder: (context, state) {
-                        return IconButton(
-                          iconSize: 28,
-                          splashRadius: 20,
-                          onPressed: () {
-                            final bloc =
-                                context.read<BulkDownloadManagerBloc>();
-                            goToQuickSearchPage(
-                              context,
-                              ref: ref,
-                              onSubmitted: (context, text) {
-                                Navigator.of(context).pop();
-                                bloc.add(
-                                  BulkDownloadManagerTagsAdded(
-                                    tags: [text],
-                                  ),
-                                );
-                              },
-                              onSelected: (tag) {
-                                bloc.add(
-                                  BulkDownloadManagerTagsAdded(
-                                    tags: [tag.value],
-                                  ),
-                                );
-                              },
+                    IconButton(
+                      iconSize: 28,
+                      splashRadius: 20,
+                      onPressed: () {
+                        final bloc = context.read<BulkDownloadManagerBloc>();
+                        goToQuickSearchPage(
+                          context,
+                          ref: ref,
+                          onSubmitted: (context, text) {
+                            Navigator.of(context).pop();
+                            bloc.add(
+                              BulkDownloadManagerTagsAdded(
+                                tags: [text],
+                              ),
                             );
                           },
-                          icon: const Icon(Icons.add),
+                          onSelected: (tag) {
+                            bloc.add(
+                              BulkDownloadManagerTagsAdded(
+                                tags: [tag.value],
+                              ),
+                            );
+                          },
                         );
                       },
+                      icon: const Icon(Icons.add),
                     ),
                   ],
                 );

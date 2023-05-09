@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -52,8 +51,6 @@ class MoebooruPostDetailsPage extends StatefulWidget {
     AutoScrollController? scrollController,
     required Settings settings,
   }) {
-    final booru = context.read<CurrentBooruBloc>().state.booru!;
-
     return MaterialPageRoute(
       builder: (_) {
         final shareCubit = PostShareCubit.of(context)
@@ -61,7 +58,6 @@ class MoebooruPostDetailsPage extends StatefulWidget {
 
         return MoebooruProvider.of(
           context,
-          booru: booru,
           builder: (context) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: shareCubit),

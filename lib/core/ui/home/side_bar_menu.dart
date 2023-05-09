@@ -1,14 +1,13 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists/blacklisted_tag_page.dart';
@@ -36,128 +35,122 @@ class SideBarMenu extends ConsumerWidget {
     return SideBar(
       width: width,
       content: SingleChildScrollView(
-        child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (context, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).viewPadding.top,
-                ),
-                BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-                  builder: (context, state) {
-                    return state.booru != null
-                        ? ListTile(
-                            horizontalTitleGap: 0,
-                            minLeadingWidth: 28,
-                            leading: BooruLogo(booru: state.booruConfig!),
-                            title: Wrap(
-                              children: [
-                                Text(
-                                  state.booruConfig!.isUnverified(state.booru!)
-                                      ? state.booruConfig!.url
-                                      : state.booru!.booruType.stringify(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                if (state.booruConfig != null &&
-                                    state.booruConfig!.ratingFilter !=
-                                        BooruConfigRatingFilter.none) ...[
-                                  const SizedBox(width: 4),
-                                  SquareChip(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(4)),
-                                    label: Text(
-                                      state.booruConfig!.ratingFilter
-                                          .getRatingTerm()
-                                          .toUpperCase(),
-                                      softWrap: true,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                    color: state.booruConfig!.ratingFilter ==
-                                            BooruConfigRatingFilter.hideNSFW
-                                        ? Colors.green
-                                        : const Color.fromARGB(
-                                            255, 154, 138, 0),
-                                  ),
-                                ],
-                              ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).viewPadding.top,
+            ),
+            Builder(
+              builder: (context) {
+                final booruConfig = ref.watch(currentBooruConfigProvider);
+                final booru = ref.watch(currentBooruProvider);
+
+                return ListTile(
+                  horizontalTitleGap: 0,
+                  minLeadingWidth: 28,
+                  leading: BooruLogo(booru: booruConfig),
+                  title: Wrap(
+                    children: [
+                      Text(
+                        booruConfig.isUnverified(booru)
+                            ? booruConfig.url
+                            : booru.booruType.stringify(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                      if (booruConfig.ratingFilter !=
+                          BooruConfigRatingFilter.none) ...[
+                        const SizedBox(width: 4),
+                        SquareChip(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          label: Text(
+                            booruConfig.ratingFilter
+                                .getRatingTerm()
+                                .toUpperCase(),
+                            softWrap: true,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
                             ),
-                            subtitle: state.booruConfig.hasLoginDetails()
-                                ? Text(state.booruConfig!.login ?? 'Unknown')
-                                : null,
-                            trailing: IconButton(
-                              onPressed: () {
-                                showMaterialModalBottomSheet(
-                                  context: context,
-                                  builder: (context) =>
-                                      const SwitchBooruModal(),
-                                );
-                              },
-                              icon: const Icon(Icons.more_vert),
-                            ),
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
-                if (initialContentBuilder != null) ...[
-                  ...initialContentBuilder!(context)!,
-                  const Divider(),
-                ],
-                const Divider(),
-                _SideMenuTile(
-                  icon: const Icon(Icons.manage_accounts),
-                  title: const Text('Manage boorus'),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    goToManageBooruPage(context);
-                  },
-                ),
-                _SideMenuTile(
-                  icon: const Icon(Icons.favorite),
-                  title: const Text('Your Bookmarks'),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    goToBookmarkPage(context);
-                  },
-                ),
-                _SideMenuTile(
-                  icon: const Icon(Icons.list_alt),
-                  title: const Text('Your Blacklist'),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const BlacklistedTagPage()));
-                  },
-                ),
-                _SideMenuTile(
-                  icon: const Icon(Icons.download),
-                  title: const Text('Bulk download'),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    goToBulkDownloadPage(
-                      context,
-                      null,
-                      ref: ref,
-                    );
-                  },
-                ),
-                _SideMenuTile(
-                  icon: const Icon(Icons.settings_outlined),
-                  title: Text('sideMenu.settings'.tr()),
-                  onTap: () {
-                    if (popOnSelect) Navigator.of(context).pop();
-                    goToSettingPage(context);
-                  },
-                ),
-              ],
-            );
-          },
+                          ),
+                          color: booruConfig.ratingFilter ==
+                                  BooruConfigRatingFilter.hideNSFW
+                              ? Colors.green
+                              : const Color.fromARGB(255, 154, 138, 0),
+                        ),
+                      ],
+                    ],
+                  ),
+                  subtitle: booruConfig.hasLoginDetails()
+                      ? Text(booruConfig.login ?? 'Unknown')
+                      : null,
+                  trailing: IconButton(
+                    onPressed: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        builder: (context) => const SwitchBooruModal(),
+                      );
+                    },
+                    icon: const Icon(Icons.more_vert),
+                  ),
+                );
+              },
+            ),
+            if (initialContentBuilder != null) ...[
+              ...initialContentBuilder!(context)!,
+              const Divider(),
+            ],
+            const Divider(),
+            _SideMenuTile(
+              icon: const Icon(Icons.manage_accounts),
+              title: const Text('Manage boorus'),
+              onTap: () {
+                if (popOnSelect) Navigator.of(context).pop();
+                goToManageBooruPage(context);
+              },
+            ),
+            _SideMenuTile(
+              icon: const Icon(Icons.favorite),
+              title: const Text('Your Bookmarks'),
+              onTap: () {
+                if (popOnSelect) Navigator.of(context).pop();
+                goToBookmarkPage(context);
+              },
+            ),
+            _SideMenuTile(
+              icon: const Icon(Icons.list_alt),
+              title: const Text('Your Blacklist'),
+              onTap: () {
+                if (popOnSelect) Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const BlacklistedTagPage()));
+              },
+            ),
+            _SideMenuTile(
+              icon: const Icon(Icons.download),
+              title: const Text('Bulk download'),
+              onTap: () {
+                if (popOnSelect) Navigator.of(context).pop();
+                goToBulkDownloadPage(
+                  context,
+                  null,
+                  ref: ref,
+                );
+              },
+            ),
+            _SideMenuTile(
+              icon: const Icon(Icons.settings_outlined),
+              title: Text('sideMenu.settings'.tr()),
+              onTap: () {
+                if (popOnSelect) Navigator.of(context).pop();
+                goToSettingPage(context);
+              },
+            ),
+          ],
         ),
       ),
     );

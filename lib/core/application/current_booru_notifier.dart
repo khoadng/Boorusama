@@ -26,9 +26,15 @@ final currentBooruProvider = Provider<Booru>(
 );
 
 class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
+  CurrentBooruConfigNotifier(
+    this.initialConfig,
+  ) : super();
+
+  final BooruConfig initialConfig;
+
   @override
   BooruConfig build() {
-    return BooruConfig.empty;
+    return initialConfig;
   }
 
   Future<void> fetch() async {
