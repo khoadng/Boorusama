@@ -11,6 +11,7 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
@@ -27,9 +28,7 @@ class SwitchBooruModal extends ConsumerWidget {
         .select((ManageBooruBloc bloc) => bloc.state.configs)
         ?.where((c) => c.id != currentConfig?.id)
         .toList();
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
-
+    final settings = ref.watch(settingsProvider);
     final booruFactory = context.read<BooruFactory>();
 
     return SizedBox(
@@ -81,14 +80,11 @@ class SwitchBooruModal extends ConsumerWidget {
                                   settings: settings,
                                 ));
                             //FIXME: create common method to update settings when booru is changed
-                            context
-                                .read<SettingsCubit>()
-                                .updateAndSyncWithRiverpod(
-                                  settings.copyWith(
-                                    currentBooruConfigId: config.id,
-                                  ),
-                                  ref,
-                                );
+                            ref.updateSettings(
+                              settings.copyWith(
+                                currentBooruConfigId: config.id,
+                              ),
+                            );
                           },
                         );
                       },

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/core/application/settings/settings_notifier.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/display.dart';
 import 'pool_grid_item.dart';
 

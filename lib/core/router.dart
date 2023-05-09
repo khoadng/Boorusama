@@ -27,7 +27,6 @@ import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
@@ -395,9 +394,7 @@ void goToManageBooruPage(BuildContext context) {
 
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
-    child: BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (_, state) => const ManageBooruPage(),
-    ),
+    child: const ManageBooruPage(),
   ));
 }
 

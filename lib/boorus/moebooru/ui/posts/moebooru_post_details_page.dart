@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -51,8 +50,8 @@ class MoebooruPostDetailsPage extends StatefulWidget {
     required List<Post> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
+    required Settings settings,
   }) {
-    final settings = context.read<SettingsCubit>().state.settings;
     final booru = context.read<CurrentBooruBloc>().state.booru!;
 
     return MaterialPageRoute(
@@ -127,29 +126,25 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
         post: widget.posts[index],
       ),
-      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) =>
-          BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          final widgets = _buildWidgets(context, expanded, page, currentPage);
+      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
+        final widgets = _buildWidgets(context, expanded, page, currentPage);
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: CustomScrollView(
-              physics:
-                  enableSwipe ? null : const NeverScrollableScrollPhysics(),
-              controller: PageContentScrollController.of(context),
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => widgets[index],
-                    childCount: widgets.length,
-                  ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: CustomScrollView(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
+            controller: PageContentScrollController.of(context),
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => widgets[index],
+                  childCount: widgets.length,
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (currentPage) => [
         MoebooruMoreActionButton(

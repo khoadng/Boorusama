@@ -4,24 +4,26 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/utils.dart';
 
 Future<void> _download(
   BuildContext context,
   Post downloadable, {
   PermissionStatus? permission,
+  required Settings settings,
 }) async {
   final service = Downloader.of(context);
-  final settings = context.read<SettingsCubit>().state.settings;
   final fileNameGenerator = context.read<FileNameGenerator>();
 
   Future<void> download() async => service
@@ -54,7 +56,7 @@ typedef DownloadDelegate = void Function(
   Post downloadable,
 );
 
-class DownloadProviderWidget extends StatelessWidget {
+class DownloadProviderWidget extends ConsumerWidget {
   const DownloadProviderWidget({
     super.key,
     required this.builder,
@@ -66,7 +68,7 @@ class DownloadProviderWidget extends StatelessWidget {
   ) builder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return isAndroid() || isIOS()
         ? BlocConsumer<DeviceStoragePermissionBloc,
             DeviceStoragePermissionState>(
@@ -97,6 +99,7 @@ class DownloadProviderWidget extends StatelessWidget {
                 context,
                 downloadable,
                 permission: state.storagePermission,
+                settings: ref.read(settingsProvider),
               ),
             ),
           )
@@ -105,6 +108,7 @@ class DownloadProviderWidget extends StatelessWidget {
             (downloadable) => _download(
               context,
               downloadable,
+              settings: ref.read(settingsProvider),
             ),
           );
   }

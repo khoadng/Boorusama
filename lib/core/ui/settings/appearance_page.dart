@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -107,10 +106,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               selectedOption: settings.themeMode,
               items: [...ThemeMode.values]..remove(ThemeMode.system),
               onChanged: (value) =>
-                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                        settings.copyWith(themeMode: value),
-                        ref,
-                      ),
+                  ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
             const Divider(thickness: 1),
@@ -120,10 +116,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               selectedOption: settings.gridSize,
               items: GridSize.values,
               onChanged: (value) =>
-                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                        settings.copyWith(gridSize: value),
-                        ref,
-                      ),
+                  ref.updateSettings(settings.copyWith(gridSize: value)),
               optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
             ),
             SettingsTile<ImageListType>(
@@ -131,10 +124,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               selectedOption: settings.imageListType,
               items: ImageListType.values,
               onChanged: (value) =>
-                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                        settings.copyWith(imageListType: value),
-                        ref,
-                      ),
+                  ref.updateSettings(settings.copyWith(imageListType: value)),
               optionBuilder: (value) => Text(_imageListToString(value)).tr(),
             ),
             SettingsTile<ImageQuality>(
@@ -152,10 +142,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               selectedOption: settings.imageQuality,
               items: [...ImageQuality.values]..remove(ImageQuality.original),
               onChanged: (value) =>
-                  context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                        settings.copyWith(imageQuality: value),
-                        ref,
-                      ),
+                  ref.updateSettings(settings.copyWith(imageQuality: value)),
               optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
             ),
             const SizedBox(
@@ -207,10 +194,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           max: 10,
           value: value,
           onChangeEnd: (value) =>
-              context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                    settings.copyWith(imageBorderRadius: value),
-                    ref,
-                  ),
+              ref.updateSettings(settings.copyWith(imageBorderRadius: value)),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
         );
       },
@@ -227,10 +211,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           max: 10,
           value: value,
           onChangeEnd: (value) =>
-              context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                    settings.copyWith(imageGridSpacing: value),
-                    ref,
-                  ),
+              ref.updateSettings(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
         );
       },

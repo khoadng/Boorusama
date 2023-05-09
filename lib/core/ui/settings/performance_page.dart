@@ -11,6 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PerformancePage extends ConsumerStatefulWidget {
@@ -28,8 +30,7 @@ class PerformancePage extends ConsumerStatefulWidget {
 class _PerformancePageState extends ConsumerState<PerformancePage> {
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -61,10 +62,8 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
                   ),
                   onChanged: (newValue) {
                     if (newValue != null) {
-                      context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                            settings.copyWith(postsPerPage: newValue),
-                            ref,
-                          );
+                      ref.updateSettings(
+                          settings.copyWith(postsPerPage: newValue));
                     }
                   },
                   items: getPostsPerPagePossibleValue()

@@ -29,7 +29,6 @@ import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/settings/settings_notifier.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
@@ -208,11 +207,6 @@ void main() async {
     },
   );
 
-  final settingsCubit = SettingsCubit(
-    settingRepository: settingRepository,
-    settings: settings,
-  );
-
   final currentBooruRepo = CurrentBooruRepositorySettings(
     settingRepository,
     booruUserRepo,
@@ -320,9 +314,6 @@ void main() async {
                   userBooruRepository: booruUserRepo,
                 )..add(CurrentBooruFetched(settings)),
               ),
-              BlocProvider(
-                create: (_) => settingsCubit,
-              ),
               BlocProvider.value(
                 value: favoriteTagBloc..add(const FavoriteTagFetched()),
               ),
@@ -350,32 +341,18 @@ void main() async {
               ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<SettingsCubit, SettingsState>(
-                  listenWhen: (previous, current) =>
-                      previous.settings.themeMode != current.settings.themeMode,
-                  listener: (context, state) {
-                    context.read<ThemeBloc>().add(ThemeChanged(
-                          theme: state.settings.themeMode,
-                        ));
-                  },
-                ),
+            child: ProviderScope(
+              overrides: [
+                //FIXME: need to change theme based on settings
+                searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+                currentBooruConfigRepoProvider
+                    .overrideWithValue(currentBooruRepo),
+                booruFactoryProvider.overrideWithValue(booruFactory),
+                tagInfoProvider.overrideWithValue(tagInfo),
+                settingsRepoProvider.overrideWithValue(settingRepository),
+                settingsProvider.overrideWith(() => SettingsNotifier(settings)),
               ],
-              child: ProviderScope(
-                overrides: [
-                  searchHistoryRepoProvider
-                      .overrideWithValue(searchHistoryRepo),
-                  currentBooruConfigRepoProvider
-                      .overrideWithValue(currentBooruRepo),
-                  booruFactoryProvider.overrideWithValue(booruFactory),
-                  tagInfoProvider.overrideWithValue(tagInfo),
-                  settingsRepoProvider.overrideWithValue(settingRepository),
-                  settingsProvider
-                      .overrideWith(() => SettingsNotifier(settings)),
-                ],
-                child: App(settings: settings),
-              ),
+              child: App(settings: settings),
             ),
           ),
         ),

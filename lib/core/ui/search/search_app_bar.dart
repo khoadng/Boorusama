@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
 
-class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
+class SearchAppBar extends ConsumerWidget with PreferredSizeWidget {
   const SearchAppBar({
     super.key,
     required this.queryEditingController,
@@ -20,21 +20,19 @@ class SearchAppBar extends StatelessWidget with PreferredSizeWidget {
   final FocusNode? focusNode;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
     return AppBar(
       elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SearchBarWithData(
-            autofocus: state.settings.autoFocusSearchBar,
-            focusNode: focusNode,
-            queryEditingController: queryEditingController,
-          );
-        },
+      title: SearchBarWithData(
+        autofocus: settings.autoFocusSearchBar,
+        focusNode: focusNode,
+        queryEditingController: queryEditingController,
       ),
     );
   }

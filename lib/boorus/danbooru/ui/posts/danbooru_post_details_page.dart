@@ -23,7 +23,6 @@ import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -388,36 +387,32 @@ class _DanbooruPostDetailsPageState
               )
         : BlocBuilder<PostDetailBloc, PostDetailState>(
             builder: (context, state) {
-              return BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, sstate) {
-                  return InteractiveBooruImage(
-                    useHero: page == currentPage,
-                    heroTag: "${post.id}_hero",
-                    aspectRatio: post.aspectRatio,
-                    imageUrl: post.thumbnailFromSettings(sstate.settings),
-                    placeholderImageUrl: post.thumbnailImageUrl,
-                    onTap: onImageTap,
-                    onCached: widget.onCachedImagePathUpdate,
-                    previewCacheManager:
-                        context.read<PreviewImageCacheManager>(),
-                    imageOverlayBuilder: (constraints) => [
-                      if (expanded)
-                        ...state.notes
-                            .map((e) => e.adjustNoteCoordFor(
-                                  posts[page],
-                                  widthConstraint: constraints.maxWidth,
-                                  heightConstraint: constraints.maxHeight,
-                                ))
-                            .map((e) => PostNote(
-                                  coordinate: e.coordinate,
-                                  content: e.content,
-                                )),
-                    ],
-                    width: post.width,
-                    height: post.height,
-                    onZoomUpdated: onZoomUpdated,
-                  );
-                },
+              return InteractiveBooruImage(
+                useHero: page == currentPage,
+                heroTag: "${post.id}_hero",
+                aspectRatio: post.aspectRatio,
+                imageUrl:
+                    post.thumbnailFromSettings(ref.read(settingsProvider)),
+                placeholderImageUrl: post.thumbnailImageUrl,
+                onTap: onImageTap,
+                onCached: widget.onCachedImagePathUpdate,
+                previewCacheManager: context.read<PreviewImageCacheManager>(),
+                imageOverlayBuilder: (constraints) => [
+                  if (expanded)
+                    ...state.notes
+                        .map((e) => e.adjustNoteCoordFor(
+                              posts[page],
+                              widthConstraint: constraints.maxWidth,
+                              heightConstraint: constraints.maxHeight,
+                            ))
+                        .map((e) => PostNote(
+                              coordinate: e.coordinate,
+                              content: e.content,
+                            )),
+                ],
+                width: post.width,
+                height: post.height,
+                onZoomUpdated: onZoomUpdated,
               );
             },
           );

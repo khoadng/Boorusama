@@ -12,8 +12,9 @@ import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart
 import 'package:boorusama/core/application/boorus/add_or_update_booru_state.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/application/settings/settings_cubit.dart';
+import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
@@ -35,6 +36,7 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
     required String url,
     bool setCurrentBooruOnSubmit = false,
     bool unverifiedBooru = false,
+    required Settings settings,
   }) {
     final cubit = AddOrUpdateBooruCubit(
       booruFactory: booruFactory,
@@ -42,7 +44,6 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
       unverifiedBooru: unverifiedBooru,
     );
     final bloc = context.read<ManageBooruBloc>();
-    final settings = context.read<SettingsCubit>().state.settings;
     final currentBooruBloc = context.read<CurrentBooruBloc>();
     return BlocProvider(
       create: (context) => cubit
@@ -61,12 +62,11 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
                       settings: settings,
                     ));
                     //FIXME: create common method to update settings when booru is changed
-                    context.read<SettingsCubit>().updateAndSyncWithRiverpod(
-                          settings.copyWith(
-                            currentBooruConfigId: booruConfig.id,
-                          ),
-                          ref,
-                        );
+                    ref.updateSettings(
+                      settings.copyWith(
+                        currentBooruConfigId: booruConfig.id,
+                      ),
+                    );
                   }
                 },
               ),

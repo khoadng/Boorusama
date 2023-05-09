@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:collection/collection.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -15,12 +16,12 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
@@ -32,7 +33,7 @@ import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 
-class GelbooruPostDetailPage extends StatefulWidget {
+class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailPage({
     super.key,
     required this.posts,
@@ -52,11 +53,11 @@ class GelbooruPostDetailPage extends StatefulWidget {
 
   static MaterialPageRoute routeOf(
     BuildContext context, {
+    required Settings settings,
     required List<Post> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
   }) {
-    final settings = context.read<SettingsCubit>().state.settings;
     final booru = context.read<CurrentBooruBloc>().state.booru!;
 
     return MaterialPageRoute(
@@ -96,10 +97,10 @@ class GelbooruPostDetailPage extends StatefulWidget {
   }
 
   @override
-  State<GelbooruPostDetailPage> createState() => _PostDetailPageState();
+  ConsumerState<GelbooruPostDetailPage> createState() => _PostDetailPageState();
 }
 
-class _PostDetailPageState extends State<GelbooruPostDetailPage>
+class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
     with PostDetailsPageMixin<GelbooruPostDetailPage, Post> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
@@ -138,49 +139,45 @@ class _PostDetailPageState extends State<GelbooruPostDetailPage>
       targetSwipeDownBuilder: (context, index) => PostMediaItem(
         post: widget.posts[index],
       ),
-      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) =>
-          BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          final widgets = _buildWidgets(context, expanded, page, currentPage);
+      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
+        final widgets = _buildWidgets(context, expanded, page, currentPage);
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: CustomScrollView(
-              physics:
-                  enableSwipe ? null : const NeverScrollableScrollPhysics(),
-              controller: PageContentScrollController.of(context),
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => widgets[index],
-                    childCount: widgets.length,
-                  ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: CustomScrollView(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
+            controller: PageContentScrollController.of(context),
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => widgets[index],
+                  childCount: widgets.length,
                 ),
-                BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
-                  builder: (context, state) {
-                    final artists = state.recommends
-                        .where(
-                            (element) => element.type == RecommendType.artist)
-                        .toList();
-                    return RecommendArtistList(
-                      onHeaderTap: (index) =>
-                          goToGelbooruArtistPage(context, artists[index].tag),
-                      onTap: (recommendIndex, postIndex) =>
-                          goToGelbooruPostDetailsPage(
-                        context: context,
-                        posts: artists[recommendIndex].posts,
-                        initialIndex: postIndex,
-                      ),
-                      recommends: artists,
-                      imageUrl: (item) => item.thumbnailImageUrl,
-                    );
-                  },
-                )
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
+                builder: (context, state) {
+                  final artists = state.recommends
+                      .where((element) => element.type == RecommendType.artist)
+                      .toList();
+                  return RecommendArtistList(
+                    onHeaderTap: (index) =>
+                        goToGelbooruArtistPage(context, artists[index].tag),
+                    onTap: (recommendIndex, postIndex) =>
+                        goToGelbooruPostDetailsPage(
+                      context: context,
+                      posts: artists[recommendIndex].posts,
+                      initialIndex: postIndex,
+                      settings: ref.read(settingsProvider),
+                    ),
+                    recommends: artists,
+                    imageUrl: (item) => item.thumbnailImageUrl,
+                  );
+                },
+              )
+            ],
+          ),
+        );
+      },
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (page) => [
         GelbooruMoreActionButton(post: widget.posts[page]),

@@ -14,6 +14,7 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -31,24 +32,9 @@ class DownloadPage extends ConsumerStatefulWidget {
 
 class _DownloadPageState extends ConsumerState<DownloadPage>
     with DownloadMixin {
-  final changed = ValueNotifier(false);
-  String? path;
-
-  @override
-  void initState() {
-    super.initState();
-    final settings = context.read<SettingsCubit>().state;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        path = settings.settings.downloadPath;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -137,20 +123,13 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
   }
 
   Future<void> _pickFolder(Settings settings) async {
-    final bloc = context.read<SettingsCubit>();
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
-      bloc.updateAndSyncWithRiverpod(
-        settings.copyWith(downloadPath: selectedDirectory),
-        ref,
-      );
-      setState(() {
-        path = selectedDirectory;
-      });
+      ref.updateSettings(settings.copyWith(downloadPath: selectedDirectory));
     }
   }
 
   @override
-  String? get storagePath => path;
+  String? get storagePath => ref.read(settingsProvider).downloadPath;
 }

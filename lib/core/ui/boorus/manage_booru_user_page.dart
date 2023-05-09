@@ -3,23 +3,25 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 
-class ManageBooruPage extends StatelessWidget {
+class ManageBooruPage extends ConsumerWidget {
   const ManageBooruPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final configs =
         context.select((ManageBooruBloc bloc) => bloc.state.configs);
 
@@ -67,6 +69,7 @@ class ManageBooruPage extends StatelessWidget {
                       unverifiedBooru:
                           intToBooruType(config.booruId) == BooruType.unknown,
                       booru: intToBooruType(config.booruId),
+                      settings: ref.read(settingsProvider),
                     ),
                   ),
                 );

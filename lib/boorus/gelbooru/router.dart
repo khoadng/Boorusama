@@ -12,10 +12,12 @@ import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/search/gelbooru_search_page.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 void goToGelbooruPostDetailsPage({
   required BuildContext context,
+  required Settings settings,
   required List<Post> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
@@ -25,6 +27,7 @@ void goToGelbooruPostDetailsPage({
     posts: posts,
     initialIndex: initialIndex,
     scrollController: scrollController,
+    settings: settings,
   ));
 }
 
