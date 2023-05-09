@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 class ExploreHotPage extends StatelessWidget {
@@ -23,16 +22,11 @@ class ExploreHotPage extends StatelessWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreHot,
         ),
-        builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dcontext) {
-                return const CustomContextMenuOverlay(
-                  child: ExploreHotPage(),
-                );
-              },
+        builder: (_) => DanbooruProvider.of(
+          context,
+          builder: (dcontext) {
+            return const CustomContextMenuOverlay(
+              child: ExploreHotPage(),
             );
           },
         ),

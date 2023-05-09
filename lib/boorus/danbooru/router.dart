@@ -162,22 +162,17 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 void goToSavedSearchEditPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) {
-      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (dcontext) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: dcontext.read<SavedSearchBloc>()
-                    ..add(const SavedSearchFetched()),
-                ),
-              ],
-              child: const SavedSearchPage(),
+      return DanbooruProvider.of(
+        context,
+        builder: (dcontext) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: dcontext.read<SavedSearchBloc>()
+                ..add(const SavedSearchFetched()),
             ),
-          );
-        },
+          ],
+          child: const SavedSearchPage(),
+        ),
       );
     },
   ));
@@ -185,24 +180,21 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToPoolPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) => DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (_) => PoolBloc(
-                poolRepository: context.read<PoolRepository>(),
-                postRepository: context.read<DanbooruPostRepository>(),
-              )..add(const PoolRefreshed(
-                  category: PoolCategory.series,
-                  order: PoolOrder.latest,
-                )),
-            ),
-          ],
-          child: const PoolPage(),
-        ),
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => PoolBloc(
+              poolRepository: context.read<PoolRepository>(),
+              postRepository: context.read<DanbooruPostRepository>(),
+            )..add(const PoolRefreshed(
+                category: PoolCategory.series,
+                order: PoolOrder.latest,
+              )),
+          ),
+        ],
+        child: const PoolPage(),
       ),
     ),
   ));
@@ -234,22 +226,17 @@ Widget provideBlacklistedTagPageDependencies(
   BuildContext context, {
   required Widget page,
 }) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (dcontext) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(
-              value: dcontext.read<BlacklistedTagsBloc>()
-                ..add(const BlacklistedTagRequested()),
-            ),
-          ],
-          child: page,
+  return DanbooruProvider.of(
+    context,
+    builder: (dcontext) => MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: dcontext.read<BlacklistedTagsBloc>()
+            ..add(const BlacklistedTagRequested()),
         ),
-      );
-    },
+      ],
+      child: page,
+    ),
   );
 }
 
@@ -259,17 +246,12 @@ void goToBlacklistedTagsSearchPage(
   List<String>? initialTags,
 }) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => BlacklistedTagsSearchPage(
-            initialTags: initialTags,
-            onSelectedDone: onSelectDone,
-          ),
-        );
-      },
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => BlacklistedTagsSearchPage(
+        initialTags: initialTags,
+        onSelectedDone: onSelectDone,
+      ),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.blacklistedSearch,
@@ -284,17 +266,12 @@ void goToCommentPage(BuildContext context, int postId) {
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (_, useAppBar) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => CommentPage(
-            useAppBar: useAppBar,
-            postId: postId,
-          ),
-        );
-      },
+    builder: (_, useAppBar) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => CommentPage(
+        useAppBar: useAppBar,
+        postId: postId,
+      ),
     ),
   );
 }
@@ -305,17 +282,12 @@ void goToCommentCreatePage(
   String? initialContent,
 }) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (context) => CommentCreatePage(
-            postId: postId,
-            initialContent: initialContent,
-          ),
-        );
-      },
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (context) => CommentCreatePage(
+        postId: postId,
+        initialContent: initialContent,
+      ),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.commentCreate,
@@ -332,18 +304,13 @@ void goToCommentUpdatePage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (context) => CommentUpdatePage(
-              postId: postId,
-              commentId: commentId,
-              initialContent: commentBody,
-            ),
-          );
-        },
+      builder: (_) => DanbooruProvider.of(
+        context,
+        builder: (context) => CommentUpdatePage(
+          postId: postId,
+          commentId: commentId,
+          initialContent: commentBody,
+        ),
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
@@ -358,20 +325,15 @@ void goToUserDetailsPage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          return DanbooruProvider.of(
-            context,
-            booru: state.booru!,
-            builder: (dcontext) => BlocProvider(
-              create: (_) => UserBloc(
-                userRepository: dcontext.read<UserRepository>(),
-                postRepository: dcontext.read<DanbooruPostRepository>(),
-              )..add(UserFetched(uid: uid)),
-              child: const UserDetailsPage(),
-            ),
-          );
-        },
+      builder: (_) => DanbooruProvider.of(
+        context,
+        builder: (dcontext) => BlocProvider(
+          create: (_) => UserBloc(
+            userRepository: dcontext.read<UserRepository>(),
+            postRepository: dcontext.read<DanbooruPostRepository>(),
+          )..add(UserFetched(uid: uid)),
+          child: const UserDetailsPage(),
+        ),
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
@@ -382,29 +344,24 @@ void goToUserDetailsPage(
 
 void goToPoolSearchPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => PoolBloc(
-                  poolRepository: dcontext.read<PoolRepository>(),
-                  postRepository: dcontext.read<DanbooruPostRepository>(),
-                ),
-              ),
-              BlocProvider(
-                create: (context) => PoolSearchBloc(
-                  poolRepository: dcontext.read<PoolRepository>(),
-                ),
-              ),
-            ],
-            child: const PoolSearchPage(),
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => PoolBloc(
+              poolRepository: dcontext.read<PoolRepository>(),
+              postRepository: dcontext.read<DanbooruPostRepository>(),
+            ),
           ),
-        );
-      },
+          BlocProvider(
+            create: (context) => PoolSearchBloc(
+              poolRepository: dcontext.read<PoolRepository>(),
+            ),
+          ),
+        ],
+        child: const PoolSearchPage(),
+      ),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -458,25 +415,20 @@ void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
       name: RouterPageConstant.postFavoriters,
     ),
     height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => BlocProvider(
-            create: (_) => PostFavoriteBloc(
-              favoritePostRepository: dcontext.read<FavoritePostRepository>(),
-              userRepository: dcontext.read<UserRepository>(),
-            )..add(PostFavoriteFetched(
-                postId: post.id,
-                refresh: true,
-              )),
-            child: FavoriterDetailsView(
-              post: post,
-            ),
-          ),
-        );
-      },
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => BlocProvider(
+        create: (_) => PostFavoriteBloc(
+          favoritePostRepository: dcontext.read<FavoritePostRepository>(),
+          userRepository: dcontext.read<UserRepository>(),
+        )..add(PostFavoriteFetched(
+            postId: post.id,
+            refresh: true,
+          )),
+        child: FavoriterDetailsView(
+          post: post,
+        ),
+      ),
     ),
   );
 }
@@ -488,25 +440,20 @@ void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
       name: RouterPageConstant.postVoters,
     ),
     height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => BlocProvider(
-            create: (_) => PostVoteInfoBloc(
-              postVoteRepository: dcontext.read<PostVoteRepository>(),
-              userRepository: dcontext.read<UserRepository>(),
-            )..add(PostVoteInfoFetched(
-                postId: post.id,
-                refresh: true,
-              )),
-            child: VoterDetailsView(
-              post: post,
-            ),
-          ),
-        );
-      },
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => BlocProvider(
+        create: (_) => PostVoteInfoBloc(
+          postVoteRepository: dcontext.read<PostVoteRepository>(),
+          userRepository: dcontext.read<UserRepository>(),
+        )..add(PostVoteInfoFetched(
+            postId: post.id,
+            refresh: true,
+          )),
+        child: VoterDetailsView(
+          post: post,
+        ),
+      ),
     ),
   );
 }
@@ -621,28 +568,22 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (___, _, __) =>
-        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (context) => EditFavoriteGroupDialog(
-            padding: isMobilePlatform() ? 0 : 8,
-            title: 'favorite_groups.create_group'.tr(),
-            enableManualDataInput: enableManualPostInput,
-            onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
-              name: name,
-              initialIds: ids,
-              isPrivate: isPrivate,
-              onFailure: (message, translatable) => showSimpleSnackBar(
-                context: context,
-                content: translatable ? Text(message).tr() : Text(message),
-              ),
-            )),
+    pageBuilder: (___, _, __) => DanbooruProvider.of(
+      context,
+      builder: (context) => EditFavoriteGroupDialog(
+        padding: isMobilePlatform() ? 0 : 8,
+        title: 'favorite_groups.create_group'.tr(),
+        enableManualDataInput: enableManualPostInput,
+        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+          name: name,
+          initialIds: ids,
+          isPrivate: isPrivate,
+          onFailure: (message, translatable) => showSimpleSnackBar(
+            context: context,
+            content: translatable ? Text(message).tr() : Text(message),
           ),
-        );
-      },
+        )),
+      ),
     ),
   );
 }
@@ -654,61 +595,50 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (dialogContext, _, __) =>
-        BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => EditFavoriteGroupDialog(
-            initialData: group,
-            padding: isMobilePlatform() ? 0 : 8,
-            title: 'favorite_groups.edit_group'.tr(),
-            onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
-              group: group,
-              name: name,
-              initialIds: ids,
-              isPrivate: isPrivate,
-              onFailure: (message) {
-                showSimpleSnackBar(
-                  context: context,
-                  content: Text(message.toString()),
-                );
-              },
-            )),
-          ),
-        );
-      },
+    pageBuilder: (dialogContext, _, __) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => EditFavoriteGroupDialog(
+        initialData: group,
+        padding: isMobilePlatform() ? 0 : 8,
+        title: 'favorite_groups.edit_group'.tr(),
+        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
+          group: group,
+          name: name,
+          initialIds: ids,
+          isPrivate: isPrivate,
+          onFailure: (message) {
+            showSimpleSnackBar(
+              context: context,
+              content: Text(message.toString()),
+            );
+          },
+        )),
+      ),
     ),
   );
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, dstate) {
-        return DanbooruProvider.of(
-          context,
-          booru: dstate.booru!,
-          builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-            builder: (_, state) {
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (_) => FavoriteGroupsBloc.of(
-                      dcontext,
-                      currentUser: state.user,
-                    )..add(
-                        const FavoriteGroupsRefreshed(includePreviews: true),
-                      ),
+    return DanbooruProvider.of(
+      context,
+      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+        builder: (_, state) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => FavoriteGroupsBloc.of(
+                  dcontext,
+                  currentUser: state.user,
+                )..add(
+                    const FavoriteGroupsRefreshed(includePreviews: true),
                   ),
-                ],
-                child: const FavoriteGroupsPage(),
-              );
-            },
-          ),
-        );
-      },
+              ),
+            ],
+            child: const FavoriteGroupsPage(),
+          );
+        },
+      ),
     );
   }));
 }
@@ -719,24 +649,19 @@ void goToFavoriteGroupDetailsPage(
   FavoriteGroupsBloc bloc,
 ) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: bloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: FavoriteGroupDetailsPage(
-                group: group,
-                postIds: QueueList.from(group.postIds),
-              ),
-            ),
+    return DanbooruProvider.of(
+      context,
+      builder: (dcontext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: bloc),
+        ],
+        child: CustomContextMenuOverlay(
+          child: FavoriteGroupDetailsPage(
+            group: group,
+            postIds: QueueList.from(group.postIds),
           ),
-        );
-      },
+        ),
+      ),
     );
   }));
 }
@@ -749,26 +674,21 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-            builder: (_, state) {
-              return BlocProvider(
-                create: (_) => FavoriteGroupsBloc.of(
-                  dcontext,
-                  currentUser: state.user,
-                )..add(const FavoriteGroupsRefreshed()),
-                child: AddToFavoriteGroupPage(
-                  posts: posts,
-                ),
-              );
-            },
-          ),
-        );
-      },
+    builder: (_) => DanbooruProvider.of(
+      context,
+      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+        builder: (_, state) {
+          return BlocProvider(
+            create: (_) => FavoriteGroupsBloc.of(
+              dcontext,
+              currentUser: state.user,
+            )..add(const FavoriteGroupsRefreshed()),
+            child: AddToFavoriteGroupPage(
+              posts: posts,
+            ),
+          );
+        },
+      ),
     ),
   );
 }

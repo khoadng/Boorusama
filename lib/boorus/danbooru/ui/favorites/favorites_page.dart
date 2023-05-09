@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 class FavoritesPage extends StatelessWidget {
@@ -22,16 +21,11 @@ class FavoritesPage extends StatelessWidget {
     BuildContext context, {
     required String username,
   }) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dContext) {
-            return CustomContextMenuOverlay(
-              child: FavoritesPage(username: username),
-            );
-          },
+    return DanbooruProvider.of(
+      context,
+      builder: (dContext) {
+        return CustomContextMenuOverlay(
+          child: FavoritesPage(username: username),
         );
       },
     );

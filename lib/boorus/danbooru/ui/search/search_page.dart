@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -42,42 +41,36 @@ class SearchPage extends ConsumerStatefulWidget {
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
         type: PageTransitionType.fade,
-        child: BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (context) {
-                final relatedTagBloc = RelatedTagBloc(
-                  relatedTagRepository: context.read<RelatedTagRepository>(),
-                );
+        child: DanbooruProvider.of(
+          context,
+          builder: (context) {
+            final relatedTagBloc = RelatedTagBloc(
+              relatedTagRepository: context.read<RelatedTagRepository>(),
+            );
 
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(
-                      value: context.read<FavoriteTagBloc>()
-                        ..add(const FavoriteTagFetched()),
-                    ),
-                    BlocProvider.value(
-                      value: BlocProvider.of<ThemeBloc>(context),
-                    ),
-                    BlocProvider.value(value: relatedTagBloc),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: context.read<FavoriteTagBloc>()
+                    ..add(const FavoriteTagFetched()),
+                ),
+                BlocProvider.value(
+                  value: BlocProvider.of<ThemeBloc>(context),
+                ),
+                BlocProvider.value(value: relatedTagBloc),
+              ],
+              child: CustomContextMenuOverlay(
+                child: ProviderScope(
+                  overrides: [
+                    selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
                   ],
-                  child: CustomContextMenuOverlay(
-                    child: ProviderScope(
-                      overrides: [
-                        selectedTagsProvider
-                            .overrideWith(SelectedTagsNotifier.new),
-                      ],
-                      child: SearchPage(
-                        metatagHighlightColor:
-                            Theme.of(context).colorScheme.primary,
-                        initialQuery: tag,
-                      ),
-                    ),
+                  child: SearchPage(
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                    initialQuery: tag,
                   ),
-                );
-              },
+                ),
+              ),
             );
           },
         ));

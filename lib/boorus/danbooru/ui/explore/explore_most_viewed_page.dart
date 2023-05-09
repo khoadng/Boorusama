@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
@@ -28,21 +27,16 @@ class ExploreMostViewedPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreMostViewed,
         ),
-        builder: (_) => BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            return DanbooruProvider.of(
-              context,
-              booru: state.booru!,
-              builder: (dcontext) {
-                return CustomContextMenuOverlay(
-                  child: ProviderScope(
-                    overrides: [
-                      dateProvider.overrideWith((ref) => DateTime.now()),
-                    ],
-                    child: const ExploreMostViewedPage(),
-                  ),
-                );
-              },
+        builder: (_) => DanbooruProvider.of(
+          context,
+          builder: (dcontext) {
+            return CustomContextMenuOverlay(
+              child: ProviderScope(
+                overrides: [
+                  dateProvider.overrideWith((ref) => DateTime.now()),
+                ],
+                child: const ExploreMostViewedPage(),
+              ),
             );
           },
         ),

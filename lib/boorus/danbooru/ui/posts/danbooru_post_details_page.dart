@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -46,28 +45,23 @@ Widget providePostDetailPageDependencies(
   // PostBloc? postBloc,
   Widget Function(PostShareCubit shareCubit) childBuilder,
 ) {
-  return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-    builder: (_, state) {
-      return DanbooruProvider.of(
-        context,
-        booru: state.booru!,
-        builder: (context) {
-          final shareCubit = PostShareCubit.of(context)
-            ..updateInformation(posts[initialIndex]);
+  return DanbooruProvider.of(
+    context,
+    builder: (context) {
+      final shareCubit = PostShareCubit.of(context)
+        ..updateInformation(posts[initialIndex]);
 
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: context.read<ThemeBloc>()),
-              BlocProvider(
-                create: (context) => shareCubit,
-              ),
-            ],
-            child: RepositoryProvider.value(
-              value: context.read<TagRepository>(),
-              child: childBuilder(shareCubit),
-            ),
-          );
-        },
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<ThemeBloc>()),
+          BlocProvider(
+            create: (context) => shareCubit,
+          ),
+        ],
+        child: RepositoryProvider.value(
+          value: context.read<TagRepository>(),
+          child: childBuilder(shareCubit),
+        ),
       );
     },
   );

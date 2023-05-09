@@ -33,7 +33,6 @@ class ExplorePopularPage extends ConsumerWidget {
           builder: (_, state) {
             return DanbooruProvider.of(
               context,
-              booru: state.booru!,
               builder: (dcontext) {
                 return CustomContextMenuOverlay(
                   child: ProviderScope(

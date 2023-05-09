@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/utils.dart';
@@ -38,30 +37,26 @@ class PoolDetailPage extends ConsumerWidget {
     BuildContext context, {
     required Pool pool,
   }) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: PoolDescriptionBloc(
-                  endpoint: state.booru!.url,
-                  poolDescriptionRepository:
-                      dcontext.read<PoolDescriptionRepository>(),
-                )..add(PoolDescriptionFetched(poolId: pool.id)),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: PoolDetailPage(
-                pool: pool,
-                postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-              ),
-            ),
+    return DanbooruProvider.of(
+      context,
+      builder: (dcontext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: PoolDescriptionBloc(
+              // endpoint: state.booru!.url,
+              endpoint: '', //FIXME: endpoint
+              poolDescriptionRepository:
+                  dcontext.read<PoolDescriptionRepository>(),
+            )..add(PoolDescriptionFetched(poolId: pool.id)),
           ),
-        );
-      },
+        ],
+        child: CustomContextMenuOverlay(
+          child: PoolDetailPage(
+            pool: pool,
+            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+          ),
+        ),
+      ),
     );
   }
 

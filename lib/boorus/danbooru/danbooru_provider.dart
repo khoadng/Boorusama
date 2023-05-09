@@ -358,7 +358,6 @@ class DanbooruProvider extends StatelessWidget {
 
   factory DanbooruProvider.of(
     BuildContext context, {
-    required Booru booru,
     required Widget Function(BuildContext context) builder,
   }) {
     final settingRepository = context.read<SettingsRepository>();
