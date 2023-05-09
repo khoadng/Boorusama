@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -15,6 +16,9 @@ final currentBooruConfigRepoProvider =
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
+
+final booruUserIdentityProviderProvider =
+    Provider<BooruUserIdentityProvider>((ref) => throw UnimplementedError());
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 final metatagsProvider = Provider<List<Metatag>>(

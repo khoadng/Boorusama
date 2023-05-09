@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -68,13 +67,11 @@ Widget mapToCarousel(
           posts: posts,
           onTap: (index) {
             goToDetailPage(
-                context: context,
-                posts: posts,
-                initialIndex: index,
-                hero: false,
-                settings: ref.read(settingsProvider)
-                // postBloc: explore.bloc,
-                );
+              context: context,
+              posts: posts,
+              initialIndex: index,
+              hero: false,
+            );
           },
         )
       : SizedBox(

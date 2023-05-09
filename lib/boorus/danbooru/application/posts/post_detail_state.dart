@@ -10,13 +10,11 @@ import 'slide_show_configuration.dart';
 
 class PostDetailState extends Equatable {
   const PostDetailState({
-    required this.id,
     required this.tags,
     required this.currentIndex,
     required this.currentPost,
     required this.nextPost,
     required this.previousPost,
-    this.enableSlideShow = false,
     this.fullScreen = false,
     this.enableNotes = true,
     this.enableOverlay = true,
@@ -28,7 +26,6 @@ class PostDetailState extends Equatable {
   });
 
   factory PostDetailState.initial() => PostDetailState(
-        id: 0,
         tags: const [],
         currentIndex: 0,
         currentPost: DanbooruPost.empty(),
@@ -49,7 +46,6 @@ class PostDetailState extends Equatable {
   final DanbooruPost currentPost;
   final DanbooruPost? nextPost;
   final DanbooruPost? previousPost;
-  final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
   final bool enableOverlay;
@@ -59,11 +55,7 @@ class PostDetailState extends Equatable {
   final List<Note> notes;
   final List<DanbooruPost> children;
 
-  //TODO: quick hack to force rebuild...
-  final double id;
-
   PostDetailState copyWith({
-    double? id,
     List<PostDetailTag>? tags,
     int? currentIndex,
     DanbooruPost? currentPost,
@@ -80,13 +72,11 @@ class PostDetailState extends Equatable {
     List<DanbooruPost>? children,
   }) =>
       PostDetailState(
-        id: id ?? this.id,
         tags: tags ?? this.tags,
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
         nextPost: nextPost != null ? nextPost() : this.nextPost,
         previousPost: previousPost != null ? previousPost() : this.previousPost,
-        enableSlideShow: enableSlideShow ?? this.enableSlideShow,
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
         recommends: recommends ?? this.recommends,
@@ -100,12 +90,10 @@ class PostDetailState extends Equatable {
   @override
   List<Object?> get props => [
         tags,
-        id,
         currentIndex,
         currentPost,
         nextPost,
         previousPost,
-        enableSlideShow,
         fullScreen,
         enableNotes,
         enableOverlay,

@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_count_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
@@ -109,7 +108,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.postVoteCubit,
     required this.danbooruArtistCharacterPostRepository,
     required this.commentsCubit,
-    required this.postCountCubit,
   });
 
   factory DanbooruProvider.create(
@@ -313,11 +311,6 @@ class DanbooruProvider extends StatelessWidget {
     final commentsCubit = CommentsCubit(
       repository: commentRepo,
     );
-    final postCountCubit = PostCountCubit(
-      repository: postCountRepo,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      booruFactory: context.read<BooruFactory>(),
-    );
 
     return DanbooruProvider(
       builder: builder,
@@ -367,7 +360,6 @@ class DanbooruProvider extends StatelessWidget {
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
       commentsCubit: commentsCubit,
-      postCountCubit: postCountCubit,
     );
   }
 
@@ -425,7 +417,6 @@ class DanbooruProvider extends StatelessWidget {
     final artistCharacterPostRepository =
         context.read<DanbooruArtistCharacterPostRepository>();
     final commentsCubit = context.read<CommentsCubit>();
-    final postCountCubit = context.read<PostCountCubit>();
 
     return DanbooruProvider(
       builder: builder,
@@ -475,7 +466,6 @@ class DanbooruProvider extends StatelessWidget {
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
       commentsCubit: commentsCubit,
-      postCountCubit: postCountCubit,
     );
   }
 
@@ -528,7 +518,6 @@ class DanbooruProvider extends StatelessWidget {
   final FavoritePostCubit favoritePostCubit;
   final PostVoteCubit postVoteCubit;
   final CommentsCubit commentsCubit;
-  final PostCountCubit postCountCubit;
 
   final TagInfo tagInfo;
 
@@ -582,12 +571,15 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: currentUserBloc),
           BlocProvider.value(value: postVoteCubit),
           BlocProvider.value(value: commentsCubit),
-          BlocProvider.value(value: postCountCubit),
         ],
         child: ProviderScope(
           overrides: [
             postCountRepoProvider.overrideWithValue(postCountRepo),
             autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
+            noteRepoProvider.overrideWithValue(noteRepo),
+            poolRepoProvider.overrideWithValue(poolRepo),
+            postVoteRepoProvider.overrideWithValue(postVoteRepo),
+            danbooruPostRepoProvider.overrideWithValue(postRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -595,6 +587,18 @@ class DanbooruProvider extends StatelessWidget {
     );
   }
 }
+
+final noteRepoProvider =
+    Provider<NoteRepository>((ref) => throw UnimplementedError());
+
+final poolRepoProvider =
+    Provider<PoolRepository>((ref) => throw UnimplementedError());
+
+final postVoteRepoProvider =
+    Provider<PostVoteRepository>((ref) => throw UnimplementedError());
+
+final danbooruPostRepoProvider =
+    Provider<DanbooruPostRepository>((ref) => throw UnimplementedError());
 
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());

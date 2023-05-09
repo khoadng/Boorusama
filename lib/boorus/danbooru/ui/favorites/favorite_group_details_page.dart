@@ -22,7 +22,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
@@ -296,8 +295,6 @@ class _FavoriteGroupDetailsPageState
                                       ),
                                       onTap: !editing
                                           ? () => goToDetailPage(
-                                                settings:
-                                                    ref.read(settingsProvider),
                                                 context: context,
                                                 posts: items,
                                                 initialIndex: index,

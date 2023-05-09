@@ -1,4 +1,8 @@
-part of 'post_count_cubit.dart';
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 
 class PostCountState extends Equatable {
   const PostCountState(this.postCounts);

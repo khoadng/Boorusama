@@ -351,6 +351,8 @@ void main() async {
                 tagInfoProvider.overrideWithValue(tagInfo),
                 settingsRepoProvider.overrideWithValue(settingRepository),
                 settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+                booruUserIdentityProviderProvider
+                    .overrideWithValue(booruUserIdProvider),
               ],
               child: App(settings: settings),
             ),

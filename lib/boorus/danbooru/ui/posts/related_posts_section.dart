@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
@@ -106,7 +105,6 @@ class RelatedPostsSection extends ConsumerWidget {
                       context: context,
                       posts: posts,
                       initialIndex: index,
-                      settings: ref.read(settingsProvider),
                     )),
           ],
         )

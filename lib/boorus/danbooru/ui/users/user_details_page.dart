@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'user_level_colors.dart';
 
@@ -276,7 +275,6 @@ class _PreviewList extends ConsumerWidget {
                       context: context,
                       posts: posts.toList(),
                       initialIndex: index,
-                      settings: ref.read(settingsProvider),
                     ),
                     child: BooruImage(
                       borderRadius: BorderRadius.zero,

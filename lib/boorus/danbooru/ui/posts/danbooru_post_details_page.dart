@@ -15,19 +15,14 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/provider.dart';
@@ -47,10 +42,8 @@ import 'package:boorusama/functional.dart';
 
 Widget providePostDetailPageDependencies(
   BuildContext context,
-  Settings settings,
   List<DanbooruPost> posts,
   int initialIndex,
-  List<PostDetailTag> tags,
   // PostBloc? postBloc,
   Widget Function(PostShareCubit shareCubit) childBuilder,
 ) {
@@ -71,25 +64,6 @@ Widget providePostDetailPageDependencies(
               BlocProvider.value(value: context.read<ThemeBloc>()),
               BlocProvider(
                 create: (context) => shareCubit,
-              ),
-              BlocProvider(
-                create: (context) => PostDetailBloc(
-                  booruUserIdentityProvider:
-                      context.read<BooruUserIdentityProvider>(),
-                  noteRepository: context.read<NoteRepository>(),
-                  defaultDetailsStyle: settings.detailsDisplay,
-                  posts: posts,
-                  initialIndex: initialIndex,
-                  postRepository:
-                      context.read<DanbooruArtistCharacterPostRepository>(),
-                  poolRepository: context.read<PoolRepository>(),
-                  currentBooruConfigRepository:
-                      context.read<CurrentBooruConfigRepository>(),
-                  postVoteRepository: context.read<PostVoteRepository>(),
-                  tags: tags,
-                  fireIndexChangedAtStart: false,
-                  tagCache: {},
-                ),
               ),
             ],
             child: RepositoryProvider.value(
@@ -121,7 +95,6 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
 
   static MaterialPageRoute routeOf(
     BuildContext context, {
-    required Settings settings,
     required List<DanbooruPost> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
@@ -129,49 +102,25 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   }) {
     final page = providePostDetailPageDependencies(
       context,
-      settings,
       posts,
       initialIndex,
-      posts
-          .map((e) => e)
-          .map((p) => [
-                ...p.artistTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.artist.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.characterTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.charater.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.copyrightTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.copyright.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.generalTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.general.stringify(),
-                      postId: p.id,
-                    )),
-                ...p.metaTags.map((e) => PostDetailTag(
-                      name: e,
-                      category: TagCategory.meta.stringify(),
-                      postId: p.id,
-                    )),
-              ])
-          .expand((e) => e)
-          .toList(),
-      (shareCubit) => DanbooruPostDetailsPage(
-        intitialIndex: initialIndex,
-        posts: posts,
-        onExit: (page) => scrollController?.scrollToIndex(page),
-        onPageChanged: (page) {
-          shareCubit.updateInformation(posts[page]);
-        },
-        onCachedImagePathUpdate: (imagePath) =>
-            shareCubit.setImagePath(imagePath ?? ''),
+      (shareCubit) => ProviderScope(
+        overrides: [
+          postDetailsProvider.overrideWith(() => PostDetailsNotifier(
+                posts: posts,
+                initialIndex: initialIndex,
+              ))
+        ],
+        child: DanbooruPostDetailsPage(
+          intitialIndex: initialIndex,
+          posts: posts,
+          onExit: (page) => scrollController?.scrollToIndex(page),
+          onPageChanged: (page) {
+            shareCubit.updateInformation(posts[page]);
+          },
+          onCachedImagePathUpdate: (imagePath) =>
+              shareCubit.setImagePath(imagePath ?? ''),
+        ),
       ),
     );
 
@@ -240,6 +189,13 @@ class _DanbooruPostDetailsPageState
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
+        final state = ref.watch(postDetailsProvider);
+        final artists = state.recommends
+            .where((element) => element.type == RecommendType.artist)
+            .toList();
+        final characters = state.recommends
+            .where((element) => element.type == RecommendType.character)
+            .toList();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -253,72 +209,52 @@ class _DanbooruPostDetailsPageState
                   childCount: widgets.length,
                 ),
               ),
-              BlocBuilder<PostDetailBloc, PostDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.children != current.children,
-                builder: (context, state) => state.children.isNotEmpty
-                    ? RelatedPostsSection(posts: state.children)
-                    : const SliverToBoxAdapter(
-                        child: SizedBox.shrink(),
-                      ),
-              ),
-              BlocBuilder<PostDetailBloc, PostDetailState>(
-                builder: (context, state) {
-                  final artists = state.recommends
-                      .where((element) => element.type == RecommendType.artist)
-                      .toList();
-
-                  return RecommendArtistList(
-                    onTap: (recommendIndex, postIndex) => goToDetailPage(
-                      context: context,
-                      posts: artists[recommendIndex].posts,
-                      initialIndex: postIndex,
-                      settings: ref.read(settingsProvider),
+              state.children.isNotEmpty
+                  ? RelatedPostsSection(posts: state.children)
+                  : const SliverToBoxAdapter(
+                      child: SizedBox.shrink(),
                     ),
-                    onHeaderTap: (index) =>
-                        goToArtistPage(context, artists[index].tag),
-                    recommends: artists,
-                    imageUrl: (item) => item.url720x720,
-                  );
-                },
+              RecommendArtistList(
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
+                  context: context,
+                  posts: artists[recommendIndex].posts,
+                  initialIndex: postIndex,
+                ),
+                onHeaderTap: (index) =>
+                    goToArtistPage(context, artists[index].tag),
+                recommends: artists,
+                imageUrl: (item) => item.url720x720,
               ),
-              BlocBuilder<PostDetailBloc, PostDetailState>(
-                builder: (context, state) {
-                  final characters = state.recommends
-                      .where(
-                          (element) => element.type == RecommendType.character)
-                      .toList();
-                  return RecommendCharacterList(
-                    onHeaderTap: (index) =>
-                        goToCharacterPage(context, characters[index].tag),
-                    onTap: (recommendIndex, postIndex) => goToDetailPage(
-                      context: context,
-                      posts: characters[recommendIndex].posts,
-                      initialIndex: postIndex,
-                      hero: false,
-                      settings: ref.read(settingsProvider),
-                    ),
-                    recommends: characters,
-                    imageUrl: (item) => item.url720x720,
-                  );
-                },
+              RecommendCharacterList(
+                onHeaderTap: (index) =>
+                    goToCharacterPage(context, characters[index].tag),
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
+                  context: context,
+                  posts: characters[recommendIndex].posts,
+                  initialIndex: postIndex,
+                  hero: false,
+                ),
+                recommends: characters,
+                imageUrl: (item) => item.url720x720,
               ),
             ],
           ),
         );
       },
       pageCount: posts.length,
-      topRightButtonsBuilder: (_) => [
-        BlocBuilder<PostDetailBloc, PostDetailState>(
-          builder: (context, dstate) {
-            if (!dstate.currentPost.isTranslated) {
+      topRightButtonsBuilder: (page) {
+        final details = ref.watch(postDetailsProvider);
+
+        return [
+          Builder(builder: (_) {
+            if (!posts[page].isTranslated) {
               return const SizedBox.shrink();
             }
 
             return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, state) {
                 return CircularIconButton(
-                  icon: dstate.enableNotes
+                  icon: details.enableNotes
                       ? Padding(
                           padding: const EdgeInsets.all(3),
                           child: FaIcon(
@@ -339,23 +275,21 @@ class _DanbooruPostDetailsPageState
                                 : null,
                           ),
                         ),
-                  onPressed: () => context.read<PostDetailBloc>().add(
-                        PostDetailNoteOptionsChanged(
-                          enable: !dstate.enableNotes,
-                        ),
-                      ),
+                  onPressed: () => ref
+                      .read(postDetailsProvider.notifier)
+                      .toggleNoteVisibility(),
                 );
               },
             );
-          },
-        ),
-        const DanbooruMoreActionButton(),
-      ],
+          }),
+          DanbooruMoreActionButton(
+            post: posts[page],
+          ),
+        ];
+      },
       onExpanded: (currentPage) {
         final post = posts[currentPage];
-        context
-            .read<PostDetailBloc>()
-            .add(PostDetailIndexChanged(index: currentPage));
+        ref.read(postDetailsProvider.notifier).loadData(currentPage);
 
         context.read<ArtistCommentaryCubit>().getCommentary(post.id);
 
@@ -370,6 +304,11 @@ class _DanbooruPostDetailsPageState
     int page,
     int currentPage,
   ) {
+    final notes = ref.watch(postDetailsProvider.select((value) => value.notes));
+    final pools = ref.watch(postDetailsProvider.select((value) => value.pools));
+    final tags = ref.watch(postDetailsProvider.select((value) => value.tags));
+    final enableNotes =
+        ref.watch(postDetailsProvider.select((value) => value.enableNotes));
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
@@ -385,36 +324,31 @@ class _DanbooruPostDetailsPageState
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
               )
-        : BlocBuilder<PostDetailBloc, PostDetailState>(
-            builder: (context, state) {
-              return InteractiveBooruImage(
-                useHero: page == currentPage,
-                heroTag: "${post.id}_hero",
-                aspectRatio: post.aspectRatio,
-                imageUrl:
-                    post.thumbnailFromSettings(ref.read(settingsProvider)),
-                placeholderImageUrl: post.thumbnailImageUrl,
-                onTap: onImageTap,
-                onCached: widget.onCachedImagePathUpdate,
-                previewCacheManager: context.read<PreviewImageCacheManager>(),
-                imageOverlayBuilder: (constraints) => [
-                  if (expanded)
-                    ...state.notes
-                        .map((e) => e.adjustNoteCoordFor(
-                              posts[page],
-                              widthConstraint: constraints.maxWidth,
-                              heightConstraint: constraints.maxHeight,
-                            ))
-                        .map((e) => PostNote(
-                              coordinate: e.coordinate,
-                              content: e.content,
-                            )),
-                ],
-                width: post.width,
-                height: post.height,
-                onZoomUpdated: onZoomUpdated,
-              );
-            },
+        : InteractiveBooruImage(
+            useHero: page == currentPage,
+            heroTag: "${post.id}_hero",
+            aspectRatio: post.aspectRatio,
+            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+            placeholderImageUrl: post.thumbnailImageUrl,
+            onTap: onImageTap,
+            onCached: widget.onCachedImagePathUpdate,
+            previewCacheManager: context.read<PreviewImageCacheManager>(),
+            imageOverlayBuilder: (constraints) => [
+              if (expanded && enableNotes)
+                ...notes
+                    .map((e) => e.adjustNoteCoordFor(
+                          posts[page],
+                          widthConstraint: constraints.maxWidth,
+                          heightConstraint: constraints.maxHeight,
+                        ))
+                    .map((e) => PostNote(
+                          coordinate: e.coordinate,
+                          content: e.content,
+                        )),
+            ],
+            width: post.width,
+            height: post.height,
+            onZoomUpdated: onZoomUpdated,
           );
 
     return [
@@ -431,12 +365,7 @@ class _DanbooruPostDetailsPageState
       if (!expandedOnCurrentPage)
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
-        BlocBuilder<PostDetailBloc, PostDetailState>(
-          buildWhen: (previous, current) => previous.pools != current.pools,
-          builder: (context, state) {
-            return PoolTiles(pools: state.pools);
-          },
-        ),
+        PoolTiles(pools: pools),
         InformationSection(post: post),
         const Divider(height: 8, thickness: 1),
         RepaintBoundary(
@@ -449,7 +378,11 @@ class _DanbooruPostDetailsPageState
             child: SourceSection(post: post),
           ),
         const Divider(height: 8, thickness: 1),
-        TagsTile(post: post),
+        TagsTile(
+            tags: tags
+                .where((e) => e.postId == post.id)
+                .map((e) => e.name)
+                .toList()),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
@@ -497,24 +430,20 @@ class _DanbooruPostDetailsPageState
 class TagsTile extends StatelessWidget {
   const TagsTile({
     super.key,
-    required this.post,
+    required this.tags,
   });
 
-  final DanbooruPost post;
+  final List<String> tags;
 
   @override
   Widget build(BuildContext context) {
-    final tags = context.select((PostDetailBloc bloc) =>
-        bloc.state.tags.where((e) => e.postId == post.id).toList());
-
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) => value
-            ? context.read<TagBloc>().add(TagFetched(tags: post.tags))
-            : null,
+        onExpansionChanged: (value) =>
+            value ? context.read<TagBloc>().add(TagFetched(tags: tags)) : null,
         children: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),

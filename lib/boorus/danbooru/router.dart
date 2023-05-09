@@ -54,7 +54,6 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
@@ -103,7 +102,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
 
 Future<void> goToDetailPage({
   required BuildContext context,
-  required Settings settings,
   required List<DanbooruPost> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
@@ -112,7 +110,6 @@ Future<void> goToDetailPage({
 }) {
   return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
     context,
-    settings: settings,
     posts: posts,
     scrollController: scrollController,
     initialIndex: initialIndex,
