@@ -1,4 +1,11 @@
 // Package imports:
+import 'dart:io';
+
+import 'package:boorusama/core/application/networking.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/main.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -41,3 +48,24 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
 
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
+
+final dioProvider = Provider.family<Dio, String>((ref, baseUrl) {
+  final dir = ref.watch(httpCacheDirProvider);
+  final generator = ref.watch(userAgentGeneratorProvider);
+  final loggerService = ref.watch(loggerProvider);
+
+  return dio(dir, baseUrl, generator, loggerService);
+}, dependencies: [
+  userAgentGeneratorProvider,
+  loggerProvider,
+  httpCacheDirProvider,
+]);
+
+final userAgentGeneratorProvider =
+    Provider<UserAgentGenerator>((ref) => throw UnimplementedError());
+
+final loggerProvider =
+    Provider<LoggerService>((ref) => throw UnimplementedError());
+
+final httpCacheDirProvider =
+    Provider<Directory>((ref) => throw UnimplementedError());

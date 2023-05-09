@@ -213,10 +213,8 @@ void main() async {
     booruUserRepo,
   );
 
-  final dioProvider = DioProvider(tempPath, userAgentGenerator, logger);
-
   final booruUserIdProvider =
-      BooruUserIdentityProviderImpl(dioProvider, booruFactory);
+      BooruUserIdentityProviderImpl(appDioProvider, booruFactory);
 
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
@@ -237,7 +235,7 @@ void main() async {
   final downloadNotifications = await DownloadNotifications.create();
 
   final dioDownloadService = DioDownloadService(
-    dioProvider.getDio(null),
+    appDioProvider.getDio(null),
     downloadNotifications,
   );
 
@@ -283,9 +281,6 @@ void main() async {
             ),
             RepositoryProvider<SearchHistoryRepository>.value(
               value: searchHistoryRepo,
-            ),
-            RepositoryProvider<DioProvider>.value(
-              value: dioProvider,
             ),
             RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,
@@ -356,6 +351,10 @@ void main() async {
                     .overrideWithValue(booruUserIdProvider),
                 authenticationProvider
                     .overrideWith(() => AuthenticationNotifier()),
+                httpCacheDirProvider.overrideWithValue(tempPath),
+                userAgentGeneratorProvider
+                    .overrideWithValue(userAgentGenerator),
+                loggerProvider.overrideWithValue(logger),
               ],
               child: App(settings: settings),
             ),
@@ -366,18 +365,4 @@ void main() async {
   }
 
   run();
-}
-
-class DioProvider {
-  DioProvider(
-    this.dir,
-    this.generator,
-    this.loggerService,
-  );
-
-  final Directory dir;
-  final UserAgentGenerator generator;
-  final l.LoggerService loggerService;
-
-  Dio getDio(String? baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }

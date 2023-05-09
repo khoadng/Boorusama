@@ -591,6 +591,9 @@ final danbooruPostRepoProvider =
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());
 
+final danbooruApiProvider =
+    Provider<DanbooruApi>((ref) => throw UnimplementedError());
+
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
   final postCountRepo = ref.watch(postCountRepoProvider);
