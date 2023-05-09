@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -408,6 +409,7 @@ void goToAddBooruPage(
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
+  required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
@@ -433,6 +435,7 @@ void goToQuickSearchPage(
                 return DanbooruProvider.create(
                   context,
                   booruConfig: state.booruConfig!,
+                  ref: ref,
                   sourceComposer: state.booruConfig!.isUnverified(state.booru!)
                       ? UnknownImageSourceComposer()
                       : DanbooruImageSourceComposer(),
@@ -583,8 +586,9 @@ Future<T?> showDesktopDialogWindow<T>(
 
 Future<void> goToBulkDownloadPage(
   BuildContext context,
-  List<String>? tags,
-) async {
+  List<String>? tags, {
+  required WidgetRef ref,
+}) async {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) {
       return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
@@ -616,6 +620,7 @@ Future<void> goToBulkDownloadPage(
             case BooruType.aibooru:
               return DanbooruProvider.create(
                 context,
+                ref: ref,
                 booruConfig: state.booruConfig!,
                 sourceComposer: state.booruConfig!.isUnverified(state.booru!)
                     ? UnknownImageSourceComposer()

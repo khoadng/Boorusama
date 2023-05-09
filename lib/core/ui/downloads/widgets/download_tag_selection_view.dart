@@ -15,18 +15,20 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DownloadTagSelectionView extends StatefulWidget {
+class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({
     super.key,
   });
 
   @override
-  State<DownloadTagSelectionView> createState() =>
+  ConsumerState<DownloadTagSelectionView> createState() =>
       _DownloadTagSelectionViewState();
 }
 
-class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
+class _DownloadTagSelectionViewState
+    extends ConsumerState<DownloadTagSelectionView> {
   final textEditingController = TextEditingController();
 
   @override
@@ -88,6 +90,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                                 context.read<BulkDownloadManagerBloc>();
                             goToQuickSearchPage(
                               context,
+                              ref: ref,
                               onSubmitted: (context, text) {
                                 Navigator.of(context).pop();
                                 bloc.add(

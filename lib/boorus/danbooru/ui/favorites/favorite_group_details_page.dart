@@ -153,6 +153,7 @@ class _FavoriteGroupDetailsPageState
                 goToBulkDownloadPage(
                   context,
                   [widget.group.getQueryString()],
+                  ref: ref,
                 );
               },
               icon: const Icon(Icons.download),

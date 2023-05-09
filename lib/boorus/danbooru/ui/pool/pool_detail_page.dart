@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -23,7 +24,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PoolDetailPage extends StatelessWidget {
+class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
     super.key,
     required this.pool,
@@ -65,7 +66,7 @@ class PoolDetailPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DanbooruPostScope(
       fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
             'pool:${pool.id}',
@@ -87,6 +88,7 @@ class PoolDetailPage extends StatelessWidget {
                   goToBulkDownloadPage(
                     context,
                     ['pool:${pool.id}'],
+                    ref: ref,
                   );
                 },
                 icon: const Icon(Icons.download),

@@ -82,6 +82,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.testbooru:
               return DanbooruProvider.create(
                 context,
+                ref: ref,
                 booruConfig: config!,
                 sourceComposer: config.isUnverified(booru)
                     ? UnknownImageSourceComposer()

@@ -7,15 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BlacklistedTagPage extends StatefulWidget {
+class BlacklistedTagPage extends ConsumerStatefulWidget {
   const BlacklistedTagPage({super.key});
 
   @override
-  State<BlacklistedTagPage> createState() => _BlacklistedTagPageState();
+  ConsumerState<BlacklistedTagPage> createState() => _BlacklistedTagPageState();
 }
 
-class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
+class _BlacklistedTagPageState extends ConsumerState<BlacklistedTagPage> {
   @override
   void initState() {
     super.initState();
@@ -68,6 +69,7 @@ class _BlacklistedTagPageState extends State<BlacklistedTagPage> {
         onPressed: () {
           goToQuickSearchPage(
             context,
+            ref: ref,
             onSelected: (tag) =>
                 context.read<BlacklistedTagCubit>().addTag(tag.value),
           );

@@ -80,6 +80,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                   final bloc = context.read<FavoriteTagBloc>();
                   goToQuickSearchPage(
                     context,
+                    ref: ref,
                     onSubmitted: (context, text) {
                       Navigator.of(context).pop();
                       bloc.add(FavoriteTagAdded(tag: text));

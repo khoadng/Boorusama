@@ -24,6 +24,7 @@ class SelectedTagListWithData extends ConsumerWidget {
       onBulkDownload: (tags) => goToBulkDownloadPage(
         context,
         tags.map((e) => e.toString()).toList(),
+        ref: ref,
       ),
     );
   }

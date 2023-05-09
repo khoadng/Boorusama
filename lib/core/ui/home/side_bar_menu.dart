@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -16,7 +17,7 @@ import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 import 'package:boorusama/core/ui/widgets/square_chip.dart';
 
-class SideBarMenu extends StatelessWidget {
+class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
     super.key,
     this.width,
@@ -31,7 +32,7 @@ class SideBarMenu extends StatelessWidget {
   final List<Widget>? Function(BuildContext context)? initialContentBuilder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SideBar(
       width: width,
       content: SingleChildScrollView(
@@ -139,7 +140,11 @@ class SideBarMenu extends StatelessWidget {
                   title: const Text('Bulk download'),
                   onTap: () {
                     if (popOnSelect) Navigator.of(context).pop();
-                    goToBulkDownloadPage(context, null);
+                    goToBulkDownloadPage(
+                      context,
+                      null,
+                      ref: ref,
+                    );
                   },
                 ),
                 _SideMenuTile(

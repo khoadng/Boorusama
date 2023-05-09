@@ -110,6 +110,7 @@ class DanbooruProvider extends StatelessWidget {
 
   factory DanbooruProvider.create(
     BuildContext context, {
+    required WidgetRef ref,
     required BooruConfig booruConfig,
     required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
