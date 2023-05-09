@@ -22,7 +22,6 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/main.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
 import 'infra/tags/gelbooru_tag_repository_api.dart';
 
@@ -43,10 +42,12 @@ class GelbooruProvider extends StatelessWidget {
   factory GelbooruProvider.create(
     BuildContext context, {
     required BooruConfig booruConfig,
+    required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = context.read<DioProvider>().getDio(booruConfig.url);
+    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+
     final api = GelbooruApi(dio);
 
     final tagRepo = GelbooruTagRepositoryApi(api);

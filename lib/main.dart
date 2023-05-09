@@ -212,10 +212,10 @@ void main() async {
     booruUserRepo,
   );
 
-  final dioProvider = DioProvider(tempPath, userAgentGenerator, logger);
+  final appDioProvider = DioProvider(tempPath, userAgentGenerator, logger);
 
   final booruUserIdProvider =
-      BooruUserIdentityProviderImpl(dioProvider, booruFactory);
+      BooruUserIdentityProviderImpl(appDioProvider, booruFactory);
 
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
@@ -232,7 +232,7 @@ void main() async {
   final downloadNotifications = await DownloadNotifications.create();
 
   final dioDownloadService = DioDownloadService(
-    dioProvider.getDio(null),
+    appDioProvider.getDio(null),
     downloadNotifications,
   );
 
@@ -278,9 +278,6 @@ void main() async {
             ),
             RepositoryProvider<SearchHistoryRepository>.value(
               value: searchHistoryRepo,
-            ),
-            RepositoryProvider<DioProvider>.value(
-              value: dioProvider,
             ),
             RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,
@@ -347,6 +344,7 @@ void main() async {
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
                 currentBooruConfigProvider.overrideWith(
                     () => CurrentBooruConfigNotifier(initialConfig!)),
+                dioProvider.overrideWithValue(appDioProvider),
               ],
               child: App(settings: settings),
             ),

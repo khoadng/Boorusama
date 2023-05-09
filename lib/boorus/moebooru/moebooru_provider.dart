@@ -23,7 +23,6 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/main.dart';
 
 class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
@@ -42,10 +41,12 @@ class MoebooruProvider extends StatelessWidget {
   factory MoebooruProvider.create(
     BuildContext context, {
     required BooruConfig booruConfig,
+    required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = context.read<DioProvider>().getDio(booruConfig.url);
+    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+
     final api = MoebooruApi(dio);
 
     final settingsRepo = context.read<SettingsRepository>();

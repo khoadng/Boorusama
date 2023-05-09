@@ -54,7 +54,6 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/main.dart';
 import 'infra/dtos/post_dto.dart';
 
 class DanbooruProvider extends StatelessWidget {
@@ -115,7 +114,7 @@ class DanbooruProvider extends StatelessWidget {
     required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
-    final dio = context.read<DioProvider>().getDio(booruConfig.url);
+    final dio = ref.read(dioProvider).getDio(booruConfig.url);
     final tagInfo = context.read<TagInfo>();
     final api = DanbooruApi(dio);
 

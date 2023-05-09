@@ -76,6 +76,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
               return GelbooruProvider.create(
                 context,
+                ref: ref,
                 key: gkey,
                 booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(
@@ -92,6 +93,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
               return MoebooruProvider.create(
                 context,
+                ref: ref,
                 key: gkey,
                 booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(

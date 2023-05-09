@@ -467,6 +467,7 @@ void goToQuickSearchPage(
           case BooruType.gelbooru:
             return GelbooruProvider.create(
               context,
+              ref: ref,
               booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
@@ -504,6 +505,7 @@ void goToQuickSearchPage(
           case BooruType.sakugabooru:
             return MoebooruProvider.create(
               context,
+              ref: ref,
               booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
@@ -600,6 +602,7 @@ Future<void> goToBulkDownloadPage(
         case BooruType.sakugabooru:
           return MoebooruProvider.create(
             context,
+            ref: ref,
             booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [
@@ -639,6 +642,7 @@ Future<void> goToBulkDownloadPage(
         case BooruType.gelbooru:
           return GelbooruProvider.create(
             context,
+            ref: ref,
             booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [

@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -45,3 +46,5 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
 
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
+
+final dioProvider = Provider<DioProvider>((ref) => throw UnimplementedError());
