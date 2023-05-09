@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -349,6 +350,8 @@ void main() async {
                 authenticationProvider
                     .overrideWith(() => AuthenticationNotifier()),
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+                currentBooruConfigProvider
+                    .overrideWith(() => CurrentBooruConfigNotifier()),
               ],
               child: App(settings: settings),
             ),

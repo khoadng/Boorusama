@@ -11,8 +11,6 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/core/application/booru_config_notifier.dart';
 import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart';
 import 'package:boorusama/core/application/boorus/add_or_update_booru_state.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/login_field.dart';
@@ -43,7 +41,6 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
       initialConfig: initialConfig,
       unverifiedBooru: unverifiedBooru,
     );
-    final currentBooruBloc = context.read<CurrentBooruBloc>();
     return BlocProvider(
       create: (context) => cubit
         ..changeBooru(booru)
@@ -52,21 +49,8 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
         onSubmit: (newConfig, ref) {
           if (initialConfig == null) {
             ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+                  setAsCurrent: setCurrentBooruOnSubmit,
                   newConfig: newConfig,
-                  onSuccess: (booruConfig) {
-                    if (setCurrentBooruOnSubmit) {
-                      currentBooruBloc.add(CurrentBooruChanged(
-                        booruConfig: booruConfig,
-                        settings: settings,
-                      ));
-                      //FIXME: create common method to update settings when booru is changed
-                      ref.updateSettings(
-                        settings.copyWith(
-                          currentBooruConfigId: booruConfig.id,
-                        ),
-                      );
-                    }
-                  },
                 );
           } else {
             ref.read(booruConfigProvider.notifier).update(

@@ -9,7 +9,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/core/application/booru_config_notifier.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
@@ -76,12 +75,6 @@ class SwitchBooruModal extends ConsumerWidget {
                             booruConfig: config,
                             settings: settings,
                           ));
-                      //FIXME: create common method to update settings when booru is changed
-                      ref.updateSettings(
-                        settings.copyWith(
-                          currentBooruConfigId: config.id,
-                        ),
-                      );
                     },
                   );
                 },

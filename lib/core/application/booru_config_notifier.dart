@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -11,7 +12,6 @@ final booruConfigProvider =
   BooruConfigNotifier.new,
   dependencies: [
     booruConfigRepoProvider,
-    settingsProvider,
   ],
 );
 
@@ -98,6 +98,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     required AddNewBooruConfig newConfig,
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
+    bool setAsCurrent = false,
   }) async {
     try {
       if (newConfig.login.isEmpty && newConfig.apiKey.isEmpty) {
@@ -120,6 +121,10 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
         onSuccess?.call(config);
 
         add(config);
+
+        if (setAsCurrent) {
+          ref.read(currentBooruConfigProvider.notifier).update(config);
+        }
       } else {
         final booruConfigData = BooruConfigData(
           login: newConfig.login,
