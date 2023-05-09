@@ -1,3 +1,4 @@
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ final currentBooruConfigProvider =
   dependencies: [
     currentBooruConfigRepoProvider,
     settingsProvider,
+    authenticationProvider,
   ],
 );
 
@@ -34,6 +36,7 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
 
   @override
   BooruConfig build() {
+    ref.read(authenticationProvider.notifier).logIn();
     return initialConfig;
   }
 
@@ -54,5 +57,6 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
         .read(settingsProvider)
         .copyWith(currentBooruConfigId: booruConfig.id);
     ref.read(settingsProvider.notifier).updateSettings(settings);
+    ref.read(authenticationProvider.notifier).logIn();
   }
 }

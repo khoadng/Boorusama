@@ -1,9 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
+import 'package:boorusama/core/application/utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -12,21 +15,18 @@ import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 
-class RelatedTagActionSheet extends StatelessWidget {
+class RelatedTagActionSheet extends ConsumerWidget {
   const RelatedTagActionSheet({
     super.key,
     required this.relatedTag,
-    required this.onAddToSearch,
-    required this.onOpenWiki,
   });
 
   final RelatedTag relatedTag;
-  final void Function(String tag) onOpenWiki;
-  final void Function(RelatedTagItem tag) onAddToSearch;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final booru = ref.watch(currentBooruProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +63,7 @@ class RelatedTagActionSheet extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
-                    onAddToSearch(relatedTag.tags[index]);
+                    //FIXME: implement this
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
                   trailing: const FaIcon(
@@ -79,7 +79,10 @@ class RelatedTagActionSheet extends StatelessWidget {
                       const VisualDensity(horizontal: -4, vertical: -4),
                   onTap: () {
                     Navigator.of(context).pop();
-                    onOpenWiki(relatedTag.tags[index].tag);
+                    launchWikiPage(
+                      booru.url,
+                      relatedTag.tags[index].tag,
+                    );
                   },
                   title: const Text('tag.related.open_wiki').tr(),
                   trailing: const FaIcon(

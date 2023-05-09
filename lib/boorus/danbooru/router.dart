@@ -49,7 +49,6 @@ import 'package:boorusama/boorus/danbooru/ui/saved_search/widgets/edit_saved_sea
 import 'package:boorusama/boorus/danbooru/ui/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
-import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/platform.dart';
@@ -373,12 +372,6 @@ void goToRelatedTagsPage(
 }) {
   final page = RelatedTagActionSheet(
     relatedTag: relatedTag,
-    onOpenWiki: (tag) => launchWikiPage(
-      "", //FIXME: implement this
-      tag,
-    ),
-    // onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
-    onAddToSearch: (tag) {}, //FIXME: implement this
   );
   if (Screen.of(context).size == ScreenSize.small) {
     showBarModalBottomSheet(
