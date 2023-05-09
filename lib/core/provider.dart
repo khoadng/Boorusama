@@ -29,6 +29,10 @@ final metatagsProvider = Provider<List<Metatag>>(
 final searchHistoryRepoProvider =
     Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
+final booruConfigRepoProvider = Provider<BooruConfigRepository>(
+  (ref) => throw UnimplementedError(),
+);
+
 final autocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
 

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/booru_config_notifier.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
@@ -22,61 +22,53 @@ class ManageBooruPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final configs =
-        context.select((ManageBooruBloc bloc) => bloc.state.configs);
-
+    final configs = ref.watch(booruConfigProvider);
     final currentConfig =
         context.select((CurrentBooruBloc bloc) => bloc.state.booruConfig);
 
     final booruFactory = context.read<BooruFactory>();
 
-    return configs != null
-        ? Scaffold(
-            appBar: AppBar(),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => goToAddBooruPage(context),
-              child: const Icon(Icons.add),
-            ),
-            body: ListView.builder(
-              itemCount: configs.length,
-              itemBuilder: (context, index) {
-                final config = configs[index];
-                final booru = config.createBooruFrom(booruFactory);
-                final isCurrent = currentConfig?.id == config.id;
+    return Scaffold(
+      appBar: AppBar(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => goToAddBooruPage(context),
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
+        itemCount: configs.length,
+        itemBuilder: (context, index) {
+          final config = configs[index];
+          final booru = config.createBooruFrom(booruFactory);
+          final isCurrent = currentConfig?.id == config.id;
 
-                return BooruConfigInfoTile(
-                  booru: booru,
-                  config: config,
-                  isCurrent: isCurrent,
-                  trailing: !isCurrent
-                      ? IconButton(
-                          onPressed: () => context
-                              .read<ManageBooruBloc>()
-                              .add(ManageBooruRemoved(
-                                user: config,
-                                onFailure: print,
-                              )),
-                          icon: const Icon(Icons.close),
-                        )
-                      : null,
-                  onTap: () => showMaterialModalBottomSheet(
-                    context: context,
-                    builder: (_) => ConfigBooruPage.of(
-                      context,
-                      booruFactory: context.read<BooruFactory>(),
-                      initialConfig: config,
-                      url: config.url,
-                      unverifiedBooru:
-                          intToBooruType(config.booruId) == BooruType.unknown,
-                      booru: intToBooruType(config.booruId),
-                      settings: ref.read(settingsProvider),
-                    ),
-                  ),
-                );
-              },
+          return BooruConfigInfoTile(
+            booru: booru,
+            config: config,
+            isCurrent: isCurrent,
+            trailing: !isCurrent
+                ? IconButton(
+                    onPressed: () =>
+                        ref.read(booruConfigProvider.notifier).add(config),
+                    icon: const Icon(Icons.close),
+                  )
+                : null,
+            onTap: () => showMaterialModalBottomSheet(
+              context: context,
+              builder: (_) => ConfigBooruPage.of(
+                context,
+                booruFactory: context.read<BooruFactory>(),
+                initialConfig: config,
+                url: config.url,
+                unverifiedBooru:
+                    intToBooruType(config.booruId) == BooruType.unknown,
+                booru: intToBooruType(config.booruId),
+                settings: ref.read(settingsProvider),
+              ),
             ),
-          )
-        : const Center(child: CircularProgressIndicator());
+          );
+        },
+      ),
+    );
   }
 }
 

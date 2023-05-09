@@ -26,7 +26,6 @@ import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
@@ -390,8 +389,6 @@ void goToBookmarkDetailsPage(
 }
 
 void goToManageBooruPage(BuildContext context) {
-  context.read<ManageBooruBloc>().add(const ManageBooruFetched());
-
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
     child: const ManageBooruPage(),

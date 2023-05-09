@@ -27,7 +27,6 @@ import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -228,12 +227,6 @@ void main() async {
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
-  final manageBooruBloc = ManageBooruBloc(
-    userBooruRepository: booruUserRepo,
-    booruFactory: booruFactory,
-    booruUserIdentityProvider: booruUserIdProvider,
-  );
-
   final downloadNotifications = await DownloadNotifications.create();
 
   final dioDownloadService = DioDownloadService(
@@ -322,7 +315,6 @@ void main() async {
                 create: (context) =>
                     ThemeBloc(initialTheme: settings.themeMode),
               ),
-              BlocProvider.value(value: manageBooruBloc),
               if (isAndroid() || isIOS())
                 BlocProvider(
                   create: (context) => DeviceStoragePermissionBloc(
@@ -356,6 +348,7 @@ void main() async {
                     .overrideWithValue(booruUserIdProvider),
                 authenticationProvider
                     .overrideWith(() => AuthenticationNotifier()),
+                booruConfigRepoProvider.overrideWithValue(booruUserRepo),
               ],
               child: App(settings: settings),
             ),

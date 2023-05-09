@@ -8,10 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/booru_config_notifier.dart';
 import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart';
 import 'package:boorusama/core/application/boorus/add_or_update_booru_state.dart';
 import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -43,7 +43,6 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
       initialConfig: initialConfig,
       unverifiedBooru: unverifiedBooru,
     );
-    final bloc = context.read<ManageBooruBloc>();
     final currentBooruBloc = context.read<CurrentBooruBloc>();
     return BlocProvider(
       create: (context) => cubit
@@ -52,31 +51,29 @@ class ConfigBooruPage extends ConsumerStatefulWidget {
       child: ConfigBooruPage(
         onSubmit: (newConfig, ref) {
           if (initialConfig == null) {
-            bloc.add(
-              ManageBooruAdded(
-                config: newConfig,
-                onSuccess: (booruConfig) {
-                  if (setCurrentBooruOnSubmit) {
-                    currentBooruBloc.add(CurrentBooruChanged(
-                      booruConfig: booruConfig,
-                      settings: settings,
-                    ));
-                    //FIXME: create common method to update settings when booru is changed
-                    ref.updateSettings(
-                      settings.copyWith(
-                        currentBooruConfigId: booruConfig.id,
-                      ),
-                    );
-                  }
-                },
-              ),
-            );
+            ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+                  newConfig: newConfig,
+                  onSuccess: (booruConfig) {
+                    if (setCurrentBooruOnSubmit) {
+                      currentBooruBloc.add(CurrentBooruChanged(
+                        booruConfig: booruConfig,
+                        settings: settings,
+                      ));
+                      //FIXME: create common method to update settings when booru is changed
+                      ref.updateSettings(
+                        settings.copyWith(
+                          currentBooruConfigId: booruConfig.id,
+                        ),
+                      );
+                    }
+                  },
+                );
           } else {
-            bloc.add(ManageBooruUpdated(
-              config: newConfig,
-              oldConfig: initialConfig,
-              id: initialConfig.id,
-            ));
+            ref.read(booruConfigProvider.notifier).update(
+                  config: newConfig,
+                  oldConfig: initialConfig,
+                  id: initialConfig.id,
+                );
           }
         },
         initial: initialConfig,
