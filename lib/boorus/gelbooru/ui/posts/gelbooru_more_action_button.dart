@@ -1,18 +1,18 @@
 // Flutter imports:
-import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GelbooruMoreActionButton extends ConsumerWidget {
   const GelbooruMoreActionButton({

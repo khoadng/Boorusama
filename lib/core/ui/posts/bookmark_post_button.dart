@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
 class BookmarkPostButton extends ConsumerWidget {

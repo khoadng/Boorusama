@@ -1,8 +1,8 @@
 // Package imports:
-import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/utils/collection_utils.dart';

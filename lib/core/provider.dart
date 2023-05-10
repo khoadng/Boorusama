@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:boorusama/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/main.dart';
 
 final currentBooruConfigRepoProvider =
     Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts/post_utils.dart';
@@ -12,7 +13,6 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/tags.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TagDetailPage extends ConsumerStatefulWidget {
   const TagDetailPage({

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
@@ -14,7 +15,6 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({

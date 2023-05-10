@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -14,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
+import 'package:boorusama/core/application/current_booru_notifier.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
