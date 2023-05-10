@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -26,22 +27,22 @@ import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 
-class MoebooruPostDetailsPage extends StatefulWidget {
+class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPage({
     super.key,
     required this.posts,
     required this.initialPage,
     required this.fullscreen,
-    required this.onPageChanged,
+    // required this.onPageChanged,
+    // required this.onCachedImagePathUpdate,
     required this.onExit,
-    required this.onCachedImagePathUpdate,
   });
 
   final List<Post> posts;
   final int initialPage;
   final bool fullscreen;
-  final void Function(int page) onPageChanged;
-  final void Function(String? imagePath) onCachedImagePathUpdate;
+  // final void Function(int page) onPageChanged;
+  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
@@ -53,23 +54,20 @@ class MoebooruPostDetailsPage extends StatefulWidget {
   }) {
     return MaterialPageRoute(
       builder: (_) {
-        final shareCubit = PostShareCubit.of(context)
-          ..updateInformation(posts[initialIndex]);
-
         return MoebooruProvider.of(
           context,
           builder: (context) => MultiBlocProvider(
             providers: [
-              BlocProvider.value(value: shareCubit),
+              // BlocProvider.value(value: shareCubit),
             ],
             child: MoebooruPostDetailsPage(
               posts: posts,
               onExit: (page) => scrollController?.scrollToIndex(page),
-              onPageChanged: (page) {
-                shareCubit.updateInformation(posts[page]);
-              },
-              onCachedImagePathUpdate: (imagePath) =>
-                  shareCubit.setImagePath(imagePath ?? ''),
+              // onPageChanged: (page) {
+              //   shareCubit.updateInformation(posts[page]);
+              // },
+              // onCachedImagePathUpdate: (imagePath) =>
+              //     shareCubit.setImagePath(imagePath ?? ''),
               initialPage: initialIndex,
               fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             ),
@@ -80,11 +78,12 @@ class MoebooruPostDetailsPage extends StatefulWidget {
   }
 
   @override
-  State<MoebooruPostDetailsPage> createState() =>
+  ConsumerState<MoebooruPostDetailsPage> createState() =>
       _MoebooruPostDetailsPageState();
 }
 
-class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
+class _MoebooruPostDetailsPageState
+    extends ConsumerState<MoebooruPostDetailsPage>
     with PostDetailsPageMixin<MoebooruPostDetailsPage, Post> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !widget.posts[widget.initialPage].isVideo);
@@ -93,7 +92,9 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
   DetailsPageController get controller => _controller;
 
   @override
-  Function(int page) get onPageChanged => widget.onPageChanged;
+  Function(int page) get onPageChanged => (page) => ref
+      .read(postShareProvider(posts[page]).notifier)
+      .updateInformation(posts[page]);
 
   @override
   List<Post> get posts => widget.posts;
@@ -178,7 +179,9 @@ class _MoebooruPostDetailsPageState extends State<MoebooruPostDetailsPage>
             imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
-            onCached: widget.onCachedImagePathUpdate,
+            onCached: (path) => ref
+                .read(postShareProvider(post).notifier)
+                .setImagePath(path ?? ''),
             previewCacheManager: context.read<PreviewImageCacheManager>(),
             width: post.width,
             height: post.height,

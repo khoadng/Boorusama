@@ -43,24 +43,18 @@ Widget providePostDetailPageDependencies(
   List<DanbooruPost> posts,
   int initialIndex,
   // PostBloc? postBloc,
-  Widget Function(PostShareCubit shareCubit) childBuilder,
+  Widget Function() childBuilder,
 ) {
   return DanbooruProvider.of(
     context,
     builder: (context) {
-      final shareCubit = PostShareCubit.of(context)
-        ..updateInformation(posts[initialIndex]);
-
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: context.read<ThemeBloc>()),
-          BlocProvider(
-            create: (context) => shareCubit,
-          ),
         ],
         child: RepositoryProvider.value(
           value: context.read<TagRepository>(),
-          child: childBuilder(shareCubit),
+          child: childBuilder(),
         ),
       );
     },
@@ -72,15 +66,15 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
     super.key,
     required this.posts,
     required this.intitialIndex,
-    required this.onPageChanged,
-    required this.onCachedImagePathUpdate,
+    // required this.onPageChanged,
+    // required this.onCachedImagePathUpdate,
     required this.onExit,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
-  final void Function(int page) onPageChanged;
-  final void Function(String? imagePath) onCachedImagePathUpdate;
+  // final void Function(int page) onPageChanged;
+  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
@@ -94,7 +88,7 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
       context,
       posts,
       initialIndex,
-      (shareCubit) => ProviderScope(
+      () => ProviderScope(
         overrides: [
           postDetailsProvider.overrideWith(() => PostDetailsNotifier(
                 posts: posts,
@@ -105,11 +99,11 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
           intitialIndex: initialIndex,
           posts: posts,
           onExit: (page) => scrollController?.scrollToIndex(page),
-          onPageChanged: (page) {
-            shareCubit.updateInformation(posts[page]);
-          },
-          onCachedImagePathUpdate: (imagePath) =>
-              shareCubit.setImagePath(imagePath ?? ''),
+          // onPageChanged: (page) {
+          //   shareCubit.updateInformation(posts[page]);
+          // },
+          // onCachedImagePathUpdate: (imagePath) =>
+          //     shareCubit.setImagePath(imagePath ?? ''),
         ),
       ),
     );
@@ -132,7 +126,9 @@ class _DanbooruPostDetailsPageState
   DetailsPageController get controller => _controller;
 
   @override
-  Function(int page) get onPageChanged => widget.onPageChanged;
+  Function(int page) get onPageChanged => (page) => ref
+      .read(postShareProvider(posts[page]).notifier)
+      .updateInformation(posts[page]);
 
   @override
   List<DanbooruPost> get posts => widget.posts;
@@ -321,7 +317,9 @@ class _DanbooruPostDetailsPageState
             imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
-            onCached: widget.onCachedImagePathUpdate,
+            onCached: (path) => ref
+                .read(postShareProvider(post).notifier)
+                .setImagePath(path ?? ''),
             previewCacheManager: context.read<PreviewImageCacheManager>(),
             imageOverlayBuilder: (constraints) => [
               if (expanded && enableNotes)
