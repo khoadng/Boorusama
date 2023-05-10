@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/current_booru_notifier.dart';
+import 'package:boorusama/core/application/boorus.dart';
 
 class OtherFeaturesPage extends ConsumerWidget {
   const OtherFeaturesPage({super.key});

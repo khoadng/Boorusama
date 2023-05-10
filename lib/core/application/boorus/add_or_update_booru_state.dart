@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/booru_config_notifier.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/crypto.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 

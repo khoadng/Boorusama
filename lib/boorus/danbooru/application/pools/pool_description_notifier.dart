@@ -5,7 +5,7 @@ import 'package:html/parser.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/application/current_booru_notifier.dart';
+import 'package:boorusama/core/application/boorus.dart';
 
 final poolDescriptionProvider =
     NotifierProvider.family<PoolDescriptionNotifier, PoolDescriptionState, int>(
