@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class GeneralPostContextMenu extends StatelessWidget {
+class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({
     super.key,
     required this.post,
@@ -26,8 +27,8 @@ class GeneralPostContextMenu extends StatelessWidget {
   final bool hasAccount;
 
   @override
-  Widget build(BuildContext context) {
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -49,7 +50,7 @@ class GeneralPostContextMenu extends StatelessWidget {
             'Add to Bookmark',
             onPressed: () => context.read<BookmarkCubit>().addBookmarkWithToast(
                   post.sampleImageUrl,
-                  booru!,
+                  booru,
                   post,
                 ),
           ),

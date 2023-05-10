@@ -3,17 +3,18 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_tile.dart';
 
-class AppearancePage extends StatefulWidget {
+class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
     super.key,
     this.hasAppBar = true,
@@ -22,7 +23,7 @@ class AppearancePage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<AppearancePage> createState() => _AppearancePageState();
+  ConsumerState<AppearancePage> createState() => _AppearancePageState();
 }
 
 String _themeModeToString(ThemeMode theme) {
@@ -70,29 +71,21 @@ String _imageListToString(ImageListType imageListType) {
   }
 }
 
-class _AppearancePageState extends State<AppearancePage>
-    with SettingsRepositoryMixin {
+class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
 
   @override
-  SettingsRepository get settingsRepository =>
-      context.read<SettingsRepository>();
-
-  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final settings = await getOrDefault();
-      _spacingSliderValue.value = settings.imageGridSpacing;
-      _borderRadiusSliderValue.value = settings.imageBorderRadius;
-    });
+    final settings = ref.read(settingsProvider);
+    _spacingSliderValue.value = settings.imageGridSpacing;
+    _borderRadiusSliderValue.value = settings.imageBorderRadius;
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -112,9 +105,8 @@ class _AppearancePageState extends State<AppearancePage>
               title: const Text('settings.theme.theme').tr(),
               selectedOption: settings.themeMode,
               items: [...ThemeMode.values]..remove(ThemeMode.system),
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(themeMode: value)),
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(themeMode: value)),
               optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
             const Divider(thickness: 1),
@@ -123,18 +115,16 @@ class _AppearancePageState extends State<AppearancePage>
               title: const Text('settings.image_grid.grid_size.grid_size').tr(),
               selectedOption: settings.gridSize,
               items: GridSize.values,
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(gridSize: value)),
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(gridSize: value)),
               optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
             ),
             SettingsTile<ImageListType>(
               title: const Text('settings.image_list.image_list').tr(),
               selectedOption: settings.imageListType,
               items: ImageListType.values,
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(imageListType: value)),
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(imageListType: value)),
               optionBuilder: (value) => Text(_imageListToString(value)).tr(),
             ),
             SettingsTile<ImageQuality>(
@@ -151,9 +141,8 @@ class _AppearancePageState extends State<AppearancePage>
                   : null,
               selectedOption: settings.imageQuality,
               items: [...ImageQuality.values]..remove(ImageQuality.original),
-              onChanged: (value) => context
-                  .read<SettingsCubit>()
-                  .update(settings.copyWith(imageQuality: value)),
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(imageQuality: value)),
               optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
             ),
             const SizedBox(
@@ -204,9 +193,8 @@ class _AppearancePageState extends State<AppearancePage>
           divisions: 10,
           max: 10,
           value: value,
-          onChangeEnd: (value) => context
-              .read<SettingsCubit>()
-              .update(settings.copyWith(imageBorderRadius: value)),
+          onChangeEnd: (value) =>
+              ref.updateSettings(settings.copyWith(imageBorderRadius: value)),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
         );
       },
@@ -222,9 +210,8 @@ class _AppearancePageState extends State<AppearancePage>
           divisions: 10,
           max: 10,
           value: value,
-          onChangeEnd: (value) => context
-              .read<SettingsCubit>()
-              .update(settings.copyWith(imageGridSpacing: value)),
+          onChangeEnd: (value) =>
+              ref.updateSettings(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
         );
       },

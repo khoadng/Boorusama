@@ -1,1 +1,2 @@
-export 'authentication/authentication_cubit.dart';
+export 'authentication/authentication_notifier.dart';
+export 'authentication/authentication_state.dart';

@@ -7,18 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class DanbooruPostContextMenu extends StatelessWidget {
+class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
     super.key,
     required this.post,
@@ -31,8 +32,8 @@ class DanbooruPostContextMenu extends StatelessWidget {
   final bool hasAccount;
 
   @override
-  Widget build(BuildContext context) {
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -54,7 +55,7 @@ class DanbooruPostContextMenu extends StatelessWidget {
             'Add to Bookmark',
             onPressed: () => context.read<BookmarkCubit>().addBookmarkWithToast(
                   post.sampleImageUrl,
-                  booru!,
+                  booru,
                   post,
                 ),
           ),
@@ -82,7 +83,7 @@ class DanbooruPostContextMenu extends StatelessWidget {
 }
 
 // ignore: prefer-single-widget-per-file
-class FavoriteGroupsPostContextMenu extends StatelessWidget {
+class FavoriteGroupsPostContextMenu extends ConsumerWidget {
   const FavoriteGroupsPostContextMenu({
     super.key,
     required this.post,
@@ -95,9 +96,8 @@ class FavoriteGroupsPostContextMenu extends StatelessWidget {
   final void Function()? onRemoveFromFavGroup;
 
   @override
-  Widget build(BuildContext context) {
-    final authState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authenticationProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(

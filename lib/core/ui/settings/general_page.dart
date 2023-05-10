@@ -3,16 +3,17 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'widgets/settings_tile.dart';
 
-class GeneralPage extends StatefulWidget {
+class GeneralPage extends ConsumerStatefulWidget {
   const GeneralPage({
     super.key,
     this.hasAppBar = true,
@@ -21,14 +22,13 @@ class GeneralPage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<GeneralPage> createState() => _GeneralPageState();
+  ConsumerState<GeneralPage> createState() => _GeneralPageState();
 }
 
-class _GeneralPageState extends State<GeneralPage> {
+class _GeneralPageState extends ConsumerState<GeneralPage> {
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -50,9 +50,8 @@ class _GeneralPageState extends State<GeneralPage> {
               items: [...BooruType.values]
                 ..remove(BooruType.testbooru)
                 ..remove(BooruType.unknown),
-              onChanged: (value) => context.read<SettingsCubit>().update(
-                    settings.copyWith(safeMode: value == BooruType.safebooru),
-                  ),
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(safeMode: value == BooruType.safebooru)),
               optionBuilder: (value) => Text(value.name.sentenceCase),
             ),
           ],

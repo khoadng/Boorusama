@@ -3,21 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/boorus/add_or_update_booru_cubit.dart';
-import 'package:boorusama/core/application/boorus/add_or_update_booru_state.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/application/settings/settings_cubit.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
-class ConfigBooruPage extends StatefulWidget {
+class ConfigBooruPage extends ConsumerStatefulWidget {
   const ConfigBooruPage({
     super.key,
     required this.onSubmit,
@@ -34,41 +32,30 @@ class ConfigBooruPage extends StatefulWidget {
     required String url,
     bool setCurrentBooruOnSubmit = false,
     bool unverifiedBooru = false,
+    required Settings settings,
   }) {
     final cubit = AddOrUpdateBooruCubit(
       booruFactory: booruFactory,
       initialConfig: initialConfig,
       unverifiedBooru: unverifiedBooru,
     );
-    final bloc = context.read<ManageBooruBloc>();
-    final settings = context.read<SettingsCubit>().state.settings;
-    final currentBooruBloc = context.read<CurrentBooruBloc>();
     return BlocProvider(
       create: (context) => cubit
         ..changeBooru(booru)
         ..changeUrl(url),
       child: ConfigBooruPage(
-        onSubmit: (newConfig) {
+        onSubmit: (newConfig, ref) {
           if (initialConfig == null) {
-            bloc.add(
-              ManageBooruAdded(
-                config: newConfig,
-                onSuccess: (booruConfig) {
-                  if (setCurrentBooruOnSubmit) {
-                    currentBooruBloc.add(CurrentBooruChanged(
-                      booruConfig: booruConfig,
-                      settings: settings,
-                    ));
-                  }
-                },
-              ),
-            );
+            ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+                  setAsCurrent: setCurrentBooruOnSubmit,
+                  newConfig: newConfig,
+                );
           } else {
-            bloc.add(ManageBooruUpdated(
-              config: newConfig,
-              oldConfig: initialConfig,
-              id: initialConfig.id,
-            ));
+            ref.read(booruConfigProvider.notifier).update(
+                  config: newConfig,
+                  oldConfig: initialConfig,
+                  id: initialConfig.id,
+                );
           }
         },
         initial: initialConfig,
@@ -80,6 +67,8 @@ class ConfigBooruPage extends StatefulWidget {
 
   final void Function(
     AddNewBooruConfig config,
+    //FIXME: this is a hack
+    WidgetRef ref,
   ) onSubmit;
 
   final BooruConfig? initial;
@@ -87,10 +76,10 @@ class ConfigBooruPage extends StatefulWidget {
   final String url;
 
   @override
-  State<ConfigBooruPage> createState() => _AddBooruPageState();
+  ConsumerState<ConfigBooruPage> createState() => _AddBooruPageState();
 }
 
-class _AddBooruPageState extends State<ConfigBooruPage>
+class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
     with AddOrUpdateBooruCubitMixin {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
@@ -322,10 +311,12 @@ class _AddBooruPageState extends State<ConfigBooruPage>
                           onPressed: allowSubmit
                               ? () {
                                   Navigator.of(context).pop();
-                                  widget.onSubmit
-                                      .call(state.createNewBooruConfig(
-                                    widget.booruFactory,
-                                  ));
+                                  widget.onSubmit.call(
+                                    state.createNewBooruConfig(
+                                      widget.booruFactory,
+                                    ),
+                                    ref,
+                                  );
                                 }
                               : null,
                           child: const Text('OK'),

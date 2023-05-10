@@ -2,28 +2,27 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PoolDetailPage extends StatelessWidget {
+class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
     super.key,
     required this.pool,
@@ -37,35 +36,21 @@ class PoolDetailPage extends StatelessWidget {
     BuildContext context, {
     required Pool pool,
   }) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (_, state) {
-        return DanbooruProvider.of(
-          context,
-          booru: state.booru!,
-          builder: (dcontext) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: PoolDescriptionBloc(
-                  endpoint: state.booru!.url,
-                  poolDescriptionRepository:
-                      dcontext.read<PoolDescriptionRepository>(),
-                )..add(PoolDescriptionFetched(poolId: pool.id)),
-              ),
-            ],
-            child: CustomContextMenuOverlay(
-              child: PoolDetailPage(
-                pool: pool,
-                postIds: QueueList.from(pool.postIds.reversed.skip(20)),
-              ),
-            ),
-          ),
-        );
-      },
+    return DanbooruProvider.of(
+      context,
+      builder: (dcontext) => CustomContextMenuOverlay(
+        child: PoolDetailPage(
+          pool: pool,
+          postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+        ),
+      ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
+
     return DanbooruPostScope(
       fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
             'pool:${pool.id}',
@@ -87,6 +72,7 @@ class PoolDetailPage extends StatelessWidget {
                   goToBulkDownloadPage(
                     context,
                     ['pool:${pool.id}'],
+                    ref: ref,
                   );
                 },
                 icon: const Icon(Icons.download),
@@ -108,22 +94,17 @@ class PoolDetailPage extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
-              builder: (context, state) {
-                return state.status == LoadStatus.success &&
-                        state.description.isNotEmpty
-                    ? Html(
-                        onLinkTap: (url, context, attributes, element) =>
-                            _onHtmlLinkTapped(
-                          attributes,
-                          url,
-                          state.descriptionEndpointRefUrl,
-                        ),
-                        data: state.description,
-                      )
-                    : const SizedBox.shrink();
-              },
-            ),
+            child: poolDesc.description.isNotEmpty
+                ? Html(
+                    onLinkTap: (url, context, attributes, element) =>
+                        _onHtmlLinkTapped(
+                      attributes,
+                      url,
+                      poolDesc.descriptionEndpointRefUrl,
+                    ),
+                    data: poolDesc.description,
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),

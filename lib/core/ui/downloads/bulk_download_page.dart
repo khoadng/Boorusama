@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_completed_view.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_empty_tag_view.dart';
@@ -104,13 +103,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
   Widget _buildBody(BulkDownloadManagerStatus status) {
     switch (status) {
       case BulkDownloadManagerStatus.initial:
-        return BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, state) {
-            return DownloadEmptyTagView(
-              settings: state.settings,
-            );
-          },
-        );
+        return const DownloadEmptyTagView();
       case BulkDownloadManagerStatus.dataSelected:
         return const DownloadTagSelectionView();
       case BulkDownloadManagerStatus.downloadInProgress:

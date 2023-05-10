@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 final languages = {
@@ -21,7 +22,7 @@ String getLanguageText(String value) {
   return 'settings.language.${languages[value]}';
 }
 
-class LanguagePage extends StatelessWidget {
+class LanguagePage extends ConsumerWidget {
   const LanguagePage({
     super.key,
     this.hasAppBar = true,
@@ -30,9 +31,8 @@ class LanguagePage extends StatelessWidget {
   final bool hasAppBar;
 
   @override
-  Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: hasAppBar,
@@ -53,9 +53,7 @@ class LanguagePage extends StatelessWidget {
                   title: Text(getLanguageText(e).tr()),
                   onChanged: (value) {
                     if (value == null) return;
-                    context
-                        .read<SettingsCubit>()
-                        .update(settings.copyWith(language: value));
+                    ref.updateSettings(settings.copyWith(language: value));
                     context.setLocale(Locale(value));
                   },
                 ),

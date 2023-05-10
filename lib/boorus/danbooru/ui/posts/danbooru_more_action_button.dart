@@ -4,32 +4,30 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
 
-class DanbooruMoreActionButton extends StatelessWidget {
-  const DanbooruMoreActionButton({super.key});
+class DanbooruMoreActionButton extends ConsumerWidget {
+  const DanbooruMoreActionButton({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
 
   @override
-  Widget build(BuildContext context) {
-    final post =
-        context.select((PostDetailBloc bloc) => bloc.state.currentPost);
-    final endpoint = context.select(
-      (CurrentBooruBloc bloc) => bloc.state.booru?.url ?? safebooru().url,
-    );
-    final authenticationState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
-
-    final booru = context.select((CurrentBooruBloc bloc) => bloc.state.booru);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booru = ref.watch(currentBooruProvider);
+    final authenticationState = ref.watch(authenticationProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -47,7 +45,7 @@ class DanbooruMoreActionButton extends StatelessWidget {
                 case 'add_to_bookmark':
                   context.read<BookmarkCubit>().addBookmarkWithToast(
                         post.sampleImageUrl,
-                        booru!,
+                        booru,
                         post,
                       );
                   break;
@@ -59,7 +57,7 @@ class DanbooruMoreActionButton extends StatelessWidget {
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
-                    post.getUriLink(endpoint),
+                    post.getUriLink(booru.url),
                   );
                   break;
                 case 'view_original':

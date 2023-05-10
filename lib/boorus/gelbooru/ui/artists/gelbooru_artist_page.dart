@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
@@ -13,7 +14,7 @@ import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/functional.dart';
 
-class GelbooruArtistPage extends StatefulWidget {
+class GelbooruArtistPage extends ConsumerStatefulWidget {
   const GelbooruArtistPage({
     super.key,
     required this.tagName,
@@ -24,10 +25,10 @@ class GelbooruArtistPage extends StatefulWidget {
   final bool includeHeaders;
 
   @override
-  State<GelbooruArtistPage> createState() => _GelbooruArtistPageState();
+  ConsumerState<GelbooruArtistPage> createState() => _GelbooruArtistPageState();
 }
 
-class _GelbooruArtistPageState extends State<GelbooruArtistPage> {
+class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);
 
   @override
@@ -59,6 +60,7 @@ class _GelbooruArtistPageState extends State<GelbooruArtistPage> {
                     goToBulkDownloadPage(
                       context,
                       [widget.tagName],
+                      ref: ref,
                     );
                   },
                   icon: const Icon(Icons.download),

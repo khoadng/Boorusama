@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:recase/recase.dart';
 
@@ -228,7 +229,7 @@ class _StatsButton extends StatelessWidget {
   }
 }
 
-class _PreviewList extends StatelessWidget {
+class _PreviewList extends ConsumerWidget {
   const _PreviewList({
     required this.title,
     required this.posts,
@@ -240,7 +241,7 @@ class _PreviewList extends StatelessWidget {
   final void Function() onViewMore;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ListTile(

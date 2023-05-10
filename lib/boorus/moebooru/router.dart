@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/search/moebooru_search_page.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/settings.dart';
 
 void goToMoebooruSearchPage(
   BuildContext context, {
@@ -21,6 +22,7 @@ void goToMoebooruDetailsPage({
   required List<Post> posts,
   required int initialPage,
   AutoScrollController? scrollController,
+  required Settings settings,
 }) {
   Navigator.push(
     context,
@@ -29,6 +31,7 @@ void goToMoebooruDetailsPage({
       posts: posts,
       initialIndex: initialPage,
       scrollController: scrollController,
+      settings: settings,
     ),
   );
 }

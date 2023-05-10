@@ -1,4 +1,8 @@
-part of 'authentication_cubit.dart';
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/core/domain/boorus.dart';
 
 abstract class AuthenticationState extends Equatable {
   const AuthenticationState();

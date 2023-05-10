@@ -8,16 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 
 class DownloadEmptyTagView extends StatelessWidget {
   const DownloadEmptyTagView({
     super.key,
-    required this.settings,
   });
-
-  final Settings settings;
 
   @override
   Widget build(BuildContext context) {

@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
-class PrivacyPage extends StatelessWidget {
+class PrivacyPage extends ConsumerWidget {
   const PrivacyPage({
     super.key,
     this.hasAppBar = true,
@@ -19,9 +20,8 @@ class PrivacyPage extends StatelessWidget {
   final bool hasAppBar;
 
   @override
-  Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: hasAppBar,
@@ -40,11 +40,11 @@ class PrivacyPage extends StatelessWidget {
               value:
                   settings.dataCollectingStatus == DataCollectingStatus.allow,
               onChanged: (value) {
-                context.read<SettingsCubit>().update(settings.copyWith(
-                      dataCollectingStatus: value
-                          ? DataCollectingStatus.allow
-                          : DataCollectingStatus.prohibit,
-                    ));
+                ref.updateSettings(settings.copyWith(
+                  dataCollectingStatus: value
+                      ? DataCollectingStatus.allow
+                      : DataCollectingStatus.prohibit,
+                ));
               },
             ),
           ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
@@ -13,10 +14,11 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
-class DownloadPage extends StatefulWidget {
+class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({
     super.key,
     this.hasAppBar = true,
@@ -25,28 +27,14 @@ class DownloadPage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<DownloadPage> createState() => _DownloadPageState();
+  ConsumerState<DownloadPage> createState() => _DownloadPageState();
 }
 
-class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
-  final changed = ValueNotifier(false);
-  String? path;
-
-  @override
-  void initState() {
-    super.initState();
-    final settings = context.read<SettingsCubit>().state;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        path = settings.settings.downloadPath;
-      });
-    });
-  }
-
+class _DownloadPageState extends ConsumerState<DownloadPage>
+    with DownloadMixin {
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -135,17 +123,13 @@ class _DownloadPageState extends State<DownloadPage> with DownloadMixin {
   }
 
   Future<void> _pickFolder(Settings settings) async {
-    final bloc = context.read<SettingsCubit>();
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
-      bloc.update(settings.copyWith(downloadPath: selectedDirectory));
-      setState(() {
-        path = selectedDirectory;
-      });
+      ref.updateSettings(settings.copyWith(downloadPath: selectedDirectory));
     }
   }
 
   @override
-  String? get storagePath => path;
+  String? get storagePath => ref.read(settingsProvider).downloadPath;
 }

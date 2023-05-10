@@ -5,14 +5,15 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
@@ -23,7 +24,7 @@ import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PostTagList extends StatelessWidget {
+class PostTagList extends ConsumerWidget {
   const PostTagList({
     super.key,
     this.maxTagWidth,
@@ -32,26 +33,27 @@ class PostTagList extends StatelessWidget {
   final double? maxTagWidth;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) {
-        return BlocBuilder<TagBloc, TagState>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              final widgets = <Widget>[];
-              for (final g in state.tags!) {
-                widgets
-                  ..add(_TagBlockTitle(
-                    title: g.groupName,
-                    isFirstBlock: g.groupName == state.tags!.first.groupName,
-                  ))
-                  ..add(_buildTags(
-                    context,
-                    authState,
-                    g.tags,
-                    onAddToBlacklisted: (tag) => context
-                        .read<BlacklistedTagsBloc>()
-                        .add(BlacklistedTagAdded(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authenticationProvider);
+    final booru = ref.watch(currentBooruProvider);
+
+    return BlocBuilder<TagBloc, TagState>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final widgets = <Widget>[];
+          for (final g in state.tags!) {
+            widgets
+              ..add(_TagBlockTitle(
+                title: g.groupName,
+                isFirstBlock: g.groupName == state.tags!.first.groupName,
+              ))
+              ..add(_buildTags(
+                context,
+                booru,
+                authState,
+                g.tags,
+                onAddToBlacklisted: (tag) =>
+                    context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
                           tag: tag.rawName,
                           onFailure: (message) => showSimpleSnackBar(
                             context: context,
@@ -63,88 +65,81 @@ class PostTagList extends StatelessWidget {
                             content: const Text('Blacklisted tags updated'),
                           ),
                         )),
-                  ));
-              }
+              ));
+          }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ...widgets,
-                ],
-              );
-            } else {
-              return const Padding(
-                padding: EdgeInsets.all(8),
-                child: Center(child: CircularProgressIndicator.adaptive()),
-              );
-            }
-          },
-        );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...widgets,
+            ],
+          );
+        } else {
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          );
+        }
       },
     );
   }
 
   Widget _buildTags(
     BuildContext context,
+    Booru booru,
     AuthenticationState authenticationState,
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
-    return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-      builder: (context, state) {
-        final booru = state.booru ?? safebooru();
+    return Tags(
+      alignment: WrapAlignment.start,
+      runSpacing: isMobilePlatform() ? 0 : 4,
+      itemCount: tags.length,
+      itemBuilder: (index) {
+        final tag = tags[index];
 
-        return Tags(
-          alignment: WrapAlignment.start,
-          runSpacing: isMobilePlatform() ? 0 : 4,
-          itemCount: tags.length,
-          itemBuilder: (index) {
-            final tag = tags[index];
-
-            return ContextMenu<String>(
-              items: [
-                PopupMenuItem(
-                  value: 'wiki',
-                  child: const Text('post.detail.open_wiki').tr(),
-                ),
-                PopupMenuItem(
-                  value: 'add_to_favorites',
-                  child: const Text('post.detail.add_to_favorites').tr(),
-                ),
-                if (authenticationState is Authenticated)
-                  PopupMenuItem(
-                    value: 'blacklist',
-                    child: const Text('post.detail.add_to_blacklist').tr(),
-                  ),
-                if (authenticationState is Authenticated)
-                  PopupMenuItem(
-                    value: 'copy_and_move_to_saved_search',
-                    child: const Text(
-                      'post.detail.copy_and_open_saved_search',
-                    ).tr(),
-                  ),
-              ],
-              onSelected: (value) {
-                if (value == 'blacklist') {
-                  onAddToBlacklisted(tag);
-                } else if (value == 'wiki') {
-                  launchWikiPage(booru.url, tag.rawName);
-                } else if (value == 'copy_and_move_to_saved_search') {
-                  Clipboard.setData(
-                    ClipboardData(text: tag.rawName),
-                  ).then((value) => goToSavedSearchEditPage(context));
-                } else if (value == 'add_to_favorites') {
-                  context
-                      .read<FavoriteTagBloc>()
-                      .add(FavoriteTagAdded(tag: tag.rawName));
-                }
-              },
-              child: GestureDetector(
-                onTap: () => goToSearchPage(context, tag: tag.rawName),
-                child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
+        return ContextMenu<String>(
+          items: [
+            PopupMenuItem(
+              value: 'wiki',
+              child: const Text('post.detail.open_wiki').tr(),
+            ),
+            PopupMenuItem(
+              value: 'add_to_favorites',
+              child: const Text('post.detail.add_to_favorites').tr(),
+            ),
+            if (authenticationState is Authenticated)
+              PopupMenuItem(
+                value: 'blacklist',
+                child: const Text('post.detail.add_to_blacklist').tr(),
               ),
-            );
+            if (authenticationState is Authenticated)
+              PopupMenuItem(
+                value: 'copy_and_move_to_saved_search',
+                child: const Text(
+                  'post.detail.copy_and_open_saved_search',
+                ).tr(),
+              ),
+          ],
+          onSelected: (value) {
+            if (value == 'blacklist') {
+              onAddToBlacklisted(tag);
+            } else if (value == 'wiki') {
+              launchWikiPage(booru.url, tag.rawName);
+            } else if (value == 'copy_and_move_to_saved_search') {
+              Clipboard.setData(
+                ClipboardData(text: tag.rawName),
+              ).then((value) => goToSavedSearchEditPage(context));
+            } else if (value == 'add_to_favorites') {
+              context
+                  .read<FavoriteTagBloc>()
+                  .add(FavoriteTagAdded(tag: tag.rawName));
+            }
           },
+          child: GestureDetector(
+            onTap: () => goToSearchPage(context, tag: tag.rawName),
+            child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
+          ),
         );
       },
     );

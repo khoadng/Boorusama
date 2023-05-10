@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -16,7 +17,7 @@ import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
-class DanbooruPostActionToolbar extends StatelessWidget {
+class DanbooruPostActionToolbar extends ConsumerWidget {
   const DanbooruPostActionToolbar({
     super.key,
     required this.post,
@@ -25,22 +26,22 @@ class DanbooruPostActionToolbar extends StatelessWidget {
   final DanbooruPost post;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authenticationProvider);
+
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-        builder: (context, authState) => ButtonBar(
-          buttonPadding: EdgeInsets.zero,
-          alignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildFavoriteButton(context, authState),
-            if (authState is Authenticated) _buildUpvoteButton(context),
-            if (authState is Authenticated) _buildDownvoteButton(context),
-            _buildCommentButton(context),
-            DownloadPostButton(post: post),
-            const SharePostButton(),
-          ],
-        ),
+      child: ButtonBar(
+        buttonPadding: EdgeInsets.zero,
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(context, authState),
+          if (authState is Authenticated) _buildUpvoteButton(context),
+          if (authState is Authenticated) _buildDownvoteButton(context),
+          _buildCommentButton(context),
+          DownloadPostButton(post: post),
+          const SharePostButton(),
+        ],
       ),
     );
   }

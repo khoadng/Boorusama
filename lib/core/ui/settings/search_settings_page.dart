@@ -3,16 +3,17 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'widgets/settings_tile.dart';
 
-class SearchSettingsPage extends StatefulWidget {
+class SearchSettingsPage extends ConsumerStatefulWidget {
   const SearchSettingsPage({
     super.key,
     this.hasAppBar = true,
@@ -21,14 +22,13 @@ class SearchSettingsPage extends StatefulWidget {
   final bool hasAppBar;
 
   @override
-  State<SearchSettingsPage> createState() => _SearchSettingsPageState();
+  ConsumerState<SearchSettingsPage> createState() => _SearchSettingsPageState();
 }
 
-class _SearchSettingsPageState extends State<SearchSettingsPage> {
+class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final settings =
-        context.select((SettingsCubit cubit) => cubit.state.settings);
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: widget.hasAppBar,
@@ -52,9 +52,9 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
                   activeColor: Theme.of(context).colorScheme.primary,
                   value: settings.autoFocusSearchBar,
                   onChanged: (value) {
-                    context.read<SettingsCubit>().update(settings.copyWith(
-                          autoFocusSearchBar: value,
-                        ));
+                    ref.updateSettings(settings.copyWith(
+                      autoFocusSearchBar: value,
+                    ));
                   },
                 ),
               ),
@@ -68,9 +68,8 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
                     ).tr()
                   : null,
               items: const [...ContentOrganizationCategory.values],
-              onChanged: (value) => context.read<SettingsCubit>().update(
-                    settings.copyWith(contentOrganizationCategory: value),
-                  ),
+              onChanged: (value) => ref.updateSettings(
+                  settings.copyWith(contentOrganizationCategory: value)),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
           ],

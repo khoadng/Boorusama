@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts/post_utils.dart';
@@ -13,7 +14,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/tags.dart';
 
-class TagDetailPage extends StatefulWidget {
+class TagDetailPage extends ConsumerStatefulWidget {
   const TagDetailPage({
     super.key,
     required this.tagName,
@@ -28,10 +29,10 @@ class TagDetailPage extends StatefulWidget {
   final bool includeHeaders;
 
   @override
-  State<TagDetailPage> createState() => _TagDetailPageState();
+  ConsumerState<TagDetailPage> createState() => _TagDetailPageState();
 }
 
-class _TagDetailPageState extends State<TagDetailPage> {
+class _TagDetailPageState extends ConsumerState<TagDetailPage> {
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);
 
   @override
@@ -62,6 +63,7 @@ class _TagDetailPageState extends State<TagDetailPage> {
                     goToBulkDownloadPage(
                       context,
                       [widget.tagName],
+                      ref: ref,
                     );
                   },
                   icon: const Icon(Icons.download),

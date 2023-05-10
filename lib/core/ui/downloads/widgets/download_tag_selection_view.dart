@@ -6,27 +6,28 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
-class DownloadTagSelectionView extends StatefulWidget {
+class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({
     super.key,
   });
 
   @override
-  State<DownloadTagSelectionView> createState() =>
+  ConsumerState<DownloadTagSelectionView> createState() =>
       _DownloadTagSelectionViewState();
 }
 
-class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
+class _DownloadTagSelectionViewState
+    extends ConsumerState<DownloadTagSelectionView> {
   final textEditingController = TextEditingController();
 
   @override
@@ -78,36 +79,32 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                               .read<BulkDownloadManagerBloc>()
                               .add(BulkDownloadManagerTagRemoved(tag: e)),
                         )),
-                    BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-                      builder: (context, state) {
-                        return IconButton(
-                          iconSize: 28,
-                          splashRadius: 20,
-                          onPressed: () {
-                            final bloc =
-                                context.read<BulkDownloadManagerBloc>();
-                            goToQuickSearchPage(
-                              context,
-                              onSubmitted: (context, text) {
-                                Navigator.of(context).pop();
-                                bloc.add(
-                                  BulkDownloadManagerTagsAdded(
-                                    tags: [text],
-                                  ),
-                                );
-                              },
-                              onSelected: (tag) {
-                                bloc.add(
-                                  BulkDownloadManagerTagsAdded(
-                                    tags: [tag.value],
-                                  ),
-                                );
-                              },
+                    IconButton(
+                      iconSize: 28,
+                      splashRadius: 20,
+                      onPressed: () {
+                        final bloc = context.read<BulkDownloadManagerBloc>();
+                        goToQuickSearchPage(
+                          context,
+                          ref: ref,
+                          onSubmitted: (context, text) {
+                            Navigator.of(context).pop();
+                            bloc.add(
+                              BulkDownloadManagerTagsAdded(
+                                tags: [text],
+                              ),
                             );
                           },
-                          icon: const Icon(Icons.add),
+                          onSelected: (tag) {
+                            bloc.add(
+                              BulkDownloadManagerTagsAdded(
+                                tags: [tag.value],
+                              ),
+                            );
+                          },
                         );
                       },
+                      icon: const Icon(Icons.add),
                     ),
                   ],
                 );

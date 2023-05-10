@@ -18,15 +18,15 @@ import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
@@ -207,23 +207,20 @@ void main() async {
     },
   );
 
-  final settingsCubit = SettingsCubit(
-    settingRepository: settingRepository,
-    settings: settings,
-  );
-
   final currentBooruRepo = CurrentBooruRepositorySettings(
     settingRepository,
     booruUserRepo,
   );
 
-  final dioProvider = DioProvider(tempPath, userAgentGenerator, logger);
+  final appDioProvider = DioProvider(tempPath, userAgentGenerator, logger);
 
   final booruUserIdProvider =
-      BooruUserIdentityProviderImpl(dioProvider, booruFactory);
+      BooruUserIdentityProviderImpl(appDioProvider, booruFactory);
 
   final favoriteTagBloc =
       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
+
+  final initialConfig = await currentBooruRepo.get();
 
   logger.logI('Start up', 'Initialize I18n');
   await ensureI18nInitialized();
@@ -232,16 +229,10 @@ void main() async {
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
-  final manageBooruBloc = ManageBooruBloc(
-    userBooruRepository: booruUserRepo,
-    booruFactory: booruFactory,
-    booruUserIdentityProvider: booruUserIdProvider,
-  );
-
   final downloadNotifications = await DownloadNotifications.create();
 
   final dioDownloadService = DioDownloadService(
-    dioProvider.getDio(null),
+    appDioProvider.getDio(null),
     downloadNotifications,
   );
 
@@ -288,9 +279,6 @@ void main() async {
             RepositoryProvider<SearchHistoryRepository>.value(
               value: searchHistoryRepo,
             ),
-            RepositoryProvider<DioProvider>.value(
-              value: dioProvider,
-            ),
             RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,
             ),
@@ -314,23 +302,12 @@ void main() async {
                 lazy: false,
               ),
               BlocProvider.value(
-                value: CurrentBooruBloc(
-                  settingsCubit: settingsCubit,
-                  booruFactory: booruFactory,
-                  userBooruRepository: booruUserRepo,
-                )..add(CurrentBooruFetched(settings)),
-              ),
-              BlocProvider(
-                create: (_) => settingsCubit,
-              ),
-              BlocProvider.value(
                 value: favoriteTagBloc..add(const FavoriteTagFetched()),
               ),
               BlocProvider(
                 create: (context) =>
                     ThemeBloc(initialTheme: settings.themeMode),
               ),
-              BlocProvider.value(value: manageBooruBloc),
               if (isAndroid() || isIOS())
                 BlocProvider(
                   create: (context) => DeviceStoragePermissionBloc(
@@ -350,29 +327,25 @@ void main() async {
               ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<SettingsCubit, SettingsState>(
-                  listenWhen: (previous, current) =>
-                      previous.settings.themeMode != current.settings.themeMode,
-                  listener: (context, state) {
-                    context.read<ThemeBloc>().add(ThemeChanged(
-                          theme: state.settings.themeMode,
-                        ));
-                  },
-                ),
+            child: ProviderScope(
+              overrides: [
+                searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+                currentBooruConfigRepoProvider
+                    .overrideWithValue(currentBooruRepo),
+                booruFactoryProvider.overrideWithValue(booruFactory),
+                tagInfoProvider.overrideWithValue(tagInfo),
+                settingsRepoProvider.overrideWithValue(settingRepository),
+                settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+                booruUserIdentityProviderProvider
+                    .overrideWithValue(booruUserIdProvider),
+                authenticationProvider
+                    .overrideWith(() => AuthenticationNotifier()),
+                booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+                currentBooruConfigProvider.overrideWith(
+                    () => CurrentBooruConfigNotifier(initialConfig!)),
+                dioProvider.overrideWithValue(appDioProvider),
               ],
-              child: ProviderScope(
-                overrides: [
-                  searchHistoryRepoProvider
-                      .overrideWithValue(searchHistoryRepo),
-                  currentBooruConfigRepoProvider
-                      .overrideWithValue(currentBooruRepo),
-                  booruFactoryProvider.overrideWithValue(booruFactory),
-                  tagInfoProvider.overrideWithValue(tagInfo),
-                ],
-                child: App(settings: settings),
-              ),
+              child: App(settings: settings),
             ),
           ),
         ),

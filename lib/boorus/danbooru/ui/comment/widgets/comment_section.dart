@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
@@ -12,7 +13,7 @@ import 'package:boorusama/core/application/authentication.dart';
 import 'comment_box.dart';
 import 'comment_list.dart';
 
-class CommentSection extends StatelessWidget {
+class CommentSection extends ConsumerWidget {
   const CommentSection({
     super.key,
     required this.commentReply,
@@ -27,8 +28,8 @@ class CommentSection extends StatelessWidget {
   final int postId;
 
   @override
-  Widget build(BuildContext context) {
-    final auth = context.select((AuthenticationCubit cubit) => cubit.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authenticationProvider);
     final comments = context.select((CommentBloc bloc) => bloc.state.comments);
 
     return Column(

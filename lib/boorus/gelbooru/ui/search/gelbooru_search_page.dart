@@ -11,7 +11,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -41,13 +40,10 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
     BuildContext context, {
     String? tag,
   }) {
-    final booru = context.read<CurrentBooruBloc>().state.booru!;
-
     return PageTransition(
       type: PageTransitionType.fade,
       child: GelbooruProvider.of(
         context,
-        booru: booru,
         builder: (gcontext) {
           final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
             ..add(const FavoriteTagFetched());

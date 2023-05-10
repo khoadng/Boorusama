@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
@@ -11,39 +11,26 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 
-class PostGridConfigIconButton<T> extends StatefulWidget {
+class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({super.key});
 
   @override
-  State<PostGridConfigIconButton<T>> createState() =>
-      _PostGridConfigIconButtonState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gridSize = ref.watch(gridSizeSettingsProvider);
+    final imageListType = ref.watch(imageListTypeSettingsProvider);
+    final pageMode = ref.watch(pageModeSettingsProvider);
 
-class _PostGridConfigIconButtonState<T>
-    extends State<PostGridConfigIconButton<T>> with SettingsCubitMixin {
-  @override
-  SettingsCubit get settingsCubit => context.read<SettingsCubit>();
-
-  @override
-  Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => showMaterialModalBottomSheet(
         context: context,
         builder: (_) => PostGridActionSheet(
-          gridSize: settingsCubit.state.settings.gridSize,
-          pageMode: settingsCubit.state.settings.contentOrganizationCategory ==
-                  ContentOrganizationCategory.infiniteScroll
-              ? PageMode.infinite
-              : PageMode.paginated,
-          imageListType: settingsCubit.state.settings.imageListType,
-          onModeChanged: (mode) {
-            setPageMode(mode == PageMode.infinite
-                ? ContentOrganizationCategory.infiniteScroll
-                : ContentOrganizationCategory.pagination);
-          },
-          onGridChanged: (grid) => setGridSize(grid),
+          gridSize: gridSize,
+          pageMode: pageMode,
+          imageListType: imageListType,
+          onModeChanged: (mode) => ref.setPageMode(mode),
+          onGridChanged: (grid) => ref.setGridSize(grid),
           onImageListChanged: (imageListType) =>
-              setImageListType(imageListType),
+              ref.setImageListType(imageListType),
         ),
       ),
       icon: const Icon(Icons.settings),

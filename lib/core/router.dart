@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -23,11 +24,9 @@ import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
-import 'package:boorusama/core/application/current_booru_bloc.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/manage_booru_user_bloc.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
@@ -391,13 +390,9 @@ void goToBookmarkDetailsPage(
 }
 
 void goToManageBooruPage(BuildContext context) {
-  context.read<ManageBooruBloc>().add(const ManageBooruFetched());
-
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
-    child: BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (_, state) => const ManageBooruPage(),
-    ),
+    child: const ManageBooruPage(),
   ));
 }
 
@@ -414,6 +409,7 @@ void goToAddBooruPage(
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
+  required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
@@ -427,121 +423,122 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
       builder: (_, themeState) {
-        return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-          builder: (_, state) {
-            switch (state.booru!.booruType) {
-              case BooruType.unknown:
-                throw UnimplementedError();
-              case BooruType.danbooru:
-              case BooruType.safebooru:
-              case BooruType.testbooru:
-              case BooruType.aibooru:
-                return DanbooruProvider.create(
-                  context,
-                  booruConfig: state.booruConfig!,
-                  sourceComposer: state.booruConfig!.isUnverified(state.booru!)
-                      ? UnknownImageSourceComposer()
-                      : DanbooruImageSourceComposer(),
-                  builder: (dcontext) => isMobile
-                      ? SimpleTagSearchView(
-                          onSubmitted: onSubmitted,
-                          ensureValidTag: ensureValidTag,
-                          floatingActionButton: floatingActionButton != null
-                              ? (text) => floatingActionButton.call(text)
-                              : null,
-                          onSelected: onSelected,
-                          textColorBuilder: (tag) =>
-                              generateDanbooruAutocompleteTagColor(
-                                  tag, themeState.theme),
-                        )
-                      : SimpleTagSearchView(
-                          onSubmitted: onSubmitted,
-                          backButton: IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          ensureValidTag: ensureValidTag,
-                          onSelected: onSelected,
-                          textColorBuilder: (tag) =>
-                              generateDanbooruAutocompleteTagColor(
-                                  tag, themeState.theme),
-                        ),
-                );
-              case BooruType.gelbooru:
-                return GelbooruProvider.create(
-                  context,
-                  booruConfig: state.booruConfig!,
-                  builder: (gcontext) => isMobile
-                      ? SimpleTagSearchView(
-                          onSubmitted: (_, text) =>
-                              onSubmitted?.call(context, text),
-                          ensureValidTag: ensureValidTag,
-                          floatingActionButton: floatingActionButton != null
-                              ? (text) => floatingActionButton.call(text)
-                              : null,
-                          onSelected: (tag) => onSelected(tag),
-                          textColorBuilder: (tag) =>
-                              generateGelbooruAutocompleteTagColor(
-                            tag,
-                            themeState.theme,
-                          ),
-                        )
-                      : SimpleTagSearchView(
-                          onSubmitted: (_, text) =>
-                              onSubmitted?.call(context, text),
-                          backButton: IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          ensureValidTag: ensureValidTag,
-                          onSelected: (tag) => onSelected(tag),
-                          textColorBuilder: (tag) =>
-                              generateGelbooruAutocompleteTagColor(
-                            tag,
-                            themeState.theme,
-                          ),
-                        ),
-                );
-              case BooruType.konachan:
-              case BooruType.yandere:
-              case BooruType.sakugabooru:
-                return MoebooruProvider.create(
-                  context,
-                  booruConfig: state.booruConfig!,
-                  builder: (gcontext) => isMobile
-                      ? SimpleTagSearchView(
-                          onSubmitted: (_, text) =>
-                              onSubmitted?.call(context, text),
-                          ensureValidTag: ensureValidTag,
-                          floatingActionButton: floatingActionButton != null
-                              ? (text) => floatingActionButton.call(text)
-                              : null,
-                          onSelected: (tag) => onSelected(tag),
-                          textColorBuilder: (tag) =>
-                              generateGelbooruAutocompleteTagColor(
-                            tag,
-                            themeState.theme,
-                          ),
-                        )
-                      : SimpleTagSearchView(
-                          onSubmitted: (_, text) =>
-                              onSubmitted?.call(context, text),
-                          backButton: IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          ensureValidTag: ensureValidTag,
-                          onSelected: (tag) => onSelected(tag),
-                          textColorBuilder: (tag) =>
-                              generateGelbooruAutocompleteTagColor(
-                            tag,
-                            themeState.theme,
-                          ),
-                        ),
-                );
-            }
-          },
-        );
+        final booruConfig = ref.read(currentBooruConfigProvider);
+        final booru = ref.watch(currentBooruProvider);
+        switch (booru.booruType) {
+          case BooruType.unknown:
+            throw UnimplementedError();
+          case BooruType.danbooru:
+          case BooruType.safebooru:
+          case BooruType.testbooru:
+          case BooruType.aibooru:
+            return DanbooruProvider.create(
+              context,
+              booruConfig: booruConfig,
+              ref: ref,
+              sourceComposer: booruConfig.isUnverified(booru)
+                  ? UnknownImageSourceComposer()
+                  : DanbooruImageSourceComposer(),
+              builder: (dcontext) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateDanbooruAutocompleteTagColor(
+                              tag, themeState.theme),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      backButton: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateDanbooruAutocompleteTagColor(
+                              tag, themeState.theme),
+                    ),
+            );
+          case BooruType.gelbooru:
+            return GelbooruProvider.create(
+              context,
+              ref: ref,
+              booruConfig: booruConfig,
+              builder: (gcontext) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateGelbooruAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateGelbooruAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    ),
+            );
+          case BooruType.konachan:
+          case BooruType.yandere:
+          case BooruType.sakugabooru:
+            return MoebooruProvider.create(
+              context,
+              ref: ref,
+              booruConfig: booruConfig,
+              builder: (gcontext) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateGelbooruAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateGelbooruAutocompleteTagColor(
+                        tag,
+                        themeState.theme,
+                      ),
+                    ),
+            );
+        }
       },
     ),
   );
@@ -589,74 +586,77 @@ Future<T?> showDesktopDialogWindow<T>(
 
 Future<void> goToBulkDownloadPage(
   BuildContext context,
-  List<String>? tags,
-) async {
+  List<String>? tags, {
+  required WidgetRef ref,
+}) async {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) {
-      return BlocBuilder<CurrentBooruBloc, CurrentBooruState>(
-        builder: (_, state) {
-          switch (state.booru!.booruType) {
-            case BooruType.unknown:
-              throw UnimplementedError();
-            case BooruType.konachan:
-            case BooruType.yandere:
-            case BooruType.sakugabooru:
-              return MoebooruProvider.create(
-                context,
-                booruConfig: state.booruConfig!,
-                builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => MoebooruBulkDownloadManagerBloc(
-                        context: context,
-                        deviceInfo: context.read<DeviceInfo>(),
-                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                    ),
-                  ],
-                  child: const BulkDownloadPage(),
+      final booru = ref.read(currentBooruProvider);
+      final booruConfig = ref.read(currentBooruConfigProvider);
+
+      switch (booru.booruType) {
+        case BooruType.unknown:
+          throw UnimplementedError();
+        case BooruType.konachan:
+        case BooruType.yandere:
+        case BooruType.sakugabooru:
+          return MoebooruProvider.create(
+            context,
+            ref: ref,
+            booruConfig: booruConfig,
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<BulkDownloadManagerBloc<Post>>(
+                  create: (_) => MoebooruBulkDownloadManagerBloc(
+                    context: context,
+                    deviceInfo: context.read<DeviceInfo>(),
+                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
-              );
-            case BooruType.danbooru:
-            case BooruType.safebooru:
-            case BooruType.testbooru:
-            case BooruType.aibooru:
-              return DanbooruProvider.create(
-                context,
-                booruConfig: state.booruConfig!,
-                sourceComposer: state.booruConfig!.isUnverified(state.booru!)
-                    ? UnknownImageSourceComposer()
-                    : DanbooruImageSourceComposer(),
-                builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => DanbooruBulkDownloadManagerBloc(
-                        context: context,
-                        deviceInfo: context.read<DeviceInfo>(),
-                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                    ),
-                  ],
-                  child: const BulkDownloadPage(),
+              ],
+              child: const BulkDownloadPage(),
+            ),
+          );
+        case BooruType.danbooru:
+        case BooruType.safebooru:
+        case BooruType.testbooru:
+        case BooruType.aibooru:
+          return DanbooruProvider.create(
+            context,
+            ref: ref,
+            booruConfig: booruConfig,
+            sourceComposer: booruConfig.isUnverified(booru)
+                ? UnknownImageSourceComposer()
+                : DanbooruImageSourceComposer(),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<BulkDownloadManagerBloc<Post>>(
+                  create: (_) => DanbooruBulkDownloadManagerBloc(
+                    context: context,
+                    deviceInfo: context.read<DeviceInfo>(),
+                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
-              );
-            case BooruType.gelbooru:
-              return GelbooruProvider.create(
-                context,
-                booruConfig: state.booruConfig!,
-                builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider<BulkDownloadManagerBloc<Post>>(
-                      create: (_) => MoebooruBulkDownloadManagerBloc(
-                        context: context,
-                        deviceInfo: context.read<DeviceInfo>(),
-                      )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                    ),
-                  ],
-                  child: const BulkDownloadPage(),
+              ],
+              child: const BulkDownloadPage(),
+            ),
+          );
+        case BooruType.gelbooru:
+          return GelbooruProvider.create(
+            context,
+            ref: ref,
+            booruConfig: booruConfig,
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<BulkDownloadManagerBloc<Post>>(
+                  create: (_) => MoebooruBulkDownloadManagerBloc(
+                    context: context,
+                    deviceInfo: context.read<DeviceInfo>(),
+                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
-              );
-          }
-        },
-      );
+              ],
+              child: const BulkDownloadPage(),
+            ),
+          );
+      }
     },
   ));
 }
