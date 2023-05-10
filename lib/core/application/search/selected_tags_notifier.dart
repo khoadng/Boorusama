@@ -36,18 +36,18 @@ class SelectedTagsNotifier extends AutoDisposeNotifier<List<TagSearchItem>> {
     String tag, {
     FilterOperator operator = FilterOperator.none,
   }) {
-    final updatedTags = List<TagSearchItem>.from(state)
+    final updatedTags = Set<TagSearchItem>.from(state)
       ..add(_toItem(_applyOperator(tag, operator)));
-    state = updatedTags;
+    state = updatedTags.toList();
   }
 
   void addTags(
     List<String> tags, {
     FilterOperator operator = FilterOperator.none,
   }) {
-    final updatedTags = List<TagSearchItem>.from(state)
+    final updatedTags = Set<TagSearchItem>.from(state)
       ..addAll(tags.map((tag) => _applyOperator(tag, operator)).map(_toItem));
-    state = updatedTags;
+    state = updatedTags.toList();
   }
 
   void removeTag(TagSearchItem tag) {
