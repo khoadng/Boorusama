@@ -567,6 +567,7 @@ class DanbooruProvider extends StatelessWidget {
             poolRepoProvider.overrideWithValue(poolRepo),
             postVoteRepoProvider.overrideWithValue(postVoteRepo),
             danbooruPostRepoProvider.overrideWithValue(postRepo),
+            poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -612,3 +613,6 @@ final postCountProvider = Provider<PostCountState>((ref) {
 }, dependencies: [
   postCountStateProvider,
 ]);
+
+final poolDescriptionRepoProvider =
+    Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());
