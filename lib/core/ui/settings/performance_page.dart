@@ -13,6 +13,7 @@ import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/utils/file_utils.dart';
 
 class PerformancePage extends ConsumerStatefulWidget {
   const PerformancePage({
@@ -75,11 +76,12 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
                 ),
               ),
             ),
-            BlocBuilder<CacheCubit, int>(
+            BlocBuilder<CacheCubit, DirectorySizeInfo>(
               builder: (context, size) {
                 return ListTile(
                   title: const Text('Cache Size'),
-                  subtitle: Text(filesize(size)),
+                  subtitle:
+                      Text("${filesize(size.size)} in ${size.fileCount} files"),
                   trailing: ElevatedButton(
                     onPressed: () => context.read<CacheCubit>().clearAppCache(),
                     child: const Text('Clear'),
