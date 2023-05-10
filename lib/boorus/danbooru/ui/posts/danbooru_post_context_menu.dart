@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -53,11 +52,12 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
           ContextMenuButtonConfig(
             'Add to Bookmark',
-            onPressed: () => context.read<BookmarkCubit>().addBookmarkWithToast(
-                  post.sampleImageUrl,
-                  booru,
-                  post,
-                ),
+            onPressed: () => ref.bookmarks
+              ..addBookmarkWithToast(
+                post.sampleImageUrl,
+                booru,
+                post,
+              ),
           ),
           if (hasAccount)
             ContextMenuButtonConfig(

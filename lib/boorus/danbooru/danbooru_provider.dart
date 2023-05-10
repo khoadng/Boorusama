@@ -42,6 +42,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -110,11 +111,11 @@ class DanbooruProvider extends StatelessWidget {
   factory DanbooruProvider.create(
     BuildContext context, {
     required WidgetRef ref,
-    required BooruConfig booruConfig,
     required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
-    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+    final booruConfig = ref.read(currentBooruConfigProvider);
+    final dio = ref.read(dioProvider(booruConfig.url));
     final tagInfo = context.read<TagInfo>();
     final api = DanbooruApi(dio);
 

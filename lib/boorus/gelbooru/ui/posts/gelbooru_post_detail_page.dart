@@ -10,7 +10,7 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts/post_share_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
@@ -38,16 +38,16 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.fullscreen,
-    required this.onPageChanged,
+    // required this.onPageChanged,
+    // required this.onCachedImagePathUpdate,
     required this.onExit,
-    required this.onCachedImagePathUpdate,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
-  final void Function(int page) onPageChanged;
-  final void Function(String? imagePath) onCachedImagePathUpdate;
+  // final void Function(int page) onPageChanged;
+  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
@@ -61,9 +61,6 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
       builder: (_) => GelbooruProvider.of(
         context,
         builder: (gcontext) {
-          final shareCubit = PostShareCubit.of(context)
-            ..updateInformation(posts[initialIndex]);
-
           return MultiBlocProvider(
             providers: [
               BlocProvider(
@@ -73,16 +70,15 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
                         posts: posts,
                       )..add(PostDetailRequested(index: initialIndex))),
               BlocProvider.value(value: gcontext.read<ThemeBloc>()),
-              BlocProvider.value(value: shareCubit),
             ],
             child: GelbooruPostDetailPage(
               posts: posts,
               initialIndex: initialIndex,
-              onPageChanged: (page) {
-                shareCubit.updateInformation(posts[page]);
-              },
-              onCachedImagePathUpdate: (imagePath) =>
-                  shareCubit.setImagePath(imagePath ?? ''),
+              // onPageChanged: (page) {
+              //   shareCubit.updateInformation(posts[page]);
+              // },
+              // onCachedImagePathUpdate: (imagePath) =>
+              //     shareCubit.setImagePath(imagePath ?? ''),
               onExit: (page) => scrollController?.scrollToIndex(page),
               fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             ),
@@ -105,7 +101,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
   DetailsPageController get controller => _controller;
 
   @override
-  Function(int page) get onPageChanged => widget.onPageChanged;
+  Function(int page) get onPageChanged => (page) => ref
+      .read(postShareProvider(posts[page]).notifier)
+      .updateInformation(posts[page]);
 
   @override
   List<Post> get posts => widget.posts;
@@ -224,7 +222,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
             imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
-            onCached: widget.onCachedImagePathUpdate,
+            onCached: (path) => ref
+                .read(postShareProvider(post).notifier)
+                .setImagePath(path ?? ''),
             previewCacheManager: context.read<PreviewImageCacheManager>(),
             width: post.width,
             height: post.height,

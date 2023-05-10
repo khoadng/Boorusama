@@ -1,1 +1,1 @@
-export 'bookmarks/bookmark_cubit.dart';
+export 'bookmarks/bookmark_notifier.dart';

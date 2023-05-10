@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocompl
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/tags.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -40,12 +41,12 @@ class MoebooruProvider extends StatelessWidget {
 
   factory MoebooruProvider.create(
     BuildContext context, {
-    required BooruConfig booruConfig,
     required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+    final booruConfig = ref.read(currentBooruConfigProvider);
+    final dio = ref.read(dioProvider(booruConfig.url));
 
     final api = MoebooruApi(dio);
 

@@ -23,7 +23,7 @@ class MoebooruPostActionToolbar extends StatelessWidget {
         children: [
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),
-          const SharePostButton(),
+          SharePostButton(post: post),
         ],
       ),
     );

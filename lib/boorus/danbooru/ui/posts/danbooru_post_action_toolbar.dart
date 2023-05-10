@@ -40,7 +40,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           if (authState is Authenticated) _buildDownvoteButton(context),
           _buildCommentButton(context),
           DownloadPostButton(post: post),
-          const SharePostButton(),
+          SharePostButton(post: post),
         ],
       ),
     );

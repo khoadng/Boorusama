@@ -20,7 +20,6 @@ import 'package:video_player_win/video_player_win.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
-import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
@@ -32,7 +31,6 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
-import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/searches.dart';
@@ -291,9 +289,6 @@ void main() async {
             RepositoryProvider<BlacklistedTagRepository>.value(
               value: globalBlacklistedTags,
             ),
-            RepositoryProvider<BookmarkRepository>.value(
-              value: bookmarkRepo,
-            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -318,13 +313,6 @@ void main() async {
               BlocProvider(
                 create: (context) => BlacklistedTagCubit(globalBlacklistedTags),
               ),
-              BlocProvider(
-                create: (context) => BookmarkCubit(
-                  settingsRepository: settingRepository,
-                  bookmarkRepository: context.read<BookmarkRepository>(),
-                  downloadService: dioDownloadService,
-                )..getAllBookmarksWithToast(),
-              ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
             child: ProviderScope(
@@ -343,7 +331,14 @@ void main() async {
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
                 currentBooruConfigProvider.overrideWith(
                     () => CurrentBooruConfigNotifier(initialConfig!)),
-                dioProvider.overrideWithValue(appDioProvider),
+                // dioProvider.overrideWithValue(appDioProvider),
+                httpCacheDirProvider.overrideWithValue(tempPath),
+                userAgentGeneratorProvider
+                    .overrideWithValue(userAgentGenerator),
+                loggerProvider.overrideWithValue(logger),
+                bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+                dioDownloadServiceProvider
+                    .overrideWithValue(dioDownloadService),
               ],
               child: App(settings: settings),
             ),

@@ -23,7 +23,6 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -372,7 +371,6 @@ void goToSettingPage(BuildContext context) {
 }
 
 void goToBookmarkPage(BuildContext context) {
-  context.read<BookmarkCubit>().getAllBookmarksWithToast();
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (_) => const BookmarkPage()));
 }
@@ -434,7 +432,6 @@ void goToQuickSearchPage(
           case BooruType.aibooru:
             return DanbooruProvider.create(
               context,
-              booruConfig: booruConfig,
               ref: ref,
               sourceComposer: booruConfig.isUnverified(booru)
                   ? UnknownImageSourceComposer()
@@ -468,7 +465,6 @@ void goToQuickSearchPage(
             return GelbooruProvider.create(
               context,
               ref: ref,
-              booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -506,7 +502,6 @@ void goToQuickSearchPage(
             return MoebooruProvider.create(
               context,
               ref: ref,
-              booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -603,7 +598,6 @@ Future<void> goToBulkDownloadPage(
           return MoebooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
@@ -623,7 +617,6 @@ Future<void> goToBulkDownloadPage(
           return DanbooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             sourceComposer: booruConfig.isUnverified(booru)
                 ? UnknownImageSourceComposer()
                 : DanbooruImageSourceComposer(),
@@ -643,7 +636,6 @@ Future<void> goToBulkDownloadPage(
           return GelbooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(

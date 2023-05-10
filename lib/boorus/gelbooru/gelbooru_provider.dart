@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/gelbooru/infra/autocompletes/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
@@ -41,12 +42,12 @@ class GelbooruProvider extends StatelessWidget {
 
   factory GelbooruProvider.create(
     BuildContext context, {
-    required BooruConfig booruConfig,
     required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+    final booruConfig = ref.read(currentBooruConfigProvider);
+    final dio = ref.read(dioProvider(booruConfig.url));
 
     final api = GelbooruApi(dio);
 
