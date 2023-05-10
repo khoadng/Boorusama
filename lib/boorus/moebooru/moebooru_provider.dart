@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/application/boorus.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,6 +13,7 @@ import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocompl
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/tags.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,34 +21,31 @@ class BookmarkPostButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booru = ref.watch(currentBooruProvider);
+    final bookmarkState = ref.watch(bookmarkProvider);
 
-    return BlocBuilder<BookmarkCubit, BookmarkState>(
-      builder: (context, bookmarkState) {
-        final isBookmarked = bookmarkState.isBookmarked(post, booru.booruType);
+    final isBookmarked = bookmarkState.isBookmarked(post, booru.booruType);
 
-        return isBookmarked
-            ? IconButton(
-                onPressed: () {
-                  context.read<BookmarkCubit>().removeBookmarkWithToast(
-                        bookmarkState.getBookmark(post, booru.booruType)!,
-                      );
-                },
-                icon: const FaIcon(
-                  FontAwesomeIcons.solidBookmark,
-                  color: Colors.red,
-                ),
-              )
-            : IconButton(
-                onPressed: () {
-                  context.read<BookmarkCubit>().addBookmarkWithToast(
-                        "",
-                        booru,
-                        post,
-                      );
-                },
-                icon: const FaIcon(FontAwesomeIcons.bookmark),
+    return isBookmarked
+        ? IconButton(
+            onPressed: () {
+              ref.bookmarks.removeBookmarkWithToast(
+                bookmarkState.getBookmark(post, booru.booruType)!,
               );
-      },
-    );
+            },
+            icon: const FaIcon(
+              FontAwesomeIcons.solidBookmark,
+              color: Colors.red,
+            ),
+          )
+        : IconButton(
+            onPressed: () {
+              ref.bookmarks.addBookmarkWithToast(
+                "",
+                booru,
+                post,
+              );
+            },
+            icon: const FaIcon(FontAwesomeIcons.bookmark),
+          );
   }
 }

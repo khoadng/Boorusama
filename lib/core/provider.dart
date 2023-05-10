@@ -1,20 +1,23 @@
-// Package imports:
+// Dart imports:
 import 'dart:io';
 
-import 'package:boorusama/core/application/networking.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
-import 'package:boorusama/core/infra/loggers.dart';
+// Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 
 final currentBooruConfigRepoProvider =
@@ -77,3 +80,11 @@ final userAgentGeneratorProvider = Provider<UserAgentGenerator>(
 
 final loggerProvider =
     Provider<LoggerService>((ref) => throw UnimplementedError());
+
+final bookmarkRepoProvider = Provider<BookmarkRepository>(
+  (ref) => throw UnimplementedError(),
+);
+
+final dioDownloadServiceProvider = Provider<DioDownloadService>(
+  (ref) => throw UnimplementedError(),
+);

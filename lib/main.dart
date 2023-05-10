@@ -20,7 +20,6 @@ import 'package:video_player_win/video_player_win.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
-import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
@@ -318,13 +317,6 @@ void main() async {
               BlocProvider(
                 create: (context) => BlacklistedTagCubit(globalBlacklistedTags),
               ),
-              BlocProvider(
-                create: (context) => BookmarkCubit(
-                  settingsRepository: settingRepository,
-                  bookmarkRepository: context.read<BookmarkRepository>(),
-                  downloadService: dioDownloadService,
-                )..getAllBookmarksWithToast(),
-              ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
             child: ProviderScope(
@@ -348,6 +340,9 @@ void main() async {
                 userAgentGeneratorProvider
                     .overrideWithValue(userAgentGenerator),
                 loggerProvider.overrideWithValue(logger),
+                bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+                dioDownloadServiceProvider
+                    .overrideWithValue(dioDownloadService),
               ],
               child: App(settings: settings),
             ),

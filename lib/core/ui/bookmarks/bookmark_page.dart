@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -61,7 +60,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                       startEditMode();
                       break;
                     case 'download_all':
-                      context.read<BookmarkCubit>().downloadAllBookmarks();
+                      ref.bookmarks.downloadAllBookmarks();
                       break;
                     default:
                   }
@@ -81,74 +80,66 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
               ),
           ],
         ),
-        body: BlocBuilder<BookmarkCubit, BookmarkState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case BookmarkStatus.loading:
-                return const Center(child: CircularProgressIndicator());
-              case BookmarkStatus.success:
-                if (state.bookmarks.isEmpty) {
-                  return const Center(
-                    child: Text('No bookmarks'),
-                  );
-                }
+        body: Builder(
+          builder: (context) {
+            final state = ref.watch(bookmarkProvider);
 
-                return CustomScrollView(
-                  slivers: [
-                    SliverMasonryGrid.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: settings.imageGridSpacing,
-                      crossAxisSpacing: settings.imageGridSpacing,
-                      childCount: state.bookmarks.length,
-                      itemBuilder: (context, index) {
-                        final bookmark = state.bookmarks[index];
-
-                        return GestureDetector(
-                          onTap: () => goToBookmarkDetailsPage(
-                            context: context,
-                            bookmarks: state.bookmarks,
-                            initialIndex: index,
-                          ),
-                          child: Stack(
-                            children: [
-                              BooruImage(
-                                borderRadius: BorderRadius.circular(
-                                    settings.imageBorderRadius),
-                                aspectRatio: bookmark.aspectRatio,
-                                fit: BoxFit.cover,
-                                imageUrl: bookmark.isVideo
-                                    ? bookmark.thumbnailUrl
-                                    : bookmark.sampleUrl,
-                                placeholderUrl: bookmark.thumbnailUrl,
-                              ),
-                              Positioned(
-                                top: 5,
-                                left: 5,
-                                child: BooruLogo(booru: booruConfig),
-                              ),
-                              if (edit)
-                                Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: CircularIconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () => context
-                                        .read<BookmarkCubit>()
-                                        .removeBookmarkWithToast(bookmark),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              case BookmarkStatus.failure:
-                return Center(child: Text(state.error));
-              default:
-                return Container();
+            if (state.bookmarks.isEmpty) {
+              return const Center(
+                child: Text('No bookmarks'),
+              );
             }
+
+            return CustomScrollView(
+              slivers: [
+                SliverMasonryGrid.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: settings.imageGridSpacing,
+                  crossAxisSpacing: settings.imageGridSpacing,
+                  childCount: state.bookmarks.length,
+                  itemBuilder: (context, index) {
+                    final bookmark = state.bookmarks[index];
+
+                    return GestureDetector(
+                      onTap: () => goToBookmarkDetailsPage(
+                        context: context,
+                        bookmarks: state.bookmarks,
+                        initialIndex: index,
+                      ),
+                      child: Stack(
+                        children: [
+                          BooruImage(
+                            borderRadius: BorderRadius.circular(
+                                settings.imageBorderRadius),
+                            aspectRatio: bookmark.aspectRatio,
+                            fit: BoxFit.cover,
+                            imageUrl: bookmark.isVideo
+                                ? bookmark.thumbnailUrl
+                                : bookmark.sampleUrl,
+                            placeholderUrl: bookmark.thumbnailUrl,
+                          ),
+                          Positioned(
+                            top: 5,
+                            left: 5,
+                            child: BooruLogo(booru: booruConfig),
+                          ),
+                          if (edit)
+                            Positioned(
+                              top: 5,
+                              right: 5,
+                              child: CircularIconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () => ref.bookmarks
+                                    .removeBookmarkWithToast(bookmark),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
           },
         ),
       ),

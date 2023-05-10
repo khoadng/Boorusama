@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
 // Project imports:
@@ -9,77 +9,52 @@ import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/toast.dart';
 
-enum BookmarkStatus { initial, loading, success, failure }
+final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
+  BookmarkNotifier.new,
+  dependencies: [
+    bookmarkRepoProvider,
+    dioDownloadServiceProvider,
+    settingsProvider,
+  ],
+);
 
-class BookmarkState extends Equatable {
-  final List<Bookmark> bookmarks;
-  final BookmarkStatus status;
-  final String error;
-
-  const BookmarkState({
-    this.bookmarks = const [],
-    this.status = BookmarkStatus.initial,
-    this.error = '',
-  });
-
-  BookmarkState copyWith({
-    List<Bookmark>? bookmarks,
-    BookmarkStatus? status,
-    String? error,
-  }) {
-    return BookmarkState(
-      bookmarks: bookmarks ?? this.bookmarks,
-      status: status ?? this.status,
-      error: error ?? this.error,
-    );
+class BookmarkNotifier extends Notifier<BookmarkState> {
+  @override
+  BookmarkState build() {
+    getAllBookmarks();
+    return const BookmarkState();
   }
 
-  @override
-  List<Object?> get props => [bookmarks, status, error];
-}
-
-class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
-  BookmarkCubit({
-    required this.bookmarkRepository,
-    required this.downloadService,
-    required this.settingsRepository,
-  }) : super(const BookmarkState());
-
-  final BookmarkRepository bookmarkRepository;
-  final DownloadService downloadService;
-  @override
-  final SettingsRepository settingsRepository;
+  BookmarkRepository get bookmarkRepository => ref.read(bookmarkRepoProvider);
 
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
   }) async {
-    emit(state.copyWith(status: BookmarkStatus.loading));
-    bookmarkRepository.getAllBookmarks().run().then((value) => value.match(
-          (error) => onError?.call(error),
-          (bookmarks) => emit(state.copyWith(
-            bookmarks: bookmarks,
-            status: BookmarkStatus.success,
-          )),
-        ));
+    bookmarkRepository.getAllBookmarks().run().then(
+          (value) => value.match(
+            (error) => onError?.call(error),
+            (bookmarks) => state = state.copyWith(
+              bookmarks: bookmarks,
+            ),
+          ),
+        );
   }
 
-  // add bookmarks
   Future<void> addBookmarks(
-    List<Post> posts,
-    Booru booru, {
+    Booru booru,
+    List<Post> posts, {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
-    emit(state.copyWith(status: BookmarkStatus.loading));
     try {
       final bookmarks = await bookmarkRepository.addBookmarks(booru, posts);
       onSuccess?.call();
-      emit(state.copyWith(
-          bookmarks: [...state.bookmarks, ...bookmarks],
-          status: BookmarkStatus.success));
+      state = state.copyWith(
+        bookmarks: [...state.bookmarks, ...bookmarks],
+      );
     } catch (e) {
       onError?.call();
     }
@@ -92,13 +67,12 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
-    emit(state.copyWith(status: BookmarkStatus.loading));
     try {
       final bookmark = await bookmarkRepository.addBookmark(booru, post);
       onSuccess?.call();
-      emit(state.copyWith(
-          bookmarks: [...state.bookmarks, bookmark],
-          status: BookmarkStatus.success));
+      state = state.copyWith(
+        bookmarks: [...state.bookmarks, bookmark],
+      );
     } catch (e) {
       onError?.call();
     }
@@ -109,14 +83,12 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
-    emit(state.copyWith(status: BookmarkStatus.loading));
     try {
       await bookmarkRepository.removeBookmark(bookmark);
       final newFavorites = List<Bookmark>.from(state.bookmarks)
         ..remove(bookmark);
       onSuccess?.call();
-      emit(state.copyWith(
-          bookmarks: newFavorites, status: BookmarkStatus.success));
+      state = state.copyWith(bookmarks: newFavorites);
     } catch (e) {
       onError?.call();
     }
@@ -127,24 +99,23 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
-    emit(state.copyWith(status: BookmarkStatus.loading));
     try {
       await bookmarkRepository.updateBookmark(bookmark);
       final index = state.bookmarks.indexWhere((f) => f.id == bookmark.id);
       final newBookmarks = List<Bookmark>.from(state.bookmarks)
         ..replaceRange(index, index + 1, [bookmark]);
       onSuccess?.call();
-      emit(state.copyWith(
-          bookmarks: newBookmarks, status: BookmarkStatus.success));
+      state = state.copyWith(bookmarks: newBookmarks);
     } catch (e) {
       onError?.call();
     }
   }
 
   Future<void> downloadAllBookmarks() async {
-    final settings = await getOrDefault();
+    final settings = ref.read(settingsProvider);
     final tasks = state.bookmarks
-        .map((bookmark) => downloadService
+        .map((bookmark) => ref
+            .read(dioDownloadServiceProvider)
             .downloadWithSettings(
               settings,
               url: bookmark.originalUrl,
@@ -158,21 +129,11 @@ class BookmarkCubit extends Cubit<BookmarkState> with SettingsRepositoryMixin {
   }
 }
 
-extension BookmarkCubitX on BookmarkState {
-  // check if a post is bookmarked
-  bool isBookmarked(Post post, BooruType booru) {
-    return bookmarks.any((b) =>
-        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
-  }
-
-  // get bookmark from Post
-  Bookmark? getBookmark(Post post, BooruType booru) {
-    return bookmarks.firstWhereOrNull((b) =>
-        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
-  }
+extension BookmarkNotifierX on WidgetRef {
+  BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
 }
 
-extension BookmarkCubitToastX on BookmarkCubit {
+extension BookmarkCubitToastX on BookmarkNotifier {
   Future<void> addBookmarkWithToast(String url, Booru booru, Post post) =>
       addBookmark(
         url,
@@ -184,8 +145,8 @@ extension BookmarkCubitToastX on BookmarkCubit {
 
   Future<void> addBookmarksWithToast(Booru booru, List<Post> posts) =>
       addBookmarks(
-        posts,
         booru,
+        posts,
         onSuccess: () => showSuccessToast('${posts.length} bookmarks added'),
         onError: () => showErrorToast('Failed to add bookmarks'),
       );
@@ -205,4 +166,41 @@ extension BookmarkCubitToastX on BookmarkCubit {
   Future<void> getAllBookmarksWithToast() => getAllBookmarks(
         onError: (error) => showErrorToast('Failed to load bookmarks: $error'),
       );
+}
+
+class BookmarkState extends Equatable {
+  final List<Bookmark> bookmarks;
+  final String error;
+
+  const BookmarkState({
+    this.bookmarks = const [],
+    this.error = '',
+  });
+
+  BookmarkState copyWith({
+    List<Bookmark>? bookmarks,
+    String? error,
+  }) {
+    return BookmarkState(
+      bookmarks: bookmarks ?? this.bookmarks,
+      error: error ?? this.error,
+    );
+  }
+
+  @override
+  List<Object?> get props => [bookmarks, error];
+}
+
+extension BookmarkCubitX on BookmarkState {
+  // check if a post is bookmarked
+  bool isBookmarked(Post post, BooruType booru) {
+    return bookmarks.any((b) =>
+        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
+  }
+
+  // get bookmark from Post
+  Bookmark? getBookmark(Post post, BooruType booru) {
+    return bookmarks.firstWhereOrNull((b) =>
+        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
+  }
 }
