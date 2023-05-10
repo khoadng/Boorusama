@@ -231,7 +231,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final trendingTagCubit = TrendingTagCubit(
       popularSearchRepo,
-      intToBooruType(booruConfig.id) == BooruType.safebooru
+      intToBooruType(booruConfig.booruId) == BooruType.safebooru
           ? tagInfo.r18Tags.toSet()
           : {},
     )..getTags();

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -28,15 +29,16 @@ import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
-class SearchPage extends ConsumerStatefulWidget {
-  const SearchPage({
-    super.key,
-    required this.metatagHighlightColor,
-    this.initialQuery,
-  });
+final tabsProvider = StateProvider.autoDispose<List<String>>((ref) {
+  return ['0'];
+});
 
-  final Color metatagHighlightColor;
-  final String? initialQuery;
+final indexProvider = StateProvider.autoDispose<int>((ref) {
+  return 0;
+});
+
+class SearchPage extends ConsumerStatefulWidget {
+  const SearchPage({super.key});
 
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
@@ -59,17 +61,8 @@ class SearchPage extends ConsumerStatefulWidget {
                 ),
                 BlocProvider.value(value: relatedTagBloc),
               ],
-              child: CustomContextMenuOverlay(
-                child: ProviderScope(
-                  overrides: [
-                    selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-                  ],
-                  child: SearchPage(
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                    initialQuery: tag,
-                  ),
-                ),
+              child: const CustomContextMenuOverlay(
+                child: SearchPage(),
               ),
             );
           },
@@ -77,10 +70,102 @@ class SearchPage extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<SearchPage> createState() => _SearchPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
+  @override
+  Widget build(BuildContext context) {
+    final index = ref.watch(indexProvider);
+    final tabs = ref.watch(tabsProvider);
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: index,
+            children: [
+              ...tabs.map(
+                (e) => ProviderScope(
+                  overrides: [
+                    selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
+                  ],
+                  child: SearchPageInner(
+                    metatagHighlightColor: Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 50,
+              color: Theme.of(context).cardColor,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        ...tabs.mapIndexed((i, e) => Container(
+                              color: index == i ? Colors.blue : null,
+                              child: Row(
+                                children: [
+                                  TextButton(
+                                    onPressed: () => ref
+                                        .read(indexProvider.notifier)
+                                        .state = i,
+                                    child: Text(e),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      final a = [...ref.read(tabsProvider)];
+                                      a.removeAt(i);
+                                      ref.read(tabsProvider.notifier).state = a;
+                                    },
+                                    icon: Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      ref.read(tabsProvider.notifier).state = [
+                        ...ref.read(tabsProvider),
+                        (tabs.length).toString(),
+                      ];
+                    },
+                    icon: const Icon(Icons.add),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SearchPageInner extends ConsumerStatefulWidget {
+  const SearchPageInner({
+    super.key,
+    required this.metatagHighlightColor,
+    this.initialQuery,
+  });
+
+  final Color metatagHighlightColor;
+  final String? initialQuery;
+
+  @override
+  ConsumerState<SearchPageInner> createState() => _SearchPageInnerState();
+}
+
+class _SearchPageInnerState extends ConsumerState<SearchPageInner> {
   late final queryEditingController = RichTextController(
     patternMatchMap: {
       ref.read(searchMetatagStringRegexProvider): TextStyle(
