@@ -329,7 +329,6 @@ void main() async {
             ],
             child: ProviderScope(
               overrides: [
-                //FIXME: need to change theme based on settings
                 searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
                 currentBooruConfigRepoProvider
                     .overrideWithValue(currentBooruRepo),

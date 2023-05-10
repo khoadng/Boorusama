@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -7,6 +8,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
@@ -25,7 +27,7 @@ import 'boorus/danbooru/router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class App extends StatefulWidget {
+class App extends ConsumerStatefulWidget {
   const App({
     super.key,
     required this.settings,
@@ -34,12 +36,21 @@ class App extends StatefulWidget {
   final Settings settings;
 
   @override
-  State<App> createState() => _AppState();
+  ConsumerState<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      settingsProvider,
+      (previous, next) {
+        if (previous?.themeMode != next.themeMode) {
+          context.read<ThemeBloc>().add(ThemeChanged(theme: next.themeMode));
+        }
+      },
+    );
+
     return Portal(
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
