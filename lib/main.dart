@@ -290,9 +290,6 @@ void main() async {
             RepositoryProvider<BlacklistedTagRepository>.value(
               value: globalBlacklistedTags,
             ),
-            RepositoryProvider<BookmarkRepository>.value(
-              value: bookmarkRepo,
-            ),
           ],
           child: MultiBlocProvider(
             providers: [
