@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -41,12 +42,12 @@ class GelbooruProvider extends StatelessWidget {
 
   factory GelbooruProvider.create(
     BuildContext context, {
-    required BooruConfig booruConfig,
     required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+    final booruConfig = ref.read(currentBooruConfigProvider);
+    final dio = ref.read(dioProvider(booruConfig.url));
 
     final api = GelbooruApi(dio);
 

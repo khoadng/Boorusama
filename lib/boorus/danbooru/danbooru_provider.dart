@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -110,11 +111,11 @@ class DanbooruProvider extends StatelessWidget {
   factory DanbooruProvider.create(
     BuildContext context, {
     required WidgetRef ref,
-    required BooruConfig booruConfig,
     required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
-    final dio = ref.read(dioProvider).getDio(booruConfig.url);
+    final booruConfig = ref.read(currentBooruConfigProvider);
+    final dio = ref.read(dioProvider(booruConfig.url));
     final tagInfo = context.read<TagInfo>();
     final api = DanbooruApi(dio);
 

@@ -1,4 +1,10 @@
 // Package imports:
+import 'dart:io';
+
+import 'package:boorusama/core/application/networking.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/loggers.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,7 +16,6 @@ import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/main.dart';
 
 final currentBooruConfigRepoProvider =
     Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());
@@ -47,4 +52,28 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
 
-final dioProvider = Provider<DioProvider>((ref) => throw UnimplementedError());
+final dioProvider = Provider.family<Dio, String>(
+  (ref, baseUrl) {
+    final dir = ref.watch(httpCacheDirProvider);
+    final generator = ref.watch(userAgentGeneratorProvider);
+    final loggerService = ref.watch(loggerProvider);
+
+    return dio(dir, baseUrl, generator, loggerService);
+  },
+  dependencies: [
+    httpCacheDirProvider,
+    userAgentGeneratorProvider,
+    loggerProvider,
+  ],
+);
+
+final httpCacheDirProvider = Provider<Directory>(
+  (ref) => throw UnimplementedError(),
+);
+
+final userAgentGeneratorProvider = Provider<UserAgentGenerator>(
+  (ref) => throw UnimplementedError(),
+);
+
+final loggerProvider =
+    Provider<LoggerService>((ref) => throw UnimplementedError());

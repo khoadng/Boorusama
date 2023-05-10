@@ -343,7 +343,11 @@ void main() async {
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
                 currentBooruConfigProvider.overrideWith(
                     () => CurrentBooruConfigNotifier(initialConfig!)),
-                dioProvider.overrideWithValue(appDioProvider),
+                // dioProvider.overrideWithValue(appDioProvider),
+                httpCacheDirProvider.overrideWithValue(tempPath),
+                userAgentGeneratorProvider
+                    .overrideWithValue(userAgentGenerator),
+                loggerProvider.overrideWithValue(logger),
               ],
               child: App(settings: settings),
             ),

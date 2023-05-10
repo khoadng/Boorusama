@@ -55,7 +55,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               return DanbooruProvider.create(
                 context,
                 ref: ref,
-                booruConfig: config,
                 sourceComposer: config.isUnverified(booru)
                     ? UnknownImageSourceComposer()
                     : DanbooruImageSourceComposer(),
@@ -75,7 +74,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 context,
                 ref: ref,
                 key: gkey,
-                booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: GelbooruHomePage(
                     key: gkey,
@@ -92,7 +90,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 context,
                 ref: ref,
                 key: gkey,
-                booruConfig: config,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: MoebooruHomePage(
                     key: gkey,

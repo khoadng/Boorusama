@@ -434,7 +434,6 @@ void goToQuickSearchPage(
           case BooruType.aibooru:
             return DanbooruProvider.create(
               context,
-              booruConfig: booruConfig,
               ref: ref,
               sourceComposer: booruConfig.isUnverified(booru)
                   ? UnknownImageSourceComposer()
@@ -468,7 +467,6 @@ void goToQuickSearchPage(
             return GelbooruProvider.create(
               context,
               ref: ref,
-              booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -506,7 +504,6 @@ void goToQuickSearchPage(
             return MoebooruProvider.create(
               context,
               ref: ref,
-              booruConfig: booruConfig,
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -603,7 +600,6 @@ Future<void> goToBulkDownloadPage(
           return MoebooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
@@ -623,7 +619,6 @@ Future<void> goToBulkDownloadPage(
           return DanbooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             sourceComposer: booruConfig.isUnverified(booru)
                 ? UnknownImageSourceComposer()
                 : DanbooruImageSourceComposer(),
@@ -643,7 +638,6 @@ Future<void> goToBulkDownloadPage(
           return GelbooruProvider.create(
             context,
             ref: ref,
-            booruConfig: booruConfig,
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
