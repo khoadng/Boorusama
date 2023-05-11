@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
 
 class AddToFavoriteGroupPage extends StatelessWidget {

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/application/search/search_history_notifier.dart';
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
 
 class FullHistoryView extends ConsumerWidget {

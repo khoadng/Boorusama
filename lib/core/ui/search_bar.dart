@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 
-class SearchBar extends StatefulWidget {
-  const SearchBar({
+class BooruSearchBar extends StatefulWidget {
+  const BooruSearchBar({
     super.key,
     this.onTap,
     this.leading,
@@ -35,10 +35,10 @@ class SearchBar extends StatefulWidget {
   final Color? backgroundColor;
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<BooruSearchBar> createState() => _BooruSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _BooruSearchBarState extends State<BooruSearchBar> {
   late TextEditingController _textEditingController;
 
   @override

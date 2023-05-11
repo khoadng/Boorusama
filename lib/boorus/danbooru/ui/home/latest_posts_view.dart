@@ -106,7 +106,7 @@ class _AppBar extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
       primary: primary ?? true,
-      title: SearchBar(
+      title: BooruSearchBar(
         enabled: false,
         leading: onMenuTap != null
             ? IconButton(

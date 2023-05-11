@@ -73,7 +73,7 @@ class _GelbooruHomePageState extends State<GelbooruHomePage> {
                                 backgroundColor:
                                     Theme.of(context).scaffoldBackgroundColor,
                                 toolbarHeight: kToolbarHeight * 1.2,
-                                title: SearchBar(
+                                title: BooruSearchBar(
                                   enabled: false,
                                   leading: widget.onMenuTap != null
                                       ? IconButton(

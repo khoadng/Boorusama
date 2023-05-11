@@ -90,7 +90,7 @@ class SimpleTagSearchView extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            child: SearchBar(
+            child: BooruSearchBar(
               backgroundColor: Theme.of(context).colorScheme.background,
               leading: backButton,
               autofocus: true,

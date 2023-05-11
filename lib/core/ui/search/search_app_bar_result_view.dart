@@ -30,7 +30,7 @@ class SearchAppBarResultView extends ConsumerWidget {
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SearchBar(
+              child: BooruSearchBar(
                 enabled: false,
                 onTap: () =>
                     ref.read(searchProvider.notifier).goToSuggestions(),

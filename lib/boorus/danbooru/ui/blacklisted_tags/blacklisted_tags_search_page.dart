@@ -249,7 +249,7 @@ class _SearchBarState extends ConsumerState<_SearchBar> {
       },
     );
 
-    return SearchBar(
+    return BooruSearchBar(
       autofocus: true,
       queryEditingController: queryEditingController,
       leading: IconButton(
