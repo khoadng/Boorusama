@@ -25,11 +25,19 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
+  final _cache = <String, List<Search>>{};
+
+  String _getKeyFromDateTime(DateTime date) =>
+      '${date.year}-${date.month}-${date.day}';
 
   @override
   Future<List<Search>> getSearchByDate(DateTime date) async {
+    final key = _getKeyFromDateTime(date);
+    if (_cache.containsKey(key)) {
+      return _cache[key]!;
+    }
     try {
-      return _currentUserBooruRepository
+      final result = await _currentUserBooruRepository
           .get()
           .then(
             (booruConfig) => _api.getPopularSearchByDate(
@@ -39,6 +47,8 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
             ),
           )
           .then(parseSearch);
+      _cache[key] = result;
+      return result;
     } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request

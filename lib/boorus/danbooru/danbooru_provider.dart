@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
+import 'package:boorusama/boorus/danbooru/application/tags/trending_tag_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
@@ -88,7 +88,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.popularSearchRepo,
     required this.favoriteTagsRepo,
     required this.tagInfo,
-    required this.trendingTagCubit,
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
@@ -229,13 +228,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
-    final trendingTagCubit = TrendingTagCubit(
-      popularSearchRepo,
-      intToBooruType(booruConfig.id) == BooruType.safebooru
-          ? tagInfo.r18Tags.toSet()
-          : {},
-    )..getTags();
-
     final blacklistedTagsBloc = BlacklistedTagsBloc(
       currentBooruConfigRepository: currentBooruConfigRepo,
       blacklistedTagsRepository: blacklistedTagRepo,
@@ -337,7 +329,6 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
-      trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       currentUserBloc: currentUserBloc,
       poolOverviewBloc: poolOverviewBloc,
@@ -390,7 +381,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final tagInfo = context.read<TagInfo>();
 
-    final trendingTagCubit = context.read<TrendingTagCubit>();
     final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
     // final exploreBloc = context.read<ExploreBloc>();
     final currentUserBloc = context.read<CurrentUserBloc>();
@@ -440,7 +430,6 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
-      trendingTagCubit: trendingTagCubit,
       blacklistedTagsBloc: blacklistedTagsBloc,
       currentUserBloc: currentUserBloc,
       poolOverviewBloc: poolOverviewBloc,
@@ -492,7 +481,6 @@ class DanbooruProvider extends StatelessWidget {
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final FileNameGenerator fileNameGenerator;
 
-  final TrendingTagCubit trendingTagCubit;
   final BlacklistedTagsBloc blacklistedTagsBloc;
   final CurrentUserBloc currentUserBloc;
   final PoolOverviewBloc poolOverviewBloc;
@@ -544,7 +532,6 @@ class DanbooruProvider extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: trendingTagCubit),
           BlocProvider.value(value: favoritesCubit),
           BlocProvider.value(value: favoritePostCubit),
           BlocProvider.value(value: profileCubit),
@@ -569,6 +556,7 @@ class DanbooruProvider extends StatelessWidget {
             postVoteRepoProvider.overrideWithValue(postVoteRepo),
             danbooruPostRepoProvider.overrideWithValue(postRepo),
             poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
+            popularSearchProvider.overrideWithValue(popularSearchRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -617,3 +605,7 @@ final postCountProvider = Provider<PostCountState>((ref) {
 
 final poolDescriptionRepoProvider =
     Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());
+
+final popularSearchProvider = Provider<PopularSearchRepository>((ref) {
+  throw UnimplementedError();
+});

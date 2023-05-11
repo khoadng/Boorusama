@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'trending_tags.dart';
 
-class TrendingSection extends StatelessWidget {
+class TrendingSection extends ConsumerWidget {
   const TrendingSection({
     super.key,
     required this.onTagTap,
@@ -19,31 +18,31 @@ class TrendingSection extends StatelessWidget {
   final ValueChanged<String>? onTagTap;
 
   @override
-  Widget build(BuildContext context) {
-    final state = context.select((TrendingTagCubit cubit) => cubit.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncData = ref.watch(trendingTagsProvider);
 
-    return state.status != LoadStatus.success
-        ? const Center(child: CircularProgressIndicator.adaptive())
-        : state.tags != null && state.tags!.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Divider(thickness: 1),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      'search.trending'.tr().toUpperCase(),
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
+    return asyncData.when(
+      data: (tags) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Divider(thickness: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'search.trending'.tr().toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  TrendingTags(
-                    onTagTap: onTagTap,
-                    tags: state.tags,
-                  ),
-                ],
-              )
-            : const SizedBox.shrink();
+            ),
+          ),
+          TrendingTags(
+            onTagTap: onTagTap,
+            tags: tags,
+          ),
+        ],
+      ),
+      error: (error, stackTrace) => const SizedBox.shrink(),
+      loading: () => const SizedBox.shrink(),
+    );
   }
 }

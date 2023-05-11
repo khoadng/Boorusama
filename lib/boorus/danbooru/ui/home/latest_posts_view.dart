@@ -6,14 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/tags.dart';
 import 'most_search_tag_list.dart';
 
 class LatestView extends StatefulWidget {
@@ -87,21 +84,10 @@ class _MostSearchTagSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status =
-        context.select((TrendingTagCubit cubit) => cubit.state.status);
-
-    switch (status) {
-      case LoadStatus.success:
-        return MostSearchTagList(
-          onSelected: onSelected,
-          selected: selected,
-        );
-      case LoadStatus.failure:
-        return const SizedBox.shrink();
-      case LoadStatus.initial:
-      case LoadStatus.loading:
-        return const TagChipsPlaceholder();
-    }
+    return MostSearchTagList(
+      onSelected: onSelected,
+      selected: selected,
+    );
   }
 }
 
