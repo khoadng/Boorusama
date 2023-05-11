@@ -11,11 +11,11 @@ TaskEither<BooruError, BooruConfig> tryGetBooruConfigFrom(
         CurrentBooruConfigRepository configRepository) =>
     TaskEither.tryCatch(
       () => configRepository.get(),
-      (error, stackTrace) => BooruError(
-          error: AppError(type: AppErrorType.failedToLoadBooruConfig)),
+      (error, stackTrace) =>
+          AppError(type: AppErrorType.failedToLoadBooruConfig),
     ).flatMap((r) => r == null
         ? TaskEither.left(
-            BooruError(error: AppError(type: AppErrorType.booruConfigNotFound)),
+            AppError(type: AppErrorType.booruConfigNotFound),
           )
         : TaskEither.right(r));
 

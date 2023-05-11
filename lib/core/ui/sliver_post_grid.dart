@@ -47,25 +47,25 @@ class SliverPostGrid extends ConsumerWidget {
             final message = translateBooruError(error!);
 
             return SliverToBoxAdapter(
-              child: error?.buildWhen(
-                appError: (err) => ErrorBox(errorMessage: message.tr()),
-                serverError: (err) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 48, bottom: 16),
-                        child: Text(
-                          err.httpStatusCode.toString(),
-                          style: Theme.of(context).textTheme.headlineMedium,
+              child: switch (error!) {
+                AppError _ => ErrorBox(errorMessage: message.tr()),
+                ServerError e => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 48, bottom: 16),
+                          child: Text(
+                            e.httpStatusCode.toString(),
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
                         ),
-                      ),
-                      Text(message).tr(),
-                    ],
+                        Text(message).tr(),
+                      ],
+                    ),
                   ),
-                ),
-                unknownError: (context) => ErrorBox(errorMessage: message),
-              ),
+                UnknownError _ => ErrorBox(errorMessage: message),
+              },
             );
           }
 

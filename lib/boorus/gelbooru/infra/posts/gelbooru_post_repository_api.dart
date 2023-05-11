@@ -54,8 +54,7 @@ TaskEither<BooruError, List<Post>> tryParsePosts(
         HttpResponse<dynamic> response) =>
     TaskEither.tryCatch(
       () => parsePostAsync(response),
-      (error, stackTrace) =>
-          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
 
 class GelbooruPostRepositoryApi

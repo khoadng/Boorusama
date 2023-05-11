@@ -45,9 +45,7 @@ TaskEither<BooruError, List<DanbooruPost>> tryParseData(
 ) =>
     TaskEither.tryCatch(
       () => parsePostAsync(response, urlComposer),
-      (error, stackTrace) => BooruError(
-        error: AppError(type: AppErrorType.failedToParseJSON),
-      ),
+      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
 
 DanbooruPost postDtoToPost(
