@@ -134,10 +134,10 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                 focusNode: focus,
                 queryEditingController: queryEditingController,
               ),
-              body: SafeArea(
+              body: const SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: const [
+                    children: [
                       SelectedTagListWithData(),
                       SearchDivider(),
                       SearchLandingView(),
@@ -193,10 +193,10 @@ class _ResultView extends ConsumerWidget {
         sliverHeaderBuilder: (context) => [
           const SearchAppBarResultView(),
           const SliverToBoxAdapter(child: SearchDivider(height: 7)),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Spacer(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),

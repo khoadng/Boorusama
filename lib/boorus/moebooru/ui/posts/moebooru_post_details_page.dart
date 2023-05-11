@@ -57,7 +57,7 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
         return MoebooruProvider.of(
           context,
           builder: (context) => MultiBlocProvider(
-            providers: [
+            providers: const [
               // BlocProvider.value(value: shareCubit),
             ],
             child: MoebooruPostDetailsPage(
