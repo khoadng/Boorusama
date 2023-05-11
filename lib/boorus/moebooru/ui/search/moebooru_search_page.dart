@@ -127,9 +127,12 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
           case DisplayState.options:
             return Scaffold(
               floatingActionButton: const SearchButton(),
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
               body: const SafeArea(
                 child: SingleChildScrollView(
@@ -145,9 +148,12 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
             );
           case DisplayState.suggestion:
             return Scaffold(
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
               body: SafeArea(
                 child: Column(

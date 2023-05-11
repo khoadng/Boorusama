@@ -9,7 +9,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/search/search_bar_with_data.dart';
 
-class SearchAppBar extends ConsumerWidget with PreferredSizeWidget {
+class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     super.key,
     required this.queryEditingController,
@@ -36,7 +36,4 @@ class SearchAppBar extends ConsumerWidget with PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
