@@ -9,7 +9,7 @@ abstract class CurrentBooruConfigRepository {
 
 TaskEither<BooruError, BooruConfig> tryGetBooruConfigFrom(
         CurrentBooruConfigRepository configRepository) =>
-    TaskEither.tryCatch(
+    TaskEither<BooruError, BooruConfig?>.tryCatch(
       () => configRepository.get(),
       (error, stackTrace) =>
           AppError(type: AppErrorType.failedToLoadBooruConfig),
