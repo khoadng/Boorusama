@@ -40,7 +40,6 @@ class DanbooruPost extends Equatable
     required this.uploaderId,
     required this.rating,
     required this.fileSize,
-    required this.pixivId,
     required this.isBanned,
     required this.hasChildren,
     required this.parentId,
@@ -74,7 +73,6 @@ class DanbooruPost extends Equatable
         uploaderId: 0,
         rating: Rating.explicit,
         fileSize: 0,
-        pixivId: null,
         isBanned: false,
         hasChildren: false,
         hasLarge: false,
@@ -117,7 +115,6 @@ class DanbooruPost extends Equatable
   final Rating rating;
   @override
   final int fileSize;
-  final int? pixivId;
   final bool isBanned;
   final bool hasChildren;
   final int? parentId;
@@ -144,7 +141,6 @@ class DanbooruPost extends Equatable
     int? score,
     int? favCount,
     bool? hasChildren,
-    int? pixivId,
     PostSource? source,
     int? parentId,
   }) =>
@@ -173,7 +169,6 @@ class DanbooruPost extends Equatable
         uploaderId: uploaderId,
         rating: rating,
         fileSize: fileSize,
-        pixivId: pixivId ?? this.pixivId,
         isBanned: isBanned,
         hasChildren: hasChildren ?? this.hasChildren,
         hasLarge: hasLarge,

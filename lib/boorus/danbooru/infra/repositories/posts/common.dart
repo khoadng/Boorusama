@@ -87,7 +87,6 @@ DanbooruPost postDtoToPost(
       uploaderId: dto.uploaderId ?? 0,
       rating: mapStringToRating(dto.rating ?? 's'),
       fileSize: dto.fileSize ?? 0,
-      pixivId: dto.pixivId,
       isBanned: dto.isBanned ?? false,
       hasChildren: dto.hasChildren ?? false,
       parentId: dto.parentId,

@@ -33,7 +33,6 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       uploaderId: 1,
       rating: Rating.explicit,
       fileSize: 1,
-      pixivId: null,
       isBanned: false,
       hasChildren: false,
       parentId: null,
