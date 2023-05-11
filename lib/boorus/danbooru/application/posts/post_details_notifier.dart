@@ -12,8 +12,8 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
-final postDetailsProvider =
-    NotifierProvider<PostDetailsNotifier, PostDetailState>(
+final danbooruPostDetailsProvider =
+    NotifierProvider<DanbooruPostDetailsNotifier, PostDetailState>(
   () => throw UnimplementedError(),
   dependencies: [
     settingsProvider,
@@ -23,9 +23,9 @@ final postDetailsProvider =
   ],
 );
 
-class PostDetailsNotifier extends Notifier<PostDetailState>
+class DanbooruPostDetailsNotifier extends Notifier<PostDetailState>
     with DanbooruPostRepositoryMixin {
-  PostDetailsNotifier({
+  DanbooruPostDetailsNotifier({
     required this.posts,
     required this.initialIndex,
   }) : super();

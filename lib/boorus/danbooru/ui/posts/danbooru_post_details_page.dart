@@ -90,20 +90,16 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
       initialIndex,
       () => ProviderScope(
         overrides: [
-          postDetailsProvider.overrideWith(() => PostDetailsNotifier(
-                posts: posts,
-                initialIndex: initialIndex,
-              ))
+          danbooruPostDetailsProvider
+              .overrideWith(() => DanbooruPostDetailsNotifier(
+                    posts: posts,
+                    initialIndex: initialIndex,
+                  ))
         ],
         child: DanbooruPostDetailsPage(
           intitialIndex: initialIndex,
           posts: posts,
           onExit: (page) => scrollController?.scrollToIndex(page),
-          // onPageChanged: (page) {
-          //   shareCubit.updateInformation(posts[page]);
-          // },
-          // onCachedImagePathUpdate: (imagePath) =>
-          //     shareCubit.setImagePath(imagePath ?? ''),
         ),
       ),
     );
@@ -175,7 +171,7 @@ class _DanbooruPostDetailsPageState
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
-        final state = ref.watch(postDetailsProvider);
+        final state = ref.watch(danbooruPostDetailsProvider);
         final artists = state.recommends
             .where((element) => element.type == RecommendType.artist)
             .toList();
@@ -229,7 +225,7 @@ class _DanbooruPostDetailsPageState
       },
       pageCount: posts.length,
       topRightButtonsBuilder: (page) {
-        final details = ref.watch(postDetailsProvider);
+        final details = ref.watch(danbooruPostDetailsProvider);
 
         return [
           Builder(builder: (_) {
@@ -262,7 +258,7 @@ class _DanbooruPostDetailsPageState
                           ),
                         ),
                   onPressed: () => ref
-                      .read(postDetailsProvider.notifier)
+                      .read(danbooruPostDetailsProvider.notifier)
                       .toggleNoteVisibility(),
                 );
               },
@@ -275,7 +271,7 @@ class _DanbooruPostDetailsPageState
       },
       onExpanded: (currentPage) {
         final post = posts[currentPage];
-        ref.read(postDetailsProvider.notifier).loadData(currentPage);
+        ref.read(danbooruPostDetailsProvider.notifier).loadData(currentPage);
 
         context.read<ArtistCommentaryCubit>().getCommentary(post.id);
 
@@ -290,11 +286,14 @@ class _DanbooruPostDetailsPageState
     int page,
     int currentPage,
   ) {
-    final notes = ref.watch(postDetailsProvider.select((value) => value.notes));
-    final pools = ref.watch(postDetailsProvider.select((value) => value.pools));
-    final tags = ref.watch(postDetailsProvider.select((value) => value.tags));
-    final enableNotes =
-        ref.watch(postDetailsProvider.select((value) => value.enableNotes));
+    final notes =
+        ref.watch(danbooruPostDetailsProvider.select((value) => value.notes));
+    final pools =
+        ref.watch(danbooruPostDetailsProvider.select((value) => value.pools));
+    final tags =
+        ref.watch(danbooruPostDetailsProvider.select((value) => value.tags));
+    final enableNotes = ref.watch(
+        danbooruPostDetailsProvider.select((value) => value.enableNotes));
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
