@@ -7,6 +7,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -65,13 +66,16 @@ class InformationSection extends StatelessWidget {
               ],
             ),
           ),
-          if (showSource && post.hasWebSource)
-            GestureDetector(
-              onTap: () => launchExternalUrl(Uri.parse(post.source!)),
-              child: WebsiteLogo(
-                url: post.sourceHost!,
+          if (showSource)
+            post.source.whenWeb(
+              (source) => GestureDetector(
+                onTap: () => launchExternalUrl(source.uri),
+                child: WebsiteLogo(
+                  url: source.url,
+                ),
               ),
-            )
+              () => const SizedBox.shrink(),
+            ),
         ],
       ),
     );

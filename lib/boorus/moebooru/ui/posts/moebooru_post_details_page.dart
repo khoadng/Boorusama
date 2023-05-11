@@ -216,7 +216,10 @@ class _MoebooruPostDetailsPageState
         FileDetailsSection(
           post: post,
         ),
-        if (post.hasWebSource) SourceSection(post: post),
+        post.source.whenWeb(
+          (source) => SourceSection(url: source.url),
+          () => const SizedBox.shrink(),
+        ),
       ],
     ];
   }

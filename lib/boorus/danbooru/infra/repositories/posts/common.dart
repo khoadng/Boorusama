@@ -73,7 +73,10 @@ DanbooruPost postDtoToPost(
       lastCommentAt: dto.lastCommentedAt != null
           ? DateTime.parse(dto.lastCommentedAt!)
           : null,
-      source: dto.source,
+      source: PostSource.from(
+        dto.source,
+        pixivId: dto.pixivId,
+      ),
       createdAt: dto.createdAt != null
           ? DateTime.parse(dto.createdAt!)
           : DateTime.now(),

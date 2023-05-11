@@ -28,7 +28,10 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
     return PostShareState(
       booruLink: booruLink,
       booruImagePath: '',
-      sourceLink: arg.source ?? booruLink,
+      sourceLink: switch (arg.source) {
+        WebSource s => s.uri.toString(),
+        _ => booruLink,
+      },
     );
   }
 
@@ -43,7 +46,10 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
 
     state = state.copyWith(
       booruLink: booruLink,
-      sourceLink: post.source ?? booruLink,
+      sourceLink: switch (arg.source) {
+        WebSource s => s.uri.toString(),
+        _ => booruLink,
+      },
     );
   }
 }

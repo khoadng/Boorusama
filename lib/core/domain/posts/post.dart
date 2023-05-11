@@ -3,7 +3,7 @@ import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 
-abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
+abstract class Post with MediaInfoMixin, ImageInfoMixin {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
@@ -14,6 +14,7 @@ abstract class Post with MediaInfoMixin, ImageInfoMixin, SourceMixin {
   bool get isTranslated;
   bool get hasParentOrChildren;
   String get downloadUrl;
+  PostSource get source;
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);

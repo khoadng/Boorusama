@@ -120,7 +120,7 @@ Post postDtoToPost(PostDto dto) {
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.image ?? 'foo.png').substring(1),
-    source: dto.source,
+    source: PostSource.from(dto.source),
     rating: mapStringToRating(dto.rating ?? 'general'),
     md5: dto.md5 ?? '',
     hasComment: _boolFromString(dto.hasComments),

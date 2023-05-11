@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import 'package:boorusama/core/display.dart';
@@ -96,6 +97,23 @@ Future<bool> launchExternalUrl(
   LaunchMode? mode,
 }) async {
   if (!await launchUrl(
+    url,
+    mode: mode ?? LaunchMode.externalApplication,
+  )) {
+    onError?.call();
+
+    return false;
+  }
+
+  return true;
+}
+
+Future<bool> launchExternalUrlString(
+  String url, {
+  void Function()? onError,
+  LaunchMode? mode,
+}) async {
+  if (!await launchUrlString(
     url,
     mode: mode ?? LaunchMode.externalApplication,
   )) {

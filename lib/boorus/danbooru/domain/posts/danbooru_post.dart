@@ -5,26 +5,16 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post_variant.dart';
 import 'package:boorusama/core/domain/image.dart';
-import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as base;
-import 'package:boorusama/core/domain/posts/rating.dart';
-import 'package:boorusama/core/domain/posts/source_mixin.dart';
-import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/video.dart';
 
-const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 const censoredTags = ['loli', 'shota'];
 
 class DanbooruPost extends Equatable
-    with
-        MediaInfoMixin,
-        TranslatedMixin,
-        ImageInfoMixin,
-        SourceMixin,
-        VideoInfoMixin
-    implements base.Post {
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    implements Post {
   const DanbooruPost({
     required this.id,
     required this.thumbnailImageUrl,
@@ -41,7 +31,7 @@ class DanbooruPost extends Equatable
     required this.format,
     required this.md5,
     required this.lastCommentAt,
-    required String? source,
+    required this.source,
     required this.createdAt,
     required this.score,
     required this.upScore,
@@ -57,7 +47,7 @@ class DanbooruPost extends Equatable
     required this.hasLarge,
     required this.duration,
     required this.variants,
-  }) : _source = source;
+  });
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
@@ -75,7 +65,7 @@ class DanbooruPost extends Equatable
         format: 'png',
         md5: '',
         lastCommentAt: null,
-        source: null,
+        source: PostSource.none(),
         createdAt: DateTime.now(),
         score: 0,
         upScore: 0,
@@ -117,7 +107,6 @@ class DanbooruPost extends Equatable
   @override
   final String md5;
   final DateTime? lastCommentAt;
-  final String? _source;
   final DateTime createdAt;
   final int score;
   final int upScore;
@@ -156,7 +145,7 @@ class DanbooruPost extends Equatable
     int? favCount,
     bool? hasChildren,
     int? pixivId,
-    String? source,
+    PostSource? source,
     int? parentId,
   }) =>
       DanbooruPost(
@@ -175,7 +164,7 @@ class DanbooruPost extends Equatable
         format: format ?? this.format,
         md5: md5 ?? this.md5,
         lastCommentAt: lastCommentAt ?? this.lastCommentAt,
-        source: source ?? _source,
+        source: source ?? this.source,
         createdAt: createdAt,
         score: score ?? this.score,
         upScore: upScore ?? this.upScore,
@@ -210,7 +199,7 @@ class DanbooruPost extends Equatable
   bool get hasFavorite => favCount > 0;
 
   @override
-  String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
+  final PostSource source;
 
   bool get hasCensoredTags {
     final tagSet = tags.toSet();
