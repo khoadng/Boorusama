@@ -13,8 +13,6 @@ class PostDetailState extends Equatable {
     required this.tags,
     required this.currentIndex,
     required this.currentPost,
-    required this.nextPost,
-    required this.previousPost,
     this.fullScreen = false,
     this.enableNotes = true,
     this.enableOverlay = true,
@@ -29,8 +27,6 @@ class PostDetailState extends Equatable {
         tags: const [],
         currentIndex: 0,
         currentPost: DanbooruPost.empty(),
-        previousPost: null,
-        nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
           interval: 4,
           skipAnimation: false,
@@ -44,8 +40,6 @@ class PostDetailState extends Equatable {
   final List<PostDetailTag> tags;
   final int currentIndex;
   final DanbooruPost currentPost;
-  final DanbooruPost? nextPost;
-  final DanbooruPost? previousPost;
   final bool fullScreen;
   final bool enableNotes;
   final bool enableOverlay;
@@ -75,8 +69,6 @@ class PostDetailState extends Equatable {
         tags: tags ?? this.tags,
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
-        nextPost: nextPost != null ? nextPost() : this.nextPost,
-        previousPost: previousPost != null ? previousPost() : this.previousPost,
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
         recommends: recommends ?? this.recommends,
@@ -92,8 +84,6 @@ class PostDetailState extends Equatable {
         tags,
         currentIndex,
         currentPost,
-        nextPost,
-        previousPost,
         fullScreen,
         enableNotes,
         enableOverlay,
@@ -118,9 +108,4 @@ class PostDetailTag extends Equatable {
 
   @override
   List<Object?> get props => [postId, name];
-}
-
-extension PostDetailX on PostDetailState {
-  bool hasNext() => nextPost != null;
-  bool hasPrevious() => previousPost != null;
 }

@@ -78,8 +78,6 @@ class PostDetailsNotifier extends Notifier<PostDetailState>
       tags: tags,
       currentIndex: initialIndex,
       currentPost: posts[initialIndex],
-      nextPost: posts.getOrNull(initialIndex + 1),
-      previousPost: posts.getOrNull(initialIndex - 1),
       slideShowConfig: PostDetailState.initial().slideShowConfig,
       recommends: const [],
       pools: const [],
