@@ -6,12 +6,12 @@ import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
 class MoebooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, SourceMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
     implements Post {
   MoebooruPost({
     required this.id,
     required this.tags,
-    this.source,
+    required this.source,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -32,7 +32,7 @@ class MoebooruPost extends Equatable
   @override
   final List<String> tags;
   @override
-  final String? source;
+  final PostSource source;
   @override
   final String thumbnailImageUrl;
   @override

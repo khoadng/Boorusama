@@ -151,9 +151,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       .getPostCount(rawTags);
                 },
               ),
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
               body: SafeArea(
                 child: SingleChildScrollView(
@@ -185,9 +188,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             );
           case DisplayState.suggestion:
             return Scaffold(
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
               body: SafeArea(
                 child: Column(

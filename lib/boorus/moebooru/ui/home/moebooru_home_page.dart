@@ -70,7 +70,7 @@ class _MoebooruHomePageState extends State<MoebooruHomePage> {
                                 backgroundColor:
                                     Theme.of(context).scaffoldBackgroundColor,
                                 toolbarHeight: kToolbarHeight * 1.2,
-                                title: SearchBar(
+                                title: BooruSearchBar(
                                   enabled: false,
                                   leading: widget.onMenuTap != null
                                       ? IconButton(

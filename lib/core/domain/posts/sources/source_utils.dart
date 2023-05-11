@@ -1,32 +1,24 @@
-mixin SourceMixin {
-  String? get source;
-  bool get hasWebSource => _isWebSource(source);
-  String? get sourceHost => hasWebSource ? _getHost(Uri.parse(source!)) : null;
-  bool get hasIcoLogoSource =>
-      hasWebSource ? _useIco(Uri.parse(source!)) : false;
-
-  bool _isWebSource(String? url) {
-    if (url == null || url.isEmpty) {
-      return false;
-    }
-
-    // Check for a valid URL format
-    final pattern = RegExp(
-        r'^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:[0-9]+)?([/?].*)?$',
-        caseSensitive: false);
-    if (!pattern.hasMatch(url)) {
-      return false;
-    }
-
-    var uri = Uri.tryParse(url);
-
-    if (uri == null) return false;
-
-    return uri.scheme == 'http' || uri.scheme == 'https';
+bool isWebSource(String? url) {
+  if (url == null || url.isEmpty) {
+    return false;
   }
+
+  // Check for a valid URL format
+  final pattern = RegExp(
+      r'^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:[0-9]+)?([/?].*)?$',
+      caseSensitive: false);
+  if (!pattern.hasMatch(url)) {
+    return false;
+  }
+
+  var uri = Uri.tryParse(url);
+
+  if (uri == null) return false;
+
+  return uri.scheme == 'http' || uri.scheme == 'https';
 }
 
-String _getHost(Uri uri) {
+String getHost(Uri uri) {
   if (uri.host.contains('artstation.com')) return 'https://artstation.com';
   if (uri.host.contains('discordapp.com')) return 'https://discordapp.com';
   if (uri.host.contains('kym-cdn.com')) return 'https://knowyourmeme.com';
@@ -45,7 +37,7 @@ String _getHost(Uri uri) {
   return '${uri.scheme}://${uri.host}';
 }
 
-bool _useIco(Uri uri) {
+bool useIco(Uri uri) {
   if (uri.host.contains('lofter.com')) return true;
   return false;
 }

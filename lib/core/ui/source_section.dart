@@ -2,17 +2,18 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/utils.dart';
 
 class SourceSection extends StatelessWidget {
   const SourceSection({
     super.key,
-    required this.post,
+    required this.url,
+    this.isIcoUrl = false,
   });
 
-  final Post post;
+  final String url;
+  final bool isIcoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class SourceSection extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
-              onTap: () => launchExternalUrl(Uri.parse(post.source!)),
+              onTap: () => launchExternalUrlString(url),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).hintColor),
@@ -49,14 +50,14 @@ class SourceSection extends StatelessWidget {
                   child: Row(
                     children: [
                       WebsiteLogo(
-                        url: post.sourceHost!,
-                        isIcoUrl: post.hasIcoLogoSource,
+                        url: url,
+                        isIcoUrl: isIcoUrl,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 10,
                         child: Text(
-                          _mapUriToSourceText(Uri.parse(post.source!)),
+                          _mapUriToSourceText(Uri.parse(url)),
                           maxLines: 1,
                           softWrap: false,
                           overflow: TextOverflow.fade,

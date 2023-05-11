@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
@@ -62,9 +63,9 @@ class RelatedPostsSection extends ConsumerWidget {
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(4)),
                                 ),
-                                child: post.hasWebSource
-                                    ? WebsiteLogo(url: post.sourceHost!)
-                                    : const SizedBox.shrink(),
+                                child: post.source.whenWeb(
+                                    (source) => WebsiteLogo(url: source.url),
+                                    () => const SizedBox.shrink()),
                               ),
                               Container(
                                 padding: const EdgeInsets.all(4),

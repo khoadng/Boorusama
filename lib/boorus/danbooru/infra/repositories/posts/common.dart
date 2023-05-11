@@ -45,9 +45,7 @@ TaskEither<BooruError, List<DanbooruPost>> tryParseData(
 ) =>
     TaskEither.tryCatch(
       () => parsePostAsync(response, urlComposer),
-      (error, stackTrace) => BooruError(
-        error: AppError(type: AppErrorType.failedToParseJSON),
-      ),
+      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
 
 DanbooruPost postDtoToPost(
@@ -75,7 +73,10 @@ DanbooruPost postDtoToPost(
       lastCommentAt: dto.lastCommentedAt != null
           ? DateTime.parse(dto.lastCommentedAt!)
           : null,
-      source: dto.source,
+      source: PostSource.from(
+        dto.source,
+        pixivId: dto.pixivId,
+      ),
       createdAt: dto.createdAt != null
           ? DateTime.parse(dto.createdAt!)
           : DateTime.now(),

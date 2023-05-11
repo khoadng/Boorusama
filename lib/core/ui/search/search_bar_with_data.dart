@@ -26,7 +26,7 @@ class SearchBarWithData extends ConsumerWidget {
     final displayState = ref.watch(searchProvider);
     final currentQuery = ref.watch(searchQueryProvider);
 
-    return SearchBar(
+    return BooruSearchBar(
       autofocus: autofocus,
       focus: focusNode,
       queryEditingController: queryEditingController,

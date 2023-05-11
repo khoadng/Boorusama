@@ -360,11 +360,16 @@ class _DanbooruPostDetailsPageState
           child: DanbooruPostActionToolbar(post: post),
         ),
         const Divider(height: 8, thickness: 1),
-        if (post.hasWebSource)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: SourceSection(post: post),
-          ),
+        switch (post.source) {
+          WebSource s => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: SourceSection(
+                url: s.url,
+                isIcoUrl: s.hasIcoLogoSource,
+              ),
+            ),
+          _ => const SizedBox.shrink(),
+        },
         const Divider(height: 8, thickness: 1),
         TagsTile(
             tags: tags
@@ -382,7 +387,7 @@ class _DanbooruPostDetailsPageState
                   (commentary) => ArtistSection(
                     artistCommentary: commentary,
                     artistTags: post.artistTags,
-                    source: post.source,
+                    source: post.source.url,
                   ),
                 ),
             crossFadeState: state.commentaryMap.lookup(post.id).fold(

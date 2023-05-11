@@ -57,7 +57,7 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
         return MoebooruProvider.of(
           context,
           builder: (context) => MultiBlocProvider(
-            providers: [
+            providers: const [
               // BlocProvider.value(value: shareCubit),
             ],
             child: MoebooruPostDetailsPage(
@@ -216,7 +216,10 @@ class _MoebooruPostDetailsPageState
         FileDetailsSection(
           post: post,
         ),
-        if (post.hasWebSource) SourceSection(post: post),
+        post.source.whenWeb(
+          (source) => SourceSection(url: source.url),
+          () => const SizedBox.shrink(),
+        ),
       ],
     ];
   }

@@ -7,15 +7,13 @@ import 'package:boorusama/core/domain/error.dart';
 void rethrowError(Object error) {
   if (error is DioError) {
     if (error.response == null) {
-      throw BooruError(error: AppError(type: AppErrorType.cannotReachServer));
+      throw AppError(type: AppErrorType.cannotReachServer);
     } else {
-      throw BooruError(
-        error: ServerError(
-          httpStatusCode: error.response?.statusCode,
-        ),
+      throw ServerError(
+        httpStatusCode: error.response?.statusCode,
       );
     }
   } else {
-    throw BooruError(error: AppError(type: AppErrorType.failedToParseJSON));
+    throw AppError(type: AppErrorType.failedToParseJSON);
   }
 }

@@ -150,7 +150,7 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
   ) {
     final searchBloc = context.read<PoolSearchBloc>();
 
-    return SearchBar(
+    return BooruSearchBar(
       leading: IconButton(
         onPressed: () => Navigator.of(context).pop(),
         icon: const Icon(

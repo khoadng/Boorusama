@@ -44,8 +44,7 @@ TaskEither<BooruError, List<MoebooruPost>> tryParsePosts(
         HttpResponse<dynamic> response) =>
     TaskEither.tryCatch(
       () => parsePostAsync(response),
-      (error, stackTrace) =>
-          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
 
 class MoebooruPostRepositoryApi
@@ -105,7 +104,7 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     sampleImageUrl: postDto.sampleUrl ?? '',
     originalImageUrl: postDto.fileUrl ?? '',
     tags: postDto.tags != null ? postDto.tags!.split(' ') : [],
-    source: postDto.source,
+    source: PostSource.from(postDto.source),
     rating: mapStringToRating(postDto.rating ?? ''),
     hasComment: false,
     isTranslated: false,

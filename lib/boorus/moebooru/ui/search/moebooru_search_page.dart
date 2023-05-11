@@ -127,14 +127,17 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
           case DisplayState.options:
             return Scaffold(
               floatingActionButton: const SearchButton(),
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
-              body: SafeArea(
+              body: const SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: const [
+                    children: [
                       SelectedTagListWithData(),
                       SearchDivider(),
                       SearchLandingView(),
@@ -145,9 +148,12 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
             );
           case DisplayState.suggestion:
             return Scaffold(
-              appBar: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
               ),
               body: SafeArea(
                 child: Column(
@@ -180,10 +186,10 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                 sliverHeaderBuilder: (context) => [
                   const SearchAppBarResultView(),
                   const SliverToBoxAdapter(child: SearchDivider(height: 7)),
-                  SliverToBoxAdapter(
+                  const SliverToBoxAdapter(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Spacer(),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),

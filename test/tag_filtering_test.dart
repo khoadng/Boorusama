@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/search/filter_operator.dart';
-import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/domain/posts.dart';
 
 DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       id: id,
@@ -24,7 +24,7 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       format: '',
       md5: '',
       lastCommentAt: null,
-      source: null,
+      source: PostSource.none(),
       createdAt: DateTime.now(),
       score: 1,
       upScore: 1,
