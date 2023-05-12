@@ -8,12 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';

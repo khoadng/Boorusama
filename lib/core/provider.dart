@@ -13,6 +13,7 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
@@ -44,6 +45,9 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
 
 final autocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
+
+final postRepoProvider =
+    Provider<PostRepository>((ref) => throw UnimplementedError());
 
 final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   () => throw UnimplementedError(),

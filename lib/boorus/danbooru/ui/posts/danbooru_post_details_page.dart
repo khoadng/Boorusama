@@ -12,6 +12,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_details_artist_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_details_character_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_details_pools_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/post_details_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
@@ -42,7 +46,6 @@ Widget providePostDetailPageDependencies(
   BuildContext context,
   List<DanbooruPost> posts,
   int initialIndex,
-  // PostBloc? postBloc,
   Widget Function() childBuilder,
 ) {
   return DanbooruProvider.of(
@@ -61,20 +64,20 @@ Widget providePostDetailPageDependencies(
   );
 }
 
+final danbooruPostProvider = Provider<DanbooruPost>((ref) {
+  throw UnimplementedError();
+});
+
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
     required this.posts,
     required this.intitialIndex,
-    // required this.onPageChanged,
-    // required this.onCachedImagePathUpdate,
     required this.onExit,
   });
 
   final int intitialIndex;
   final List<DanbooruPost> posts;
-  // final void Function(int page) onPageChanged;
-  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
@@ -88,19 +91,10 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
       context,
       posts,
       initialIndex,
-      () => ProviderScope(
-        overrides: [
-          danbooruPostDetailsProvider
-              .overrideWith(() => DanbooruPostDetailsNotifier(
-                    posts: posts,
-                    initialIndex: initialIndex,
-                  ))
-        ],
-        child: DanbooruPostDetailsPage(
-          intitialIndex: initialIndex,
-          posts: posts,
-          onExit: (page) => scrollController?.scrollToIndex(page),
-        ),
+      () => DanbooruPostDetailsPage(
+        intitialIndex: initialIndex,
+        posts: posts,
+        onExit: (page) => scrollController?.scrollToIndex(page),
       ),
     );
 
@@ -171,61 +165,61 @@ class _DanbooruPostDetailsPageState
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
-        final state = ref.watch(danbooruPostDetailsProvider);
-        final artists = state.recommends
-            .where((element) => element.type == RecommendType.artist)
-            .toList();
-        final characters = state.recommends
-            .where((element) => element.type == RecommendType.character)
-            .toList();
+        final artists =
+            ref.watch(danbooruPostDetailsArtistProvider(posts[page].id));
+        final characters =
+            ref.watch(danbooruPostDetailsCharacterProvider(posts[page].id));
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: CustomScrollView(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            controller: PageContentScrollController.of(context),
-            slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => widgets[index],
-                  childCount: widgets.length,
+        return ProviderScope(
+          overrides: [
+            danbooruPostProvider.overrideWithValue(posts[page]),
+          ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: CustomScrollView(
+              physics:
+                  enableSwipe ? null : const NeverScrollableScrollPhysics(),
+              controller: PageContentScrollController.of(context),
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => widgets[index],
+                    childCount: widgets.length,
+                  ),
                 ),
-              ),
-              state.children.isNotEmpty
-                  ? RelatedPostsSection(posts: state.children)
-                  : const SliverToBoxAdapter(
-                      child: SizedBox.shrink(),
-                    ),
-              RecommendArtistList(
-                onTap: (recommendIndex, postIndex) => goToDetailPage(
-                  context: context,
-                  posts: artists[recommendIndex].posts,
-                  initialIndex: postIndex,
+                const RelatedPostsSection(),
+                RecommendArtistList(
+                  onTap: (recommendIndex, postIndex) => goToDetailPage(
+                    context: context,
+                    posts: artists[recommendIndex].posts,
+                    initialIndex: postIndex,
+                  ),
+                  onHeaderTap: (index) =>
+                      goToArtistPage(context, artists[index].tag),
+                  recommends: artists,
+                  imageUrl: (item) => item.url720x720,
                 ),
-                onHeaderTap: (index) =>
-                    goToArtistPage(context, artists[index].tag),
-                recommends: artists,
-                imageUrl: (item) => item.url720x720,
-              ),
-              RecommendCharacterList(
-                onHeaderTap: (index) =>
-                    goToCharacterPage(context, characters[index].tag),
-                onTap: (recommendIndex, postIndex) => goToDetailPage(
-                  context: context,
-                  posts: characters[recommendIndex].posts,
-                  initialIndex: postIndex,
-                  hero: false,
+                RecommendCharacterList(
+                  onHeaderTap: (index) =>
+                      goToCharacterPage(context, characters[index].tag),
+                  onTap: (recommendIndex, postIndex) => goToDetailPage(
+                    context: context,
+                    posts: characters[recommendIndex].posts,
+                    initialIndex: postIndex,
+                    hero: false,
+                  ),
+                  recommends: characters,
+                  imageUrl: (item) => item.url720x720,
                 ),
-                recommends: characters,
-                imageUrl: (item) => item.url720x720,
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
       pageCount: posts.length,
       topRightButtonsBuilder: (page) {
-        final details = ref.watch(danbooruPostDetailsProvider);
+        final noteState =
+            ref.watch(danbooruPostDetailsNoteProvider(posts[page].id));
 
         return [
           Builder(builder: (_) {
@@ -236,7 +230,7 @@ class _DanbooruPostDetailsPageState
             return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, state) {
                 return CircularIconButton(
-                  icon: details.enableNotes
+                  icon: noteState.enableNotes
                       ? Padding(
                           padding: const EdgeInsets.all(3),
                           child: FaIcon(
@@ -258,7 +252,8 @@ class _DanbooruPostDetailsPageState
                           ),
                         ),
                   onPressed: () => ref
-                      .read(danbooruPostDetailsProvider.notifier)
+                      .read(danbooruPostDetailsNoteProvider(posts[page].id)
+                          .notifier)
                       .toggleNoteVisibility(),
                 );
               },
@@ -271,7 +266,8 @@ class _DanbooruPostDetailsPageState
       },
       onExpanded: (currentPage) {
         final post = posts[currentPage];
-        ref.read(danbooruPostDetailsProvider.notifier).loadData(currentPage);
+
+        post.loadDetailsFrom(ref);
 
         context.read<ArtistCommentaryCubit>().getCommentary(post.id);
 
@@ -286,15 +282,10 @@ class _DanbooruPostDetailsPageState
     int page,
     int currentPage,
   ) {
-    final notes =
-        ref.watch(danbooruPostDetailsProvider.select((value) => value.notes));
-    final pools =
-        ref.watch(danbooruPostDetailsProvider.select((value) => value.pools));
-    final tags =
-        ref.watch(danbooruPostDetailsProvider.select((value) => value.tags));
-    final enableNotes = ref.watch(
-        danbooruPostDetailsProvider.select((value) => value.enableNotes));
     final post = posts[page];
+    final noteState = ref.watch(danbooruPostDetailsNoteProvider(post.id));
+    final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
+    final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
         ? extension(post.sampleImageUrl) == '.webm'
@@ -321,8 +312,8 @@ class _DanbooruPostDetailsPageState
                 .setImagePath(path ?? ''),
             previewCacheManager: context.read<PreviewImageCacheManager>(),
             imageOverlayBuilder: (constraints) => [
-              if (expanded && enableNotes)
-                ...notes
+              if (expanded && noteState.enableNotes)
+                ...noteState.notes
                     .map((e) => e.adjustNoteCoordFor(
                           posts[page],
                           widthConstraint: constraints.maxWidth,

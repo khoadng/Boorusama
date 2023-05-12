@@ -149,6 +149,7 @@ class GelbooruProvider extends StatelessWidget {
         child: ProviderScope(
           overrides: [
             autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
+            postRepoProvider.overrideWithValue(postRepository),
           ],
           child: Builder(
             builder: builder,

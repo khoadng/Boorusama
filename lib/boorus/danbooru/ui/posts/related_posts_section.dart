@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts/post_details_children_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -16,12 +18,19 @@ import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
 
 class RelatedPostsSection extends ConsumerWidget {
-  const RelatedPostsSection({super.key, required this.posts});
-
-  final List<DanbooruPost> posts;
+  const RelatedPostsSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = ref.watch(danbooruPostProvider);
+    final posts = ref.watch(danbooruPostDetailsChildrenProvider(post.id));
+
+    if (posts.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: SizedBox.shrink(),
+      );
+    }
+
     return SliverList(
       delegate: SliverChildListDelegate([
         Column(

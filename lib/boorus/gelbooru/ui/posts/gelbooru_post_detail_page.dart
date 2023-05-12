@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,10 +10,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
+import 'package:boorusama/core/application/posts/details.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -38,16 +37,12 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.fullscreen,
-    // required this.onPageChanged,
-    // required this.onCachedImagePathUpdate,
     required this.onExit,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
-  // final void Function(int page) onPageChanged;
-  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
@@ -63,22 +58,11 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
         builder: (gcontext) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(
-                  create: (_) => GelbooruPostDetailBloc(
-                        postRepository: gcontext.read<PostRepository>(),
-                        initialIndex: initialIndex,
-                        posts: posts,
-                      )..add(PostDetailRequested(index: initialIndex))),
               BlocProvider.value(value: gcontext.read<ThemeBloc>()),
             ],
             child: GelbooruPostDetailPage(
               posts: posts,
               initialIndex: initialIndex,
-              // onPageChanged: (page) {
-              //   shareCubit.updateInformation(posts[page]);
-              // },
-              // onCachedImagePathUpdate: (imagePath) =>
-              //     shareCubit.setImagePath(imagePath ?? ''),
               onExit: (page) => scrollController?.scrollToIndex(page),
               fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             ),
@@ -135,6 +119,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
+        final artists =
+            ref.watch(booruPostDetailsArtistProvider(posts[page].id));
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -148,25 +134,18 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
                   childCount: widgets.length,
                 ),
               ),
-              BlocBuilder<GelbooruPostDetailBloc, GelbooruPostDetailState>(
-                builder: (context, state) {
-                  final artists = state.recommends
-                      .where((element) => element.type == RecommendType.artist)
-                      .toList();
-                  return RecommendArtistList(
-                    onHeaderTap: (index) =>
-                        goToGelbooruArtistPage(context, artists[index].tag),
-                    onTap: (recommendIndex, postIndex) =>
-                        goToGelbooruPostDetailsPage(
-                      context: context,
-                      posts: artists[recommendIndex].posts,
-                      initialIndex: postIndex,
-                      settings: ref.read(settingsProvider),
-                    ),
-                    recommends: artists,
-                    imageUrl: (item) => item.thumbnailImageUrl,
-                  );
-                },
+              RecommendArtistList(
+                onHeaderTap: (index) =>
+                    goToGelbooruArtistPage(context, artists[index].tag),
+                onTap: (recommendIndex, postIndex) =>
+                    goToGelbooruPostDetailsPage(
+                  context: context,
+                  posts: artists[recommendIndex].posts,
+                  initialIndex: postIndex,
+                  settings: ref.read(settingsProvider),
+                ),
+                recommends: artists,
+                imageUrl: (item) => item.thumbnailImageUrl,
               )
             ],
           ),
@@ -177,18 +156,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
         GelbooruMoreActionButton(post: widget.posts[page]),
       ],
       onExpanded: (currentPage) => context.read<TagBloc>().add(TagFetched(
-            tags: widget.posts[currentPage].tags,
+            tags: posts[currentPage].tags,
             onResult: (tags) {
-              final t = tags
-                  .firstWhereOrNull(
-                      (e) => e.groupName.toLowerCase() == 'artist')
-                  ?.tags;
-
-              if (t != null) {
-                context
-                    .read<GelbooruPostDetailBloc>()
-                    .add(GelbooruPostDetailRecommendedFetch(t));
-              }
+              posts[currentPage].loadArtistPostsFrom(ref, tags);
             },
           )),
     );
