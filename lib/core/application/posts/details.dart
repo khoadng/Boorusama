@@ -16,12 +16,18 @@ mixin PostDetailsTagsX<T extends Post>
 
   Future<void> fetchPosts(
     List<String> tags,
-    RecommendType type,
-  ) async {
+    RecommendType type, {
+    int? limit,
+  }) async {
     for (final tag in tags) {
       if (state.any((e) => e.tag == tag)) continue;
       final posts =
           tagCache.containsKey(tag) ? tagCache[tag]! : await fetcher(tag, 1);
+
+      // if limit is not null, then we only want to get the first [limit] posts
+      if (limit != null) {
+        posts.removeRange(limit, posts.length);
+      }
 
       tagCache[tag] = posts;
 

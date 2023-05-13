@@ -29,6 +29,9 @@ class PostDetailsArtistNotifier
   @override
   List<Recommend<DanbooruPost>> build(int arg) => [];
 
-  Future<void> load(DanbooruPost post) =>
-      fetchPosts(post.artistTags, RecommendType.artist);
+  Future<void> load(DanbooruPost post) => fetchPosts(
+        post.artistTags,
+        RecommendType.artist,
+        limit: 30,
+      );
 }
