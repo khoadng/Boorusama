@@ -119,7 +119,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   @override
   Function() get popper => () => _onBackButtonPressed();
-  bool get _isSwiping => controller.page != controller.page?.round();
+  bool get _isSwiping {
+    if (!controller.hasClients) return false;
+    return controller.page != controller.page?.round();
+  }
 
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;

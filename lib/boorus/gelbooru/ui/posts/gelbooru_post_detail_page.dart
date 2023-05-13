@@ -114,8 +114,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
           GelbooruPostActionToolbar(post: posts[page]),
         ],
       ),
-      targetSwipeDownBuilder: (context, index) => PostMediaItem(
-        post: widget.posts[index],
+      targetSwipeDownBuilder: (context, page) => BooruImage(
+        imageUrl: posts[page].thumbnailImageUrl,
+        fit: BoxFit.contain,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
@@ -209,7 +210,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
           child: RepaintBoundary(child: media),
         )
       else if (post.isVideo)
-        BooruImage(imageUrl: post.thumbnailImageUrl)
+        BooruImage(
+          imageUrl: post.thumbnailImageUrl,
+          fit: BoxFit.contain,
+        )
       else
         RepaintBoundary(child: media),
       if (!expandedOnCurrentPage)

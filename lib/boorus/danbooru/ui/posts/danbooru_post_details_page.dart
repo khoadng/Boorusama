@@ -160,8 +160,9 @@ class _DanbooruPostDetailsPageState
           ],
         );
       },
-      targetSwipeDownBuilder: (context, page) => PostMediaItem(
-        post: posts[page],
+      targetSwipeDownBuilder: (context, page) => BooruImage(
+        imageUrl: posts[page].url720x720,
+        fit: BoxFit.contain,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
@@ -337,7 +338,10 @@ class _DanbooruPostDetailsPageState
           child: RepaintBoundary(child: media),
         )
       else if (post.isVideo)
-        BooruImage(imageUrl: post.videoThumbnailUrl)
+        BooruImage(
+          imageUrl: post.videoThumbnailUrl,
+          fit: BoxFit.contain,
+        )
       else
         RepaintBoundary(child: media),
       if (!expandedOnCurrentPage)
