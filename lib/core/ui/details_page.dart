@@ -119,6 +119,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   @override
   Function() get popper => () => _onBackButtonPressed();
+  bool get _isSwiping => controller.page != controller.page?.round();
 
   double _navigationButtonGroupOffset = 0.0;
   double _topRightButtonGroupOffset = 0.0;
@@ -173,7 +174,10 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   }
 
   void _handlePointerMove(PointerMoveEvent event, bool expanded) {
-    if (!_controller.pageSwipe || !_controller.swipeDownToDismiss || expanded) {
+    if (!_controller.pageSwipe ||
+        !_controller.swipeDownToDismiss ||
+        expanded ||
+        _isSwiping) {
       return;
     }
 
