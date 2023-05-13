@@ -56,15 +56,10 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   }
 }
 
-m.ThemeMode mapAppThemeModeToSystemThemeMode(ThemeMode theme) {
-  switch (theme) {
-    case ThemeMode.system:
-      return m.ThemeMode.system;
-    case ThemeMode.dark:
-      return m.ThemeMode.dark;
-    case ThemeMode.light:
-      return m.ThemeMode.light;
-    case ThemeMode.amoledDark:
-      return m.ThemeMode.dark;
-  }
-}
+m.ThemeMode mapAppThemeModeToSystemThemeMode(ThemeMode theme) =>
+    switch (theme) {
+      ThemeMode.system => m.ThemeMode.system,
+      ThemeMode.dark => m.ThemeMode.dark,
+      ThemeMode.light => m.ThemeMode.light,
+      ThemeMode.amoledDark => m.ThemeMode.dark
+    };

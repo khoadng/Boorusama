@@ -101,15 +101,10 @@ class MoebooruPopularRepositoryApi
   }
 }
 
-String moebooruTimePeriodToString(MoebooruTimePeriod period) {
-  switch (period) {
-    case MoebooruTimePeriod.day:
-      return '1d';
-    case MoebooruTimePeriod.week:
-      return '1w';
-    case MoebooruTimePeriod.month:
-      return '1m';
-    case MoebooruTimePeriod.year:
-      return '1y';
-  }
-}
+String moebooruTimePeriodToString(MoebooruTimePeriod period) =>
+    switch (period) {
+      MoebooruTimePeriod.day => '1d',
+      MoebooruTimePeriod.week => '1w',
+      MoebooruTimePeriod.month => '1m',
+      MoebooruTimePeriod.year => '1y'
+    };

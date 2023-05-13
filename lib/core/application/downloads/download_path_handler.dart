@@ -36,16 +36,14 @@ bool _isSupportedPlatforms() => isAndroid() || isIOS() || isWindows();
 // map DirectoryError to DownloadDirectoryError
 DownloadDirectoryError _mapDirectoryErrorToDownloadDirectoryError(
   DirectoryError error,
-) {
-  switch (error) {
-    case DirectoryError.directoryNotFound:
-      return DownloadDirectoryError.directoryNotFound;
-    case DirectoryError.permissionDenied:
-      return DownloadDirectoryError.permissionDenied;
-    case DirectoryError.unknownError:
-      return DownloadDirectoryError.unknownError;
-  }
-}
+) =>
+    switch (error) {
+      DirectoryError.directoryNotFound =>
+        DownloadDirectoryError.directoryNotFound,
+      DirectoryError.permissionDenied =>
+        DownloadDirectoryError.permissionDenied,
+      DirectoryError.unknownError => DownloadDirectoryError.unknownError
+    };
 
 TaskEither<DirectoryError, Directory>
     _tryGetDownloadDirectoryOnSupportedPlatforms() => isAndroid()

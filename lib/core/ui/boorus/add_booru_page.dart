@@ -152,24 +152,17 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
 // map BooruUrlError to string message
 extension BooruUrlErrorX on BooruUrlError {
-  String message(String url) {
-    switch (this) {
-      case BooruUrlError.nullUrl:
-        return 'URL is null';
-      case BooruUrlError.emptyUrl:
-        return 'URL is empty';
-      case BooruUrlError.invalidUrlFormat:
-        return '"$url" is not a valid URL';
-      case BooruUrlError.notAnHttpOrHttpsUrl:
-        return '"$url" is not an HTTP or HTTPS URL';
-      case BooruUrlError.missingLastSlash:
-        return '"$url" is missing a trailing slash';
-      case BooruUrlError.redundantWww:
-        return '"$url" contains redundant "www"';
-      case BooruUrlError.stringHasInbetweenSpaces:
-        return '"$url" contains in-between spaces';
-      case BooruUrlError.missingScheme:
-        return '"$url" is missing a scheme (e.g. https://)';
-    }
-  }
+  String message(String url) => switch (this) {
+        BooruUrlError.nullUrl => 'URL is null',
+        BooruUrlError.emptyUrl => 'URL is empty',
+        BooruUrlError.invalidUrlFormat => '"$url" is not a valid URL',
+        BooruUrlError.notAnHttpOrHttpsUrl =>
+          '"$url" is not an HTTP or HTTPS URL',
+        BooruUrlError.missingLastSlash => '"$url" is missing a trailing slash',
+        BooruUrlError.redundantWww => '"$url" contains redundant "www"',
+        BooruUrlError.stringHasInbetweenSpaces =>
+          '"$url" contains in-between spaces',
+        BooruUrlError.missingScheme =>
+          '"$url" is missing a scheme (e.g. https://)'
+      };
 }

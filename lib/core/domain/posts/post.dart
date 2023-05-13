@@ -21,16 +21,11 @@ abstract class Post with MediaInfoMixin, ImageInfoMixin {
 }
 
 extension PostImageX on Post {
-  String thumbnailFromSettings(Settings settings) {
-    switch (settings.imageQuality) {
-      case ImageQuality.automatic:
-        return thumbnailImageUrl;
-      case ImageQuality.low:
-        return thumbnailImageUrl;
-      case ImageQuality.high:
-        return sampleImageUrl;
-      case ImageQuality.original:
-        return originalImageUrl;
-    }
-  }
+  String thumbnailFromSettings(Settings settings) =>
+      switch (settings.imageQuality) {
+        ImageQuality.automatic => thumbnailImageUrl,
+        ImageQuality.low => thumbnailImageUrl,
+        ImageQuality.high => sampleImageUrl,
+        ImageQuality.original => originalImageUrl
+      };
 }

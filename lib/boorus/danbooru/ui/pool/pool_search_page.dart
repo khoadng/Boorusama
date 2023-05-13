@@ -184,12 +184,7 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
   }
 }
 
-Color _poolCategoryToColor(PoolCategory category) {
-  switch (category) {
-    case PoolCategory.series:
-      return TagColors.dark().copyright;
-    case PoolCategory.unknown:
-    case PoolCategory.collection:
-      return TagColors.dark().general;
-  }
-}
+Color _poolCategoryToColor(PoolCategory category) => switch (category) {
+      PoolCategory.series => TagColors.dark().copyright,
+      _ => TagColors.dark().general,
+    };

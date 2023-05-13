@@ -4,14 +4,11 @@ import 'package:boorusama/core/domain/boorus.dart';
 String? booruFilterConfigToDanbooruTag(BooruConfigRatingFilter? filter) {
   if (filter == null) return null;
 
-  switch (filter) {
-    case BooruConfigRatingFilter.none:
-      return null;
-    case BooruConfigRatingFilter.hideExplicit:
-      return '-rating:e,q';
-    case BooruConfigRatingFilter.hideNSFW:
-      return 'rating:g';
-  }
+  return switch (filter) {
+    BooruConfigRatingFilter.none => null,
+    BooruConfigRatingFilter.hideExplicit => '-rating:e,q',
+    BooruConfigRatingFilter.hideNSFW => 'rating:g'
+  };
 }
 
 String? booruConfigDeletedBehaviorToDanbooruTag(
@@ -19,10 +16,8 @@ String? booruConfigDeletedBehaviorToDanbooruTag(
 ) {
   if (behavior == null) return null;
 
-  switch (behavior) {
-    case BooruConfigDeletedItemBehavior.show:
-      return null;
-    case BooruConfigDeletedItemBehavior.hide:
-      return '-status:deleted';
-  }
+  return switch (behavior) {
+    BooruConfigDeletedItemBehavior.show => null,
+    BooruConfigDeletedItemBehavior.hide => '-status:deleted'
+  };
 }

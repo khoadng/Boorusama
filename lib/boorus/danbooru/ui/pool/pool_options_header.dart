@@ -118,18 +118,12 @@ class _OrderMenu extends StatelessWidget {
   }
 }
 
-String _poolOrderToString(PoolOrder order) {
-  switch (order) {
-    case PoolOrder.newest:
-      return 'pool.order.new';
-    case PoolOrder.postCount:
-      return 'pool.order.post_count';
-    case PoolOrder.name:
-      return 'pool.order.name';
-    case PoolOrder.latest:
-      return 'pool.order.recent';
-  }
-}
+String _poolOrderToString(PoolOrder order) => switch (order) {
+      PoolOrder.newest => 'pool.order.new',
+      PoolOrder.postCount => 'pool.order.post_count',
+      PoolOrder.name => 'pool.order.name',
+      PoolOrder.latest => 'pool.order.recent'
+    };
 
 String _poolCategoryToString(PoolCategory category) =>
     'pool.category.${category.name}';

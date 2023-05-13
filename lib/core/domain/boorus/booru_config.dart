@@ -62,27 +62,17 @@ enum BooruConfigRatingFilter {
 }
 
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
-  String getRatingTerm() {
-    switch (this) {
-      case BooruConfigRatingFilter.none:
-        return 'None';
-      case BooruConfigRatingFilter.hideExplicit:
-        return 'Safeish';
-      case BooruConfigRatingFilter.hideNSFW:
-        return 'Safe';
-    }
-  }
+  String getRatingTerm() => switch (this) {
+        BooruConfigRatingFilter.none => 'None',
+        BooruConfigRatingFilter.hideExplicit => 'Safeish',
+        BooruConfigRatingFilter.hideNSFW => 'Safe'
+      };
 
-  String getFilterRatingTerm() {
-    switch (this) {
-      case BooruConfigRatingFilter.none:
-        return 'None';
-      case BooruConfigRatingFilter.hideExplicit:
-        return 'Moderate';
-      case BooruConfigRatingFilter.hideNSFW:
-        return 'Aggressive';
-    }
-  }
+  String getFilterRatingTerm() => switch (this) {
+        BooruConfigRatingFilter.none => 'None',
+        BooruConfigRatingFilter.hideExplicit => 'Moderate',
+        BooruConfigRatingFilter.hideNSFW => 'Aggressive'
+      };
 }
 
 extension BooruConfigNullX on BooruConfig? {

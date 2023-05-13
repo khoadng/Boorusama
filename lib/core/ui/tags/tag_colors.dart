@@ -8,20 +8,14 @@ import 'package:boorusama/core/domain/tags.dart';
 Color getTagColor(TagCategory category, ThemeMode themeMode) {
   final colors =
       themeMode == ThemeMode.light ? TagColors.light() : TagColors.dark();
-  switch (category) {
-    case TagCategory.artist:
-      return colors.artist;
-    case TagCategory.copyright:
-      return colors.copyright;
-    case TagCategory.charater:
-      return colors.character;
-    case TagCategory.general:
-      return colors.general;
-    case TagCategory.meta:
-      return colors.meta;
-    case TagCategory.invalid_:
-      return colors.general;
-  }
+  return switch (category) {
+    TagCategory.artist => colors.artist,
+    TagCategory.copyright => colors.copyright,
+    TagCategory.charater => colors.character,
+    TagCategory.general => colors.general,
+    TagCategory.meta => colors.meta,
+    TagCategory.invalid_ => colors.general
+  };
 }
 
 class TagColors {

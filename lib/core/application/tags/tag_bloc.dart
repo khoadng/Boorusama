@@ -110,38 +110,22 @@ class TagGroupItem extends Equatable {
   List<Object?> get props => [groupName, tags, order];
 }
 
-String tagCategoryToString(TagCategory category) {
-  switch (category) {
-    case TagCategory.artist:
-      return 'Artist';
-    case TagCategory.charater:
-      return 'Character';
-    case TagCategory.copyright:
-      return 'Copyright';
-    case TagCategory.general:
-      return 'General';
-    case TagCategory.meta:
-      return 'Meta';
-    case TagCategory.invalid_:
-      return '';
-  }
-}
+String tagCategoryToString(TagCategory category) => switch (category) {
+      TagCategory.artist => 'Artist',
+      TagCategory.charater => 'Character',
+      TagCategory.copyright => 'Copyright',
+      TagCategory.general => 'General',
+      TagCategory.meta => 'Meta',
+      TagCategory.invalid_ => ''
+    };
 
 typedef TagCategoryOrder = int;
 
-TagCategoryOrder tagCategoryToOrder(TagCategory category) {
-  switch (category) {
-    case TagCategory.artist:
-      return 0;
-    case TagCategory.copyright:
-      return 1;
-    case TagCategory.charater:
-      return 2;
-    case TagCategory.general:
-      return 3;
-    case TagCategory.meta:
-      return 4;
-    case TagCategory.invalid_:
-      return 5;
-  }
-}
+TagCategoryOrder tagCategoryToOrder(TagCategory category) => switch (category) {
+      TagCategory.artist => 0,
+      TagCategory.copyright => 1,
+      TagCategory.charater => 2,
+      TagCategory.general => 3,
+      TagCategory.meta => 4,
+      TagCategory.invalid_ => 5
+    };

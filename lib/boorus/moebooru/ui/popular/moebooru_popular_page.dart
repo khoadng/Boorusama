@@ -24,22 +24,22 @@ class MoebooruPopularPage extends StatefulWidget {
 }
 
 class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
-  final selectedDate = ValueNotifier(DateTime.now());
+  final selectedDateNotifier = ValueNotifier(DateTime.now());
   final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
-  PostsOrError _typeToData(MoebooruPopularType type, int page) {
-    final repo = context.read<MoebooruPopularRepository>();
-    switch (type) {
-      case MoebooruPopularType.recent:
-        return repo.getPopularPostsRecent(MoebooruTimePeriod.day);
-      case MoebooruPopularType.day:
-        return repo.getPopularPostsByDay(selectedDate.value);
-      case MoebooruPopularType.week:
-        return repo.getPopularPostsByWeek(selectedDate.value);
-      case MoebooruPopularType.month:
-        return repo.getPopularPostsByMonth(selectedDate.value);
-    }
-  }
+  MoebooruPopularRepository get repo =>
+      context.read<MoebooruPopularRepository>();
+
+  DateTime get selectedDate => selectedDateNotifier.value;
+
+  PostsOrError _typeToData(MoebooruPopularType type, int page) =>
+      switch (type) {
+        MoebooruPopularType.recent =>
+          repo.getPopularPostsRecent(MoebooruTimePeriod.day),
+        MoebooruPopularType.day => repo.getPopularPostsByDay(selectedDate),
+        MoebooruPopularType.week => repo.getPopularPostsByWeek(selectedDate),
+        MoebooruPopularType.month => repo.getPopularPostsByMonth(selectedDate)
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +53,13 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
                 color:
                     Theme.of(context).bottomNavigationBarTheme.backgroundColor,
                 child: ValueListenableBuilder<DateTime>(
-                  valueListenable: selectedDate,
+                  valueListenable: selectedDateNotifier,
                   builder: (context, d, __) =>
                       ValueListenableBuilder<MoebooruPopularType>(
                     valueListenable: selectedPopular,
                     builder: (_, type, __) => DateTimeSelector(
                       onDateChanged: (date) {
-                        selectedDate.value = date;
+                        selectedDateNotifier.value = date;
                         controller.refresh();
                       },
                       date: d,
@@ -92,25 +92,16 @@ class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
   }
 }
 
-TimeScale _convertToTimeScale(MoebooruPopularType popularType) {
-  switch (popularType) {
-    case MoebooruPopularType.day:
-    case MoebooruPopularType.recent:
-      return TimeScale.day;
-    case MoebooruPopularType.week:
-      return TimeScale.week;
-    case MoebooruPopularType.month:
-      return TimeScale.month;
-  }
-}
+TimeScale _convertToTimeScale(MoebooruPopularType popularType) =>
+    switch (popularType) {
+      MoebooruPopularType.day || MoebooruPopularType.recent => TimeScale.day,
+      MoebooruPopularType.week => TimeScale.week,
+      MoebooruPopularType.month => TimeScale.month,
+    };
 
-MoebooruPopularType _convertToMoebooruPopularType(TimeScale timeScale) {
-  switch (timeScale) {
-    case TimeScale.day:
-      return MoebooruPopularType.day;
-    case TimeScale.week:
-      return MoebooruPopularType.week;
-    case TimeScale.month:
-      return MoebooruPopularType.month;
-  }
-}
+MoebooruPopularType _convertToMoebooruPopularType(TimeScale timeScale) =>
+    switch (timeScale) {
+      TimeScale.day => MoebooruPopularType.day,
+      TimeScale.week => MoebooruPopularType.week,
+      TimeScale.month => MoebooruPopularType.month
+    };

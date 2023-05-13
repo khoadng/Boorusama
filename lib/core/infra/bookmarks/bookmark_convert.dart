@@ -4,14 +4,11 @@ import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
 import 'package:boorusama/functional.dart';
 
 // map BoxError to BookmarkGetError
-BookmarkGetError mapBoxErrorToBookmarkGetError(BoxError error) {
-  switch (error) {
-    case BoxError.boxClosed:
-      return BookmarkGetError.databaseClosed;
-    case BoxError.unknown:
-      return BookmarkGetError.unknown;
-  }
-}
+BookmarkGetError mapBoxErrorToBookmarkGetError(BoxError error) =>
+    switch (error) {
+      BoxError.boxClosed => BookmarkGetError.databaseClosed,
+      BoxError.unknown => BookmarkGetError.unknown
+    };
 
 Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
   Iterable<BookmarkHiveObject> hiveObjects,

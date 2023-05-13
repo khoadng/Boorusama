@@ -1,73 +1,35 @@
-UserLevel intToUserLevel(int value) {
-  switch (value) {
-    case 10:
-      return UserLevel.restricted;
-    case 20:
-      return UserLevel.member;
-    case 30:
-      return UserLevel.gold;
-    case 31:
-      return UserLevel.platinum;
-    case 32:
-      return UserLevel.builder;
-    case 35:
-      return UserLevel.contributor;
-    case 37:
-      return UserLevel.approver;
-    case 40:
-      return UserLevel.moderator;
-    case 50:
-      return UserLevel.admin;
-    case 60:
-      return UserLevel.owner;
-    default:
-      return UserLevel.member;
-  }
-}
+UserLevel intToUserLevel(int value) => switch (value) {
+      10 => UserLevel.restricted,
+      20 => UserLevel.member,
+      30 => UserLevel.gold,
+      31 => UserLevel.platinum,
+      32 => UserLevel.builder,
+      35 => UserLevel.contributor,
+      37 => UserLevel.approver,
+      40 => UserLevel.moderator,
+      50 => UserLevel.admin,
+      60 => UserLevel.owner,
+      _ => UserLevel.member
+    };
 
-UserLevel stringToUserLevel(String value) {
-  switch (value.toLowerCase()) {
-    case 'restricted':
-      return UserLevel.restricted;
-    case 'member':
-      return UserLevel.member;
-    case 'gold':
-      return UserLevel.gold;
-    case 'platinum':
-      return UserLevel.platinum;
-    case 'builder':
-      return UserLevel.builder;
-    case 'contributor':
-      return UserLevel.contributor;
-    case 'approver':
-      return UserLevel.approver;
-    case 'moderator':
-      return UserLevel.moderator;
-    case 'admin':
-      return UserLevel.admin;
-    case 'owner':
-      return UserLevel.owner;
-    default:
-      return UserLevel.member;
-  }
-}
+UserLevel stringToUserLevel(String value) => switch (value.toLowerCase()) {
+      'restricted' => UserLevel.restricted,
+      'member' => UserLevel.member,
+      'gold' => UserLevel.gold,
+      'platinum' => UserLevel.platinum,
+      'builder' => UserLevel.builder,
+      'contributor' => UserLevel.contributor,
+      'approver' => UserLevel.approver,
+      'moderator' => UserLevel.moderator,
+      'admin' => UserLevel.admin,
+      'owner' => UserLevel.owner,
+      _ => UserLevel.member
+    };
 
-bool isBooruGoldPlusAccount(UserLevel level) {
-  switch (level) {
-    case UserLevel.restricted:
-    case UserLevel.member:
-      return false;
-    case UserLevel.gold:
-    case UserLevel.platinum:
-    case UserLevel.builder:
-    case UserLevel.contributor:
-    case UserLevel.approver:
-    case UserLevel.moderator:
-    case UserLevel.admin:
-    case UserLevel.owner:
-      return true;
-  }
-}
+bool isBooruGoldPlusAccount(UserLevel level) => switch (level) {
+      UserLevel.restricted || UserLevel.member => false,
+      _ => true
+    };
 
 bool isBooruGoldPlusAccountInt(int level) =>
     isBooruGoldPlusAccount(intToUserLevel(level));

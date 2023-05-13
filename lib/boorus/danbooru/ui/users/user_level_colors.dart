@@ -4,30 +4,18 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
-int getUserHexColor(UserLevel level) {
-  switch (level) {
-    case UserLevel.member:
-      return 0xff0073ff;
-    case UserLevel.gold:
-      return 0xffd0ba79;
-    case UserLevel.platinum:
-      return 0xff808080;
-    case UserLevel.builder:
-      return 0xff6633ff;
-    case UserLevel.contributor:
-      return 0xff6633ff;
-    case UserLevel.approver:
-      return 0xffffa500;
-    case UserLevel.moderator:
-      return 0xff33ba48;
-    case UserLevel.admin:
-      return 0xffff0000;
-    case UserLevel.owner:
-      return 0xffff0000;
-    case UserLevel.restricted:
-      return 0xff0073ff;
-  }
-}
+int getUserHexColor(UserLevel level) => switch (level) {
+      UserLevel.member => 0xff0073ff,
+      UserLevel.gold => 0xffd0ba79,
+      UserLevel.platinum => 0xff808080,
+      UserLevel.builder => 0xff6633ff,
+      UserLevel.contributor => 0xff6633ff,
+      UserLevel.approver => 0xffffa500,
+      UserLevel.moderator => 0xff33ba48,
+      UserLevel.admin => 0xffff0000,
+      UserLevel.owner => 0xffff0000,
+      UserLevel.restricted => 0xff0073ff
+    };
 
 extension UserColor on UserLevel {
   Color toColor() => Color(getUserHexColor(this));

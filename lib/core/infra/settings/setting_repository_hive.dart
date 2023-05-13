@@ -48,14 +48,12 @@ class SettingsRepositoryHive implements SettingsRepository {
 
   SettingsLoadError _mapJsonDecodeErrorToSettingsLoadError(
     JsonDecodeError error,
-  ) {
-    switch (error) {
-      case JsonDecodeError.invalidJsonFormat:
-        return SettingsLoadError.invalidJsonFormat;
-      default:
-        return SettingsLoadError.unknown;
-    }
-  }
+  ) =>
+      switch (error) {
+        JsonDecodeError.invalidJsonFormat =>
+          SettingsLoadError.invalidJsonFormat,
+        _ => SettingsLoadError.unknown
+      };
 
   @override
   Future<bool> save(Settings setting) async {

@@ -9,22 +9,14 @@ enum PostQualityType {
   original,
 }
 
-PostQualityType mapStringToPostQualityType(String? value) {
-  switch (value) {
-    case '180x180':
-      return PostQualityType.v180x180;
-    case '360x360':
-      return PostQualityType.v360x360;
-    case '720x720':
-      return PostQualityType.v720x720;
-    case 'sample':
-      return PostQualityType.sample;
-    case 'original':
-      return PostQualityType.original;
-    default:
-      return PostQualityType.sample;
-  }
-}
+PostQualityType mapStringToPostQualityType(String? value) => switch (value) {
+      '180x180' => PostQualityType.v180x180,
+      '360x360' => PostQualityType.v360x360,
+      '720x720' => PostQualityType.v720x720,
+      'sample' => PostQualityType.sample,
+      'original' => PostQualityType.original,
+      _ => PostQualityType.sample
+    };
 
 class PostVariant extends Equatable {
   const PostVariant({

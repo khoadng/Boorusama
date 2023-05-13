@@ -108,28 +108,17 @@ extension BooruX on Booru {
 }
 
 extension BooruTypeX on BooruType {
-  String stringify() {
-    switch (this) {
-      case BooruType.unknown:
-        return '<UNKNOWN>';
-      case BooruType.danbooru:
-        return 'Danbooru';
-      case BooruType.safebooru:
-        return 'Danbooru (G)';
-      case BooruType.testbooru:
-        return 'Testbooru';
-      case BooruType.gelbooru:
-        return 'Gelbooru';
-      case BooruType.aibooru:
-        return 'AIBooru';
-      case BooruType.konachan:
-        return 'Konachan';
-      case BooruType.yandere:
-        return 'Yandere';
-      case BooruType.sakugabooru:
-        return 'Sakugabooru';
-    }
-  }
+  String stringify() => switch (this) {
+        BooruType.unknown => '<UNKNOWN>',
+        BooruType.danbooru => 'Danbooru',
+        BooruType.safebooru => 'Danbooru (G)',
+        BooruType.testbooru => 'Testbooru',
+        BooruType.gelbooru => 'Gelbooru',
+        BooruType.aibooru => 'AIBooru',
+        BooruType.konachan => 'Konachan',
+        BooruType.yandere => 'Yandere',
+        BooruType.sakugabooru => 'Sakugabooru'
+      };
 }
 
 Booru safebooru() => booruDataToBooru(
@@ -170,75 +159,42 @@ Booru booruDataToBooru(BooruData d) {
   );
 }
 
-LoginType stringToLoginType(String value) {
-  switch (value) {
-    case 'login_api_key':
-      return LoginType.loginAndApiKey;
-    case 'login_password_hashed':
-      return LoginType.loginAndPasswordHashed;
-    default:
-      throw ArgumentError('Invalid login type: $value');
-  }
-}
+LoginType stringToLoginType(String value) => switch (value) {
+      'login_api_key' => LoginType.loginAndApiKey,
+      'login_password_hashed' => LoginType.loginAndPasswordHashed,
+      _ => throw ArgumentError('Invalid login type: $value')
+    };
 
-BooruType intToBooruType(int value) {
-  switch (value) {
-    case 1:
-      return BooruType.danbooru;
-    case 2:
-      return BooruType.safebooru;
-    case 3:
-      return BooruType.testbooru;
-    case 4:
-      return BooruType.gelbooru;
-    case 5:
-      return BooruType.aibooru;
-    case 6:
-      return BooruType.konachan;
-    case 7:
-      return BooruType.yandere;
-    case 8:
-      return BooruType.sakugabooru;
-    default:
-      return BooruType.unknown;
-  }
-}
+BooruType intToBooruType(int value) => switch (value) {
+      1 => BooruType.danbooru,
+      2 => BooruType.safebooru,
+      3 => BooruType.testbooru,
+      4 => BooruType.gelbooru,
+      5 => BooruType.aibooru,
+      6 => BooruType.konachan,
+      7 => BooruType.yandere,
+      8 => BooruType.sakugabooru,
+      _ => BooruType.unknown
+    };
 
-BooruType stringToBooruType(String value) {
-  switch (value) {
-    case 'danbooru':
-      return BooruType.danbooru;
-    case 'safebooru':
-      return BooruType.safebooru;
-    case 'testbooru':
-      return BooruType.testbooru;
-    case 'gelbooru':
-      return BooruType.gelbooru;
-    case 'aibooru':
-      return BooruType.aibooru;
-    case 'konachan':
-      return BooruType.konachan;
-    case 'yandere':
-      return BooruType.yandere;
-    case 'sakugabooru':
-      return BooruType.sakugabooru;
-    default:
-      return BooruType.unknown;
-  }
-}
+BooruType stringToBooruType(String value) => switch (value) {
+      'danbooru' => BooruType.danbooru,
+      'safebooru' => BooruType.safebooru,
+      'testbooru' => BooruType.testbooru,
+      'gelbooru' => BooruType.gelbooru,
+      'aibooru' => BooruType.aibooru,
+      'konachan' => BooruType.konachan,
+      'yandere' => BooruType.yandere,
+      'sakugabooru' => BooruType.sakugabooru,
+      _ => BooruType.unknown
+    };
 
-BooruType getBooruType(String url, List<BooruData> booruDataList) {
-  return stringToBooruType(
-      booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
-}
+BooruType getBooruType(String url, List<BooruData> booruDataList) =>
+    stringToBooruType(
+        booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
 
-BooruType booruEngineToBooruType(BooruEngine engine) {
-  switch (engine) {
-    case BooruEngine.danbooru:
-      return BooruType.danbooru;
-    case BooruEngine.gelbooru:
-      return BooruType.gelbooru;
-    case BooruEngine.moebooru:
-      return BooruType.yandere;
-  }
-}
+BooruType booruEngineToBooruType(BooruEngine engine) => switch (engine) {
+      BooruEngine.danbooru => BooruType.danbooru,
+      BooruEngine.gelbooru => BooruType.gelbooru,
+      BooruEngine.moebooru => BooruType.yandere
+    };

@@ -81,13 +81,8 @@ Pool poolDtoToPool(PoolDto dto) => Pool(
       updatedAt: dto.updatedAt!,
     );
 
-PoolCategory stringToPoolCategory(String? value) {
-  switch (value) {
-    case 'collection':
-      return PoolCategory.collection;
-    case 'series':
-      return PoolCategory.series;
-    default:
-      return PoolCategory.unknown;
-  }
-}
+PoolCategory stringToPoolCategory(String? value) => switch (value) {
+      'collection' => PoolCategory.collection,
+      'series' => PoolCategory.series,
+      _ => PoolCategory.unknown
+    };

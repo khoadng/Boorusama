@@ -80,28 +80,24 @@ class Downloader {
 }
 
 // map DownloadError to message
-String mapDownloadErrorToMessage(DownloadError error) {
-  switch (error.errorType) {
-    case DownloadErrorType.directoryNotFound:
-      return 'Directory ${error.savedPath} not found';
-    case DownloadErrorType.platformNotSupported:
-      return 'Platform not supported';
-    case DownloadErrorType.restrictedDirectory:
-      return 'Restricted directory, cannot download to  ${error.savedPath}';
-    case DownloadErrorType.httpRequestError:
-      return 'Http request error, failed to download';
-    case DownloadErrorType.unknownError:
-      return 'Unknown error';
-    case DownloadErrorType.failedToCreateFile:
-      return 'Failed to create file';
-    case DownloadErrorType.needElevatedPermission:
-      return 'Need elevated permission in order to download to  ${error.savedPath}';
-    case DownloadErrorType.readOnlyDirectory:
-      return 'Read only directory, cannot download to  ${error.savedPath}';
-    case DownloadErrorType.fileNameTooLong:
-      return 'File name is too long, total length is  ${error.fileName.length}';
-  }
-}
+String mapDownloadErrorToMessage(DownloadError error) =>
+    switch (error.errorType) {
+      DownloadErrorType.directoryNotFound =>
+        'Directory ${error.savedPath} not found',
+      DownloadErrorType.platformNotSupported => 'Platform not supported',
+      DownloadErrorType.restrictedDirectory =>
+        'Restricted directory, cannot download to  ${error.savedPath}',
+      DownloadErrorType.httpRequestError =>
+        'Http request error, failed to download',
+      DownloadErrorType.unknownError => 'Unknown error',
+      DownloadErrorType.failedToCreateFile => 'Failed to create file',
+      DownloadErrorType.needElevatedPermission =>
+        'Need elevated permission in order to download to  ${error.savedPath}',
+      DownloadErrorType.readOnlyDirectory =>
+        'Read only directory, cannot download to  ${error.savedPath}',
+      DownloadErrorType.fileNameTooLong =>
+        'File name is too long, total length is  ${error.fileName.length}'
+    };
 
 class DioDownloadService implements DownloadService {
   DioDownloadService(this.dio, this.notifications);

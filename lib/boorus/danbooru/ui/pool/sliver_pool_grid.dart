@@ -21,41 +21,29 @@ class SliverPoolGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = ref.watch(gridSpacingSettingsProvider);
+    final size = screenWidthToDisplaySize(MediaQuery.of(context).size.width);
 
     return SliverGrid(
-      gridDelegate: _gridSizeToGridDelegate(
-        spacing: spacing,
-        screenWidth: MediaQuery.of(context).size.width,
-      ),
+      gridDelegate: switch (size) {
+        ScreenSize.small ||
+        ScreenSize.medium =>
+          SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: spacing,
+            crossAxisCount: 2,
+            childAspectRatio: 0.5,
+          ),
+        ScreenSize.large ||
+        ScreenSize.veryLarge =>
+          SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: spacing,
+            crossAxisCount: 5,
+            childAspectRatio: 0.6,
+          ),
+      },
       delegate: SliverChildBuilderDelegate(
         (_, index) => PoolGridItem(pool: pools[index]),
         childCount: pools.length,
       ),
     );
-  }
-}
-
-SliverGridDelegate _gridSizeToGridDelegate({
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  switch (displaySize) {
-    case ScreenSize.small:
-      return const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.5,
-      );
-    case ScreenSize.medium:
-      return const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.5,
-      );
-    case ScreenSize.large:
-    case ScreenSize.veryLarge:
-      return const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
-        childAspectRatio: 0.6,
-      );
   }
 }

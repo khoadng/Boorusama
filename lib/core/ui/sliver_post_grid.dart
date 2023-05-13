@@ -77,9 +77,17 @@ class SliverPostGrid extends ConsumerWidget {
             return const SliverToBoxAdapter(child: NoDataBox());
           }
 
-          switch (imageListType) {
-            case ImageListType.standard:
-              return SliverGrid(
+          final payload = gridSizeToGridData(
+            size: gridSize,
+            spacing: imageGridSpacing,
+            screenWidth: MediaQuery.of(context).size.width,
+          );
+          final crossAxisCount = payload.$1;
+          final mainAxisSpacing = payload.$2;
+          final crossAxisSpacing = payload.$3;
+
+          return switch (imageListType) {
+            ImageListType.standard => SliverGrid(
                 gridDelegate: gridSizeToGridDelegate(
                   size: gridSize,
                   spacing: imageGridSpacing,
@@ -89,26 +97,15 @@ class SliverPostGrid extends ConsumerWidget {
                   itemBuilder,
                   childCount: data.length,
                 ),
-              );
-
-            case ImageListType.masonry:
-              final payload = gridSizeToGridData(
-                size: gridSize,
-                spacing: imageGridSpacing,
-                screenWidth: MediaQuery.of(context).size.width,
-              );
-              final crossAxisCount = payload.first;
-              final mainAxisSpacing = payload[1];
-              final crossAxisSpacing = payload[2];
-
-              return SliverMasonryGrid.count(
+              ),
+            ImageListType.masonry => SliverMasonryGrid.count(
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: mainAxisSpacing,
                 crossAxisSpacing: crossAxisSpacing,
                 childCount: data.length,
                 itemBuilder: itemBuilder,
-              );
-          }
+              ),
+          };
         },
       ),
     );
@@ -144,9 +141,17 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
     final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
 
-    switch (imageListType) {
-      case ImageListType.standard:
-        return SliverGrid(
+    final data = gridSizeToGridData(
+      size: gridSize,
+      spacing: imageGridSpacing,
+      screenWidth: MediaQuery.of(context).size.width,
+    );
+    final crossAxisCount = data.$1;
+    final mainAxisSpacing = data.$2;
+    final crossAxisSpacing = data.$3;
+
+    return switch (imageListType) {
+      ImageListType.standard => SliverGrid(
           gridDelegate: gridSizeToGridDelegate(
             size: gridSize,
             spacing: imageGridSpacing,
@@ -165,18 +170,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             },
             childCount: 100,
           ),
-        );
-      case ImageListType.masonry:
-        final data = gridSizeToGridData(
-          size: gridSize,
-          spacing: imageGridSpacing,
-          screenWidth: MediaQuery.of(context).size.width,
-        );
-        final crossAxisCount = data.first;
-        final mainAxisSpacing = data[1];
-        final crossAxisSpacing = data[2];
-
-        return SliverMasonryGrid.count(
+        ),
+      ImageListType.masonry => SliverMasonryGrid.count(
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: mainAxisSpacing,
           crossAxisSpacing: crossAxisSpacing,
@@ -187,8 +182,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
               borderRadius: BorderRadius.circular(imageBorderRadius),
             );
           },
-        );
-    }
+        )
+    };
   }
 }
 
@@ -198,14 +193,11 @@ SliverGridDelegate gridSizeToGridDelegate({
   required double screenWidth,
 }) {
   final displaySize = screenWidthToDisplaySize(screenWidth);
-  switch (size) {
-    case GridSize.large:
-      return SliverPostGridDelegate.large(spacing, displaySize);
-    case GridSize.small:
-      return SliverPostGridDelegate.small(spacing, displaySize);
-    case GridSize.normal:
-      return SliverPostGridDelegate.normal(spacing, displaySize);
-  }
+  return switch (size) {
+    GridSize.large => SliverPostGridDelegate.large(spacing, displaySize),
+    GridSize.small => SliverPostGridDelegate.small(spacing, displaySize),
+    GridSize.normal => SliverPostGridDelegate.normal(spacing, displaySize)
+  };
 }
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
@@ -240,25 +232,37 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
       );
 }
 
-int displaySizeToGridCountWeight(ScreenSize size) {
-  if (size == ScreenSize.small) return 1;
-  if (size == ScreenSize.medium) return 2;
+int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
+      ScreenSize.small => 1,
+      ScreenSize.medium => 2,
+      ScreenSize.large || ScreenSize.veryLarge => 3,
+    };
 
-  return 3;
-}
-
-List<dynamic> gridSizeToGridData({
+(
+  int crossAxisCount,
+  double mainAxisSpacing,
+  double crossAxisSpacing,
+) gridSizeToGridData({
   required GridSize size,
   required double spacing,
   required double screenWidth,
 }) {
   final displaySize = screenWidthToDisplaySize(screenWidth);
-  switch (size) {
-    case GridSize.large:
-      return [displaySizeToGridCountWeight(displaySize), spacing, spacing];
-    case GridSize.normal:
-      return [displaySizeToGridCountWeight(displaySize) * 2, spacing, spacing];
-    case GridSize.small:
-      return [displaySizeToGridCountWeight(displaySize) * 3, spacing, spacing];
-  }
+  return switch (size) {
+    GridSize.large => (
+        displaySizeToGridCountWeight(displaySize),
+        spacing,
+        spacing
+      ),
+    GridSize.normal => (
+        displaySizeToGridCountWeight(displaySize) * 2,
+        spacing,
+        spacing
+      ),
+    GridSize.small => (
+        displaySizeToGridCountWeight(displaySize) * 3,
+        spacing,
+        spacing
+      ),
+  };
 }

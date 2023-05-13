@@ -8,59 +8,30 @@ enum TagCategory {
 }
 
 extension TagCategoryX on TagCategory {
-  String stringify() {
-    switch (this) {
-      case TagCategory.general:
-        return '0';
-      case TagCategory.artist:
-        return '1';
-      case TagCategory.invalid_:
-        return '2';
-      case TagCategory.copyright:
-        return '3';
-      case TagCategory.charater:
-        return '4';
-      case TagCategory.meta:
-        return '5';
-    }
-  }
+  String stringify() => switch (this) {
+        TagCategory.general => '0',
+        TagCategory.artist => '1',
+        TagCategory.invalid_ => '2',
+        TagCategory.copyright => '3',
+        TagCategory.charater => '4',
+        TagCategory.meta => '5'
+      };
 }
 
-TagCategory intToTagCategory(int value) {
-  switch (value) {
-    case 0:
-      return TagCategory.general;
-    case 1:
-      return TagCategory.artist;
-    case 3:
-      return TagCategory.copyright;
-    case 4:
-      return TagCategory.charater;
-    case 5:
-      return TagCategory.meta;
-    default:
-      return TagCategory.general;
-  }
-}
+TagCategory intToTagCategory(int value) => switch (value) {
+      0 => TagCategory.general,
+      1 => TagCategory.artist,
+      3 => TagCategory.copyright,
+      4 => TagCategory.charater,
+      5 => TagCategory.meta,
+      _ => TagCategory.general
+    };
 
-TagCategory stringToTagCategory(String value) {
-  switch (value) {
-    case '0':
-    case 'tag':
-      return TagCategory.general;
-    case '1':
-    case 'artist':
-      return TagCategory.artist;
-    case '3':
-    case 'copyright':
-      return TagCategory.copyright;
-    case '4':
-    case 'character':
-      return TagCategory.charater;
-    case '5':
-    case 'metadata':
-      return TagCategory.meta;
-    default:
-      return TagCategory.general;
-  }
-}
+TagCategory stringToTagCategory(String value) => switch (value) {
+      '0' || 'tag' => TagCategory.general,
+      '1' || 'artist' => TagCategory.artist,
+      '3' || 'copyright' => TagCategory.copyright,
+      '4' || 'character' => TagCategory.charater,
+      '5' || 'metadata' => TagCategory.meta,
+      _ => TagCategory.general
+    };

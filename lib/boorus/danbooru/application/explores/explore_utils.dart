@@ -11,25 +11,17 @@ enum ExploreCategory {
 }
 
 extension DateTimeX on DateTime {
-  DateTime subtractTimeScale(TimeScale scale) {
-    switch (scale) {
-      case TimeScale.day:
-        return Jiffy.parseFromDateTime(this).subtract(days: 1).dateTime;
-      case TimeScale.week:
-        return Jiffy.parseFromDateTime(this).subtract(weeks: 1).dateTime;
-      case TimeScale.month:
-        return Jiffy.parseFromDateTime(this).subtract(months: 1).dateTime;
-    }
-  }
+  Jiffy asJiffy() => Jiffy.parseFromDateTime(this);
 
-  DateTime addTimeScale(TimeScale scale) {
-    switch (scale) {
-      case TimeScale.day:
-        return Jiffy.parseFromDateTime(this).add(days: 1).dateTime;
-      case TimeScale.week:
-        return Jiffy.parseFromDateTime(this).add(weeks: 1).dateTime;
-      case TimeScale.month:
-        return Jiffy.parseFromDateTime(this).add(months: 1).dateTime;
-    }
-  }
+  DateTime subtractTimeScale(TimeScale scale) => switch (scale) {
+        TimeScale.day => asJiffy().subtract(days: 1).dateTime,
+        TimeScale.week => asJiffy().subtract(weeks: 1).dateTime,
+        TimeScale.month => asJiffy().subtract(months: 1).dateTime
+      };
+
+  DateTime addTimeScale(TimeScale scale) => switch (scale) {
+        TimeScale.day => asJiffy().add(days: 1).dateTime,
+        TimeScale.week => asJiffy().add(weeks: 1).dateTime,
+        TimeScale.month => asJiffy().add(months: 1).dateTime
+      };
 }

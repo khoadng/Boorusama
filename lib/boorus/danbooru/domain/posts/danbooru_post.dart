@@ -272,20 +272,13 @@ extension DanbooruPostVideoX on DanbooruPost {
 }
 
 extension DanbooruPostImageX on DanbooruPost {
-  String thumbnailFromImageQuality(ImageQuality quality) {
-    switch (quality) {
-      case ImageQuality.low:
-        return url360x360;
-      case ImageQuality.high:
-        return url720x720;
-      case ImageQuality.original:
-        return urlSample;
-      case ImageQuality.automatic:
-        return url720x720;
-    }
-  }
+  String thumbnailFromImageQuality(ImageQuality quality) => switch (quality) {
+        ImageQuality.low => url360x360,
+        ImageQuality.high => url720x720,
+        ImageQuality.original => urlSample,
+        ImageQuality.automatic => url720x720
+      };
 
-  String thumbnailFromSettings(Settings settings) {
-    return thumbnailFromImageQuality(settings.imageQuality);
-  }
+  String thumbnailFromSettings(Settings settings) =>
+      thumbnailFromImageQuality(settings.imageQuality);
 }
