@@ -2,7 +2,6 @@
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
-import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -16,14 +15,12 @@ class PostRepositoryApi
   PostRepositoryApi(
     DanbooruApi api,
     CurrentBooruConfigRepository currentBooruConfigRepository,
-    this.urlComposer,
     this.settingsRepository,
   )   : _api = api,
         _currentUserBooruRepository = currentBooruConfigRepository;
 
   final CurrentBooruConfigRepository _currentUserBooruRepository;
   final DanbooruApi _api;
-  final ImageSourceComposer<PostDto> urlComposer;
   @override
   final SettingsRepository settingsRepository;
 
@@ -58,7 +55,7 @@ class PostRepositoryApi
                   )),
             ),
           )
-          .flatMap((response) => tryParseData(response, urlComposer));
+          .flatMap((response) => tryParseData(response));
 
   @override
   DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(

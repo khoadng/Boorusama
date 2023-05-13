@@ -16,50 +16,43 @@ import 'utils.dart';
 
 class ParsePostArguments {
   final HttpResponse<dynamic> value;
-  final ImageSourceComposer<PostDto> urlComposer;
 
-  ParsePostArguments(this.value, this.urlComposer);
+  ParsePostArguments(this.value);
 }
 
 List<DanbooruPost> _parsePostInIsolate(ParsePostArguments arguments) =>
-    parsePost(arguments.value, arguments.urlComposer);
+    parsePost(arguments.value);
 
 Future<List<DanbooruPost>> parsePostAsync(
   HttpResponse<dynamic> value,
-  ImageSourceComposer<PostDto> urlComposer,
 ) =>
-    compute(_parsePostInIsolate, ParsePostArguments(value, urlComposer));
+    compute(_parsePostInIsolate, ParsePostArguments(value));
 
 List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
-  ImageSourceComposer<PostDto> urlComposer,
 ) =>
     parse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e, urlComposer)).toList();
+    ).map((e) => postDtoToPost(e)).toList();
 
 TaskEither<BooruError, List<DanbooruPost>> tryParseData(
   HttpResponse<dynamic> response,
-  ImageSourceComposer<PostDto> urlComposer,
 ) =>
     TaskEither.tryCatch(
-      () => parsePostAsync(response, urlComposer),
+      () => parsePostAsync(response),
       (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
 
 DanbooruPost postDtoToPost(
   PostDto dto,
-  ImageSourceComposer<PostDto> urlComposer,
 ) {
   try {
-    final sources = urlComposer.compose(dto);
-
     return DanbooruPost(
       id: dto.id!,
-      thumbnailImageUrl: sources.thumbnail,
-      sampleImageUrl: sources.sample,
-      originalImageUrl: sources.original,
+      thumbnailImageUrl: dto.previewFileUrl ?? '',
+      sampleImageUrl: dto.largeFileUrl ?? '',
+      originalImageUrl: dto.fileUrl ?? '',
       copyrightTags: splitTag(dto.tagStringCopyright),
       characterTags: splitTag(dto.tagStringCharacter),
       artistTags: splitTag(dto.tagStringArtist),

@@ -46,7 +46,6 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
@@ -54,7 +53,6 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
-import 'infra/dtos/post_dto.dart';
 
 class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
@@ -109,7 +107,6 @@ class DanbooruProvider extends StatelessWidget {
   factory DanbooruProvider.create(
     BuildContext context, {
     required WidgetRef ref,
-    required ImageSourceComposer<PostDto> sourceComposer,
     required Widget Function(BuildContext context) builder,
   }) {
     final booruConfig = ref.read(currentBooruConfigProvider);
@@ -141,7 +138,6 @@ class DanbooruProvider extends StatelessWidget {
     final postRepo = PostRepositoryApi(
       api,
       currentBooruConfigRepo,
-      sourceComposer,
       settingRepository,
     );
 
@@ -150,7 +146,6 @@ class DanbooruProvider extends StatelessWidget {
         api: api,
         currentBooruConfigRepository: currentBooruConfigRepo,
         postRepository: postRepo,
-        urlComposer: sourceComposer,
         settingsRepository: settingRepository,
       ),
       popularStaleDuration: const Duration(minutes: 20),

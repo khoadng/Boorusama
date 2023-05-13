@@ -16,7 +16,6 @@ import 'package:page_transition/page_transition.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/danbooru_bulk_download_manager_bloc.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_image_source_composer.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
@@ -421,7 +420,6 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
       builder: (_, themeState) {
-        final booruConfig = ref.read(currentBooruConfigProvider);
         final booru = ref.watch(currentBooruProvider);
         switch (booru.booruType) {
           case BooruType.unknown:
@@ -433,9 +431,6 @@ void goToQuickSearchPage(
             return DanbooruProvider.create(
               context,
               ref: ref,
-              sourceComposer: booruConfig.isUnverified(booru)
-                  ? UnknownImageSourceComposer()
-                  : DanbooruImageSourceComposer(),
               builder: (dcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: onSubmitted,
@@ -587,8 +582,6 @@ Future<void> goToBulkDownloadPage(
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) {
       final booru = ref.read(currentBooruProvider);
-      final booruConfig = ref.read(currentBooruConfigProvider);
-
       switch (booru.booruType) {
         case BooruType.unknown:
           throw UnimplementedError();
@@ -617,9 +610,6 @@ Future<void> goToBulkDownloadPage(
           return DanbooruProvider.create(
             context,
             ref: ref,
-            sourceComposer: booruConfig.isUnverified(booru)
-                ? UnknownImageSourceComposer()
-                : DanbooruImageSourceComposer(),
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
