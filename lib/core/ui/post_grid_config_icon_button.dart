@@ -9,7 +9,6 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({super.key});

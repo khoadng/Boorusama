@@ -204,7 +204,7 @@
         "general_data_source": "Data source",
         "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
         "result_layout" : {
-            "result_layout" : "Result layout",
+            "result_layout" : "Page mode",
             "infinite_scroll": "Infinite scroll",
             "pagination": "Pagination"
         },

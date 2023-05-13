@@ -4,13 +4,11 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Project imports:
+import 'package:boorusama/core/domain/settings.dart';
+
 typedef ItemFetcher<T> = Future<List<T>> Function(int page);
 typedef ItemRefresher<T> = Future<List<T>> Function();
-
-enum PageMode {
-  infinite,
-  paginated,
-}
 
 class PostGridController<T> extends ChangeNotifier {
   PostGridController({

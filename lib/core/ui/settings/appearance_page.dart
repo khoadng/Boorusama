@@ -26,50 +26,30 @@ class AppearancePage extends ConsumerStatefulWidget {
   ConsumerState<AppearancePage> createState() => _AppearancePageState();
 }
 
-String _themeModeToString(ThemeMode theme) {
-  switch (theme) {
-    case ThemeMode.dark:
-      return 'settings.theme.dark';
-    case ThemeMode.system:
-    case ThemeMode.amoledDark:
-      return 'settings.theme.amoled_dark';
-    case ThemeMode.light:
-      return 'settings.theme.light';
-  }
-}
+String _themeModeToString(ThemeMode theme) => switch (theme) {
+      ThemeMode.dark => 'settings.theme.dark',
+      ThemeMode.system || ThemeMode.amoledDark => 'settings.theme.amoled_dark',
+      ThemeMode.light => 'settings.theme.light',
+    };
 
-String _imageQualityToString(ImageQuality quality) {
-  switch (quality) {
-    case ImageQuality.high:
-      return 'settings.image_grid.image_quality.high';
-    case ImageQuality.low:
-      return 'settings.image_grid.image_quality.low';
-    case ImageQuality.original:
-      return 'settings.image_grid.image_quality.original';
-    case ImageQuality.automatic:
-      return 'settings.image_grid.image_quality.automatic';
-  }
-}
+String _imageQualityToString(ImageQuality quality) => switch (quality) {
+      ImageQuality.high => 'settings.image_grid.image_quality.high',
+      ImageQuality.low => 'settings.image_grid.image_quality.low',
+      ImageQuality.original => 'settings.image_grid.image_quality.original',
+      ImageQuality.automatic => 'settings.image_grid.image_quality.automatic'
+    };
 
-String _gridSizeToString(GridSize size) {
-  switch (size) {
-    case GridSize.large:
-      return 'settings.image_grid.grid_size.large';
-    case GridSize.small:
-      return 'settings.image_grid.grid_size.small';
-    case GridSize.normal:
-      return 'settings.image_grid.grid_size.medium';
-  }
-}
+String _gridSizeToString(GridSize size) => switch (size) {
+      GridSize.large => 'settings.image_grid.grid_size.large',
+      GridSize.small => 'settings.image_grid.grid_size.small',
+      GridSize.normal => 'settings.image_grid.grid_size.medium'
+    };
 
-String _imageListToString(ImageListType imageListType) {
-  switch (imageListType) {
-    case ImageListType.standard:
-      return 'settings.image_list.standard';
-    case ImageListType.masonry:
-      return 'settings.image_list.masonry';
-  }
-}
+String _imageListToString(ImageListType imageListType) =>
+    switch (imageListType) {
+      ImageListType.standard => 'settings.image_list.standard',
+      ImageListType.masonry => 'settings.image_list.masonry'
+    };
 
 class _AppearancePageState extends ConsumerState<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
@@ -145,6 +125,17 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(imageQuality: value)),
               optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
             ),
+            SettingsTile<PageMode>(
+              title: const Text('settings.result_layout.result_layout').tr(),
+              selectedOption: settings.pageMode,
+              subtitle: settings.pageMode == PageMode.infinite
+                  ? const Text('settings.infinite_scroll_warning').tr()
+                  : null,
+              items: const [...PageMode.values],
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(pageMode: value)),
+              optionBuilder: (value) => Text(_layoutToString(value)).tr(),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -218,3 +209,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     );
   }
 }
+
+String _layoutToString(PageMode category) => switch (category) {
+      PageMode.infinite => 'settings.result_layout.infinite_scroll',
+      PageMode.paginated => 'settings.result_layout.pagination'
+    };

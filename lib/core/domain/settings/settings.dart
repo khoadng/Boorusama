@@ -21,7 +21,7 @@ class Settings extends Equatable {
     required this.imageQualityInFullView,
     required this.imageListType,
     required this.detailsDisplay,
-    required this.contentOrganizationCategory,
+    required this.pageMode,
     required this.autoFocusSearchBar,
     required this.postsPerPage,
     required this.currentBooruConfigId,
@@ -56,11 +56,9 @@ class Settings extends Equatable {
         detailsDisplay = json['detailsDisplay'] != null
             ? DetailsDisplay.values[json['detailsDisplay']]
             : DetailsDisplay.postFocus,
-        contentOrganizationCategory =
-            json['contentOrganizationCategory'] != null
-                ? ContentOrganizationCategory
-                    .values[json['contentOrganizationCategory']]
-                : ContentOrganizationCategory.infiniteScroll,
+        pageMode = json['contentOrganizationCategory'] != null
+            ? PageMode.values[json['contentOrganizationCategory']]
+            : PageMode.infinite,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
@@ -82,7 +80,7 @@ class Settings extends Equatable {
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
     detailsDisplay: DetailsDisplay.postFocus,
-    contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
+    pageMode: PageMode.infinite,
     autoFocusSearchBar: true,
     postsPerPage: 60,
     currentBooruConfigId: -1,
@@ -110,7 +108,7 @@ class Settings extends Equatable {
 
   final DetailsDisplay detailsDisplay;
 
-  final ContentOrganizationCategory contentOrganizationCategory;
+  final PageMode pageMode;
 
   final bool autoFocusSearchBar;
 
@@ -133,7 +131,7 @@ class Settings extends Equatable {
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
     DetailsDisplay? detailsDisplay,
-    ContentOrganizationCategory? contentOrganizationCategory,
+    PageMode? pageMode,
     bool? autoFocusSearchBar,
     int? postsPerPage,
     int? currentBooruConfigId,
@@ -155,8 +153,7 @@ class Settings extends Equatable {
             imageQualityInFullView ?? this.imageQualityInFullView,
         imageListType: imageListType ?? this.imageListType,
         detailsDisplay: detailsDisplay ?? this.detailsDisplay,
-        contentOrganizationCategory:
-            contentOrganizationCategory ?? this.contentOrganizationCategory,
+        pageMode: pageMode ?? this.pageMode,
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
@@ -177,7 +174,7 @@ class Settings extends Equatable {
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
         'detailsDisplay': detailsDisplay.index,
-        'contentOrganizationCategory': contentOrganizationCategory.index,
+        'contentOrganizationCategory': pageMode.index,
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
         'currentBooruConfigId': currentBooruConfigId,
@@ -199,7 +196,7 @@ class Settings extends Equatable {
         imageQualityInFullView,
         imageListType,
         detailsDisplay,
-        contentOrganizationCategory,
+        pageMode,
         autoFocusSearchBar,
         postsPerPage,
         currentBooruConfigId,

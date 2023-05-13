@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/ui/post_grid_controller.dart';
 
 final gridSizeSettingsProvider = Provider<GridSize>(
     (ref) => ref.watch(settingsProvider.select((value) => value.gridSize)));
@@ -15,12 +14,8 @@ final gridSizeSettingsProvider = Provider<GridSize>(
 final imageListTypeSettingsProvider = Provider<ImageListType>((ref) =>
     ref.watch(settingsProvider.select((value) => value.imageListType)));
 
-//FIXME: PageMode should be move to settings
-final pageModeSettingsProvider = Provider<PageMode>((ref) => ref.watch(
-    settingsProvider.select((value) => value.contentOrganizationCategory ==
-            ContentOrganizationCategory.infiniteScroll
-        ? PageMode.infinite
-        : PageMode.paginated)));
+final pageModeSettingsProvider = Provider<PageMode>(
+    (ref) => ref.watch(settingsProvider.select((value) => value.pageMode)));
 
 final gridSpacingSettingsProvider = Provider<double>((ref) => ref.watch(
     settingsProvider.select((value) => value.imageGridSpacing.toDouble())));
@@ -64,9 +59,7 @@ extension SettingsNotifierX on WidgetRef {
 
   Future<void> setPageMode(PageMode mode) => updateSettings(
         read(settingsProvider).copyWith(
-          contentOrganizationCategory: mode == PageMode.infinite
-              ? ContentOrganizationCategory.infiniteScroll
-              : ContentOrganizationCategory.pagination,
+          pageMode: mode,
         ),
       );
 }

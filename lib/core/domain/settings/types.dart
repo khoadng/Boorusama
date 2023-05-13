@@ -31,7 +31,7 @@ enum DetailsDisplay {
   imageFocus,
 }
 
-enum ContentOrganizationCategory {
-  infiniteScroll,
-  pagination,
+enum PageMode {
+  infinite,
+  paginated,
 }
