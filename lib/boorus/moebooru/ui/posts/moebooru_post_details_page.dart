@@ -25,6 +25,7 @@ import 'package:boorusama/core/ui/post_media_item.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/source_section.dart';
+import 'package:boorusama/core/ui/swipe_target_image.dart';
 import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -120,9 +121,9 @@ class _MoebooruPostDetailsPageState
           MoebooruPostActionToolbar(post: posts[page]),
         ],
       ),
-      targetSwipeDownBuilder: (context, page) => BooruImage(
+      targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
         imageUrl: posts[page].thumbnailImageUrl,
-        fit: BoxFit.contain,
+        aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);

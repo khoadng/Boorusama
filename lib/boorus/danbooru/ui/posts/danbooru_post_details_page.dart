@@ -39,6 +39,7 @@ import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/recommend_character_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
+import 'package:boorusama/core/ui/swipe_target_image.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/functional.dart';
 
@@ -160,9 +161,9 @@ class _DanbooruPostDetailsPageState
           ],
         );
       },
-      targetSwipeDownBuilder: (context, page) => BooruImage(
+      targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
         imageUrl: posts[page].url720x720,
-        fit: BoxFit.contain,
+        aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets = _buildWidgets(context, expanded, page, currentPage);
@@ -198,7 +199,7 @@ class _DanbooruPostDetailsPageState
                   onHeaderTap: (index) =>
                       goToArtistPage(context, artists[index].tag),
                   recommends: artists,
-                  imageUrl: (item) => item.url720x720,
+                  imageUrl: (item) => item.url360x360,
                 ),
                 RecommendCharacterList(
                   onHeaderTap: (index) =>
