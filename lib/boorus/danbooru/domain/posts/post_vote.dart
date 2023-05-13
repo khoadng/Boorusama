@@ -36,6 +36,21 @@ class PostVote extends Equatable {
   final int score;
   final bool isDeleted;
 
+  @override
+  List<Object?> get props => [
+        id,
+        postId,
+        userId,
+        createdAt,
+        updatedAt,
+        score,
+        isDeleted,
+      ];
+}
+
+extension PostVoteX on PostVote {
+  VoteState get voteState => voteStateFromScore(score);
+
   PostVote copyWith({
     PostVoteId? id,
     int? postId,
@@ -54,19 +69,4 @@ class PostVote extends Equatable {
         score: score ?? this.score,
         isDeleted: isDeleted ?? this.isDeleted,
       );
-
-  @override
-  List<Object?> get props => [
-        id,
-        postId,
-        userId,
-        createdAt,
-        updatedAt,
-        score,
-        isDeleted,
-      ];
-}
-
-extension PostVoteX on PostVote {
-  VoteState get voteState => voteStateFromScore(score);
 }

@@ -10,8 +10,6 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/video.dart';
 
-const censoredTags = ['loli', 'shota'];
-
 class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
@@ -123,6 +121,92 @@ class DanbooruPost extends Equatable
   final double duration;
   final List<PostVariant> variants;
 
+  @override
+  bool get hasComment => lastCommentAt != null;
+
+  @override
+  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
+
+  bool get hasParent => parentId != null;
+  bool get hasBothParentAndChildren => hasChildren && hasParent;
+  @override
+  bool get hasParentOrChildren => hasChildren || hasParent;
+
+  double get upvotePercent => totalVote > 0 ? upScore / totalVote : 1;
+  int get totalVote => upScore + -downScore;
+  bool get hasVoter => upScore != 0 || downScore != 0;
+  bool get hasFavorite => favCount > 0;
+
+  @override
+  final PostSource source;
+
+  bool get viewable => [
+        thumbnailImageUrl,
+        sampleImageUrl,
+        originalImageUrl,
+        md5,
+      ].every((e) => e != '');
+
+  @override
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
+
+  @override
+  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
+
+  @override
+  List<Object?> get props => [id];
+}
+
+extension PostX on DanbooruPost {
+  String get url180x180 =>
+      variants.firstWhereOrNull((e) => e.is180x180)?.url ?? thumbnailImageUrl;
+
+  String get url360x360 =>
+      variants.firstWhereOrNull((e) => e.is360x360)?.url ?? thumbnailImageUrl;
+
+  String get url720x720 =>
+      variants.firstWhereOrNull((e) => e.is720x720)?.url ?? thumbnailImageUrl;
+
+  String get urlSample =>
+      variants.firstWhereOrNull((e) => e.isSample)?.url ?? sampleImageUrl;
+
+  String get urlOriginal =>
+      variants.firstWhereOrNull((e) => e.isOriginal)?.url ?? originalImageUrl;
+
+  bool get hasCensoredTags {
+    const censoredTags = ['loli', 'shota'];
+    final tagSet = tags.toSet();
+
+    return censoredTags.any(tagSet.contains);
+  }
+
+  List<Tag> extractTags() {
+    final tags = <Tag>[];
+
+    for (final t in artistTags) {
+      tags.add(Tag(name: t, category: TagCategory.artist, postCount: 0));
+    }
+
+    for (final t in copyrightTags) {
+      tags.add(Tag(name: t, category: TagCategory.copyright, postCount: 0));
+    }
+
+    for (final t in characterTags) {
+      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
+    }
+
+    for (final t in metaTags) {
+      tags.add(Tag(name: t, category: TagCategory.meta, postCount: 0));
+    }
+
+    for (final t in generalTags) {
+      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
+    }
+
+    return tags;
+  }
+
   DanbooruPost copyWith({
     int? id,
     List<String>? copyrightTags,
@@ -176,93 +260,6 @@ class DanbooruPost extends Equatable
         duration: duration,
         variants: variants,
       );
-
-  @override
-  bool get hasComment => lastCommentAt != null;
-
-  @override
-  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
-
-  bool get hasParent => parentId != null;
-  bool get hasBothParentAndChildren => hasChildren && hasParent;
-  @override
-  bool get hasParentOrChildren => hasChildren || hasParent;
-
-  double get upvotePercent => totalVote > 0 ? upScore / totalVote : 1;
-  int get totalVote => upScore + -downScore;
-  bool get hasVoter => upScore != 0 || downScore != 0;
-  bool get hasFavorite => favCount > 0;
-
-  @override
-  final PostSource source;
-
-  bool get hasCensoredTags {
-    final tagSet = tags.toSet();
-
-    return censoredTags.any(tagSet.contains);
-  }
-
-  bool get viewable => [
-        thumbnailImageUrl,
-        sampleImageUrl,
-        originalImageUrl,
-        md5,
-      ].every((e) => e != '');
-
-  @override
-  String getLink(String baseUrl) =>
-      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
-  @override
-  List<Object?> get props => [id];
-}
-
-bool isPostValid(DanbooruPost post) => post.id != 0 && post.viewable;
-
-extension PostX on DanbooruPost {
-  String get url180x180 =>
-      variants.firstWhereOrNull((e) => e.is180x180)?.url ?? thumbnailImageUrl;
-
-  String get url360x360 =>
-      variants.firstWhereOrNull((e) => e.is360x360)?.url ?? thumbnailImageUrl;
-
-  String get url720x720 =>
-      variants.firstWhereOrNull((e) => e.is720x720)?.url ?? thumbnailImageUrl;
-
-  String get urlSample =>
-      variants.firstWhereOrNull((e) => e.isSample)?.url ?? sampleImageUrl;
-
-  String get urlOriginal =>
-      variants.firstWhereOrNull((e) => e.isOriginal)?.url ?? originalImageUrl;
-
-  List<Tag> extractTags() {
-    final tags = <Tag>[];
-
-    for (final t in artistTags) {
-      tags.add(Tag(name: t, category: TagCategory.artist, postCount: 0));
-    }
-
-    for (final t in copyrightTags) {
-      tags.add(Tag(name: t, category: TagCategory.copyright, postCount: 0));
-    }
-
-    for (final t in characterTags) {
-      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
-    }
-
-    for (final t in metaTags) {
-      tags.add(Tag(name: t, category: TagCategory.meta, postCount: 0));
-    }
-
-    for (final t in generalTags) {
-      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
-    }
-
-    return tags;
-  }
 }
 
 extension DanbooruPostVideoX on DanbooruPost {
