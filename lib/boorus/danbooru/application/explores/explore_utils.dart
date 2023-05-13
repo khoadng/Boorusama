@@ -14,22 +14,22 @@ extension DateTimeX on DateTime {
   DateTime subtractTimeScale(TimeScale scale) {
     switch (scale) {
       case TimeScale.day:
-        return Jiffy(this).subtract(days: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).subtract(days: 1).dateTime;
       case TimeScale.week:
-        return Jiffy(this).subtract(weeks: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).subtract(weeks: 1).dateTime;
       case TimeScale.month:
-        return Jiffy(this).subtract(months: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).subtract(months: 1).dateTime;
     }
   }
 
   DateTime addTimeScale(TimeScale scale) {
     switch (scale) {
       case TimeScale.day:
-        return Jiffy(this).add(days: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).add(days: 1).dateTime;
       case TimeScale.week:
-        return Jiffy(this).add(weeks: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).add(weeks: 1).dateTime;
       case TimeScale.month:
-        return Jiffy(this).add(months: 1).dateTime;
+        return Jiffy.parseFromDateTime(this).add(months: 1).dateTime;
     }
   }
 }

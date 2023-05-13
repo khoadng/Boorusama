@@ -32,8 +32,9 @@ class DateTimeSelector extends StatelessWidget {
           color: Colors.transparent,
           child: IconButton(
             icon: const Icon(Icons.keyboard_arrow_left),
-            onPressed: () =>
-                onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
+            onPressed: () => onDateChanged(Jiffy.parseFromDateTime(date)
+                .dateTime
+                .subtractTimeScale(scale)),
           ),
         ),
         TextButton(
@@ -66,8 +67,8 @@ class DateTimeSelector extends StatelessWidget {
           color: Colors.transparent,
           child: IconButton(
             icon: const Icon(Icons.keyboard_arrow_right),
-            onPressed: () =>
-                onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
+            onPressed: () => onDateChanged(
+                Jiffy.parseFromDateTime(date).dateTime.addTimeScale(scale)),
           ),
         ),
       ],
