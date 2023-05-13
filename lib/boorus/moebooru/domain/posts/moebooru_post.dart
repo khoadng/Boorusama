@@ -4,9 +4,10 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/video.dart';
 
 class MoebooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
   MoebooruPost({
     required this.id,
@@ -73,4 +74,7 @@ class MoebooruPost extends Equatable
 
   @override
   List<Object?> get props => [id];
+
+  @override
+  double get duration => -1;
 }

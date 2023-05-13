@@ -70,7 +70,7 @@ class MoebooruMoreActionButton extends ConsumerWidget {
                 value: 'view_in_browser',
                 child: const Text('post.detail.view_in_browser').tr(),
               ),
-              if (!post.isVideo)
+              if (post.hasFullView)
                 PopupMenuItem(
                   value: 'view_original',
                   child: const Text('post.image_fullview.view_original').tr(),

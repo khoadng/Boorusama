@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
@@ -89,7 +90,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 value: 'view_in_browser',
                 child: const Text('post.detail.view_in_browser').tr(),
               ),
-              if (!post.isVideo)
+              if (post.hasFullView)
                 PopupMenuItem(
                   value: 'view_original',
                   child: const Text('post.image_fullview.view_original').tr(),

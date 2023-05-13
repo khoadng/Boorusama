@@ -5,9 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart' as base;
+import 'package:boorusama/core/domain/video.dart';
 
 class GelbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements base.Post {
   const GelbooruPost({
     required this.format,
@@ -101,4 +102,7 @@ class GelbooruPost extends Equatable
 
   @override
   final int fileSize;
+
+  @override
+  double get duration => -1;
 }

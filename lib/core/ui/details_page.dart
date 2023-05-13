@@ -479,13 +479,8 @@ class __BottomSheetState extends State<_BottomSheet>
   void initState() {
     super.initState();
     _animController = AnimationController(
+      value: 1,
       vsync: this,
-    );
-
-    _animController.animateTo(
-      1,
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.easeOut,
     );
   }
 

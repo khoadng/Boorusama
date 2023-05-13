@@ -2,8 +2,9 @@
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/domain/video.dart';
 
-abstract class Post with MediaInfoMixin, ImageInfoMixin {
+abstract class Post with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
@@ -21,6 +22,8 @@ abstract class Post with MediaInfoMixin, ImageInfoMixin {
 }
 
 extension PostImageX on Post {
+  bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
+
   String thumbnailFromSettings(Settings settings) =>
       switch (settings.imageQuality) {
         ImageQuality.automatic => thumbnailImageUrl,
