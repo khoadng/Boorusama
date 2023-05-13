@@ -20,9 +20,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({
     super.key,
     required this.post,
+    required this.onToggleSlideShow,
   });
 
   final DanbooruPost post;
+  final VoidCallback onToggleSlideShow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,6 +65,9 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'view_original':
                   goToOriginalImagePage(context, post);
                   break;
+                case 'toggle_slide_show':
+                  onToggleSlideShow();
+                  break;
                 // ignore: no_default_cases
                 default:
               }
@@ -95,6 +100,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   value: 'view_original',
                   child: const Text('post.image_fullview.view_original').tr(),
                 ),
+              const PopupMenuItem(
+                value: 'toggle_slide_show',
+                child: Text('Toggle slide show'),
+              ),
             ],
           ),
         ),

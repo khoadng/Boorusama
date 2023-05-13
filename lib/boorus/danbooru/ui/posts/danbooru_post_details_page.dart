@@ -261,6 +261,7 @@ class _DanbooruPostDetailsPageState
             );
           }),
           DanbooruMoreActionButton(
+            onToggleSlideShow: controller.toggleSlideShow,
             post: posts[page],
           ),
         ];

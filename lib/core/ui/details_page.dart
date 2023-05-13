@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/ui/auto_slide_mixin.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
@@ -25,11 +26,40 @@ class DetailsPageController extends ChangeNotifier {
 
   var _enableSwipeDownToDismiss = false;
   var _enablePageSwipe = true;
+  final _slideShow = ValueNotifier((false, <int>[]));
   final _hideOverlay = ValueNotifier(false);
 
   bool get swipeDownToDismiss => _enableSwipeDownToDismiss;
   bool get pageSwipe => _enablePageSwipe;
   ValueNotifier<bool> get hideOverlay => _hideOverlay;
+  ValueNotifier<(bool, List<int>)> get slideShow => _slideShow;
+
+  void toggleSlideShow() {
+    if (_slideShow.value.$1) {
+      stopSlideShow();
+    } else {
+      startSlideShow();
+    }
+  }
+
+  void startSlideShow({
+    List<int>? skipIndexes,
+  }) {
+    _slideShow.value = (true, skipIndexes ?? <int>[]);
+    disablePageSwipe();
+    disableSwipeDownToDismiss();
+    if (!_hideOverlay.value) setHideOverlay(true);
+    notifyListeners();
+  }
+
+  void stopSlideShow() {
+    _slideShow.value = (false, <int>[]);
+    enablePageSwipe();
+    enableSwipeDownToDismiss();
+    setHideOverlay(false);
+
+    notifyListeners();
+  }
 
   void enableSwipeDownToDismiss() {
     _enableSwipeDownToDismiss = true;
@@ -52,7 +82,7 @@ class DetailsPageController extends ChangeNotifier {
   }
 
   // set overlay value
-  void setOverlay(bool value) {
+  void setHideOverlay(bool value) {
     _hideOverlay.value = value;
     notifyListeners();
   }
@@ -101,7 +131,10 @@ class DetailsPage<T> extends StatefulWidget {
 }
 
 class _DetailsPageState<T> extends State<DetailsPage<T>>
-    with TickerProviderStateMixin, SwipeDownToDismissMixin<DetailsPage<T>> {
+    with
+        TickerProviderStateMixin,
+        SwipeDownToDismissMixin<DetailsPage<T>>,
+        AutomaticSlideMixin {
   late final controller = ExprollablePageController(
     initialPage: widget.intitialIndex,
     maxViewportOffset: ViewportOffset.shrunk,
@@ -116,6 +149,9 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   //details page contorller
   late final _controller = widget.controller ?? DetailsPageController();
+
+  @override
+  PageController get pageController => controller;
 
   @override
   Function() get popper => () => _onBackButtonPressed();
@@ -145,6 +181,18 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
       setState(() {
         _pageSwipe = _controller.pageSwipe;
       });
+    }
+
+    final (slideShow, skipIndexes) = _controller.slideShow.value;
+
+    if (slideShow) {
+      startAutoSlide(
+        controller.currentPage.value,
+        widget.pageCount,
+        skipIndexes: skipIndexes,
+      );
+    } else {
+      stopAutoSlide();
     }
   }
 
@@ -180,6 +228,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
     if (!_controller.pageSwipe ||
         !_controller.swipeDownToDismiss ||
         expanded ||
+        _controller.slideShow.value.$1 ||
         _isSwiping) {
       return;
     }

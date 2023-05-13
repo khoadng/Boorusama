@@ -38,7 +38,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onVisibilityChanged(bool value) {
-    controller.setOverlay(value);
+    controller.setHideOverlay(value);
   }
 
   void onZoomUpdated(bool zoom) {
@@ -46,6 +46,9 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onImageTap() {
+    if (controller.slideShow.value.$1) {
+      controller.stopSlideShow();
+    }
     controller.toggleOverlay();
   }
 }

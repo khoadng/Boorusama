@@ -30,6 +30,7 @@ String getHost(Uri uri) {
   if (uri.host.contains('exhentai.org')) return 'https://e-hentai.org';
   if (uri.host.contains('ngfiles.com')) return 'https://newgrounds.com';
   if (uri.host.contains('i.pximg.net')) return 'https://pixiv.net';
+  if (uri.host.contains('youtu.be')) return 'https://youtube.com';
   if (uri.host.contains('lofter.com')) {
     return 'https://www.lofter.com/favicon.ico';
   }
