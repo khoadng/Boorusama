@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
@@ -96,21 +95,12 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                     (e) => const SizedBox.shrink(),
                     (uri) => ElevatedButton(
                         onPressed: () {
-                          final booruFactoru = context.read<BooruFactory>();
-                          final booruType = getBooruType(
-                              uri.toString(), booruFactoru.booruData);
                           Navigator.of(context).pop();
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => ConfigBooruPage.of(
-                                    context,
-                                    booruFactory: booruFactoru,
-                                    url: uri.toString(),
-                                    booru: booruType,
-                                    unverifiedBooru:
-                                        booruType == BooruType.unknown,
+                              builder: (_) => ConfigBooruPage(
                                     setCurrentBooruOnSubmit:
                                         widget.setCurrentBooruOnSubmit,
-                                    settings: ref.read(settingsProvider),
+                                    arg: AddNewConfig(uri),
                                   )));
                         },
                         child: const Text('Next')),
