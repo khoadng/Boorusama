@@ -11,7 +11,7 @@ final danbooruPostDetailsCharacterProvider = NotifierProvider.autoDispose
     .family<PostDetailsCharacterNotifier, List<Recommend<DanbooruPost>>, int>(
   PostDetailsCharacterNotifier.new,
   dependencies: [
-    danbooruPostRepoProvider,
+    danbooruArtistCharacterPostRepoProvider,
   ],
 );
 
@@ -20,7 +20,7 @@ class PostDetailsCharacterNotifier
     with DanbooruPostRepositoryMixin, PostDetailsTagsX<DanbooruPost> {
   @override
   DanbooruPostRepository get postRepository =>
-      ref.read(danbooruPostRepoProvider);
+      ref.read(danbooruArtistCharacterPostRepoProvider);
 
   @override
   Future<List<DanbooruPost>> Function(String tag, int page) get fetcher =>
