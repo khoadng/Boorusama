@@ -562,11 +562,7 @@ void goToFavoriteGroupPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
     return DanbooruProvider.of(
       context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return const FavoriteGroupsPage();
-        },
-      ),
+      builder: (dcontext) => const FavoriteGroupsPage(),
     );
   }));
 }
@@ -598,12 +594,8 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     expand: true,
     builder: (_) => DanbooruProvider.of(
       context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return AddToFavoriteGroupPage(
-            posts: posts,
-          );
-        },
+      builder: (dcontext) => AddToFavoriteGroupPage(
+        posts: posts,
       ),
     ),
   );

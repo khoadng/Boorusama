@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -58,6 +57,8 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = ref.watch(danbooruCurrentUserProvider);
+
     return Dialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -159,27 +160,22 @@ class _EditFavoriteGroupDialogState
                     ),
                   ),
                 ),
-              BlocBuilder<CurrentUserBloc, CurrentUserState>(
-                builder: (context, state) {
-                  return AnimatedCrossFade(
-                    firstChild: const SizedBox.shrink(),
-                    secondChild: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                      title:
-                          const Text('favorite_groups.is_private_group_option')
-                              .tr(),
-                      trailing: Switch.adaptive(
-                        value: isPrivate,
-                        onChanged: (value) => setState(() => isPrivate = value),
-                      ),
-                    ),
-                    crossFadeState: state.user != null &&
-                            isBooruGoldPlusAccount(state.user!.level)
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 150),
-                  );
-                },
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  title: const Text('favorite_groups.is_private_group_option')
+                      .tr(),
+                  trailing: Switch.adaptive(
+                    value: isPrivate,
+                    onChanged: (value) => setState(() => isPrivate = value),
+                  ),
+                ),
+                crossFadeState: currentUser != null &&
+                        isBooruGoldPlusAccount(currentUser.level)
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 150),
               ),
               ButtonBar(
                 children: [

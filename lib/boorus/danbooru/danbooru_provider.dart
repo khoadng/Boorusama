@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
@@ -82,7 +81,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
-    required this.currentUserBloc,
     required this.poolOverviewBloc,
     required this.artistBloc,
     required this.tagBloc,
@@ -213,12 +211,6 @@ class DanbooruProvider extends StatelessWidget {
       booruUserIdentityProvider: booruUserIdentityProvider,
     )..add(const BlacklistedTagRequested());
 
-    final currentUserBloc = CurrentUserBloc(
-      userRepository: userRepo,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      booruUserIdentityProvider: booruUserIdentityProvider,
-    )..add(const CurrentUserFetched());
-
     final poolOverviewBloc = PoolOverviewBloc()
       ..add(const PoolOverviewChanged(
         category: PoolCategory.series,
@@ -301,7 +293,6 @@ class DanbooruProvider extends StatelessWidget {
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       blacklistedTagsBloc: blacklistedTagsBloc,
-      currentUserBloc: currentUserBloc,
       poolOverviewBloc: poolOverviewBloc,
       artistBloc: artistBloc,
       tagBloc: tagBloc,
@@ -349,7 +340,6 @@ class DanbooruProvider extends StatelessWidget {
     final tagInfo = context.read<TagInfo>();
 
     final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
-    final currentUserBloc = context.read<CurrentUserBloc>();
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
     final artistBloc = context.read<ArtistBloc>();
     final tagBloc = context.read<TagBloc>();
@@ -393,7 +383,6 @@ class DanbooruProvider extends StatelessWidget {
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       blacklistedTagsBloc: blacklistedTagsBloc,
-      currentUserBloc: currentUserBloc,
       poolOverviewBloc: poolOverviewBloc,
       artistBloc: artistBloc,
       tagBloc: tagBloc,
@@ -440,7 +429,6 @@ class DanbooruProvider extends StatelessWidget {
   final FileNameGenerator fileNameGenerator;
 
   final BlacklistedTagsBloc blacklistedTagsBloc;
-  final CurrentUserBloc currentUserBloc;
   final PoolOverviewBloc poolOverviewBloc;
   final ArtistBloc artistBloc;
   final TagBloc tagBloc;
@@ -495,7 +483,6 @@ class DanbooruProvider extends StatelessWidget {
           BlocProvider.value(value: artistBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
-          BlocProvider.value(value: currentUserBloc),
           BlocProvider.value(value: postVoteCubit),
           BlocProvider.value(value: commentsCubit),
         ],
