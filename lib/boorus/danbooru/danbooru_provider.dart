@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -95,7 +94,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.savedSearchBloc,
     required this.commentBloc,
     required this.artistCommentaryBloc,
-    required this.favoritesCubit,
     required this.profileCubit,
     required this.postVoteCubit,
     required this.danbooruArtistCharacterPostRepository,
@@ -273,7 +271,6 @@ class DanbooruProvider extends StatelessWidget {
       repository: artistCommentaryRepo,
     );
 
-    final favoritedCubit = FavoritesCubit(postRepository: postRepo);
     final profileCubit = ProfileCubit(profileRepository: profileRepo);
 
     final postVoteCubit = PostVoteCubit(postVoteRepo);
@@ -325,7 +322,6 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchBloc: savedSearchBloc,
       commentBloc: commentBloc,
       artistCommentaryBloc: artistCommentaryBloc,
-      favoritesCubit: favoritedCubit,
       profileCubit: profileCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
@@ -377,7 +373,6 @@ class DanbooruProvider extends StatelessWidget {
     final savedSearchBloc = context.read<SavedSearchBloc>();
     final commentBloc = context.read<CommentBloc>();
     final artistCommentaryBloc = context.read<ArtistCommentaryCubit>();
-    final favoritesCubit = context.read<FavoritesCubit>();
     final profileCubit = context.read<ProfileCubit>();
     final postVoteCubit = context.read<PostVoteCubit>();
     final artistCharacterPostRepository =
@@ -425,7 +420,6 @@ class DanbooruProvider extends StatelessWidget {
       commentBloc: commentBloc,
       artistCommentaryBloc: artistCommentaryBloc,
       profileCubit: profileCubit,
-      favoritesCubit: favoritesCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
       commentsCubit: commentsCubit,
@@ -474,7 +468,6 @@ class DanbooruProvider extends StatelessWidget {
   final SavedSearchBloc savedSearchBloc;
   final CommentBloc commentBloc;
   final ArtistCommentaryCubit artistCommentaryBloc;
-  final FavoritesCubit favoritesCubit;
   final ProfileCubit profileCubit;
   final PostVoteCubit postVoteCubit;
   final CommentsCubit commentsCubit;
@@ -515,7 +508,6 @@ class DanbooruProvider extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: favoritesCubit),
           BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: commentBloc),
           BlocProvider.value(value: artistCommentaryBloc),
