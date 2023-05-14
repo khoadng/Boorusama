@@ -5,14 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 
-final danbooruPostDetailsChildrenProvider = NotifierProvider.autoDispose
-    .family<PostDetailsChildrenNotifier, List<DanbooruPost>, int>(
-  PostDetailsChildrenNotifier.new,
-  dependencies: [
-    danbooruPostRepoProvider,
-  ],
-);
-
 class PostDetailsChildrenNotifier
     extends AutoDisposeFamilyNotifier<List<DanbooruPost>, int>
     with DanbooruPostRepositoryMixin {

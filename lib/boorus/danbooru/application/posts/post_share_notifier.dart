@@ -8,15 +8,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 
-final postShareProvider =
-    NotifierProvider.family<PostShareNotifier, PostShareState, Post>(
-  PostShareNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-    booruFactoryProvider,
-  ],
-);
-
 class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
   //TODO: remove duplicated codes
   @override

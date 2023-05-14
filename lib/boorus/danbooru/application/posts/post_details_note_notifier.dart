@@ -7,14 +7,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
-final danbooruPostDetailsNoteProvider = NotifierProvider.autoDispose
-    .family<PostDetailsNoteNotifier, PostDetailsNoteState, int>(
-  PostDetailsNoteNotifier.new,
-  dependencies: [
-    noteRepoProvider,
-  ],
-);
-
 class PostDetailsNoteState extends Equatable {
   const PostDetailsNoteState({
     required this.notes,

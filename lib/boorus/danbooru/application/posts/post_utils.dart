@@ -4,11 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_artist_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_character_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_children_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_pools_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/functional.dart';

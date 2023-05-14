@@ -27,7 +27,6 @@ import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repository_cacher.dart';
@@ -69,7 +68,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.postVoteRepo,
     required this.poolDescriptionRepo,
     required this.exploreRepo,
-    required this.postCountRepo,
     required this.savedSearchRepo,
     required this.commentVoteRepo,
     required this.commentRepo,
@@ -186,11 +184,6 @@ class DanbooruProvider extends StatelessWidget {
       booruUserIdentityProvider: booruUserIdentityProvider,
     );
 
-    final postCountRepo = PostCountRepositoryApi(
-      api: api,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-    );
-
     final savedSearchRepo =
         SavedSearchRepositoryApi(api, currentBooruConfigRepo);
 
@@ -254,7 +247,6 @@ class DanbooruProvider extends StatelessWidget {
       noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
-      postCountRepo: postCountRepo,
       postRepo: postRepo,
       postVoteRepo: postVoteRepo,
       profileRepo: profileRepo,
@@ -308,7 +300,6 @@ class DanbooruProvider extends StatelessWidget {
     final wikiRepo = context.read<WikiRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
     final postVoteRepo = context.read<PostVoteRepository>();
-    final postCountRepo = context.read<PostCountRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -338,7 +329,6 @@ class DanbooruProvider extends StatelessWidget {
       noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
-      postCountRepo: postCountRepo,
       postRepo: postRepo,
       postVoteRepo: postVoteRepo,
       profileRepo: profileRepo,
@@ -390,7 +380,6 @@ class DanbooruProvider extends StatelessWidget {
   final PostVoteRepository postVoteRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
-  final PostCountRepository postCountRepo;
   final SavedSearchRepository savedSearchRepo;
   final CommentVoteRepository commentVoteRepo;
   final CommentRepository commentRepo;
@@ -436,7 +425,6 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: postVoteRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: exploreRepo),
-        RepositoryProvider.value(value: postCountRepo),
         RepositoryProvider.value(value: savedSearchRepo),
         RepositoryProvider.value(value: fileNameGenerator),
       ],
@@ -454,7 +442,6 @@ class DanbooruProvider extends StatelessWidget {
         ],
         child: ProviderScope(
           overrides: [
-            postCountRepoProvider.overrideWithValue(postCountRepo),
             autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
             noteRepoProvider.overrideWithValue(noteRepo),
             poolRepoProvider.overrideWithValue(poolRepo),
@@ -497,32 +484,6 @@ final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
 
 final danbooruArtistCharacterPostRepoProvider =
     Provider<DanbooruPostRepository>((ref) => throw UnimplementedError());
-
-final postCountRepoProvider =
-    Provider<PostCountRepository>((ref) => throw UnimplementedError());
-
-final postCountStateProvider =
-    StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
-  final postCountRepo = ref.watch(postCountRepoProvider);
-  final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return PostCountNotifier(
-    repository: postCountRepo,
-    currentBooruConfigRepository: currentBooruConfigRepo,
-    booruFactory: booruFactory,
-  );
-}, dependencies: [
-  postCountRepoProvider,
-  currentBooruConfigRepoProvider,
-  booruFactoryProvider,
-]);
-
-final postCountProvider = Provider<PostCountState>((ref) {
-  return ref.watch(postCountStateProvider);
-}, dependencies: [
-  postCountStateProvider,
-]);
 
 final poolDescriptionRepoProvider =
     Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());

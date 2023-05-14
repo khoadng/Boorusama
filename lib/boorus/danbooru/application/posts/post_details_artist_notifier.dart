@@ -7,14 +7,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/posts/details.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
-final danbooruPostDetailsArtistProvider = NotifierProvider.autoDispose
-    .family<PostDetailsArtistNotifier, List<Recommend<DanbooruPost>>, int>(
-  PostDetailsArtistNotifier.new,
-  dependencies: [
-    danbooruArtistCharacterPostRepoProvider,
-  ],
-);
-
 class PostDetailsArtistNotifier
     extends AutoDisposeFamilyNotifier<List<Recommend<DanbooruPost>>, int>
     with DanbooruPostRepositoryMixin, PostDetailsTagsX<DanbooruPost> {

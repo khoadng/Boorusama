@@ -12,10 +12,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_artist_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_character_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_pools_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/post_details_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';

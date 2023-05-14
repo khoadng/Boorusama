@@ -6,11 +6,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 
-final danbooruPostDetailsTagsProvider = NotifierProvider.autoDispose
-    .family<PostDetailsTagsNotifier, List<PostDetailTag>, int>(
-  PostDetailsTagsNotifier.new,
-);
-
 class PostDetailsTagsNotifier
     extends AutoDisposeFamilyNotifier<List<PostDetailTag>, int> {
   @override
