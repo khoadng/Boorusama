@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_groups_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/modal_favorite_group_action.dart';
@@ -30,10 +28,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
         title: const Text('favorite_groups.favorite_groups').tr(),
         actions: [
           IconButton(
-            onPressed: () {
-              final bloc = context.read<FavoriteGroupsBloc>();
-              goToFavoriteGroupCreatePage(context, bloc);
-            },
+            onPressed: () => goToFavoriteGroupCreatePage(context),
             icon: const FaIcon(FontAwesomeIcons.plus),
           ),
         ],
@@ -41,7 +36,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            if (favoriteGroups.isEmpty)
+            if (favoriteGroups == null)
               _buildLoading()
             else
               SliverList(
@@ -74,14 +69,13 @@ class FavoriteGroupsPage extends ConsumerWidget {
                         ],
                       ),
                       onTap: () {
-                        final bloc = context.read<FavoriteGroupsBloc>();
-
-                        goToFavoriteGroupDetailsPage(context, group, bloc);
+                        goToFavoriteGroupDetailsPage(context, group);
                       },
                       leading: _Preview(group: group),
                       trailing: IconButton(
                         onPressed: () => _showEditSheet(
                           context,
+                          ref,
                           group,
                         ),
                         icon: const Icon(Icons.more_vert),
@@ -97,8 +91,8 @@ class FavoriteGroupsPage extends ConsumerWidget {
     );
   }
 
-  void _showEditSheet(BuildContext context, FavoriteGroup favGroup) {
-    final bloc = context.read<FavoriteGroupsBloc>();
+  void _showEditSheet(
+      BuildContext context, WidgetRef ref, FavoriteGroup favGroup) {
     showMaterialModalBottomSheet(
       context: context,
       builder: (_) => ModalFavoriteGroupAction(
@@ -117,16 +111,16 @@ class FavoriteGroupsPage extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  bloc.add(FavoriteGroupsDeleted(
-                    groupId: favGroup.id,
-                  ));
+                  ref
+                      .read(danbooruFavoriteGroupsProvider.notifier)
+                      .delete(group: favGroup);
                 },
                 child: const Text('generic.action.ok').tr(),
               ),
             ],
           ),
         ),
-        onEdit: () => goToFavoriteGroupEditPage(context, bloc, favGroup),
+        onEdit: () => goToFavoriteGroupEditPage(context, favGroup),
       ),
     );
   }

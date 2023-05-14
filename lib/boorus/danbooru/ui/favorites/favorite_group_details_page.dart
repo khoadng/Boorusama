@@ -101,11 +101,10 @@ class _FavoriteGroupDetailsPageState
       }
     }
 
-    context.read<FavoriteGroupsBloc>().add(FavoriteGroupsEdited(
+    ref.read(danbooruFavoriteGroupsProvider.notifier).edit(
           group: widget.group,
           initialIds: ids.join(' '),
-          refreshPreviews: true,
-        ));
+        );
   }
 
   @override
@@ -268,7 +267,7 @@ class _FavoriteGroupDetailsPageState
                                     index: index,
                                   ),
                                   post: post,
-                                  onTap: () => !editing
+                                  onTap: !editing
                                       ? () => goToDetailPage(
                                             context: context,
                                             posts: items,
