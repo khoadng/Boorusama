@@ -310,15 +310,15 @@ class DanbooruImageGridItem extends ConsumerWidget {
     required this.post,
     required this.hideOverlay,
     required this.autoScrollOptions,
-    required this.onTap,
     required this.enableFav,
+    this.onTap,
     this.image,
   });
 
   final DanbooruPost post;
   final bool hideOverlay;
   final AutoScrollOptions autoScrollOptions;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool enableFav;
   final Widget? image;
 

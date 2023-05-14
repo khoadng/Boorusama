@@ -133,7 +133,7 @@ class _DanbooruInfinitePostListState
                 controller: _autoScrollController,
                 index: index,
               ),
-              onTap: () => !multiSelect
+              onTap: !multiSelect
                   ? () {
                       goToDetailPage(
                         context: context,
