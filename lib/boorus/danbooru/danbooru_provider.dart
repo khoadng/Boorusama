@@ -520,7 +520,6 @@ class DanbooruProvider extends StatelessWidget {
             noteRepoProvider.overrideWithValue(noteRepo),
             poolRepoProvider.overrideWithValue(poolRepo),
             postVoteRepoProvider.overrideWithValue(postVoteRepo),
-            danbooruPostRepoProvider.overrideWithValue(postRepo),
             danbooruArtistCharacterPostRepoProvider
                 .overrideWithValue(danbooruArtistCharacterPostRepository),
             poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
@@ -549,8 +548,13 @@ final poolRepoProvider =
 final postVoteRepoProvider =
     Provider<PostVoteRepository>((ref) => throw UnimplementedError());
 
-final danbooruPostRepoProvider =
-    Provider<DanbooruPostRepository>((ref) => throw UnimplementedError());
+final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
+  final api = ref.watch(danbooruApiProvider);
+  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final settingsRepo = ref.watch(settingsRepoProvider);
+
+  return PostRepositoryApi(api, booruConfigRepo, settingsRepo);
+});
 
 final danbooruArtistCharacterPostRepoProvider =
     Provider<DanbooruPostRepository>((ref) => throw UnimplementedError());
