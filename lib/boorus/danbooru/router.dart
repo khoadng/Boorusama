@@ -394,28 +394,7 @@ void goToRelatedTagsPage(
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.postFavoriters,
-    ),
-    height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocProvider(
-        create: (_) => PostFavoriteBloc(
-          favoritePostRepository: dcontext.read<FavoritePostRepository>(),
-          userRepository: dcontext.read<UserRepository>(),
-        )..add(PostFavoriteFetched(
-            postId: post.id,
-            refresh: true,
-          )),
-        child: FavoriterDetailsView(
-          post: post,
-        ),
-      ),
-    ),
-  );
+  //FIXME: re enable this later
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
