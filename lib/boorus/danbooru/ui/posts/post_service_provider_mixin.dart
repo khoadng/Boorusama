@@ -1,11 +1,9 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -14,7 +12,8 @@ import 'package:boorusama/core/domain/boorus/current_booru_config_repository.dar
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
 
-mixin DanbooruPostServiceProviderMixin<T extends StatefulWidget> on State<T> {
+mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
+    on ConsumerState<T> {
   BlacklistedTagsRepository get blacklistedTagsRepository =>
       context.read<BlacklistedTagsRepository>();
 
@@ -24,7 +23,8 @@ mixin DanbooruPostServiceProviderMixin<T extends StatefulWidget> on State<T> {
   CurrentBooruConfigRepository get currentBooruConfigRepository =>
       context.read<CurrentBooruConfigRepository>();
 
-  FavoritePostCubit get favoriteCubit => context.read<FavoritePostCubit>();
+  void Function(List<int> ids) get checkFavorites =>
+      (ids) => ref.danbooruFavorites.checkFavorites(ids);
 
   PoolRepository get poolRepository => context.read<PoolRepository>();
 

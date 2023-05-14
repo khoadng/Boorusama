@@ -14,7 +14,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
@@ -101,11 +101,10 @@ class _FavoriteGroupDetailsPageState
       }
     }
 
-    context.read<FavoriteGroupsBloc>().add(FavoriteGroupsEdited(
+    ref.read(danbooruFavoriteGroupsProvider.notifier).edit(
           group: widget.group,
           initialIds: ids.join(' '),
-          refreshPreviews: true,
-        ));
+        );
   }
 
   @override
@@ -214,125 +213,84 @@ class _FavoriteGroupDetailsPageState
                     ],
                   ),
                 Expanded(
-                  child: BlocBuilder<FavoritePostCubit, FavoritePostState>(
-                    buildWhen: (previous, current) =>
-                        current is FavoritePostListSuccess,
-                    builder: (context, favoriteState) {
-                      return InfiniteLoadList(
-                        scrollController: scrollController,
-                        onLoadMore: () => controller.fetchMore(),
-                        enableRefresh: false,
-                        enableLoadMore: hasMore,
-                        builder: (context, scrollController) {
-                          final count =
-                              _sizeToGridCount(Screen.of(context).size);
+                  child: InfiniteLoadList(
+                    scrollController: scrollController,
+                    onLoadMore: () => controller.fetchMore(),
+                    enableRefresh: false,
+                    enableLoadMore: hasMore,
+                    builder: (context, scrollController) {
+                      final count = _sizeToGridCount(Screen.of(context).size);
 
-                          return ReorderableGridView.builder(
-                            controller: scrollController,
-                            dragEnabled: editing,
-                            itemCount: items.length,
-                            onReorder: (oldIndex, newIndex) {
-                              controller.moveAndInsert(
-                                fromIndex: oldIndex,
-                                toIndex: newIndex,
-                                onSuccess: () {
-                                  if (oldIndex != newIndex) {
-                                    setState(() {
-                                      commands
-                                          .add([false, oldIndex, newIndex, 0]);
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:
-                                  editing ? rowCountEditMode : count,
-                              mainAxisSpacing: 4,
-                              crossAxisSpacing: 4,
-                            ),
-                            itemBuilder: (context, index) {
-                              final post = items[index];
-
-                              var isFaved = false;
-                              if (favoriteState is FavoritePostListSuccess) {
-                                isFaved =
-                                    favoriteState.favorites[post.id] ?? false;
+                      return ReorderableGridView.builder(
+                        controller: scrollController,
+                        dragEnabled: editing,
+                        itemCount: items.length,
+                        onReorder: (oldIndex, newIndex) {
+                          controller.moveAndInsert(
+                            fromIndex: oldIndex,
+                            toIndex: newIndex,
+                            onSuccess: () {
+                              if (oldIndex != newIndex) {
+                                setState(() {
+                                  commands.add([false, oldIndex, newIndex, 0]);
+                                });
                               }
-
-                              return Stack(
-                                key: ValueKey(index),
-                                children: [
-                                  ConditionalParentWidget(
-                                    condition: !editing,
-                                    conditionalBuilder: (child) =>
-                                        ContextMenuRegion(
-                                      contextMenu: DanbooruPostContextMenu(
-                                        post: post,
-                                        hasAccount: authState is Authenticated,
-                                      ),
-                                      child: child,
-                                    ),
-                                    child: ImageGridItem(
-                                      hideOverlay: editing,
-                                      isFaved: isFaved,
-                                      enableFav: authState is Authenticated,
-                                      onFavToggle: (isFaved) async {
-                                        final favoritePostCubit =
-                                            context.read<FavoritePostCubit>();
-                                        if (!isFaved) {
-                                          await favoritePostCubit
-                                              .removeFavorite(post.id);
-                                        } else {
-                                          await favoritePostCubit
-                                              .addFavorite(post.id);
-                                        }
-                                      },
-                                      autoScrollOptions: AutoScrollOptions(
-                                        controller: scrollController,
-                                        index: index,
-                                      ),
-                                      onTap: !editing
-                                          ? () => goToDetailPage(
-                                                context: context,
-                                                posts: items,
-                                                initialIndex: index,
-                                                scrollController:
-                                                    scrollController,
-                                              )
-                                          : null,
-                                      image: BooruImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: post.isAnimated
-                                            ? post.thumbnailImageUrl
-                                            : post.sampleImageUrl,
-                                        placeholderUrl: post.thumbnailImageUrl,
-                                      ),
-                                      isAnimated: post.isAnimated,
-                                      isTranslated: post.isTranslated,
-                                      hasComments: post.hasComment,
-                                      hasParentOrChildren:
-                                          post.hasParentOrChildren,
-                                    ),
-                                  ),
-                                  if (editing)
-                                    Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: CircularIconButton(
-                                        padding: const EdgeInsets.all(4),
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          controller
-                                              .remove([post.id], (e) => e.id);
-                                          commands.add([true, 0, 0, post.id]);
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              );
                             },
+                          );
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: editing ? rowCountEditMode : count,
+                          mainAxisSpacing: 4,
+                          crossAxisSpacing: 4,
+                        ),
+                        itemBuilder: (context, index) {
+                          final post = items[index];
+
+                          return Stack(
+                            key: ValueKey(index),
+                            children: [
+                              ConditionalParentWidget(
+                                condition: !editing,
+                                conditionalBuilder: (child) =>
+                                    ContextMenuRegion(
+                                  contextMenu: DanbooruPostContextMenu(
+                                    post: post,
+                                    hasAccount: authState is Authenticated,
+                                  ),
+                                  child: child,
+                                ),
+                                child: DanbooruImageGridItem(
+                                  enableFav: authState is Authenticated,
+                                  hideOverlay: editing,
+                                  autoScrollOptions: AutoScrollOptions(
+                                    controller: scrollController,
+                                    index: index,
+                                  ),
+                                  post: post,
+                                  onTap: !editing
+                                      ? () => goToDetailPage(
+                                            context: context,
+                                            posts: items,
+                                            initialIndex: index,
+                                            scrollController: scrollController,
+                                          )
+                                      : null,
+                                ),
+                              ),
+                              if (editing)
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: CircularIconButton(
+                                    padding: const EdgeInsets.all(4),
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      controller.remove([post.id], (e) => e.id);
+                                      commands.add([true, 0, 0, post.id]);
+                                    },
+                                  ),
+                                ),
+                            ],
                           );
                         },
                       );
@@ -341,6 +299,57 @@ class _FavoriteGroupDetailsPageState
                 ),
               ],
             ),
+    );
+  }
+}
+
+class DanbooruImageGridItem extends ConsumerWidget {
+  const DanbooruImageGridItem({
+    super.key,
+    required this.post,
+    required this.hideOverlay,
+    required this.autoScrollOptions,
+    required this.enableFav,
+    this.onTap,
+    this.image,
+  });
+
+  final DanbooruPost post;
+  final bool hideOverlay;
+  final AutoScrollOptions autoScrollOptions;
+  final VoidCallback? onTap;
+  final bool enableFav;
+  final Widget? image;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
+    final settings = ref.watch(settingsProvider);
+    return ImageGridItem(
+      hideOverlay: hideOverlay,
+      isFaved: isFaved,
+      enableFav: enableFav,
+      onFavToggle: (isFaved) async {
+        if (!isFaved) {
+          ref.danbooruFavorites.remove(post.id);
+        } else {
+          ref.danbooruFavorites.add(post.id);
+        }
+      },
+      autoScrollOptions: autoScrollOptions,
+      onTap: onTap,
+      image: image ??
+          BooruImage(
+            fit: BoxFit.cover,
+            imageUrl: post.thumbnailFromSettings(settings),
+            placeholderUrl: post.thumbnailImageUrl,
+          ),
+      isAnimated: post.isAnimated,
+      isTranslated: post.isTranslated,
+      hasComments: post.hasComment,
+      hasParentOrChildren: post.hasParentOrChildren,
+      hasSound: post.hasSound,
+      duration: post.duration,
     );
   }
 }

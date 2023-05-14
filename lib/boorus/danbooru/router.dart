@@ -11,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
@@ -394,28 +393,7 @@ void goToRelatedTagsPage(
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.postFavoriters,
-    ),
-    height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocProvider(
-        create: (_) => PostFavoriteBloc(
-          favoritePostRepository: dcontext.read<FavoritePostRepository>(),
-          userRepository: dcontext.read<UserRepository>(),
-        )..add(PostFavoriteFetched(
-            postId: post.id,
-            refresh: true,
-          )),
-        child: FavoriterDetailsView(
-          post: post,
-        ),
-      ),
-    ),
-  );
+  //FIXME: re enable this later
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
@@ -547,8 +525,7 @@ void goToSavedSearchPatchPage(
 }
 
 Future<Object?> goToFavoriteGroupCreatePage(
-  BuildContext context,
-  FavoriteGroupsBloc bloc, {
+  BuildContext context, {
   bool enableManualPostInput = true,
 }) {
   return showGeneralDialog(
@@ -559,15 +536,6 @@ Future<Object?> goToFavoriteGroupCreatePage(
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.create_group'.tr(),
         enableManualDataInput: enableManualPostInput,
-        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
-          name: name,
-          initialIds: ids,
-          isPrivate: isPrivate,
-          onFailure: (message, translatable) => showSimpleSnackBar(
-            context: context,
-            content: translatable ? Text(message).tr() : Text(message),
-          ),
-        )),
       ),
     ),
   );
@@ -575,7 +543,6 @@ Future<Object?> goToFavoriteGroupCreatePage(
 
 Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
-  FavoriteGroupsBloc bloc,
   FavoriteGroup group,
 ) {
   return showGeneralDialog(
@@ -586,18 +553,6 @@ Future<Object?> goToFavoriteGroupEditPage(
         initialData: group,
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.edit_group'.tr(),
-        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
-          group: group,
-          name: name,
-          initialIds: ids,
-          isPrivate: isPrivate,
-          onFailure: (message) {
-            showSimpleSnackBar(
-              context: context,
-              content: Text(message.toString()),
-            );
-          },
-        )),
       ),
     ),
   );
@@ -607,23 +562,7 @@ void goToFavoriteGroupPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
     return DanbooruProvider.of(
       context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => FavoriteGroupsBloc.of(
-                  dcontext,
-                  currentUser: state.user,
-                )..add(
-                    const FavoriteGroupsRefreshed(includePreviews: true),
-                  ),
-              ),
-            ],
-            child: const FavoriteGroupsPage(),
-          );
-        },
-      ),
+      builder: (dcontext) => const FavoriteGroupsPage(),
     );
   }));
 }
@@ -631,20 +570,14 @@ void goToFavoriteGroupPage(BuildContext context) {
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
-  FavoriteGroupsBloc bloc,
 ) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
     return DanbooruProvider.of(
       context,
-      builder: (dcontext) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: bloc),
-        ],
-        child: CustomContextMenuOverlay(
-          child: FavoriteGroupDetailsPage(
-            group: group,
-            postIds: QueueList.from(group.postIds),
-          ),
+      builder: (dcontext) => CustomContextMenuOverlay(
+        child: FavoriteGroupDetailsPage(
+          group: group,
+          postIds: QueueList.from(group.postIds),
         ),
       ),
     );
@@ -661,18 +594,8 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     expand: true,
     builder: (_) => DanbooruProvider.of(
       context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return BlocProvider(
-            create: (_) => FavoriteGroupsBloc.of(
-              dcontext,
-              currentUser: state.user,
-            )..add(const FavoriteGroupsRefreshed()),
-            child: AddToFavoriteGroupPage(
-              posts: posts,
-            ),
-          );
-        },
+      builder: (dcontext) => AddToFavoriteGroupPage(
+        posts: posts,
       ),
     ),
   );

@@ -7,12 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/router.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({
@@ -24,23 +21,9 @@ class ProfilePage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('profile.profile'.tr()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              ref.read(authenticationProvider.notifier).logOut();
-              goToHomePage(context, replace: true);
-            },
-          ),
-        ],
       ),
       body: SafeArea(
-        child: BlocConsumer<ProfileCubit, AsyncLoadState<Profile>>(
-          listener: (context, state) => state.status == LoadStatus.success
-              ? context
-                  .read<FavoritesCubit>()
-                  .getUserFavoritePosts(state.data!.name)
-              : null,
+        child: BlocBuilder<ProfileCubit, AsyncLoadState<Profile>>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
               final profile = state.data!;

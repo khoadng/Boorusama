@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -14,108 +14,85 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 
-class FavoriteGroupsPage extends StatelessWidget {
+class FavoriteGroupsPage extends ConsumerWidget {
   const FavoriteGroupsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('favorite_groups.favorite_groups').tr(),
         actions: [
           IconButton(
-            onPressed: () {
-              final bloc = context.read<FavoriteGroupsBloc>();
-              goToFavoriteGroupCreatePage(context, bloc);
-            },
+            onPressed: () => goToFavoriteGroupCreatePage(context),
             icon: const FaIcon(FontAwesomeIcons.plus),
           ),
         ],
       ),
       body: SafeArea(
-        child: BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
-          builder: (context, state) {
-            return CustomScrollView(
-              slivers: [
-                if (state.loading) _buildLoading() else _buildList(state),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
+        child: CustomScrollView(
+          slivers: [
+            if (favoriteGroups == null)
+              _buildLoading()
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final group = favoriteGroups[index];
 
-  Widget _buildList(FavoriteGroupsState state) {
-    if (state.favoriteGroups.isEmpty) {
-      return SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 42),
-          child: Center(
-            child: state.page == 1
-                ? const Text('favorite_groups.empty_group_notice').tr()
-                : const Text('No data'),
-          ),
-        ),
-      );
-    }
-
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final group = state.favoriteGroups[index];
-
-          return ListTile(
-            title: Text(
-              group.name.replaceAll('_', ' '),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                Text(
-                  'favorite_groups.group_item_counter'.plural(group.totalCount),
+                    return ListTile(
+                      title: Text(
+                        group.name.replaceAll('_', ' '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            'favorite_groups.group_item_counter'
+                                .plural(group.totalCount),
+                          ),
+                          if (!group.isPublic)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4),
+                              child: Text('|'),
+                            ),
+                          if (!group.isPublic)
+                            const Text('favorite_groups.private').tr(),
+                        ],
+                      ),
+                      onTap: () {
+                        goToFavoriteGroupDetailsPage(context, group);
+                      },
+                      leading: _Preview(group: group),
+                      trailing: IconButton(
+                        onPressed: () => _showEditSheet(
+                          context,
+                          ref,
+                          group,
+                        ),
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    );
+                  },
+                  childCount: favoriteGroups.length,
                 ),
-                if (!group.isPublic)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: Text('|'),
-                  ),
-                if (!group.isPublic) const Text('favorite_groups.private').tr(),
-              ],
-            ),
-            onTap: () {
-              final bloc = context.read<FavoriteGroupsBloc>();
-
-              goToFavoriteGroupDetailsPage(context, group, bloc);
-            },
-            leading: state.previews.isNotEmpty && group.totalCount > 0
-                ? BooruImage(
-                    fit: BoxFit.cover,
-                    imageUrl: state.previews[group.postIds.first] ?? '',
-                  )
-                : const BooruImage(imageUrl: ''),
-            trailing: IconButton(
-              onPressed: () => _showEditSheet(
-                context,
-                group,
               ),
-              icon: const Icon(Icons.more_vert),
-            ),
-          );
-        },
-        childCount: state.favoriteGroups.length,
+          ],
+        ),
       ),
     );
   }
 
-  void _showEditSheet(BuildContext context, FavoriteGroup favGroup) {
-    final bloc = context.read<FavoriteGroupsBloc>();
+  void _showEditSheet(
+      BuildContext context, WidgetRef ref, FavoriteGroup favGroup) {
     showMaterialModalBottomSheet(
       context: context,
       builder: (_) => ModalFavoriteGroupAction(
@@ -134,16 +111,16 @@ class FavoriteGroupsPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  bloc.add(FavoriteGroupsDeleted(
-                    groupId: favGroup.id,
-                  ));
+                  ref
+                      .read(danbooruFavoriteGroupsProvider.notifier)
+                      .delete(group: favGroup);
                 },
                 child: const Text('generic.action.ok').tr(),
               ),
             ],
           ),
         ),
-        onEdit: () => goToFavoriteGroupEditPage(context, bloc, favGroup),
+        onEdit: () => goToFavoriteGroupEditPage(context, favGroup),
       ),
     );
   }
@@ -154,6 +131,25 @@ class FavoriteGroupsPage extends StatelessWidget {
         padding: EdgeInsets.only(top: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
       ),
+    );
+  }
+}
+
+class _Preview extends ConsumerWidget {
+  const _Preview({
+    required this.group,
+  });
+
+  final FavoriteGroup group;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final preview = ref
+        .watch(danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull));
+
+    return BooruImage(
+      fit: BoxFit.cover,
+      imageUrl: preview,
     );
   }
 }

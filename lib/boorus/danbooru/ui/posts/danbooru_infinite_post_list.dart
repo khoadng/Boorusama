@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -99,109 +99,83 @@ class _DanbooruInfinitePostListState
 
     final settings = ref.watch(settingsProvider);
 
-    return BlocBuilder<FavoritePostCubit, FavoritePostState>(
-      buildWhen: (previous, current) => current is FavoritePostListSuccess,
-      builder: (context, favoriteState) {
-        return PostGrid(
-          refreshAtStart: widget.refreshAtStart,
-          controller: widget.controller,
-          scrollController: _autoScrollController,
-          sliverHeaderBuilder: widget.sliverHeaderBuilder,
-          footerBuilder: (context, selectedItems) =>
-              DanbooruMultiSelectionActions(
-            selectedPosts: selectedItems,
-            endMultiSelect: () {
-              _multiSelectController.disableMultiSelect();
+    return PostGrid(
+      refreshAtStart: widget.refreshAtStart,
+      controller: widget.controller,
+      scrollController: _autoScrollController,
+      sliverHeaderBuilder: widget.sliverHeaderBuilder,
+      footerBuilder: (context, selectedItems) => DanbooruMultiSelectionActions(
+        selectedPosts: selectedItems,
+        endMultiSelect: () {
+          _multiSelectController.disableMultiSelect();
+        },
+      ),
+      multiSelectController: _multiSelectController,
+      onLoadMore: widget.onLoadMore,
+      onRefresh: widget.onRefresh,
+      itemBuilder: (context, items, index) {
+        final post = items[index];
+
+        return ContextMenuRegion(
+          isEnabled: !multiSelect,
+          contextMenu: DanbooruPostContextMenu(
+            hasAccount: authState is Authenticated,
+            onMultiSelect: () {
+              _multiSelectController.enableMultiSelect();
             },
+            post: post,
           ),
-          multiSelectController: _multiSelectController,
-          onLoadMore: widget.onLoadMore,
-          onRefresh: widget.onRefresh,
-          itemBuilder: (context, items, index) {
-            final post = items[index];
-
-            var isFaved = false;
-            if (favoriteState is FavoritePostListSuccess) {
-              isFaved = favoriteState.favorites[post.id] ?? false;
-            }
-
-            return ContextMenuRegion(
-              isEnabled: !multiSelect,
-              contextMenu: DanbooruPostContextMenu(
-                hasAccount: authState is Authenticated,
-                onMultiSelect: () {
-                  _multiSelectController.enableMultiSelect();
-                },
-                post: post,
+          child: LayoutBuilder(
+            builder: (context, constraints) => DanbooruImageGridItem(
+              post: post,
+              hideOverlay: false,
+              autoScrollOptions: AutoScrollOptions(
+                controller: _autoScrollController,
+                index: index,
               ),
-              child: LayoutBuilder(
-                builder: (context, constraints) => ImageGridItem(
-                  onTap: !multiSelect
-                      ? () {
-                          goToDetailPage(
-                            context: context,
-                            posts: items,
-                            initialIndex: index,
-                            scrollController: _autoScrollController,
-                          );
-                        }
-                      : null,
-                  isFaved: isFaved,
-                  enableFav: !multiSelect && authState is Authenticated,
-                  onFavToggle: (isFaved) async {
-                    final favoritePostCubit = context.read<FavoritePostCubit>();
-                    if (!isFaved) {
-                      await favoritePostCubit.removeFavorite(post.id);
-                    } else {
-                      await favoritePostCubit.addFavorite(post.id);
+              onTap: !multiSelect
+                  ? () {
+                      goToDetailPage(
+                        context: context,
+                        posts: items,
+                        initialIndex: index,
+                        scrollController: _autoScrollController,
+                      );
                     }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  hasComments: post.hasComment,
-                  hasParentOrChildren: post.hasParentOrChildren,
-                  duration: post.duration,
-                  hasSound: post.hasSound,
-                  image: settings.imageListType == ImageListType.masonry
-                      ? BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: post.thumbnailFromSettings(settings),
-                          borderRadius: BorderRadius.circular(
-                            settings.imageBorderRadius,
-                          ),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          previewCacheManager:
-                              context.read<PreviewImageCacheManager>(),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        )
-                      : BooruImageLegacy(
-                          imageUrl: post.thumbnailFromSettings(settings),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            settings.imageBorderRadius,
-                          ),
-                          cacheHeight:
-                              (constraints.maxHeight * 2).toIntOrNull(),
-                          cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                        ),
-                ),
-              ),
-            );
-          },
-          bodyBuilder: (context, itemBuilder, refreshing, data) {
-            return SliverPostGrid(
-              itemBuilder: itemBuilder,
-              refreshing: refreshing,
-              error: widget.errors,
-              data: data,
-            );
-          },
+                  : null,
+              enableFav: !multiSelect && authState is Authenticated,
+              image: settings.imageListType == ImageListType.masonry
+                  ? BooruImage(
+                      aspectRatio: post.aspectRatio,
+                      imageUrl: post.thumbnailFromSettings(settings),
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      placeholderUrl: post.thumbnailImageUrl,
+                      previewCacheManager:
+                          context.read<PreviewImageCacheManager>(),
+                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                    )
+                  : BooruImageLegacy(
+                      imageUrl: post.thumbnailFromSettings(settings),
+                      placeholderUrl: post.thumbnailImageUrl,
+                      borderRadius: BorderRadius.circular(
+                        settings.imageBorderRadius,
+                      ),
+                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                    ),
+            ),
+          ),
+        );
+      },
+      bodyBuilder: (context, itemBuilder, refreshing, data) {
+        return SliverPostGrid(
+          itemBuilder: itemBuilder,
+          refreshing: refreshing,
+          error: widget.errors,
+          data: data,
         );
       },
     );

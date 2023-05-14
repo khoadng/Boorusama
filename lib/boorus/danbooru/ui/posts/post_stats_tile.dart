@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
@@ -254,90 +253,90 @@ class _InfoTile extends StatelessWidget {
 }
 
 // ignore: prefer-single-widget-per-file
-class FavoriterDetailsView extends StatefulWidget {
-  const FavoriterDetailsView({
-    super.key,
-    required this.post,
-  });
+// class FavoriterDetailsView extends StatefulWidget {
+//   const FavoriterDetailsView({
+//     super.key,
+//     required this.post,
+//   });
 
-  final DanbooruPost post;
+//   final DanbooruPost post;
 
-  @override
-  State<FavoriterDetailsView> createState() => _FavoriterDetailsViewState();
-}
+//   @override
+//   State<FavoriterDetailsView> createState() => _FavoriterDetailsViewState();
+// }
 
-class _FavoriterDetailsViewState extends State<FavoriterDetailsView> {
-  final scrollController = ScrollController();
+// class _FavoriterDetailsViewState extends State<FavoriterDetailsView> {
+//   final scrollController = ScrollController();
 
-  @override
-  void initState() {
-    scrollController.addListener(() {
-      if (_isBottom) {
-        context
-            .read<PostFavoriteBloc>()
-            .add(PostFavoriteFetched(postId: widget.post.id));
-      }
-    });
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     scrollController.addListener(() {
+//       if (_isBottom) {
+//         // context
+//         //     .read<PostFavoriteBloc>()
+//         //     .add(PostFavoriteFetched(postId: widget.post.id));
+//       }
+//     });
+//     super.initState();
+//   }
 
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     scrollController.dispose();
+//     super.dispose();
+//   }
 
-  bool get _isBottom {
-    if (!scrollController.hasClients) return false;
-    final maxScroll = scrollController.position.maxScrollExtent;
-    final currentScroll = scrollController.offset;
+//   bool get _isBottom {
+//     if (!scrollController.hasClients) return false;
+//     final maxScroll = scrollController.position.maxScrollExtent;
+//     final currentScroll = scrollController.offset;
 
-    return currentScroll >= (maxScroll * 0.9);
-  }
+//     return currentScroll >= (maxScroll * 0.9);
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      body: BlocBuilder<PostFavoriteBloc, PostFavoriteState>(
-        builder: (context, state) => state.refreshing
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final user = state.favoriters[index];
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         automaticallyImplyLeading: false,
+//         actions: [
+//           IconButton(
+//             onPressed: () => Navigator.of(context).pop(),
+//             icon: const Icon(Icons.close),
+//           ),
+//         ],
+//       ),
+//       body: BlocBuilder<PostFavoriteBloc, PostFavoriteState>(
+//         builder: (context, state) => state.refreshing
+//             ? const Center(child: CircularProgressIndicator.adaptive())
+//             : CustomScrollView(
+//                 controller: scrollController,
+//                 slivers: [
+//                   SliverList(
+//                     delegate: SliverChildBuilderDelegate(
+//                       (context, index) {
+//                         final user = state.favoriters[index];
 
-                        return _InfoTile(
-                          title: user.name,
-                          level: user.level,
-                          onTap: () => goToUserDetailsPage(
-                            context,
-                            uid: user.id,
-                          ),
-                        );
-                      },
-                      childCount: state.favoriters.length,
-                    ),
-                  ),
-                  if (state.loading)
-                    const SliverToBoxAdapter(
-                      child:
-                          Center(child: CircularProgressIndicator.adaptive()),
-                    ),
-                ],
-              ),
-      ),
-    );
-  }
-}
+//                         return _InfoTile(
+//                           title: user.name,
+//                           level: user.level,
+//                           onTap: () => goToUserDetailsPage(
+//                             context,
+//                             uid: user.id,
+//                           ),
+//                         );
+//                       },
+//                       childCount: state.favoriters.length,
+//                     ),
+//                   ),
+//                   if (state.loading)
+//                     const SliverToBoxAdapter(
+//                       child:
+//                           Center(child: CircularProgressIndicator.adaptive()),
+//                     ),
+//                 ],
+//               ),
+//       ),
+//     );
+//   }
+// }

@@ -3,28 +3,23 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/utils.dart';
 
-class EditFavoriteGroupDialog extends StatefulWidget {
+class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
     super.key,
-    required this.onDone,
     required this.title,
     this.padding,
     this.initialData,
     this.enableManualDataInput = true,
   });
-
-  final void Function(
-    String name,
-    String initialIds,
-    bool isPrivate,
-  ) onDone;
 
   final double? padding;
   final String title;
@@ -32,11 +27,12 @@ class EditFavoriteGroupDialog extends StatefulWidget {
   final bool enableManualDataInput;
 
   @override
-  State<EditFavoriteGroupDialog> createState() =>
+  ConsumerState<EditFavoriteGroupDialog> createState() =>
       _EditFavoriteGroupDialogState();
 }
 
-class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
+class _EditFavoriteGroupDialogState
+    extends ConsumerState<EditFavoriteGroupDialog> {
   final textController = TextEditingController();
   final nameController = TextEditingController();
   bool isPrivate = false;
@@ -162,27 +158,9 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                     ),
                   ),
                 ),
-              BlocBuilder<CurrentUserBloc, CurrentUserState>(
-                builder: (context, state) {
-                  return AnimatedCrossFade(
-                    firstChild: const SizedBox.shrink(),
-                    secondChild: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                      title:
-                          const Text('favorite_groups.is_private_group_option')
-                              .tr(),
-                      trailing: Switch.adaptive(
-                        value: isPrivate,
-                        onChanged: (value) => setState(() => isPrivate = value),
-                      ),
-                    ),
-                    crossFadeState: state.user != null &&
-                            isBooruGoldPlusAccount(state.user!.level)
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 150),
-                  );
-                },
+              PrivacyToggle(
+                isPrivate: isPrivate,
+                onChanged: (value) => setState(() => isPrivate = value),
               ),
               ButtonBar(
                 children: [
@@ -201,11 +179,39 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                       onPressed: nameController.text.isNotEmpty
                           ? () {
                               Navigator.of(context).pop();
-                              widget.onDone(
-                                nameController.text,
-                                textController.text,
-                                isPrivate,
-                              );
+                              if (widget.initialData == null) {
+                                ref
+                                    .read(
+                                        danbooruFavoriteGroupsProvider.notifier)
+                                    .create(
+                                      initialIds: textController.text,
+                                      name: value.text,
+                                      isPrivate: isPrivate,
+                                      onFailure: (message, translatable) =>
+                                          showSimpleSnackBar(
+                                        context: context,
+                                        content: translatable
+                                            ? Text(message).tr()
+                                            : Text(message),
+                                      ),
+                                    );
+                              } else {
+                                ref
+                                    .read(
+                                        danbooruFavoriteGroupsProvider.notifier)
+                                    .edit(
+                                      group: widget.initialData!,
+                                      name: value.text,
+                                      isPrivate: isPrivate,
+                                      initialIds: textController.text,
+                                      onFailure: (message, _) {
+                                        showSimpleSnackBar(
+                                          context: context,
+                                          content: Text(message.toString()),
+                                        );
+                                      },
+                                    );
+                              }
                             }
                           : null,
                       child: const Text('favorite_groups.create_group_confirm')
@@ -218,6 +224,36 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class PrivacyToggle extends ConsumerWidget {
+  const PrivacyToggle(
+      {super.key, required this.isPrivate, required this.onChanged});
+
+  final bool isPrivate;
+  final void Function(bool value) onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(danbooruCurrentUserProvider);
+
+    return AnimatedCrossFade(
+      firstChild: const SizedBox.shrink(),
+      secondChild: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: const Text('favorite_groups.is_private_group_option').tr(),
+        trailing: Switch.adaptive(
+          value: isPrivate,
+          onChanged: onChanged,
+        ),
+      ),
+      crossFadeState:
+          currentUser != null && isBooruGoldPlusAccount(currentUser.level)
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+      duration: const Duration(milliseconds: 150),
     );
   }
 }
