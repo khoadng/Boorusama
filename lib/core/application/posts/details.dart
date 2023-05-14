@@ -21,12 +21,12 @@ mixin PostDetailsTagsX<T extends Post>
   }) async {
     for (final tag in tags) {
       if (state.any((e) => e.tag == tag)) continue;
-      final posts =
+      var posts =
           tagCache.containsKey(tag) ? tagCache[tag]! : await fetcher(tag, 1);
 
       // if limit is not null, then we only want to get the first [limit] posts
       if (limit != null) {
-        posts.removeRange(limit, posts.length);
+        posts = posts.take(limit).toList();
       }
 
       tagCache[tag] = posts;
