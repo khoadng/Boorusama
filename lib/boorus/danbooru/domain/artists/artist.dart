@@ -24,22 +24,6 @@ class Artist extends Equatable {
         updatedAt: DateTime(1),
       );
 
-  Artist copyWith({
-    int? id,
-    String? name,
-    List<String>? otherNames,
-  }) =>
-      Artist(
-        id: id ?? this.id,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isBanned: isBanned,
-        groupName: groupName,
-        isDeleted: isDeleted,
-        otherNames: otherNames ?? this.otherNames,
-        name: name ?? this.name,
-      );
-
   final int id;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -60,4 +44,24 @@ class Artist extends Equatable {
         otherNames,
         name,
       ];
+}
+
+extension ArtistX on Artist {
+  bool get isEmpty => this == Artist.empty();
+
+  Artist copyWith({
+    int? id,
+    String? name,
+    List<String>? otherNames,
+  }) =>
+      Artist(
+        id: id ?? this.id,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isBanned: isBanned,
+        groupName: groupName,
+        isDeleted: isDeleted,
+        otherNames: otherNames ?? this.otherNames,
+        name: name ?? this.name,
+      );
 }

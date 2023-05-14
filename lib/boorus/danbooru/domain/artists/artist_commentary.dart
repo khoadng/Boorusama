@@ -33,3 +33,7 @@ class ArtistCommentary extends Equatable {
         translatedTitle,
       ];
 }
+
+extension ArtistCommentaryX on ArtistCommentary {
+  bool get isEmpty => this == ArtistCommentary.empty();
+}

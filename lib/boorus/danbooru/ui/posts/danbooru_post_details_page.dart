@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/posts/post_details_charact
 import 'package:boorusama/boorus/danbooru/application/posts/post_details_pools_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/post_details_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -272,8 +273,6 @@ class _DanbooruPostDetailsPageState
 
         post.loadDetailsFrom(ref);
 
-        context.read<ArtistCommentaryCubit>().getCommentary(post.id);
-
         context.read<CommentsCubit>().getCommentsFromPostId(post.id);
       },
     );
@@ -375,24 +374,7 @@ class _DanbooruPostDetailsPageState
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
-        BlocBuilder<ArtistCommentaryCubit, ArtistCommentaryState>(
-          builder: (context, state) => AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: state.commentaryMap.lookup(post.id).fold(
-                  () => const SizedBox.shrink(),
-                  (commentary) => ArtistSection(
-                    artistCommentary: commentary,
-                    artistTags: post.artistTags,
-                    source: post.source.url,
-                  ),
-                ),
-            crossFadeState: state.commentaryMap.lookup(post.id).fold(
-                  () => CrossFadeState.showFirst,
-                  (_) => CrossFadeState.showSecond,
-                ),
-            duration: const Duration(milliseconds: 80),
-          ),
-        ),
+        DanbooruArtistSection(post: post),
         BlocBuilder<CommentsCubit, CommentsState>(
           builder: (context, state) {
             return Padding(
@@ -412,6 +394,35 @@ class _DanbooruPostDetailsPageState
         const Divider(height: 8, thickness: 1),
       ],
     ];
+  }
+}
+
+class DanbooruArtistSection extends ConsumerWidget {
+  const DanbooruArtistSection({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commentary = ref.watch(danbooruArtistCommentaryProvider(post.id));
+
+    return AnimatedCrossFade(
+      firstChild: const SizedBox.shrink(),
+      secondChild: commentary.isEmpty
+          ? const SizedBox.shrink()
+          : ArtistSection(
+              artistCommentary: commentary,
+              artistTags: post.artistTags,
+              source: post.source.url,
+            ),
+      crossFadeState: commentary.isEmpty
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
+      duration: const Duration(milliseconds: 80),
+    );
   }
 }
 

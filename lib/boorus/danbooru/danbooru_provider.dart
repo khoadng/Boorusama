@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
@@ -67,7 +66,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.autocompleteRepo,
     required this.relatedTagRepo,
     required this.wikiRepo,
-    required this.artistCommentaryRepo,
     required this.postVoteRepo,
     required this.poolDescriptionRepo,
     required this.exploreRepo,
@@ -82,12 +80,10 @@ class DanbooruProvider extends StatelessWidget {
     required this.fileNameGenerator,
     required this.blacklistedTagsBloc,
     required this.poolOverviewBloc,
-    required this.artistBloc,
     required this.tagBloc,
     required this.wikiBloc,
     required this.savedSearchBloc,
     required this.commentBloc,
-    required this.artistCommentaryBloc,
     required this.profileCubit,
     required this.postVoteCubit,
     required this.danbooruArtistCharacterPostRepository,
@@ -159,11 +155,6 @@ class DanbooruProvider extends StatelessWidget {
       repo: NoteRepositoryApi(api),
     );
 
-    final artistCommentaryRepo = ArtistCommentaryCacher(
-      cache: LruCacher(capacity: 200),
-      repo: ArtistCommentaryRepositoryApi(api, currentBooruConfigRepo),
-    );
-
     final poolRepo = PoolCacher(PoolRepositoryApi(api, currentBooruConfigRepo));
 
     final blacklistedTagRepo = BlacklistedTagsRepositoryImpl(
@@ -224,13 +215,6 @@ class DanbooruProvider extends StatelessWidget {
       ),
     );
 
-    final artistBloc = ArtistBloc(
-      artistRepository: ArtistCacher(
-        repo: artistRepo,
-        cache: LruCacher(capacity: 100),
-      ),
-    );
-
     final wikiBloc = WikiBloc(
       wikiRepository: WikiCacher(
         cache: LruCacher(capacity: 200),
@@ -248,9 +232,6 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
       booruUserIdentityProvider: booruUserIdentityProvider,
     );
-    final artistCommentaryBloc = ArtistCommentaryCubit(
-      repository: artistCommentaryRepo,
-    );
 
     final profileCubit = ProfileCubit(profileRepository: profileRepo);
 
@@ -266,7 +247,6 @@ class DanbooruProvider extends StatelessWidget {
     return DanbooruProvider(
       builder: builder,
       currentBooruConfigRepo: currentBooruConfigRepo,
-      artistCommentaryRepo: artistCommentaryRepo,
       artistRepo: artistRepo,
       autocompleteRepo: autocompleteRepo,
       blacklistedTagRepo: blacklistedTagRepo,
@@ -294,12 +274,10 @@ class DanbooruProvider extends StatelessWidget {
       fileNameGenerator: fileNameGenerator,
       blacklistedTagsBloc: blacklistedTagsBloc,
       poolOverviewBloc: poolOverviewBloc,
-      artistBloc: artistBloc,
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       commentBloc: commentBloc,
-      artistCommentaryBloc: artistCommentaryBloc,
       profileCubit: profileCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
@@ -322,7 +300,6 @@ class DanbooruProvider extends StatelessWidget {
     final commentRepo = context.read<CommentRepository>();
     final userRepo = context.read<UserRepository>();
     final noteRepo = context.read<NoteRepository>();
-    final artistCommentaryRepo = context.read<ArtistCommentaryRepository>();
     final poolRepo = context.read<PoolRepository>();
     final blacklistedTagRepo = context.read<BlacklistedTagsRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
@@ -341,12 +318,10 @@ class DanbooruProvider extends StatelessWidget {
 
     final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
-    final artistBloc = context.read<ArtistBloc>();
     final tagBloc = context.read<TagBloc>();
     final wikiBloc = context.read<WikiBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
     final commentBloc = context.read<CommentBloc>();
-    final artistCommentaryBloc = context.read<ArtistCommentaryCubit>();
     final profileCubit = context.read<ProfileCubit>();
     final postVoteCubit = context.read<PostVoteCubit>();
     final artistCharacterPostRepository =
@@ -356,7 +331,6 @@ class DanbooruProvider extends StatelessWidget {
     return DanbooruProvider(
       builder: builder,
       currentBooruConfigRepo: currentBooruConfigRepo,
-      artistCommentaryRepo: artistCommentaryRepo,
       artistRepo: artistRepo,
       autocompleteRepo: autocompleteRepo,
       blacklistedTagRepo: blacklistedTagRepo,
@@ -384,12 +358,10 @@ class DanbooruProvider extends StatelessWidget {
       fileNameGenerator: fileNameGenerator,
       blacklistedTagsBloc: blacklistedTagsBloc,
       poolOverviewBloc: poolOverviewBloc,
-      artistBloc: artistBloc,
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       commentBloc: commentBloc,
-      artistCommentaryBloc: artistCommentaryBloc,
       profileCubit: profileCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
@@ -415,7 +387,6 @@ class DanbooruProvider extends StatelessWidget {
   final AutocompleteRepository autocompleteRepo;
   final RelatedTagRepository relatedTagRepo;
   final WikiRepository wikiRepo;
-  final ArtistCommentaryRepository artistCommentaryRepo;
   final PostVoteRepository postVoteRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
@@ -430,12 +401,10 @@ class DanbooruProvider extends StatelessWidget {
 
   final BlacklistedTagsBloc blacklistedTagsBloc;
   final PoolOverviewBloc poolOverviewBloc;
-  final ArtistBloc artistBloc;
   final TagBloc tagBloc;
   final WikiBloc wikiBloc;
   final SavedSearchBloc savedSearchBloc;
   final CommentBloc commentBloc;
-  final ArtistCommentaryCubit artistCommentaryBloc;
   final ProfileCubit profileCubit;
   final PostVoteCubit postVoteCubit;
   final CommentsCubit commentsCubit;
@@ -464,7 +433,6 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: autocompleteRepo),
         RepositoryProvider.value(value: relatedTagRepo),
         RepositoryProvider.value(value: wikiRepo),
-        RepositoryProvider.value(value: artistCommentaryRepo),
         RepositoryProvider.value(value: postVoteRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: exploreRepo),
@@ -476,11 +444,9 @@ class DanbooruProvider extends StatelessWidget {
         providers: [
           BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: commentBloc),
-          BlocProvider.value(value: artistCommentaryBloc),
           BlocProvider.value(value: blacklistedTagsBloc),
           BlocProvider.value(value: poolOverviewBloc),
           BlocProvider.value(value: tagBloc),
-          BlocProvider.value(value: artistBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
           BlocProvider.value(value: postVoteCubit),
