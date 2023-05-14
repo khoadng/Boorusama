@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorite_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -98,7 +97,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.artistCommentaryBloc,
     required this.favoritesCubit,
     required this.profileCubit,
-    required this.favoritePostCubit,
     required this.postVoteCubit,
     required this.danbooruArtistCharacterPostRepository,
     required this.commentsCubit,
@@ -277,12 +275,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final favoritedCubit = FavoritesCubit(postRepository: postRepo);
     final profileCubit = ProfileCubit(profileRepository: profileRepo);
-    final favoritePostCubit = FavoritePostCubit(
-      favoritePostRepository: favoriteRepo,
-      userIdentityProvider: booruUserIdentityProvider,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      limit: 200,
-    );
+
     final postVoteCubit = PostVoteCubit(postVoteRepo);
     final artistCharacterPostRepository = DanbooruArtistCharacterPostRepository(
       repository: postRepo,
@@ -334,7 +327,6 @@ class DanbooruProvider extends StatelessWidget {
       artistCommentaryBloc: artistCommentaryBloc,
       favoritesCubit: favoritedCubit,
       profileCubit: profileCubit,
-      favoritePostCubit: favoritePostCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
       commentsCubit: commentsCubit,
@@ -387,7 +379,6 @@ class DanbooruProvider extends StatelessWidget {
     final artistCommentaryBloc = context.read<ArtistCommentaryCubit>();
     final favoritesCubit = context.read<FavoritesCubit>();
     final profileCubit = context.read<ProfileCubit>();
-    final favoritePostCubit = context.read<FavoritePostCubit>();
     final postVoteCubit = context.read<PostVoteCubit>();
     final artistCharacterPostRepository =
         context.read<DanbooruArtistCharacterPostRepository>();
@@ -435,7 +426,6 @@ class DanbooruProvider extends StatelessWidget {
       artistCommentaryBloc: artistCommentaryBloc,
       profileCubit: profileCubit,
       favoritesCubit: favoritesCubit,
-      favoritePostCubit: favoritePostCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
       commentsCubit: commentsCubit,
@@ -486,7 +476,6 @@ class DanbooruProvider extends StatelessWidget {
   final ArtistCommentaryCubit artistCommentaryBloc;
   final FavoritesCubit favoritesCubit;
   final ProfileCubit profileCubit;
-  final FavoritePostCubit favoritePostCubit;
   final PostVoteCubit postVoteCubit;
   final CommentsCubit commentsCubit;
 
@@ -527,7 +516,6 @@ class DanbooruProvider extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: favoritesCubit),
-          BlocProvider.value(value: favoritePostCubit),
           BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: commentBloc),
           BlocProvider.value(value: artistCommentaryBloc),
@@ -561,6 +549,13 @@ class DanbooruProvider extends StatelessWidget {
   }
 }
 
+final danbooruApiProvider = Provider<DanbooruApi>((ref) {
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
+
+  return DanbooruApi(dio);
+});
+
 final noteRepoProvider =
     Provider<NoteRepository>((ref) => throw UnimplementedError());
 
@@ -578,6 +573,13 @@ final danbooruArtistCharacterPostRepoProvider =
 
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());
+
+final danbooruFavoriteRepoProvider = Provider<FavoritePostRepository>((ref) {
+  final api = ref.watch(danbooruApiProvider);
+  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+
+  return FavoritePostRepositoryApi(api, booruConfigRepo);
+});
 
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
