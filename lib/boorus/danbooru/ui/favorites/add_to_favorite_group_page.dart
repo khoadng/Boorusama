@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/functional.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({
@@ -27,8 +28,6 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filteredGroups = ref.watch(danbooruFavoriteGroupFilterableProvider);
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -90,77 +89,94 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          if (filteredGroups == null)
-            const Padding(
-              padding: EdgeInsets.all(8),
-              child: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            )
-          else
-            Expanded(
-              child: ImplicitlyAnimatedList<FavoriteGroup>(
-                items: filteredGroups,
-                controller: ModalScrollController.of(context),
-                areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
-                insertDuration: const Duration(milliseconds: 250),
-                removeDuration: const Duration(milliseconds: 250),
-                itemBuilder: (_, animation, group, index) {
-                  return SizeFadeTransition(
-                    sizeFraction: 0.7,
-                    curve: Curves.easeInOut,
-                    animation: animation,
-                    child: ListTile(
-                        title: Text(
-                          group.name.replaceAll('_', ' '),
-                        ),
-                        subtitle:
-                            Text(dateTimeToStringTimeAgo(group.updatedAt)),
-                        trailing:
-                            Text('favorite_groups.group_item_counter'.plural(
-                          group.postIds.length,
-                        )),
-                        onTap: () => ref
-                            .read(danbooruFavoriteGroupsProvider.notifier)
-                            .addToGroup(
-                              group: group,
-                              postIds: posts.map((e) => e.id).toList(),
-                              onFailure: (message, translatable) {
-                                showSimpleSnackBar(
-                                  context: context,
-                                  duration: const Duration(seconds: 6),
-                                  content: translatable
-                                      ? Text(
-                                          message,
-                                        ).tr()
-                                      : Text(
-                                          message,
-                                        ),
-                                );
-                              },
-                              onSuccess: (newGroup) {
-                                showSimpleSnackBar(
-                                  context: context,
-                                  duration: const Duration(seconds: 3),
-                                  content: Text(
-                                    'favorite_groups.items_added_notification_popup'
-                                        .tr()
-                                        .replaceAll('{0}', '${posts.length}')
-                                        .replaceAll(
-                                          '{1}',
-                                          group.name.replaceAll('_', ' '),
-                                        ),
-                                  ),
-                                );
-                                Navigator.of(context).pop(true);
-                              },
-                            )),
-                  );
-                },
-              ),
-            ),
+          Expanded(child: _FavoriteGroupList(posts: posts)),
         ],
       ),
+    );
+  }
+}
+
+class _FavoriteGroupList extends ConsumerWidget {
+  const _FavoriteGroupList({
+    required this.posts,
+  });
+
+  final List<DanbooruPost> posts;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filteredGroups = ref.watch(danbooruFavoriteGroupFilterableProvider);
+
+    return filteredGroups.toOption().fold(
+          () => const Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          (groups) => groups.isEmpty
+              ? const Center(child: Text('Empty'))
+              : _buildList(groups, context, ref),
+        );
+  }
+
+  Widget _buildList(
+    List<FavoriteGroup> groups,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    return ImplicitlyAnimatedList<FavoriteGroup>(
+      items: groups,
+      controller: ModalScrollController.of(context),
+      areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+      insertDuration: const Duration(milliseconds: 250),
+      removeDuration: const Duration(milliseconds: 250),
+      itemBuilder: (_, animation, group, index) {
+        return SizeFadeTransition(
+          sizeFraction: 0.7,
+          curve: Curves.easeInOut,
+          animation: animation,
+          child: ListTile(
+            title: Text(
+              group.name.replaceAll('_', ' '),
+            ),
+            subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
+            trailing: Text('favorite_groups.group_item_counter'.plural(
+              group.postIds.length,
+            )),
+            onTap: () {
+              ref.read(danbooruFavoriteGroupsProvider.notifier).addToGroup(
+                    group: group,
+                    postIds: posts.map((e) => e.id).toList(),
+                    onFailure: (message, translatable) {
+                      showSimpleSnackBar(
+                        context: context,
+                        duration: const Duration(seconds: 6),
+                        content:
+                            translatable ? Text(message).tr() : Text(message),
+                      );
+                    },
+                    onSuccess: (newGroup) {
+                      showSimpleSnackBar(
+                        context: context,
+                        duration: const Duration(seconds: 3),
+                        content: Text(
+                          'favorite_groups.items_added_notification_popup'
+                              .tr()
+                              .replaceAll('{0}', '${posts.length}')
+                              .replaceAll(
+                                '{1}',
+                                group.name.replaceAll('_', ' '),
+                              ),
+                        ),
+                      );
+                      Navigator.of(context).pop(true);
+                    },
+                  );
+            },
+          ),
+        );
+      },
     );
   }
 }
