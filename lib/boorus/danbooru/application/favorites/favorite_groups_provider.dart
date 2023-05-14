@@ -6,7 +6,9 @@ import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/users/users_provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'favorite_groups_filterable_notifier.dart';
 
 //#region Previews
@@ -24,6 +26,17 @@ final danbooruFavoriteGroupPreviewsProvider =
 //#endregion
 
 //#region Favorite Groups
+final danbooruFavoriteGroupRepoProvider =
+    Provider<FavoriteGroupRepository>((ref) {
+  final api = ref.watch(danbooruApiProvider);
+  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+
+  return FavoriteGroupRepositoryApi(
+    api: api,
+    currentBooruConfigRepository: booruConfigRepo,
+  );
+});
+
 final danbooruFavoriteGroupsProvider =
     NotifierProvider<FavoriteGroupsNotifier, List<FavoriteGroup>?>(
   FavoriteGroupsNotifier.new,
