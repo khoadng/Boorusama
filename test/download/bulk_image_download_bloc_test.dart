@@ -57,30 +57,6 @@ void main() {
   );
 
   blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
-    'have 1 tag, remove 1 tag',
-    seed: () => BulkDownloadManagerState.initial().copyWith(
-      status: BulkDownloadManagerStatus.dataSelected,
-      selectedTags: [
-        'bar',
-      ],
-    ),
-    build: () => BulkDownloadManagerBloc(
-      permissionChecker: () async => PermissionStatus.granted,
-      permissionRequester: () async => PermissionStatus.granted,
-      bulkPostDownloadBloc: downloadBloc,
-    ),
-    act: (bloc) => bloc.add(const BulkDownloadManagerRequested(tags: ['bar'])),
-    expect: () => [
-      BulkDownloadManagerState.initial().copyWith(
-        status: BulkDownloadManagerStatus.downloadInProgress,
-        selectedTags: [
-          'bar',
-        ],
-      ),
-    ],
-  );
-
-  blocTest<BulkDownloadManagerBloc, BulkDownloadManagerState>(
     'request download will switch to download progress state',
     seed: () => BulkDownloadManagerState.initial().copyWith(
       status: BulkDownloadManagerStatus.dataSelected,
