@@ -58,7 +58,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.builder,
     required this.tagRepo,
     required this.profileRepo,
-    required this.favoriteRepo,
     required this.currentBooruConfigRepo,
     required this.settingRepository,
     required this.noteRepo,
@@ -164,8 +163,6 @@ class DanbooruProvider extends StatelessWidget {
       cache: LruCacher(capacity: 100),
       repo: NoteRepositoryApi(api),
     );
-
-    final favoriteRepo = FavoritePostRepositoryApi(api, currentBooruConfigRepo);
 
     final artistCommentaryRepo = ArtistCommentaryCacher(
       cache: LruCacher(capacity: 200),
@@ -291,7 +288,6 @@ class DanbooruProvider extends StatelessWidget {
       blacklistedTagRepo: blacklistedTagRepo,
       exploreRepo: exploreRepo,
       favoriteGroupRepo: favoriteGroupRepo,
-      favoriteRepo: favoriteRepo,
       noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
@@ -344,7 +340,6 @@ class DanbooruProvider extends StatelessWidget {
     final commentRepo = context.read<CommentRepository>();
     final userRepo = context.read<UserRepository>();
     final noteRepo = context.read<NoteRepository>();
-    final favoriteRepo = context.read<FavoritePostRepository>();
     final artistCommentaryRepo = context.read<ArtistCommentaryRepository>();
     final poolRepo = context.read<PoolRepository>();
     final blacklistedTagRepo = context.read<BlacklistedTagsRepository>();
@@ -388,7 +383,6 @@ class DanbooruProvider extends StatelessWidget {
       blacklistedTagRepo: blacklistedTagRepo,
       exploreRepo: exploreRepo,
       favoriteGroupRepo: favoriteGroupRepo,
-      favoriteRepo: favoriteRepo,
       noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
@@ -430,7 +424,6 @@ class DanbooruProvider extends StatelessWidget {
 
   final TagRepository tagRepo;
   final ProfileRepository profileRepo;
-  final FavoritePostRepository favoriteRepo;
   final CurrentBooruConfigRepository currentBooruConfigRepo;
   final SettingsRepository settingRepository;
   final NoteRepository noteRepo;
@@ -480,7 +473,6 @@ class DanbooruProvider extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: tagRepo),
         RepositoryProvider.value(value: profileRepo),
-        RepositoryProvider.value(value: favoriteRepo),
         RepositoryProvider.value(value: currentBooruConfigRepo),
         RepositoryProvider.value(value: settingRepository),
         RepositoryProvider.value(value: noteRepo),
@@ -565,13 +557,6 @@ final danbooruArtistCharacterPostRepoProvider =
 
 final postCountRepoProvider =
     Provider<PostCountRepository>((ref) => throw UnimplementedError());
-
-final danbooruFavoriteRepoProvider = Provider<FavoritePostRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
-
-  return FavoritePostRepositoryApi(api, booruConfigRepo);
-});
 
 final postCountStateProvider =
     StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {

@@ -2,28 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-
-final danbooruFavoritesProvider =
-    NotifierProvider<FavoritesNotifier, Map<int, bool>>(
-  FavoritesNotifier.new,
-  dependencies: [
-    danbooruFavoriteRepoProvider,
-    booruUserIdentityProviderProvider,
-    currentBooruConfigProvider,
-  ],
-);
-
-final danbooruFavoriteProvider = Provider.family<bool, int>(
-  (ref, postId) {
-    return ref.watch(danbooruFavoritesProvider)[postId] ?? false;
-  },
-  dependencies: [
-    danbooruFavoritesProvider,
-  ],
-);
+import 'favorites_provider.dart';
 
 class FavoritesNotifier extends Notifier<Map<int, bool>> {
   final _limit = 200;
