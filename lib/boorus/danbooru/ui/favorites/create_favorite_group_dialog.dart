@@ -57,8 +57,6 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = ref.watch(danbooruCurrentUserProvider);
-
     return Dialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -160,22 +158,9 @@ class _EditFavoriteGroupDialogState
                     ),
                   ),
                 ),
-              AnimatedCrossFade(
-                firstChild: const SizedBox.shrink(),
-                secondChild: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  title: const Text('favorite_groups.is_private_group_option')
-                      .tr(),
-                  trailing: Switch.adaptive(
-                    value: isPrivate,
-                    onChanged: (value) => setState(() => isPrivate = value),
-                  ),
-                ),
-                crossFadeState: currentUser != null &&
-                        isBooruGoldPlusAccount(currentUser.level)
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 150),
+              PrivacyToggle(
+                isPrivate: isPrivate,
+                onChanged: (value) => setState(() => isPrivate = value),
               ),
               ButtonBar(
                 children: [
@@ -239,6 +224,36 @@ class _EditFavoriteGroupDialogState
           ),
         ),
       ),
+    );
+  }
+}
+
+class PrivacyToggle extends ConsumerWidget {
+  const PrivacyToggle(
+      {super.key, required this.isPrivate, required this.onChanged});
+
+  final bool isPrivate;
+  final void Function(bool value) onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(danbooruCurrentUserProvider);
+
+    return AnimatedCrossFade(
+      firstChild: const SizedBox.shrink(),
+      secondChild: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: const Text('favorite_groups.is_private_group_option').tr(),
+        trailing: Switch.adaptive(
+          value: isPrivate,
+          onChanged: onChanged,
+        ),
+      ),
+      crossFadeState:
+          currentUser != null && isBooruGoldPlusAccount(currentUser.level)
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+      duration: const Duration(milliseconds: 150),
     );
   }
 }
