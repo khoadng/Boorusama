@@ -6,17 +6,27 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/infra/cache_mixin.dart';
 
-class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
+class ArtistCommentaryRepositoryApi
+    with CacheMixin<ArtistCommentary>
+    implements ArtistCommentaryRepository {
   ArtistCommentaryRepositoryApi(this._api, this._currentUserBooruRepository);
   final DanbooruApi _api;
   final CurrentBooruConfigRepository _currentUserBooruRepository;
+
+  @override
+  int get maxCapacity => 100;
+  @override
+  Duration get staleDuration => const Duration(minutes: 15);
 
   @override
   Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {
+    if (exist('$postId')) return Future.value(get('$postId'));
+
     final booruConfig = await _currentUserBooruRepository.get();
 
     try {
@@ -38,7 +48,7 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
         }
       }
 
-      return commentaries.isNotEmpty
+      final ac = commentaries.isNotEmpty
           ? commentaries.first.toEntity()
           : ArtistCommentaryDto(
               createdAt: DateTime.now(),
@@ -46,6 +56,9 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
               postId: -1,
               updatedAt: DateTime.now(),
             ).toEntity();
+
+      set('$postId', ac);
+      return ac;
     } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request

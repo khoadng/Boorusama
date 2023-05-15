@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'artist_commentaries_provider.dart';
 
-class ArtistCommentaryNotifier extends FamilyNotifier<ArtistCommentary, int> {
+class ArtistCommentaryNotifier
+    extends AutoDisposeFamilyNotifier<ArtistCommentary, int> {
   @override
   ArtistCommentary build(int arg) {
+    load();
     return ArtistCommentary.empty();
   }
 

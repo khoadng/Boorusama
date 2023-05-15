@@ -18,6 +18,7 @@ class PostDetailsChildrenNotifier
   }
 
   Future<void> load(DanbooruPost post) async {
+    if (state.isNotEmpty) return;
     if (post.hasParentOrChildren) {
       if (post.hasParent) {
         _loadParentChildPosts(

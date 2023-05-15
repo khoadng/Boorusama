@@ -19,8 +19,8 @@ final danbooruArtistCommentaryRepoProvider =
   },
 );
 
-final danbooruArtistCommentaryProvider =
-    NotifierProvider.family<ArtistCommentaryNotifier, ArtistCommentary, int>(
+final danbooruArtistCommentaryProvider = NotifierProvider.autoDispose
+    .family<ArtistCommentaryNotifier, ArtistCommentary, int>(
   ArtistCommentaryNotifier.new,
   dependencies: [
     danbooruArtistCommentaryRepoProvider,
