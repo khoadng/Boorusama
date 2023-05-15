@@ -38,16 +38,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
     });
 
-    on<CommentSent>((event, emit) async {
-      final content = buildCommentContent(event);
-      await tryAsync<bool>(
-        action: () => commentRepository.postComment(event.postId, content),
-        onSuccess: (success) async {
-          add(CommentFetched(postId: event.postId));
-        },
-      );
-    });
-
     on<CommentUpdated>((event, emit) async {
       await tryAsync<bool>(
         action: () =>
@@ -113,16 +103,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
     });
   }
-}
-
-String buildCommentContent(CommentSent event) {
-  var content = event.content;
-  if (event.replyTo != null) {
-    content =
-        '[quote]\n${event.replyTo!.authorName} said:\n\n${event.replyTo!.body}\n[/quote]\n\n$content';
-  }
-
-  return content;
 }
 
 List<CommentData> _updateWith(

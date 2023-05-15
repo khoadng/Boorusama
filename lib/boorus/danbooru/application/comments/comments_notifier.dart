@@ -26,4 +26,30 @@ class CommentsNotifier
         ))
         .then(sortDescendedById());
   }
+
+  Future<void> send({
+    required String content,
+    CommentData? replyTo,
+  }) async {
+    await ref.read(danbooruCommentRepoProvider).postComment(
+          arg,
+          buildCommentContent(
+            content: content,
+            replyTo: replyTo,
+          ),
+        );
+    await fetch();
+  }
+}
+
+String buildCommentContent({
+  required String content,
+  CommentData? replyTo,
+}) {
+  var c = content;
+  if (replyTo != null) {
+    c = '[quote]\n${replyTo.authorName} said:\n\n${replyTo.body}\n[/quote]\n\n$content';
+  }
+
+  return c;
 }
