@@ -59,4 +59,11 @@ class LruCacher<K, V> implements Cacher<K, V> {
       _cache[key] = CacheObject(key, item);
     }
   }
+
+  void remove(K key) {
+    if (_cache.containsKey(key)) {
+      _list.remove(key);
+      _cache.remove(key);
+    }
+  }
 }

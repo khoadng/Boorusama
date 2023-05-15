@@ -6,13 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/infra/cache_mixin.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/utils.dart';
 
 mixin PostDetailsTagsX<T extends Post>
     on AutoDisposeFamilyNotifier<List<Recommend<T>>, int> {
   Future<List<T>> Function(String tag, int page) get fetcher;
-  final Map<String, List<T>> tagCache = {};
+  final _cache = Cache<List<T>>(
+    staleDuration: const Duration(minutes: 10),
+    maxCapacity: 100,
+  );
 
   Future<void> fetchPosts(
     List<String> tags,
@@ -21,15 +25,19 @@ mixin PostDetailsTagsX<T extends Post>
   }) async {
     for (final tag in tags) {
       if (state.any((e) => e.tag == tag)) continue;
-      var posts =
-          tagCache.containsKey(tag) ? tagCache[tag]! : await fetcher(tag, 1);
+      List<T> posts;
+
+      if (_cache.exist(tag)) {
+        posts = _cache.get(tag)!;
+      } else {
+        posts = await fetcher(tag, 1);
+        _cache.set(tag, posts);
+      }
 
       // if limit is not null, then we only want to get the first [limit] posts
       if (limit != null) {
         posts = posts.take(limit).toList();
       }
-
-      tagCache[tag] = posts;
 
       state = [
         ...state,
