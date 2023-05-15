@@ -1,10 +1,14 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
 import 'package:boorusama/core/domain/image.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/video.dart';
 
-abstract class Post with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
+abstract class Post extends Equatable
+    with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
   int get id;
   String get thumbnailImageUrl;
   String get sampleImageUrl;

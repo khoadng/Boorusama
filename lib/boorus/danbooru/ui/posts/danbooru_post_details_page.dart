@@ -218,7 +218,7 @@ class _DanbooruPostDetailsPageState
       pageCount: posts.length,
       topRightButtonsBuilder: (page) {
         final noteState =
-            ref.watch(danbooruPostDetailsNoteProvider(posts[page].id));
+            ref.watch(danbooruPostDetailsNoteProvider(posts[page]));
 
         return [
           Builder(builder: (_) {
@@ -251,8 +251,8 @@ class _DanbooruPostDetailsPageState
                           ),
                         ),
                   onPressed: () => ref
-                      .read(danbooruPostDetailsNoteProvider(posts[page].id)
-                          .notifier)
+                      .read(
+                          danbooruPostDetailsNoteProvider(posts[page]).notifier)
                       .toggleNoteVisibility(),
                 );
               },
@@ -281,7 +281,7 @@ class _DanbooruPostDetailsPageState
     int currentPage,
   ) {
     final post = posts[page];
-    final noteState = ref.watch(danbooruPostDetailsNoteProvider(post.id));
+    final noteState = ref.watch(danbooruPostDetailsNoteProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;

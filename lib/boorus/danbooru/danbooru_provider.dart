@@ -443,7 +443,6 @@ class DanbooruProvider extends StatelessWidget {
         child: ProviderScope(
           overrides: [
             autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
-            noteRepoProvider.overrideWithValue(noteRepo),
             poolRepoProvider.overrideWithValue(poolRepo),
             postVoteRepoProvider.overrideWithValue(postVoteRepo),
             danbooruArtistCharacterPostRepoProvider
@@ -464,9 +463,6 @@ final danbooruApiProvider = Provider<DanbooruApi>((ref) {
 
   return DanbooruApi(dio);
 });
-
-final noteRepoProvider =
-    Provider<NoteRepository>((ref) => throw UnimplementedError());
 
 final poolRepoProvider =
     Provider<PoolRepository>((ref) => throw UnimplementedError());

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/application/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/core/domain/posts.dart';
 
@@ -35,20 +35,13 @@ class PostDetailsNoteState extends Equatable {
 }
 
 class PostDetailsNoteNotifier
-    extends AutoDisposeFamilyNotifier<PostDetailsNoteState, int> {
+    extends AutoDisposeFamilyNotifier<PostDetailsNoteState, Post> {
   @override
-  PostDetailsNoteState build(int arg) => PostDetailsNoteState.initial();
-
-  Future<void> load(Post post) async {
-    if (post.isTranslated) {
-      state = state.copyWith(
-        notes: await _loadNotes(post.id),
-      );
-    }
+  PostDetailsNoteState build(Post arg) {
+    return PostDetailsNoteState.initial().copyWith(
+      notes: ref.watch(danbooruNoteProvider(arg)),
+    );
   }
-
-  Future<List<Note>> _loadNotes(int postId) =>
-      ref.read(noteRepoProvider).getNotesFrom(postId);
 
   void toggleNoteVisibility() {
     state = state.copyWith(
