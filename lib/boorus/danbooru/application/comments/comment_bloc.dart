@@ -38,16 +38,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
     });
 
-    on<CommentUpdated>((event, emit) async {
-      await tryAsync<bool>(
-        action: () =>
-            commentRepository.updateComment(event.commentId, event.content),
-        onSuccess: (success) async {
-          add(CommentFetched(postId: event.postId));
-        },
-      );
-    });
-
     on<CommentUpvoted>((event, emit) async {
       await tryAsync<CommentVote>(
         action: () => commentVoteRepository.upvote(event.commentId),

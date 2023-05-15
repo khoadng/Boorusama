@@ -48,6 +48,14 @@ class CommentsNotifier
     await repo.deleteComment(comment.id);
     await fetch();
   }
+
+  Future<void> update({
+    required CommentId commentId,
+    required String content,
+  }) async {
+    await repo.updateComment(commentId, content);
+    await fetch();
+  }
 }
 
 String buildCommentContent({
