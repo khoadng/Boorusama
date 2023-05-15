@@ -20,17 +20,18 @@ class CommentSection extends ConsumerWidget {
     required this.focus,
     required this.isEditing,
     required this.postId,
+    required this.comments,
   });
 
   final ValueNotifier<CommentData?> commentReply;
   final FocusNode focus;
   final ValueNotifier<bool> isEditing;
   final int postId;
+  final List<CommentData> comments;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authenticationProvider);
-    final comments = context.select((CommentBloc bloc) => bloc.state.comments);
 
     return Column(
       children: [

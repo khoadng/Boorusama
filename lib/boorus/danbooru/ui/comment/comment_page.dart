@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
+import 'package:boorusama/functional.dart';
 import 'widgets/comment_section.dart';
 
-class CommentPage extends StatefulWidget {
+class CommentPage extends ConsumerStatefulWidget {
   const CommentPage({
     super.key,
     required this.postId,
@@ -25,10 +25,10 @@ class CommentPage extends StatefulWidget {
   final bool useAppBar;
 
   @override
-  State<CommentPage> createState() => _CommentPageState();
+  ConsumerState<CommentPage> createState() => _CommentPageState();
 }
 
-class _CommentPageState extends State<CommentPage> {
+class _CommentPageState extends ConsumerState<CommentPage> {
   late final _focus = FocusNode();
   final _commentReply = ValueNotifier<CommentData?>(null);
   final isEditing = ValueNotifier(false);
@@ -36,7 +36,7 @@ class _CommentPageState extends State<CommentPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
+    // context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
 
     isEditing.addListener(_onEditing);
 
@@ -63,6 +63,8 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final comments = ref.watch(danbooruCommentsProvider(widget.postId));
+
     return WillPopScope(
       onWillPop: () async {
         if (isEditing.value) {
@@ -82,32 +84,21 @@ class _CommentPageState extends State<CommentPage> {
                 ),
               )
             : null,
-        body: BlocSelector<CommentBloc, CommentState, LoadStatus>(
-          selector: (state) => state.status,
-          builder: (context, status) {
-            switch (status) {
-              case LoadStatus.initial:
-              case LoadStatus.loading:
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              case LoadStatus.success:
-                return GestureDetector(
-                  onTap: () => isEditing.value = false,
-                  child: CommentSection(
-                    commentReply: _commentReply,
-                    focus: _focus,
-                    isEditing: isEditing,
-                    postId: widget.postId,
-                  ),
-                );
-              case LoadStatus.failure:
-                return const Center(
-                  child: Text('Something went wrong'),
-                );
-            }
-          },
-        ),
+        body: comments.toOption().fold(
+              () => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+              (comments) => GestureDetector(
+                onTap: () => isEditing.value = false,
+                child: CommentSection(
+                  comments: comments,
+                  commentReply: _commentReply,
+                  focus: _focus,
+                  isEditing: isEditing,
+                  postId: widget.postId,
+                ),
+              ),
+            ),
       ),
     );
   }
