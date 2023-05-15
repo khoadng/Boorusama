@@ -14,9 +14,10 @@ class CommentsNotifier
     return null;
   }
 
+  CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
+
   Future<void> fetch() async {
-    state = await ref
-        .watch(danbooruCommentRepoProvider)
+    state = await repo
         .getCommentsFromPostId(arg)
         .then(filterDeleted())
         .then(createCommentDataWith(
@@ -31,13 +32,20 @@ class CommentsNotifier
     required String content,
     CommentData? replyTo,
   }) async {
-    await ref.read(danbooruCommentRepoProvider).postComment(
-          arg,
-          buildCommentContent(
-            content: content,
-            replyTo: replyTo,
-          ),
-        );
+    await repo.postComment(
+      arg,
+      buildCommentContent(
+        content: content,
+        replyTo: replyTo,
+      ),
+    );
+    await fetch();
+  }
+
+  Future<void> delete({
+    required CommentData comment,
+  }) async {
+    await repo.deleteComment(comment.id);
     await fetch();
   }
 }

@@ -54,11 +54,9 @@ class CommentSection extends ConsumerWidget {
                 focus.requestFocus,
               );
             },
-            onDelete: (comment) =>
-                context.read<CommentBloc>().add(CommentDeleted(
-                      commentId: comment.id,
-                      postId: postId,
-                    )),
+            onDelete: (comment) => ref
+                .read(danbooruCommentsProvider(postId).notifier)
+                .delete(comment: comment),
             onUpvote: (comment) => context
                 .read<CommentBloc>()
                 .add(CommentUpvoted(commentId: comment.id)),

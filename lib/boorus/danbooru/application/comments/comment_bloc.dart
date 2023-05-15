@@ -48,15 +48,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
     });
 
-    on<CommentDeleted>((event, emit) async {
-      await tryAsync<bool>(
-        action: () => commentRepository.deleteComment(event.commentId),
-        onSuccess: (success) async {
-          add(CommentFetched(postId: event.postId));
-        },
-      );
-    });
-
     on<CommentUpvoted>((event, emit) async {
       await tryAsync<CommentVote>(
         action: () => commentVoteRepository.upvote(event.commentId),
