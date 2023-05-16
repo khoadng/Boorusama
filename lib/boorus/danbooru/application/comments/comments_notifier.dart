@@ -16,13 +16,13 @@ class CommentsNotifier
     extends AutoDisposeFamilyNotifier<List<CommentData>?, int> {
   @override
   List<CommentData>? build(int arg) {
-    fetch();
+    load();
     return null;
   }
 
   CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
 
-  Future<void> fetch() async {
+  Future<void> load() async {
     final config = ref.watch(currentBooruConfigProvider);
     final accountId = await ref
         .watch(booruUserIdentityProviderProvider)
@@ -69,14 +69,14 @@ class CommentsNotifier
       arg,
       buildCommentContent(content: content, replyTo: replyTo),
     );
-    await fetch();
+    await load();
   }
 
   Future<void> delete({
     required CommentData comment,
   }) async {
     await repo.deleteComment(comment.id);
-    await fetch();
+    await load();
   }
 
   Future<void> update({
@@ -84,7 +84,7 @@ class CommentsNotifier
     required String content,
   }) async {
     await repo.updateComment(commentId, content);
-    await fetch();
+    await load();
   }
 }
 
