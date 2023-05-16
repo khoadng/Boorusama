@@ -1,11 +1,16 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comments/comments_provider.dart';
+import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-import 'comment_votes_provider.dart';
+
+const youtubeUrl = 'www.youtube.com';
 
 class CommentsNotifier
     extends AutoDisposeFamilyNotifier<List<CommentData>?, int> {
@@ -18,14 +23,35 @@ class CommentsNotifier
   CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
 
   Future<void> fetch() async {
+    final config = ref.watch(currentBooruConfigProvider);
+    final accountId = await ref
+        .watch(booruUserIdentityProviderProvider)
+        .getAccountIdFromConfig(config);
+
     final comments = await repo
         .getCommentsFromPostId(arg)
         .then(filterDeleted())
-        .then(createCommentDataWith(
-          ref.watch(currentBooruConfigRepoProvider),
-          ref.watch(booruUserIdentityProviderProvider),
-        ))
-        .then(sortDescendedById());
+        .then((comments) => comments
+            .map((comment) => CommentData(
+                  id: comment.id,
+                  authorName: comment.creator?.name ?? 'User',
+                  authorLevel: comment.creator?.level ?? UserLevel.member,
+                  authorId: comment.creator?.id ?? 0,
+                  body: comment.body,
+                  createdAt: comment.createdAt,
+                  updatedAt: comment.updatedAt,
+                  isSelf: comment.creator?.id == accountId,
+                  recentlyUpdated: comment.createdAt != comment.updatedAt,
+                  uris: RegExp(urlPattern)
+                      .allMatches(comment.body)
+                      .map((match) => Uri.tryParse(
+                          comment.body.substring(match.start, match.end)))
+                      .whereNotNull()
+                      .where((e) => e.host.contains(youtubeUrl))
+                      .toList(),
+                ))
+            .toList())
+        .then(_sortDescById);
 
     state = comments;
 
@@ -41,10 +67,7 @@ class CommentsNotifier
   }) async {
     await repo.postComment(
       arg,
-      buildCommentContent(
-        content: content,
-        replyTo: replyTo,
-      ),
+      buildCommentContent(content: content, replyTo: replyTo),
     );
     await fetch();
   }
@@ -64,6 +87,9 @@ class CommentsNotifier
     await fetch();
   }
 }
+
+List<CommentData> _sortDescById(List<CommentData> comments) =>
+    comments..sort((a, b) => b.id.compareTo(a.id));
 
 String buildCommentContent({
   required String content,

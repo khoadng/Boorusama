@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import 'package:boorusama/boorus/danbooru/application/comments.dart';
 
 class ReplyHeader extends StatelessWidget {
   const ReplyHeader({

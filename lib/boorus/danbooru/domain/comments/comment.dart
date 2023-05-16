@@ -10,6 +10,12 @@ typedef CommentBody = String;
 typedef CommentCreatorId = int;
 typedef CommentPostId = int;
 
+enum CommentVoteState {
+  unvote,
+  downvoted,
+  upvoted,
+}
+
 class Comment extends Equatable {
   const Comment({
     required this.id,
