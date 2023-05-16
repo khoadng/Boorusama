@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -57,18 +56,15 @@ class CommentSection extends ConsumerWidget {
             onDelete: (comment) => ref
                 .read(danbooruCommentsProvider(postId).notifier)
                 .delete(comment: comment),
-            onUpvote: (comment) => context
-                .read<CommentBloc>()
-                .add(CommentUpvoted(commentId: comment.id)),
-            onDownvote: (comment) => context
-                .read<CommentBloc>()
-                .add(CommentDownvoted(commentId: comment.id)),
-            onClearVote: (comment) =>
-                context.read<CommentBloc>().add(CommentVoteRemoved(
-                      commentId: comment.id,
-                      commentVoteId: comment.voteId!,
-                      voteState: comment.voteState,
-                    )),
+            onUpvote: (comment) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .upvote(comment.id),
+            onDownvote: (comment) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .downvote(comment.id),
+            onClearVote: (comment, commentVote) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .unvote(commentVote),
           ),
         ),
         if (auth is Authenticated)

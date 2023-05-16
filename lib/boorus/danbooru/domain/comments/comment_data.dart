@@ -26,11 +26,8 @@ class CommentData extends Equatable {
     required this.body,
     required this.createdAt,
     required this.updatedAt,
-    required this.score,
     required this.isSelf,
     required this.recentlyUpdated,
-    required this.voteState,
-    this.voteId,
     required this.uris,
   });
 
@@ -41,35 +38,9 @@ class CommentData extends Equatable {
   final String body;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final int score;
   final bool isSelf;
   final bool recentlyUpdated;
-  final int? voteId;
-  final CommentVoteState voteState;
   final List<Uri> uris;
-
-  bool get hasVote => voteState != CommentVoteState.unvote;
-
-  CommentData copyWith({
-    int? score,
-    CommentVoteState? voteState,
-    int? voteId,
-  }) =>
-      CommentData(
-        id: id,
-        authorName: authorName,
-        authorLevel: authorLevel,
-        authorId: authorId,
-        body: body,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        score: score ?? this.score,
-        isSelf: isSelf,
-        recentlyUpdated: recentlyUpdated,
-        voteState: voteState ?? this.voteState,
-        voteId: voteId,
-        uris: uris,
-      );
 
   @override
   List<Object?> get props => [
@@ -80,11 +51,8 @@ class CommentData extends Equatable {
         body,
         createdAt,
         updatedAt,
-        score,
         isSelf,
         recentlyUpdated,
-        voteState,
-        voteId,
         uris,
       ];
 }
@@ -94,26 +62,21 @@ List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
 
 CommentData Function(Comment comment) createCommentData({
   required int? accountId,
-  required List<CommentVote> votes,
 }) =>
-    (comment) => commentDataFrom(comment, comment.creator, accountId, votes);
+    (comment) => commentDataFrom(comment, comment.creator, accountId);
 
 Future<List<CommentData>> Function(
     List<Comment> comments) createCommentDataWith(
   CurrentBooruConfigRepository currentBooruConfigRepository,
   BooruUserIdentityProvider booruUserIdentityProvider,
-  CommentVoteRepository commentVoteRepository,
 ) =>
     (comments) async {
-      final votes = await commentVoteRepository
-          .getCommentVotes(comments.map((e) => e.id).toList());
       final config = await currentBooruConfigRepository.get();
       final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
 
       return comments
           .map(createCommentData(
             accountId: id,
-            votes: votes,
           ))
           .toList();
     };
@@ -122,7 +85,6 @@ CommentData commentDataFrom(
   Comment comment,
   User? user,
   int? accountId,
-  List<CommentVote> votes,
 ) =>
     CommentData(
       id: comment.id,
@@ -132,11 +94,8 @@ CommentData commentDataFrom(
       body: comment.body,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
-      score: comment.score,
       isSelf: comment.creator?.id == accountId,
       recentlyUpdated: comment.createdAt != comment.updatedAt,
-      voteState: _getVoteState(comment, votes),
-      voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,
       uris: RegExp(urlPattern)
           .allMatches(comment.body)
           .map((match) {
@@ -152,22 +111,3 @@ CommentData commentDataFrom(
           .where((e) => e.host.contains(youtubeUrl))
           .toList(),
     );
-
-CommentVoteState _getVoteState(Comment comment, List<CommentVote> votes) {
-  final voteMap = {
-    for (var i = 0; i < votes.length; i += 1) votes[i].commentId: votes[i],
-  };
-  final hasVote = voteMap.containsKey(comment.id);
-
-  if (!hasVote) return CommentVoteState.unvote;
-
-  final score = voteMap[comment.id]!.score;
-
-  if (score == 1) {
-    return CommentVoteState.upvoted;
-  } else if (score == -1) {
-    return CommentVoteState.downvoted;
-  } else {
-    return CommentVoteState.unvote;
-  }
-}

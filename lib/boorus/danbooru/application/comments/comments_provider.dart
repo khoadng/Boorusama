@@ -16,15 +16,6 @@ final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
   return CommentRepositoryApi(api, currentBooruConfigRepository);
 });
 
-final danbooruCommentVoteRepoProvider =
-    Provider<CommentVoteApiRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfigRepository =
-      ref.watch(currentBooruConfigRepoProvider);
-
-  return CommentVoteApiRepository(api, currentBooruConfigRepository);
-});
-
 final danbooruCommentsProvider = NotifierProvider.autoDispose
     .family<CommentsNotifier, List<CommentData>?, int>(
   CommentsNotifier.new,

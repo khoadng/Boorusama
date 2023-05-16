@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comments_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/core/provider.dart';
+import 'comment_votes_provider.dart';
 
 class CommentsNotifier
     extends AutoDisposeFamilyNotifier<List<CommentData>?, int> {
@@ -17,15 +18,21 @@ class CommentsNotifier
   CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
 
   Future<void> fetch() async {
-    state = await repo
+    final comments = await repo
         .getCommentsFromPostId(arg)
         .then(filterDeleted())
         .then(createCommentDataWith(
           ref.watch(currentBooruConfigRepoProvider),
           ref.watch(booruUserIdentityProviderProvider),
-          ref.watch(danbooruCommentVoteRepoProvider),
         ))
         .then(sortDescendedById());
+
+    state = comments;
+
+    // fetch comment votes
+    ref
+        .read(danbooruCommentVotesProvider.notifier)
+        .fetch(comments.map((e) => e.id).toList());
   }
 
   Future<void> send({
