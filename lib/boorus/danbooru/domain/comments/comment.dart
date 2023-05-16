@@ -39,23 +39,6 @@ class Comment extends Equatable {
         creator: null,
       );
 
-  Comment copyWith({
-    CommentId? id,
-    bool? isDeleted,
-    String? body,
-    int? score,
-  }) =>
-      Comment(
-        id: id ?? this.id,
-        score: score ?? this.score,
-        body: body ?? this.body,
-        postId: postId,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isDeleted: isDeleted ?? this.isDeleted,
-        creator: creator,
-      );
-
   final CommentId id;
   final CommentScore score;
   final CommentBody body;
@@ -75,6 +58,27 @@ class Comment extends Equatable {
         updatedAt,
         isDeleted,
       ];
+}
+
+extension CommentX on Comment {
+  bool get isEdited => createdAt != updatedAt;
+
+  Comment copyWith({
+    CommentId? id,
+    bool? isDeleted,
+    String? body,
+    int? score,
+  }) =>
+      Comment(
+        id: id ?? this.id,
+        score: score ?? this.score,
+        body: body ?? this.body,
+        postId: postId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isDeleted: isDeleted ?? this.isDeleted,
+        creator: creator,
+      );
 }
 
 List<Comment> Function(List<Comment> comments) filterDeleted() =>

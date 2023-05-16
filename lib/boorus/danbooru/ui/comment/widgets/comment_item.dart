@@ -55,7 +55,7 @@ class CommentItem extends ConsumerWidget {
         ...comment.uris
             .where((e) => e.host == youtubeUrl)
             .map((e) => YoutubePreviewBox(uri: e)),
-        if (comment.recentlyUpdated)
+        if (comment.isEdited)
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(

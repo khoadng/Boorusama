@@ -41,7 +41,7 @@ class CommentsNotifier
                   createdAt: comment.createdAt,
                   updatedAt: comment.updatedAt,
                   isSelf: comment.creator?.id == accountId,
-                  recentlyUpdated: comment.createdAt != comment.updatedAt,
+                  isEdited: comment.isEdited,
                   uris: RegExp(urlPattern)
                       .allMatches(comment.body)
                       .map((match) => Uri.tryParse(

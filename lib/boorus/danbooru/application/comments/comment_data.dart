@@ -14,7 +14,7 @@ class CommentData extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     required this.isSelf,
-    required this.recentlyUpdated,
+    required this.isEdited,
     required this.uris,
   });
 
@@ -26,7 +26,7 @@ class CommentData extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isSelf;
-  final bool recentlyUpdated;
+  final bool isEdited;
   final List<Uri> uris;
 
   @override
@@ -39,7 +39,7 @@ class CommentData extends Equatable {
         createdAt,
         updatedAt,
         isSelf,
-        recentlyUpdated,
+        isEdited,
         uris,
       ];
 }
