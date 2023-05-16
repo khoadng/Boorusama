@@ -27,7 +27,7 @@ class CommentItem extends ConsumerWidget {
   final CommentData comment;
   final VoidCallback onReply;
   final bool hasVoteSection;
-  final void Function(VoteEvent event, CommentVote commentVote) onVoteChanged;
+  final void Function(VoteEvent event, CommentVote? commentVote) onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
   @override
@@ -75,7 +75,7 @@ class CommentItem extends ConsumerWidget {
           _VoteSection(
             score: commentVote?.score ?? 0,
             voteState: commentVote?.voteState ?? CommentVoteState.unvote,
-            onVote: (event) => onVoteChanged(event, commentVote!),
+            onVote: (event) => onVoteChanged(event, commentVote),
             onReply: onReply,
             moreBuilder: moreBuilder,
           ),

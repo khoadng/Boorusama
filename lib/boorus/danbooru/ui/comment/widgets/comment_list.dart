@@ -28,7 +28,8 @@ class CommentList extends StatelessWidget {
   final void Function(CommentData comment) onDelete;
   final void Function(CommentData comment) onUpvote;
   final void Function(CommentData comment) onDownvote;
-  final void Function(CommentData comment, CommentVote commentVote) onClearVote;
+  final void Function(CommentData comment, CommentVote? commentVote)
+      onClearVote;
 
   @override
   Widget build(BuildContext context) {

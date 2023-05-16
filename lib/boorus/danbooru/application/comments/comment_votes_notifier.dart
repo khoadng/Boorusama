@@ -51,7 +51,8 @@ class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
   }
 
   // unvote
-  Future<void> unvote(CommentVote commentVote) async {
+  Future<void> unvote(CommentVote? commentVote) async {
+    if (commentVote == null) return;
     final currentVote = state[commentVote.commentId];
 
     if (currentVote == null) return;
