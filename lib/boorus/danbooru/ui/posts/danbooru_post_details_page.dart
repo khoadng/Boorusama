@@ -11,10 +11,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
+import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -268,8 +268,6 @@ class _DanbooruPostDetailsPageState
         final post = posts[currentPage];
 
         post.loadDetailsFrom(ref);
-
-        context.read<CommentsCubit>().getCommentsFromPostId(post.id);
       },
     );
   }
@@ -371,25 +369,37 @@ class _DanbooruPostDetailsPageState
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
         DanbooruArtistSection(post: post),
-        BlocBuilder<CommentsCubit, CommentsState>(
-          builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: RepaintBoundary(
-                child: state.commentsMap.lookup(post.id).fold(
-                      () => const SizedBox.shrink(),
-                      (comments) => PostStatsTile(
-                        post: post,
-                        totalComments: comments.length,
-                      ),
-                    ),
-              ),
-            );
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: DanbooruPostStatsTile(post: post),
         ),
         const Divider(height: 8, thickness: 1),
       ],
     ];
+  }
+}
+
+class DanbooruPostStatsTile extends ConsumerWidget {
+  const DanbooruPostStatsTile({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final comments = ref.watch(danbooruCommentsProvider(post.id));
+
+    return RepaintBoundary(
+      child: comments.toOption().fold(
+            () => const SizedBox.shrink(),
+            (comments) => PostStatsTile(
+              post: post,
+              totalComments: comments.length,
+            ),
+          ),
+    );
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -14,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/ui/comment/widgets/youtube_preview_box
 import 'package:boorusama/core/utils.dart';
 import 'comment_header.dart';
 
-class CommentItem extends StatelessWidget {
+class CommentItem extends ConsumerWidget {
   const CommentItem({
     super.key,
     required this.comment,
@@ -26,11 +27,13 @@ class CommentItem extends StatelessWidget {
   final CommentData comment;
   final VoidCallback onReply;
   final bool hasVoteSection;
-  final void Function(VoteEvent event) onVoteChanged;
+  final void Function(VoteEvent event, CommentVote? commentVote) onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commentVote = ref.watch(danbooruCommentVoteProvider(comment.id));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,7 +55,7 @@ class CommentItem extends StatelessWidget {
         ...comment.uris
             .where((e) => e.host == youtubeUrl)
             .map((e) => YoutubePreviewBox(uri: e)),
-        if (comment.recentlyUpdated)
+        if (comment.isEdited)
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
@@ -70,9 +73,9 @@ class CommentItem extends StatelessWidget {
         if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           _VoteSection(
-            score: comment.score,
-            voteState: comment.voteState,
-            onVote: onVoteChanged,
+            score: commentVote?.score ?? 0,
+            voteState: commentVote?.voteState ?? CommentVoteState.unvote,
+            onVote: (event) => onVoteChanged(event, commentVote),
             onReply: onReply,
             moreBuilder: moreBuilder,
           ),

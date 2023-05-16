@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'comment_box.dart';
@@ -20,17 +18,18 @@ class CommentSection extends ConsumerWidget {
     required this.focus,
     required this.isEditing,
     required this.postId,
+    required this.comments,
   });
 
   final ValueNotifier<CommentData?> commentReply;
   final FocusNode focus;
   final ValueNotifier<bool> isEditing;
   final int postId;
+  final List<CommentData> comments;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authenticationProvider);
-    final comments = context.select((CommentBloc bloc) => bloc.state.comments);
 
     return Column(
       children: [
@@ -53,23 +52,18 @@ class CommentSection extends ConsumerWidget {
                 focus.requestFocus,
               );
             },
-            onDelete: (comment) =>
-                context.read<CommentBloc>().add(CommentDeleted(
-                      commentId: comment.id,
-                      postId: postId,
-                    )),
-            onUpvote: (comment) => context
-                .read<CommentBloc>()
-                .add(CommentUpvoted(commentId: comment.id)),
-            onDownvote: (comment) => context
-                .read<CommentBloc>()
-                .add(CommentDownvoted(commentId: comment.id)),
-            onClearVote: (comment) =>
-                context.read<CommentBloc>().add(CommentVoteRemoved(
-                      commentId: comment.id,
-                      commentVoteId: comment.voteId!,
-                      voteState: comment.voteState,
-                    )),
+            onDelete: (comment) => ref
+                .read(danbooruCommentsProvider(postId).notifier)
+                .delete(comment: comment),
+            onUpvote: (comment) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .upvote(comment.id),
+            onDownvote: (comment) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .downvote(comment.id),
+            onClearVote: (comment, commentVote) => ref
+                .read(danbooruCommentVotesProvider.notifier)
+                .unvote(commentVote),
           ),
         ),
         if (auth is Authenticated)

@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -17,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comments_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -81,11 +79,9 @@ class DanbooruProvider extends StatelessWidget {
     required this.tagBloc,
     required this.wikiBloc,
     required this.savedSearchBloc,
-    required this.commentBloc,
     required this.profileCubit,
     required this.postVoteCubit,
     required this.danbooruArtistCharacterPostRepository,
-    required this.commentsCubit,
   });
 
   factory DanbooruProvider.create(
@@ -219,22 +215,12 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepository: savedSearchRepo,
     );
 
-    final commentBloc = CommentBloc(
-      commentVoteRepository: commentVoteRepo,
-      commentRepository: commentRepo,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      booruUserIdentityProvider: booruUserIdentityProvider,
-    );
-
     final profileCubit = ProfileCubit(profileRepository: profileRepo);
 
     final postVoteCubit = PostVoteCubit(postVoteRepo);
     final artistCharacterPostRepository = DanbooruArtistCharacterPostRepository(
       repository: postRepo,
       cache: LruCacher(),
-    );
-    final commentsCubit = CommentsCubit(
-      repository: commentRepo,
     );
 
     return DanbooruProvider(
@@ -269,11 +255,9 @@ class DanbooruProvider extends StatelessWidget {
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
-      commentBloc: commentBloc,
       profileCubit: profileCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
-      commentsCubit: commentsCubit,
     );
   }
 
@@ -312,12 +296,10 @@ class DanbooruProvider extends StatelessWidget {
     final tagBloc = context.read<TagBloc>();
     final wikiBloc = context.read<WikiBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
-    final commentBloc = context.read<CommentBloc>();
     final profileCubit = context.read<ProfileCubit>();
     final postVoteCubit = context.read<PostVoteCubit>();
     final artistCharacterPostRepository =
         context.read<DanbooruArtistCharacterPostRepository>();
-    final commentsCubit = context.read<CommentsCubit>();
 
     return DanbooruProvider(
       builder: builder,
@@ -351,11 +333,9 @@ class DanbooruProvider extends StatelessWidget {
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
-      commentBloc: commentBloc,
       profileCubit: profileCubit,
       postVoteCubit: postVoteCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
-      commentsCubit: commentsCubit,
     );
   }
 
@@ -393,10 +373,8 @@ class DanbooruProvider extends StatelessWidget {
   final TagBloc tagBloc;
   final WikiBloc wikiBloc;
   final SavedSearchBloc savedSearchBloc;
-  final CommentBloc commentBloc;
   final ProfileCubit profileCubit;
   final PostVoteCubit postVoteCubit;
-  final CommentsCubit commentsCubit;
 
   final TagInfo tagInfo;
 
@@ -431,14 +409,12 @@ class DanbooruProvider extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: profileCubit),
-          BlocProvider.value(value: commentBloc),
           BlocProvider.value(value: blacklistedTagsBloc),
           BlocProvider.value(value: poolOverviewBloc),
           BlocProvider.value(value: tagBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
           BlocProvider.value(value: postVoteCubit),
-          BlocProvider.value(value: commentsCubit),
         ],
         child: ProviderScope(
           overrides: [

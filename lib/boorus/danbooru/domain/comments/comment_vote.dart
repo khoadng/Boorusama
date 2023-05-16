@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 
 typedef CommentVoteId = int;
@@ -36,6 +36,25 @@ class CommentVote extends Equatable {
   final DateTime updatedAt;
   final bool isDeleted;
 
+  @override
+  List<Object?> get props => [
+        id,
+        commentId,
+        userId,
+        score,
+        createdAt,
+        updatedAt,
+        isDeleted,
+      ];
+}
+
+extension CommentVoteX on CommentVote {
+  CommentVoteState get voteState => switch (score) {
+        -1 => CommentVoteState.downvoted,
+        1 => CommentVoteState.upvoted,
+        _ => CommentVoteState.unvote,
+      };
+
   CommentVote copyWith({
     CommentVoteId? id,
     CommentId? commentId,
@@ -51,15 +70,4 @@ class CommentVote extends Equatable {
         updatedAt: updatedAt,
         isDeleted: isDeleted,
       );
-
-  @override
-  List<Object?> get props => [
-        id,
-        commentId,
-        userId,
-        score,
-        createdAt,
-        updatedAt,
-        isDeleted,
-      ];
 }

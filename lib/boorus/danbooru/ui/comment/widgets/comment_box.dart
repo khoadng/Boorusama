@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'reply_header.dart';
 
-class CommentBox extends StatefulWidget {
+class CommentBox extends ConsumerStatefulWidget {
   const CommentBox({
     super.key,
     required this.commentReply,
@@ -26,10 +25,10 @@ class CommentBox extends StatefulWidget {
   final FocusNode focus;
 
   @override
-  State<CommentBox> createState() => _CommentBoxState();
+  ConsumerState<CommentBox> createState() => _CommentBoxState();
 }
 
-class _CommentBoxState extends State<CommentBox> {
+class _CommentBoxState extends ConsumerState<CommentBox> {
   late final textEditingController = TextEditingController(text: '');
 
   @override
@@ -115,11 +114,14 @@ class _CommentBoxState extends State<CommentBox> {
                             ? null
                             : () {
                                 widget.isEditing.value = false;
-                                context.read<CommentBloc>().add(CommentSent(
+                                ref
+                                    .read(
+                                        danbooruCommentsProvider(widget.postId)
+                                            .notifier)
+                                    .send(
                                       content: value.text,
                                       replyTo: comment,
-                                      postId: widget.postId,
-                                    ));
+                                    );
                               },
                         child: const Text('comment.list.send').tr(),
                       ),

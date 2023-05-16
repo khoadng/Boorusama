@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'widgets/editor_spacer.dart';
 
-class CommentUpdatePage extends StatefulWidget {
+class CommentUpdatePage extends ConsumerStatefulWidget {
   const CommentUpdatePage({
     super.key,
     required this.postId,
@@ -22,10 +22,10 @@ class CommentUpdatePage extends StatefulWidget {
   final int postId;
 
   @override
-  State<CommentUpdatePage> createState() => _CommentUpdatePageState();
+  ConsumerState<CommentUpdatePage> createState() => _CommentUpdatePageState();
 }
 
-class _CommentUpdatePageState extends State<CommentUpdatePage> {
+class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
   late final textEditingController =
       TextEditingController(text: widget.initialContent);
 
@@ -96,10 +96,9 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
 
   void _handleSave(String content) {
     FocusScope.of(context).unfocus();
-    context.read<CommentBloc>().add(CommentUpdated(
+    ref.read(danbooruCommentsProvider(widget.postId).notifier).update(
           commentId: widget.commentId,
-          postId: widget.postId,
           content: content,
-        ));
+        );
   }
 }

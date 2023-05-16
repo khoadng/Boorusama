@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'comment_item.dart';
 
@@ -28,7 +29,8 @@ class CommentList extends StatelessWidget {
   final void Function(CommentData comment) onDelete;
   final void Function(CommentData comment) onUpvote;
   final void Function(CommentData comment) onDownvote;
-  final void Function(CommentData comment) onClearVote;
+  final void Function(CommentData comment, CommentVote? commentVote)
+      onClearVote;
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +43,13 @@ class CommentList extends StatelessWidget {
               return ListTile(
                 title: CommentItem(
                   hasVoteSection: authenticated,
-                  onVoteChanged: (event) {
+                  onVoteChanged: (event, commentVote) {
                     if (event == VoteEvent.upvoted) {
                       onUpvote(comment);
                     } else if (event == VoteEvent.downvote) {
                       onDownvote(comment);
                     } else if (event == VoteEvent.voteRemoved) {
-                      if (comment.hasVote) {
-                        onClearVote(comment);
-                      }
+                      onClearVote(comment, commentVote);
                     } else {
                       //TODO: unknown vote event
                     }
