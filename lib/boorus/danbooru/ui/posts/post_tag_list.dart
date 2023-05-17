@@ -53,7 +53,7 @@ class PostTagList extends ConsumerWidget {
                 authState,
                 g.tags,
                 onAddToBlacklisted: (tag) =>
-                    context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
+                    ref.read(danbooruBlacklistedTagsProvider.notifier).add(
                           tag: tag.rawName,
                           onFailure: (message) => showSimpleSnackBar(
                             context: context,
@@ -64,7 +64,7 @@ class PostTagList extends ConsumerWidget {
                             duration: const Duration(seconds: 2),
                             content: const Text('Blacklisted tags updated'),
                           ),
-                        )),
+                        ),
               ));
           }
 

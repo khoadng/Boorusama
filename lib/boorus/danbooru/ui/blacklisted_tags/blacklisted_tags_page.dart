@@ -3,45 +3,43 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
+import 'package:boorusama/functional.dart';
 
-class BlacklistedTagsPage extends StatelessWidget {
+class BlacklistedTagsPage extends ConsumerWidget {
   const BlacklistedTagsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
-          _buildAddTagButton(context),
+          _buildAddTagButton(context, ref),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),
     );
   }
 
-  Widget _buildAddTagButton(BuildContext context) {
+  Widget _buildAddTagButton(BuildContext context, WidgetRef ref) {
     return IconButton(
       onPressed: () {
-        final bloc = context.read<BlacklistedTagsBloc>();
-
         goToBlacklistedTagsSearchPage(
           context,
           onSelectDone: (tagItems) {
-            bloc.add(BlacklistedTagAdded(
-              tag: tagItems.map((e) => e.toString()).join(' '),
-            ));
+            ref
+                .read(danbooruBlacklistedTagsProvider.notifier)
+                .add(tag: tagItems.map((e) => e.toString()).join(' '));
             Navigator.of(context).pop();
           },
         );
@@ -52,25 +50,18 @@ class BlacklistedTagsPage extends StatelessWidget {
 }
 
 // ignore: prefer-single-widget-per-file
-class BlacklistedTagsList extends StatelessWidget {
+class BlacklistedTagsList extends ConsumerWidget {
   const BlacklistedTagsList({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success ||
-            state.status == LoadStatus.loading) {
-          final tags = state.blacklistedTags;
-          if (tags == null) {
-            return Center(
-              child: const Text('blacklisted_tags.load_error').tr(),
-            );
-          }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(danbooruBlacklistedTagsProvider);
 
-          return CustomScrollView(
+    return tags.toOption().fold(
+          () => const Center(child: CircularProgressIndicator()),
+          (tags) => CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: WarningContainer(contentBuilder: (context) {
@@ -84,18 +75,24 @@ class BlacklistedTagsList extends StatelessWidget {
 
                     return BlacklistedTagTile(
                       tag: tag,
+                      onRemoveTag: (tag) => ref
+                          .read(
+                            danbooruBlacklistedTagsProvider.notifier,
+                          )
+                          .remove(tag: tag),
                       onEditTap: () {
-                        final bloc = context.read<BlacklistedTagsBloc>();
-
                         goToBlacklistedTagsSearchPage(
                           context,
                           initialTags: tag.split(' '),
                           onSelectDone: (tagItems) {
-                            bloc.add(BlacklistedTagReplaced(
-                              oldTag: tag,
-                              newTag:
-                                  tagItems.map((e) => e.toString()).join(' '),
-                            ));
+                            ref
+                                .read(danbooruBlacklistedTagsProvider.notifier)
+                                .replace(
+                                  oldTag: tag,
+                                  newTag: tagItems
+                                      .map((e) => e.toString())
+                                      .join(' '),
+                                );
                             Navigator.of(context).pop();
                           },
                         );
@@ -106,16 +103,8 @@ class BlacklistedTagsList extends StatelessWidget {
                 ),
               ),
             ],
-          );
-        } else if (state.status == LoadStatus.failure) {
-          return Center(
-            child: const Text('blacklisted_tags.load_error').tr(),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+          ),
+        );
   }
 }
 
@@ -125,10 +114,12 @@ class BlacklistedTagTile extends StatelessWidget {
     super.key,
     required this.tag,
     required this.onEditTap,
+    required this.onRemoveTag,
   });
 
   final String tag;
   final VoidCallback onEditTap;
+  final void Function(String tag) onRemoveTag;
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +141,7 @@ class BlacklistedTagTile extends StatelessWidget {
                 child: ListTile(
                   onTap: () {
                     Navigator.of(context).pop();
-                    context
-                        .read<BlacklistedTagsBloc>()
-                        .add(BlacklistedTagRemoved(tag: tag));
+                    onRemoveTag.call(tag);
                   },
                   title: const Text('blacklisted_tags.remove').tr(),
                   trailing: const FaIcon(

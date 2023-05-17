@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
@@ -224,15 +223,7 @@ Widget provideBlacklistedTagPageDependencies(
 }) {
   return DanbooruProvider.of(
     context,
-    builder: (dcontext) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(
-          value: dcontext.read<BlacklistedTagsBloc>()
-            ..add(const BlacklistedTagRequested()),
-        ),
-      ],
-      child: page,
-    ),
+    builder: (dcontext) => page,
   );
 }
 
@@ -605,26 +596,12 @@ Future<bool?> goToAddToBlacklistPage(
   BuildContext context,
   DanbooruPost post,
 ) {
-  final bloc = context.read<BlacklistedTagsBloc>();
-
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => AddToBlacklistPage(
       tags: post.extractTags(),
-      onAdded: (tag) => bloc.add(BlacklistedTagAdded(
-        tag: tag.rawName,
-        onFailure: (message) => showSimpleSnackBar(
-          context: context,
-          content: Text(message),
-        ),
-        onSuccess: (_) => showSimpleSnackBar(
-          context: context,
-          duration: const Duration(seconds: 2),
-          content: const Text('Blacklisted tags updated'),
-        ),
-      )),
     ),
   );
 }

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
@@ -74,7 +73,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.tagInfo,
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
-    required this.blacklistedTagsBloc,
     required this.poolOverviewBloc,
     required this.tagBloc,
     required this.wikiBloc,
@@ -185,12 +183,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
 
-    final blacklistedTagsBloc = BlacklistedTagsBloc(
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      blacklistedTagsRepository: blacklistedTagRepo,
-      booruUserIdentityProvider: booruUserIdentityProvider,
-    )..add(const BlacklistedTagRequested());
-
     final poolOverviewBloc = PoolOverviewBloc()
       ..add(const PoolOverviewChanged(
         category: PoolCategory.series,
@@ -250,7 +242,6 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
-      blacklistedTagsBloc: blacklistedTagsBloc,
       poolOverviewBloc: poolOverviewBloc,
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
@@ -291,7 +282,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final tagInfo = context.read<TagInfo>();
 
-    final blacklistedTagsBloc = context.read<BlacklistedTagsBloc>();
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
     final tagBloc = context.read<TagBloc>();
     final wikiBloc = context.read<WikiBloc>();
@@ -328,7 +318,6 @@ class DanbooruProvider extends StatelessWidget {
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
-      blacklistedTagsBloc: blacklistedTagsBloc,
       poolOverviewBloc: poolOverviewBloc,
       tagBloc: tagBloc,
       wikiBloc: wikiBloc,
@@ -368,7 +357,6 @@ class DanbooruProvider extends StatelessWidget {
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final FileNameGenerator fileNameGenerator;
 
-  final BlacklistedTagsBloc blacklistedTagsBloc;
   final PoolOverviewBloc poolOverviewBloc;
   final TagBloc tagBloc;
   final WikiBloc wikiBloc;
@@ -409,7 +397,6 @@ class DanbooruProvider extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: profileCubit),
-          BlocProvider.value(value: blacklistedTagsBloc),
           BlocProvider.value(value: poolOverviewBloc),
           BlocProvider.value(value: tagBloc),
           BlocProvider.value(value: wikiBloc),
