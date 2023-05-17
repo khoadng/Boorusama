@@ -26,9 +26,10 @@ mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
   void Function(List<int> ids) get checkFavorites =>
       (ids) => ref.danbooruFavorites.checkFavorites(ids);
 
-  PoolRepository get poolRepository => context.read<PoolRepository>();
+  void Function(List<int> ids) get checkVotes =>
+      (ids) => ref.read(danbooruPostVotesProvider.notifier).getVotes(ids);
 
-  PostVoteCubit get postVoteCubit => context.read<PostVoteCubit>();
+  PoolRepository get poolRepository => context.read<PoolRepository>();
 
   PostVoteRepository get postVoteRepository =>
       context.read<PostVoteRepository>();

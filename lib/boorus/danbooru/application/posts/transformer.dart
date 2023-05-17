@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts/post_vote_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -22,7 +21,7 @@ mixin DanbooruPostTransformMixin<T, E> {
   PostPreviewPreloader? get previewPreloader;
   BooruUserIdentityProvider get booruUserIdentityProvider;
   void Function(List<int> ids) get checkFavorites;
-  PostVoteCubit get postVoteCubit;
+  void Function(List<int> ids) get checkVotes;
 
   Future<List<DanbooruPost>> transform(List<DanbooruPost> posts) async {
     final config = await currentBooruConfigRepository.get();
@@ -30,7 +29,7 @@ mixin DanbooruPostTransformMixin<T, E> {
     if (id != null) {
       final ids = posts.map((e) => e.id).toList();
       checkFavorites(ids);
-      unawaited(postVoteCubit.getVotes(ids));
+      checkVotes(ids);
     }
 
     return Future.value(posts)
