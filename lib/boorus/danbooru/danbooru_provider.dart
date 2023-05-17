@@ -7,15 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/application/comments/comment_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles.dart';
@@ -29,7 +25,6 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repos
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
@@ -51,23 +46,16 @@ class DanbooruProvider extends StatelessWidget {
     required this.profileRepo,
     required this.currentBooruConfigRepo,
     required this.settingRepository,
-    required this.noteRepo,
     required this.postRepo,
     required this.searchHistoryRepo,
     required this.poolRepo,
     required this.userRepo,
-    required this.blacklistedTagRepo,
-    required this.artistRepo,
     required this.autocompleteRepo,
     required this.relatedTagRepo,
     required this.wikiRepo,
-    required this.postVoteRepo,
     required this.poolDescriptionRepo,
     required this.exploreRepo,
     required this.savedSearchRepo,
-    required this.commentVoteRepo,
-    required this.commentRepo,
-    required this.popularSearchRepo,
     required this.favoriteTagsRepo,
     required this.tagInfo,
     required this.currentBooruConfigRepository,
@@ -93,18 +81,10 @@ class DanbooruProvider extends StatelessWidget {
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
-    final booruUserIdentityProvider = context.read<BooruUserIdentityProvider>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
 
-    final popularSearchRepo = PopularSearchRepositoryApi(
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      api: api,
-    );
-
     final tagRepo = TagRepositoryApi(api, currentBooruConfigRepo);
-
-    final artistRepo = ArtistRepositoryApi(api: api);
 
     final profileRepo = ProfileRepositoryApi(
       currentBooruConfigRepository: currentBooruConfigRepo,
@@ -129,29 +109,13 @@ class DanbooruProvider extends StatelessWidget {
       hotStaleDuration: const Duration(minutes: 5),
     );
 
-    final commentRepo = CommentCacher(
-      cache: LruCacher(capacity: 100),
-      repo: CommentRepositoryApi(api, currentBooruConfigRepo),
-    );
-
     final userRepo = UserRepositoryApi(
       api,
       currentBooruConfigRepo,
       tagInfo.defaultBlacklistedTags,
     );
 
-    final noteRepo = NoteCacher(
-      cache: LruCacher(capacity: 100),
-      repo: NoteRepositoryApi(api),
-    );
-
     final poolRepo = PoolCacher(PoolRepositoryApi(api, currentBooruConfigRepo));
-
-    final blacklistedTagRepo = BlacklistedTagsRepositoryImpl(
-      userRepo,
-      currentBooruConfigRepo,
-      api,
-    );
 
     final autocompleteRepo = AutocompleteRepositoryApi(
       api: api,
@@ -160,20 +124,11 @@ class DanbooruProvider extends StatelessWidget {
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
-    final commentVoteRepo =
-        CommentVoteApiRepository(api, currentBooruConfigRepo);
-
     final wikiRepo = WikiRepositoryApi(api);
 
     final poolDescriptionRepo = PoolDescriptionRepositoryApi(
       dio: dio,
       endpoint: booruConfig.url,
-    );
-
-    final postVoteRepo = PostVoteApiRepositoryApi(
-      api: api,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      booruUserIdentityProvider: booruUserIdentityProvider,
     );
 
     final savedSearchRepo =
@@ -215,15 +170,11 @@ class DanbooruProvider extends StatelessWidget {
     return DanbooruProvider(
       builder: builder,
       currentBooruConfigRepo: currentBooruConfigRepo,
-      artistRepo: artistRepo,
       autocompleteRepo: autocompleteRepo,
-      blacklistedTagRepo: blacklistedTagRepo,
       exploreRepo: exploreRepo,
-      noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
       postRepo: postRepo,
-      postVoteRepo: postVoteRepo,
       profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
@@ -232,9 +183,6 @@ class DanbooruProvider extends StatelessWidget {
       tagRepo: tagRepo,
       userRepo: userRepo,
       wikiRepo: wikiRepo,
-      commentRepo: commentRepo,
-      commentVoteRepo: commentVoteRepo,
-      popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
@@ -254,23 +202,16 @@ class DanbooruProvider extends StatelessWidget {
   }) {
     final settingRepository = context.read<SettingsRepository>();
     final searchHistoryRepo = context.read<SearchHistoryRepository>();
-    final artistRepo = context.read<ArtistRepository>();
-    final popularSearchRepo = context.read<PopularSearchRepository>();
     final tagRepo = context.read<TagRepository>();
     final profileRepo = context.read<ProfileRepository>();
     final postRepo = context.read<DanbooruPostRepository>();
     final exploreRepo = context.read<ExploreRepository>();
-    final commentRepo = context.read<CommentRepository>();
     final userRepo = context.read<UserRepository>();
-    final noteRepo = context.read<NoteRepository>();
     final poolRepo = context.read<PoolRepository>();
-    final blacklistedTagRepo = context.read<BlacklistedTagsRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
     final relatedTagRepo = context.read<RelatedTagRepository>();
-    final commentVoteRepo = context.read<CommentVoteRepository>();
     final wikiRepo = context.read<WikiRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
-    final postVoteRepo = context.read<PostVoteRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
@@ -289,15 +230,11 @@ class DanbooruProvider extends StatelessWidget {
     return DanbooruProvider(
       builder: builder,
       currentBooruConfigRepo: currentBooruConfigRepo,
-      artistRepo: artistRepo,
       autocompleteRepo: autocompleteRepo,
-      blacklistedTagRepo: blacklistedTagRepo,
       exploreRepo: exploreRepo,
-      noteRepo: noteRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
       postRepo: postRepo,
-      postVoteRepo: postVoteRepo,
       profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
@@ -306,9 +243,6 @@ class DanbooruProvider extends StatelessWidget {
       tagRepo: tagRepo,
       userRepo: userRepo,
       wikiRepo: wikiRepo,
-      commentRepo: commentRepo,
-      commentVoteRepo: commentVoteRepo,
-      popularSearchRepo: popularSearchRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
@@ -328,25 +262,18 @@ class DanbooruProvider extends StatelessWidget {
   final ProfileRepository profileRepo;
   final CurrentBooruConfigRepository currentBooruConfigRepo;
   final SettingsRepository settingRepository;
-  final NoteRepository noteRepo;
   final DanbooruPostRepository postRepo;
   final DanbooruArtistCharacterPostRepository
       danbooruArtistCharacterPostRepository;
   final SearchHistoryRepository searchHistoryRepo;
   final PoolRepository poolRepo;
   final UserRepository userRepo;
-  final BlacklistedTagsRepository blacklistedTagRepo;
-  final ArtistRepository artistRepo;
   final AutocompleteRepository autocompleteRepo;
   final RelatedTagRepository relatedTagRepo;
   final WikiRepository wikiRepo;
-  final PostVoteRepository postVoteRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
   final SavedSearchRepository savedSearchRepo;
-  final CommentVoteRepository commentVoteRepo;
-  final CommentRepository commentRepo;
-  final PopularSearchRepository popularSearchRepo;
   final FavoriteTagRepository favoriteTagsRepo;
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   final FileNameGenerator fileNameGenerator;
@@ -367,21 +294,14 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: profileRepo),
         RepositoryProvider.value(value: currentBooruConfigRepo),
         RepositoryProvider.value(value: settingRepository),
-        RepositoryProvider.value(value: noteRepo),
         RepositoryProvider.value(value: postRepo),
         RepositoryProvider.value(value: danbooruArtistCharacterPostRepository),
-        RepositoryProvider.value(value: commentRepo),
-        RepositoryProvider.value(value: commentVoteRepo),
-        RepositoryProvider.value(value: popularSearchRepo),
         RepositoryProvider.value(value: searchHistoryRepo),
         RepositoryProvider.value(value: poolRepo),
         RepositoryProvider.value(value: userRepo),
-        RepositoryProvider.value(value: blacklistedTagRepo),
-        RepositoryProvider.value(value: artistRepo),
         RepositoryProvider.value(value: autocompleteRepo),
         RepositoryProvider.value(value: relatedTagRepo),
         RepositoryProvider.value(value: wikiRepo),
-        RepositoryProvider.value(value: postVoteRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: exploreRepo),
         RepositoryProvider.value(value: savedSearchRepo),
@@ -399,11 +319,9 @@ class DanbooruProvider extends StatelessWidget {
           overrides: [
             autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
             poolRepoProvider.overrideWithValue(poolRepo),
-            postVoteRepoProvider.overrideWithValue(postVoteRepo),
             danbooruArtistCharacterPostRepoProvider
                 .overrideWithValue(danbooruArtistCharacterPostRepository),
             poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
-            popularSearchProvider.overrideWithValue(popularSearchRepo),
           ],
           child: Builder(builder: builder),
         ),
@@ -422,9 +340,6 @@ final danbooruApiProvider = Provider<DanbooruApi>((ref) {
 final poolRepoProvider =
     Provider<PoolRepository>((ref) => throw UnimplementedError());
 
-final postVoteRepoProvider =
-    Provider<PostVoteRepository>((ref) => throw UnimplementedError());
-
 final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
   final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
@@ -438,7 +353,3 @@ final danbooruArtistCharacterPostRepoProvider =
 
 final poolDescriptionRepoProvider =
     Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());
-
-final popularSearchProvider = Provider<PopularSearchRepository>((ref) {
-  throw UnimplementedError();
-});

@@ -11,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -388,28 +387,7 @@ void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.postVoters,
-    ),
-    height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocProvider(
-        create: (_) => PostVoteInfoBloc(
-          postVoteRepository: dcontext.read<PostVoteRepository>(),
-          userRepository: dcontext.read<UserRepository>(),
-        )..add(PostVoteInfoFetched(
-            postId: post.id,
-            refresh: true,
-          )),
-        child: VoterDetailsView(
-          post: post,
-        ),
-      ),
-    ),
-  );
+  //FIXME: re enable this later
 }
 
 void goToSavedSearchCreatePage(

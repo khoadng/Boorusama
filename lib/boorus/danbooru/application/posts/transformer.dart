@@ -16,7 +16,6 @@ import 'package:boorusama/core/domain/tags.dart';
 mixin DanbooruPostTransformMixin<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
   CurrentBooruConfigRepository get currentBooruConfigRepository;
-  PostVoteRepository get postVoteRepository;
   PoolRepository get poolRepository;
   PostPreviewPreloader? get previewPreloader;
   BooruUserIdentityProvider get booruUserIdentityProvider;

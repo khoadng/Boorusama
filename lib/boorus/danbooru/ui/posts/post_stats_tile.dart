@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/users/user_level_colors.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PostStatsTile extends StatelessWidget {
@@ -140,117 +136,117 @@ String _generatePercentText(DanbooruPost post) {
 }
 
 // ignore: prefer-single-widget-per-file
-class VoterDetailsView extends StatefulWidget {
-  const VoterDetailsView({
-    super.key,
-    required this.post,
-  });
+// class VoterDetailsView extends StatefulWidget {
+//   const VoterDetailsView({
+//     super.key,
+//     required this.post,
+//   });
 
-  final DanbooruPost post;
+//   final DanbooruPost post;
 
-  @override
-  State<VoterDetailsView> createState() => _VoterDetailsViewState();
-}
+//   @override
+//   State<VoterDetailsView> createState() => _VoterDetailsViewState();
+// }
 
-class _VoterDetailsViewState extends State<VoterDetailsView> {
-  final scrollController = ScrollController();
+// class _VoterDetailsViewState extends State<VoterDetailsView> {
+//   final scrollController = ScrollController();
 
-  @override
-  void initState() {
-    scrollController.addListener(() {
-      if (_isBottom) {
-        context
-            .read<PostVoteInfoBloc>()
-            .add(PostVoteInfoFetched(postId: widget.post.id));
-      }
-    });
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     scrollController.addListener(() {
+//       if (_isBottom) {
+//         context
+//             .read<PostVoteInfoBloc>()
+//             .add(PostVoteInfoFetched(postId: widget.post.id));
+//       }
+//     });
+//     super.initState();
+//   }
 
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     scrollController.dispose();
+//     super.dispose();
+//   }
 
-  bool get _isBottom {
-    if (!scrollController.hasClients) return false;
-    final maxScroll = scrollController.position.maxScrollExtent;
-    final currentScroll = scrollController.offset;
+//   bool get _isBottom {
+//     if (!scrollController.hasClients) return false;
+//     final maxScroll = scrollController.position.maxScrollExtent;
+//     final currentScroll = scrollController.offset;
 
-    return currentScroll >= (maxScroll * 0.9);
-  }
+//     return currentScroll >= (maxScroll * 0.9);
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      body: BlocBuilder<PostVoteInfoBloc, PostVoteInfoState>(
-        builder: (context, state) => state.refreshing
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final voter = state.upvoters[index];
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         automaticallyImplyLeading: false,
+//         actions: [
+//           IconButton(
+//             onPressed: () => Navigator.of(context).pop(),
+//             icon: const Icon(Icons.close),
+//           ),
+//         ],
+//       ),
+//       body: BlocBuilder<PostVoteInfoBloc, PostVoteInfoState>(
+//         builder: (context, state) => state.refreshing
+//             ? const Center(child: CircularProgressIndicator.adaptive())
+//             : CustomScrollView(
+//                 controller: scrollController,
+//                 slivers: [
+//                   SliverList(
+//                     delegate: SliverChildBuilderDelegate(
+//                       (context, index) {
+//                         final voter = state.upvoters[index];
 
-                        return _InfoTile(
-                          title: voter.user.name,
-                          level: voter.user.level,
-                          onTap: () => goToUserDetailsPage(
-                            context,
-                            uid: voter.user.id,
-                          ),
-                        );
-                      },
-                      childCount: state.upvoters.length,
-                    ),
-                  ),
-                  if (state.loading)
-                    const SliverToBoxAdapter(
-                      child:
-                          Center(child: CircularProgressIndicator.adaptive()),
-                    ),
-                ],
-              ),
-      ),
-    );
-  }
-}
+//                         return _InfoTile(
+//                           title: voter.user.name,
+//                           level: voter.user.level,
+//                           onTap: () => goToUserDetailsPage(
+//                             context,
+//                             uid: voter.user.id,
+//                           ),
+//                         );
+//                       },
+//                       childCount: state.upvoters.length,
+//                     ),
+//                   ),
+//                   if (state.loading)
+//                     const SliverToBoxAdapter(
+//                       child:
+//                           Center(child: CircularProgressIndicator.adaptive()),
+//                     ),
+//                 ],
+//               ),
+//       ),
+//     );
+//   }
+// }
 
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({
-    required this.title,
-    required this.level,
-    required this.onTap,
-  });
+// class _InfoTile extends StatelessWidget {
+//   const _InfoTile({
+//     required this.title,
+//     required this.level,
+//     required this.onTap,
+//   });
 
-  final String title;
-  final UserLevel level;
-  final void Function() onTap;
+//   final String title;
+//   final UserLevel level;
+//   final void Function() onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      visualDensity: VisualDensity.comfortable,
-      title: Text(
-        title,
-        style: TextStyle(color: Color(getUserHexColor(level))),
-      ),
-      onTap: onTap,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListTile(
+//       visualDensity: VisualDensity.comfortable,
+//       title: Text(
+//         title,
+//         style: TextStyle(color: Color(getUserHexColor(level))),
+//       ),
+//       onTap: onTap,
+//     );
+//   }
+// }
 
 // ignore: prefer-single-widget-per-file
 // class FavoriterDetailsView extends StatefulWidget {

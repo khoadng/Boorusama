@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
+import 'tags_provider.dart';
 
 final trendingTagsProvider =
     AsyncNotifierProvider<TrendingTagNotifier, List<Search>>(
@@ -23,12 +23,7 @@ final trendingTagsProvider =
 class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
   @override
   FutureOr<List<Search>> build() {
-    ref.listen(
-      currentBooruConfigProvider,
-      (previous, next) {
-        ref.invalidateSelf();
-      },
-    );
+    ref.watch(currentBooruConfigProvider);
 
     return fetch();
   }
