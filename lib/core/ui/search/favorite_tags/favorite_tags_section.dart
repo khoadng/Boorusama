@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/tags.dart';
@@ -16,7 +16,7 @@ import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
 
-class FavoriteTagsSection extends StatelessWidget {
+class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
     super.key,
     required this.onTagTap,
@@ -27,35 +27,34 @@ class FavoriteTagsSection extends StatelessWidget {
   final VoidCallback onAddTagRequest;
 
   @override
-  Widget build(BuildContext context) {
-    final tags = context.select((FavoriteTagBloc bloc) => bloc.state.tags);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(favoriteTagsProvider);
 
     return OptionTagsArena(
       editable: tags.isNotEmpty,
       title: 'favorite_tags.favorites'.tr(),
       childrenBuilder: (editMode) =>
-          _buildFavoriteTags(context, tags, editMode),
+          _buildFavoriteTags(context, ref, tags, editMode),
       titleTrailing: (editMode) => editMode && tags.isNotEmpty
           ? PopupMenuButton(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
               onSelected: (value) {
-                final bloc = context.read<FavoriteTagBloc>();
                 if (value == 'import') {
-                  goToFavoriteTagImportPage(context, bloc);
+                  goToFavoriteTagImportPage(context);
                 } else if (value == 'export') {
-                  bloc.add(
-                    FavoriteTagExported(
-                      onDone: (tagString) => Clipboard.setData(
+                  ref.read(favoriteTagsProvider.notifier).export(
+                    onDone: (tagString) {
+                      Clipboard.setData(
                         ClipboardData(text: tagString),
                       ).then((value) => showSimpleSnackBar(
                             context: context,
                             content: const Text(
                               'favorite_tags.export_notification',
                             ).tr(),
-                          )),
-                    ),
+                          ));
+                    },
                   );
                 }
               },
@@ -76,6 +75,7 @@ class FavoriteTagsSection extends StatelessWidget {
 
   List<Widget> _buildFavoriteTags(
     BuildContext context,
+    WidgetRef ref,
     List<FavoriteTag> tags,
     bool editMode,
   ) {
@@ -88,9 +88,7 @@ class FavoriteTagsSection extends StatelessWidget {
               size: 18,
             ),
             onDeleted: editMode
-                ? () => context
-                    .read<FavoriteTagBloc>()
-                    .add(FavoriteTagRemoved(index: index))
+                ? () => ref.read(favoriteTagsProvider.notifier).remove(index)
                 : null,
           )),
       if (tags.isEmpty) ...[

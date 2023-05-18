@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ImportFavoriteTagsDialog extends StatefulWidget {
+// Project imports:
+import 'package:boorusama/core/application/tags.dart';
+
+class ImportFavoriteTagsDialog extends ConsumerStatefulWidget {
   const ImportFavoriteTagsDialog({
     super.key,
-    required this.onImport,
     this.padding,
   });
 
-  final void Function(String tagString) onImport;
   final double? padding;
 
   @override
-  State<ImportFavoriteTagsDialog> createState() =>
+  ConsumerState<ImportFavoriteTagsDialog> createState() =>
       _ImportFavoriteTagsDialogState();
 }
 
-class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
+class _ImportFavoriteTagsDialogState
+    extends ConsumerState<ImportFavoriteTagsDialog> {
   final textController = TextEditingController();
 
   @override
@@ -89,7 +92,9 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
                   onPressed: value.text.isNotEmpty
                       ? () {
                           Navigator.of(context).pop();
-                          widget.onImport(value.text);
+                          ref
+                              .read(favoriteTagsProvider.notifier)
+                              .import(value.text);
                         }
                       : null,
                   child: const Text('favorite_tags.import').tr(),

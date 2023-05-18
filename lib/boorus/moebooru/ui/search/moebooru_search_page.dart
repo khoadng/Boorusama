@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -42,22 +41,14 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
       child: MoebooruProvider.of(
         context,
         builder: (gcontext) {
-          final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
-            ..add(const FavoriteTagFetched());
-
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: favoriteTagBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: ProviderScope(
-                overrides: [
-                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-                ],
-                child: MoebooruSearchPage(
-                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
-                  initialQuery: tag,
-                ),
+          return CustomContextMenuOverlay(
+            child: ProviderScope(
+              overrides: [
+                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
+              ],
+              child: MoebooruSearchPage(
+                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                initialQuery: tag,
               ),
             ),
           );

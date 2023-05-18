@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/core/application/tags.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -29,7 +30,6 @@ import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -215,9 +215,6 @@ void main() async {
   final booruUserIdProvider =
       BooruUserIdentityProviderImpl(appDioProvider, booruFactory);
 
-  final favoriteTagBloc =
-      FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
-
   final initialConfig = await currentBooruRepo.get();
 
   logger.logI('Start up', 'Initialize I18n');
@@ -293,9 +290,6 @@ void main() async {
                 create: (_) => NetworkBloc(),
                 lazy: false,
               ),
-              BlocProvider.value(
-                value: favoriteTagBloc..add(const FavoriteTagFetched()),
-              ),
               BlocProvider(
                 create: (context) =>
                     ThemeBloc(initialTheme: settings.themeMode),
@@ -311,6 +305,7 @@ void main() async {
             ],
             child: ProviderScope(
               overrides: [
+                favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
                 searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
                 currentBooruConfigRepoProvider
                     .overrideWithValue(currentBooruRepo),

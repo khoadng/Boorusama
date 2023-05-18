@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -77,16 +76,15 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
               ],
               FavoriteTagsSection(
                 onAddTagRequest: () {
-                  final bloc = context.read<FavoriteTagBloc>();
                   goToQuickSearchPage(
                     context,
                     ref: ref,
                     onSubmitted: (context, text) {
                       Navigator.of(context).pop();
-                      bloc.add(FavoriteTagAdded(tag: text));
+                      ref.read(favoriteTagsProvider.notifier).add(text);
                     },
                     onSelected: (tag) =>
-                        bloc.add(FavoriteTagAdded(tag: tag.value)),
+                        ref.read(favoriteTagsProvider.notifier).add(tag.value),
                   );
                 },
                 onTagTap: (value) {

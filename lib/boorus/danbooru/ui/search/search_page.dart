@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -51,10 +50,6 @@ class SearchPage extends ConsumerStatefulWidget {
 
             return MultiBlocProvider(
               providers: [
-                BlocProvider.value(
-                  value: context.read<FavoriteTagBloc>()
-                    ..add(const FavoriteTagFetched()),
-                ),
                 BlocProvider.value(
                   value: BlocProvider.of<ThemeBloc>(context),
                 ),

@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -45,22 +44,14 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
       child: GelbooruProvider.of(
         context,
         builder: (gcontext) {
-          final favoriteTagBloc = gcontext.read<FavoriteTagBloc>()
-            ..add(const FavoriteTagFetched());
-
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: favoriteTagBloc),
-            ],
-            child: CustomContextMenuOverlay(
-              child: ProviderScope(
-                overrides: [
-                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
-                ],
-                child: GelbooruSearchPage(
-                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
-                  initialQuery: tag,
-                ),
+          return CustomContextMenuOverlay(
+            child: ProviderScope(
+              overrides: [
+                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
+              ],
+              child: GelbooruSearchPage(
+                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                initialQuery: tag,
               ),
             ),
           );

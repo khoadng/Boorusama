@@ -37,7 +37,6 @@ import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
 import 'package:boorusama/core/ui/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
-import 'application/tags.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/app_info_provider.dart';
@@ -268,7 +267,6 @@ void goToMetatagsPage(
 
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
-  FavoriteTagBloc bloc,
 ) {
   return showGeneralDialog(
     context: context,
@@ -277,9 +275,6 @@ Future<Object?> goToFavoriteTagImportPage(
     ),
     pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
       padding: isMobilePlatform() ? 0 : 8,
-      onImport: (tagString) => bloc.add(FavoriteTagImported(
-        tagString: tagString,
-      )),
     ),
   );
 }

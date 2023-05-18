@@ -49,6 +49,7 @@ class PostTagList extends ConsumerWidget {
               ))
               ..add(_buildTags(
                 context,
+                ref,
                 booru,
                 authState,
                 g.tags,
@@ -86,6 +87,7 @@ class PostTagList extends ConsumerWidget {
 
   Widget _buildTags(
     BuildContext context,
+    WidgetRef ref,
     Booru booru,
     AuthenticationState authenticationState,
     List<Tag> tags, {
@@ -131,9 +133,7 @@ class PostTagList extends ConsumerWidget {
                 ClipboardData(text: tag.rawName),
               ).then((value) => goToSavedSearchEditPage(context));
             } else if (value == 'add_to_favorites') {
-              context
-                  .read<FavoriteTagBloc>()
-                  .add(FavoriteTagAdded(tag: tag.rawName));
+              ref.read(favoriteTagsProvider.notifier).add(tag.rawName);
             }
           },
           child: GestureDetector(
