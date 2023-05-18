@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'favorites_provider.dart';
@@ -11,6 +12,7 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
 
   @override
   Map<int, bool> build() {
+    ref.watch(currentBooruConfigProvider);
     return {};
   }
 
@@ -18,6 +20,9 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
     final success =
         await ref.read(danbooruFavoriteRepoProvider).addToFavorites(postId);
     if (success) {
+      ref
+          .read(danbooruPostVotesProvider.notifier)
+          .upvote(postId, localOnly: true);
       state = {
         ...state,
         postId: true,
@@ -30,6 +35,7 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
         .read(danbooruFavoriteRepoProvider)
         .removeFromFavorites(postId);
     if (success) {
+      ref.read(danbooruPostVotesProvider.notifier).removeVote(postId);
       state = {
         ...state,
         postId: false,

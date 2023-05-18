@@ -28,6 +28,20 @@ class PostVote extends Equatable {
         isDeleted: false,
       );
 
+  factory PostVote.local({
+    required int postId,
+    required int score,
+  }) =>
+      PostVote(
+        id: -99,
+        postId: postId,
+        userId: -99,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        score: score,
+        isDeleted: false,
+      );
+
   final PostVoteId id;
   final int postId;
   final UserId userId;
@@ -50,6 +64,8 @@ class PostVote extends Equatable {
 
 extension PostVoteX on PostVote {
   VoteState get voteState => voteStateFromScore(score);
+  bool get isOptimisticUpdateVote =>
+      id == PostVote.local(postId: postId, score: score).id;
 
   PostVote copyWith({
     PostVoteId? id,

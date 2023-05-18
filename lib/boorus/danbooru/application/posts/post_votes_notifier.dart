@@ -16,29 +16,54 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
 
   PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider);
 
-  Future<void> upvote(int postId) async {
-    final postVote = await repo.upvote(postId);
+  void _vote(PostVote? postVote) {
     if (postVote == null) return;
 
     state = {
       ...state,
-      postId: postVote,
+      postVote.postId: postVote,
     };
   }
 
-  Future<void> downvote(int postId) async {
-    final postVote = await repo.downvote(postId);
-    if (postVote == null) return;
+  Future<void> upvote(
+    int postId, {
+    bool localOnly = false,
+  }) async {
+    if (localOnly) {
+      _vote(PostVote.local(postId: postId, score: 1));
+      return;
+    }
 
+    final postVote = await repo.upvote(postId);
+    _vote(postVote);
+  }
+
+  Future<void> downvote(
+    int postId, {
+    bool localOnly = false,
+  }) async {
+    if (localOnly) {
+      _vote(PostVote.local(postId: postId, score: -1));
+      return;
+    }
+
+    final postVote = await repo.downvote(postId);
+    _vote(postVote);
+  }
+
+  void removeVote(int postId) {
+    final votes = {...state}..remove(postId);
     state = {
-      ...state,
-      postId: postVote,
+      ...votes,
     };
   }
 
   Future<void> getVotes(List<int> postIds) async {
-    final postIdsToFetch =
-        postIds.where((postId) => !state.containsKey(postId)).toList();
+    // fetch votes for posts that are not in the cache and votes that is local
+    final postIdsToFetch = postIds.where((postId) {
+      final postVote = state[postId];
+      return postVote == null || postVote.isOptimisticUpdateVote;
+    }).toList();
 
     if (postIdsToFetch.isNotEmpty) {
       final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch);
