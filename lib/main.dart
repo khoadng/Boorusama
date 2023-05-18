@@ -19,7 +19,7 @@ import 'package:video_player_win/video_player_win.dart';
 // Project imports:
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/blacklists/blacklisted_tags_cubit.dart';
+import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
@@ -283,7 +283,7 @@ void main() async {
             RepositoryProvider<CurrentBooruConfigRepository>.value(
               value: currentBooruRepo,
             ),
-            RepositoryProvider<BlacklistedTagRepository>.value(
+            RepositoryProvider<GlobalBlacklistedTagRepository>.value(
               value: globalBlacklistedTags,
             ),
           ],
@@ -307,9 +307,6 @@ void main() async {
                     initialStatus: PermissionStatus.denied,
                   )..add(DeviceStoragePermissionFetched()),
                 ),
-              BlocProvider(
-                create: (context) => BlacklistedTagCubit(globalBlacklistedTags),
-              ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
             child: ProviderScope(
@@ -328,7 +325,8 @@ void main() async {
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
                 currentBooruConfigProvider.overrideWith(
                     () => CurrentBooruConfigNotifier(initialConfig!)),
-                // dioProvider.overrideWithValue(appDioProvider),
+                globalBlacklistedTagRepoProvider
+                    .overrideWithValue(globalBlacklistedTags),
                 httpCacheDirProvider.overrideWithValue(tempPath),
                 userAgentGeneratorProvider
                     .overrideWithValue(userAgentGenerator),

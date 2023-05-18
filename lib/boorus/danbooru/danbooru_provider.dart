@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repos
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
+import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
@@ -92,6 +93,7 @@ class DanbooruProvider extends StatelessWidget {
       api,
       currentBooruConfigRepo,
       settingRepository,
+      ref.read(globalBlacklistedTagRepoProvider),
     );
 
     final exploreRepo = ExploreRepositoryCacher(
@@ -100,6 +102,7 @@ class DanbooruProvider extends StatelessWidget {
         currentBooruConfigRepository: currentBooruConfigRepo,
         postRepository: postRepo,
         settingsRepository: settingRepository,
+        blacklistedTagRepository: ref.read(globalBlacklistedTagRepoProvider),
       ),
       popularStaleDuration: const Duration(minutes: 20),
       mostViewedStaleDuration: const Duration(hours: 1),
@@ -336,8 +339,10 @@ final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
   final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
   final settingsRepo = ref.watch(settingsRepoProvider);
+  final globalBlacklistedTagRepo = ref.watch(globalBlacklistedTagRepoProvider);
 
-  return PostRepositoryApi(api, booruConfigRepo, settingsRepo);
+  return PostRepositoryApi(
+      api, booruConfigRepo, settingsRepo, globalBlacklistedTagRepo);
 });
 
 final danbooruArtistCharacterPostRepoProvider =

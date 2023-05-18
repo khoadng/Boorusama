@@ -6,7 +6,7 @@ import 'package:boorusama/core/domain/blacklists/blacklisted_tag.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/infra/blacklists/blacklisted_tag_hive_object.dart';
 
-class HiveBlacklistedTagRepository implements BlacklistedTagRepository {
+class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   static const _boxName = 'blacklisted_tags';
 
   late Box<BlacklistedTagHiveObject> _box;

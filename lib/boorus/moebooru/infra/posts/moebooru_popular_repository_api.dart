@@ -24,7 +24,7 @@ List<MoebooruPost> parsePost(
     ).map((e) => postDtoToPost(e)).toList();
 
 class MoebooruPopularRepositoryApi
-    with BlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    with GlobalBlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
     implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(
     this._api,
@@ -34,7 +34,7 @@ class MoebooruPopularRepositoryApi
 
   final MoebooruApi _api;
   @override
-  final BlacklistedTagRepository blacklistedTagRepository;
+  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
 

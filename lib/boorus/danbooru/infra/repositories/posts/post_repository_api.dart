@@ -1,21 +1,22 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
+import 'package:boorusama/core/application/posts.dart';
+import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'common.dart';
-import 'utils.dart';
 
 class PostRepositoryApi
-    with SettingsRepositoryMixin
+    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
     implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
     CurrentBooruConfigRepository currentBooruConfigRepository,
     this.settingsRepository,
+    this.blacklistedTagRepository,
   )   : _api = api,
         _currentUserBooruRepository = currentBooruConfigRepository;
 
@@ -23,19 +24,8 @@ class PostRepositoryApi
   final DanbooruApi _api;
   @override
   final SettingsRepository settingsRepository;
-
-  // convert a BooruConfig and an orignal tag list to List<String>
-  List<String> getTags(BooruConfig booruConfig, String tags) {
-    final ratingTag = booruFilterConfigToDanbooruTag(booruConfig.ratingFilter);
-    final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
-      booruConfig.deletedItemBehavior,
-    );
-    return [
-      ...splitTag(tags),
-      if (ratingTag != null) ratingTag,
-      if (deletedStatusTag != null) deletedStatusTag,
-    ];
-  }
+  @override
+  final GlobalBlacklistedTagRepository blacklistedTagRepository;
 
   @override
   DanbooruPostsOrError getPosts(
@@ -55,7 +45,8 @@ class PostRepositoryApi
                   )),
             ),
           )
-          .flatMap((response) => tryParseData(response));
+          .flatMap((response) => tryParseData(response))
+          .flatMap(tryFilterBlacklistedTags);
 
   @override
   DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(

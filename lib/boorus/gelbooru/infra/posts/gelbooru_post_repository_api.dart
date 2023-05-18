@@ -59,7 +59,7 @@ TaskEither<BooruError, List<Post>> tryParsePosts(
 
 class GelbooruPostRepositoryApi
     with
-        BlacklistedTagFilterMixin,
+        GlobalBlacklistedTagFilterMixin,
         CurrentBooruConfigRepositoryMixin,
         SettingsRepositoryMixin
     implements PostRepository {
@@ -74,7 +74,7 @@ class GelbooruPostRepositoryApi
   @override
   final CurrentBooruConfigRepository currentBooruConfigRepository;
   @override
-  final BlacklistedTagRepository blacklistedTagRepository;
+  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
   final SettingsRepository settingsRepository;
 

@@ -2,18 +2,21 @@
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/common.dart';
+import 'package:boorusama/core/application/posts.dart';
+import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/networks.dart';
 
 class ExploreRepositoryApi
-    with SettingsRepositoryMixin
+    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
     implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
     required this.currentBooruConfigRepository,
     required this.postRepository,
     required this.settingsRepository,
+    required this.blacklistedTagRepository,
   });
 
   final CurrentBooruConfigRepository currentBooruConfigRepository;
@@ -21,6 +24,8 @@ class ExploreRepositoryApi
   final DanbooruApi api;
   @override
   final SettingsRepository settingsRepository;
+  @override
+  final GlobalBlacklistedTagRepository blacklistedTagRepository;
 
   @override
   DanbooruPostsOrError getHotPosts(
@@ -45,7 +50,8 @@ class ExploreRepositoryApi
                   '${date.year}-${date.month}-${date.day}',
                 ),
               ))
-          .flatMap((response) => tryParseData(response));
+          .flatMap(tryParseData)
+          .flatMap(tryFilterBlacklistedTags);
 
   @override
   DanbooruPostsOrError getPopularPosts(
@@ -66,5 +72,6 @@ class ExploreRepositoryApi
                           limit ?? lim,
                         )),
               ))
-          .flatMap((response) => tryParseData(response));
+          .flatMap(tryParseData)
+          .flatMap(tryFilterBlacklistedTags);
 }

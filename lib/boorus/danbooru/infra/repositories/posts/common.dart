@@ -7,7 +7,9 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_variant.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/utils.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
@@ -43,6 +45,19 @@ TaskEither<BooruError, List<DanbooruPost>> tryParseData(
       () => parsePostAsync(response),
       (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
     );
+
+// convert a BooruConfig and an orignal tag list to List<String>
+List<String> getTags(BooruConfig booruConfig, String tags) {
+  final ratingTag = booruFilterConfigToDanbooruTag(booruConfig.ratingFilter);
+  final deletedStatusTag = booruConfigDeletedBehaviorToDanbooruTag(
+    booruConfig.deletedItemBehavior,
+  );
+  return [
+    ...splitTag(tags),
+    if (ratingTag != null) ratingTag,
+    if (deletedStatusTag != null) deletedStatusTag,
+  ];
+}
 
 DanbooruPost postDtoToPost(
   PostDto dto,

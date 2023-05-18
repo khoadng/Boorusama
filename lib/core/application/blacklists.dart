@@ -1,2 +1,2 @@
-export 'blacklists/blacklisted_tags_cubit.dart';
-export 'blacklists/blacklisted_tags_state.dart';
+export 'blacklists/global_blacklisted_tags_notifier.dart';
+export 'blacklists/global_blacklisted_tags_provider.dart';

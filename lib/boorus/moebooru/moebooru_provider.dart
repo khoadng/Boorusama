@@ -47,7 +47,8 @@ class MoebooruProvider extends StatelessWidget {
 
     final settingsRepo = context.read<SettingsRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
-    final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
+    final globalBlacklistedTagRepo =
+        context.read<GlobalBlacklistedTagRepository>();
     final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
     final tagSummaryRepository = MoebooruTagSummaryRepository(api);
