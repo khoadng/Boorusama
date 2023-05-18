@@ -14,7 +14,6 @@ import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
@@ -35,9 +34,6 @@ final metatagsProvider = Provider<List<Metatag>>(
   (ref) => ref.watch(tagInfoProvider).metatags,
   dependencies: [tagInfoProvider],
 );
-
-final searchHistoryRepoProvider =
-    Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
 final booruConfigRepoProvider = Provider<BooruConfigRepository>(
   (ref) => throw UnimplementedError(),

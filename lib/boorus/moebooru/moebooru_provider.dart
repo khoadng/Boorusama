@@ -19,7 +19,6 @@ import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
@@ -29,11 +28,9 @@ class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
     super.key,
     required this.postRepository,
-    // required this.tagRepository,
     required this.builder,
     required this.autocompleteRepository,
     required this.userMetatagRepository,
-    required this.searchHistoryRepository,
     required this.favoriteTagRepository,
     required this.fileNameGenerator,
     required this.moebooruPopularRepository,
@@ -52,7 +49,6 @@ class MoebooruProvider extends StatelessWidget {
 
     final settingsRepo = context.read<SettingsRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
-    final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
     final currentBooruConfigRepository =
@@ -77,11 +73,9 @@ class MoebooruProvider extends StatelessWidget {
     return MoebooruProvider(
       key: key,
       postRepository: postRepo,
-      // tagRepository: tagRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
-      searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
       moebooruPopularRepository: popularRepository,
@@ -97,7 +91,6 @@ class MoebooruProvider extends StatelessWidget {
     // final tagRepo = context.read<TagRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
     final userMetatagsRepo = context.read<UserMetatagRepository>();
-    final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
     final popularRepository = context.read<MoebooruPopularRepository>();
@@ -109,17 +102,14 @@ class MoebooruProvider extends StatelessWidget {
       builder: builder,
       autocompleteRepository: autocompleteRepo,
       userMetatagRepository: userMetatagsRepo,
-      searchHistoryRepository: searchHistoryRepo,
       favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
     );
   }
 
   final PostRepository postRepository;
-  // final TagRepository tagRepository;
   final AutocompleteRepository autocompleteRepository;
   final UserMetatagRepository userMetatagRepository;
-  final SearchHistoryRepository searchHistoryRepository;
   final FavoriteTagRepository favoriteTagRepository;
   final FileNameGenerator fileNameGenerator;
   final MoebooruPopularRepository moebooruPopularRepository;
@@ -133,7 +123,6 @@ class MoebooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: moebooruPopularRepository),
         RepositoryProvider.value(value: autocompleteRepository),
         RepositoryProvider.value(value: userMetatagRepository),
-        RepositoryProvider.value(value: searchHistoryRepository),
         RepositoryProvider.value(value: favoriteTagRepository),
         RepositoryProvider.value(value: fileNameGenerator),
       ],

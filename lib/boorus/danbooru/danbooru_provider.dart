@@ -30,7 +30,6 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -47,7 +46,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.currentBooruConfigRepo,
     required this.settingRepository,
     required this.postRepo,
-    required this.searchHistoryRepo,
     required this.poolRepo,
     required this.userRepo,
     required this.autocompleteRepo,
@@ -79,7 +77,6 @@ class DanbooruProvider extends StatelessWidget {
     final api = DanbooruApi(dio);
 
     final settingRepository = context.read<SettingsRepository>();
-    final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
@@ -178,7 +175,6 @@ class DanbooruProvider extends StatelessWidget {
       profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      searchHistoryRepo: searchHistoryRepo,
       settingRepository: settingRepository,
       tagRepo: tagRepo,
       userRepo: userRepo,
@@ -201,7 +197,6 @@ class DanbooruProvider extends StatelessWidget {
     required Widget Function(BuildContext context) builder,
   }) {
     final settingRepository = context.read<SettingsRepository>();
-    final searchHistoryRepo = context.read<SearchHistoryRepository>();
     final tagRepo = context.read<TagRepository>();
     final profileRepo = context.read<ProfileRepository>();
     final postRepo = context.read<DanbooruPostRepository>();
@@ -238,7 +233,6 @@ class DanbooruProvider extends StatelessWidget {
       profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      searchHistoryRepo: searchHistoryRepo,
       settingRepository: settingRepository,
       tagRepo: tagRepo,
       userRepo: userRepo,
@@ -265,7 +259,6 @@ class DanbooruProvider extends StatelessWidget {
   final DanbooruPostRepository postRepo;
   final DanbooruArtistCharacterPostRepository
       danbooruArtistCharacterPostRepository;
-  final SearchHistoryRepository searchHistoryRepo;
   final PoolRepository poolRepo;
   final UserRepository userRepo;
   final AutocompleteRepository autocompleteRepo;
@@ -296,7 +289,6 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: settingRepository),
         RepositoryProvider.value(value: postRepo),
         RepositoryProvider.value(value: danbooruArtistCharacterPostRepository),
-        RepositoryProvider.value(value: searchHistoryRepo),
         RepositoryProvider.value(value: poolRepo),
         RepositoryProvider.value(value: userRepo),
         RepositoryProvider.value(value: autocompleteRepo),

@@ -27,13 +27,13 @@ import 'package:boorusama/core/application/device_storage_permission/device_stor
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/networking.dart';
+import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
@@ -273,9 +273,6 @@ void main() async {
             ),
             RepositoryProvider<BooruConfigRepository>.value(
               value: booruUserRepo,
-            ),
-            RepositoryProvider<SearchHistoryRepository>.value(
-              value: searchHistoryRepo,
             ),
             RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,

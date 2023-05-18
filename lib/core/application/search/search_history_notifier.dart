@@ -3,16 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/searches.dart';
-import 'package:boorusama/core/provider.dart';
-
-final searchHistoryProvider =
-    StateNotifierProvider<SearchHistoryNotifier, SearchHistoryState>((ref) {
-  final searchHistoryRepository = ref.watch(searchHistoryRepoProvider);
-  return SearchHistoryNotifier(
-      searchHistoryRepository: searchHistoryRepository);
-}, dependencies: [
-  searchHistoryRepoProvider,
-]);
 
 class SearchHistoryState {
   SearchHistoryState({
