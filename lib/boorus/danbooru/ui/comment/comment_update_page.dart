@@ -96,7 +96,8 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
 
   void _handleSave(String content) {
     FocusScope.of(context).unfocus();
-    ref.read(danbooruCommentsProvider(widget.postId).notifier).update(
+    ref.read(danbooruCommentsProvider.notifier).update(
+          postId: widget.postId,
           commentId: widget.commentId,
           content: content,
         );

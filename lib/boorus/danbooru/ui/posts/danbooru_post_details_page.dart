@@ -389,7 +389,7 @@ class DanbooruPostStatsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final comments = ref.watch(danbooruCommentsProvider(post.id));
+    final comments = ref.watch(danbooruCommentsProvider)[post.id];
 
     return RepaintBoundary(
       child: comments.toOption().fold(

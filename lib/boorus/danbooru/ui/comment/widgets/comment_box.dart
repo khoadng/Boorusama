@@ -115,10 +115,9 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                             : () {
                                 widget.isEditing.value = false;
                                 ref
-                                    .read(
-                                        danbooruCommentsProvider(widget.postId)
-                                            .notifier)
+                                    .read(danbooruCommentsProvider.notifier)
                                     .send(
+                                      postId: widget.postId,
                                       content: value.text,
                                       replyTo: comment,
                                     );

@@ -53,8 +53,8 @@ class CommentSection extends ConsumerWidget {
               );
             },
             onDelete: (comment) => ref
-                .read(danbooruCommentsProvider(postId).notifier)
-                .delete(comment: comment),
+                .read(danbooruCommentsProvider.notifier)
+                .delete(postId: postId, comment: comment),
             onUpvote: (comment) => ref
                 .read(danbooruCommentVotesProvider.notifier)
                 .upvote(comment.id),

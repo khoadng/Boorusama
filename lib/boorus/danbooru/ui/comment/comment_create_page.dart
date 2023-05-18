@@ -90,7 +90,8 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
 
   void _handleSend(String content) {
     FocusScope.of(context).unfocus();
-    ref.read(danbooruCommentsProvider(widget.postId).notifier).send(
+    ref.read(danbooruCommentsProvider.notifier).send(
+          postId: widget.postId,
           content: content,
         );
   }

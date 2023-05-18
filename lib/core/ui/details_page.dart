@@ -138,7 +138,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
   late final controller = ExprollablePageController(
     initialPage: widget.intitialIndex,
     viewportConfiguration: ViewportConfiguration(
-      minFraction: 0.999,
+      minFraction: 0.99,
       extraSnapInsets: [
         ViewportInset.shrunk,
       ],
@@ -383,6 +383,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                     child: ExprollablePageView(
                       controller: controller,
                       onViewportChanged: (metrics) {
+                        if (metrics.isPageExpanded == isExpanded.value) return;
+
                         isExpanded.value = metrics.isPageExpanded;
                         if (isExpanded.value) {
                           widget.onExpanded?.call(currentPage);

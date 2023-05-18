@@ -35,7 +35,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
   @override
   void initState() {
     super.initState();
-    // context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
+    ref.read(danbooruCommentsProvider.notifier).load(widget.postId);
 
     isEditing.addListener(_onEditing);
 
@@ -62,7 +62,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final comments = ref.watch(danbooruCommentsProvider(widget.postId));
+    final comments = ref.watch(danbooruCommentsProvider)[widget.postId];
 
     return WillPopScope(
       onWillPop: () async {

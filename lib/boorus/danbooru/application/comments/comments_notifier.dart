@@ -12,24 +12,28 @@ import 'package:boorusama/core/provider.dart';
 
 const youtubeUrl = 'www.youtube.com';
 
-class CommentsNotifier
-    extends AutoDisposeFamilyNotifier<List<CommentData>?, int> {
+class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
   @override
-  List<CommentData>? build(int arg) {
-    load();
-    return null;
+  Map<int, List<CommentData>?> build() {
+    ref.watch(currentBooruConfigProvider);
+    return {};
   }
 
   CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
 
-  Future<void> load() async {
+  Future<void> load(
+    int postId, {
+    bool force = false,
+  }) async {
+    if (state.containsKey(postId) && !force) return;
+
     final config = ref.watch(currentBooruConfigProvider);
     final accountId = await ref
         .watch(booruUserIdentityProviderProvider)
         .getAccountIdFromConfig(config);
 
     final comments = await repo
-        .getCommentsFromPostId(arg)
+        .getCommentsFromPostId(postId)
         .then(filterDeleted())
         .then((comments) => comments
             .map((comment) => CommentData(
@@ -53,7 +57,10 @@ class CommentsNotifier
             .toList())
         .then(_sortDescById);
 
-    state = comments;
+    state = {
+      ...state,
+      postId: comments,
+    };
 
     // fetch comment votes
     ref
@@ -62,34 +69,37 @@ class CommentsNotifier
   }
 
   Future<void> send({
+    required int postId,
     required String content,
     CommentData? replyTo,
   }) async {
     await repo.postComment(
-      arg,
+      postId,
       buildCommentContent(content: content, replyTo: replyTo),
     );
-    await load();
+    await load(postId, force: true);
   }
 
   Future<void> delete({
+    required int postId,
     required CommentData comment,
   }) async {
     await repo.deleteComment(comment.id);
-    await load();
+    await load(postId, force: true);
   }
 
   Future<void> update({
+    required int postId,
     required CommentId commentId,
     required String content,
   }) async {
     await repo.updateComment(commentId, content);
-    await load();
+    await load(postId, force: true);
   }
 }
 
 List<CommentData> _sortDescById(List<CommentData> comments) =>
-    comments..sort((a, b) => b.id.compareTo(a.id));
+    comments..sort((b, a) => b.id.compareTo(a.id));
 
 String buildCommentContent({
   required String content,

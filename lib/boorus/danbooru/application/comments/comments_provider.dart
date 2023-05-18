@@ -17,8 +17,8 @@ final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
   return CommentRepositoryApi(api, currentBooruConfigRepository);
 });
 
-final danbooruCommentsProvider = NotifierProvider.autoDispose
-    .family<CommentsNotifier, List<CommentData>?, int>(
+final danbooruCommentsProvider =
+    NotifierProvider<CommentsNotifier, Map<int, List<CommentData>?>>(
   CommentsNotifier.new,
   dependencies: [
     booruUserIdentityProviderProvider,
