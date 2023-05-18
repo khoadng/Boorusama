@@ -19,7 +19,6 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
-import 'package:boorusama/core/infra/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
@@ -32,7 +31,6 @@ class GelbooruProvider extends StatelessWidget {
     required this.tagRepository,
     required this.builder,
     required this.autocompleteRepository,
-    required this.userMetatagRepository,
     required this.favoriteTagRepository,
     required this.fileNameGenerator,
     required this.tagBloc,
@@ -53,7 +51,6 @@ class GelbooruProvider extends StatelessWidget {
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
     final settingsRepo = context.read<SettingsRepository>();
-    final userMetatagsRepo = context.read<UserMetatagRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final globalBlacklistedTagRepo = context.read<BlacklistedTagRepository>();
     final currentBooruConfigRepository =
@@ -79,7 +76,6 @@ class GelbooruProvider extends StatelessWidget {
       tagRepository: tagRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      userMetatagRepository: userMetatagsRepo,
       favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
       tagBloc: tagBloc,
@@ -94,7 +90,6 @@ class GelbooruProvider extends StatelessWidget {
     final postRepo = context.read<PostRepository>();
     final tagRepo = context.read<TagRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
-    final userMetatagsRepo = context.read<UserMetatagRepository>();
     final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
 
@@ -106,7 +101,6 @@ class GelbooruProvider extends StatelessWidget {
       tagRepository: tagRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      userMetatagRepository: userMetatagsRepo,
       favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
       tagBloc: tagBloc,
@@ -116,7 +110,6 @@ class GelbooruProvider extends StatelessWidget {
   final PostRepository postRepository;
   final TagRepository tagRepository;
   final AutocompleteRepository autocompleteRepository;
-  final UserMetatagRepository userMetatagRepository;
   final FavoriteTagRepository favoriteTagRepository;
   final FileNameGenerator fileNameGenerator;
   final Widget Function(BuildContext context) builder;
@@ -130,7 +123,6 @@ class GelbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: tagRepository),
         RepositoryProvider.value(value: autocompleteRepository),
-        RepositoryProvider.value(value: userMetatagRepository),
         RepositoryProvider.value(value: favoriteTagRepository),
         RepositoryProvider.value(value: fileNameGenerator),
       ],
