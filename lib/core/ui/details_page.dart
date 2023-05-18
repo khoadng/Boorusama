@@ -137,12 +137,14 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
         AutomaticSlideMixin {
   late final controller = ExprollablePageController(
     initialPage: widget.intitialIndex,
-    maxViewportOffset: ViewportOffset.shrunk,
-    minViewportFraction: 0.999,
-    snapViewportOffsets: [
-      ViewportOffset.shrunk,
-    ],
+    viewportConfiguration: ViewportConfiguration(
+      minFraction: 0.999,
+      extraSnapInsets: [
+        ViewportInset.shrunk,
+      ],
+    ),
   );
+
   var isExpanded = ValueNotifier(false);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
   final _scrollNotification = ValueNotifier<ScrollNotification?>(null);
@@ -293,8 +295,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                       scrollNotification: notification,
                       child: FloatingActionButton.small(
                         onPressed: () {
-                          controller.animateViewportOffsetTo(
-                              ViewportOffset.shrunk,
+                          controller.animateViewportInsetTo(
+                              ViewportInset.shrunk,
                               curve: Curves.easeOut,
                               duration: const Duration(milliseconds: 150));
                         },
@@ -381,7 +383,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                     child: ExprollablePageView(
                       controller: controller,
                       onViewportChanged: (metrics) {
-                        isExpanded.value = metrics.isExpanded;
+                        isExpanded.value = metrics.isPageExpanded;
                         if (isExpanded.value) {
                           widget.onExpanded?.call(currentPage);
                         }
@@ -494,8 +496,8 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
                                   : const Icon(
                                       Icons.keyboard_double_arrow_down),
                               onPressed: () =>
-                                  controller.animateViewportOffsetTo(
-                                      ViewportOffset.expanded,
+                                  controller.animateViewportInsetTo(
+                                      ViewportInset.expanded,
                                       curve: Curves.easeOut,
                                       duration:
                                           const Duration(milliseconds: 150)),
