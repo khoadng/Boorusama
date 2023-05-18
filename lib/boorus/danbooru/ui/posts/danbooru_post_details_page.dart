@@ -19,10 +19,9 @@ import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/tags/tags_providers.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -53,10 +52,7 @@ Widget providePostDetailPageDependencies(
         providers: [
           BlocProvider.value(value: context.read<ThemeBloc>()),
         ],
-        child: RepositoryProvider.value(
-          value: context.read<TagRepository>(),
-          child: childBuilder(),
-        ),
+        child: childBuilder(),
       );
     },
   );
@@ -433,7 +429,7 @@ class DanbooruArtistSection extends ConsumerWidget {
 }
 
 // ignore: prefer-single-widget-per-file
-class TagsTile extends StatelessWidget {
+class TagsTile extends ConsumerWidget {
   const TagsTile({
     super.key,
     required this.tags,
@@ -442,14 +438,14 @@ class TagsTile extends StatelessWidget {
   final List<String> tags;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
         onExpansionChanged: (value) =>
-            value ? context.read<TagBloc>().add(TagFetched(tags: tags)) : null,
+            value ? ref.read(tagsProvider.notifier).load(tags) : null,
         children: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),

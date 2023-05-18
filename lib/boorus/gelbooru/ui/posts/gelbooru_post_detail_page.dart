@@ -157,12 +157,11 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       topRightButtonsBuilder: (page) => [
         GelbooruMoreActionButton(post: widget.posts[page]),
       ],
-      onExpanded: (currentPage) => context.read<TagBloc>().add(TagFetched(
-            tags: posts[currentPage].tags,
-            onResult: (tags) {
-              posts[currentPage].loadArtistPostsFrom(ref, tags);
-            },
-          )),
+      onExpanded: (currentPage) => ref.read(tagsProvider.notifier).load(
+            posts[currentPage].tags,
+            onSuccess: (tags) =>
+                posts[currentPage].loadArtistPostsFrom(ref, tags),
+          ),
     );
   }
 

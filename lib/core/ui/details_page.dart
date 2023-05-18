@@ -144,7 +144,6 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
       ],
     ),
   );
-
   var isExpanded = ValueNotifier(false);
   late final _shouldSlideDownNotifier = ValueNotifier(false);
   final _scrollNotification = ValueNotifier<ScrollNotification?>(null);

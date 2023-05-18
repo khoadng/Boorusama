@@ -4,17 +4,17 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/tags.dart';
 
-class PostTagList extends StatelessWidget {
+class PostTagList extends ConsumerWidget {
   const PostTagList({
     super.key,
     this.maxTagWidth,
@@ -25,36 +25,29 @@ class PostTagList extends StatelessWidget {
   final void Function(Tag tag)? onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final state = context.watch<TagBloc>().state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(tagsProvider);
 
-    if (state.status == LoadStatus.success) {
-      final widgets = <Widget>[];
-      for (final g in state.tags!) {
-        widgets
-          ..add(_TagBlockTitle(
-            title: g.groupName,
-            isFirstBlock: g.groupName == state.tags!.first.groupName,
-          ))
-          ..add(_buildTags(
-            context,
-            g.tags,
-            onTap,
-          ));
-      }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ...widgets,
-        ],
-      );
-    } else {
-      return const Padding(
-        padding: EdgeInsets.all(8),
-        child: Center(child: CircularProgressIndicator.adaptive()),
-      );
+    final widgets = <Widget>[];
+    for (final g in tags) {
+      widgets
+        ..add(_TagBlockTitle(
+          title: g.groupName,
+          isFirstBlock: g.groupName == tags.first.groupName,
+        ))
+        ..add(_buildTags(
+          context,
+          g.tags,
+          onTap,
+        ));
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ...widgets,
+      ],
+    );
   }
 
   Widget _buildTags(

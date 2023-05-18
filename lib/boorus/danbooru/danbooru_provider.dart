@@ -10,6 +10,7 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
@@ -35,14 +36,12 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
 
 class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
     super.key,
     required this.builder,
-    required this.tagRepo,
     required this.profileRepo,
     required this.currentBooruConfigRepo,
     required this.settingRepository,
@@ -60,7 +59,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.poolOverviewBloc,
-    required this.tagBloc,
     required this.wikiBloc,
     required this.savedSearchBloc,
     required this.profileCubit,
@@ -81,8 +79,6 @@ class DanbooruProvider extends StatelessWidget {
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
-
-    final tagRepo = TagRepositoryApi(api, currentBooruConfigRepo);
 
     final profileRepo = ProfileRepositoryApi(
       currentBooruConfigRepository: currentBooruConfigRepo,
@@ -142,13 +138,6 @@ class DanbooruProvider extends StatelessWidget {
         order: PoolOrder.latest,
       ));
 
-    final tagBloc = TagBloc(
-      tagRepository: TagCacher(
-        cache: LruCacher(capacity: 1000),
-        repo: tagRepo,
-      ),
-    );
-
     final wikiBloc = WikiBloc(
       wikiRepository: WikiCacher(
         cache: LruCacher(capacity: 200),
@@ -179,7 +168,6 @@ class DanbooruProvider extends StatelessWidget {
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
-      tagRepo: tagRepo,
       userRepo: userRepo,
       wikiRepo: wikiRepo,
       favoriteTagsRepo: favoriteTagRepo,
@@ -187,7 +175,6 @@ class DanbooruProvider extends StatelessWidget {
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
-      tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       profileCubit: profileCubit,
@@ -200,7 +187,6 @@ class DanbooruProvider extends StatelessWidget {
     required Widget Function(BuildContext context) builder,
   }) {
     final settingRepository = context.read<SettingsRepository>();
-    final tagRepo = context.read<TagRepository>();
     final profileRepo = context.read<ProfileRepository>();
     final postRepo = context.read<DanbooruPostRepository>();
     final exploreRepo = context.read<ExploreRepository>();
@@ -218,7 +204,6 @@ class DanbooruProvider extends StatelessWidget {
     final tagInfo = context.read<TagInfo>();
 
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
-    final tagBloc = context.read<TagBloc>();
     final wikiBloc = context.read<WikiBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
     final profileCubit = context.read<ProfileCubit>();
@@ -237,7 +222,6 @@ class DanbooruProvider extends StatelessWidget {
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
-      tagRepo: tagRepo,
       userRepo: userRepo,
       wikiRepo: wikiRepo,
       favoriteTagsRepo: favoriteTagRepo,
@@ -245,7 +229,6 @@ class DanbooruProvider extends StatelessWidget {
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
-      tagBloc: tagBloc,
       wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       profileCubit: profileCubit,
@@ -255,7 +238,6 @@ class DanbooruProvider extends StatelessWidget {
 
   final Widget Function(BuildContext context) builder;
 
-  final TagRepository tagRepo;
   final ProfileRepository profileRepo;
   final CurrentBooruConfigRepository currentBooruConfigRepo;
   final SettingsRepository settingRepository;
@@ -275,7 +257,6 @@ class DanbooruProvider extends StatelessWidget {
   final FileNameGenerator fileNameGenerator;
 
   final PoolOverviewBloc poolOverviewBloc;
-  final TagBloc tagBloc;
   final WikiBloc wikiBloc;
   final SavedSearchBloc savedSearchBloc;
   final ProfileCubit profileCubit;
@@ -286,7 +267,6 @@ class DanbooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: tagRepo),
         RepositoryProvider.value(value: profileRepo),
         RepositoryProvider.value(value: currentBooruConfigRepo),
         RepositoryProvider.value(value: settingRepository),
@@ -306,7 +286,6 @@ class DanbooruProvider extends StatelessWidget {
         providers: [
           BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: poolOverviewBloc),
-          BlocProvider.value(value: tagBloc),
           BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
         ],
@@ -317,6 +296,8 @@ class DanbooruProvider extends StatelessWidget {
             danbooruArtistCharacterPostRepoProvider
                 .overrideWithValue(danbooruArtistCharacterPostRepository),
             poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
+            tagRepoProvider
+                .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
           ],
           child: Builder(builder: builder),
         ),

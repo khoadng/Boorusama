@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
@@ -36,52 +35,42 @@ class PostTagList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
     final booru = ref.watch(currentBooruProvider);
+    final tags = ref.watch(tagsProvider);
 
-    return BlocBuilder<TagBloc, TagState>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final widgets = <Widget>[];
-          for (final g in state.tags!) {
-            widgets
-              ..add(_TagBlockTitle(
-                title: g.groupName,
-                isFirstBlock: g.groupName == state.tags!.first.groupName,
-              ))
-              ..add(_buildTags(
-                context,
-                ref,
-                booru,
-                authState,
-                g.tags,
-                onAddToBlacklisted: (tag) =>
-                    ref.read(danbooruBlacklistedTagsProvider.notifier).add(
-                          tag: tag.rawName,
-                          onFailure: (message) => showSimpleSnackBar(
-                            context: context,
-                            content: Text(message),
-                          ),
-                          onSuccess: (_) => showSimpleSnackBar(
-                            context: context,
-                            duration: const Duration(seconds: 2),
-                            content: const Text('Blacklisted tags updated'),
-                          ),
-                        ),
-              ));
-          }
+    final widgets = <Widget>[];
+    for (final g in tags) {
+      widgets
+        ..add(_TagBlockTitle(
+          title: g.groupName,
+          isFirstBlock: g.groupName == tags.first.groupName,
+        ))
+        ..add(_buildTags(
+          context,
+          ref,
+          booru,
+          authState,
+          g.tags,
+          onAddToBlacklisted: (tag) =>
+              ref.read(danbooruBlacklistedTagsProvider.notifier).add(
+                    tag: tag.rawName,
+                    onFailure: (message) => showSimpleSnackBar(
+                      context: context,
+                      content: Text(message),
+                    ),
+                    onSuccess: (_) => showSimpleSnackBar(
+                      context: context,
+                      duration: const Duration(seconds: 2),
+                      content: const Text('Blacklisted tags updated'),
+                    ),
+                  ),
+        ));
+    }
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ...widgets,
-            ],
-          );
-        } else {
-          return const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(child: CircularProgressIndicator.adaptive()),
-          );
-        }
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ...widgets,
+      ],
     );
   }
 
