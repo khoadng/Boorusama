@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
+import 'package:boorusama/functional.dart';
 import 'datetime_selector.dart';
 
 class ExploreMostViewedPage extends ConsumerWidget {
@@ -47,8 +48,9 @@ class ExploreMostViewedPage extends ConsumerWidget {
     final date = ref.watch(dateProvider);
 
     return DanbooruPostScope(
-      fetcher: (page) =>
-          context.read<ExploreRepository>().getMostViewedPosts(date),
+      fetcher: (page) => page > 1
+          ? TaskEither.fromEither(Either.of([]))
+          : context.read<ExploreRepository>().getMostViewedPosts(date),
       builder: (context, controller, errors) => _MostViewedContent(
         controller: controller,
         errors: errors,
