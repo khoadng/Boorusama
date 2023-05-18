@@ -30,7 +30,6 @@ import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
@@ -289,10 +288,6 @@ void main() async {
               BlocProvider(
                 create: (_) => NetworkBloc(),
                 lazy: false,
-              ),
-              BlocProvider(
-                create: (context) =>
-                    ThemeBloc(initialTheme: settings.themeMode),
               ),
               if (isAndroid() || isIOS())
                 BlocProvider(

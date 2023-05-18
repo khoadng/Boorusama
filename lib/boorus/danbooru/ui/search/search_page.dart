@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/search/metatags/danbooru_metatags_section.dart';
@@ -50,9 +49,6 @@ class SearchPage extends ConsumerStatefulWidget {
 
             return MultiBlocProvider(
               providers: [
-                BlocProvider.value(
-                  value: BlocProvider.of<ThemeBloc>(context),
-                ),
                 BlocProvider.value(value: relatedTagBloc),
               ],
               child: CustomContextMenuOverlay(
@@ -133,7 +129,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Builder(builder: (context) {
         final displayState = ref.watch(searchProvider);
-        final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+        final theme = ref.watch(themeProvider);
 
         switch (displayState) {
           case DisplayState.options:

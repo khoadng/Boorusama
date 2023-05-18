@@ -4,18 +4,20 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/home/latest_posts_view.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
 import 'other_features_page.dart';
 
-class DanbooruHomePage extends StatefulWidget {
+class DanbooruHomePage extends ConsumerStatefulWidget {
   const DanbooruHomePage({
     super.key,
     required this.onMenuTap,
@@ -24,15 +26,15 @@ class DanbooruHomePage extends StatefulWidget {
   final VoidCallback? onMenuTap;
 
   @override
-  State<DanbooruHomePage> createState() => _HomePageState();
+  ConsumerState<DanbooruHomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<DanbooruHomePage> {
+class _HomePageState extends ConsumerState<DanbooruHomePage> {
   final viewIndex = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(

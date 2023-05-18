@@ -25,12 +25,12 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_details.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
@@ -413,9 +413,11 @@ void goToQuickSearchPage(
     ),
     ensureValidTag: ensureValidTag,
     floatingActionButton: floatingActionButton,
-    builder: (_, isMobile) => BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (_, themeState) {
+    builder: (_, isMobile) => Builder(
+      builder: (_) {
         final booru = ref.watch(currentBooruProvider);
+        final theme = ref.watch(themeProvider);
+
         switch (booru.booruType) {
           case BooruType.unknown:
             throw UnimplementedError();
@@ -435,8 +437,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateDanbooruAutocompleteTagColor(
-                              tag, themeState.theme),
+                          generateDanbooruAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: onSubmitted,
@@ -447,8 +448,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateDanbooruAutocompleteTagColor(
-                              tag, themeState.theme),
+                          generateDanbooruAutocompleteTagColor(tag, theme),
                     ),
             );
           case BooruType.gelbooru:
@@ -465,10 +465,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(
-                        tag,
-                        themeState.theme,
-                      ),
+                          generateGelbooruAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -480,10 +477,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(
-                        tag,
-                        themeState.theme,
-                      ),
+                          generateGelbooruAutocompleteTagColor(tag, theme),
                     ),
             );
           case BooruType.konachan:
@@ -502,10 +496,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(
-                        tag,
-                        themeState.theme,
-                      ),
+                          generateGelbooruAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -517,10 +508,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(
-                        tag,
-                        themeState.theme,
-                      ),
+                          generateGelbooruAutocompleteTagColor(tag, theme),
                     ),
             );
         }

@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'related_tag_chip.dart';
@@ -60,7 +60,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
   }
 }
 
-class _RelatedTagChip extends StatelessWidget {
+class _RelatedTagChip extends ConsumerWidget {
   const _RelatedTagChip({
     required this.relatedTag,
     required this.onPressed,
@@ -70,8 +70,8 @@ class _RelatedTagChip extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeProvider);
 
     return RelatedTagButton(
       backgroundColor: getTagColor(relatedTag.category, theme),

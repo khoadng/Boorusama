@@ -3,14 +3,15 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/provider.dart';
 
-class TagSuggestionItems extends StatelessWidget {
+class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
     super.key,
     required List<AutocompleteData> tags,
@@ -27,43 +28,41 @@ class TagSuggestionItems extends StatelessWidget {
   final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeProvider);
+
     return Material(
       color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: ListView.builder(
-              itemCount: _tags.length,
-              itemBuilder: (context, index) {
-                final tag = _tags[index];
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: ListView.builder(
+          itemCount: _tags.length,
+          itemBuilder: (context, index) {
+            final tag = _tags[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ListTile(
-                    hoverColor: Theme.of(context).cardColor,
-                    onTap: () => onItemTap(_tags[index]),
-                    trailing: tag.hasCount
-                        ? Text(
-                            NumberFormat.compact().format(tag.postCount),
-                            style: const TextStyle(color: Colors.grey),
-                          )
-                        : null,
-                    title: _getTitle(
-                      tag,
-                      state.theme,
-                      currentQuery,
-                      textColorBuilder?.call(tag),
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: ListTile(
+                hoverColor: Theme.of(context).cardColor,
+                onTap: () => onItemTap(_tags[index]),
+                trailing: tag.hasCount
+                    ? Text(
+                        NumberFormat.compact().format(tag.postCount),
+                        style: const TextStyle(color: Colors.grey),
+                      )
+                    : null,
+                title: _getTitle(
+                  tag,
+                  theme,
+                  currentQuery,
+                  textColorBuilder?.call(tag),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/posts/details.dart';
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -57,16 +56,11 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
       builder: (_) => GelbooruProvider.of(
         context,
         builder: (gcontext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: gcontext.read<ThemeBloc>()),
-            ],
-            child: GelbooruPostDetailPage(
-              posts: posts,
-              initialIndex: initialIndex,
-              onExit: (page) => scrollController?.scrollToIndex(page),
-              fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
-            ),
+          return GelbooruPostDetailPage(
+            posts: posts,
+            initialIndex: initialIndex,
+            onExit: (page) => scrollController?.scrollToIndex(page),
+            fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
           );
         },
       ),

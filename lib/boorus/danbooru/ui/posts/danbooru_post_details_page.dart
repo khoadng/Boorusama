@@ -48,12 +48,7 @@ Widget providePostDetailPageDependencies(
   return DanbooruProvider.of(
     context,
     builder: (context) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: context.read<ThemeBloc>()),
-        ],
-        child: childBuilder(),
-      );
+      return childBuilder();
     },
   );
 }
@@ -218,40 +213,37 @@ class _DanbooruPostDetailsPageState
 
         return [
           Builder(builder: (_) {
+            final theme = ref.watch(themeProvider);
+
             if (!posts[page].isTranslated) {
               return const SizedBox.shrink();
             }
 
-            return BlocBuilder<ThemeBloc, ThemeState>(
-              builder: (context, state) {
-                return CircularIconButton(
-                  icon: noteState.enableNotes
-                      ? Padding(
-                          padding: const EdgeInsets.all(3),
-                          child: FaIcon(
-                            FontAwesomeIcons.eyeSlash,
-                            size: 18,
-                            color: state.theme == ThemeMode.light
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : null,
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: FaIcon(
-                            FontAwesomeIcons.eye,
-                            size: 18,
-                            color: state.theme == ThemeMode.light
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : null,
-                          ),
-                        ),
-                  onPressed: () => ref
-                      .read(
-                          danbooruPostDetailsNoteProvider(posts[page]).notifier)
-                      .toggleNoteVisibility(),
-                );
-              },
+            return CircularIconButton(
+              icon: noteState.enableNotes
+                  ? Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: FaIcon(
+                        FontAwesomeIcons.eyeSlash,
+                        size: 18,
+                        color: theme == ThemeMode.light
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : null,
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: FaIcon(
+                        FontAwesomeIcons.eye,
+                        size: 18,
+                        color: theme == ThemeMode.light
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : null,
+                      ),
+                    ),
+              onPressed: () => ref
+                  .read(danbooruPostDetailsNoteProvider(posts[page]).notifier)
+                  .toggleNoteVisibility(),
             );
           }),
           DanbooruMoreActionButton(

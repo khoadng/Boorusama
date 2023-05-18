@@ -10,6 +10,7 @@ import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -88,3 +89,7 @@ final bookmarkRepoProvider = Provider<BookmarkRepository>(
 final dioDownloadServiceProvider = Provider<DioDownloadService>(
   (ref) => throw UnimplementedError(),
 );
+
+final themeProvider = Provider<ThemeMode>((ref) {
+  return ref.watch(settingsProvider).themeMode;
+});

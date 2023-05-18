@@ -3,15 +3,14 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 
 class PostTagList extends ConsumerWidget {
@@ -71,7 +70,7 @@ class PostTagList extends ConsumerWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
+class _Chip extends ConsumerWidget {
   const _Chip({
     required this.tag,
     required this.maxTagWidth,
@@ -81,53 +80,50 @@ class _Chip extends StatelessWidget {
   final double? maxTagWidth;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Chip(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-              backgroundColor: getTagColor(tag.category, state.theme),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                ),
-              ),
-              label: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth:
-                      maxTagWidth ?? MediaQuery.of(context).size.width * 0.7,
-                ),
-                child: Text(
-                  _getTagStringDisplayName(tag),
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeProvider);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: getTagColor(tag.category, theme),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
+          ),
+          label: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: maxTagWidth ?? MediaQuery.of(context).size.width * 0.7,
+            ),
+            child: Text(
+              _getTagStringDisplayName(tag),
+              overflow: TextOverflow.fade,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            Chip(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-              backgroundColor: Colors.grey[800],
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-              ),
-              label: Text(
-                NumberFormat.compact().format(tag.postCount),
-                style: const TextStyle(color: Colors.white60, fontSize: 12),
-              ),
+          ),
+        ),
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: Colors.grey[800],
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(8),
+              bottomRight: Radius.circular(8),
             ),
-          ],
-        );
-      },
+          ),
+          label: Text(
+            NumberFormat.compact().format(tag.postCount),
+            style: const TextStyle(color: Colors.white60, fontSize: 12),
+          ),
+        ),
+      ],
     );
   }
 }

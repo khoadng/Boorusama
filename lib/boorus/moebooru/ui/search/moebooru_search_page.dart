@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
@@ -97,7 +97,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
   @override
   Widget build(BuildContext context) {
     final displayState = ref.watch(searchProvider);
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
 
     ref.listen(
       sanitizedQueryProvider,

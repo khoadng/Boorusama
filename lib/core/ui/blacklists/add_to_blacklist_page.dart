@@ -2,13 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -22,7 +21,7 @@ class AddToBlacklistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
 
     return Scaffold(
       appBar: AppBar(

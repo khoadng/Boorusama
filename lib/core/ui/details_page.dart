@@ -6,11 +6,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/auto_slide_mixin.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
@@ -99,7 +100,7 @@ class DetailsPageController extends ChangeNotifier {
   }
 }
 
-class DetailsPage<T> extends StatefulWidget {
+class DetailsPage<T> extends ConsumerStatefulWidget {
   const DetailsPage({
     Key? key,
     this.onPageChanged,
@@ -127,10 +128,10 @@ class DetailsPage<T> extends StatefulWidget {
   final DetailsPageController? controller;
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  ConsumerState<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState<T> extends State<DetailsPage<T>>
+class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     with
         TickerProviderStateMixin,
         SwipeDownToDismissMixin<DetailsPage<T>>,
@@ -272,7 +273,7 @@ class _DetailsPageState<T> extends State<DetailsPage<T>>
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
 
     return WillPopScope(
       onWillPop: () async {

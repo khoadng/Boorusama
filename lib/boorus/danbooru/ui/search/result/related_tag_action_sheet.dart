@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -25,7 +24,8 @@ class RelatedTagActionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
+
     final booru = ref.watch(currentBooruProvider);
 
     return Scaffold(

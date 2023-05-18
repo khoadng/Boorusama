@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -12,7 +11,6 @@ import 'package:boorusama/core/application/search/filter_operator.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -63,7 +61,7 @@ class _BlacklistedTagsSearchPageState
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final theme = ref.watch(themeProvider);
     final query = ref.watch(_queryProvider);
     final selectedTags = ref.watch(_selectedTagsProvider);
     final suggestions = ref.watch(_suggestionsProvider);
