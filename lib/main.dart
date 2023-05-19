@@ -16,6 +16,7 @@ import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists.dart';
@@ -234,7 +235,6 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
-            RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<PostPreviewPreloader>.value(
               value: previewPreloader,
             ),
@@ -278,6 +278,8 @@ void main() async {
               downloadNotificationProvider
                   .overrideWithValue(downloadNotifications),
               deviceInfoProvider.overrideWithValue(deviceInfo),
+              danbooruUserMetatagRepoProvider
+                  .overrideWithValue(userMetatagRepo),
             ],
             child: App(settings: settings),
           ),

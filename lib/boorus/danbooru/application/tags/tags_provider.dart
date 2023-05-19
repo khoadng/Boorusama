@@ -2,11 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/tags.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
+import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/infra/tags.dart';
 import 'package:boorusama/core/provider.dart';
 
@@ -36,5 +38,17 @@ final danbooruTagRepoProvider = Provider<TagRepository>(
   },
   dependencies: [
     currentBooruConfigRepoProvider,
+  ],
+);
+
+final danbooruUserMetatagRepoProvider = Provider<UserMetatagRepository>((ref) {
+  throw UnimplementedError();
+});
+
+final danbooruUserMetatagsProvider =
+    NotifierProvider<UserMetatagsNotifier, List<String>>(
+  UserMetatagsNotifier.new,
+  dependencies: [
+    danbooruUserMetatagRepoProvider,
   ],
 );
