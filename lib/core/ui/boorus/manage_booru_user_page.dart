@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
@@ -22,8 +22,7 @@ class ManageBooruPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(booruConfigProvider);
     final currentConfig = ref.watch(currentBooruConfigProvider);
-
-    final booruFactory = context.read<BooruFactory>();
+    final booruFactory = ref.watch(booruFactoryProvider);
 
     return Scaffold(
       appBar: AppBar(),

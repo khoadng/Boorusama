@@ -34,7 +34,6 @@ import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.dart';
@@ -252,9 +251,6 @@ void main() async {
             RepositoryProvider<DownloadService>.value(
                 value: dioDownloadService),
             RepositoryProvider.value(value: userMetatagRepo),
-            RepositoryProvider<FavoriteTagRepository>.value(
-              value: favoriteTagsRepo,
-            ),
             RepositoryProvider<PostPreviewPreloader>.value(
               value: previewPreloader,
             ),
@@ -264,17 +260,8 @@ void main() async {
             RepositoryProvider<UserAgentGenerator>.value(
               value: userAgentGenerator,
             ),
-            RepositoryProvider<BooruFactory>.value(
-              value: booruFactory,
-            ),
-            RepositoryProvider<BooruConfigRepository>.value(
-              value: booruUserRepo,
-            ),
             RepositoryProvider<SettingsRepository>.value(
               value: settingRepository,
-            ),
-            RepositoryProvider<BooruUserIdentityProvider>.value(
-              value: booruUserIdProvider,
             ),
             RepositoryProvider<CurrentBooruConfigRepository>.value(
               value: currentBooruRepo,

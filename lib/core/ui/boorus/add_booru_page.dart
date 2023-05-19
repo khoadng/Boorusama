@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
@@ -134,7 +134,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 builder: (_, error, __) => error.fold(
                   (e) => const SizedBox.shrink(),
                   (uri) => getBooruType(uri.toString(),
-                              context.read<BooruFactory>().booruData) ==
+                              ref.watch(booruFactoryProvider).booruData) ==
                           BooruType.unknown
                       ? WarningContainer(
                           contentBuilder: (context) =>

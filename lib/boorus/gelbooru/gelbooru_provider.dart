@@ -18,7 +18,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/provider.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
 
@@ -28,7 +27,6 @@ class GelbooruProvider extends StatelessWidget {
     required this.postRepository,
     required this.builder,
     required this.autocompleteRepository,
-    required this.favoriteTagRepository,
     required this.fileNameGenerator,
   });
 
@@ -46,7 +44,6 @@ class GelbooruProvider extends StatelessWidget {
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
     final settingsRepo = context.read<SettingsRepository>();
-    final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final globalBlacklistedTagRepo =
         context.read<GlobalBlacklistedTagRepository>();
     final currentBooruConfigRepository =
@@ -65,7 +62,6 @@ class GelbooruProvider extends StatelessWidget {
       postRepository: postRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
     );
   }
@@ -77,7 +73,6 @@ class GelbooruProvider extends StatelessWidget {
   }) {
     final postRepo = context.read<PostRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
-    final favoriteTagRepo = context.read<FavoriteTagRepository>();
     final fileNameGenerator = context.read<FileNameGenerator>();
 
     return GelbooruProvider(
@@ -85,14 +80,12 @@ class GelbooruProvider extends StatelessWidget {
       postRepository: postRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      favoriteTagRepository: favoriteTagRepo,
       fileNameGenerator: fileNameGenerator,
     );
   }
 
   final PostRepository postRepository;
   final AutocompleteRepository autocompleteRepository;
-  final FavoriteTagRepository favoriteTagRepository;
   final FileNameGenerator fileNameGenerator;
   final Widget Function(BuildContext context) builder;
 
@@ -102,7 +95,6 @@ class GelbooruProvider extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: autocompleteRepository),
-        RepositoryProvider.value(value: favoriteTagRepository),
         RepositoryProvider.value(value: fileNameGenerator),
       ],
       child: ProviderScope(

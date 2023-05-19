@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
 
@@ -24,7 +24,7 @@ class SwitchBooruModal extends ConsumerWidget {
         .watch(booruConfigProvider)
         .where((c) => c.id != currentConfig.id)
         .toList();
-    final booruFactory = context.read<BooruFactory>();
+    final booruFactory = ref.watch(booruFactoryProvider);
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
