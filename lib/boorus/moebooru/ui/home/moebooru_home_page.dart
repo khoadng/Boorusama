@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
+import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
@@ -51,7 +51,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
-            const NetworkUnavailableIndicatorWithNetworkBloc(),
+            const NetworkUnavailableIndicatorWithState(),
             Expanded(
               child: ValueListenableBuilder<int>(
                 valueListenable: viewIndex,

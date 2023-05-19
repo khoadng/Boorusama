@@ -254,41 +254,32 @@ void main() async {
               value: globalBlacklistedTags,
             ),
           ],
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => NetworkBloc(),
-                lazy: false,
-              ),
+          child: ProviderScope(
+            overrides: [
+              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+              currentBooruConfigRepoProvider
+                  .overrideWithValue(currentBooruRepo),
+              booruFactoryProvider.overrideWithValue(booruFactory),
+              tagInfoProvider.overrideWithValue(tagInfo),
+              settingsRepoProvider.overrideWithValue(settingRepository),
+              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+              authenticationProvider
+                  .overrideWith(() => AuthenticationNotifier()),
+              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+              currentBooruConfigProvider.overrideWith(
+                  () => CurrentBooruConfigNotifier(initialConfig!)),
+              globalBlacklistedTagRepoProvider
+                  .overrideWithValue(globalBlacklistedTags),
+              httpCacheDirProvider.overrideWithValue(tempPath),
+              userAgentGeneratorProvider.overrideWithValue(userAgentGenerator),
+              loggerProvider.overrideWithValue(logger),
+              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+              downloadNotificationProvider
+                  .overrideWithValue(downloadNotifications),
+              deviceInfoProvider.overrideWithValue(deviceInfo),
             ],
-            child: ProviderScope(
-              overrides: [
-                favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-                searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-                currentBooruConfigRepoProvider
-                    .overrideWithValue(currentBooruRepo),
-                booruFactoryProvider.overrideWithValue(booruFactory),
-                tagInfoProvider.overrideWithValue(tagInfo),
-                settingsRepoProvider.overrideWithValue(settingRepository),
-                settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-                authenticationProvider
-                    .overrideWith(() => AuthenticationNotifier()),
-                booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-                currentBooruConfigProvider.overrideWith(
-                    () => CurrentBooruConfigNotifier(initialConfig!)),
-                globalBlacklistedTagRepoProvider
-                    .overrideWithValue(globalBlacklistedTags),
-                httpCacheDirProvider.overrideWithValue(tempPath),
-                userAgentGeneratorProvider
-                    .overrideWithValue(userAgentGenerator),
-                loggerProvider.overrideWithValue(logger),
-                bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-                downloadNotificationProvider
-                    .overrideWithValue(downloadNotifications),
-                deviceInfoProvider.overrideWithValue(deviceInfo),
-              ],
-              child: App(settings: settings),
-            ),
+            child: App(settings: settings),
           ),
         ),
       ),

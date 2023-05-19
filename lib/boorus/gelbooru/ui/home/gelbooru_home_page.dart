@@ -9,14 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
-import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
-import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
@@ -52,13 +50,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
             Expanded(
               child: Column(
                 children: [
-                  BlocBuilder<NetworkBloc, NetworkState>(
-                    builder: (_, state) => ConditionalRenderWidget(
-                      condition: state is NetworkDisconnectedState ||
-                          state is NetworkInitialState,
-                      childBuilder: (_) => const NetworkUnavailableIndicator(),
-                    ),
-                  ),
+                  const NetworkUnavailableIndicatorWithState(),
                   Expanded(
                     child: PostScope(
                       fetcher: (page) => context

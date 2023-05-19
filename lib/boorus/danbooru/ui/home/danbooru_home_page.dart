@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/ui/home/latest_posts_view.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
+import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
 import 'other_features_page.dart';
@@ -46,7 +45,7 @@ class _HomePageState extends ConsumerState<DanbooruHomePage> {
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
-            const NetworkUnavailableIndicatorWithNetworkBloc(),
+            const NetworkUnavailableIndicatorWithState(),
             Expanded(
               child: ValueListenableBuilder<int>(
                 valueListenable: viewIndex,
@@ -73,12 +72,12 @@ class _HomePageState extends ConsumerState<DanbooruHomePage> {
   }
 }
 
-class _ExplorePage extends StatelessWidget {
+class _ExplorePage extends ConsumerWidget {
   const _ExplorePage();
 
   @override
-  Widget build(BuildContext context) {
-    final state = context.watch<NetworkBloc>().state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(networkStateProvider);
 
     return ExplorePage(
       useAppBarPadding: state is NetworkConnectedState,
@@ -86,7 +85,7 @@ class _ExplorePage extends StatelessWidget {
   }
 }
 
-class _LatestView extends StatelessWidget {
+class _LatestView extends ConsumerWidget {
   const _LatestView({
     required this.onMenuTap,
   });
@@ -94,8 +93,8 @@ class _LatestView extends StatelessWidget {
   final void Function()? onMenuTap;
 
   @override
-  Widget build(BuildContext context) {
-    final state = context.watch<NetworkBloc>().state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(networkStateProvider);
 
     return LatestView(
       onMenuTap: onMenuTap,
