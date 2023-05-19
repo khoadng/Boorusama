@@ -2,16 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
-import 'package:boorusama/core/application/common.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 import 'character_page.dart';
 
-class CharacterPageDesktop extends StatelessWidget {
+class CharacterPageDesktop extends ConsumerWidget {
   const CharacterPageDesktop({
     super.key,
     required this.characterName,
@@ -30,24 +29,16 @@ class CharacterPageDesktop extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TagDetailPageDesktop(
       tagName: characterName,
-      otherNamesBuilder: (context) => BlocBuilder<WikiBloc, WikiState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case LoadStatus.initial:
-            case LoadStatus.loading:
-              return const SizedBox(height: 40, width: 40);
-            case LoadStatus.success:
-              return state.wiki != null
-                  ? TagOtherNames(otherNames: state.wiki!.otherNames)
-                  : const SizedBox.shrink();
-            case LoadStatus.failure:
-              return const SizedBox.shrink();
-          }
-        },
-      ),
+      otherNamesBuilder: (context) =>
+          switch (ref.watch(danbooruWikiProvider(characterName))) {
+        WikiStateLoading _ => const SizedBox(height: 40, width: 40),
+        WikiStateLoaded s => TagOtherNames(otherNames: s.wiki.otherNames),
+        WikiStateError _ => const SizedBox.shrink(),
+        WikiStateNotFound _ => const SizedBox.shrink(),
+      },
     );
   }
 }

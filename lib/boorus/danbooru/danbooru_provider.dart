@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/application/wikis.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -19,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/domain/profiles.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repository_cacher.dart';
@@ -50,7 +48,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.userRepo,
     required this.autocompleteRepo,
     required this.relatedTagRepo,
-    required this.wikiRepo,
     required this.poolDescriptionRepo,
     required this.exploreRepo,
     required this.savedSearchRepo,
@@ -59,7 +56,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.currentBooruConfigRepository,
     required this.fileNameGenerator,
     required this.poolOverviewBloc,
-    required this.wikiBloc,
     required this.savedSearchBloc,
     required this.profileCubit,
     required this.danbooruArtistCharacterPostRepository,
@@ -120,8 +116,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
-    final wikiRepo = WikiRepositoryApi(api);
-
     final poolDescriptionRepo = PoolDescriptionRepositoryApi(
       dio: dio,
       endpoint: booruConfig.url,
@@ -137,13 +131,6 @@ class DanbooruProvider extends StatelessWidget {
         category: PoolCategory.series,
         order: PoolOrder.latest,
       ));
-
-    final wikiBloc = WikiBloc(
-      wikiRepository: WikiCacher(
-        cache: LruCacher(capacity: 200),
-        repo: wikiRepo,
-      ),
-    );
 
     final savedSearchBloc = SavedSearchBloc(
       savedSearchRepository: savedSearchRepo,
@@ -169,13 +156,11 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
       userRepo: userRepo,
-      wikiRepo: wikiRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
-      wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       profileCubit: profileCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
@@ -194,7 +179,6 @@ class DanbooruProvider extends StatelessWidget {
     final poolRepo = context.read<PoolRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
     final relatedTagRepo = context.read<RelatedTagRepository>();
-    final wikiRepo = context.read<WikiRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
@@ -204,7 +188,6 @@ class DanbooruProvider extends StatelessWidget {
     final tagInfo = context.read<TagInfo>();
 
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
-    final wikiBloc = context.read<WikiBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
     final profileCubit = context.read<ProfileCubit>();
     final artistCharacterPostRepository =
@@ -223,13 +206,11 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
       userRepo: userRepo,
-      wikiRepo: wikiRepo,
       favoriteTagsRepo: favoriteTagRepo,
       currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
-      wikiBloc: wikiBloc,
       savedSearchBloc: savedSearchBloc,
       profileCubit: profileCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
@@ -248,7 +229,6 @@ class DanbooruProvider extends StatelessWidget {
   final UserRepository userRepo;
   final AutocompleteRepository autocompleteRepo;
   final RelatedTagRepository relatedTagRepo;
-  final WikiRepository wikiRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
   final SavedSearchRepository savedSearchRepo;
@@ -257,7 +237,6 @@ class DanbooruProvider extends StatelessWidget {
   final FileNameGenerator fileNameGenerator;
 
   final PoolOverviewBloc poolOverviewBloc;
-  final WikiBloc wikiBloc;
   final SavedSearchBloc savedSearchBloc;
   final ProfileCubit profileCubit;
 
@@ -276,7 +255,6 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: userRepo),
         RepositoryProvider.value(value: autocompleteRepo),
         RepositoryProvider.value(value: relatedTagRepo),
-        RepositoryProvider.value(value: wikiRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: exploreRepo),
         RepositoryProvider.value(value: savedSearchRepo),
@@ -286,7 +264,6 @@ class DanbooruProvider extends StatelessWidget {
         providers: [
           BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: poolOverviewBloc),
-          BlocProvider.value(value: wikiBloc),
           BlocProvider.value(value: savedSearchBloc),
         ],
         child: ProviderScope(
