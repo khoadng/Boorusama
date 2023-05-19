@@ -20,7 +20,6 @@ import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/networking.dart';
@@ -261,7 +260,6 @@ void main() async {
                 create: (_) => NetworkBloc(),
                 lazy: false,
               ),
-              BlocProvider(create: (context) => CacheCubit()),
             ],
             child: ProviderScope(
               overrides: [

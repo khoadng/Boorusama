@@ -1,21 +1,23 @@
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/utils/file_utils.dart';
 
-class CacheCubit extends Cubit<DirectorySizeInfo> {
-  CacheCubit() : super(DirectorySizeInfo.zero) {
+class CacheSizeNotifier extends Notifier<DirectorySizeInfo> {
+  @override
+  DirectorySizeInfo build() {
     calculateCacheSize();
+    return DirectorySizeInfo.zero;
   }
 
   Future<void> clearAppCache() async {
     await clearCache();
-    emit(DirectorySizeInfo.zero);
+    state = DirectorySizeInfo.zero;
   }
 
   Future<void> calculateCacheSize() async {
     final cacheSize = await getCacheSize();
-    emit(cacheSize);
+    state = cacheSize;
   }
 }

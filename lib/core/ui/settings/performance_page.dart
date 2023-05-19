@@ -4,16 +4,13 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/utils/file_utils.dart';
 
 class PerformancePage extends ConsumerStatefulWidget {
   const PerformancePage({
@@ -76,14 +73,17 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
                 ),
               ),
             ),
-            BlocBuilder<CacheCubit, DirectorySizeInfo>(
-              builder: (context, size) {
+            Builder(
+              builder: (context) {
+                final size = ref.watch(cacheSizeProvider);
+
                 return ListTile(
                   title: const Text('Cache Size'),
                   subtitle:
                       Text("${filesize(size.size)} in ${size.fileCount} files"),
                   trailing: ElevatedButton(
-                    onPressed: () => context.read<CacheCubit>().clearAppCache(),
+                    onPressed: () =>
+                        ref.read(cacheSizeProvider.notifier).clearAppCache(),
                     child: const Text('Clear'),
                   ),
                 );

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/application/cache_notifier.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -20,6 +21,7 @@ import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/utils/file_utils.dart';
 
 final currentBooruConfigRepoProvider =
     Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());
@@ -98,3 +100,7 @@ final themeProvider = Provider<ThemeMode>((ref) {
 final deviceInfoProvider = Provider<DeviceInfo>((ref) {
   throw UnimplementedError();
 });
+
+final cacheSizeProvider =
+    NotifierProvider<CacheSizeNotifier, DirectorySizeInfo>(
+        CacheSizeNotifier.new);

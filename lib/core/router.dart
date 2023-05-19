@@ -23,7 +23,6 @@ import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
@@ -124,7 +123,6 @@ Future<void> goToSettingsPerformance(
   Widget oldWidget,
 ) async {
   final navigator = Navigator.of(context);
-  context.read<CacheCubit>().calculateCacheSize();
   await navigator.push(
     ParallaxSlideInPageRoute(
       enterWidget: const PerformancePage(),
