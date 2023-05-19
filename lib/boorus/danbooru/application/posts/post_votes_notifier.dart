@@ -61,16 +61,20 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
   Future<void> getVotes(List<int> postIds) async {
     // fetch votes for posts that are not in the cache and votes that is local
     final postIdsToFetch = postIds.where((postId) {
+      if (!state.containsKey(postId)) return true;
       final postVote = state[postId];
-      return postVote == null || postVote.isOptimisticUpdateVote;
+      return postVote!.isOptimisticUpdateVote;
     }).toList();
 
     if (postIdsToFetch.isNotEmpty) {
       final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch);
+      final voteMap = {
+        for (var postVote in fetchedPostVotes) postVote.postId: postVote,
+      };
 
       state = {
         ...state,
-        for (var postVote in fetchedPostVotes) postVote.postId: postVote,
+        for (var id in postIds) id: voteMap[id],
       };
     }
   }
