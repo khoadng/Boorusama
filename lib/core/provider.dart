@@ -18,6 +18,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 
@@ -92,4 +93,8 @@ final dioDownloadServiceProvider = Provider<DioDownloadService>(
 
 final themeProvider = Provider<ThemeMode>((ref) {
   return ref.watch(settingsProvider).themeMode;
+});
+
+final deviceInfoProvider = Provider<DeviceInfo>((ref) {
+  throw UnimplementedError();
 });

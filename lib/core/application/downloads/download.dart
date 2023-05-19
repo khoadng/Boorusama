@@ -134,12 +134,12 @@ Future<String> _wrapWithNotification(
   final fileName = path.split('/').last;
 
   if (enableNotification) {
-    await notifications.showInProgress(fileName);
+    await notifications.showInProgress(fileName, path);
   }
 
   final result = await fn();
   if (enableNotification) {
-    await notifications.showCompleted(fileName);
+    await notifications.showCompleted(fileName, path);
   }
 
   return result;

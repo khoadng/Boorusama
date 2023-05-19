@@ -7,17 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
+import 'package:boorusama/boorus/moebooru/application/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_popular_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocomplete_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
@@ -28,7 +28,6 @@ class MoebooruProvider extends StatelessWidget {
     required this.postRepository,
     required this.builder,
     required this.autocompleteRepository,
-    required this.fileNameGenerator,
     required this.moebooruPopularRepository,
   });
 
@@ -58,7 +57,6 @@ class MoebooruProvider extends StatelessWidget {
       currentBooruConfigRepository,
       settingsRepo,
     );
-    final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
     final popularRepository = MoebooruPopularRepositoryApi(
       api,
       globalBlacklistedTagRepo,
@@ -70,7 +68,6 @@ class MoebooruProvider extends StatelessWidget {
       postRepository: postRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      fileNameGenerator: fileNameGenerator,
       moebooruPopularRepository: popularRepository,
     );
   }
@@ -82,7 +79,6 @@ class MoebooruProvider extends StatelessWidget {
   }) {
     final postRepo = context.read<PostRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
-    final fileNameGenerator = context.read<FileNameGenerator>();
     final popularRepository = context.read<MoebooruPopularRepository>();
 
     return MoebooruProvider(
@@ -91,13 +87,11 @@ class MoebooruProvider extends StatelessWidget {
       moebooruPopularRepository: popularRepository,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      fileNameGenerator: fileNameGenerator,
     );
   }
 
   final PostRepository postRepository;
   final AutocompleteRepository autocompleteRepository;
-  final FileNameGenerator fileNameGenerator;
   final MoebooruPopularRepository moebooruPopularRepository;
   final Widget Function(BuildContext context) builder;
 
@@ -108,11 +102,12 @@ class MoebooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: moebooruPopularRepository),
         RepositoryProvider.value(value: autocompleteRepository),
-        RepositoryProvider.value(value: fileNameGenerator),
       ],
       child: ProviderScope(
         overrides: [
           autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
+          downloadFileNameGeneratorProvider.overrideWith(
+              (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
         ],
         child: Builder(
           builder: builder,

@@ -7,15 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
-import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
+import 'package:boorusama/boorus/gelbooru/application/downloads/download_provider.dart';
 import 'package:boorusama/boorus/gelbooru/application/tags/tags_provider.dart';
 import 'package:boorusama/boorus/gelbooru/infra/autocompletes/gelbooru_autocomplete_repository_api.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
@@ -27,7 +27,6 @@ class GelbooruProvider extends StatelessWidget {
     required this.postRepository,
     required this.builder,
     required this.autocompleteRepository,
-    required this.fileNameGenerator,
   });
 
   factory GelbooruProvider.create(
@@ -55,14 +54,12 @@ class GelbooruProvider extends StatelessWidget {
       blacklistedTagRepository: globalBlacklistedTagRepo,
       settingsRepository: settingsRepo,
     );
-    final fileNameGenerator = DownloadUrlBaseNameFileNameGenerator();
 
     return GelbooruProvider(
       key: key,
       postRepository: postRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      fileNameGenerator: fileNameGenerator,
     );
   }
 
@@ -73,20 +70,17 @@ class GelbooruProvider extends StatelessWidget {
   }) {
     final postRepo = context.read<PostRepository>();
     final autocompleteRepo = context.read<AutocompleteRepository>();
-    final fileNameGenerator = context.read<FileNameGenerator>();
 
     return GelbooruProvider(
       key: key,
       postRepository: postRepo,
       builder: builder,
       autocompleteRepository: autocompleteRepo,
-      fileNameGenerator: fileNameGenerator,
     );
   }
 
   final PostRepository postRepository;
   final AutocompleteRepository autocompleteRepository;
-  final FileNameGenerator fileNameGenerator;
   final Widget Function(BuildContext context) builder;
 
   @override
@@ -95,7 +89,6 @@ class GelbooruProvider extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: autocompleteRepository),
-        RepositoryProvider.value(value: fileNameGenerator),
       ],
       child: ProviderScope(
         overrides: [
@@ -103,6 +96,8 @@ class GelbooruProvider extends StatelessWidget {
           postRepoProvider.overrideWithValue(postRepository),
           tagRepoProvider
               .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
+          downloadFileNameGeneratorProvider.overrideWith(
+              (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
         ],
         child: Builder(
           builder: builder,

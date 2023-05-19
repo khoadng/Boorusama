@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
@@ -23,7 +22,6 @@ import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
-import 'package:boorusama/core/application/device_storage_permission/device_storage_permission.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/networking.dart';
@@ -276,13 +274,6 @@ void main() async {
                 create: (_) => NetworkBloc(),
                 lazy: false,
               ),
-              if (isAndroid() || isIOS())
-                BlocProvider(
-                  create: (context) => DeviceStoragePermissionBloc(
-                    deviceInfo: deviceInfo,
-                    initialStatus: PermissionStatus.denied,
-                  )..add(DeviceStoragePermissionFetched()),
-                ),
               BlocProvider(create: (context) => CacheCubit()),
             ],
             child: ProviderScope(
@@ -311,6 +302,7 @@ void main() async {
                 bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
                 dioDownloadServiceProvider
                     .overrideWithValue(dioDownloadService),
+                deviceInfoProvider.overrideWithValue(deviceInfo),
               ],
               child: App(settings: settings),
             ),

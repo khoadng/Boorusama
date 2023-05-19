@@ -34,16 +34,16 @@ class DownloadNotifications {
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
-  Future<void> showInProgress(String fileName) {
-    return _showNotification(fileName, 'in progress');
+  Future<void> showInProgress(String fileName, String path) {
+    return _showNotification(fileName, 'in progress', payload: path);
   }
 
-  Future<void> showCompleted(String fileName) {
-    return _showNotification(fileName, 'completed', payload: fileName);
+  Future<void> showCompleted(String fileName, String path) {
+    return _showNotification(fileName, 'completed', payload: path);
   }
 
-  Future<void> showFailed(String fileName) {
-    return _showNotification(fileName, 'failed', payload: fileName);
+  Future<void> showFailed(String fileName, String path) {
+    return _showNotification(fileName, 'failed', payload: path);
   }
 
   Future<void> _showNotification(String title, String body,
@@ -83,9 +83,7 @@ Future<void> _localNotificatonHandler(NotificationResponse response) async {
     final intent = AndroidIntent(
       action: 'action_view',
       type: 'image/*',
-      //TODO: download path is hard-coded
-      data: Uri.parse('/storage/emulated/0/Pictures/${response.payload}')
-          .toString(),
+      data: Uri.parse('${response.payload}').toString(),
       flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
     );
     await intent.launch();

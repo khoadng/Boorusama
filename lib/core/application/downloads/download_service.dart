@@ -147,6 +147,12 @@ DownloadError _notifyFailure(
   DownloadNotifications notifications,
   DownloadError error,
 ) {
-  notifications.showFailed(mapDownloadErrorToMessage(error));
+  notifications.showFailed(
+    mapDownloadErrorToMessage(error),
+    error.savedPath.fold(
+      () => '',
+      (t) => t,
+    ),
+  );
   return error;
 }
