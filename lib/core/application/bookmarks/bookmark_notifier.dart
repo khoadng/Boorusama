@@ -16,7 +16,7 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
   dependencies: [
     bookmarkRepoProvider,
-    dioDownloadServiceProvider,
+    downloadServiceProvider,
     settingsProvider,
   ],
 );
@@ -115,7 +115,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     final settings = ref.read(settingsProvider);
     final tasks = state.bookmarks
         .map((bookmark) => ref
-            .read(dioDownloadServiceProvider)
+            .read(downloadServiceProvider)
             .downloadWithSettings(
               settings,
               url: bookmark.originalUrl,

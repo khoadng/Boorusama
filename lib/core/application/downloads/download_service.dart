@@ -1,9 +1,5 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:path/path.dart';
 
@@ -72,11 +68,6 @@ extension DownloadWithSettingsX on DownloadService {
               fileNameBuilder: fileNameBuilder,
             ),
           );
-}
-
-class Downloader {
-  static DownloadService of(BuildContext context) =>
-      context.read<DownloadService>();
 }
 
 // map DownloadError to message

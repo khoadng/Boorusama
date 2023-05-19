@@ -20,7 +20,7 @@ Future<void> _download(
   PermissionStatus? permission,
   required Settings settings,
 }) async {
-  final service = Downloader.of(context);
+  final service = ref.read(downloadServiceProvider);
   final fileNameGenerator = ref.read(downloadFileNameGeneratorProvider);
 
   Future<void> download() async => service

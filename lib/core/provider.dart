@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -29,7 +28,12 @@ final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
 
 final booruUserIdentityProviderProvider =
-    Provider<BooruUserIdentityProvider>((ref) => throw UnimplementedError());
+    Provider<BooruUserIdentityProvider>((ref) {
+  final booruFactory = ref.watch(booruFactoryProvider);
+  final dio = ref.watch(dioProvider(''));
+
+  return BooruUserIdentityProviderImpl(dio, booruFactory);
+});
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 final metatagsProvider = Provider<List<Metatag>>(
@@ -84,10 +88,6 @@ final loggerProvider =
     Provider<LoggerService>((ref) => throw UnimplementedError());
 
 final bookmarkRepoProvider = Provider<BookmarkRepository>(
-  (ref) => throw UnimplementedError(),
-);
-
-final dioDownloadServiceProvider = Provider<DioDownloadService>(
   (ref) => throw UnimplementedError(),
 );
 

@@ -1,7 +1,9 @@
+// Package imports:
+import 'package:dio/dio.dart';
+
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/main.dart';
 
 abstract class BooruUserIdentityProvider {
   Future<int?> getAccountIdFromConfig(BooruConfig? config);
@@ -15,11 +17,11 @@ abstract class BooruUserIdentityProvider {
 
 class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
   BooruUserIdentityProviderImpl(
-    this.dioProvider,
+    this.dio,
     this.booruFactory,
   );
 
-  final DioProvider dioProvider;
+  final Dio dio;
   final BooruFactory booruFactory;
   final Map<String, int?> _accountIdCache =
       {}; // <Booru.url + login, accountId>
@@ -48,7 +50,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.safebooru:
       case BooruType.testbooru:
       case BooruType.aibooru:
-        accountId = await DanbooruApi(dioProvider.getDio(booru.url))
+        accountId = await DanbooruApi(dio, baseUrl: booru.url)
             .getProfile(
               login,
               apiKey,

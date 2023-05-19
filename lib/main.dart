@@ -19,7 +19,6 @@ import 'package:video_player_win/video_player_win.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/cache_cubit.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -206,11 +205,6 @@ void main() async {
     booruUserRepo,
   );
 
-  final appDioProvider = DioProvider(tempPath, userAgentGenerator, logger);
-
-  final booruUserIdProvider =
-      BooruUserIdentityProviderImpl(appDioProvider, booruFactory);
-
   final initialConfig = await currentBooruRepo.get();
 
   logger.logI('Start up', 'Initialize I18n');
@@ -221,11 +215,6 @@ void main() async {
   initializeErrorHandlers(settings);
 
   final downloadNotifications = await DownloadNotifications.create();
-
-  final dioDownloadService = DioDownloadService(
-    appDioProvider.getDio(null),
-    downloadNotifications,
-  );
 
   FlutterError.demangleStackTrace = (StackTrace stack) {
     if (stack is stack_trace.Trace) return stack.vmTrace;
@@ -246,8 +235,6 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
-            RepositoryProvider<DownloadService>.value(
-                value: dioDownloadService),
             RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<PostPreviewPreloader>.value(
               value: previewPreloader,
@@ -286,8 +273,6 @@ void main() async {
                 tagInfoProvider.overrideWithValue(tagInfo),
                 settingsRepoProvider.overrideWithValue(settingRepository),
                 settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-                booruUserIdentityProviderProvider
-                    .overrideWithValue(booruUserIdProvider),
                 authenticationProvider
                     .overrideWith(() => AuthenticationNotifier()),
                 booruConfigRepoProvider.overrideWithValue(booruUserRepo),
@@ -300,8 +285,8 @@ void main() async {
                     .overrideWithValue(userAgentGenerator),
                 loggerProvider.overrideWithValue(logger),
                 bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-                dioDownloadServiceProvider
-                    .overrideWithValue(dioDownloadService),
+                downloadNotificationProvider
+                    .overrideWithValue(downloadNotifications),
                 deviceInfoProvider.overrideWithValue(deviceInfo),
               ],
               child: App(settings: settings),
