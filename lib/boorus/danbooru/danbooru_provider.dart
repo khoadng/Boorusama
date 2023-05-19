@@ -8,13 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
@@ -40,7 +38,6 @@ class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
     super.key,
     required this.builder,
-    required this.profileRepo,
     required this.currentBooruConfigRepo,
     required this.settingRepository,
     required this.postRepo,
@@ -57,7 +54,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.fileNameGenerator,
     required this.poolOverviewBloc,
     required this.savedSearchBloc,
-    required this.profileCubit,
     required this.danbooruArtistCharacterPostRepository,
   });
 
@@ -75,11 +71,6 @@ class DanbooruProvider extends StatelessWidget {
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
 
     final fileNameGenerator = BoorusamaStyledFileNameGenerator();
-
-    final profileRepo = ProfileRepositoryApi(
-      currentBooruConfigRepository: currentBooruConfigRepo,
-      api: api,
-    );
 
     final postRepo = PostRepositoryApi(
       api,
@@ -136,8 +127,6 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepository: savedSearchRepo,
     );
 
-    final profileCubit = ProfileCubit(profileRepository: profileRepo);
-
     final artistCharacterPostRepository = DanbooruArtistCharacterPostRepository(
       repository: postRepo,
       cache: LruCacher(),
@@ -151,7 +140,6 @@ class DanbooruProvider extends StatelessWidget {
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
       postRepo: postRepo,
-      profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
@@ -162,7 +150,6 @@ class DanbooruProvider extends StatelessWidget {
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
-      profileCubit: profileCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
     );
   }
@@ -172,7 +159,6 @@ class DanbooruProvider extends StatelessWidget {
     required Widget Function(BuildContext context) builder,
   }) {
     final settingRepository = context.read<SettingsRepository>();
-    final profileRepo = context.read<ProfileRepository>();
     final postRepo = context.read<DanbooruPostRepository>();
     final exploreRepo = context.read<ExploreRepository>();
     final userRepo = context.read<UserRepository>();
@@ -189,7 +175,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
-    final profileCubit = context.read<ProfileCubit>();
     final artistCharacterPostRepository =
         context.read<DanbooruArtistCharacterPostRepository>();
 
@@ -201,7 +186,6 @@ class DanbooruProvider extends StatelessWidget {
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
       postRepo: postRepo,
-      profileRepo: profileRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       settingRepository: settingRepository,
@@ -212,14 +196,12 @@ class DanbooruProvider extends StatelessWidget {
       fileNameGenerator: fileNameGenerator,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
-      profileCubit: profileCubit,
       danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
     );
   }
 
   final Widget Function(BuildContext context) builder;
 
-  final ProfileRepository profileRepo;
   final CurrentBooruConfigRepository currentBooruConfigRepo;
   final SettingsRepository settingRepository;
   final DanbooruPostRepository postRepo;
@@ -238,7 +220,6 @@ class DanbooruProvider extends StatelessWidget {
 
   final PoolOverviewBloc poolOverviewBloc;
   final SavedSearchBloc savedSearchBloc;
-  final ProfileCubit profileCubit;
 
   final TagInfo tagInfo;
 
@@ -246,7 +227,6 @@ class DanbooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: profileRepo),
         RepositoryProvider.value(value: currentBooruConfigRepo),
         RepositoryProvider.value(value: settingRepository),
         RepositoryProvider.value(value: postRepo),
@@ -262,7 +242,6 @@ class DanbooruProvider extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: profileCubit),
           BlocProvider.value(value: poolOverviewBloc),
           BlocProvider.value(value: savedSearchBloc),
         ],
