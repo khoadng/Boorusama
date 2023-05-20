@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/explores.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -100,8 +100,8 @@ class _MostViewedExploreState extends ConsumerState<_MostViewedExplore>
         PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
         DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (_) => context
-        .read<ExploreRepository>()
+    fetcher: (_) => ref
+        .read(danbooruExploreRepoProvider)
         .getMostViewedPosts(DateTime.now())
         .run()
         .then((value) => value.fold(
@@ -109,8 +109,8 @@ class _MostViewedExploreState extends ConsumerState<_MostViewedExplore>
               (r) => r,
             ))
         .then((transform)),
-    refresher: () => context
-        .read<ExploreRepository>()
+    refresher: () => ref
+        .read(danbooruExploreRepoProvider)
         .getMostViewedPosts(DateTime.now())
         .run()
         .then((value) => value.fold(
@@ -146,8 +146,8 @@ class _HotExploreState extends ConsumerState<_HotExplore>
         PostExplorerMixin<_HotExplore, DanbooruPost>,
         DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => context
-        .read<ExploreRepository>()
+    fetcher: (page) => ref
+        .read(danbooruExploreRepoProvider)
         .getHotPosts(page)
         .run()
         .then((value) => value.fold(
@@ -155,8 +155,8 @@ class _HotExploreState extends ConsumerState<_HotExplore>
               (r) => r,
             ))
         .then((transform)),
-    refresher: () => context
-        .read<ExploreRepository>()
+    refresher: () => ref
+        .read(danbooruExploreRepoProvider)
         .getHotPosts(1)
         .run()
         .then((value) => value.fold(
@@ -192,8 +192,8 @@ class _PopularExploreState extends ConsumerState<_PopularExplore>
         PostExplorerMixin<_PopularExplore, DanbooruPost>,
         DanbooruPostServiceProviderMixin {
   late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => context
-        .read<ExploreRepository>()
+    fetcher: (page) => ref
+        .read(danbooruExploreRepoProvider)
         .getPopularPosts(DateTime.now(), page, TimeScale.day)
         .run()
         .then((value) => value.fold(
@@ -201,8 +201,8 @@ class _PopularExploreState extends ConsumerState<_PopularExplore>
               (r) => r,
             ))
         .then((transform)),
-    refresher: () => context
-        .read<ExploreRepository>()
+    refresher: () => ref
+        .read(danbooruExploreRepoProvider)
         .getPopularPosts(DateTime.now(), 1, TimeScale.day)
         .run()
         .then((value) => value.fold(

@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
@@ -13,19 +16,21 @@ class ExploreRepositoryApi
     implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
-    required this.currentBooruConfigRepository,
+    required this.booruConfig,
     required this.postRepository,
     required this.settingsRepository,
     required this.blacklistedTagRepository,
+    this.shouldFilter,
   });
 
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
   final DanbooruPostRepository postRepository;
   final DanbooruApi api;
   @override
   final SettingsRepository settingsRepository;
   @override
   final GlobalBlacklistedTagRepository blacklistedTagRepository;
+  final bool Function(DanbooruPost post)? shouldFilter;
 
   @override
   DanbooruPostsOrError getHotPosts(
@@ -42,16 +47,19 @@ class ExploreRepositoryApi
   DanbooruPostsOrError getMostViewedPosts(
     DateTime date,
   ) =>
-      tryGetBooruConfigFrom(currentBooruConfigRepository)
-          .flatMap((booruConfig) => tryParseResponse(
-                fetcher: () => api.getMostViewedPosts(
-                  booruConfig.login,
-                  booruConfig.apiKey,
-                  '${date.year}-${date.month}-${date.day}',
-                ),
-              ))
+      tryParseResponse(
+        fetcher: () => api.getMostViewedPosts(
+          booruConfig.login,
+          booruConfig.apiKey,
+          '${date.year}-${date.month}-${date.day}',
+        ),
+      )
           .flatMap(tryParseData)
-          .flatMap(tryFilterBlacklistedTags);
+          .flatMap(tryFilterBlacklistedTags)
+          // filter when filerFn is provided
+          .map((posts) => shouldFilter != null
+              ? posts.whereNot(shouldFilter!).toList()
+              : posts.toList());
 
   @override
   DanbooruPostsOrError getPopularPosts(
@@ -60,18 +68,17 @@ class ExploreRepositoryApi
     TimeScale scale, {
     int? limit,
   }) =>
-      tryGetBooruConfigFrom(currentBooruConfigRepository)
-          .flatMap((booruConfig) => tryParseResponse(
-                fetcher: () =>
-                    getPostsPerPage().then((lim) => api.getPopularPosts(
-                          booruConfig.login,
-                          booruConfig.apiKey,
-                          '${date.year}-${date.month}-${date.day}',
-                          scale.toString().split('.').last,
-                          page,
-                          limit ?? lim,
-                        )),
-              ))
-          .flatMap(tryParseData)
-          .flatMap(tryFilterBlacklistedTags);
+      tryParseResponse(
+        fetcher: () => getPostsPerPage().then((lim) => api.getPopularPosts(
+              booruConfig.login,
+              booruConfig.apiKey,
+              '${date.year}-${date.month}-${date.day}',
+              scale.toString().split('.').last,
+              page,
+              limit ?? lim,
+            )),
+      ).flatMap(tryParseData).flatMap(tryFilterBlacklistedTags).map((posts) =>
+          shouldFilter != null
+              ? posts.whereNot(shouldFilter!).toList()
+              : posts.toList());
 }

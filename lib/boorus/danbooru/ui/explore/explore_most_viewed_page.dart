@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -50,7 +49,7 @@ class ExploreMostViewedPage extends ConsumerWidget {
     return DanbooruPostScope(
       fetcher: (page) => page > 1
           ? TaskEither.fromEither(Either.of([]))
-          : context.read<ExploreRepository>().getMostViewedPosts(date),
+          : ref.watch(danbooruExploreRepoProvider).getMostViewedPosts(date),
       builder: (context, controller, errors) => _MostViewedContent(
         controller: controller,
         errors: errors,

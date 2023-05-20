@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -49,9 +48,9 @@ class ExplorePopularPage extends ConsumerWidget {
     final timeAndDate = ref.watch(timeAndDateProvider);
 
     return DanbooruPostScope(
-      fetcher: (page) => context
-          .read<ExploreRepository>()
-          .getPopularPosts(timeAndDate.second, page, timeAndDate.first),
+      fetcher: (page) => ref
+          .watch(danbooruExploreRepoProvider)
+          .getPopularPosts(timeAndDate.date, page, timeAndDate.scale),
       builder: (context, controller, errors) => _PopularContent(
         controller: controller,
         errors: errors,
@@ -71,7 +70,7 @@ class _PopularContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timeAndDate = ref.watch(timeAndDateProvider);
+    final scaleAndTime = ref.watch(timeAndDateProvider);
 
     ref.listen(
       timeAndDateProvider,
@@ -114,8 +113,8 @@ class _PopularContent extends ConsumerWidget {
           child: DateTimeSelector(
             onDateChanged: (date) =>
                 ref.read(dateProvider.notifier).state = date,
-            date: timeAndDate.second,
-            scale: timeAndDate.first,
+            date: scaleAndTime.date,
+            scale: scaleAndTime.scale,
             backgroundColor: Colors.transparent,
           ),
         ),
