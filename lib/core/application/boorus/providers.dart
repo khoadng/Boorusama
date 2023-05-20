@@ -22,6 +22,7 @@ final currentBooruConfigProvider =
     currentBooruConfigRepoProvider,
     settingsProvider,
     authenticationProvider,
+    loggerProvider,
   ],
 );
 

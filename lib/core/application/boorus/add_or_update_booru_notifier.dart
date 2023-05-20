@@ -67,9 +67,12 @@ class AddOrUpdateBooruNotifier extends AutoDisposeFamilyNotifier<
   }
 
   void changeUrl(String newUrl) {
+    final booruDataList = ref.read(booruFactoryProvider).booruData;
+    final booru = getBooruType(newUrl, booruDataList);
     state = state.copyWith(
       url: newUrl,
     );
+    changeBooru(booru);
   }
 
   void changeBooru(BooruType booruType) {
@@ -118,6 +121,9 @@ class AddOrUpdateBooruNotifier extends AutoDisposeFamilyNotifier<
               config: newConfig,
               oldConfig: a.oldConfig,
               id: a.oldConfig.id,
+              onSuccess: (booruConfig) => ref
+                  .read(currentBooruConfigProvider.notifier)
+                  .update(booruConfig),
             );
         break;
       case AddNewConfig _:

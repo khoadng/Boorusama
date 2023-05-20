@@ -37,5 +37,6 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
         .copyWith(currentBooruConfigId: booruConfig.id);
     ref.read(settingsProvider.notifier).updateSettings(settings);
     ref.read(authenticationProvider.notifier).logIn();
+    ref.read(loggerProvider).logI('Booru', 'Current booru config updated');
   }
 }
