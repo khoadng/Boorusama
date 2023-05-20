@@ -6,11 +6,7 @@ const List<String> _allowedDownloadFolders = [
   'Pictures',
 ];
 
-bool isInternalStorage(String? path) {
-  if (path == null) return false;
-
-  return path.startsWith(_basePath);
-}
+bool isInternalStorage(String? path) => path?.startsWith(_basePath) ?? false;
 
 bool isNonPublicDirectories(String? path) {
   try {
@@ -20,10 +16,7 @@ bool isNonPublicDirectories(String? path) {
     final nonBasePath = path.replaceAll('$_basePath/', '');
     final paths = nonBasePath.split('/');
 
-    if (paths.isEmpty) return true;
-    if (!_allowedDownloadFolders.contains(paths.first)) return true;
-
-    return false;
+    return paths.isEmpty || !_allowedDownloadFolders.contains(paths.first);
   } catch (e) {
     return false;
   }
@@ -34,11 +27,10 @@ mixin DownloadMixin {
 
   bool shouldDisplayWarning({
     required bool hasScopeStorage,
-  }) {
-    if (storagePath == null || storagePath!.isEmpty) return false;
-
-    return !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
-  }
+  }) =>
+      storagePath != null &&
+      storagePath!.isNotEmpty &&
+      !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
 
   bool isValidDownload({
     required bool hasScopeStorage,
@@ -49,13 +41,20 @@ mixin DownloadMixin {
 
   List<String> get allowedFolders => _allowedDownloadFolders;
 
+  /// Checks if the [storagePath] is valid for storing downloaded files.
+  ///
+  /// A valid storage path must:
+  /// - not be null or empty
+  /// - be an internal storage path
+  /// - not contain non-public directories if [hasScopeStorage] is true
+  ///
+  /// @param [hasScopeStorage] whether the storage path should have scope storage
+  /// @return true if the storage path is valid, false otherwise
   bool hasValidStoragePath({
     required bool hasScopeStorage,
-  }) {
-    if (storagePath == null || storagePath!.isEmpty) return false;
-    if (!isInternalStorage(storagePath)) return false;
-
-    // ignore: avoid_bool_literals_in_conditional_expressions
-    return hasScopeStorage ? !isNonPublicDirectories(storagePath) : true;
-  }
+  }) =>
+      storagePath != null &&
+      storagePath!.isNotEmpty &&
+      isInternalStorage(storagePath) &&
+      (hasScopeStorage ? !isNonPublicDirectories(storagePath) : true);
 }
