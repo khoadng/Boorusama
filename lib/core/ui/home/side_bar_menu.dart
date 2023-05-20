@@ -10,7 +10,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';
 import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
@@ -92,6 +91,8 @@ class SideBarMenu extends ConsumerWidget {
                     onPressed: () {
                       showMaterialModalBottomSheet(
                         context: context,
+                        duration: const Duration(milliseconds: 250),
+                        animationCurve: Curves.easeOut,
                         builder: (context) => const SwitchBooruModal(),
                       );
                     },
@@ -126,8 +127,7 @@ class SideBarMenu extends ConsumerWidget {
               title: const Text('Your Blacklist'),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const BlacklistedTagPage()));
+                goToGlobalBlacklistedTagsPage(context);
               },
             ),
             _SideMenuTile(
@@ -147,7 +147,7 @@ class SideBarMenu extends ConsumerWidget {
               title: Text('sideMenu.settings'.tr()),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
-                goToSettingPage(context);
+                goToSettingsPage(context);
               },
             ),
           ],

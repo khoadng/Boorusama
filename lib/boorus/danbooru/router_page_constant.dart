@@ -22,6 +22,7 @@ class RouterPageConstant {
   static const settingsInformation = 'settings/information';
 
   static const blacklistedTags = 'blacklisted_tags';
+  static const globalBlacklistedTags = 'global_blacklisted_tags';
   static const blacklistedSearch = 'blacklisted_tags/search';
 
   static const comment = 'comment';

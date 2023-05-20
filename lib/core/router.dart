@@ -30,6 +30,7 @@ import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/ui/blacklists.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_details.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
@@ -69,6 +70,16 @@ void goToOriginalImagePage(BuildContext context, Post post) {
       post: post,
       initialOrientation: MediaQuery.of(context).orientation,
     ),
+  ));
+}
+
+void goToGlobalBlacklistedTagsPage(BuildContext context) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.rightToLeft,
+    settings: const RouteSettings(
+      name: RouterPageConstant.globalBlacklistedTags,
+    ),
+    child: const BlacklistedTagPage(),
   ));
 }
 
@@ -345,10 +356,11 @@ void goToSearchHistoryPage(
   );
 }
 
-void goToSettingPage(BuildContext context) {
+void goToSettingsPage(BuildContext context) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const SettingsPage(),
+    Navigator.of(context).push(PageTransition(
+      type: PageTransitionType.rightToLeft,
+      child: const SettingsPage(),
     ));
   } else {
     showDesktopDialogWindow(
@@ -560,8 +572,9 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.rightToLeft,
+    child: Builder(builder: (_) {
       final booru = ref.read(currentBooruProvider);
       switch (booru.booruType) {
         case BooruType.unknown:
@@ -624,7 +637,7 @@ Future<void> goToBulkDownloadPage(
             ),
           );
       }
-    },
+    }),
   ));
 }
 
