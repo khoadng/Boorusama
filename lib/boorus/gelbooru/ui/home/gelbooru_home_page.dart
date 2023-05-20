@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme.dart';
@@ -52,7 +53,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                   Expanded(
                     child: PostScope(
                       fetcher: (page) => ref
-                          .watch(postRepoProvider)
+                          .watch(gelbooruPostRepoProvider)
                           .getPostsFromTags('', page),
                       builder: (context, controller, errors) =>
                           GelbooruInfinitePostList(

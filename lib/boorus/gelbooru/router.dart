@@ -63,10 +63,8 @@ Widget provideArtistPageDependencies(
   required String artist,
   required Widget page,
 }) {
-  return GelbooruProvider.of(
-    ref,
-    context,
-    builder: (dcontext) {
+  return GelbooruProvider(
+    builder: (_) {
       return CustomContextMenuOverlay(
         child: page,
       );

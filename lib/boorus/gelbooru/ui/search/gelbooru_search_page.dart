@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
@@ -40,9 +41,7 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: GelbooruProvider.of(
-        ref,
-        context,
+      child: GelbooruProvider(
         builder: (gcontext) {
           return CustomContextMenuOverlay(
             child: ProviderScope(
@@ -180,7 +179,7 @@ class _ResultView extends ConsumerWidget {
     final selectedTags = ref.watch(selectedRawTagStringProvider);
 
     return PostScope(
-      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
+      fetcher: (page) => ref.watch(gelbooruPostRepoProvider).getPostsFromTags(
             selectedTags.join(' '),
             page,
           ),

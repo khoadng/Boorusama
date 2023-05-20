@@ -462,9 +462,7 @@ void goToQuickSearchPage(
                     ),
             );
           case BooruType.gelbooru:
-            return GelbooruProvider.create(
-              context,
-              ref: ref,
+            return GelbooruProvider(
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -620,9 +618,7 @@ Future<void> goToBulkDownloadPage(
             ),
           );
         case BooruType.gelbooru:
-          return GelbooruProvider.create(
-            context,
-            ref: ref,
+          return GelbooruProvider(
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(

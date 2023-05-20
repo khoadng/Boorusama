@@ -95,9 +95,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.gelbooru:
               final gkey = ValueKey(config.id);
 
-              return GelbooruProvider.create(
-                context,
-                ref: ref,
+              return GelbooruProvider(
                 key: gkey,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: GelbooruHomePage(

@@ -54,9 +54,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     AutoScrollController? scrollController,
   }) {
     return MaterialPageRoute(
-      builder: (_) => GelbooruProvider.of(
-        ref,
-        context,
+      builder: (_) => GelbooruProvider(
         builder: (gcontext) {
           return GelbooruPostDetailPage(
             posts: posts,

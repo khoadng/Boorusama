@@ -5,9 +5,9 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/tags.dart';
@@ -33,7 +33,7 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
   @override
   Widget build(BuildContext context) {
     return PostScope(
-      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
+      fetcher: (page) => ref.watch(gelbooruPostRepoProvider).getPostsFromTags(
             queryFromTagFilterCategory(
               category: selectedCategory.value,
               tag: widget.tagName,
