@@ -48,23 +48,19 @@ TaskEither<BooruError, List<MoebooruPost>> tryParsePosts(
     );
 
 class MoebooruPostRepositoryApi
-    with
-        GlobalBlacklistedTagFilterMixin,
-        CurrentBooruConfigRepositoryMixin,
-        SettingsRepositoryMixin
+    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
     implements PostRepository {
   MoebooruPostRepositoryApi(
     this._api,
     this.blacklistedTagRepository,
-    this.currentBooruConfigRepository,
+    this.booruConfig,
     this.settingsRepository,
   );
 
   final MoebooruApi _api;
   @override
   final GlobalBlacklistedTagRepository blacklistedTagRepository;
-  @override
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
   @override
   final SettingsRepository settingsRepository;
 
@@ -83,18 +79,15 @@ class MoebooruPostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      tryGetBooruConfig()
-          .flatMap((config) => tryParseResponse(
-                fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-                      config.login,
-                      config.apiKey,
-                      page,
-                      getTags(config, tags).join(' '),
-                      limit ?? lim,
-                    )),
-              ))
-          .flatMap(tryParsePosts)
-          .flatMap(tryFilterBlacklistedTags);
+      tryParseResponse(
+        fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+              booruConfig.login,
+              booruConfig.apiKey,
+              page,
+              getTags(booruConfig, tags).join(' '),
+              limit ?? lim,
+            )),
+      ).flatMap(tryParsePosts).flatMap(tryFilterBlacklistedTags);
 }
 
 MoebooruPost postDtoToPost(PostDto postDto) {

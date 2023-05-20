@@ -17,11 +17,11 @@ List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
 class TagRepositoryApi implements TagRepository {
   TagRepositoryApi(
     this._api,
-    this._currentUserBooruRepository,
+    this.booruConfig,
   );
 
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
 
   @override
   Future<List<Tag>> getTagsByNameComma(
@@ -30,18 +30,17 @@ class TagRepositoryApi implements TagRepository {
     CancelToken? cancelToken,
   }) async {
     try {
-      return _currentUserBooruRepository
-          .get()
-          .then((booruConfig) => _api.getTagsByNameComma(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                page,
-                'yes',
-                stringComma,
-                'count',
-                1000,
-                cancelToken: cancelToken,
-              ))
+      return _api
+          .getTagsByNameComma(
+            booruConfig.login,
+            booruConfig.apiKey,
+            page,
+            'yes',
+            stringComma,
+            'count',
+            1000,
+            cancelToken: cancelToken,
+          )
           .then(parseTag);
     } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {

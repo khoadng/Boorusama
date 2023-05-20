@@ -6,15 +6,16 @@ import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 
 final danbooruUserRepoProvider = Provider<UserRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final booruUserConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
   return UserRepositoryApi(
     api,
-    booruUserConfigRepo,
+    booruConfig,
     [], //FIXME: shouldn't be empty
   );
 });
@@ -24,7 +25,7 @@ final danbooruCurrentUserProvider =
   CurrentUserNotifier.new,
   dependencies: [
     danbooruUserRepoProvider,
-    currentBooruConfigRepoProvider,
+    currentBooruConfigProvider,
     booruUserIdentityProviderProvider
   ],
 );

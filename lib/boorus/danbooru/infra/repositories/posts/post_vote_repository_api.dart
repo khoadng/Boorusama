@@ -16,29 +16,27 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
     ).map(postVoteDtoToPostVote).toList();
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
-  const PostVoteApiRepositoryApi(
-      {required DanbooruApi api,
-      required CurrentBooruConfigRepository currentBooruConfigRepository,
-      required this.booruUserIdentityProvider})
-      : _api = api,
-        _currentUserBooruRepository = currentBooruConfigRepository;
+  const PostVoteApiRepositoryApi({
+    required DanbooruApi api,
+    required this.booruConfig,
+    required this.booruUserIdentityProvider,
+  }) : _api = api;
 
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
   final DanbooruApi _api;
   final BooruUserIdentityProvider booruUserIdentityProvider;
 
   @override
   Future<List<PostVote>> getPostVotes(List<int> postIds) async {
     if (postIds.isEmpty) return Future.value([]);
-    final booruConfig = await _currentUserBooruRepository.get();
     final id =
         await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
     if (id == null) return [];
 
     return _api
         .getPostVotes(
-          booruConfig?.login,
-          booruConfig?.apiKey,
+          booruConfig.login,
+          booruConfig.apiKey,
           1,
           postIds.join(','),
           id.toString(),
@@ -49,29 +47,24 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   }
 
   @override
-  Future<List<PostVote>> getAllVotes(int postId, int page) =>
-      _currentUserBooruRepository
-          .get()
-          .then((booruConfig) => _api.getPostVotes(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                page,
-                postId.toString(),
-                null,
-                false,
-                100,
-              ))
-          .then(parsePostVote);
+  Future<List<PostVote>> getAllVotes(int postId, int page) => _api
+      .getPostVotes(
+        booruConfig.login,
+        booruConfig.apiKey,
+        page,
+        postId.toString(),
+        null,
+        false,
+        100,
+      )
+      .then(parsePostVote);
 
-  Future<PostVote?> _vote(int postId, int score) => _currentUserBooruRepository
-      .get()
-      .then(
-        (booruConfig) => _api.votePost(
-          booruConfig?.login,
-          booruConfig?.apiKey,
-          postId,
-          score,
-        ),
+  Future<PostVote?> _vote(int postId, int score) => _api
+      .votePost(
+        booruConfig.login,
+        booruConfig.apiKey,
+        postId,
+        score,
       )
       .then(extractData)
       .then(PostVoteDto.fromJson)

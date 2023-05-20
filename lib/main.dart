@@ -19,7 +19,6 @@ import 'package:video_player_win/video_player_win.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -37,7 +36,6 @@ import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
 import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
-import 'package:boorusama/core/infra/boorus/current_booru_repository_settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart' as l;
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -130,6 +128,8 @@ void main() async {
             (r) => r,
           ));
 
+  final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
+
   logger.logI('Start up', 'Initialize meta tags');
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
@@ -200,13 +200,6 @@ void main() async {
     },
   );
 
-  final currentBooruRepo = CurrentBooruRepositorySettings(
-    settingRepository,
-    booruUserRepo,
-  );
-
-  final initialConfig = await currentBooruRepo.get();
-
   logger.logI('Start up', 'Initialize I18n');
   await ensureI18nInitialized();
 
@@ -247,17 +240,14 @@ void main() async {
             overrides: [
               favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
               searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-              currentBooruConfigRepoProvider
-                  .overrideWithValue(currentBooruRepo),
               booruFactoryProvider.overrideWithValue(booruFactory),
               tagInfoProvider.overrideWithValue(tagInfo),
               settingsRepoProvider.overrideWithValue(settingRepository),
               settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-              authenticationProvider
-                  .overrideWith(() => AuthenticationNotifier()),
               booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              currentBooruConfigProvider.overrideWith(
-                  () => CurrentBooruConfigNotifier(initialConfig!)),
+              currentBooruConfigProvider.overrideWith(() =>
+                  CurrentBooruConfigNotifier(
+                      initialConfig: initialConfig ?? BooruConfig.empty)),
               globalBlacklistedTagRepoProvider
                   .overrideWithValue(globalBlacklistedTags),
               httpCacheDirProvider.overrideWithValue(tempPath),

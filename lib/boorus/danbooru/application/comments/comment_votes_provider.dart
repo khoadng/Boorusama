@@ -6,16 +6,14 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/comments/comments.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/provider.dart';
 import 'comment_votes_notifier.dart';
 
 final danbooruCommentVoteRepoProvider =
     Provider<CommentVoteApiRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfigRepository =
-      ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
-  return CommentVoteApiRepository(api, currentBooruConfigRepository);
+  return CommentVoteApiRepository(api, booruConfig);
 });
 
 final danbooruCommentVotesProvider =

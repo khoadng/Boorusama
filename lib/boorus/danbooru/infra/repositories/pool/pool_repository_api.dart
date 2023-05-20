@@ -16,11 +16,11 @@ List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
 class PoolRepositoryApi implements PoolRepository {
   PoolRepositoryApi(
     this._api,
-    this._currentUserBooruRepository,
+    this.booruConfig,
   );
 
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
   final _limit = 20;
 
   @override
@@ -31,10 +31,10 @@ class PoolRepositoryApi implements PoolRepository {
     String? name,
     String? description,
   }) =>
-      _currentUserBooruRepository.get().then((booruConfig) => _api
+      _api
           .getPools(
-            booruConfig?.login,
-            booruConfig?.apiKey,
+            booruConfig.login,
+            booruConfig.apiKey,
             page,
             _limit,
             category: category?.toString(),
@@ -42,31 +42,30 @@ class PoolRepositoryApi implements PoolRepository {
             name: name,
             description: description,
           )
-          .then(parsePool));
+          .then(parsePool);
 
   @override
-  Future<List<Pool>> getPoolsByPostId(int postId) =>
-      _currentUserBooruRepository.get().then((booruConfig) => _api
-          .getPoolsFromPostId(
-            booruConfig?.login,
-            booruConfig?.apiKey,
-            postId,
-            _limit,
-          )
-          .then(parsePool));
+  Future<List<Pool>> getPoolsByPostId(int postId) => _api
+      .getPoolsFromPostId(
+        booruConfig.login,
+        booruConfig.apiKey,
+        postId,
+        _limit,
+      )
+      .then(parsePool);
 
   @override
   Future<List<Pool>> getPoolsByPostIds(List<int> postIds) {
     if (postIds.isEmpty) return Future.value([]);
 
-    return _currentUserBooruRepository.get().then((booruConfig) => _api
+    return _api
         .getPoolsFromPostIds(
-          booruConfig?.login,
-          booruConfig?.apiKey,
+          booruConfig.login,
+          booruConfig.apiKey,
           postIds.join(' '),
           _limit,
         )
-        .then(parsePool));
+        .then(parsePool);
   }
 }
 

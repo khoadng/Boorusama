@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/provider.dart';
 import 'favorite_groups_filterable_notifier.dart';
 
 //#region Previews
@@ -30,11 +29,11 @@ final danbooruFavoriteGroupPreviewsProvider =
 final danbooruFavoriteGroupRepoProvider =
     Provider<FavoriteGroupRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
   return FavoriteGroupRepositoryApi(
     api: api,
-    currentBooruConfigRepository: booruConfigRepo,
+    booruConfig: booruConfig,
   );
 });
 

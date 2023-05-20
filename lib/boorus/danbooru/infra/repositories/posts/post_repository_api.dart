@@ -14,13 +14,12 @@ class PostRepositoryApi
     implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentBooruConfigRepository,
+    this.booruConfig,
     this.settingsRepository,
     this.blacklistedTagRepository,
-  )   : _api = api,
-        _currentUserBooruRepository = currentBooruConfigRepository;
+  ) : _api = api;
 
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
   final DanbooruApi _api;
   @override
   final SettingsRepository settingsRepository;
@@ -33,18 +32,15 @@ class PostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      tryGetBooruConfigFrom(_currentUserBooruRepository)
-          .flatMap(
-            (booruConfig) => tryParseResponse(
-              fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-                    booruConfig.login,
-                    booruConfig.apiKey,
-                    page,
-                    getTags(booruConfig, tags).join(' '),
-                    limit ?? lim,
-                  )),
-            ),
-          )
+      tryParseResponse(
+        fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+              booruConfig.login,
+              booruConfig.apiKey,
+              page,
+              getTags(booruConfig, tags).join(' '),
+              limit ?? lim,
+            )),
+      )
           .flatMap((response) => tryParseData(response))
           .flatMap(tryFilterBlacklistedTags);
 

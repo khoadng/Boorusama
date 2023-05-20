@@ -23,9 +23,6 @@ import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
-final currentBooruConfigRepoProvider =
-    Provider<CurrentBooruConfigRepository>((ref) => throw UnimplementedError());
-
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
 

@@ -15,7 +15,7 @@ import 'package:boorusama/core/domain/tags.dart';
 
 mixin DanbooruPostTransformMixin<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
-  CurrentBooruConfigRepository get currentBooruConfigRepository;
+  BooruConfig get booruConfig;
   PoolRepository get poolRepository;
   PostPreviewPreloader? get previewPreloader;
   BooruUserIdentityProvider get booruUserIdentityProvider;
@@ -23,8 +23,8 @@ mixin DanbooruPostTransformMixin<T, E> {
   void Function(List<int> ids) get checkVotes;
 
   Future<List<DanbooruPost>> transform(List<DanbooruPost> posts) async {
-    final config = await currentBooruConfigRepository.get();
-    final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
+    final id =
+        await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
     if (id != null) {
       final ids = posts.map((e) => e.id).toList();
       checkFavorites(ids);
@@ -34,7 +34,7 @@ mixin DanbooruPostTransformMixin<T, E> {
     return Future.value(posts)
         .then(filterWith(
           blacklistedTagsRepository,
-          currentBooruConfigRepository,
+          booruConfig,
           booruUserIdentityProvider,
         ))
         .then(filterFlashFiles())
@@ -43,11 +43,10 @@ mixin DanbooruPostTransformMixin<T, E> {
 
   Future<List<DanbooruPost>> Function(List<DanbooruPost> posts) filterWith(
     BlacklistedTagsRepository blacklistedTagsRepository,
-    CurrentBooruConfigRepository currentBooruConfigRepository,
+    BooruConfig booruConfig,
     BooruUserIdentityProvider booruUserIdentityProvider,
   ) =>
       (posts) async {
-        final booruConfig = await currentBooruConfigRepository.get();
         final id =
             await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
 

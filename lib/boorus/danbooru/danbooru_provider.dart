@@ -51,15 +51,13 @@ class DanbooruProvider extends StatelessWidget {
     final api = DanbooruApi(dio);
     ref.read(trendingTagsProvider.notifier).fetch();
 
-    final currentBooruConfigRepo = ref.read(currentBooruConfigRepoProvider);
-
     final userRepo = UserRepositoryApi(
       api,
-      currentBooruConfigRepo,
+      booruConfig,
       tagInfo.defaultBlacklistedTags,
     );
 
-    final poolRepo = PoolCacher(PoolRepositoryApi(api, currentBooruConfigRepo));
+    final poolRepo = PoolCacher(PoolRepositoryApi(api, booruConfig));
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
@@ -68,8 +66,7 @@ class DanbooruProvider extends StatelessWidget {
       endpoint: booruConfig.url,
     );
 
-    final savedSearchRepo =
-        SavedSearchRepositoryApi(api, currentBooruConfigRepo);
+    final savedSearchRepo = SavedSearchRepositoryApi(api, booruConfig);
 
     final poolOverviewBloc = PoolOverviewBloc()
       ..add(const PoolOverviewChanged(
@@ -184,11 +181,10 @@ final poolDescriptionRepoProvider =
 final danbooruAutocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfigRepository =
-      ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
   return AutocompleteRepositoryApi(
     api: api,
-    currentBooruConfigRepository: currentBooruConfigRepository,
+    booruConfig: booruConfig,
   );
 });

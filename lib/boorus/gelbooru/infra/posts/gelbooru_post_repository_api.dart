@@ -58,21 +58,17 @@ TaskEither<BooruError, List<Post>> tryParsePosts(
     );
 
 class GelbooruPostRepositoryApi
-    with
-        GlobalBlacklistedTagFilterMixin,
-        CurrentBooruConfigRepositoryMixin,
-        SettingsRepositoryMixin
+    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
     implements PostRepository {
   const GelbooruPostRepositoryApi({
     required this.api,
-    required this.currentBooruConfigRepository,
+    required this.booruConfig,
     required this.blacklistedTagRepository,
     required this.settingsRepository,
   });
 
   final GelbooruApi api;
-  @override
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
   @override
   final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
@@ -93,21 +89,18 @@ class GelbooruPostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      tryGetBooruConfig()
-          .flatMap((config) => tryParseResponse(
-                fetcher: () => api.getPosts(
-                  config.apiKey,
-                  config.login,
-                  'dapi',
-                  'post',
-                  'index',
-                  getTags(config, tags).join(' '),
-                  '1',
-                  (page - 1).toString(),
-                ),
-              ))
-          .flatMap(tryParsePosts)
-          .flatMap(tryFilterBlacklistedTags);
+      tryParseResponse(
+        fetcher: () => api.getPosts(
+          booruConfig.apiKey,
+          booruConfig.login,
+          'dapi',
+          'post',
+          'index',
+          getTags(booruConfig, tags).join(' '),
+          '1',
+          (page - 1).toString(),
+        ),
+      ).flatMap(tryParsePosts).flatMap(tryFilterBlacklistedTags);
 }
 
 Post postDtoToPost(PostDto dto) {

@@ -16,23 +16,20 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentBooruConfigRepository,
-  )   : _api = api,
-        _currentUserBooruRepository = currentBooruConfigRepository;
+    this.booruConfig,
+  ) : _api = api;
 
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
 
   @override
-  Future<List<CommentVote>> getCommentVotes(List<int> commentIds) =>
-      _currentUserBooruRepository
-          .get()
-          .then((booruConfig) => _api.getCommentVotes(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                commentIds.join(','),
-                false,
-              ))
+  Future<List<CommentVote>> getCommentVotes(List<int> commentIds) => _api
+          .getCommentVotes(
+            booruConfig.login,
+            booruConfig.apiKey,
+            commentIds.join(','),
+            false,
+          )
           .then(parseCommentVote)
           .catchError((Object error) {
         throw Exception(
@@ -41,14 +38,13 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       });
 
   @override
-  Future<CommentVote> downvote(int commentId) => _currentUserBooruRepository
-      .get()
-      .then((booruConfig) => _api.voteComment(
-            booruConfig?.login,
-            booruConfig?.apiKey,
-            commentId,
-            -1,
-          ))
+  Future<CommentVote> downvote(int commentId) => _api
+      .voteComment(
+        booruConfig.login,
+        booruConfig.apiKey,
+        commentId,
+        -1,
+      )
       .then(extractData)
       .then(CommentVoteDto.fromJson)
       .then(commentVoteDtoToCommentVote)
@@ -57,14 +53,13 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       );
 
   @override
-  Future<CommentVote> upvote(int commentId) => _currentUserBooruRepository
-          .get()
-          .then((account) => _api.voteComment(
-                account?.login,
-                account?.apiKey,
-                commentId,
-                1,
-              ))
+  Future<CommentVote> upvote(int commentId) => _api
+          .voteComment(
+            booruConfig.login,
+            booruConfig.apiKey,
+            commentId,
+            1,
+          )
           .then(extractData)
           .then(CommentVoteDto.fromJson)
           .then(commentVoteDtoToCommentVote)
@@ -73,13 +68,12 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       });
 
   @override
-  Future<bool> removeVote(int commentId) => _currentUserBooruRepository
-      .get()
-      .then((account) => _api.removeVoteComment(
-            account?.login,
-            account?.apiKey,
-            commentId,
-          ))
+  Future<bool> removeVote(int commentId) => _api
+      .removeVoteComment(
+        booruConfig.login,
+        booruConfig.apiKey,
+        commentId,
+      )
       .then((_) => true)
       .catchError((Object error) => false);
 }

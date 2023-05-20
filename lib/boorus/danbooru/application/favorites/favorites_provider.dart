@@ -11,9 +11,9 @@ import 'favorites_notifier.dart';
 
 final danbooruFavoriteRepoProvider = Provider<FavoritePostRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
-  return FavoritePostRepositoryApi(api, booruConfigRepo);
+  return FavoritePostRepositoryApi(api, booruConfig);
 });
 
 // Provider to check if a post is favorited

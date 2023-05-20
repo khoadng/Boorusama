@@ -29,11 +29,11 @@ List<UserSelf> parseUserSelf(
 class UserRepositoryApi implements UserRepository {
   UserRepositoryApi(
     this._api,
-    this._currentBooruRepository,
+    this.booruConfig,
     this.defaultBlacklistedTags,
   );
 
-  final CurrentBooruConfigRepository _currentBooruRepository;
+  final BooruConfig booruConfig;
   final DanbooruApi _api;
   final List<String> defaultBlacklistedTags;
 
@@ -64,28 +64,22 @@ class UserRepositoryApi implements UserRepository {
   }
 
   @override
-  Future<User> getUserById(int id) => _currentBooruRepository
-      .get()
-      .then(
-        (booruConfig) => _api.getUserById(
-          booruConfig?.login,
-          booruConfig?.apiKey,
-          id,
-        ),
+  Future<User> getUserById(int id) => _api
+      .getUserById(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
       )
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserDto.fromJson(e))
       .then((d) => userDtoToUser(d));
 
   @override
-  Future<UserSelf?> getUserSelfById(int id) => _currentBooruRepository
-      .get()
-      .then(
-        (booruConfig) => _api.getUserById(
-          booruConfig?.login,
-          booruConfig?.apiKey,
-          id,
-        ),
+  Future<UserSelf?> getUserSelfById(int id) => _api
+      .getUserById(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
       )
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserSelfDto.fromJson(e))

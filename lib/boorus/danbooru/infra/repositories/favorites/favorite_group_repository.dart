@@ -22,28 +22,25 @@ List<FavoriteGroup> parseFavoriteGroups(HttpResponse<dynamic> value) => parse(
 class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   const FavoriteGroupRepositoryApi({
     required this.api,
-    required this.currentBooruConfigRepository,
+    required this.booruConfig,
   });
 
   final DanbooruApi api;
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
 
   @override
   Future<List<FavoriteGroup>> getFavoriteGroups({
     String? name,
     int? page,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then(
-            (booruConfig) => api.getFavoriteGroups(
-              booruConfig?.login,
-              booruConfig?.apiKey,
-              namePattern: name,
-              page: page,
-              only: favoriteGroupApiParams,
-              limit: 50,
-            ),
+      api
+          .getFavoriteGroups(
+            booruConfig.login,
+            booruConfig.apiKey,
+            namePattern: name,
+            page: page,
+            only: favoriteGroupApiParams,
+            limit: 50,
           )
           .then(parseFavoriteGroups);
 
@@ -52,18 +49,16 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required String name,
     int? page,
   }) =>
-      currentBooruConfigRepository.get().then(
-        (booruConfig) {
-          return api.getFavoriteGroups(
-            booruConfig?.login,
-            booruConfig?.apiKey,
+      api
+          .getFavoriteGroups(
+            booruConfig.login,
+            booruConfig.apiKey,
             page: page,
             creatorName: name,
             only: favoriteGroupApiParams,
             limit: _favGroupLimit,
-          );
-        },
-      ).then(parseFavoriteGroups);
+          )
+          .then(parseFavoriteGroups);
 
   @override
   Future<bool> createFavoriteGroup({
@@ -71,28 +66,25 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     List<int>? initialItems,
     bool isPrivate = false,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.postFavoriteGroups(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                name: name,
-                postIdsString: initialItems?.join(' '),
-                isPrivate: isPrivate,
-              ))
+      api
+          .postFavoriteGroups(
+        booruConfig.login,
+        booruConfig.apiKey,
+        name: name,
+        postIdsString: initialItems?.join(' '),
+        isPrivate: isPrivate,
+      )
           .then((value) {
         return [302, 201].contains(value.response.statusCode);
       });
 
   @override
-  Future<bool> deleteFavoriteGroup({required int id}) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.deleteFavoriteGroup(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                id,
-              ))
+  Future<bool> deleteFavoriteGroup({required int id}) => api
+          .deleteFavoriteGroup(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
+      )
           .then((value) {
         return [302, 204].contains(value.response.statusCode);
       });
@@ -102,14 +94,13 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required int id,
     required List<int> itemIds,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.patchFavoriteGroups(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                id,
-                postIdsString: itemIds.join(' '),
-              ))
+      api
+          .patchFavoriteGroups(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
+        postIdsString: itemIds.join(' '),
+      )
           .then((value) {
         return [302, 204].contains(value.response.statusCode);
       });
@@ -119,14 +110,13 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required int id,
     required List<int> itemIds,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.patchFavoriteGroups(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                id,
-                postIdsString: itemIds.join(' '),
-              ))
+      api
+          .patchFavoriteGroups(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
+        postIdsString: itemIds.join(' '),
+      )
           .then((value) {
         return [302, 204].contains(value.response.statusCode);
       });
@@ -139,16 +129,15 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     bool isPrivate = false,
   }) async {
     try {
-      return await currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.patchFavoriteGroups(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                id,
-                name: name,
-                isPrivate: isPrivate,
-                postIdsString: itemIds?.join(' '),
-              ))
+      return await api
+          .patchFavoriteGroups(
+            booruConfig.login,
+            booruConfig.apiKey,
+            id,
+            name: name,
+            isPrivate: isPrivate,
+            postIdsString: itemIds?.join(' '),
+          )
           .then((value) => true);
     } on DioError catch (e, stackTrace) {
       if (e.response?.statusCode == 422) {

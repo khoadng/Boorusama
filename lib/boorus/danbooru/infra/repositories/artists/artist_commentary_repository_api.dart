@@ -11,9 +11,9 @@ import 'package:boorusama/core/infra/cache_mixin.dart';
 class ArtistCommentaryRepositoryApi
     with CacheMixin<ArtistCommentary>
     implements ArtistCommentaryRepository {
-  ArtistCommentaryRepositoryApi(this._api, this._currentUserBooruRepository);
+  ArtistCommentaryRepositoryApi(this._api, this.booruConfig);
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
 
   @override
   int get maxCapacity => 100;
@@ -27,12 +27,10 @@ class ArtistCommentaryRepositoryApi
   }) async {
     if (exist('$postId')) return Future.value(get('$postId'));
 
-    final booruConfig = await _currentUserBooruRepository.get();
-
     try {
       final value = await _api.getArtistCommentary(
-        booruConfig?.login,
-        booruConfig?.apiKey,
+        booruConfig.login,
+        booruConfig.apiKey,
         postId,
         cancelToken: cancelToken,
       );

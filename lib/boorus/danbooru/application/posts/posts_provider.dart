@@ -27,13 +27,14 @@ part 'posts_details_provider.dart';
 
 final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+
   final settingsRepo = ref.watch(settingsRepoProvider);
   final globalBlacklistedTagRepo = ref.watch(globalBlacklistedTagRepoProvider);
 
   return PostRepositoryApi(
     api,
-    booruConfigRepo,
+    booruConfig,
     settingsRepo,
     globalBlacklistedTagRepo,
   );

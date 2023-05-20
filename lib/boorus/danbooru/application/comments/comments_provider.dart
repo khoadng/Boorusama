@@ -11,10 +11,9 @@ import 'package:boorusama/core/provider.dart';
 
 final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfigRepository =
-      ref.watch(currentBooruConfigRepoProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
 
-  return CommentRepositoryApi(api, currentBooruConfigRepository);
+  return CommentRepositoryApi(api, booruConfig);
 });
 
 final danbooruCommentsProvider =

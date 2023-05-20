@@ -54,25 +54,22 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
     required DanbooruApi api,
-    required CurrentBooruConfigRepository currentBooruConfigRepository,
-  })  : _currentUserBooruRepository = currentBooruConfigRepository,
-        _api = api;
+    required this.booruConfig,
+  }) : _api = api;
 
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
 
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) async =>
-      _currentUserBooruRepository
-          .get()
-          .then((account) => _api.autocomplete(
-                account?.login,
-                account?.apiKey,
-                query,
-                'tag_query',
-                10,
-              ))
-          .then(parseAutocomplete)
-          .then(mapDtoToAutocomplete)
-          .catchError((_) => <AutocompleteData>[]);
+  Future<List<AutocompleteData>> getAutocomplete(String query) async => _api
+      .autocomplete(
+        booruConfig.login,
+        booruConfig.apiKey,
+        query,
+        'tag_query',
+        10,
+      )
+      .then(parseAutocomplete)
+      .then(mapDtoToAutocomplete)
+      .catchError((_) => <AutocompleteData>[]);
 }

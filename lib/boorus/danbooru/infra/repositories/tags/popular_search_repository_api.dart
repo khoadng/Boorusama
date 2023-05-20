@@ -18,12 +18,11 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required this.booruConfig,
     required DanbooruApi api,
-  })  : _currentUserBooruRepository = currentBooruConfigRepository,
-        _api = api;
+  }) : _api = api;
 
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
   final DanbooruApi _api;
   final _cache = <String, List<Search>>{};
 
@@ -37,14 +36,11 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
       return _cache[key]!;
     }
     try {
-      final result = await _currentUserBooruRepository
-          .get()
-          .then(
-            (booruConfig) => _api.getPopularSearchByDate(
-              booruConfig?.login,
-              booruConfig?.apiKey,
-              '${date.year}-${date.month}-${date.day}',
-            ),
+      final result = await _api
+          .getPopularSearchByDate(
+            booruConfig.login,
+            booruConfig.apiKey,
+            '${date.year}-${date.month}-${date.day}',
           )
           .then(parseSearch);
       _cache[key] = result;

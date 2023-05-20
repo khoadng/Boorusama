@@ -6,38 +6,39 @@ import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/tags.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/infra/tags.dart';
-import 'package:boorusama/core/provider.dart';
 
 final popularSearchProvider = Provider<PopularSearchRepository>(
   (ref) {
     final api = ref.watch(danbooruApiProvider);
-    final currentBooruConfigRepository =
-        ref.watch(currentBooruConfigRepoProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return PopularSearchRepositoryApi(
-        currentBooruConfigRepository: currentBooruConfigRepository, api: api);
+      booruConfig: booruConfig,
+      api: api,
+    );
   },
   dependencies: [
-    currentBooruConfigRepoProvider,
+    currentBooruConfigProvider,
   ],
 );
 
 final danbooruTagRepoProvider = Provider<TagRepository>(
   (ref) {
     final api = ref.watch(danbooruApiProvider);
-    final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return TagCacher(
       cache: LruCacher(capacity: 1000),
-      repo: TagRepositoryApi(api, currentBooruConfigRepo),
+      repo: TagRepositoryApi(api, booruConfig),
     );
   },
   dependencies: [
-    currentBooruConfigRepoProvider,
+    currentBooruConfigProvider,
   ],
 );
 

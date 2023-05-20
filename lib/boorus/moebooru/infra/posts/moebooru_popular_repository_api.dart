@@ -24,58 +24,54 @@ List<MoebooruPost> parsePost(
     ).map((e) => postDtoToPost(e)).toList();
 
 class MoebooruPopularRepositoryApi
-    with GlobalBlacklistedTagFilterMixin, CurrentBooruConfigRepositoryMixin
+    with GlobalBlacklistedTagFilterMixin
     implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(
     this._api,
     this.blacklistedTagRepository,
-    this.currentBooruConfigRepository,
+    this.booruConfig,
   );
 
   final MoebooruApi _api;
   @override
   final GlobalBlacklistedTagRepository blacklistedTagRepository;
-  @override
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
 
   @override
-  PostsOrError getPopularPostsByDay(DateTime dateTime) => tryGetBooruConfig()
-      .flatMap((config) => tryParseResponse(
-            fetcher: () => _api.getPopularPostsByDay(
-              config.login,
-              config.apiKey,
-              dateTime.day,
-              dateTime.month,
-              dateTime.year,
-            ),
-          ))
-      .flatMap(
-          (response) => TaskEither.fromEither(Either.of(parsePost(response))))
-      .flatMap(tryFilterBlacklistedTags);
+  PostsOrError getPopularPostsByDay(DateTime dateTime) => tryParseResponse(
+        fetcher: () => _api.getPopularPostsByDay(
+          booruConfig.login,
+          booruConfig.apiKey,
+          dateTime.day,
+          dateTime.month,
+          dateTime.year,
+        ),
+      )
+          .flatMap((response) =>
+              TaskEither.fromEither(Either.of(parsePost(response))))
+          .flatMap(tryFilterBlacklistedTags);
 
   @override
-  PostsOrError getPopularPostsByMonth(DateTime dateTime) => tryGetBooruConfig()
-      .flatMap((config) => tryParseResponse(
+  PostsOrError getPopularPostsByMonth(DateTime dateTime) => tryParseResponse(
           fetcher: () => _api.getPopularPostsByMonth(
-                config.login,
-                config.apiKey,
+                booruConfig.login,
+                booruConfig.apiKey,
                 dateTime.month,
                 dateTime.year,
-              )))
+              ))
       .flatMap(
           (response) => TaskEither.fromEither(Either.of(parsePost(response))))
       .flatMap(tryFilterBlacklistedTags);
 
   @override
-  PostsOrError getPopularPostsByWeek(DateTime dateTime) => tryGetBooruConfig()
-      .flatMap((config) => tryParseResponse(
+  PostsOrError getPopularPostsByWeek(DateTime dateTime) => tryParseResponse(
           fetcher: () => _api.getPopularPostsByWeek(
-                config.login,
-                config.apiKey,
+                booruConfig.login,
+                booruConfig.apiKey,
                 dateTime.day,
                 dateTime.month,
                 dateTime.year,
-              )))
+              ))
       .flatMap(
           (response) => TaskEither.fromEither(Either.of(parsePost(response))))
       .flatMap(tryFilterBlacklistedTags);

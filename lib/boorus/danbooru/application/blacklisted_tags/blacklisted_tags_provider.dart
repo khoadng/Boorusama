@@ -13,19 +13,15 @@ import 'package:boorusama/core/provider.dart';
 final danbooruBlacklistedTagRepoProvider = Provider<BlacklistedTagsRepository>(
   (ref) {
     final userRepository = ref.watch(danbooruUserRepoProvider);
-    final currentBooruConfigRepository =
-        ref.watch(currentBooruConfigRepoProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
     final api = ref.watch(danbooruApiProvider);
 
-    return BlacklistedTagsRepositoryImpl(
-      userRepository,
-      currentBooruConfigRepository,
-      api,
-    );
+    return BlacklistedTagsRepositoryImpl(userRepository, booruConfig, api);
   },
   dependencies: [
     danbooruUserRepoProvider,
-    currentBooruConfigRepoProvider,
+    currentBooruConfigProvider,
     danbooruApiProvider,
   ],
 );

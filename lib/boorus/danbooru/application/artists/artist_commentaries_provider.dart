@@ -5,17 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
-import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/application/boorus.dart';
 import 'artist_commentary_notifier.dart';
 
 final danbooruArtistCommentaryRepoProvider =
     Provider<ArtistCommentaryRepository>(
   (ref) {
     final api = ref.watch(danbooruApiProvider);
-    final currentUserBooruRepository =
-        ref.watch(currentBooruConfigRepoProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
-    return ArtistCommentaryRepositoryApi(api, currentUserBooruRepository);
+    return ArtistCommentaryRepositoryApi(api, booruConfig);
   },
 );
 

@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
@@ -19,9 +18,7 @@ final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
   () => throw UnimplementedError(),
   dependencies: [
-    currentBooruConfigRepoProvider,
     settingsProvider,
-    authenticationProvider,
     loggerProvider,
   ],
 );

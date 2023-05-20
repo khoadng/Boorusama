@@ -12,20 +12,20 @@ import 'package:boorusama/core/provider.dart';
 final danbooruPostVoteRepoProvider = Provider<PostVoteRepository>(
   (ref) {
     final api = ref.watch(danbooruApiProvider);
-    final currentBooruConfigRepository =
-        ref.watch(currentBooruConfigRepoProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
     final booruUserIdentityProvider =
         ref.watch(booruUserIdentityProviderProvider);
 
     return PostVoteApiRepositoryApi(
       api: api,
-      currentBooruConfigRepository: currentBooruConfigRepository,
+      booruConfig: booruConfig,
       booruUserIdentityProvider: booruUserIdentityProvider,
     );
   },
   dependencies: [
     danbooruApiProvider,
-    currentBooruConfigRepoProvider,
+    currentBooruConfigProvider,
     booruUserIdentityProviderProvider,
   ],
 );

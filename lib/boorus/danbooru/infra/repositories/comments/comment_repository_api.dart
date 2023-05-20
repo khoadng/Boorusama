@@ -22,12 +22,11 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
     DanbooruApi api,
-    CurrentBooruConfigRepository currentBooruConfigRepository,
-  )   : _api = api,
-        _currentUserBooruRepository = currentBooruConfigRepository;
+    this.booruConfig,
+  ) : _api = api;
 
   final DanbooruApi _api;
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
 
   @override
   Future<List<Comment>> getCommentsFromPostId(
@@ -47,40 +46,35 @@ class CommentRepositoryApi implements CommentRepository {
       });
 
   @override
-  Future<bool> postComment(int postId, String content) =>
-      _currentUserBooruRepository
-          .get()
-          .then((account) => _api.postComment(
-                account?.login,
-                account?.apiKey,
-                postId,
-                content,
-                true,
-              ))
-          .then((_) => true)
-          .catchError((Object obj) => false);
+  Future<bool> postComment(int postId, String content) => _api
+      .postComment(
+        booruConfig.login,
+        booruConfig.apiKey,
+        postId,
+        content,
+        true,
+      )
+      .then((_) => true)
+      .catchError((Object obj) => false);
 
   @override
-  Future<bool> updateComment(int commentId, String content) =>
-      _currentUserBooruRepository
-          .get()
-          .then((account) => _api.updateComment(
-                account?.login,
-                account?.apiKey,
-                commentId,
-                content,
-              ))
-          .then((_) => true)
-          .catchError((Object obj) => false);
+  Future<bool> updateComment(int commentId, String content) => _api
+      .updateComment(
+        booruConfig.login,
+        booruConfig.apiKey,
+        commentId,
+        content,
+      )
+      .then((_) => true)
+      .catchError((Object obj) => false);
 
   @override
-  Future<bool> deleteComment(int commentId) => _currentUserBooruRepository
-      .get()
-      .then((account) => _api.deleteComment(
-            account?.login,
-            account?.apiKey,
-            commentId,
-          ))
+  Future<bool> deleteComment(int commentId) => _api
+      .deleteComment(
+        booruConfig.login,
+        booruConfig.apiKey,
+        commentId,
+      )
       .then((_) => true)
       .catchError((Object obj) => false);
 }

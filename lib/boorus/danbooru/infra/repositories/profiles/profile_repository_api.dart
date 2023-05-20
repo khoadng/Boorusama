@@ -10,12 +10,11 @@ import 'package:boorusama/core/domain/boorus.dart';
 
 class ProfileRepositoryApi implements ProfileRepository {
   ProfileRepositoryApi({
-    required CurrentBooruConfigRepository currentBooruConfigRepository,
+    required this.booruConfig,
     required DanbooruApi api,
-  })  : _api = api,
-        _currentUserBooruRepository = currentBooruConfigRepository;
+  }) : _api = api;
 
-  final CurrentBooruConfigRepository _currentUserBooruRepository;
+  final BooruConfig booruConfig;
   final DanbooruApi _api;
 
   @override
@@ -30,10 +29,9 @@ class ProfileRepositoryApi implements ProfileRepository {
         value =
             await _api.getProfile(username, apiKey, cancelToken: cancelToken);
       } else {
-        final booruConfig = await _currentUserBooruRepository.get();
         value = await _api.getProfile(
-          booruConfig?.login,
-          booruConfig?.apiKey,
+          booruConfig.login,
+          booruConfig.apiKey,
           cancelToken: cancelToken,
         );
       }

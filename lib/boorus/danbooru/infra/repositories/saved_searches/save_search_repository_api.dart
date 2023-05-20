@@ -16,25 +16,24 @@ List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) => parse(
 class SavedSearchRepositoryApi implements SavedSearchRepository {
   const SavedSearchRepositoryApi(
     this.api,
-    this.currentBooruConfigRepository,
+    this.booruConfig,
   );
 
   final DanbooruApi api;
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
+  final BooruConfig booruConfig;
 
   @override
   Future<List<SavedSearch>> getSavedSearches({
     required int page,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.getSavedSearches(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                page,
-                //TODO: shouldn't hardcode it
-                1000,
-              ))
+      api
+          .getSavedSearches(
+            booruConfig.login,
+            booruConfig.apiKey,
+            page,
+            //TODO: shouldn't hardcode it
+            1000,
+          )
           .then(parseSavedSearch);
 
   @override
@@ -42,19 +41,16 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
     required String query,
     String? label,
   }) =>
-      currentBooruConfigRepository
-          .get()
-          .then((booruConfig) => api.postSavedSearch(
-                booruConfig?.login,
-                booruConfig?.apiKey,
-                {
-                  'saved_search[query]': query,
-                  'saved_search[label_string]': label ?? '',
-                },
-              ))
-          .then((value) => value.response.statusCode == 201
-              ? _parseSingleSavedSearch(value)
-              : null);
+      api.postSavedSearch(
+        booruConfig.login,
+        booruConfig.apiKey,
+        {
+          'saved_search[query]': query,
+          'saved_search[label_string]': label ?? '',
+        },
+      ).then((value) => value.response.statusCode == 201
+          ? _parseSingleSavedSearch(value)
+          : null);
 
   @override
   Future<bool> updateSavedSearch(
@@ -73,25 +69,23 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
       map['saved_search[label_string]'] = label;
     }
 
-    return currentBooruConfigRepository
-        .get()
-        .then((booruConfig) => api.patchSavedSearch(
-              booruConfig?.login,
-              booruConfig?.apiKey,
-              id,
-              map,
-            ))
+    return api
+        .patchSavedSearch(
+          booruConfig.login,
+          booruConfig.apiKey,
+          id,
+          map,
+        )
         .then((value) => value.response.statusCode == 204);
   }
 
   @override
-  Future<bool> deleteSavedSearch(int id) => currentBooruConfigRepository
-      .get()
-      .then((booruConfig) => api.deleteSavedSearch(
-            booruConfig?.login,
-            booruConfig?.apiKey,
-            id,
-          ))
+  Future<bool> deleteSavedSearch(int id) => api
+      .deleteSavedSearch(
+        booruConfig.login,
+        booruConfig.apiKey,
+        id,
+      )
       .then((value) => value.response.statusCode == 204);
 }
 
