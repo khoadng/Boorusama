@@ -2,14 +2,12 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
@@ -53,7 +51,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
     final selectedTags = ref.watch(selectedRawTagStringProvider);
 
     return DanbooruPostScope(
-      fetcher: (page) => context.read<DanbooruPostRepository>().getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
             selectedTags.join(' '),
             page,
           ),

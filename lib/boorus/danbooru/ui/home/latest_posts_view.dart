@@ -2,18 +2,18 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'most_search_tag_list.dart';
 
-class LatestView extends StatefulWidget {
+class LatestView extends ConsumerStatefulWidget {
   const LatestView({
     super.key,
     this.onMenuTap,
@@ -24,10 +24,10 @@ class LatestView extends StatefulWidget {
   final bool? useAppBarPadding;
 
   @override
-  State<LatestView> createState() => _LatestViewState();
+  ConsumerState<LatestView> createState() => _LatestViewState();
 }
 
-class _LatestViewState extends State<LatestView> {
+class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
   final _selectedTag = ValueNotifier('');
 
@@ -41,9 +41,8 @@ class _LatestViewState extends State<LatestView> {
   @override
   Widget build(BuildContext context) {
     return DanbooruPostScope(
-      fetcher: (page) => context
-          .read<DanbooruPostRepository>()
-          .getPosts(_selectedTag.value, page),
+      fetcher: (page) =>
+          ref.read(danbooruPostRepoProvider).getPosts(_selectedTag.value, page),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,

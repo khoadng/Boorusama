@@ -8,9 +8,13 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/provider.dart';
 import 'post_details_artist_notifier.dart';
 import 'post_details_character_notifier.dart';
@@ -18,80 +22,32 @@ import 'post_details_children_notifier.dart';
 import 'post_details_pools_notifier.dart';
 import 'post_details_tags_notifier.dart';
 
-//#region Post Count
-final postCountRepoProvider = Provider<PostCountRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfig = ref.watch(currentBooruConfigProvider);
-  final currentBooru = ref.watch(currentBooruProvider);
+part 'posts_count_provider.dart';
+part 'posts_details_provider.dart';
 
-  return PostCountRepositoryApi(
-    api: api,
-    booruConfig: currentBooruConfig,
-    //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags:
-        currentBooru.booruType == BooruType.safebooru ? ['rating:general'] : [],
+final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
+  final api = ref.watch(danbooruApiProvider);
+  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final settingsRepo = ref.watch(settingsRepoProvider);
+  final globalBlacklistedTagRepo = ref.watch(globalBlacklistedTagRepoProvider);
+
+  return PostRepositoryApi(
+    api,
+    booruConfigRepo,
+    settingsRepo,
+    globalBlacklistedTagRepo,
   );
 });
 
-final postCountStateProvider =
-    NotifierProvider<PostCountNotifier, PostCountState>(
-  PostCountNotifier.new,
-  dependencies: [
-    postCountRepoProvider,
-  ],
-);
+final danbooruArtistCharacterPostRepoProvider =
+    Provider<DanbooruPostRepository>((ref) {
+  final postRepo = ref.watch(danbooruPostRepoProvider);
 
-final postCountProvider = Provider<PostCountState>((ref) {
-  return ref.watch(postCountStateProvider);
-}, dependencies: [
-  postCountStateProvider,
-]);
-//#endregion
-
-final danbooruPostDetailsArtistProvider = NotifierProvider.autoDispose
-    .family<PostDetailsArtistNotifier, List<Recommend<DanbooruPost>>, int>(
-  PostDetailsArtistNotifier.new,
-  dependencies: [
-    danbooruArtistCharacterPostRepoProvider,
-  ],
-);
-
-final danbooruPostDetailsCharacterProvider = NotifierProvider.autoDispose
-    .family<PostDetailsCharacterNotifier, List<Recommend<DanbooruPost>>, int>(
-  PostDetailsCharacterNotifier.new,
-  dependencies: [
-    danbooruArtistCharacterPostRepoProvider,
-  ],
-);
-
-final danbooruPostDetailsChildrenProvider = NotifierProvider.autoDispose
-    .family<PostDetailsChildrenNotifier, List<DanbooruPost>, int>(
-  PostDetailsChildrenNotifier.new,
-  dependencies: [
-    danbooruPostRepoProvider,
-  ],
-);
-
-final danbooruPostDetailsNoteProvider = NotifierProvider.autoDispose
-    .family<PostDetailsNoteNotifier, PostDetailsNoteState, Post>(
-  PostDetailsNoteNotifier.new,
-  dependencies: [
-    danbooruNoteProvider,
-  ],
-);
-
-final danbooruPostDetailsPoolsProvider = NotifierProvider.autoDispose
-    .family<PostDetailsPoolsNotifier, List<Pool>, int>(
-  PostDetailsPoolsNotifier.new,
-  dependencies: [
-    poolRepoProvider,
-  ],
-);
-
-final danbooruPostDetailsTagsProvider = NotifierProvider.autoDispose
-    .family<PostDetailsTagsNotifier, List<PostDetailTag>, int>(
-  PostDetailsTagsNotifier.new,
-);
+  return DanbooruArtistCharacterPostRepository(
+    repository: postRepo,
+    cache: LruCacher(),
+  );
+});
 
 final postShareProvider =
     NotifierProvider.family<PostShareNotifier, PostShareState, Post>(

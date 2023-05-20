@@ -28,7 +28,7 @@ class OtherFeaturesPage extends ConsumerWidget {
                 leading: const Icon(Icons.photo_album_outlined),
                 title: const Text('Pools'),
                 onTap: () {
-                  goToPoolPage(context);
+                  goToPoolPage(context, ref);
                 },
               ),
               if (authState is Authenticated) ...[

@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
@@ -19,7 +20,7 @@ import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';
 
-class SavedSearchFeedPage extends StatefulWidget {
+class SavedSearchFeedPage extends ConsumerStatefulWidget {
   const SavedSearchFeedPage({
     super.key,
   });
@@ -43,10 +44,11 @@ class SavedSearchFeedPage extends StatefulWidget {
   }
 
   @override
-  State<SavedSearchFeedPage> createState() => _SavedSearchFeedPageState();
+  ConsumerState<SavedSearchFeedPage> createState() =>
+      _SavedSearchFeedPageState();
 }
 
-class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
+class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
   final _selectedSearchStream = BehaviorSubject<SavedSearch>();
   final _compositeSubscription = CompositeSubscription();
   final savedSearches = ValueNotifier(SavedSearch.all().toQuery());
@@ -86,8 +88,8 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
     SavedSearchFeedState savedSearchState,
   ) {
     return DanbooruPostScope(
-      fetcher: (page) => context
-          .read<DanbooruPostRepository>()
+      fetcher: (page) => ref
+          .read(danbooruPostRepoProvider)
           .getPosts(savedSearches.value, page),
       builder: (context, controller, errors) =>
           BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/posts/posts_provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends ConsumerWidget {
   const FavoritesPage({
     super.key,
     required this.username,
@@ -34,11 +34,10 @@ class FavoritesPage extends StatelessWidget {
   final String username;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DanbooruPostScope(
-      fetcher: (page) => context
-          .read<DanbooruPostRepository>()
-          .getPosts('ordfav:$username', page),
+      fetcher: (page) =>
+          ref.read(danbooruPostRepoProvider).getPosts('ordfav:$username', page),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,

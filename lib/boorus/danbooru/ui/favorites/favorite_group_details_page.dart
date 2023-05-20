@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -67,7 +66,7 @@ class _FavoriteGroupDetailsPageState
 
   @override
   DanbooruPostRepository get postRepository =>
-      context.read<DanbooruPostRepository>();
+      ref.read(danbooruPostRepoProvider);
 
   @override
   void initState() {

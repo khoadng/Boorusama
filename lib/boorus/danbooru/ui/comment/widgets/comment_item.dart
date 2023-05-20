@@ -42,6 +42,7 @@ class CommentItem extends ConsumerWidget {
           authorLevel: comment.authorLevel,
           createdAt: comment.createdAt,
           onTap: () => goToUserDetailsPage(
+            ref,
             context,
             uid: comment.authorId,
           ),

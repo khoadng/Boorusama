@@ -12,21 +12,17 @@ import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
-import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/provider.dart';
 
@@ -34,7 +30,6 @@ class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
     super.key,
     required this.builder,
-    required this.postRepo,
     required this.poolRepo,
     required this.userRepo,
     required this.relatedTagRepo,
@@ -43,7 +38,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.tagInfo,
     required this.poolOverviewBloc,
     required this.savedSearchBloc,
-    required this.danbooruArtistCharacterPostRepository,
   });
 
   factory DanbooruProvider.create(
@@ -57,15 +51,7 @@ class DanbooruProvider extends StatelessWidget {
     final api = DanbooruApi(dio);
     ref.read(trendingTagsProvider.notifier).fetch();
 
-    final settingRepository = ref.read(settingsRepoProvider);
     final currentBooruConfigRepo = ref.read(currentBooruConfigRepoProvider);
-
-    final postRepo = PostRepositoryApi(
-      api,
-      currentBooruConfigRepo,
-      settingRepository,
-      ref.read(globalBlacklistedTagRepoProvider),
-    );
 
     final userRepo = UserRepositoryApi(
       api,
@@ -95,23 +81,16 @@ class DanbooruProvider extends StatelessWidget {
       savedSearchRepository: savedSearchRepo,
     );
 
-    final artistCharacterPostRepository = DanbooruArtistCharacterPostRepository(
-      repository: postRepo,
-      cache: LruCacher(),
-    );
-
     return DanbooruProvider(
       builder: builder,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
-      postRepo: postRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       userRepo: userRepo,
       tagInfo: tagInfo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
-      danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
     );
   }
 
@@ -119,7 +98,6 @@ class DanbooruProvider extends StatelessWidget {
     BuildContext context, {
     required Widget Function(BuildContext context) builder,
   }) {
-    final postRepo = context.read<DanbooruPostRepository>();
     final userRepo = context.read<UserRepository>();
     final poolRepo = context.read<PoolRepository>();
     final relatedTagRepo = context.read<RelatedTagRepository>();
@@ -130,29 +108,22 @@ class DanbooruProvider extends StatelessWidget {
 
     final poolOverviewBloc = context.read<PoolOverviewBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
-    final artistCharacterPostRepository =
-        context.read<DanbooruArtistCharacterPostRepository>();
 
     return DanbooruProvider(
       builder: builder,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
-      postRepo: postRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
       userRepo: userRepo,
       tagInfo: tagInfo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
-      danbooruArtistCharacterPostRepository: artistCharacterPostRepository,
     );
   }
 
   final Widget Function(BuildContext context) builder;
 
-  final DanbooruPostRepository postRepo;
-  final DanbooruArtistCharacterPostRepository
-      danbooruArtistCharacterPostRepository;
   final PoolRepository poolRepo;
   final UserRepository userRepo;
   final RelatedTagRepository relatedTagRepo;
@@ -168,8 +139,6 @@ class DanbooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: postRepo),
-        RepositoryProvider.value(value: danbooruArtistCharacterPostRepository),
         RepositoryProvider.value(value: poolRepo),
         RepositoryProvider.value(value: userRepo),
         RepositoryProvider.value(value: relatedTagRepo),
@@ -184,8 +153,6 @@ class DanbooruProvider extends StatelessWidget {
         child: ProviderScope(
           overrides: [
             poolRepoProvider.overrideWithValue(poolRepo),
-            danbooruArtistCharacterPostRepoProvider
-                .overrideWithValue(danbooruArtistCharacterPostRepository),
             poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
             tagRepoProvider
                 .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
@@ -210,19 +177,6 @@ final danbooruApiProvider = Provider<DanbooruApi>((ref) {
 
 final poolRepoProvider =
     Provider<PoolRepository>((ref) => throw UnimplementedError());
-
-final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
-  final settingsRepo = ref.watch(settingsRepoProvider);
-  final globalBlacklistedTagRepo = ref.watch(globalBlacklistedTagRepoProvider);
-
-  return PostRepositoryApi(
-      api, booruConfigRepo, settingsRepo, globalBlacklistedTagRepo);
-});
-
-final danbooruArtistCharacterPostRepoProvider =
-    Provider<DanbooruPostRepository>((ref) => throw UnimplementedError());
 
 final poolDescriptionRepoProvider =
     Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());

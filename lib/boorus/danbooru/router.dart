@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
+import 'package:boorusama/boorus/danbooru/application/posts/posts_provider.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -172,7 +174,7 @@ void goToSavedSearchEditPage(BuildContext context) {
   ));
 }
 
-void goToPoolPage(BuildContext context) {
+void goToPoolPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => DanbooruProvider.of(
       context,
@@ -181,7 +183,7 @@ void goToPoolPage(BuildContext context) {
           BlocProvider(
             create: (_) => PoolBloc(
               poolRepository: context.read<PoolRepository>(),
-              postRepository: context.read<DanbooruPostRepository>(),
+              postRepository: ref.read(danbooruPostRepoProvider),
             )..add(const PoolRefreshed(
                 category: PoolCategory.series,
                 order: PoolOrder.latest,
@@ -306,6 +308,7 @@ void goToCommentUpdatePage(
 }
 
 void goToUserDetailsPage(
+  WidgetRef ref,
   BuildContext context, {
   required int uid,
 }) {
@@ -316,7 +319,7 @@ void goToUserDetailsPage(
         builder: (dcontext) => BlocProvider(
           create: (_) => UserBloc(
             userRepository: dcontext.read<UserRepository>(),
-            postRepository: dcontext.read<DanbooruPostRepository>(),
+            postRepository: ref.read(danbooruPostRepoProvider),
           )..add(UserFetched(uid: uid)),
           child: const UserDetailsPage(),
         ),
@@ -328,7 +331,7 @@ void goToUserDetailsPage(
   );
 }
 
-void goToPoolSearchPage(BuildContext context) {
+void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => DanbooruProvider.of(
       context,
@@ -337,7 +340,7 @@ void goToPoolSearchPage(BuildContext context) {
           BlocProvider(
             create: (_) => PoolBloc(
               poolRepository: dcontext.read<PoolRepository>(),
-              postRepository: dcontext.read<DanbooruPostRepository>(),
+              postRepository: ref.read(danbooruPostRepoProvider),
             ),
           ),
           BlocProvider(

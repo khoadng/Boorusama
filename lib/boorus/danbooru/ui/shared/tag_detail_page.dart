@@ -1,13 +1,11 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts/post_utils.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/danbooru_artist_character_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -39,7 +37,7 @@ class _TagDetailPageState extends ConsumerState<TagDetailPage> {
   Widget build(BuildContext context) {
     return DanbooruPostScope(
       fetcher: (page) =>
-          context.read<DanbooruArtistCharacterPostRepository>().getPosts(
+          ref.read(danbooruArtistCharacterPostRepoProvider).getPosts(
                 queryFromTagFilterCategory(
                   category: selectedCategory.value,
                   tag: widget.tagName,
