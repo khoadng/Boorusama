@@ -18,6 +18,8 @@ class DanbooruBulkDownloadManagerBloc
     extends MobileBulkDownloadManagerBloc<DanbooruPost> {
   DanbooruBulkDownloadManagerBloc({
     required BuildContext context,
+    required PostCountRepository postCountRepository,
+    required DanbooruPostRepository postRepository,
     required super.deviceInfo,
   }) : super(
             bulkPostDownloadBloc: DanbooruBulkDownloadBloc(
@@ -28,8 +30,8 @@ class DanbooruBulkDownloadManagerBloc
                 DanbooruMd5OnlyFileNameGenerator().generateFor(item),
             idResolver: (items) => items.id,
           ),
-          postCountRepository: context.read<PostCountRepository>(),
-          postRepository: context.read<DanbooruPostRepository>(),
+          postCountRepository: postCountRepository,
+          postRepository: postRepository,
           errorTranslator: translateBooruError,
           onDownloadDone: (path) => MediaScanner.loadMedia(path: path),
         ));

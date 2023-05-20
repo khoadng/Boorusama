@@ -15,6 +15,7 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/danbooru_bulk_download_manager_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
@@ -360,8 +361,10 @@ void goToSettingPage(BuildContext context) {
 }
 
 void goToBookmarkPage(BuildContext context) {
-  Navigator.of(context)
-      .push(MaterialPageRoute(builder: (_) => const BookmarkPage()));
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.rightToLeft,
+    child: const BookmarkPage(),
+  ));
 }
 
 void goToBookmarkDetailsPage(
@@ -595,6 +598,8 @@ Future<void> goToBulkDownloadPage(
                   create: (_) => DanbooruBulkDownloadManagerBloc(
                     context: context,
                     deviceInfo: ref.read(deviceInfoProvider),
+                    postRepository: ref.read(danbooruPostRepoProvider),
+                    postCountRepository: ref.read(postCountRepoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
               ],
