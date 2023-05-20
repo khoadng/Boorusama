@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -214,7 +214,10 @@ class _MoebooruPostDetailsPageState
           post: post,
         ),
         post.source.whenWeb(
-          (source) => SourceSection(url: source.url),
+          (source) => SourceSection(
+            url: source.sourceHost,
+            isIcoUrl: source.hasIcoLogoSource,
+          ),
           () => const SizedBox.shrink(),
         ),
       ],

@@ -226,7 +226,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
           post: post,
         ),
         post.source.whenWeb(
-          (source) => SourceSection(url: source.url),
+          (source) => SourceSection(
+            url: source.sourceHost,
+            isIcoUrl: source.hasIcoLogoSource,
+          ),
           () => const SizedBox.shrink(),
         ),
       ],

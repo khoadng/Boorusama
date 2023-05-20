@@ -38,7 +38,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.postRepo,
     required this.poolRepo,
     required this.userRepo,
-    required this.autocompleteRepo,
     required this.relatedTagRepo,
     required this.poolDescriptionRepo,
     required this.exploreRepo,
@@ -91,11 +90,6 @@ class DanbooruProvider extends StatelessWidget {
 
     final poolRepo = PoolCacher(PoolRepositoryApi(api, currentBooruConfigRepo));
 
-    final autocompleteRepo = AutocompleteRepositoryApi(
-      api: api,
-      currentBooruConfigRepository: currentBooruConfigRepo,
-    );
-
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
     final poolDescriptionRepo = PoolDescriptionRepositoryApi(
@@ -123,7 +117,6 @@ class DanbooruProvider extends StatelessWidget {
 
     return DanbooruProvider(
       builder: builder,
-      autocompleteRepo: autocompleteRepo,
       exploreRepo: exploreRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
@@ -146,7 +139,6 @@ class DanbooruProvider extends StatelessWidget {
     final exploreRepo = context.read<ExploreRepository>();
     final userRepo = context.read<UserRepository>();
     final poolRepo = context.read<PoolRepository>();
-    final autocompleteRepo = context.read<AutocompleteRepository>();
     final relatedTagRepo = context.read<RelatedTagRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
@@ -160,7 +152,6 @@ class DanbooruProvider extends StatelessWidget {
 
     return DanbooruProvider(
       builder: builder,
-      autocompleteRepo: autocompleteRepo,
       exploreRepo: exploreRepo,
       poolDescriptionRepo: poolDescriptionRepo,
       poolRepo: poolRepo,
@@ -182,7 +173,6 @@ class DanbooruProvider extends StatelessWidget {
       danbooruArtistCharacterPostRepository;
   final PoolRepository poolRepo;
   final UserRepository userRepo;
-  final AutocompleteRepository autocompleteRepo;
   final RelatedTagRepository relatedTagRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
@@ -201,7 +191,6 @@ class DanbooruProvider extends StatelessWidget {
         RepositoryProvider.value(value: danbooruArtistCharacterPostRepository),
         RepositoryProvider.value(value: poolRepo),
         RepositoryProvider.value(value: userRepo),
-        RepositoryProvider.value(value: autocompleteRepo),
         RepositoryProvider.value(value: relatedTagRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: exploreRepo),
@@ -214,7 +203,6 @@ class DanbooruProvider extends StatelessWidget {
         ],
         child: ProviderScope(
           overrides: [
-            autocompleteRepoProvider.overrideWithValue(autocompleteRepo),
             poolRepoProvider.overrideWithValue(poolRepo),
             danbooruArtistCharacterPostRepoProvider
                 .overrideWithValue(danbooruArtistCharacterPostRepository),
@@ -223,6 +211,8 @@ class DanbooruProvider extends StatelessWidget {
                 .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
             downloadFileNameGeneratorProvider.overrideWith(
                 (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
+            autocompleteRepoProvider.overrideWith(
+                (ref) => ref.watch(danbooruAutocompleteRepoProvider))
           ],
           child: Builder(builder: builder),
         ),
@@ -256,3 +246,15 @@ final danbooruArtistCharacterPostRepoProvider =
 
 final poolDescriptionRepoProvider =
     Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());
+
+final danbooruAutocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) {
+  final api = ref.watch(danbooruApiProvider);
+  final currentBooruConfigRepository =
+      ref.watch(currentBooruConfigRepoProvider);
+
+  return AutocompleteRepositoryApi(
+    api: api,
+    currentBooruConfigRepository: currentBooruConfigRepository,
+  );
+});

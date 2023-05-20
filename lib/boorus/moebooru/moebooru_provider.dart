@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_popular_repository.dart';
+import 'package:boorusama/boorus/moebooru/domain/tags.dart';
 import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocomplete_repository.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
@@ -25,7 +26,6 @@ class MoebooruProvider extends StatelessWidget {
     super.key,
     required this.postRepository,
     required this.builder,
-    required this.autocompleteRepository,
     required this.moebooruPopularRepository,
   });
 
@@ -45,9 +45,6 @@ class MoebooruProvider extends StatelessWidget {
     final globalBlacklistedTagRepo = ref.read(globalBlacklistedTagRepoProvider);
     final currentBooruConfigRepository =
         ref.read(currentBooruConfigRepoProvider);
-    final tagSummaryRepository = MoebooruTagSummaryRepository(api);
-    final autocompleteRepo = MoebooruAutocompleteRepository(
-        tagSummaryRepository: tagSummaryRepository);
 
     final postRepo = MoebooruPostRepositoryApi(
       api,
@@ -65,7 +62,6 @@ class MoebooruProvider extends StatelessWidget {
       key: key,
       postRepository: postRepo,
       builder: builder,
-      autocompleteRepository: autocompleteRepo,
       moebooruPopularRepository: popularRepository,
     );
   }
@@ -77,7 +73,6 @@ class MoebooruProvider extends StatelessWidget {
     Key? key,
   }) {
     final postRepo = ref.read(postRepoProvider);
-    final autocompleteRepo = ref.read(autocompleteRepoProvider);
     final popularRepository = context.read<MoebooruPopularRepository>();
 
     return MoebooruProvider(
@@ -85,12 +80,10 @@ class MoebooruProvider extends StatelessWidget {
       postRepository: postRepo,
       moebooruPopularRepository: popularRepository,
       builder: builder,
-      autocompleteRepository: autocompleteRepo,
     );
   }
 
   final PostRepository postRepository;
-  final AutocompleteRepository autocompleteRepository;
   final MoebooruPopularRepository moebooruPopularRepository;
   final Widget Function(BuildContext context) builder;
 
@@ -99,14 +92,14 @@ class MoebooruProvider extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: moebooruPopularRepository),
-        RepositoryProvider.value(value: autocompleteRepository),
       ],
       child: ProviderScope(
         overrides: [
-          autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
           downloadFileNameGeneratorProvider.overrideWith(
               (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
           postRepoProvider.overrideWithValue(postRepository),
+          autocompleteRepoProvider.overrideWith(
+              (ref) => ref.watch(moebooruAutocompleteRepoProvider))
         ],
         child: Builder(
           builder: builder,
@@ -115,3 +108,24 @@ class MoebooruProvider extends StatelessWidget {
     );
   }
 }
+
+final moebooruApiProvider = Provider<MoebooruApi>((ref) {
+  final booruConfig = ref.read(currentBooruConfigProvider);
+  final dio = ref.read(dioProvider(booruConfig.url));
+
+  return MoebooruApi(dio);
+});
+
+final moebooruAutocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) {
+  final tagSummaryRepository = ref.watch(moebooruTagSummaryProvider);
+
+  return MoebooruAutocompleteRepository(
+      tagSummaryRepository: tagSummaryRepository);
+});
+
+final moebooruTagSummaryProvider = Provider<TagSummaryRepository>((ref) {
+  final api = ref.watch(moebooruApiProvider);
+
+  return MoebooruTagSummaryRepository(api);
+});

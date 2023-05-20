@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/provider.dart';

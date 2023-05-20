@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -24,7 +23,6 @@ class GelbooruProvider extends StatelessWidget {
     super.key,
     required this.postRepository,
     required this.builder,
-    required this.autocompleteRepository,
   });
 
   factory GelbooruProvider.create(
@@ -37,8 +35,6 @@ class GelbooruProvider extends StatelessWidget {
     final dio = ref.read(dioProvider(booruConfig.url));
 
     final api = GelbooruApi(dio);
-
-    final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
     final settingsRepo = ref.read(settingsRepoProvider);
     final globalBlacklistedTagRepo = ref.read(globalBlacklistedTagRepoProvider);
@@ -56,7 +52,6 @@ class GelbooruProvider extends StatelessWidget {
       key: key,
       postRepository: postRepo,
       builder: builder,
-      autocompleteRepository: autocompleteRepo,
     );
   }
 
@@ -67,38 +62,31 @@ class GelbooruProvider extends StatelessWidget {
     Key? key,
   }) {
     final postRepo = ref.read(postRepoProvider);
-    final autocompleteRepo = ref.read(autocompleteRepoProvider);
 
     return GelbooruProvider(
       key: key,
       postRepository: postRepo,
       builder: builder,
-      autocompleteRepository: autocompleteRepo,
     );
   }
 
   final PostRepository postRepository;
-  final AutocompleteRepository autocompleteRepository;
   final Widget Function(BuildContext context) builder;
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider.value(value: autocompleteRepository),
+    return ProviderScope(
+      overrides: [
+        autocompleteRepoProvider
+            .overrideWith((ref) => ref.watch(gelbooruAutocompleteRepoProvider)),
+        postRepoProvider.overrideWithValue(postRepository),
+        tagRepoProvider
+            .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
+        downloadFileNameGeneratorProvider.overrideWith(
+            (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
       ],
-      child: ProviderScope(
-        overrides: [
-          autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
-          postRepoProvider.overrideWithValue(postRepository),
-          tagRepoProvider
-              .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
-          downloadFileNameGeneratorProvider.overrideWith(
-              (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
-        ],
-        child: Builder(
-          builder: builder,
-        ),
+      child: Builder(
+        builder: builder,
       ),
     );
   }
@@ -109,4 +97,11 @@ final gelbooruApiProvider = Provider<GelbooruApi>((ref) {
   final dio = ref.read(dioProvider(booruConfig.url));
 
   return GelbooruApi(dio);
+});
+
+final gelbooruAutocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) {
+  final api = ref.watch(gelbooruApiProvider);
+
+  return GelbooruAutocompleteRepositoryApi(api);
 });
