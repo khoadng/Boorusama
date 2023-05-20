@@ -63,6 +63,7 @@ class DanbooruProvider extends StatelessWidget {
     final dio = ref.read(dioProvider(booruConfig.url));
     final tagInfo = context.read<TagInfo>();
     final api = DanbooruApi(dio);
+    ref.read(trendingTagsProvider.notifier).fetch();
 
     final settingRepository = context.read<SettingsRepository>();
     final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();

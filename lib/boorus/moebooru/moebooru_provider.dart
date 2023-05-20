@@ -13,10 +13,10 @@ import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocompl
 import 'package:boorusama/boorus/moebooru/infra/posts.dart';
 import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/infra/tags.dart';
+import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -43,8 +43,7 @@ class MoebooruProvider extends StatelessWidget {
     final api = MoebooruApi(dio);
 
     final settingsRepo = context.read<SettingsRepository>();
-    final globalBlacklistedTagRepo =
-        context.read<GlobalBlacklistedTagRepository>();
+    final globalBlacklistedTagRepo = ref.read(globalBlacklistedTagRepoProvider);
     final currentBooruConfigRepository =
         context.read<CurrentBooruConfigRepository>();
     final tagSummaryRepository = MoebooruTagSummaryRepository(api);

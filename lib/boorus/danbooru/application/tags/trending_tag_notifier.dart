@@ -25,13 +25,13 @@ class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
   FutureOr<List<Search>> build() {
     ref.watch(currentBooruConfigProvider);
 
-    return fetch();
+    return [];
   }
 
   PopularSearchRepository get popularSearchRepository =>
       ref.read(popularSearchProvider);
 
-  Future<List<Search>> fetch() async {
+  Future<void> fetch() async {
     final excludedTags = ref.read(tagInfoProvider).r18Tags;
     var searches =
         await popularSearchRepository.getSearchByDate(DateTime.now());
@@ -44,6 +44,6 @@ class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
     final filtered =
         searches.where((s) => !excludedTags.contains(s.keyword)).toList();
 
-    return filtered;
+    state = AsyncData(filtered);
   }
 }

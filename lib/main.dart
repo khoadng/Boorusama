@@ -27,7 +27,6 @@ import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings.dart';
@@ -249,9 +248,6 @@ void main() async {
             ),
             RepositoryProvider<CurrentBooruConfigRepository>.value(
               value: currentBooruRepo,
-            ),
-            RepositoryProvider<GlobalBlacklistedTagRepository>.value(
-              value: globalBlacklistedTags,
             ),
           ],
           child: ProviderScope(
