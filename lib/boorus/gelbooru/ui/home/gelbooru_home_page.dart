@@ -3,14 +3,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
@@ -53,8 +51,8 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                   const NetworkUnavailableIndicatorWithState(),
                   Expanded(
                     child: PostScope(
-                      fetcher: (page) => context
-                          .read<PostRepository>()
+                      fetcher: (page) => ref
+                          .watch(postRepoProvider)
                           .getPostsFromTags('', page),
                       builder: (context, controller, errors) =>
                           GelbooruInfinitePostList(
@@ -73,7 +71,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                                       onPressed: () => widget.onMenuTap?.call(),
                                     )
                                   : null,
-                              onTap: () => goToGelbooruSearchPage(context),
+                              onTap: () => goToGelbooruSearchPage(ref, context),
                             ),
                             floating: true,
                             snap: true,

@@ -17,6 +17,7 @@ import 'package:boorusama/core/infra/downloads.dart';
 class GelbooruBulkDownloadManagerBloc
     extends MobileBulkDownloadManagerBloc<Post> {
   GelbooruBulkDownloadManagerBloc({
+    required PostRepository postRepository,
     required BuildContext context,
     required super.deviceInfo,
   }) : super(
@@ -28,7 +29,7 @@ class GelbooruBulkDownloadManagerBloc
                 Md5OnlyFileNameGenerator().generateFor(item),
             idResolver: (items) => items.id,
           ),
-          postRepository: context.read<PostRepository>(),
+          postRepository: postRepository,
           errorTranslator: translateBooruError,
           onDownloadDone: (path) => MediaScanner.loadMedia(path: path),
         ));

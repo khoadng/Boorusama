@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,7 +11,6 @@ import 'package:boorusama/boorus/moebooru/ui/home/moebooru_bottom_bar.dart';
 import 'package:boorusama/boorus/moebooru/ui/popular/moebooru_popular_page.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
@@ -59,9 +57,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                   index: index,
                   children: [
                     PostScope(
-                      fetcher: (page) => context
-                          .read<PostRepository>()
-                          .getPostsFromTags('', page),
+                      fetcher: (page) =>
+                          ref.read(postRepoProvider).getPostsFromTags('', page),
                       builder: (context, controller, errors) =>
                           MoebooruInfinitePostList(
                         errors: errors,
@@ -79,7 +76,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                                       onPressed: () => widget.onMenuTap?.call(),
                                     )
                                   : null,
-                              onTap: () => goToMoebooruSearchPage(context),
+                              onTap: () => goToMoebooruSearchPage(ref, context),
                             ),
                             floating: true,
                             snap: true,

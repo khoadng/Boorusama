@@ -63,7 +63,8 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
     final postIdsToFetch = postIds.where((postId) {
       if (!state.containsKey(postId)) return true;
       final postVote = state[postId];
-      return postVote!.isOptimisticUpdateVote;
+      if (postVote == null) return false;
+      return postVote.isOptimisticUpdateVote;
     }).toList();
 
     if (postIdsToFetch.isNotEmpty) {

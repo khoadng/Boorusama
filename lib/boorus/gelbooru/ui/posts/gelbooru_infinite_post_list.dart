@@ -126,6 +126,7 @@ class _DanbooruInfinitePostListState
               onTap: !multiSelect
                   ? () {
                       goToGelbooruPostDetailsPage(
+                        ref: ref,
                         context: context,
                         posts: items,
                         initialIndex: index,

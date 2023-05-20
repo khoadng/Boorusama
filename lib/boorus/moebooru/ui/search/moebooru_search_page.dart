@@ -1,18 +1,16 @@
 // Flutter imports:
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
@@ -35,11 +33,16 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
   final Color metatagHighlightColor;
   final String? initialQuery;
 
-  static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
+  static Route<T> routeOf<T>(
+    BuildContext context,
+    WidgetRef ref, {
+    String? tag,
+  }) {
     return PageTransition(
       type: PageTransitionType.fade,
       child: MoebooruProvider.of(
         context,
+        ref,
         builder: (gcontext) {
           return CustomContextMenuOverlay(
             child: ProviderScope(
@@ -165,11 +168,10 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
             final selectedTags = ref.watch(selectedRawTagStringProvider);
 
             return PostScope(
-              fetcher: (page) =>
-                  context.read<PostRepository>().getPostsFromTags(
-                        selectedTags.join(' '),
-                        page,
-                      ),
+              fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
+                    selectedTags.join(' '),
+                    page,
+                  ),
               builder: (context, controller, errors) =>
                   MoebooruInfinitePostList(
                 errors: errors,

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -10,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -47,7 +47,8 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required List<Post> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
@@ -57,21 +58,12 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
       builder: (_) {
         return MoebooruProvider.of(
           context,
-          builder: (context) => MultiBlocProvider(
-            providers: const [
-              // BlocProvider.value(value: shareCubit),
-            ],
-            child: MoebooruPostDetailsPage(
-              posts: posts,
-              onExit: (page) => scrollController?.scrollToIndex(page),
-              // onPageChanged: (page) {
-              //   shareCubit.updateInformation(posts[page]);
-              // },
-              // onCachedImagePathUpdate: (imagePath) =>
-              //     shareCubit.setImagePath(imagePath ?? ''),
-              initialPage: initialIndex,
-              fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
-            ),
+          ref,
+          builder: (context) => MoebooruPostDetailsPage(
+            posts: posts,
+            onExit: (page) => scrollController?.scrollToIndex(page),
+            initialPage: initialIndex,
+            fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
           ),
         );
       },
@@ -211,7 +203,7 @@ class _MoebooruPostDetailsPageState
           padding: const EdgeInsets.all(8),
           child: BasicTagList(
             tags: post.tags,
-            onTap: (tag) => goToMoebooruSearchPage(context, tag: tag),
+            onTap: (tag) => goToMoebooruSearchPage(ref, context, tag: tag),
           ),
         ),
         const Divider(

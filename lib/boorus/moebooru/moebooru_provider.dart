@@ -71,12 +71,13 @@ class MoebooruProvider extends StatelessWidget {
   }
 
   factory MoebooruProvider.of(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final postRepo = context.read<PostRepository>();
-    final autocompleteRepo = context.read<AutocompleteRepository>();
+    final postRepo = ref.read(postRepoProvider);
+    final autocompleteRepo = ref.read(autocompleteRepoProvider);
     final popularRepository = context.read<MoebooruPopularRepository>();
 
     return MoebooruProvider(
@@ -97,7 +98,6 @@ class MoebooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: moebooruPopularRepository),
         RepositoryProvider.value(value: autocompleteRepository),
       ],
@@ -106,6 +106,7 @@ class MoebooruProvider extends StatelessWidget {
           autocompleteRepoProvider.overrideWithValue(autocompleteRepository),
           downloadFileNameGeneratorProvider.overrideWith(
               (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
+          postRepoProvider.overrideWithValue(postRepository),
         ],
         child: Builder(
           builder: builder,

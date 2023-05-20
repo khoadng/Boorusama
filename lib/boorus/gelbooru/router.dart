@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Package imports:
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 void goToGelbooruPostDetailsPage({
+  required WidgetRef ref,
   required BuildContext context,
   required Settings settings,
   required List<Post> posts,
@@ -21,6 +23,7 @@ void goToGelbooruPostDetailsPage({
   AutoScrollController? scrollController,
 }) {
   Navigator.of(context).push(GelbooruPostDetailPage.routeOf(
+    ref,
     context,
     posts: posts,
     initialIndex: initialIndex,
@@ -30,14 +33,21 @@ void goToGelbooruPostDetailsPage({
 }
 
 void goToGelbooruSearchPage(
+  WidgetRef ref,
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context).push(GelbooruSearchPage.routeOf(context, tag: tag));
+    Navigator.of(context)
+        .push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
 
-void goToGelbooruArtistPage(BuildContext context, String artist) {
+void goToGelbooruArtistPage(
+  WidgetRef ref,
+  BuildContext context,
+  String artist,
+) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => provideArtistPageDependencies(
+      ref,
       context,
       artist: artist,
       page: GelbooruArtistPage(
@@ -48,11 +58,13 @@ void goToGelbooruArtistPage(BuildContext context, String artist) {
 }
 
 Widget provideArtistPageDependencies(
+  WidgetRef ref,
   BuildContext context, {
   required String artist,
   required Widget page,
 }) {
   return GelbooruProvider.of(
+    ref,
     context,
     builder: (dcontext) {
       return CustomContextMenuOverlay(

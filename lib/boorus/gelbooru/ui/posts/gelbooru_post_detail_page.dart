@@ -46,6 +46,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
+    WidgetRef ref,
     BuildContext context, {
     required Settings settings,
     required List<Post> posts,
@@ -54,6 +55,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   }) {
     return MaterialPageRoute(
       builder: (_) => GelbooruProvider.of(
+        ref,
         context,
         builder: (gcontext) {
           return GelbooruPostDetailPage(
@@ -132,9 +134,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
               ),
               RecommendArtistList(
                 onHeaderTap: (index) =>
-                    goToGelbooruArtistPage(context, artists[index].tag),
+                    goToGelbooruArtistPage(ref, context, artists[index].tag),
                 onTap: (recommendIndex, postIndex) =>
                     goToGelbooruPostDetailsPage(
+                  ref: ref,
                   context: context,
                   posts: artists[recommendIndex].posts,
                   initialIndex: postIndex,
@@ -215,7 +218,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       if (expandedOnCurrentPage) ...[
         TagsTile(
           post: post,
-          onTagTap: (tag) => goToGelbooruSearchPage(context, tag: tag.rawName),
+          onTagTap: (tag) =>
+              goToGelbooruSearchPage(ref, context, tag: tag.rawName),
         ),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(

@@ -61,12 +61,13 @@ class GelbooruProvider extends StatelessWidget {
   }
 
   factory GelbooruProvider.of(
+    WidgetRef ref,
     BuildContext context, {
     required Widget Function(BuildContext context) builder,
     Key? key,
   }) {
-    final postRepo = context.read<PostRepository>();
-    final autocompleteRepo = context.read<AutocompleteRepository>();
+    final postRepo = ref.read(postRepoProvider);
+    final autocompleteRepo = ref.read(autocompleteRepoProvider);
 
     return GelbooruProvider(
       key: key,
@@ -84,7 +85,6 @@ class GelbooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: postRepository),
         RepositoryProvider.value(value: autocompleteRepository),
       ],
       child: ProviderScope(

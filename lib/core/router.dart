@@ -574,6 +574,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
+                    postRepository: ref.read(postRepoProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
@@ -609,6 +610,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
+                    postRepository: ref.read(postRepoProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),

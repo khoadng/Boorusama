@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -12,7 +11,6 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
@@ -36,12 +34,14 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
   final String? initialQuery;
 
   static Route<T> routeOf<T>(
+    WidgetRef ref,
     BuildContext context, {
     String? tag,
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
       child: GelbooruProvider.of(
+        ref,
         context,
         builder: (gcontext) {
           return CustomContextMenuOverlay(
@@ -180,7 +180,7 @@ class _ResultView extends ConsumerWidget {
     final selectedTags = ref.watch(selectedRawTagStringProvider);
 
     return PostScope(
-      fetcher: (page) => context.read<PostRepository>().getPostsFromTags(
+      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
             selectedTags.join(' '),
             page,
           ),
