@@ -19,9 +19,11 @@ import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
+import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/application/downloads.dart';
+import 'package:boorusama/boorus/moebooru/application/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -491,9 +493,7 @@ void goToQuickSearchPage(
           case BooruType.konachan:
           case BooruType.yandere:
           case BooruType.sakugabooru:
-            return MoebooruProvider.create(
-              context,
-              ref: ref,
+            return MoebooruProvider(
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -580,15 +580,13 @@ Future<void> goToBulkDownloadPage(
         case BooruType.konachan:
         case BooruType.yandere:
         case BooruType.sakugabooru:
-          return MoebooruProvider.create(
-            context,
-            ref: ref,
+          return MoebooruProvider(
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
-                    postRepository: ref.read(postRepoProvider),
+                    postRepository: ref.read(moebooruPostRepoProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
@@ -624,7 +622,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
-                    postRepository: ref.read(postRepoProvider),
+                    postRepository: ref.read(gelbooruPostRepoProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),

@@ -2,33 +2,34 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/datetime_selector.dart';
 import 'package:boorusama/boorus/danbooru/ui/explore/time_scale_toggle_switch.dart';
+import 'package:boorusama/boorus/moebooru/application/posts.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 
-class MoebooruPopularPage extends StatefulWidget {
+class MoebooruPopularPage extends ConsumerStatefulWidget {
   const MoebooruPopularPage({
     super.key,
   });
 
   @override
-  State<MoebooruPopularPage> createState() => _MoebooruPopularPageState();
+  ConsumerState<MoebooruPopularPage> createState() =>
+      _MoebooruPopularPageState();
 }
 
-class _MoebooruPopularPageState extends State<MoebooruPopularPage> {
+class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
   final selectedDateNotifier = ValueNotifier(DateTime.now());
   final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
-  MoebooruPopularRepository get repo =>
-      context.read<MoebooruPopularRepository>();
+  MoebooruPopularRepository get repo => ref.read(moebooruPopularRepoProvider);
 
   DateTime get selectedDate => selectedDateNotifier.value;
 

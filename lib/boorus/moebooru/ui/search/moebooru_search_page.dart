@@ -40,9 +40,7 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: MoebooruProvider.of(
-        context,
-        ref,
+      child: MoebooruProvider(
         builder: (gcontext) {
           return CustomContextMenuOverlay(
             child: ProviderScope(

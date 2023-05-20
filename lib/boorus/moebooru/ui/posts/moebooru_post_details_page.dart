@@ -56,9 +56,7 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   }) {
     return MaterialPageRoute(
       builder: (_) {
-        return MoebooruProvider.of(
-          context,
-          ref,
+        return MoebooruProvider(
           builder: (context) => MoebooruPostDetailsPage(
             posts: posts,
             onExit: (page) => scrollController?.scrollToIndex(page),

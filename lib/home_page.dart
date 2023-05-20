@@ -109,9 +109,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.sakugabooru:
               final gkey = ValueKey(config.id);
 
-              return MoebooruProvider.create(
-                context,
-                ref: ref,
+              return MoebooruProvider(
                 key: gkey,
                 builder: (gcontext) => CustomContextMenuOverlay(
                   child: MoebooruHomePage(
