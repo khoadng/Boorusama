@@ -101,3 +101,7 @@ final deviceInfoProvider = Provider<DeviceInfo>((ref) {
 final cacheSizeProvider =
     NotifierProvider<CacheSizeNotifier, DirectorySizeInfo>(
         CacheSizeNotifier.new);
+
+final appInfoProvider = Provider<AppInfo>((ref) {
+  throw UnimplementedError();
+});

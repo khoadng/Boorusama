@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
@@ -16,7 +15,6 @@ import 'package:boorusama/core/app_theme.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -78,7 +76,7 @@ class _AppState extends ConsumerState<App> {
           supportedLocales: context.supportedLocales,
           locale: context.locale,
           debugShowCheckedModeBanner: false,
-          title: context.read<AppInfoProvider>().appInfo.appName,
+          title: ref.watch(appInfoProvider).appName,
           navigatorKey: navigatorKey,
           navigatorObservers: isAnalyticsEnabled(widget.settings)
               ? [

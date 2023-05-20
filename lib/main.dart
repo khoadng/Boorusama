@@ -52,9 +52,6 @@ import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'app.dart';
 
-const savedSearchHelpUrl =
-    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
-
 void main() async {
   final logger = await l.logger();
   final stopwatch = Stopwatch()..start();
@@ -174,7 +171,7 @@ void main() async {
 
   logger.logI('Start up', 'Initialize app info and package info');
   final packageInfo = await PackageInfo.fromPlatform();
-  final appInfo = AppInfoProvider(await getAppInfo());
+  final appInfo = await getAppInfo();
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
   logger.logI('Start up', 'Initialize device info');
@@ -185,7 +182,7 @@ void main() async {
 
   final userAgentGenerator = UserAgentGeneratorImpl(
     appVersion: packageInfo.version,
-    appName: appInfo.appInfo.appName,
+    appName: appInfo.appName,
   );
 
   logger.logI('Start up', 'Initialize downloader');
@@ -224,8 +221,6 @@ void main() async {
       BooruLocalization(
         child: MultiRepositoryProvider(
           providers: [
-            RepositoryProvider.value(value: appInfo),
-            RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<PostPreviewPreloader>.value(
               value: previewPreloader,
             ),
@@ -260,6 +255,7 @@ void main() async {
               danbooruUserMetatagRepoProvider
                   .overrideWithValue(userMetatagRepo),
               packageInfoProvider.overrideWithValue(packageInfo),
+              appInfoProvider.overrideWithValue(appInfo),
             ],
             child: App(settings: settings),
           ),

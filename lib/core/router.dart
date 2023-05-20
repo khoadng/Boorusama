@@ -41,7 +41,6 @@ import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
-import 'infra/app_info_provider.dart';
 import 'infra/package_info_provider.dart';
 import 'infra/preloader/preloader.dart';
 import 'platform.dart';
@@ -223,7 +222,7 @@ void goToAppAboutPage(BuildContext context, WidgetRef ref) {
     ),
     applicationVersion: ref.read(packageInfoProvider).version,
     applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
-    applicationName: context.read<AppInfoProvider>().appInfo.appName,
+    applicationName: ref.read(appInfoProvider).appName,
   );
 }
 

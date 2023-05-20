@@ -18,7 +18,6 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/ui/tags/tag_chips_placeholder.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/main.dart';
 
 class SavedSearchFeedPage extends ConsumerStatefulWidget {
   const SavedSearchFeedPage({

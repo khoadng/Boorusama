@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+const savedSearchHelpUrl =
+    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
+
 class SavedSearch extends Equatable {
   const SavedSearch({
     required this.id,

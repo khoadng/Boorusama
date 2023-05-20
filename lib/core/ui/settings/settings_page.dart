@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
@@ -198,8 +198,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                           applicationVersion: package.version,
                           applicationLegalese:
                               '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                          applicationName:
-                              context.read<AppInfoProvider>().appInfo.appName,
+                          applicationName: ref.watch(appInfoProvider).appName,
                         ),
                       ),
                       const Padding(
@@ -251,7 +250,7 @@ class _Divider extends StatelessWidget {
   }
 }
 
-class _Footer extends StatelessWidget {
+class _Footer extends ConsumerWidget {
   const _Footer({
     this.mainAxisAlignment,
   });
@@ -259,7 +258,7 @@ class _Footer extends StatelessWidget {
   final MainAxisAlignment? mainAxisAlignment;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       height: 50,
       child: Row(
@@ -267,14 +266,14 @@ class _Footer extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () => launchExternalUrl(
-              Uri.parse(context.read<AppInfoProvider>().appInfo.githubUrl),
+              Uri.parse(ref.read(appInfoProvider).githubUrl),
               mode: LaunchMode.externalApplication,
             ),
             icon: const FaIcon(FontAwesomeIcons.squareGithub),
           ),
           IconButton(
             onPressed: () => launchExternalUrl(
-              Uri.parse(context.read<AppInfoProvider>().appInfo.discordUrl),
+              Uri.parse(ref.read(appInfoProvider).discordUrl),
               mode: LaunchMode.externalApplication,
             ),
             icon: const FaIcon(FontAwesomeIcons.discord),
