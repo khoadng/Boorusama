@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'post_details_artist_notifier.dart';
@@ -20,30 +21,25 @@ import 'post_details_tags_notifier.dart';
 //#region Post Count
 final postCountRepoProvider = Provider<PostCountRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
+  final currentBooruConfig = ref.watch(currentBooruConfigProvider);
+  final currentBooru = ref.watch(currentBooruProvider);
 
   return PostCountRepositoryApi(
     api: api,
-    currentBooruConfigRepository: currentBooruConfigRepo,
+    booruConfig: currentBooruConfig,
+    //TODO: this is a hack to get around the fact that count endpoint includes all ratings
+    extraTags:
+        currentBooru.booruType == BooruType.safebooru ? ['rating:general'] : [],
   );
 });
 
 final postCountStateProvider =
-    StateNotifierProvider<PostCountNotifier, PostCountState>((ref) {
-  final postCountRepo = ref.watch(postCountRepoProvider);
-  final currentBooruConfigRepo = ref.watch(currentBooruConfigRepoProvider);
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return PostCountNotifier(
-    repository: postCountRepo,
-    currentBooruConfigRepository: currentBooruConfigRepo,
-    booruFactory: booruFactory,
-  );
-}, dependencies: [
-  postCountRepoProvider,
-  currentBooruConfigRepoProvider,
-  booruFactoryProvider,
-]);
+    NotifierProvider<PostCountNotifier, PostCountState>(
+  PostCountNotifier.new,
+  dependencies: [
+    postCountRepoProvider,
+  ],
+);
 
 final postCountProvider = Provider<PostCountState>((ref) {
   return ref.watch(postCountStateProvider);

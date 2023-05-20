@@ -6,26 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 
 String generatePostCountKey(List<String> tags) => tags.join('+');
 
-class PostCountNotifier extends StateNotifier<PostCountState> {
-  final PostCountRepository repository;
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
-  final BooruFactory booruFactory;
+class PostCountNotifier extends Notifier<PostCountState> {
+  PostCountNotifier({
+    this.cacheDuration = const Duration(minutes: 1),
+  }) : super();
+
   final Duration cacheDuration;
 
   // Store timestamps for cache keys
   final Map<String, DateTime> _postCountTimestamps = {};
 
-  PostCountNotifier({
-    required this.repository,
-    required this.currentBooruConfigRepository,
-    required this.booruFactory,
-    this.cacheDuration = const Duration(minutes: 1),
-  }) : super(PostCountState.initial());
+  @override
+  PostCountState build() {
+    return PostCountState.initial();
+  }
 
   Future<void> getPostCount(List<String> tags) async {
     try {
@@ -39,18 +36,7 @@ class PostCountNotifier extends StateNotifier<PostCountState> {
         return;
       }
 
-      final config = await currentBooruConfigRepository.get();
-      if (config == null) return;
-
-      final newTags = [
-        ...tags,
-        //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-        if (config.createBooruFrom(booruFactory).booruType ==
-            BooruType.safebooru)
-          'rating:general',
-      ];
-
-      final postCount = await repository.count(newTags);
+      final postCount = await ref.read(postCountRepoProvider).count(tags);
       state = PostCountState({
         ...state.postCounts,
         cacheKey: postCount,
