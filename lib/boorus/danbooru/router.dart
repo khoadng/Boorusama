@@ -14,14 +14,12 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts/posts_provider.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_search_page.dart';
@@ -316,12 +314,8 @@ void goToUserDetailsPage(
     MaterialPageRoute(
       builder: (_) => DanbooruProvider.of(
         context,
-        builder: (dcontext) => BlocProvider(
-          create: (_) => UserBloc(
-            userRepository: dcontext.read<UserRepository>(),
-            postRepository: ref.read(danbooruPostRepoProvider),
-          )..add(UserFetched(uid: uid)),
-          child: const UserDetailsPage(),
+        builder: (dcontext) => UserDetailsPage(
+          uid: uid,
         ),
       ),
       settings: const RouteSettings(

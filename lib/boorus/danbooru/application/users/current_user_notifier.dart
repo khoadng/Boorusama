@@ -5,19 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 
 class CurrentUserNotifier extends Notifier<UserSelf?> {
-  //TODO: watch auth state and fetch user when auth state changes
   @override
   UserSelf? build() {
-    fetch();
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
+    fetch(booruConfig);
     return null;
   }
 
-  Future<void> fetch() async {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
+  Future<void> fetch(BooruConfig booruConfig) async {
     final id = await ref
         .watch(booruUserIdentityProviderProvider)
         .getAccountIdFromConfig(booruConfig);

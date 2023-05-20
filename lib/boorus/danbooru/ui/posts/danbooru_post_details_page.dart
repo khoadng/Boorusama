@@ -199,7 +199,7 @@ class _DanbooruPostDetailsPageState
                     hero: false,
                   ),
                   recommends: characters,
-                  imageUrl: (item) => item.url720x720,
+                  imageUrl: (item) => item.url360x360,
                 ),
               ],
             ),

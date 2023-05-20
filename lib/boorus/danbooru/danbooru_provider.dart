@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
@@ -30,7 +29,6 @@ class DanbooruProvider extends StatelessWidget {
     super.key,
     required this.builder,
     required this.poolRepo,
-    required this.userRepo,
     required this.relatedTagRepo,
     required this.poolDescriptionRepo,
     required this.savedSearchRepo,
@@ -47,12 +45,6 @@ class DanbooruProvider extends StatelessWidget {
     final dio = ref.read(dioProvider(booruConfig.url));
     final api = DanbooruApi(dio);
     ref.read(trendingTagsProvider.notifier).fetch();
-
-    final userRepo = UserRepositoryApi(
-      api,
-      booruConfig,
-      ref.read(tagInfoProvider).defaultBlacklistedTags,
-    );
 
     final poolRepo = PoolCacher(PoolRepositoryApi(api, booruConfig));
 
@@ -81,7 +73,6 @@ class DanbooruProvider extends StatelessWidget {
       poolRepo: poolRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      userRepo: userRepo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
     );
@@ -91,7 +82,6 @@ class DanbooruProvider extends StatelessWidget {
     BuildContext context, {
     required Widget Function(BuildContext context) builder,
   }) {
-    final userRepo = context.read<UserRepository>();
     final poolRepo = context.read<PoolRepository>();
     final relatedTagRepo = context.read<RelatedTagRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
@@ -106,7 +96,6 @@ class DanbooruProvider extends StatelessWidget {
       poolRepo: poolRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      userRepo: userRepo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
     );
@@ -115,7 +104,6 @@ class DanbooruProvider extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
 
   final PoolRepository poolRepo;
-  final UserRepository userRepo;
   final RelatedTagRepository relatedTagRepo;
   final PoolDescriptionRepository poolDescriptionRepo;
   final SavedSearchRepository savedSearchRepo;
@@ -128,7 +116,6 @@ class DanbooruProvider extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: poolRepo),
-        RepositoryProvider.value(value: userRepo),
         RepositoryProvider.value(value: relatedTagRepo),
         RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: savedSearchRepo),
