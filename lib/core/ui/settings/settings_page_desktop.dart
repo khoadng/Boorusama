@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,7 +18,6 @@ import 'package:boorusama/core/ui/settings/performance_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'package:boorusama/core/utils.dart';
-import 'settings_page.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({
@@ -50,18 +50,20 @@ class SettingsPageDesktop extends StatelessWidget {
   }
 }
 
-class _LargeLayout extends StatefulWidget {
+class _LargeLayout extends ConsumerStatefulWidget {
   const _LargeLayout();
 
   @override
-  State<_LargeLayout> createState() => _LargeLayoutState();
+  ConsumerState<_LargeLayout> createState() => _LargeLayoutState();
 }
 
 //TODO: refactor this when having more settings, this is a terrible design.
-class _LargeLayoutState extends State<_LargeLayout> {
+class _LargeLayoutState extends ConsumerState<_LargeLayout> {
   final currentTab = ValueNotifier(0);
   @override
   Widget build(BuildContext context) {
+    final packageInfo = ref.watch(packageInfoProvider);
+
     return ValueListenableBuilder<int>(
       valueListenable: currentTab,
       builder: (context, index, _) => Row(
@@ -133,12 +135,8 @@ class _LargeLayoutState extends State<_LargeLayout> {
                         width: 64,
                         height: 64,
                       ),
-                      applicationVersion: getVersion(
-                        RepositoryProvider.of<PackageInfoProvider>(
-                          context,
-                        ).getPackageInfo(),
-                      ),
-                      applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                      applicationVersion: packageInfo.version,
+                      applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
                       applicationName:
                           context.read<AppInfoProvider>().appInfo.appName,
                     ),

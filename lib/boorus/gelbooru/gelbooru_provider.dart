@@ -15,9 +15,7 @@ import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
 import 'infra/posts/gelbooru_post_repository_api.dart';
 
@@ -42,10 +40,10 @@ class GelbooruProvider extends StatelessWidget {
 
     final autocompleteRepo = GelbooruAutocompleteRepositoryApi(api);
 
-    final settingsRepo = context.read<SettingsRepository>();
+    final settingsRepo = ref.read(settingsRepoProvider);
     final globalBlacklistedTagRepo = ref.read(globalBlacklistedTagRepoProvider);
     final currentBooruConfigRepository =
-        context.read<CurrentBooruConfigRepository>();
+        ref.read(currentBooruConfigRepoProvider);
 
     final postRepo = GelbooruPostRepositoryApi(
       currentBooruConfigRepository: currentBooruConfigRepository,

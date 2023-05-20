@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
@@ -172,7 +173,7 @@ void main() async {
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
   logger.logI('Start up', 'Initialize app info and package info');
-  final packageInfo = PackageInfoProvider(await getPackageInfo());
+  final packageInfo = await PackageInfo.fromPlatform();
   final appInfo = AppInfoProvider(await getAppInfo());
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
@@ -183,7 +184,7 @@ void main() async {
   final tempPath = await getTemporaryDirectory();
 
   final userAgentGenerator = UserAgentGeneratorImpl(
-    appVersion: packageInfo.packageInfo.version,
+    appVersion: packageInfo.version,
     appName: appInfo.appInfo.appName,
   );
 
@@ -230,9 +231,7 @@ void main() async {
       BooruLocalization(
         child: MultiRepositoryProvider(
           providers: [
-            RepositoryProvider.value(value: packageInfo),
             RepositoryProvider.value(value: appInfo),
-            RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<PostPreviewPreloader>.value(
               value: previewPreloader,
@@ -242,12 +241,6 @@ void main() async {
             ),
             RepositoryProvider<UserAgentGenerator>.value(
               value: userAgentGenerator,
-            ),
-            RepositoryProvider<SettingsRepository>.value(
-              value: settingRepository,
-            ),
-            RepositoryProvider<CurrentBooruConfigRepository>.value(
-              value: currentBooruRepo,
             ),
           ],
           child: ProviderScope(
@@ -276,6 +269,7 @@ void main() async {
               deviceInfoProvider.overrideWithValue(deviceInfo),
               danbooruUserMetatagRepoProvider
                   .overrideWithValue(userMetatagRepo),
+              packageInfoProvider.overrideWithValue(packageInfo),
             ],
             child: App(settings: settings),
           ),

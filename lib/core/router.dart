@@ -28,7 +28,6 @@ import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_details.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_page.dart';
@@ -197,7 +196,7 @@ void goToChanglog(BuildContext context) {
   );
 }
 
-void goToAppAboutPage(BuildContext context) {
+void goToAppAboutPage(BuildContext context, WidgetRef ref) {
   showAboutDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -208,9 +207,7 @@ void goToAppAboutPage(BuildContext context) {
       width: 64,
       height: 64,
     ),
-    applicationVersion: getVersion(
-      context.read<PackageInfoProvider>().getPackageInfo(),
-    ),
+    applicationVersion: ref.read(packageInfoProvider).version,
     applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
     applicationName: context.read<AppInfoProvider>().appInfo.appName,
   );
@@ -577,7 +574,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
-                    deviceInfo: context.read<DeviceInfo>(),
+                    deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
               ],
@@ -596,7 +593,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => DanbooruBulkDownloadManagerBloc(
                     context: context,
-                    deviceInfo: context.read<DeviceInfo>(),
+                    deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
               ],
@@ -612,7 +609,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
-                    deviceInfo: context.read<DeviceInfo>(),
+                    deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
               ],

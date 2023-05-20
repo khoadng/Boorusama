@@ -27,8 +27,6 @@ import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/provider.dart';
@@ -37,8 +35,6 @@ class DanbooruProvider extends StatelessWidget {
   const DanbooruProvider({
     super.key,
     required this.builder,
-    required this.currentBooruConfigRepo,
-    required this.settingRepository,
     required this.postRepo,
     required this.poolRepo,
     required this.userRepo,
@@ -48,7 +44,6 @@ class DanbooruProvider extends StatelessWidget {
     required this.exploreRepo,
     required this.savedSearchRepo,
     required this.tagInfo,
-    required this.currentBooruConfigRepository,
     required this.poolOverviewBloc,
     required this.savedSearchBloc,
     required this.danbooruArtistCharacterPostRepository,
@@ -65,8 +60,8 @@ class DanbooruProvider extends StatelessWidget {
     final api = DanbooruApi(dio);
     ref.read(trendingTagsProvider.notifier).fetch();
 
-    final settingRepository = context.read<SettingsRepository>();
-    final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
+    final settingRepository = ref.read(settingsRepoProvider);
+    final currentBooruConfigRepo = ref.read(currentBooruConfigRepoProvider);
 
     final postRepo = PostRepositoryApi(
       api,
@@ -128,7 +123,6 @@ class DanbooruProvider extends StatelessWidget {
 
     return DanbooruProvider(
       builder: builder,
-      currentBooruConfigRepo: currentBooruConfigRepo,
       autocompleteRepo: autocompleteRepo,
       exploreRepo: exploreRepo,
       poolDescriptionRepo: poolDescriptionRepo,
@@ -136,9 +130,7 @@ class DanbooruProvider extends StatelessWidget {
       postRepo: postRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      settingRepository: settingRepository,
       userRepo: userRepo,
-      currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
@@ -150,7 +142,6 @@ class DanbooruProvider extends StatelessWidget {
     BuildContext context, {
     required Widget Function(BuildContext context) builder,
   }) {
-    final settingRepository = context.read<SettingsRepository>();
     final postRepo = context.read<DanbooruPostRepository>();
     final exploreRepo = context.read<ExploreRepository>();
     final userRepo = context.read<UserRepository>();
@@ -159,7 +150,6 @@ class DanbooruProvider extends StatelessWidget {
     final relatedTagRepo = context.read<RelatedTagRepository>();
     final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
-    final currentBooruConfigRepo = context.read<CurrentBooruConfigRepository>();
 
     final tagInfo = context.read<TagInfo>();
 
@@ -170,7 +160,6 @@ class DanbooruProvider extends StatelessWidget {
 
     return DanbooruProvider(
       builder: builder,
-      currentBooruConfigRepo: currentBooruConfigRepo,
       autocompleteRepo: autocompleteRepo,
       exploreRepo: exploreRepo,
       poolDescriptionRepo: poolDescriptionRepo,
@@ -178,9 +167,7 @@ class DanbooruProvider extends StatelessWidget {
       postRepo: postRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      settingRepository: settingRepository,
       userRepo: userRepo,
-      currentBooruConfigRepository: currentBooruConfigRepo,
       tagInfo: tagInfo,
       poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
@@ -190,8 +177,6 @@ class DanbooruProvider extends StatelessWidget {
 
   final Widget Function(BuildContext context) builder;
 
-  final CurrentBooruConfigRepository currentBooruConfigRepo;
-  final SettingsRepository settingRepository;
   final DanbooruPostRepository postRepo;
   final DanbooruArtistCharacterPostRepository
       danbooruArtistCharacterPostRepository;
@@ -202,7 +187,6 @@ class DanbooruProvider extends StatelessWidget {
   final PoolDescriptionRepository poolDescriptionRepo;
   final ExploreRepository exploreRepo;
   final SavedSearchRepository savedSearchRepo;
-  final CurrentBooruConfigRepository currentBooruConfigRepository;
 
   final PoolOverviewBloc poolOverviewBloc;
   final SavedSearchBloc savedSearchBloc;
@@ -213,8 +197,6 @@ class DanbooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: currentBooruConfigRepo),
-        RepositoryProvider.value(value: settingRepository),
         RepositoryProvider.value(value: postRepo),
         RepositoryProvider.value(value: danbooruArtistCharacterPostRepository),
         RepositoryProvider.value(value: poolRepo),

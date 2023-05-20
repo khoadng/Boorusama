@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -18,13 +17,13 @@ import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/utils.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Screen.of(context).size == ScreenSize.small
         ? Scaffold(
             appBar: AppBar(title: Text('settings.settings'.tr())),
@@ -106,7 +105,7 @@ class SettingsPage extends StatelessWidget {
                           ListTile(
                             title: const Text('settings.information').tr(),
                             leading: const Icon(Icons.info),
-                            onTap: () => goToAppAboutPage(context),
+                            onTap: () => goToAppAboutPage(context, ref),
                           ),
                         ],
                       ),
@@ -134,6 +133,8 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
   final currentTab = ValueNotifier(0);
   @override
   Widget build(BuildContext context) {
+    final package = ref.watch(packageInfoProvider);
+
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
@@ -194,11 +195,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                             width: 64,
                             height: 64,
                           ),
-                          applicationVersion: getVersion(
-                            RepositoryProvider.of<PackageInfoProvider>(
-                              context,
-                            ).getPackageInfo(),
-                          ),
+                          applicationVersion: package.version,
                           applicationLegalese:
                               '\u{a9} 2020-2022 Nguyen Duc Khoa',
                           applicationName:
@@ -309,5 +306,3 @@ class _SettingsSection extends StatelessWidget {
     );
   }
 }
-
-String getVersion(PackageInfo info) => info.version;

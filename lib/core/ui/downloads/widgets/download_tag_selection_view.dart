@@ -11,8 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/android.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
@@ -175,16 +175,16 @@ class _DownloadTagSelectionViewState
             BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
               builder: (context, state) {
                 return state.shouldDisplayWarning(
-                  hasScopeStorage: hasScopedStorage(context
-                          .read<DeviceInfo>()
+                  hasScopeStorage: hasScopedStorage(ref
+                          .read(deviceInfoProvider)
                           .androidDeviceInfo
                           ?.version
                           .sdkInt) ??
                       true,
                 )
                     ? DownloadPathWarning(
-                        releaseName: context
-                                .read<DeviceInfo>()
+                        releaseName: ref
+                                .read(deviceInfoProvider)
                                 .androidDeviceInfo
                                 ?.version
                                 .release ??
@@ -201,8 +201,8 @@ class _DownloadTagSelectionViewState
               builder: (context, state) {
                 return ElevatedButton(
                   onPressed: state.isValidToStartDownload(
-                    hasScopeStorage: hasScopedStorage(context
-                            .read<DeviceInfo>()
+                    hasScopeStorage: hasScopedStorage(ref
+                            .read(deviceInfoProvider)
                             .androidDeviceInfo
                             ?.version
                             .sdkInt) ??
