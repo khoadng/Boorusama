@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -156,15 +155,7 @@ void goToSavedSearchEditPage(BuildContext context) {
     builder: (_) {
       return DanbooruProvider.of(
         context,
-        builder: (dcontext) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(
-              value: dcontext.read<SavedSearchBloc>()
-                ..add(const SavedSearchFetched()),
-            ),
-          ],
-          child: const SavedSearchPage(),
-        ),
+        builder: (dcontext) => const SavedSearchPage(),
       );
     },
   ));
@@ -358,11 +349,10 @@ void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
 }
 
 void goToSavedSearchCreatePage(
+  WidgetRef ref,
   BuildContext context, {
   SavedSearch? initialValue,
 }) {
-  final bloc = context.read<SavedSearchBloc>();
-
   if (isMobilePlatform()) {
     showMaterialModalBottomSheet(
       context: context,
@@ -372,15 +362,16 @@ void goToSavedSearchCreatePage(
       backgroundColor: Theme.of(context).colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
-        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-          query: query,
-          label: label,
-          onCreated: (data) => showSimpleSnackBar(
-            context: context,
-            duration: const Duration(seconds: 1),
-            content: const Text('saved_search.saved_search_added').tr(),
-          ),
-        )),
+        onSubmit: (query, label) =>
+            ref.read(danbooruSavedSearchesProvider.notifier).create(
+                  query: query,
+                  label: label,
+                  onCreated: (data) => showSimpleSnackBar(
+                    context: context,
+                    duration: const Duration(seconds: 1),
+                    content: const Text('saved_search.saved_search_added').tr(),
+                  ),
+                ),
       ),
     );
   } else {
@@ -411,15 +402,17 @@ void goToSavedSearchCreatePage(
               ),
             ),
             child: EditSavedSearchSheet(
-              onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-                query: query,
-                label: label,
-                onCreated: (data) => showSimpleSnackBar(
-                  context: context,
-                  duration: const Duration(seconds: 1),
-                  content: const Text('saved_search.saved_search_added').tr(),
-                ),
-              )),
+              onSubmit: (query, label) =>
+                  ref.read(danbooruSavedSearchesProvider.notifier).create(
+                        query: query,
+                        label: label,
+                        onCreated: (data) => showSimpleSnackBar(
+                          context: context,
+                          duration: const Duration(seconds: 1),
+                          content: const Text('saved_search.saved_search_added')
+                              .tr(),
+                        ),
+                      ),
             ),
           ),
         );
@@ -429,9 +422,9 @@ void goToSavedSearchCreatePage(
 }
 
 void goToSavedSearchPatchPage(
+  WidgetRef ref,
   BuildContext context,
   SavedSearch savedSearch,
-  SavedSearchBloc bloc,
 ) {
   showMaterialModalBottomSheet(
     context: context,
@@ -442,20 +435,21 @@ void goToSavedSearchPatchPage(
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
-      onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
-        id: savedSearch.id,
-        label: label,
-        query: query,
-        onUpdated: (data) => showSimpleSnackBar(
-          context: context,
-          duration: const Duration(
-            seconds: 1,
-          ),
-          content: const Text(
-            'saved_search.saved_search_updated',
-          ).tr(),
-        ),
-      )),
+      onSubmit: (query, label) =>
+          ref.read(danbooruSavedSearchesProvider.notifier).update(
+                id: savedSearch.id,
+                label: label,
+                query: query,
+                onUpdated: (data) => showSimpleSnackBar(
+                  context: context,
+                  duration: const Duration(
+                    seconds: 1,
+                  ),
+                  content: const Text(
+                    'saved_search.saved_search_updated',
+                  ).tr(),
+                ),
+              ),
     ),
   );
 }

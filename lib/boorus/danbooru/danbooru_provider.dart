@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -24,7 +23,6 @@ class DanbooruProvider extends StatelessWidget {
     super.key,
     required this.builder,
     required this.relatedTagRepo,
-    required this.savedSearchBloc,
   });
 
   factory DanbooruProvider.create(
@@ -36,14 +34,9 @@ class DanbooruProvider extends StatelessWidget {
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
-    final savedSearchBloc = SavedSearchBloc(
-      savedSearchRepository: ref.read(danbooruSavedSearchRepoProvider),
-    );
-
     return DanbooruProvider(
       builder: builder,
       relatedTagRepo: relatedTagRepo,
-      savedSearchBloc: savedSearchBloc,
     );
   }
 
@@ -53,12 +46,9 @@ class DanbooruProvider extends StatelessWidget {
   }) {
     final relatedTagRepo = context.read<RelatedTagRepository>();
 
-    final savedSearchBloc = context.read<SavedSearchBloc>();
-
     return DanbooruProvider(
       builder: builder,
       relatedTagRepo: relatedTagRepo,
-      savedSearchBloc: savedSearchBloc,
     );
   }
 
@@ -66,29 +56,22 @@ class DanbooruProvider extends StatelessWidget {
 
   final RelatedTagRepository relatedTagRepo;
 
-  final SavedSearchBloc savedSearchBloc;
-
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: relatedTagRepo),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: savedSearchBloc),
+      child: ProviderScope(
+        overrides: [
+          tagRepoProvider
+              .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
+          downloadFileNameGeneratorProvider.overrideWith(
+              (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
+          autocompleteRepoProvider.overrideWith(
+              (ref) => ref.watch(danbooruAutocompleteRepoProvider))
         ],
-        child: ProviderScope(
-          overrides: [
-            tagRepoProvider
-                .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
-            downloadFileNameGeneratorProvider.overrideWith(
-                (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
-            autocompleteRepoProvider.overrideWith(
-                (ref) => ref.watch(danbooruAutocompleteRepoProvider))
-          ],
-          child: Builder(builder: builder),
-        ),
+        child: Builder(builder: builder),
       ),
     );
   }
