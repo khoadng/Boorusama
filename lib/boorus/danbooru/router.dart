@@ -180,7 +180,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
         providers: [
           BlocProvider(
             create: (_) => PoolBloc(
-              poolRepository: context.read<PoolRepository>(),
+              poolRepository: ref.read(danbooruPoolRepoProvider),
               postRepository: ref.read(danbooruPostRepoProvider),
             )..add(const PoolRefreshed(
                 category: PoolCategory.series,
@@ -333,13 +333,13 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
         providers: [
           BlocProvider(
             create: (_) => PoolBloc(
-              poolRepository: dcontext.read<PoolRepository>(),
+              poolRepository: ref.read(danbooruPoolRepoProvider),
               postRepository: ref.read(danbooruPostRepoProvider),
             ),
           ),
           BlocProvider(
             create: (context) => PoolSearchBloc(
-              poolRepository: dcontext.read<PoolRepository>(),
+              poolRepository: ref.read(danbooruPoolRepoProvider),
             ),
           ),
         ],

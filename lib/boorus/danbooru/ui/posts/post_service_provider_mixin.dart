@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
@@ -30,7 +31,7 @@ mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
   void Function(List<int> ids) get checkVotes =>
       (ids) => ref.read(danbooruPostVotesProvider.notifier).getVotes(ids);
 
-  PoolRepository get poolRepository => context.read<PoolRepository>();
+  PoolRepository get poolRepository => ref.read(danbooruPoolRepoProvider);
 
   PostPreviewPreloader? get previewPreloader =>
       context.read<PostPreviewPreloader>();

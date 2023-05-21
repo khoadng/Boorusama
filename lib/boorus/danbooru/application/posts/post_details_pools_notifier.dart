@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 
 class PostDetailsPoolsNotifier
@@ -17,5 +17,5 @@ class PostDetailsPoolsNotifier
   }
 
   Future<List<Pool>> _loadPools(int postId) =>
-      ref.read(poolRepoProvider).getPoolsByPostId(postId);
+      ref.read(danbooruPoolRepoProvider).getPoolsByPostId(postId);
 }
