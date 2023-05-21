@@ -8,10 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -28,9 +26,7 @@ class DanbooruProvider extends StatelessWidget {
     super.key,
     required this.builder,
     required this.relatedTagRepo,
-    required this.poolDescriptionRepo,
     required this.savedSearchRepo,
-    required this.poolOverviewBloc,
     required this.savedSearchBloc,
   });
 
@@ -46,18 +42,7 @@ class DanbooruProvider extends StatelessWidget {
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
-    final poolDescriptionRepo = PoolDescriptionRepositoryApi(
-      dio: dio,
-      endpoint: booruConfig.url,
-    );
-
     final savedSearchRepo = SavedSearchRepositoryApi(api, booruConfig);
-
-    final poolOverviewBloc = PoolOverviewBloc()
-      ..add(const PoolOverviewChanged(
-        category: PoolCategory.series,
-        order: PoolOrder.latest,
-      ));
 
     final savedSearchBloc = SavedSearchBloc(
       savedSearchRepository: savedSearchRepo,
@@ -65,10 +50,8 @@ class DanbooruProvider extends StatelessWidget {
 
     return DanbooruProvider(
       builder: builder,
-      poolDescriptionRepo: poolDescriptionRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
     );
   }
@@ -78,18 +61,14 @@ class DanbooruProvider extends StatelessWidget {
     required Widget Function(BuildContext context) builder,
   }) {
     final relatedTagRepo = context.read<RelatedTagRepository>();
-    final poolDescriptionRepo = context.read<PoolDescriptionRepository>();
     final savedSearchRepo = context.read<SavedSearchRepository>();
 
-    final poolOverviewBloc = context.read<PoolOverviewBloc>();
     final savedSearchBloc = context.read<SavedSearchBloc>();
 
     return DanbooruProvider(
       builder: builder,
-      poolDescriptionRepo: poolDescriptionRepo,
       relatedTagRepo: relatedTagRepo,
       savedSearchRepo: savedSearchRepo,
-      poolOverviewBloc: poolOverviewBloc,
       savedSearchBloc: savedSearchBloc,
     );
   }
@@ -97,10 +76,8 @@ class DanbooruProvider extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
 
   final RelatedTagRepository relatedTagRepo;
-  final PoolDescriptionRepository poolDescriptionRepo;
   final SavedSearchRepository savedSearchRepo;
 
-  final PoolOverviewBloc poolOverviewBloc;
   final SavedSearchBloc savedSearchBloc;
 
   @override
@@ -108,17 +85,14 @@ class DanbooruProvider extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: relatedTagRepo),
-        RepositoryProvider.value(value: poolDescriptionRepo),
         RepositoryProvider.value(value: savedSearchRepo),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: poolOverviewBloc),
           BlocProvider.value(value: savedSearchBloc),
         ],
         child: ProviderScope(
           overrides: [
-            poolDescriptionRepoProvider.overrideWithValue(poolDescriptionRepo),
             tagRepoProvider
                 .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
             downloadFileNameGeneratorProvider.overrideWith(
@@ -139,9 +113,6 @@ final danbooruApiProvider = Provider<DanbooruApi>((ref) {
 
   return DanbooruApi(dio);
 });
-
-final poolDescriptionRepoProvider =
-    Provider<PoolDescriptionRepository>((ref) => throw UnimplementedError());
 
 final danbooruAutocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) {

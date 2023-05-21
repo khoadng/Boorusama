@@ -911,6 +911,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.0"
+  infinite_scroll_pagination:
+    dependency: "direct main"
+    description:
+      name: infinite_scroll_pagination
+      sha256: "9517328f4e373f08f57dbb11c5aac5b05554142024d6b60c903f3b73476d52db"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   intl:
     dependency: "direct main"
     description:
@@ -1410,6 +1418,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
+  riverpod_infinite_scroll:
+    dependency: "direct main"
+    description:
+      name: riverpod_infinite_scroll
+      sha256: "94f177086c77dc17ca8d1e85117eed346ff6ac651ccbf4d51a449b212d68fd24"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.9"
   rxdart:
     dependency: "direct main"
     description:
@@ -1535,6 +1551,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliver_tools:
+    dependency: transitive
+    description:
+      name: sliver_tools
+      sha256: ccdc502098a8bfa07b3ec582c282620031481300035584e1bb3aca296a505e8c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.10"
   source_gen:
     dependency: transitive
     description:
