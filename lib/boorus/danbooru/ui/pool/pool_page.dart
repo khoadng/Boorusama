@@ -9,7 +9,6 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/ui/pool/pool_grid_item.dart';
 import 'pool_options_header.dart';
 import 'pool_search_button.dart';
@@ -48,7 +47,7 @@ class _PostList extends ConsumerWidget {
         const SliverToBoxAdapter(
           child: PoolOptionsHeader(),
         ),
-        RiverPagedBuilder<PoolKey, Pool>(
+        RiverPagedBuilder.autoDispose(
           firstPageProgressIndicatorBuilder: (context, controller) =>
               const CircularProgressIndicator.adaptive(),
           pullToRefresh: false,

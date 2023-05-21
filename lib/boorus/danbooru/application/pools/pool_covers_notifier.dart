@@ -11,12 +11,6 @@ import 'package:boorusama/core/application/boorus.dart';
 class PoolCoversNotifier extends Notifier<Map<PoolId, PoolCover?>> {
   @override
   Map<PoolId, PoolCover?> build() {
-    // Doesn't work
-    // ref.listen(
-    //   danbooruPoolsProvider,
-    //   (previous, next) => load(next.records),
-    // );
-
     ref.watch(currentBooruConfigProvider);
 
     return {};
@@ -27,15 +21,21 @@ class PoolCoversNotifier extends Notifier<Map<PoolId, PoolCover?>> {
   Future<void> load(List<Pool>? pools) async {
     if (pools == null) return;
 
-    final poolFiltered =
+    final poolsWithPosts =
         pools.where((element) => element.postIds.isNotEmpty).toList();
 
+    // only load pools that is not in the cache
+    final poolsToFetch =
+        poolsWithPosts.where((e) => !state.containsKey(e.id)).toList();
+
+    if (poolsToFetch.isEmpty) return;
+
     final poolCoverMap = <int, PoolCover?>{
-      for (var e in poolFiltered) e.id: null,
+      for (var e in poolsToFetch) e.id: null,
     };
 
     final postPoolMap = <int, int>{
-      for (var e in poolFiltered) e.postIds.last: e.id,
+      for (var pool in poolsToFetch) pool.postIds.last: pool.id,
     };
 
     final posts = await postRepo
@@ -47,7 +47,7 @@ class PoolCoversNotifier extends Notifier<Map<PoolId, PoolCover?>> {
             ));
 
     final postMap = <int, DanbooruPost>{
-      for (var e in posts) e.id: e,
+      for (var post in posts) post.id: post,
     };
 
     for (var postId in postPoolMap.keys) {

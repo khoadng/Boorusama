@@ -6,14 +6,18 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/infra/cache_mixin.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/infra/networks/request_deduplicator_mixin.dart';
 
 List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
       value: value,
       converter: (item) => PoolDto.fromJson(item),
     ).map(poolDtoToPool).toList();
 
-class PoolRepositoryApi implements PoolRepository {
+class PoolRepositoryApi
+    with RequestDeduplicator<List<Pool>>
+    implements PoolRepository {
   PoolRepositoryApi(
     this._api,
     this.booruConfig,
@@ -21,7 +25,20 @@ class PoolRepositoryApi implements PoolRepository {
 
   final DanbooruApi _api;
   final BooruConfig booruConfig;
+  final _cache = Cache<List<Pool>>(
+    maxCapacity: 10,
+    staleDuration: const Duration(seconds: 10),
+  );
   final _limit = 20;
+
+  String _buildKey(
+    int page,
+    PoolCategory? category,
+    PoolOrder? order,
+    String? name,
+    String? description,
+  ) =>
+      '$page-${category?.toString()}-${order?.key}-$name-$description';
 
   @override
   Future<List<Pool>> getPools(
@@ -30,8 +47,17 @@ class PoolRepositoryApi implements PoolRepository {
     PoolOrder? order,
     String? name,
     String? description,
-  }) =>
-      _api
+  }) async {
+    final key = _buildKey(page, category, order, name, description);
+
+    final cachedPools = _cache.get(key);
+    if (cachedPools != null) {
+      return Future.value(cachedPools);
+    }
+
+    final pools = await deduplicate(
+      key,
+      () => _api
           .getPools(
             booruConfig.login,
             booruConfig.apiKey,
@@ -42,7 +68,13 @@ class PoolRepositoryApi implements PoolRepository {
             name: name,
             description: description,
           )
-          .then(parsePool);
+          .then(parsePool),
+    );
+
+    _cache.set(key, pools);
+
+    return pools;
+  }
 
   @override
   Future<List<Pool>> getPoolsByPostId(int postId) => _api

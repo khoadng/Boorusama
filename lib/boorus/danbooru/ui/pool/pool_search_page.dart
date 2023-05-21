@@ -3,27 +3,26 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/ui/error_box.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
-import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'pool_grid_item.dart';
 
-class PoolSearchPage extends StatefulWidget {
+class PoolSearchPage extends ConsumerStatefulWidget {
   const PoolSearchPage({super.key});
 
   @override
-  State<PoolSearchPage> createState() => _PoolSearchPageState();
+  ConsumerState<PoolSearchPage> createState() => _PoolSearchPageState();
 }
 
-class _PoolSearchPageState extends State<PoolSearchPage> {
+class _PoolSearchPageState extends ConsumerState<PoolSearchPage> {
   final textEditingController = TextEditingController();
 
   @override
@@ -34,159 +33,154 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final mode = ref.watch(danbooruPoolSearchModeProvider);
 
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     backgroundColor: Colors.transparent,
-    //     elevation: 0,
-    //     automaticallyImplyLeading: false,
-    //     title: _buildSearchBar(context),
-    //   ),
-    //   body: SafeArea(
-    //     child: BlocBuilder<PoolSearchBloc, PoolSearchState>(
-    //       builder: (context, state) {
-    //         return !state.isDone
-    //             ? state.pools.isNotEmpty
-    //                 ? ListView.builder(
-    //                     itemBuilder: (context, index) {
-    //                       final pool = state.pools[index];
-
-    //                       return ListTile(
-    //                         visualDensity: VisualDensity.compact,
-    //                         title: Text(
-    //                           pool.name.removeUnderscoreWithSpace(),
-    //                           style: TextStyle(
-    //                             fontWeight: FontWeight.w600,
-    //                             color: _poolCategoryToColor(pool.category),
-    //                           ),
-    //                         ),
-    //                         trailing: Text(
-    //                           NumberFormat.compact().format(pool.postCount),
-    //                           style: const TextStyle(color: Colors.grey),
-    //                         ),
-    //                         onTap: () {
-    //                           FocusManager.instance.primaryFocus?.unfocus();
-    //                           textEditingController.text =
-    //                               pool.name.replaceAll('_', ' ');
-    //                           context
-    //                               .read<PoolSearchBloc>()
-    //                               .add(PoolSearchItemSelect(pool.name));
-    //                           context
-    //                               .read<PoolBloc>()
-    //                               .add(PoolRefreshed(name: pool.name));
-    //                         },
-    //                       );
-    //                     },
-    //                     itemCount: state.pools.length,
-    //                   )
-    //                 : const SizedBox.shrink()
-    //             : BlocBuilder<PoolBloc, PoolState>(builder: (context, pState) {
-    //                 return _buildList(state, pState, context);
-    //               });
-    //       },
-    //     ),
-    //   ),
-    // );
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: _SearchBar(textEditingController: textEditingController),
+      ),
+      body: switch (mode) {
+        PoolSearchMode.suggestion => _SuggestionView(
+            textEditingController: textEditingController,
+          ),
+        PoolSearchMode.result => const _ResultView(),
+      },
+    );
   }
-
-//   Widget _buildList(
-//     PoolSearchState psState,
-//     PoolState pState,
-//     BuildContext context,
-//   ) {
-//     return InfiniteLoadListScrollView(
-//       isLoading: pState.status == LoadStatus.loading,
-//       enableRefresh: false,
-//       enableLoadMore: pState.hasMore,
-//       onLoadMore: () =>
-//           context.read<PoolBloc>().add(PoolFetched(name: psState.query)),
-//       onRefresh: (controller) {
-//         context.read<PoolBloc>().add(PoolRefreshed(name: psState.query));
-//         Future.delayed(
-//           const Duration(milliseconds: 500),
-//           () => controller.refreshCompleted(),
-//         );
-//       },
-//       sliverBuilder: (controller) => [
-//         SliverPadding(
-//           padding: const EdgeInsets.symmetric(horizontal: 14),
-//           sliver: BlocBuilder<PoolBloc, PoolState>(
-//             buildWhen: (previous, current) =>
-//                 current.status != LoadStatus.loading,
-//             builder: (context, state) {
-//               if (state.status == LoadStatus.initial) {
-//                 return const SliverToBoxAdapter(
-//                   child: Padding(
-//                     padding: EdgeInsets.only(top: 50),
-//                     child: Center(child: CircularProgressIndicator()),
-//                   ),
-//                 );
-//               } else if (state.status == LoadStatus.success) {
-//                 if (state.pools.isEmpty) {
-//                   return const SliverToBoxAdapter(child: NoDataBox());
-//                 }
-
-//                 return SliverPoolGrid(
-//                   pools: state.pools,
-//                 );
-//               } else if (state.status == LoadStatus.loading) {
-//                 return const SliverToBoxAdapter(
-//                   child: SizedBox.shrink(),
-//                 );
-//               } else {
-//                 return const SliverToBoxAdapter(
-//                   child: ErrorBox(),
-//                 );
-//               }
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildSearchBar(
-//     BuildContext context,
-//   ) {
-//     final searchBloc = context.read<PoolSearchBloc>();
-
-//     return BooruSearchBar(
-//       leading: IconButton(
-//         onPressed: () => Navigator.of(context).pop(),
-//         icon: const Icon(
-//           Icons.arrow_back,
-//         ),
-//       ),
-//       queryEditingController: textEditingController,
-//       autofocus: true,
-//       trailing: BlocSelector<PoolSearchBloc, PoolSearchState, String>(
-//         selector: (state) => state.query,
-//         builder: (context, query) {
-//           return query.isNotEmpty
-//               ? IconButton(
-//                   onPressed: () {
-//                     textEditingController.clear();
-//                     searchBloc.add(const PoolSearchCleared());
-//                   },
-//                   icon: const Icon(Icons.close),
-//                 )
-//               : const SizedBox.shrink();
-//         },
-//       ),
-//       onChanged: (value) => searchBloc.add(PoolSearched(value)),
-//       onSubmitted: (value) {
-//         searchBloc.add(PoolSearchItemSelect(value));
-//         context.read<PoolBloc>().add(PoolRefreshed(name: value));
-//       },
-//       hintText: 'pool.search.hint'.tr(),
-//       onTap: () => searchBloc.add(const PoolSearchResumed()),
-//     );
-//   }
-// }
-
-// Color _poolCategoryToColor(PoolCategory category) => switch (category) {
-//       PoolCategory.series => TagColors.dark().copyright,
-//       _ => TagColors.dark().general,
-//     };
 }
+
+class _ResultView extends ConsumerWidget {
+  const _ResultView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = ref.watch(danbooruPoolQueryProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: CustomScrollView(
+        slivers: [
+          RiverPagedBuilder.autoDispose(
+            firstPageProgressIndicatorBuilder: (context, controller) =>
+                const CircularProgressIndicator.adaptive(),
+            pullToRefresh: false,
+            firstPageKey: PoolKey(page: 1, name: query),
+            provider: danbooruPoolsSearchResultProvider,
+            itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
+            pagedBuilder: (controller, builder) => PagedSliverGrid(
+              pagingController: controller,
+              builderDelegate: builder,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SuggestionView extends ConsumerWidget {
+  const _SuggestionView({
+    required this.textEditingController,
+  });
+
+  final TextEditingController textEditingController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      danbooruPoolQueryProvider,
+      (previous, next) {
+        if (next.isNotEmpty) {
+          ref.read(danbooruPoolsSearchProvider.notifier).load(
+                PoolKey(page: 1, name: next),
+                50,
+              );
+        }
+      },
+    );
+
+    return RiverPagedBuilder.autoDispose(
+      provider: danbooruPoolsSearchProvider,
+      pagedBuilder: (controller, builder) => PagedListView(
+        pagingController: controller,
+        builderDelegate: builder,
+      ),
+      itemBuilder: (context, pool, index) => ListTile(
+        visualDensity: VisualDensity.compact,
+        title: Text(
+          pool.name.removeUnderscoreWithSpace(),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: _poolCategoryToColor(pool.category),
+          ),
+        ),
+        trailing: Text(
+          NumberFormat.compact().format(pool.postCount),
+          style: const TextStyle(color: Colors.grey),
+        ),
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+          textEditingController.text = pool.name.replaceAll('_', ' ');
+          ref.read(danbooruPoolQueryProvider.notifier).state = pool.name;
+          ref.read(danbooruPoolSearchModeProvider.notifier).state =
+              PoolSearchMode.result;
+        },
+      ),
+      firstPageKey: const PoolKey(page: 1),
+    );
+  }
+}
+
+class _SearchBar extends ConsumerWidget {
+  const _SearchBar({
+    required this.textEditingController,
+  });
+
+  final TextEditingController textEditingController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = ref.watch(danbooruPoolQueryProvider);
+
+    return BooruSearchBar(
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: const Icon(
+          Icons.arrow_back,
+        ),
+      ),
+      queryEditingController: textEditingController,
+      autofocus: true,
+      trailing: query.isNotEmpty
+          ? IconButton(
+              onPressed: () {
+                textEditingController.clear();
+                ref.read(danbooruPoolQueryProvider.notifier).state = '';
+              },
+              icon: const Icon(Icons.close),
+            )
+          : const SizedBox.shrink(),
+      onChanged: (value) =>
+          ref.read(danbooruPoolQueryProvider.notifier).state = value,
+      onSubmitted: (value) {
+        ref.read(danbooruPoolSearchModeProvider.notifier).state =
+            PoolSearchMode.result;
+      },
+      hintText: 'pool.search.hint'.tr(),
+      onTap: () => ref.read(danbooruPoolSearchModeProvider.notifier).state =
+          PoolSearchMode.suggestion,
+    );
+  }
+}
+
+Color _poolCategoryToColor(PoolCategory category) => switch (category) {
+      PoolCategory.series => TagColors.dark().copyright,
+      _ => TagColors.dark().general,
+    };

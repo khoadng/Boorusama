@@ -12,6 +12,8 @@ import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/provider.dart';
 
+part 'pools_search_provider.dart';
+
 final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {
   final api = ref.read(danbooruApiProvider);
   final booruConfig = ref.read(currentBooruConfigProvider);
@@ -34,8 +36,9 @@ final poolDescriptionRepoProvider = Provider<PoolDescriptionRepository>((ref) {
 });
 
 final danbooruPoolsProvider =
-    StateNotifierProvider<PoolsNotifier, PagedState<PoolKey, Pool>>((ref) {
-  final repo = ref.read(danbooruPoolRepoProvider);
+    StateNotifierProvider.autoDispose<PoolsNotifier, PagedState<PoolKey, Pool>>(
+        (ref) {
+  final repo = ref.watch(danbooruPoolRepoProvider);
   final category = ref.watch(danbooruSelectedPoolCategoryProvider);
   final order = ref.watch(danbooruSelectedPoolOrderProvider);
   ref.watch(currentBooruConfigProvider);

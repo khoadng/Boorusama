@@ -9,8 +9,8 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 
 class PoolKey extends Equatable {
   final int page;
-  final String? name;
   final String? description;
+  final String? name;
 
   const PoolKey({
     required this.page,
@@ -29,9 +29,11 @@ class PoolKey extends Equatable {
 class PoolsNotifier extends PagedNotifier<PoolKey, Pool> {
   PoolsNotifier({
     required PoolRepository repo,
-    required PoolCategory category,
-    required PoolOrder order,
+    PoolCategory? category,
+    PoolOrder? order,
     required Ref ref,
+    bool loadCovers = true,
+    NextPageKeyBuilder<PoolKey, Pool>? nextPageKeyBuilder,
   }) : super(
           load: (key, limit) async {
             final pools = await repo.getPools(
@@ -42,17 +44,19 @@ class PoolsNotifier extends PagedNotifier<PoolKey, Pool> {
               description: key.description,
             );
 
-            ref.read(danbooruPoolCoversProvider.notifier).load(pools);
+            if (loadCovers) {
+              ref.read(danbooruPoolCoversProvider.notifier).load(pools);
+            }
 
             return pools;
           },
-          nextPageKeyBuilder: (records, key, limit) =>
-              (records == null || records.length < limit)
-                  ? null
-                  : PoolKey(
-                      page: key.page + 1,
-                      name: key.name,
-                      description: key.description,
-                    ),
+          nextPageKeyBuilder: nextPageKeyBuilder ??
+              (records, key, limit) =>
+                  (records == null || records.length < limit)
+                      ? null
+                      : PoolKey(
+                          page: key.page + 1,
+                          description: key.description,
+                        ),
         );
 }
