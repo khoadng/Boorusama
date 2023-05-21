@@ -10,10 +10,8 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/tags/related_tag_repository_empty.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -26,7 +24,6 @@ class DanbooruProvider extends StatelessWidget {
     super.key,
     required this.builder,
     required this.relatedTagRepo,
-    required this.savedSearchRepo,
     required this.savedSearchBloc,
   });
 
@@ -35,23 +32,17 @@ class DanbooruProvider extends StatelessWidget {
     required WidgetRef ref,
     required Widget Function(BuildContext context) builder,
   }) {
-    final booruConfig = ref.read(currentBooruConfigProvider);
-    final dio = ref.read(dioProvider(booruConfig.url));
-    final api = DanbooruApi(dio);
     ref.read(trendingTagsProvider.notifier).fetch();
 
     final relatedTagRepo = RelatedTagRepositoryEmpty();
 
-    final savedSearchRepo = SavedSearchRepositoryApi(api, booruConfig);
-
     final savedSearchBloc = SavedSearchBloc(
-      savedSearchRepository: savedSearchRepo,
+      savedSearchRepository: ref.read(danbooruSavedSearchRepoProvider),
     );
 
     return DanbooruProvider(
       builder: builder,
       relatedTagRepo: relatedTagRepo,
-      savedSearchRepo: savedSearchRepo,
       savedSearchBloc: savedSearchBloc,
     );
   }
@@ -61,14 +52,12 @@ class DanbooruProvider extends StatelessWidget {
     required Widget Function(BuildContext context) builder,
   }) {
     final relatedTagRepo = context.read<RelatedTagRepository>();
-    final savedSearchRepo = context.read<SavedSearchRepository>();
 
     final savedSearchBloc = context.read<SavedSearchBloc>();
 
     return DanbooruProvider(
       builder: builder,
       relatedTagRepo: relatedTagRepo,
-      savedSearchRepo: savedSearchRepo,
       savedSearchBloc: savedSearchBloc,
     );
   }
@@ -76,7 +65,6 @@ class DanbooruProvider extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
 
   final RelatedTagRepository relatedTagRepo;
-  final SavedSearchRepository savedSearchRepo;
 
   final SavedSearchBloc savedSearchBloc;
 
@@ -85,7 +73,6 @@ class DanbooruProvider extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: relatedTagRepo),
-        RepositoryProvider.value(value: savedSearchRepo),
       ],
       child: MultiBlocProvider(
         providers: [
