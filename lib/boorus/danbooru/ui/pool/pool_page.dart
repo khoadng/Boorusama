@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/core/application/common.dart';
-import 'package:boorusama/core/ui/error_box.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
-import 'package:boorusama/core/ui/no_data_box.dart';
+import 'package:boorusama/boorus/danbooru/ui/pool/pool_grid_item.dart';
 import 'pool_options_header.dart';
 import 'pool_search_button.dart';
-import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatelessWidget {
   const PoolPage({
@@ -22,96 +20,47 @@ class PoolPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PoolOverviewBloc, PoolOverviewState>(
-          listener: (context, state) {
-            context.read<PoolBloc>().add(PoolRefreshed(
-                  category: state.category,
-                  order: state.order,
-                ));
-          },
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('pool.pool_gallery').tr(),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: const [
-            PoolSearchButton(),
-          ],
-        ),
-        body: const SafeArea(
-          bottom: false,
-          child: _PostList(),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('pool.pool_gallery').tr(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [
+          PoolSearchButton(),
+        ],
+      ),
+      body: const SafeArea(
+        bottom: false,
+        child: _PostList(),
       ),
     );
   }
 }
 
-class _PostList extends StatelessWidget {
+class _PostList extends ConsumerWidget {
   const _PostList();
 
   @override
-  Widget build(BuildContext context) {
-    final pState = context.watch<PoolBloc>().state;
-    final poState = context.watch<PoolOverviewBloc>().state;
-
-    return InfiniteLoadListScrollView(
-      isLoading: pState.status == LoadStatus.loading,
-      enableRefresh: false,
-      enableLoadMore: pState.hasMore,
-      onLoadMore: () => context.read<PoolBloc>().add(PoolFetched(
-            category: poState.category,
-            order: poState.order,
-          )),
-      onRefresh: (controller) {
-        context.read<PoolBloc>().add(PoolRefreshed(
-              category: poState.category,
-              order: poState.order,
-            ));
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          () => controller.refreshCompleted(),
-        );
-      },
-      sliverBuilder: (controller) => [
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CustomScrollView(
+      slivers: [
         const SliverToBoxAdapter(
           child: PoolOptionsHeader(),
         ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          sliver: BlocBuilder<PoolBloc, PoolState>(
-            buildWhen: (previous, current) =>
-                current.status != LoadStatus.loading,
-            builder: (context, state) {
-              if (state.status == LoadStatus.initial) {
-                return const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                );
-              } else if (state.status == LoadStatus.success) {
-                if (state.pools.isEmpty) {
-                  return const SliverToBoxAdapter(child: NoDataBox());
-                }
-
-                return SliverPoolGrid(
-                  pools: state.pools,
-                );
-              } else if (state.status == LoadStatus.loading) {
-                return const SliverToBoxAdapter(
-                  child: SizedBox.shrink(),
-                );
-              } else {
-                return const SliverToBoxAdapter(
-                  child: ErrorBox(),
-                );
-              }
-            },
+        RiverPagedBuilder.autoDispose(
+          firstPageProgressIndicatorBuilder: (context, controller) =>
+              const CircularProgressIndicator.adaptive(),
+          pullToRefresh: false,
+          firstPageKey: const PoolKey(page: 1),
+          provider: danbooruPoolsProvider,
+          itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
+          pagedBuilder: (controller, builder) => PagedSliverGrid(
+            pagingController: controller,
+            builderDelegate: builder,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.5,
+            ),
           ),
         ),
       ],

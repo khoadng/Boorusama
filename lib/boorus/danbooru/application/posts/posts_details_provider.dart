@@ -36,7 +36,7 @@ final danbooruPostDetailsPoolsProvider = NotifierProvider.autoDispose
     .family<PostDetailsPoolsNotifier, List<Pool>, int>(
   PostDetailsPoolsNotifier.new,
   dependencies: [
-    poolRepoProvider,
+    danbooruPoolRepoProvider,
   ],
 );
 
