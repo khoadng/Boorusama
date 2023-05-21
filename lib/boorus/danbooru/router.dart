@@ -11,8 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/application/posts/posts_provider.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
@@ -176,20 +174,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => DanbooruProvider.of(
       context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => PoolBloc(
-              poolRepository: ref.read(danbooruPoolRepoProvider),
-              postRepository: ref.read(danbooruPostRepoProvider),
-            )..add(const PoolRefreshed(
-                category: PoolCategory.series,
-                order: PoolOrder.latest,
-              )),
-          ),
-        ],
-        child: const PoolPage(),
-      ),
+      builder: (context) => const PoolPage(),
     ),
   ));
 }
@@ -329,22 +314,7 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => DanbooruProvider.of(
       context,
-      builder: (dcontext) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => PoolBloc(
-              poolRepository: ref.read(danbooruPoolRepoProvider),
-              postRepository: ref.read(danbooruPostRepoProvider),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => PoolSearchBloc(
-              poolRepository: ref.read(danbooruPoolRepoProvider),
-            ),
-          ),
-        ],
-        child: const PoolSearchPage(),
-      ),
+      builder: (dcontext) => const PoolSearchPage(),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,

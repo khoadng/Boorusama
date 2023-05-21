@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pools/pools_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
@@ -38,18 +38,36 @@ final danbooruPoolsProvider =
   final repo = ref.read(danbooruPoolRepoProvider);
   final category = ref.watch(danbooruSelectedPoolCategoryProvider);
   final order = ref.watch(danbooruSelectedPoolOrderProvider);
+  ref.watch(currentBooruConfigProvider);
 
   return PoolsNotifier(
+    ref: ref,
     repo: repo,
     category: category,
     order: order,
   );
 });
 
-final danbooruSelectedPoolCategoryProvider = StateProvider<PoolCategory>((ref) {
-  return PoolCategory.series;
+final danbooruSelectedPoolCategoryProvider =
+    StateProvider<PoolCategory>((ref) => PoolCategory.series);
+
+final danbooruSelectedPoolOrderProvider =
+    StateProvider<PoolOrder>((ref) => PoolOrder.latest);
+
+final danbooruPoolCoversProvider =
+    NotifierProvider<PoolCoversNotifier, Map<int, PoolCover?>>(
+  PoolCoversNotifier.new,
+);
+
+final danbooruPoolCoverProvider =
+    Provider.family<PoolCover?, PoolId>((ref, id) {
+  final covers = ref.watch(danbooruPoolCoversProvider);
+
+  return covers[id];
 });
 
-final danbooruSelectedPoolOrderProvider = StateProvider<PoolOrder>((ref) {
-  return PoolOrder.latest;
+typedef PoolCover = ({
+  PoolId id,
+  String? url,
+  double aspectRatio,
 });

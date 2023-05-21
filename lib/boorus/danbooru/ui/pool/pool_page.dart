@@ -11,7 +11,6 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/boorus/danbooru/ui/pool/pool_grid_item.dart';
-import 'package:boorusama/core/ui/sliver_post_grid.dart';
 import 'pool_options_header.dart';
 import 'pool_search_button.dart';
 
@@ -44,9 +43,6 @@ class _PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final pState = context.watch<PoolBloc>().state;
-    // final poState = context.watch<PoolOverviewBloc>().state;
-
     return CustomScrollView(
       slivers: [
         const SliverToBoxAdapter(
@@ -54,27 +50,17 @@ class _PostList extends ConsumerWidget {
         ),
         RiverPagedBuilder<PoolKey, Pool>(
           firstPageProgressIndicatorBuilder: (context, controller) =>
-              const SizedBox(
-            height: 1000,
-            child: CustomScrollView(
-              slivers: [
-                SliverPostGridPlaceHolder(),
-              ],
-            ),
-          ),
+              const CircularProgressIndicator.adaptive(),
           pullToRefresh: false,
-          firstPageKey: const PoolKey(page: 1
-              // order: poState.order,
-              // category: poState.category,
-              ),
+          firstPageKey: const PoolKey(page: 1),
           provider: danbooruPoolsProvider,
-          itemBuilder: (context, pool, index) =>
-              PoolGridItem(pool: PoolItem(pool: pool)),
+          itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
           pagedBuilder: (controller, builder) => PagedSliverGrid(
             pagingController: controller,
             builderDelegate: builder,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+              childAspectRatio: 0.5,
             ),
           ),
         ),
