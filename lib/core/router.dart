@@ -42,7 +42,6 @@ import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/package_info_provider.dart';
-import 'infra/preloader/preloader.dart';
 import 'platform.dart';
 import 'ui/booru_image.dart';
 import 'ui/image_grid_item.dart';
@@ -287,7 +286,7 @@ Future<Object?> goToFavoriteTagImportPage(
   );
 }
 
-void goToImagePreviewPage(BuildContext context, Post post) {
+void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
   showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -298,7 +297,7 @@ void goToImagePreviewPage(BuildContext context, Post post) {
         placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
+        previewCacheManager: ref.watch(previewImageCacheManagerProvider),
       ),
     ),
   );
@@ -584,6 +583,7 @@ Future<void> goToBulkDownloadPage(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
                     postRepository: ref.read(moebooruPostRepoProvider),
+                    userAgentGenerator: ref.read(userAgentGeneratorProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
                 ),
@@ -602,6 +602,7 @@ Future<void> goToBulkDownloadPage(
                   create: (_) => DanbooruBulkDownloadManagerBloc(
                     context: context,
                     deviceInfo: ref.read(deviceInfoProvider),
+                    userAgentGenerator: ref.read(userAgentGeneratorProvider),
                     postRepository: ref.read(danbooruPostRepoProvider),
                     postCountRepository: ref.read(postCountRepoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),
@@ -617,6 +618,7 @@ Future<void> goToBulkDownloadPage(
                 BlocProvider<BulkDownloadManagerBloc<Post>>(
                   create: (_) => MoebooruBulkDownloadManagerBloc(
                     context: context,
+                    userAgentGenerator: ref.read(userAgentGeneratorProvider),
                     postRepository: ref.read(gelbooruPostRepoProvider),
                     deviceInfo: ref.read(deviceInfoProvider),
                   )..add(BulkDownloadManagerTagsAdded(tags: tags)),

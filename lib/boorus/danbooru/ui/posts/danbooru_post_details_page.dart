@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
@@ -22,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags/tags_providers.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
@@ -275,7 +273,7 @@ class _DanbooruPostDetailsPageState
             onCached: (path) => ref
                 .read(postShareProvider(post).notifier)
                 .setImagePath(path ?? ''),
-            previewCacheManager: context.read<PreviewImageCacheManager>(),
+            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             imageOverlayBuilder: (constraints) => [
               if (expanded && noteState.enableNotes)
                 ...noteState.notes

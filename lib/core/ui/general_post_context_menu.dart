@@ -34,7 +34,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
         buttonConfigs: [
           ContextMenuButtonConfig(
             'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(context, post),
+            onPressed: () => goToImagePreviewPage(ref, context, post),
           ),
           // if (post.hasComment)
           //   ContextMenuButtonConfig(

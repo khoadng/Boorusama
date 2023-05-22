@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
 
-class RecommendPostSection<T extends Post> extends StatelessWidget {
+class RecommendPostSection<T extends Post> extends ConsumerWidget {
   const RecommendPostSection({
     super.key,
     required this.posts,
@@ -26,7 +26,7 @@ class RecommendPostSection<T extends Post> extends StatelessWidget {
   final String Function(T item) imageUrl;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         header,
@@ -34,13 +34,13 @@ class RecommendPostSection<T extends Post> extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           child: grid
               ? PreviewPostGrid<T>(
-                  cacheManager: context.read<PreviewImageCacheManager>(),
+                  cacheManager: ref.watch(previewImageCacheManagerProvider),
                   posts: posts,
                   onTap: onTap,
                   imageUrl: imageUrl,
                 )
               : PreviewPostList<T>(
-                  cacheManager: context.read<PreviewImageCacheManager>(),
+                  cacheManager: ref.watch(previewImageCacheManagerProvider),
                   posts: posts,
                   onTap: onTap,
                   imageUrl: imageUrl,

@@ -20,7 +20,9 @@ import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
 final booruFactoryProvider =
@@ -80,7 +82,12 @@ final httpCacheDirProvider = Provider<Directory>(
 );
 
 final userAgentGeneratorProvider = Provider<UserAgentGenerator>(
-  (ref) => throw UnimplementedError(),
+  (ref) {
+    final appVersion = ref.watch(packageInfoProvider).version;
+    final appName = ref.watch(appInfoProvider).appName;
+
+    return UserAgentGeneratorImpl(appVersion: appVersion, appName: appName);
+  },
 );
 
 final loggerProvider =
@@ -104,4 +111,21 @@ final cacheSizeProvider =
 
 final appInfoProvider = Provider<AppInfo>((ref) {
   throw UnimplementedError();
+});
+
+final previewImageCacheManagerProvider =
+    Provider<PreviewImageCacheManager>((ref) {
+  return PreviewImageCacheManager();
+});
+
+final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
+  final userAgentGenerator = ref.watch(userAgentGeneratorProvider);
+  final previewImageCacheManager = ref.watch(previewImageCacheManagerProvider);
+
+  return PostPreviewPreloaderImp(
+    previewImageCacheManager,
+    httpHeaders: {
+      'User-Agent': userAgentGenerator.generate(),
+    },
+  );
 });

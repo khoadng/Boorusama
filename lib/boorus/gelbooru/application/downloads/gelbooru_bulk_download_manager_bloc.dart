@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
@@ -19,11 +18,12 @@ class GelbooruBulkDownloadManagerBloc
   GelbooruBulkDownloadManagerBloc({
     required PostRepository postRepository,
     required BuildContext context,
+    required UserAgentGenerator userAgentGenerator,
     required super.deviceInfo,
   }) : super(
             bulkPostDownloadBloc: GelbooruBulkPostDownloadBloc(
           downloader: CrossplatformBulkDownloader<Post>(
-            userAgentGenerator: context.read<UserAgentGenerator>(),
+            userAgentGenerator: userAgentGenerator,
             urlResolver: (item) => item.downloadUrl,
             fileNameResolver: (item) =>
                 Md5OnlyFileNameGenerator().generateFor(item),

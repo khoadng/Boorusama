@@ -39,7 +39,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         buttonConfigs: [
           ContextMenuButtonConfig(
             'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(context, post),
+            onPressed: () => goToImagePreviewPage(ref, context, post),
           ),
           if (post.hasComment)
             ContextMenuButtonConfig(
@@ -104,7 +104,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
         buttonConfigs: [
           ContextMenuButtonConfig(
             'Preview',
-            onPressed: () => goToImagePreviewPage(context, post),
+            onPressed: () => goToImagePreviewPage(ref, context, post),
           ),
           ContextMenuButtonConfig(
             'download.download'.tr(),

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/provider.dart';
 
-class BooruImageLegacy extends StatefulWidget {
+class BooruImageLegacy extends ConsumerStatefulWidget {
   const BooruImageLegacy({
     super.key,
     required this.imageUrl,
@@ -27,10 +27,10 @@ class BooruImageLegacy extends StatefulWidget {
   final int? cacheHeight;
 
   @override
-  State<BooruImageLegacy> createState() => _BooruImageLegacyState();
+  ConsumerState<BooruImageLegacy> createState() => _BooruImageLegacyState();
 }
 
-class _BooruImageLegacyState extends State<BooruImageLegacy> {
+class _BooruImageLegacyState extends ConsumerState<BooruImageLegacy> {
   late Image myImage;
 
   @override
@@ -45,7 +45,7 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       image: CachedNetworkImageProvider(
         widget.imageUrl,
         headers: {
-          'User-Agent': context.read<UserAgentGenerator>().generate(),
+          'User-Agent': ref.read(userAgentGeneratorProvider).generate(),
         },
       ),
     );
@@ -61,7 +61,7 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       httpHeaders: {
-        'User-Agent': context.read<UserAgentGenerator>().generate(),
+        'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
       },
       memCacheWidth: widget.cacheWidth,
       memCacheHeight: widget.cacheHeight,
@@ -81,7 +81,7 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       placeholder: (context, url) => widget.placeholderUrl != null
           ? CachedNetworkImage(
               httpHeaders: {
-                'User-Agent': context.read<UserAgentGenerator>().generate(),
+                'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
               },
               imageUrl: widget.placeholderUrl!,
               imageBuilder: (context, imageProvider) => Container(

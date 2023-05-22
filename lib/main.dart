@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,7 +27,6 @@ import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
@@ -38,13 +36,11 @@ import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
 import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart' as l;
-import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/infra/repositories/search_histories.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
 import 'package:boorusama/core/internationalization.dart';
@@ -180,22 +176,9 @@ void main() async {
 
   final tempPath = await getTemporaryDirectory();
 
-  final userAgentGenerator = UserAgentGeneratorImpl(
-    appVersion: packageInfo.version,
-    appName: appInfo.appName,
-  );
-
   logger.logI('Start up', 'Initialize downloader');
 
   if (isWindows()) WindowsVideoPlayer.registerWith();
-
-  final previewImageCacheManager = PreviewImageCacheManager();
-  final previewPreloader = PostPreviewPreloaderImp(
-    previewImageCacheManager,
-    httpHeaders: {
-      'User-Agent': userAgentGenerator.generate(),
-    },
-  );
 
   logger.logI('Start up', 'Initialize I18n');
   await ensureI18nInitialized();
@@ -219,46 +202,31 @@ void main() async {
   void run() {
     runApp(
       BooruLocalization(
-        child: MultiRepositoryProvider(
-          providers: [
-            RepositoryProvider<PostPreviewPreloader>.value(
-              value: previewPreloader,
-            ),
-            RepositoryProvider<PreviewImageCacheManager>.value(
-              value: previewImageCacheManager,
-            ),
-            RepositoryProvider<UserAgentGenerator>.value(
-              value: userAgentGenerator,
-            ),
+        child: ProviderScope(
+          overrides: [
+            favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+            searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+            booruFactoryProvider.overrideWithValue(booruFactory),
+            tagInfoProvider.overrideWithValue(tagInfo),
+            settingsRepoProvider.overrideWithValue(settingRepository),
+            settingsProvider.overrideWith(() => SettingsNotifier(settings)),
+            booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+            currentBooruConfigProvider.overrideWith(() =>
+                CurrentBooruConfigNotifier(
+                    initialConfig: initialConfig ?? BooruConfig.empty)),
+            globalBlacklistedTagRepoProvider
+                .overrideWithValue(globalBlacklistedTags),
+            httpCacheDirProvider.overrideWithValue(tempPath),
+            loggerProvider.overrideWithValue(logger),
+            bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+            downloadNotificationProvider
+                .overrideWithValue(downloadNotifications),
+            deviceInfoProvider.overrideWithValue(deviceInfo),
+            danbooruUserMetatagRepoProvider.overrideWithValue(userMetatagRepo),
+            packageInfoProvider.overrideWithValue(packageInfo),
+            appInfoProvider.overrideWithValue(appInfo),
           ],
-          child: ProviderScope(
-            overrides: [
-              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-              booruFactoryProvider.overrideWithValue(booruFactory),
-              tagInfoProvider.overrideWithValue(tagInfo),
-              settingsRepoProvider.overrideWithValue(settingRepository),
-              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              currentBooruConfigProvider.overrideWith(() =>
-                  CurrentBooruConfigNotifier(
-                      initialConfig: initialConfig ?? BooruConfig.empty)),
-              globalBlacklistedTagRepoProvider
-                  .overrideWithValue(globalBlacklistedTags),
-              httpCacheDirProvider.overrideWithValue(tempPath),
-              userAgentGeneratorProvider.overrideWithValue(userAgentGenerator),
-              loggerProvider.overrideWithValue(logger),
-              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-              downloadNotificationProvider
-                  .overrideWithValue(downloadNotifications),
-              deviceInfoProvider.overrideWithValue(deviceInfo),
-              danbooruUserMetatagRepoProvider
-                  .overrideWithValue(userMetatagRepo),
-              packageInfoProvider.overrideWithValue(packageInfo),
-              appInfoProvider.overrideWithValue(appInfo),
-            ],
-            child: App(settings: settings),
-          ),
+          child: App(settings: settings),
         ),
       ),
     );

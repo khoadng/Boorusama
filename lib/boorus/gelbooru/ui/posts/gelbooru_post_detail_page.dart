@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -17,7 +16,6 @@ import 'package:boorusama/core/application/posts/details.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
@@ -191,7 +189,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
             onCached: (path) => ref
                 .read(postShareProvider(post).notifier)
                 .setImagePath(path ?? ''),
-            previewCacheManager: context.read<PreviewImageCacheManager>(),
+            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             width: post.width,
             height: post.height,
             onZoomUpdated: onZoomUpdated,

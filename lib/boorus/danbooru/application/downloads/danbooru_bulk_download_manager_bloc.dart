@@ -2,7 +2,6 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
@@ -20,11 +19,12 @@ class DanbooruBulkDownloadManagerBloc
     required BuildContext context,
     required PostCountRepository postCountRepository,
     required DanbooruPostRepository postRepository,
+    required UserAgentGenerator userAgentGenerator,
     required super.deviceInfo,
   }) : super(
             bulkPostDownloadBloc: DanbooruBulkDownloadBloc(
           downloader: CrossplatformBulkDownloader<DanbooruPost>(
-            userAgentGenerator: context.read<UserAgentGenerator>(),
+            userAgentGenerator: userAgentGenerator,
             urlResolver: (item) => item.downloadUrl,
             fileNameResolver: (item) =>
                 DanbooruMd5OnlyFileNameGenerator().generateFor(item),

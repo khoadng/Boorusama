@@ -14,7 +14,6 @@ export 'posts/post_detail_page_desktop.dart';
 export 'posts/post_info.dart';
 export 'posts/post_note.dart';
 export 'posts/post_service_provider_mixin.dart';
-export 'posts/post_slider_desktop.dart';
 export 'posts/post_stats_tile.dart';
 export 'posts/post_tag_list.dart';
 export 'posts/related_posts_section.dart';

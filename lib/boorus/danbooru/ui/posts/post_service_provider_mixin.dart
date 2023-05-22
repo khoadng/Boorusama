@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -33,6 +32,5 @@ mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
 
   PoolRepository get poolRepository => ref.read(danbooruPoolRepoProvider);
 
-  PostPreviewPreloader? get previewPreloader =>
-      context.read<PostPreviewPreloader>();
+  PostPreviewPreloader? get previewPreloader => ref.read(previewLoaderProvider);
 }

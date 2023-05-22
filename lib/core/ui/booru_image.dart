@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/provider.dart';
 
-class BooruImage extends StatelessWidget {
+class BooruImage extends ConsumerWidget {
   const BooruImage({
     super.key,
     required this.imageUrl,
@@ -32,7 +32,7 @@ class BooruImage extends StatelessWidget {
   final int? cacheHeight;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (imageUrl.isEmpty) {
       return AspectRatio(
         aspectRatio: aspectRatio,
@@ -46,7 +46,7 @@ class BooruImage extends StatelessWidget {
         aspectRatio: aspectRatio,
         child: CachedNetworkImage(
           httpHeaders: {
-            'User-Agent': context.read<UserAgentGenerator>().generate(),
+            'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
           },
           memCacheWidth: cacheWidth,
           memCacheHeight: cacheHeight,
@@ -55,7 +55,8 @@ class BooruImage extends StatelessWidget {
           placeholder: (context, url) => placeholderUrl != null
               ? CachedNetworkImage(
                   httpHeaders: {
-                    'User-Agent': context.read<UserAgentGenerator>().generate(),
+                    'User-Agent':
+                        ref.watch(userAgentGeneratorProvider).generate(),
                   },
                   fit: fit ?? BoxFit.fill,
                   imageUrl: placeholderUrl!,

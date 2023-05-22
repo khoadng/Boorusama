@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -14,7 +13,6 @@ import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
@@ -155,7 +153,7 @@ class _MoebooruInfinitePostListState
                       ),
                       placeholderUrl: post.thumbnailImageUrl,
                       previewCacheManager:
-                          context.read<PreviewImageCacheManager>(),
+                          ref.watch(previewImageCacheManagerProvider),
                       cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
                       cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
                     )
