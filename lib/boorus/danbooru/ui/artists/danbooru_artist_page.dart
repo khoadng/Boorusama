@@ -18,16 +18,14 @@ Widget provideArtistPageDependencies(
   BuildContext context, {
   required String artist,
   required Widget page,
-}) {
-  return DanbooruProvider.of(
-    context,
-    builder: (dcontext) {
-      return CustomContextMenuOverlay(
-        child: page,
-      );
-    },
-  );
-}
+}) =>
+    DanbooruProvider(
+      builder: (_) {
+        return CustomContextMenuOverlay(
+          child: page,
+        );
+      },
+    );
 
 class DanbooruArtistPage extends ConsumerWidget {
   const DanbooruArtistPage({

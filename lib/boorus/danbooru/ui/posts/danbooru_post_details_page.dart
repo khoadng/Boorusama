@@ -39,20 +39,6 @@ import 'package:boorusama/core/ui/swipe_target_image.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/functional.dart';
 
-Widget providePostDetailPageDependencies(
-  BuildContext context,
-  List<DanbooruPost> posts,
-  int initialIndex,
-  Widget Function() childBuilder,
-) {
-  return DanbooruProvider.of(
-    context,
-    builder: (context) {
-      return childBuilder();
-    },
-  );
-}
-
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {
   throw UnimplementedError();
 });
@@ -75,20 +61,15 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
     required int initialIndex,
     AutoScrollController? scrollController,
     bool hero = false,
-  }) {
-    final page = providePostDetailPageDependencies(
-      context,
-      posts,
-      initialIndex,
-      () => DanbooruPostDetailsPage(
-        intitialIndex: initialIndex,
-        posts: posts,
-        onExit: (page) => scrollController?.scrollToIndex(page),
-      ),
-    );
-
-    return MaterialPageRoute(builder: (_) => page);
-  }
+  }) =>
+      MaterialPageRoute(
+          builder: (_) => DanbooruProvider(
+                builder: (_) => DanbooruPostDetailsPage(
+                  intitialIndex: initialIndex,
+                  posts: posts,
+                  onExit: (page) => scrollController?.scrollToIndex(page),
+                ),
+              ));
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>

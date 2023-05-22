@@ -27,18 +27,15 @@ class ExploreMostViewedPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreMostViewed,
         ),
-        builder: (_) => DanbooruProvider.of(
-          context,
-          builder: (dcontext) {
-            return CustomContextMenuOverlay(
-              child: ProviderScope(
-                overrides: [
-                  dateProvider.overrideWith((ref) => DateTime.now()),
-                ],
-                child: const ExploreMostViewedPage(),
-              ),
-            );
-          },
+        builder: (_) => DanbooruProvider(
+          builder: (_) => CustomContextMenuOverlay(
+            child: ProviderScope(
+              overrides: [
+                dateProvider.overrideWith((ref) => DateTime.now()),
+              ],
+              child: const ExploreMostViewedPage(),
+            ),
+          ),
         ),
       );
 

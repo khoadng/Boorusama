@@ -27,19 +27,16 @@ class ExplorePopularPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.explorePopular,
         ),
-        builder: (_) => DanbooruProvider.of(
-          context,
-          builder: (dcontext) {
-            return CustomContextMenuOverlay(
-              child: ProviderScope(
-                overrides: [
-                  timeScaleProvider.overrideWith((ref) => TimeScale.day),
-                  dateProvider.overrideWith((ref) => DateTime.now()),
-                ],
-                child: const ExplorePopularPage(),
-              ),
-            );
-          },
+        builder: (_) => DanbooruProvider(
+          builder: (_) => CustomContextMenuOverlay(
+            child: ProviderScope(
+              overrides: [
+                timeScaleProvider.overrideWith((ref) => TimeScale.day),
+                dateProvider.overrideWith((ref) => DateTime.now()),
+              ],
+              child: const ExplorePopularPage(),
+            ),
+          ),
         ),
       );
 

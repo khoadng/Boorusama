@@ -34,17 +34,15 @@ class PoolDetailPage extends ConsumerWidget {
   static Widget of(
     BuildContext context, {
     required Pool pool,
-  }) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => CustomContextMenuOverlay(
-        child: PoolDetailPage(
-          pool: pool,
-          postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+  }) =>
+      DanbooruProvider(
+        builder: (_) => CustomContextMenuOverlay(
+          child: PoolDetailPage(
+            pool: pool,
+            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

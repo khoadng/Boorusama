@@ -20,16 +20,12 @@ class FavoritesPage extends ConsumerWidget {
   static Widget of(
     BuildContext context, {
     required String username,
-  }) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dContext) {
-        return CustomContextMenuOverlay(
+  }) =>
+      DanbooruProvider(
+        builder: (_) => CustomContextMenuOverlay(
           child: FavoritesPage(username: username),
-        );
-      },
-    );
-  }
+        ),
+      );
 
   final String username;
 

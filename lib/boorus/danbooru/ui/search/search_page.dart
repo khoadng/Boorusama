@@ -2,16 +2,13 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/provider.dart';
@@ -40,27 +37,16 @@ class SearchPage extends ConsumerStatefulWidget {
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
         type: PageTransitionType.fade,
-        child: DanbooruProvider.of(
-          context,
-          builder: (context) {
-            final relatedTagBloc = RelatedTagBloc(
-              relatedTagRepository: context.read<RelatedTagRepository>(),
-            );
-
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: relatedTagBloc),
-              ],
-              child: CustomContextMenuOverlay(
-                child: ProviderScope(
-                  overrides: [
-                    selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-                  ],
-                  child: SearchPage(
-                    metatagHighlightColor:
-                        Theme.of(context).colorScheme.primary,
-                    initialQuery: tag,
-                  ),
+        child: DanbooruProvider(
+          builder: (_) {
+            return CustomContextMenuOverlay(
+              child: ProviderScope(
+                overrides: [
+                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
+                ],
+                child: SearchPage(
+                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                  initialQuery: tag,
                 ),
               ),
             );

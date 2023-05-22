@@ -22,13 +22,10 @@ class ExploreHotPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreHot,
         ),
-        builder: (_) => DanbooruProvider.of(
-          context,
-          builder: (dcontext) {
-            return const CustomContextMenuOverlay(
-              child: ExploreHotPage(),
-            );
-          },
+        builder: (_) => DanbooruProvider(
+          builder: (_) => const CustomContextMenuOverlay(
+            child: ExploreHotPage(),
+          ),
         ),
       );
 

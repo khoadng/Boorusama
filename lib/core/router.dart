@@ -436,10 +436,8 @@ void goToQuickSearchPage(
           case BooruType.safebooru:
           case BooruType.testbooru:
           case BooruType.aibooru:
-            return DanbooruProvider.create(
-              context,
-              ref: ref,
-              builder: (dcontext) => isMobile
+            return DanbooruProvider(
+              builder: (_) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: onSubmitted,
                       ensureValidTag: ensureValidTag,
@@ -597,9 +595,7 @@ Future<void> goToBulkDownloadPage(
         case BooruType.safebooru:
         case BooruType.testbooru:
         case BooruType.aibooru:
-          return DanbooruProvider.create(
-            context,
-            ref: ref,
+          return DanbooruProvider(
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<BulkDownloadManagerBloc<Post>>(

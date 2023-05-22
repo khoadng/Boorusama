@@ -80,9 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.danbooru:
             case BooruType.safebooru:
             case BooruType.testbooru:
-              return DanbooruProvider.create(
-                context,
-                ref: ref,
+              return DanbooruProvider(
                 builder: (context) {
                   return CustomContextMenuOverlay(
                     child: DanbooruHomePage(
