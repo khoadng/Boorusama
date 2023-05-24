@@ -97,7 +97,6 @@ Future<void> goToDetailPage({
   required int initialIndex,
   AutoScrollController? scrollController,
   bool hero = false,
-  // PostBloc? postBloc,
 }) {
   return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
     context,

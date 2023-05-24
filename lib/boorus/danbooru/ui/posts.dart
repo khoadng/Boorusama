@@ -10,7 +10,6 @@ export 'posts/information_section.dart';
 export 'posts/parent_child_data.dart';
 export 'posts/parent_child_tile.dart';
 export 'posts/pool_tiles.dart';
-export 'posts/post_detail_page_desktop.dart';
 export 'posts/post_info.dart';
 export 'posts/post_note.dart';
 export 'posts/post_service_provider_mixin.dart';
