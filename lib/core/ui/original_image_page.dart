@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/mobile.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
-class OriginalImagePage extends StatefulWidget {
+class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
     super.key,
     required this.post,
@@ -24,10 +24,10 @@ class OriginalImagePage extends StatefulWidget {
   final Orientation initialOrientation;
 
   @override
-  State<OriginalImagePage> createState() => _OriginalImagePageState();
+  ConsumerState<OriginalImagePage> createState() => _OriginalImagePageState();
 }
 
-class _OriginalImagePageState extends State<OriginalImagePage> {
+class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   late Orientation currentRotation;
   bool overlay = true;
   bool zoom = false;
@@ -102,7 +102,8 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
             Positioned.fill(
               child: CachedNetworkImage(
                 httpHeaders: {
-                  'User-Agent': context.read<UserAgentGenerator>().generate(),
+                  'User-Agent':
+                      ref.watch(userAgentGeneratorProvider).generate(),
                 },
                 imageUrl: widget.post.originalImageUrl,
                 imageBuilder: (context, imageProvider) => Hero(

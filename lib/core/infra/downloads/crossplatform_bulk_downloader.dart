@@ -5,73 +5,74 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
-import 'package:boorusama/core/infra/io_helper.dart';
-import 'package:boorusama/core/platform.dart';
 
-class CrossplatformBulkDownloader<T> extends BulkDownloader<T> {
-  late final String Function(T item) _urlResolver;
-  late final String Function(T item) _fileNameResolver;
-  late final int Function(T item) _idResolver;
-  late final DownloadManager _downloadManager;
-  final StreamController<DownloadData> _downloadDataController =
-      StreamController.broadcast();
+class CrossplatformBulkDownloader implements BulkDownloader {
+  final DownloadManager _downloadManager;
+  final _downloadDataController =
+      StreamController<BulkDownloadStatus>.broadcast();
 
-  CrossplatformBulkDownloader({
-    required String Function(T item) urlResolver,
-    required String Function(T item) fileNameResolver,
-    required int Function(T items) idResolver,
-    required UserAgentGenerator userAgentGenerator,
-  }) {
-    _urlResolver = urlResolver;
-    _fileNameResolver = fileNameResolver;
-    _idResolver = idResolver;
-    _downloadManager = DownloadManager(
-        dio: Dio(BaseOptions(headers: {
-      'User-Agent': userAgentGenerator.generate(),
-    })));
-  }
+  CrossplatformBulkDownloader(UserAgentGenerator userAgentGenerator)
+      : _downloadManager = DownloadManager(
+          dio: Dio(
+            BaseOptions(
+              headers: {
+                'User-Agent': userAgentGenerator.generate(),
+              },
+            ),
+          ),
+          maxConcurrentTasks: 6,
+        );
 
   @override
-  Future<void> init() async {
-    // You can perform any initialization logic here if needed.
-  }
+  Future<void> enqueueDownload({
+    required String url,
+    String? path,
+    required DownloadFileNameBuilder fileNameBuilder,
+  }) async {
+    _downloadDataController.add(BulkDownloadInitializing(url));
 
-  @override
-  void dispose() {
-    _downloadDataController.close();
-  }
+    final fileName = fileNameBuilder();
+    final savePath = path != null
+        ? tryGetCustomDownloadDirectory(path)
+        : tryGetDownloadDirectory();
 
-  @override
-  Future<String> getDownloadDirPath() async => isAndroid()
-      ? (await IOHelper.getDownloadPath())
-      : (await getApplicationDocumentsDirectory()).path;
+    final savedPath = await savePath.run();
 
-  @override
-  Future<void> enqueueDownload(T downloadable, {String? folder}) async {
-    String url = _urlResolver(downloadable);
-    String fileName = _fileNameResolver(downloadable);
-    String downloadDir = await getDownloadDirPath();
-    String savePath = folder != null ? join(downloadDir, folder) : downloadDir;
+    if (savedPath.isLeft()) return;
+    final dir = savedPath.getRight();
 
-    final task =
-        await _downloadManager.addDownload(url, join(savePath, fileName));
+    return dir.fold(
+      () => null,
+      (t) async {
+        final task =
+            await _downloadManager.addDownload(url, join(t.path, fileName));
 
-    // Add a listener for download completion
-    task?.whenDownloadComplete().then((_) {
-      _downloadDataController.add(DownloadData(
-        _idResolver(downloadable),
-        task.request.path,
-        task.request.url,
-      ));
-    }).catchError((error) {
-      _downloadDataController
-          .addError(error); // Emit error events through the stream
-    });
+        _downloadDataController.add(BulkDownloadQueued(url));
+
+        task?.progress.addListener(() {
+          _downloadDataController.add(BulkDownloadInProgress(
+            url,
+            task.progress.value,
+          ));
+        });
+
+        // Add a listener for download completion
+        task?.whenDownloadComplete().then((_) {
+          _downloadDataController.add(BulkDownloadDone(
+            task.request.url,
+            task.request.path,
+          ));
+        }).catchError((error) {
+          _downloadDataController
+              .addError(error); // Emit error events through the stream
+        });
+      },
+    );
   }
 
   @override
@@ -84,14 +85,5 @@ class CrossplatformBulkDownloader<T> extends BulkDownloader<T> {
   }
 
   @override
-  Stream<DownloadData> get stream {
-    return _downloadDataController.stream;
-  }
-
-  @override
-  bool get isInit {
-    // Check if the downloader is initialized.
-    // Since there's no specific initialization in this implementation, we return true.
-    return true;
-  }
+  Stream<BulkDownloadStatus> get stream => _downloadDataController.stream;
 }

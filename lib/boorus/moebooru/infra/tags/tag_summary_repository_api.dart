@@ -1,12 +1,16 @@
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/domain/tags.dart';
 import 'package:boorusama/boorus/moebooru/infra/tags.dart';
+import 'package:boorusama/core/infra/networks/request_deduplicator_mixin.dart';
 
-class MoebooruTagSummaryRepository implements TagSummaryRepository {
+class MoebooruTagSummaryRepository
+    with RequestDeduplicator<HttpResponse<dynamic>>
+    implements TagSummaryRepository {
   MoebooruTagSummaryRepository(this._api);
 
   final MoebooruApi _api;
@@ -14,7 +18,7 @@ class MoebooruTagSummaryRepository implements TagSummaryRepository {
   @override
   Future<List<TagSummary>> getTagSummaries() async {
     try {
-      var response = await _api.getTagSummary();
+      var response = await deduplicate('key', () => _api.getTagSummary());
       if ([200, 304].contains(response.response.statusCode)) {
         var tagSummaryDto = TagSummaryDto.fromJson(response.data);
 

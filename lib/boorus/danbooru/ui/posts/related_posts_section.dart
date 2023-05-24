@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:filesize/filesize.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
@@ -44,7 +43,7 @@ class RelatedPostsSection extends ConsumerWidget {
               ),
             ),
             PreviewPostList(
-                cacheManager: context.read<PreviewImageCacheManager>(),
+                cacheManager: ref.watch(previewImageCacheManagerProvider),
                 posts: posts,
                 imageUrl: (item) => item.url720x720,
                 imageBuilder: (post) => Stack(

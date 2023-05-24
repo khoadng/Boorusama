@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/bookmarks.dart';
-import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -69,7 +69,7 @@ class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
   }
 }
 
-class BookmarkSlider extends StatefulWidget {
+class BookmarkSlider extends ConsumerStatefulWidget {
   const BookmarkSlider({
     super.key,
     required this.bookmarks,
@@ -84,10 +84,10 @@ class BookmarkSlider extends StatefulWidget {
   final bool fullscreen;
 
   @override
-  State<BookmarkSlider> createState() => _PostSliderState();
+  ConsumerState<BookmarkSlider> createState() => _PostSliderState();
 }
 
-class _PostSliderState extends State<BookmarkSlider> {
+class _PostSliderState extends ConsumerState<BookmarkSlider> {
   var enableSwipe = true;
 
   @override
@@ -98,7 +98,7 @@ class _PostSliderState extends State<BookmarkSlider> {
         final media = BookmarkMediaItem(
           //TODO: this is used to preload image between page
           bookmark: widget.bookmarks[index],
-          previewCacheManager: context.read<PreviewImageCacheManager>(),
+          previewCacheManager: ref.watch(previewImageCacheManagerProvider),
           onZoomUpdated: (zoom) {
             final swipe = !zoom;
             if (swipe != enableSwipe) {

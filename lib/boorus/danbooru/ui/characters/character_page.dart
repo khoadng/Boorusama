@@ -17,16 +17,10 @@ Widget provideCharacterPageDependencies(
   BuildContext context, {
   required String character,
   required Widget page,
-}) {
-  return DanbooruProvider.of(
-    context,
-    builder: (dcontext) {
-      return CustomContextMenuOverlay(
-        child: page,
-      );
-    },
-  );
-}
+}) =>
+    DanbooruProvider(
+      builder: (_) => CustomContextMenuOverlay(child: page),
+    );
 
 class CharacterPage extends ConsumerWidget {
   const CharacterPage({

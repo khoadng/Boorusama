@@ -7,26 +7,19 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/downloads/danbooru_bulk_download_manager_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/ui/utils.dart';
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
-import 'package:boorusama/boorus/moebooru/application/downloads.dart';
-import 'package:boorusama/boorus/moebooru/application/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -42,7 +35,6 @@ import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/package_info_provider.dart';
-import 'infra/preloader/preloader.dart';
 import 'platform.dart';
 import 'ui/booru_image.dart';
 import 'ui/image_grid_item.dart';
@@ -287,7 +279,7 @@ Future<Object?> goToFavoriteTagImportPage(
   );
 }
 
-void goToImagePreviewPage(BuildContext context, Post post) {
+void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
   showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -298,7 +290,7 @@ void goToImagePreviewPage(BuildContext context, Post post) {
         placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
-        previewCacheManager: context.read<PreviewImageCacheManager>(),
+        previewCacheManager: ref.watch(previewImageCacheManagerProvider),
       ),
     ),
   );
@@ -436,10 +428,8 @@ void goToQuickSearchPage(
           case BooruType.safebooru:
           case BooruType.testbooru:
           case BooruType.aibooru:
-            return DanbooruProvider.create(
-              context,
-              ref: ref,
-              builder: (dcontext) => isMobile
+            return DanbooruProvider(
+              builder: (_) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: onSubmitted,
                       ensureValidTag: ensureValidTag,
@@ -569,10 +559,11 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
+  final booru = ref.read(currentBooruProvider);
+
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,
     child: Builder(builder: (_) {
-      final booru = ref.read(currentBooruProvider);
       switch (booru.booruType) {
         case BooruType.unknown:
           throw UnimplementedError();
@@ -580,54 +571,18 @@ Future<void> goToBulkDownloadPage(
         case BooruType.yandere:
         case BooruType.sakugabooru:
           return MoebooruProvider(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider<BulkDownloadManagerBloc<Post>>(
-                  create: (_) => MoebooruBulkDownloadManagerBloc(
-                    context: context,
-                    postRepository: ref.read(moebooruPostRepoProvider),
-                    deviceInfo: ref.read(deviceInfoProvider),
-                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                ),
-              ],
-              child: const BulkDownloadPage(),
-            ),
+            builder: (context) => const BulkDownloadPage(),
           );
         case BooruType.danbooru:
         case BooruType.safebooru:
         case BooruType.testbooru:
         case BooruType.aibooru:
-          return DanbooruProvider.create(
-            context,
-            ref: ref,
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider<BulkDownloadManagerBloc<Post>>(
-                  create: (_) => DanbooruBulkDownloadManagerBloc(
-                    context: context,
-                    deviceInfo: ref.read(deviceInfoProvider),
-                    postRepository: ref.read(danbooruPostRepoProvider),
-                    postCountRepository: ref.read(postCountRepoProvider),
-                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                ),
-              ],
-              child: const BulkDownloadPage(),
-            ),
+          return DanbooruProvider(
+            builder: (context) => const BulkDownloadPage(),
           );
         case BooruType.gelbooru:
           return GelbooruProvider(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider<BulkDownloadManagerBloc<Post>>(
-                  create: (_) => MoebooruBulkDownloadManagerBloc(
-                    context: context,
-                    postRepository: ref.read(gelbooruPostRepoProvider),
-                    deviceInfo: ref.read(deviceInfoProvider),
-                  )..add(BulkDownloadManagerTagsAdded(tags: tags)),
-                ),
-              ],
-              child: const BulkDownloadPage(),
-            ),
+            builder: (context) => const BulkDownloadPage(),
           );
       }
     }),

@@ -11,6 +11,9 @@ import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/infra/tags.dart';
+import 'related_tags_notifier.dart';
+
+part 'related_tags_provider.dart';
 
 final popularSearchProvider = Provider<PopularSearchRepository>(
   (ref) {

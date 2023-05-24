@@ -6,18 +6,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
 import 'package:boorusama/core/domain/bookmarks.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 
-class BookmarkMediaItem extends StatefulWidget {
+class BookmarkMediaItem extends ConsumerStatefulWidget {
   const BookmarkMediaItem({
     super.key,
     required this.bookmark,
@@ -32,10 +32,10 @@ class BookmarkMediaItem extends StatefulWidget {
   final CacheManager? previewCacheManager;
 
   @override
-  State<BookmarkMediaItem> createState() => _PostMediaItemState();
+  ConsumerState<BookmarkMediaItem> createState() => _PostMediaItemState();
 }
 
-class _PostMediaItemState extends State<BookmarkMediaItem> {
+class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
   final transformationController = TransformationController();
 
   @override
@@ -81,7 +81,7 @@ class _PostMediaItemState extends State<BookmarkMediaItem> {
                   builder: (context, constraints) => CachedNetworkImage(
                     httpHeaders: {
                       'User-Agent':
-                          context.read<UserAgentGenerator>().generate(),
+                          ref.watch(userAgentGeneratorProvider).generate(),
                     },
                     imageUrl: widget.bookmark.sampleUrl,
                     imageBuilder: (context, imageProvider) {
@@ -108,7 +108,7 @@ class _PostMediaItemState extends State<BookmarkMediaItem> {
                     placeholder: (context, url) => CachedNetworkImage(
                       httpHeaders: {
                         'User-Agent':
-                            context.read<UserAgentGenerator>().generate(),
+                            ref.watch(userAgentGeneratorProvider).generate(),
                       },
                       fit: BoxFit.fill,
                       imageUrl: widget.bookmark.thumbnailUrl,

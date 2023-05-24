@@ -20,8 +20,6 @@ class TagSuggestionItemsWithData extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentQuery = ref.watch(searchQueryProvider);
     final suggestionTags = ref.watch(suggestionsProvider);
-    // final histories = context
-    //     .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
 
     return TagSuggestionItems(
       tags: suggestionTags,

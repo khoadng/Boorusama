@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
@@ -76,7 +76,7 @@ class PostMediaItem extends StatelessWidget {
   }
 }
 
-class InteractiveBooruImage extends StatefulWidget {
+class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
     super.key,
     this.onTap,
@@ -110,10 +110,11 @@ class InteractiveBooruImage extends StatefulWidget {
   final void Function(bool zoom)? onZoomUpdated;
 
   @override
-  State<InteractiveBooruImage> createState() => _InteractiveBooruImageState();
+  ConsumerState<InteractiveBooruImage> createState() =>
+      _InteractiveBooruImageState();
 }
 
-class _InteractiveBooruImageState extends State<InteractiveBooruImage> {
+class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
   final transformationController = TransformationController();
 
   @override
@@ -160,7 +161,7 @@ class _InteractiveBooruImageState extends State<InteractiveBooruImage> {
           child: LayoutBuilder(
             builder: (context, constraints) => CachedNetworkImage(
               httpHeaders: {
-                'User-Agent': context.read<UserAgentGenerator>().generate(),
+                'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
               },
               imageUrl: widget.imageUrl,
               imageBuilder: (context, imageProvider) {
@@ -198,7 +199,8 @@ class _InteractiveBooruImageState extends State<InteractiveBooruImage> {
               fadeInDuration: Duration.zero,
               placeholder: (context, url) => CachedNetworkImage(
                 httpHeaders: {
-                  'User-Agent': context.read<UserAgentGenerator>().generate(),
+                  'User-Agent':
+                      ref.watch(userAgentGeneratorProvider).generate(),
                 },
                 fit: BoxFit.fill,
                 imageUrl: widget.placeholderImageUrl,

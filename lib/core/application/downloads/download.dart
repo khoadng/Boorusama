@@ -7,9 +7,8 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/functional.dart';
-import 'download_path_handler.dart';
-import 'notification.dart';
 
 DownloadPathOrError downloadUrl({
   required Dio dio,

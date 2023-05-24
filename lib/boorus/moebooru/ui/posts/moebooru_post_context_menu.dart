@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
-class MoebooruPostContextMenu extends StatelessWidget {
+class MoebooruPostContextMenu extends ConsumerWidget {
   const MoebooruPostContextMenu({
     super.key,
     required this.post,
@@ -23,13 +24,13 @@ class MoebooruPostContextMenu extends StatelessWidget {
   final bool hasAccount;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
             'post.action.preview'.tr(),
-            onPressed: () => goToImagePreviewPage(context, post),
+            onPressed: () => goToImagePreviewPage(ref, context, post),
           ),
           // if (post.hasComment)
           //   ContextMenuButtonConfig(

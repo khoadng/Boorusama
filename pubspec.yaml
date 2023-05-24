@@ -13,7 +13,6 @@ dependencies:
   animated_list_plus: ^0.5.0
   basic_utils: ^5.5.4
   bitsdojo_window: ^0.1.5
-  bloc_concurrency: ^0.2.1
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
   chewie: ^1.4.0
@@ -36,7 +35,6 @@ dependencies:
   firebase_performance: ^0.9.1+1
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.1.2
   flutter_cache_manager: ^3.3.0
   flutter_download_manager:
     git:
@@ -104,7 +102,6 @@ dependencies:
   webview_flutter: ^4.2.0
 
 dev_dependencies:
-  bloc_test: ^9.0.3
   build_runner: ^2.1.11
   dart_code_metrics: ^5.5.1
   flutter_launcher_icons: ^0.13.0

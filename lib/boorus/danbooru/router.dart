@@ -97,7 +97,6 @@ Future<void> goToDetailPage({
   required int initialIndex,
   AutoScrollController? scrollController,
   bool hero = false,
-  // PostBloc? postBloc,
 }) {
   return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
     context,
@@ -153,9 +152,8 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 void goToSavedSearchEditPage(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) {
-      return DanbooruProvider.of(
-        context,
-        builder: (dcontext) => const SavedSearchPage(),
+      return DanbooruProvider(
+        builder: (_) => const SavedSearchPage(),
       );
     },
   ));
@@ -163,9 +161,8 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (context) => const PoolPage(),
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const PoolPage(),
     ),
   ));
 }
@@ -195,12 +192,8 @@ void goToBlacklistedTagPage(BuildContext context) {
 Widget provideBlacklistedTagPageDependencies(
   BuildContext context, {
   required Widget page,
-}) {
-  return DanbooruProvider.of(
-    context,
-    builder: (dcontext) => page,
-  );
-}
+}) =>
+    DanbooruProvider(builder: (_) => page);
 
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {
@@ -208,9 +201,8 @@ void goToBlacklistedTagsSearchPage(
   List<String>? initialTags,
 }) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlacklistedTagsSearchPage(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => BlacklistedTagsSearchPage(
         initialTags: initialTags,
         onSelectedDone: onSelectDone,
       ),
@@ -228,9 +220,8 @@ void goToCommentPage(BuildContext context, int postId) {
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (_, useAppBar) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => CommentPage(
+    builder: (_, useAppBar) => DanbooruProvider(
+      builder: (_) => CommentPage(
         useAppBar: useAppBar,
         postId: postId,
       ),
@@ -244,9 +235,8 @@ void goToCommentCreatePage(
   String? initialContent,
 }) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (context) => CommentCreatePage(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => CommentCreatePage(
         postId: postId,
         initialContent: initialContent,
       ),
@@ -266,9 +256,8 @@ void goToCommentUpdatePage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider.of(
-        context,
-        builder: (context) => CommentUpdatePage(
+      builder: (_) => DanbooruProvider(
+        builder: (_) => CommentUpdatePage(
           postId: postId,
           commentId: commentId,
           initialContent: commentBody,
@@ -288,9 +277,8 @@ void goToUserDetailsPage(
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider.of(
-        context,
-        builder: (dcontext) => UserDetailsPage(
+      builder: (_) => DanbooruProvider(
+        builder: (_) => UserDetailsPage(
           uid: uid,
         ),
       ),
@@ -303,9 +291,8 @@ void goToUserDetailsPage(
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => const PoolSearchPage(),
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const PoolSearchPage(),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -460,9 +447,8 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (___, _, __) => DanbooruProvider.of(
-      context,
-      builder: (context) => EditFavoriteGroupDialog(
+    pageBuilder: (___, _, __) => DanbooruProvider(
+      builder: (_) => EditFavoriteGroupDialog(
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.create_group'.tr(),
         enableManualDataInput: enableManualPostInput,
@@ -477,9 +463,8 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (dialogContext, _, __) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => EditFavoriteGroupDialog(
+    pageBuilder: (dialogContext, _, __) => DanbooruProvider(
+      builder: (_) => EditFavoriteGroupDialog(
         initialData: group,
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.edit_group'.tr(),
@@ -489,29 +474,27 @@ Future<Object?> goToFavoriteGroupEditPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => const FavoriteGroupsPage(),
-    );
-  }));
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const FavoriteGroupsPage(),
+    ),
+  ));
 }
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
 ) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => CustomContextMenuOverlay(
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => CustomContextMenuOverlay(
         child: FavoriteGroupDetailsPage(
           group: group,
           postIds: QueueList.from(group.postIds),
         ),
       ),
-    );
-  }));
+    ),
+  ));
 }
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
@@ -522,9 +505,8 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => AddToFavoriteGroupPage(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => AddToFavoriteGroupPage(
         posts: posts,
       ),
     ),

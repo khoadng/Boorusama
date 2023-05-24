@@ -26,9 +26,8 @@ class SavedSearchFeedPage extends ConsumerWidget {
   });
 
   static Widget of(BuildContext context) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => const CustomContextMenuOverlay(
+    return DanbooruProvider(
+      builder: (_) => const CustomContextMenuOverlay(
         child: SavedSearchFeedPage(),
       ),
     );

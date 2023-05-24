@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads/download.dart';
+import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/functional.dart';
@@ -35,7 +36,6 @@ class DownloadError {
 }
 
 typedef DownloadPathOrError = TaskEither<DownloadError, String>;
-typedef DownloadFileNameBuilder = String Function();
 
 abstract class DownloadService {
   DownloadPathOrError download({
