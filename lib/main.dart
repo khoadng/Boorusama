@@ -21,7 +21,6 @@ import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/downloads/notification.dart';
 import 'package:boorusama/core/application/networking.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/application/settings.dart';

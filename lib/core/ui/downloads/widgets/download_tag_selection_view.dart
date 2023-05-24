@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
 import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/domain/downloads/download_options.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
@@ -61,46 +61,42 @@ class _DownloadTagSelectionViewState
               vertical: 18,
               horizontal: 16,
             ),
-            child: BlocSelector<BulkDownloadManagerBloc,
-                BulkDownloadManagerState, List<String>>(
-              selector: (state) => state.selectedTags,
-              builder: (context, selectedTags) {
+            child: Builder(
+              builder: (context) {
+                final selectedTags =
+                    ref.watch(bulkDownloadSelectedTagsProvider);
+
                 return Wrap(
                   spacing: 5,
                   children: [
                     ...selectedTags.map((e) => Chip(
-                          label: Text(e.replaceAll('_', ' ')),
+                          label: Text(e.toString().replaceAll('_', ' ')),
                           deleteIcon: Icon(
                             Icons.close,
                             size: 16,
                             color: Theme.of(context).colorScheme.error,
                           ),
-                          onDeleted: () => context
-                              .read<BulkDownloadManagerBloc>()
-                              .add(BulkDownloadManagerTagRemoved(tag: e)),
+                          onDeleted: () => ref
+                              .read(bulkDownloadSelectedTagsProvider.notifier)
+                              .removeTag(e),
                         )),
                     IconButton(
                       iconSize: 28,
                       splashRadius: 20,
                       onPressed: () {
-                        final bloc = context.read<BulkDownloadManagerBloc>();
                         goToQuickSearchPage(
                           context,
                           ref: ref,
                           onSubmitted: (context, text) {
                             Navigator.of(context).pop();
-                            bloc.add(
-                              BulkDownloadManagerTagsAdded(
-                                tags: [text],
-                              ),
-                            );
+                            ref
+                                .read(bulkDownloadSelectedTagsProvider.notifier)
+                                .addTag(text);
                           },
                           onSelected: (tag) {
-                            bloc.add(
-                              BulkDownloadManagerTagsAdded(
-                                tags: [tag.value],
-                              ),
-                            );
+                            ref
+                                .read(bulkDownloadSelectedTagsProvider.notifier)
+                                .addTag(tag.value);
                           },
                         );
                       },
@@ -131,10 +127,10 @@ class _DownloadTagSelectionViewState
               horizontal: 16,
               vertical: 8,
             ),
-            child: BlocSelector<BulkDownloadManagerBloc,
-                BulkDownloadManagerState, DownloadOptions>(
-              selector: (state) => state.options,
-              builder: (context, options) {
+            child: Builder(
+              builder: (context) {
+                final options = ref.watch(bulkDownloadOptionsProvider);
+
                 return Material(
                   child: Ink(
                     decoration: BoxDecoration(
@@ -172,9 +168,11 @@ class _DownloadTagSelectionViewState
             ),
           ),
           if (isAndroid())
-            BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
-              builder: (context, state) {
-                return state.shouldDisplayWarning(
+            Builder(
+              builder: (context) {
+                final options = ref.watch(bulkDownloadOptionsProvider);
+
+                return options.shouldDisplayWarning(
                   hasScopeStorage: hasScopedStorage(ref
                           .read(deviceInfoProvider)
                           .androidDeviceInfo
@@ -189,30 +187,25 @@ class _DownloadTagSelectionViewState
                                 ?.version
                                 .release ??
                             'Unknown',
-                        allowedFolders: state.allowedFolders,
+                        allowedFolders: options.allowedFolders,
                       )
                     : const SizedBox.shrink();
               },
             ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child:
-                BlocBuilder<BulkDownloadManagerBloc, BulkDownloadManagerState>(
-              builder: (context, state) {
+            child: Builder(
+              builder: (context) {
+                final allowDownloadd =
+                    ref.watch(isValidToStartDownloadProvider);
+                final selectedTags =
+                    ref.watch(bulkDownloadSelectedTagsProvider);
+
                 return ElevatedButton(
-                  onPressed: state.isValidToStartDownload(
-                    hasScopeStorage: hasScopedStorage(ref
-                            .read(deviceInfoProvider)
-                            .androidDeviceInfo
-                            ?.version
-                            .sdkInt) ??
-                        false,
-                  )
-                      ? () => context.read<BulkDownloadManagerBloc>().add(
-                            BulkDownloadManagerRequested(
-                              tags: state.selectedTags,
-                            ),
-                          )
+                  onPressed: allowDownloadd
+                      ? () => ref
+                          .read(bulkDownloaderManagerProvider.notifier)
+                          .download(tags: selectedTags.join(' '))
                       : null,
                   child: const Text('download.download').tr(),
                 );
@@ -228,16 +221,12 @@ class _DownloadTagSelectionViewState
     BuildContext context,
     DownloadOptions options,
   ) async {
-    final bloc = context.read<BulkDownloadManagerBloc>();
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
-      bloc.add(
-        BulkDownloadManagerOptionsChanged(
-          options: options.copyWith(
-            storagePath: selectedDirectory,
-          ),
-        ),
+      final state = ref.read(bulkDownloadOptionsProvider);
+      ref.read(bulkDownloadOptionsProvider.notifier).state = state.copyWith(
+        storagePath: selectedDirectory,
       );
     }
   }

@@ -1,7 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-class DownloadOptions extends Equatable {
+// Project imports:
+import 'package:boorusama/core/application/downloads.dart';
+
+class DownloadOptions extends Equatable with DownloadMixin {
   const DownloadOptions({
     required this.onlyDownloadNewFile,
     required this.storagePath,
@@ -17,6 +20,7 @@ class DownloadOptions extends Equatable {
       );
 
   final bool onlyDownloadNewFile;
+  @override
   final String storagePath;
 
   @override

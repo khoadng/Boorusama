@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -25,16 +24,17 @@ class DownloadEmptyTagView extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(4),
         child: SimpleTagSearchView(
-          textColorBuilder: (tag) =>
-              generateDanbooruAutocompleteTagColor(tag, theme),
+          textColorBuilder: (tag) => generateDanbooruAutocompleteTagColor(
+              tag, theme), //FIXME: should be a provider
           closeOnSelected: false,
           ensureValidTag: false,
           onSelected: (tag) {
-            context.read<BulkDownloadManagerBloc>().add(
-                  BulkDownloadManagerTagsAdded(
-                    tags: [tag.value],
-                  ),
-                );
+            ref
+                .read(bulkDownloadSelectedTagsProvider.notifier)
+                .addTag(tag.value);
+            ref
+                .read(bulkDownloaderManagerProvider.notifier)
+                .switchToTagSelect();
           },
         ),
       ),

@@ -14,12 +14,16 @@ import 'package:boorusama/boorus/gelbooru/ui/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/home.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/permissions.dart';
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/home/side_bar_menu.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/functional.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -58,6 +62,26 @@ class _HomePageState extends ConsumerState<HomePage> {
         },
       );
     }
+
+    ref.listen(
+      bulkDownloadStateProvider.select((value) => value.downloadStatuses),
+      (previous, next) {
+        if (previous == null) return;
+        if (previous.values.any((e) => e is! BulkDownloadDone) &&
+            next.values.all((t) => t is BulkDownloadDone)) {
+          showSimpleSnackBar(
+            context: context,
+            duration: const Duration(seconds: 10),
+            action: SnackBarAction(
+              label: 'View',
+              onPressed: () => goToBulkDownloadPage(context, [], ref: ref),
+            ),
+            behavior: SnackBarBehavior.fixed,
+            content: const Text('All downloads are done'),
+          );
+        }
+      },
+    );
 
     return Scaffold(
       key: scaffoldKey,
