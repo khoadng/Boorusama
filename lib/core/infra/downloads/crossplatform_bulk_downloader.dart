@@ -1,15 +1,18 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_download_manager/flutter_download_manager.dart';
+import 'package:media_scanner/media_scanner.dart';
 import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/platform.dart';
 
 class CrossplatformBulkDownloader implements BulkDownloader {
   final DownloadManager _downloadManager;
@@ -34,9 +37,9 @@ class CrossplatformBulkDownloader implements BulkDownloader {
     String? path,
     required DownloadFileNameBuilder fileNameBuilder,
   }) async {
-    _downloadDataController.add(BulkDownloadInitializing(url));
-
     final fileName = fileNameBuilder();
+    _downloadDataController.add(BulkDownloadInitializing(url, fileName));
+
     final savePath = path != null
         ? tryGetCustomDownloadDirectory(path)
         : tryGetDownloadDirectory();
@@ -49,27 +52,62 @@ class CrossplatformBulkDownloader implements BulkDownloader {
     return dir.fold(
       () => null,
       (t) async {
+        final filePath = join(t.path, fileName);
+        if (File(filePath).existsSync()) {
+          _downloadDataController.add(BulkDownloadDone(
+            url,
+            fileName,
+            t.path,
+            alreadyExists: true,
+          ));
+          return;
+        }
+
         final task =
             await _downloadManager.addDownload(url, join(t.path, fileName));
 
-        _downloadDataController.add(BulkDownloadQueued(url));
+        _downloadDataController.add(BulkDownloadQueued(url, fileName));
 
         task?.progress.addListener(() {
-          _downloadDataController.add(BulkDownloadInProgress(
-            url,
-            task.progress.value,
-          ));
+          if (task.status.value == DownloadStatus.downloading) {
+            _downloadDataController.add(BulkDownloadInProgress(
+              url,
+              fileName,
+              task.progress.value,
+            ));
+          }
         });
 
-        // Add a listener for download completion
-        task?.whenDownloadComplete().then((_) {
-          _downloadDataController.add(BulkDownloadDone(
-            task.request.url,
-            task.request.path,
-          ));
-        }).catchError((error) {
-          _downloadDataController
-              .addError(error); // Emit error events through the stream
+        task?.whenDownloadComplete().then((value) {
+          if (isAndroid()) {
+            MediaScanner.loadMedia(path: task.request.path);
+          }
+        });
+
+        task?.status.addListener(() {
+          final status = switch (task.status.value) {
+            DownloadStatus.queued => BulkDownloadQueued(url, fileName),
+            DownloadStatus.downloading => BulkDownloadInProgress(
+                url,
+                fileName,
+                task.progress.value,
+              ),
+            DownloadStatus.paused => BulkDownloadPaused(
+                url,
+                fileName,
+                task.progress.value,
+              ),
+            DownloadStatus.failed => BulkDownloadFailed(url, fileName),
+            DownloadStatus.canceled => task.progress.value == 1
+                ? BulkDownloadDone(url, fileName, task.request.path)
+                : BulkDownloadCanceled(url, fileName),
+            DownloadStatus.completed => BulkDownloadDone(
+                url,
+                fileName,
+                task.request.path,
+              ),
+          };
+          _downloadDataController.add(status);
         });
       },
     );
@@ -86,4 +124,14 @@ class CrossplatformBulkDownloader implements BulkDownloader {
 
   @override
   Stream<BulkDownloadStatus> get stream => _downloadDataController.stream;
+
+  @override
+  Future<void> pause(String url) {
+    return _downloadManager.pauseDownload(url);
+  }
+
+  @override
+  Future<void> resume(String url) {
+    return _downloadManager.resumeDownload(url);
+  }
 }

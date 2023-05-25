@@ -16,6 +16,10 @@ final bulkDownloadThumbnailsProvider =
   return {};
 });
 
+final bulkDownloadFileSizeProvider = StateProvider<Map<String, int>>((ref) {
+  return {};
+});
+
 final bulkDownloadSelectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
         SelectedTagsNotifier.new,
@@ -70,8 +74,7 @@ final bulkDownloadFileNameProvider = Provider<FileNameGenerator<Post>>((ref) {
   throw UnimplementedError();
 });
 
-final bulkDownloadStateProvider = StateProvider<BulkDownloadState>((ref) {
-  return const BulkDownloadState(
-    downloadStatuses: {},
-  );
-});
+final bulkDownloadStateProvider =
+    NotifierProvider<BulkDownloadStateNotifier, BulkDownloadState>(
+  BulkDownloadStateNotifier.new,
+);
