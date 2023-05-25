@@ -69,13 +69,15 @@ class BulkDownloadTile extends ConsumerWidget {
                         ),
                         label: Text(extension(data.url)),
                       ),
-                      Chip(
-                        visualDensity: const VisualDensity(
-                          horizontal: -4,
-                          vertical: -4,
+                      if (fileSizes[data.url] != null &&
+                          fileSizes[data.url]! > 0)
+                        Chip(
+                          visualDensity: const VisualDensity(
+                            horizontal: -4,
+                            vertical: -4,
+                          ),
+                          label: Text(filesize(fileSizes[data.url], 1)),
                         ),
-                        label: Text(filesize(fileSizes[data.url], 1)),
-                      ),
                     ],
                   ),
                 ),
