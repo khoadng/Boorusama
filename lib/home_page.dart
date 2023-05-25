@@ -72,7 +72,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             next.values.all((t) => t is BulkDownloadDone)) {
           showSimpleSnackBar(
             context: context,
-            duration: const Duration(seconds: 10),
+            duration: const Duration(seconds: 3),
             action: SnackBarAction(
               label: 'View',
               onPressed: () => goToBulkDownloadPage(context, [], ref: ref),

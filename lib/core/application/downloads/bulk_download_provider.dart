@@ -70,8 +70,7 @@ final bulkDownloadFileNameProvider = Provider<FileNameGenerator<Post>>((ref) {
   throw UnimplementedError();
 });
 
-final bulkDownloadStateProvider = StateProvider<BulkDownloadState>((ref) {
-  return const BulkDownloadState(
-    downloadStatuses: {},
-  );
-});
+final bulkDownloadStateProvider =
+    NotifierProvider<BulkDownloadStateNotifier, BulkDownloadState>(
+  BulkDownloadStateNotifier.new,
+);

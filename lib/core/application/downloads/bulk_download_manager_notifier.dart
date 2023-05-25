@@ -10,20 +10,23 @@ import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/provider.dart';
 
 class BulkDownloadManagerNotifier extends Notifier<void> {
+  BulkDownloadStateNotifier get bulkDownloadState =>
+      ref.read(bulkDownloadStateProvider.notifier);
+
+  BulkDownloader get downloader => ref.read(bulkDownloadProvider);
+
+  StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
+      ref.read(bulkDownloadManagerStatusProvider.notifier);
+
+  PostRepository get postRepo => ref.read(postRepoProvider);
+
   @override
   void build() {
     ref.listen(
       bulkdDownloadDataProvider,
       (previous, next) {
         next.whenData((value) {
-          final bs = ref.read(bulkDownloadStateProvider);
-
-          ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
-            downloadStatuses: {
-              ...bs.downloadStatuses,
-              value.url: value,
-            },
-          );
+          bulkDownloadState.updateDownloadStatus(url: value.url, status: value);
         });
       },
     );
@@ -32,15 +35,12 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
   }
 
   void switchToTagSelect() {
-    ref.read(bulkDownloadManagerStatusProvider.notifier).state =
-        BulkDownloadManagerStatus.dataSelected;
+    bulkDownloadStatus.state = BulkDownloadManagerStatus.dataSelected;
   }
 
   void done() {
-    ref.read(bulkDownloadManagerStatusProvider.notifier).state =
-        BulkDownloadManagerStatus.initial;
+    bulkDownloadStatus.state = BulkDownloadManagerStatus.initial;
     ref.invalidate(bulkDownloadThumbnailsProvider);
-    ref.invalidate(bulkDownloadStateProvider);
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 
@@ -53,92 +53,68 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
     if (permission != PermissionStatus.granted) {
       final status = await requestMediaPermissions(deviceInfo);
       if (status != PermissionStatus.granted) {
-        ref.read(bulkDownloadManagerStatusProvider.notifier).state =
-            BulkDownloadManagerStatus.failure;
+        bulkDownloadStatus.state = BulkDownloadManagerStatus.failure;
         return;
       }
     }
 
     final storagePath = ref.read(bulkDownloadOptionsProvider).storagePath;
 
-    ref.read(bulkDownloadManagerStatusProvider.notifier).state =
-        BulkDownloadManagerStatus.downloadInProgress;
+    bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
     final fileNameGenerator = ref.read(bulkDownloadFileNameProvider);
 
     var page = 1;
-    final initialItems =
-        await ref.read(postRepoProvider).getPostsFromTagsOrEmpty(tags, page);
+    final initialItems = await postRepo.getPostsFromTagsOrEmpty(tags, page);
     final itemStack = [initialItems];
 
     while (itemStack.isNotEmpty) {
       final items = itemStack.removeLast();
 
       for (var item in items) {
-        ref.read(bulkDownloadProvider).enqueueDownload(
-              url: item.downloadUrl,
-              path: storagePath,
-              fileNameBuilder: () => fileNameGenerator.generateFor(item),
-            );
+        downloader.enqueueDownload(
+          url: item.downloadUrl,
+          path: storagePath,
+          fileNameBuilder: () => fileNameGenerator.generateFor(item),
+        );
 
-        final ts = ref.read(bulkDownloadThumbnailsProvider);
         ref.read(bulkDownloadThumbnailsProvider.notifier).state = {
-          ...ts,
+          ...ref.read(bulkDownloadThumbnailsProvider),
           item.downloadUrl: item.thumbnailImageUrl,
         };
 
-        final bs = ref.read(bulkDownloadStateProvider);
-        ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
-          estimatedDownloadSize: bs.estimatedDownloadSize + item.fileSize,
-        );
+        bulkDownloadState.addDownloadSize(item.fileSize);
       }
 
       await Future.delayed(const Duration(milliseconds: 200));
     }
 
     page += 1;
-    final next = await ref
-        .read(postRepoProvider)
-        .getPostsFromTagsOrEmpty(tags, page, limit: 20);
+    final next = await postRepo.getPostsFromTagsOrEmpty(tags, page, limit: 20);
     if (next.isNotEmpty) {
       itemStack.add(next);
     }
   }
 
   Future<void> reset() async {
-    await ref.read(bulkDownloadProvider).cancelAll();
+    await downloader.cancelAll();
     ref.invalidate(bulkDownloadThumbnailsProvider);
     ref.invalidate(bulkDownloadStateProvider);
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 
   Future<void> pause(String url) async {
-    final bs = ref.read(bulkDownloadStateProvider);
-
-    ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
-      downloadStatuses: {
-        ...bs.downloadStatuses,
-        url: BulkDownloadInitializing(url, bs.downloadStatuses[url]!.fileName),
-      },
-    );
-    await ref.read(bulkDownloadProvider).pause(url);
+    bulkDownloadState.updateDownloadToInitilizingState(url);
+    await downloader.pause(url);
   }
 
   Future<void> resume(String url) async {
-    final bs = ref.read(bulkDownloadStateProvider);
-
-    ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
-      downloadStatuses: {
-        ...bs.downloadStatuses,
-        url: BulkDownloadInitializing(url, bs.downloadStatuses[url]!.fileName),
-      },
-    );
-    await ref.read(bulkDownloadProvider).resume(url);
+    bulkDownloadState.updateDownloadToInitilizingState(url);
+    await downloader.resume(url);
   }
 
   Future<void> cancelAll() async {
-    ref.read(bulkDownloadManagerStatusProvider.notifier).state =
-        BulkDownloadManagerStatus.cancel;
-    await ref.read(bulkDownloadProvider).cancelAll();
+    bulkDownloadStatus.state = BulkDownloadManagerStatus.cancel;
+    await downloader.cancelAll();
   }
 }
