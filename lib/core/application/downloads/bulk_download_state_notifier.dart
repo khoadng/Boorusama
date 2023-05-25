@@ -17,6 +17,15 @@ class BulkDownloadStateNotifier extends Notifier<BulkDownloadState> {
       },
     );
 
+    ref.listen(
+      bulkDownloadDataProvider,
+      (previous, next) {
+        next.whenData((value) {
+          updateDownloadStatus(url: value.url, status: value);
+        });
+      },
+    );
+
     return BulkDownloadState.initial();
   }
 

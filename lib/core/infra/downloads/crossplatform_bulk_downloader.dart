@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
@@ -16,8 +17,7 @@ import 'package:boorusama/core/platform.dart';
 
 class CrossplatformBulkDownloader implements BulkDownloader {
   final DownloadManager _downloadManager;
-  final _downloadDataController =
-      StreamController<BulkDownloadStatus>.broadcast();
+  final _downloadDataController = BehaviorSubject<BulkDownloadStatus>();
 
   CrossplatformBulkDownloader(UserAgentGenerator userAgentGenerator)
       : _downloadManager = DownloadManager(

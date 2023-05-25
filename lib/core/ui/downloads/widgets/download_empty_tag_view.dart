@@ -32,9 +32,6 @@ class DownloadEmptyTagView extends ConsumerWidget {
             ref
                 .read(bulkDownloadSelectedTagsProvider.notifier)
                 .addTag(tag.value);
-            ref
-                .read(bulkDownloaderManagerProvider.notifier)
-                .switchToTagSelect();
           },
         ),
       ),

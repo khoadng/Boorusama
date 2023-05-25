@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -560,6 +561,7 @@ Future<void> goToBulkDownloadPage(
   required WidgetRef ref,
 }) async {
   final booru = ref.read(currentBooruProvider);
+  ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
 
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.rightToLeft,

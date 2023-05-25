@@ -22,20 +22,7 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
 
   @override
   void build() {
-    ref.listen(
-      bulkdDownloadDataProvider,
-      (previous, next) {
-        next.whenData((value) {
-          bulkDownloadState.updateDownloadStatus(url: value.url, status: value);
-        });
-      },
-    );
-
     return;
-  }
-
-  void switchToTagSelect() {
-    bulkDownloadStatus.state = BulkDownloadManagerStatus.dataSelected;
   }
 
   void done() {
@@ -72,6 +59,8 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
       final items = itemStack.removeLast();
 
       for (var item in items) {
+        if (item.downloadUrl.isEmpty) continue;
+
         downloader.enqueueDownload(
           url: item.downloadUrl,
           path: storagePath,
@@ -104,7 +93,6 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
   Future<void> reset() async {
     await downloader.cancelAll();
     ref.invalidate(bulkDownloadThumbnailsProvider);
-    ref.invalidate(bulkDownloadStateProvider);
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 

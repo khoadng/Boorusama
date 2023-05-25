@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/android.dart';
 import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -21,11 +20,9 @@ final bulkDownloadFileSizeProvider = StateProvider<Map<String, int>>((ref) {
 });
 
 final bulkDownloadSelectedTagsProvider =
-    NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
-        SelectedTagsNotifier.new,
-        dependencies: [
-      tagInfoProvider,
-    ]);
+    NotifierProvider<BulkDownloadTagsNotifier, List<String>>(
+  BulkDownloadTagsNotifier.new,
+);
 
 final isValidToStartDownloadProvider = Provider.autoDispose<bool>(
   (ref) {
@@ -53,7 +50,7 @@ final bulkDownloadProvider = Provider<BulkDownloader>((ref) {
   return CrossplatformBulkDownloader(userAgentGenerator);
 });
 
-final bulkdDownloadDataProvider = StreamProvider<BulkDownloadStatus>(
+final bulkDownloadDataProvider = StreamProvider<BulkDownloadStatus>(
     (ref) => ref.watch(bulkDownloadProvider).stream);
 
 final bulkDownloaderManagerProvider =
@@ -67,6 +64,16 @@ final bulkDownloaderManagerProvider =
 
 final bulkDownloadManagerStatusProvider =
     StateProvider<BulkDownloadManagerStatus>((ref) {
+  ref.listen(
+    bulkDownloadSelectedTagsProvider,
+    (previous, next) {
+      if (previous == null) return;
+      if (previous.isEmpty && next.isNotEmpty) {
+        ref.controller.state = BulkDownloadManagerStatus.dataSelected;
+      }
+    },
+  );
+
   return BulkDownloadManagerStatus.initial;
 });
 
