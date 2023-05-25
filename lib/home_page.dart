@@ -68,6 +68,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       (previous, next) {
         if (previous == null) return;
         if (previous.values.any((e) => e is! BulkDownloadDone) &&
+            next.values.isNotEmpty &&
             next.values.all((t) => t is BulkDownloadDone)) {
           showSimpleSnackBar(
             context: context,

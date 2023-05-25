@@ -20,6 +20,7 @@ class DownloadInProgressView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(bulkDownloadStateProvider);
+    final status = ref.watch(bulkDownloadManagerStatusProvider);
     final data = state.downloadStatuses.values.toList();
     final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
 
@@ -78,7 +79,8 @@ class DownloadInProgressView extends ConsumerWidget {
             ),
           ),
         ),
-        if (data.all((t) => t is BulkDownloadDone))
+        if ((data.isNotEmpty && data.all((t) => t is BulkDownloadDone)) ||
+            status == BulkDownloadManagerStatus.cancel)
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(

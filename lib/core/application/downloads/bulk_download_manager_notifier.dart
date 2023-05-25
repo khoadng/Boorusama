@@ -112,7 +112,33 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 
+  Future<void> pause(String url) async {
+    final bs = ref.read(bulkDownloadStateProvider);
+
+    ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
+      downloadStatuses: {
+        ...bs.downloadStatuses,
+        url: BulkDownloadInitializing(url, bs.downloadStatuses[url]!.fileName),
+      },
+    );
+    await ref.read(bulkDownloadProvider).pause(url);
+  }
+
+  Future<void> resume(String url) async {
+    final bs = ref.read(bulkDownloadStateProvider);
+
+    ref.read(bulkDownloadStateProvider.notifier).state = bs.copyWith(
+      downloadStatuses: {
+        ...bs.downloadStatuses,
+        url: BulkDownloadInitializing(url, bs.downloadStatuses[url]!.fileName),
+      },
+    );
+    await ref.read(bulkDownloadProvider).resume(url);
+  }
+
   Future<void> cancelAll() async {
+    ref.read(bulkDownloadManagerStatusProvider.notifier).state =
+        BulkDownloadManagerStatus.cancel;
     await ref.read(bulkDownloadProvider).cancelAll();
   }
 }

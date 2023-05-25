@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // Project imports:
@@ -31,27 +30,22 @@ class BulkDownloadTile extends ConsumerWidget {
       child: switch (data) {
         BulkDownloadInitializing d => ListTile(
             leading: _Thumbnail(url: thumbnails[d.url]),
-            title: Text(basename(data.url)),
-            trailing: const CircularProgressIndicator.adaptive(),
+            title: _Title(data: data),
+            trailing: const CircularProgressIndicator(),
           ),
         BulkDownloadQueued d => ListTile(
             leading: _Thumbnail(url: thumbnails[d.url]),
-            title: Text(basename(data.url)),
-            subtitle: const Text('Queued'),
+            title: _Title(data: data),
+            subtitle: const Text('Queued', maxLines: 1),
           ),
         BulkDownloadInProgress d => ListTile(
             leading: _Thumbnail(url: thumbnails[d.url]),
             trailing: IconButton(
-                onPressed: () => print('object'),
+                onPressed: () => ref
+                    .read(bulkDownloaderManagerProvider.notifier)
+                    .pause(d.url),
                 icon: const Icon(Icons.pause)),
-            title: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                basename(d.url),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            title: _Title(data: data),
             subtitle: LinearPercentIndicator(
               lineHeight: 2,
               percent: d.progress,
@@ -63,8 +57,45 @@ class BulkDownloadTile extends ConsumerWidget {
               ),
             ),
           ),
+        BulkDownloadPaused d => ListTile(
+            leading: _Thumbnail(url: thumbnails[d.url]),
+            trailing: IconButton(
+                onPressed: () => ref
+                    .read(bulkDownloaderManagerProvider.notifier)
+                    .resume(d.url),
+                icon: const Icon(Icons.play_arrow)),
+            title: _Title(data: data),
+            subtitle: LinearPercentIndicator(
+              lineHeight: 2,
+              percent: d.progress,
+              animateFromLastPercent: true,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              animation: true,
+              trailing: Text(
+                '${(d.progress * 100).floor()}%',
+              ),
+            ),
+          ),
+        BulkDownloadFailed d => ListTile(
+            leading: _Thumbnail(url: thumbnails[d.url]),
+            title: _Title(data: data),
+            subtitle: const Text('Failed', maxLines: 1),
+          ),
+        BulkDownloadCanceled d => ListTile(
+            leading: _Thumbnail(url: thumbnails[d.url]),
+            title: _Title(
+              data: data,
+              strikeThrough: true,
+              color: Theme.of(context).hintColor,
+            ),
+            subtitle: const Text('Canceled', maxLines: 1),
+          ),
         BulkDownloadDone d => ListTile(
             leading: _Thumbnail(url: thumbnails[d.url]),
+            trailing: const Icon(
+              Icons.download_done,
+              color: Colors.green,
+            ),
             onTap: () async {
               if (isAndroid()) {
                 final intent = AndroidIntent(
@@ -76,9 +107,36 @@ class BulkDownloadTile extends ConsumerWidget {
                 await intent.launch();
               }
             },
-            title: Text(basename(data.url), maxLines: 1),
+            title: _Title(data: data),
+            subtitle: const Text('Done', maxLines: 1),
           ),
       },
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    required this.data,
+    this.strikeThrough = false,
+    this.color,
+  });
+
+  final BulkDownloadStatus data;
+  final bool strikeThrough;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      data.fileName,
+      maxLines: 1,
+      overflow: TextOverflow.fade,
+      softWrap: false,
+      style: TextStyle(
+        color: color,
+        decoration: strikeThrough ? TextDecoration.lineThrough : null,
+      ),
     );
   }
 }
