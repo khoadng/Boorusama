@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -31,18 +30,17 @@ class BulkDownloadPage extends ConsumerWidget {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('download.bulk_download').tr(),
+        body: SafeArea(
+          child: switch (state) {
+            BulkDownloadManagerStatus.initial => const DownloadEmptyTagView(),
+            BulkDownloadManagerStatus.dataSelected =>
+              const DownloadTagSelectionView(),
+            BulkDownloadManagerStatus.downloadInProgress ||
+            BulkDownloadManagerStatus.cancel =>
+              const DownloadInProgressView(),
+            _ => const SizedBox.shrink(),
+          },
         ),
-        body: switch (state) {
-          BulkDownloadManagerStatus.initial => const DownloadEmptyTagView(),
-          BulkDownloadManagerStatus.dataSelected =>
-            const DownloadTagSelectionView(),
-          BulkDownloadManagerStatus.downloadInProgress ||
-          BulkDownloadManagerStatus.cancel =>
-            const DownloadInProgressView(),
-          _ => const SizedBox.shrink(),
-        },
       ),
     );
   }

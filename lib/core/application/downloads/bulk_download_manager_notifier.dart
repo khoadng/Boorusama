@@ -83,6 +83,11 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
           item.downloadUrl: item.thumbnailImageUrl,
         };
 
+        ref.read(bulkDownloadFileSizeProvider.notifier).state = {
+          ...ref.read(bulkDownloadFileSizeProvider),
+          item.downloadUrl: item.fileSize,
+        };
+
         bulkDownloadState.addDownloadSize(item.fileSize);
       }
 

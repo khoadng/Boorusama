@@ -16,6 +16,10 @@ final bulkDownloadThumbnailsProvider =
   return {};
 });
 
+final bulkDownloadFileSizeProvider = StateProvider<Map<String, int>>((ref) {
+  return {};
+});
+
 final bulkDownloadSelectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
         SelectedTagsNotifier.new,

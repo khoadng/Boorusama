@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
@@ -51,6 +52,17 @@ class CrossplatformBulkDownloader implements BulkDownloader {
     return dir.fold(
       () => null,
       (t) async {
+        final filePath = join(t.path, fileName);
+        if (File(filePath).existsSync()) {
+          _downloadDataController.add(BulkDownloadDone(
+            url,
+            fileName,
+            t.path,
+            alreadyExists: true,
+          ));
+          return;
+        }
+
         final task =
             await _downloadManager.addDownload(url, join(t.path, fileName));
 

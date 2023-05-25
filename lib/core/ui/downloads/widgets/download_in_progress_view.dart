@@ -66,8 +66,10 @@ class DownloadInProgressView extends ConsumerWidget {
             alignment: WrapAlignment.center,
             spacing: 4,
             children: selectedTags
-                .map(
-                    (e) => Chip(label: Text(e.toString().replaceAll('_', ' '))))
+                .map((e) => Chip(
+                      label: Text(e.toString().replaceAll('_', ' ')),
+                      shape: const StadiumBorder(side: BorderSide()),
+                    ))
                 .toList(),
           ),
         ),
