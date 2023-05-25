@@ -57,9 +57,10 @@ class _DownloadTagSelectionViewState
             ).tr(),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 16,
+            padding: const EdgeInsets.only(
+              top: 18,
+              left: 16,
+              right: 16,
             ),
             child: Builder(
               builder: (context) {
@@ -112,6 +113,7 @@ class _DownloadTagSelectionViewState
             endIndent: 16,
             indent: 16,
           ),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(

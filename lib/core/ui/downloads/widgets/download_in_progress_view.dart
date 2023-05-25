@@ -5,12 +5,46 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/ui/downloads/widgets/bulk_download_tile.dart';
+import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/functional.dart';
+
+enum BulkDownloadFilter {
+  all,
+  pending,
+  inProgress,
+  completed,
+  failed,
+}
+
+final bulkDownloadFilterProvider =
+    StateProvider.autoDispose<BulkDownloadFilter>((ref) {
+  return BulkDownloadFilter.all;
+});
+
+final bulkDownloadFilteredProvider =
+    Provider.autoDispose<List<BulkDownloadStatus>>((ref) {
+  final filter = ref.watch(bulkDownloadFilterProvider);
+  final state = ref.watch(
+      bulkDownloadStateProvider.select((value) => value.downloadStatuses));
+
+  return switch (filter) {
+    BulkDownloadFilter.all => state.values.toList(),
+    BulkDownloadFilter.pending =>
+      state.values.whereType<BulkDownloadQueued>().toList(),
+    BulkDownloadFilter.inProgress =>
+      state.values.whereType<BulkDownloadInProgress>().toList(),
+    BulkDownloadFilter.completed =>
+      state.values.whereType<BulkDownloadDone>().toList(),
+    BulkDownloadFilter.failed =>
+      state.values.whereType<BulkDownloadFailed>().toList(),
+  };
+});
 
 class DownloadInProgressView extends ConsumerWidget {
   const DownloadInProgressView({
@@ -21,7 +55,7 @@ class DownloadInProgressView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(bulkDownloadStateProvider);
     final status = ref.watch(bulkDownloadManagerStatusProvider);
-    final data = state.downloadStatuses.values.toList();
+    final data = ref.watch(bulkDownloadFilteredProvider);
     final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
 
     return Column(
@@ -73,11 +107,33 @@ class DownloadInProgressView extends ConsumerWidget {
                 .toList(),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Builder(builder: (context) {
+            final selectedFilter = ref.watch(bulkDownloadFilterProvider);
+            return OptionDropDownButton<BulkDownloadFilter>(
+              value: selectedFilter,
+              onChanged: (value) {
+                if (value == null) return;
+                ref.read(bulkDownloadFilterProvider.notifier).state = value;
+              },
+              items: BulkDownloadFilter.values
+                  .map((value) => DropdownMenuItem<BulkDownloadFilter>(
+                        value: value,
+                        child: Text(value.name.sentenceCase),
+                      ))
+                  .toList(),
+            );
+          }),
+        ),
         Expanded(
-          child: ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) => BulkDownloadTile(
-              data: data[index],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) => BulkDownloadTile(
+                data: data[index],
+              ),
             ),
           ),
         ),
