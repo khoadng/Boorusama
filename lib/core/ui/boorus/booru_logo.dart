@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/domain/posts/sources/source_utils.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({
@@ -28,7 +29,7 @@ class BooruLogo extends StatelessWidget {
         fit: BoxFit.cover,
         fadeInDuration: const Duration(milliseconds: 100),
         fadeOutDuration: const Duration(milliseconds: 200),
-        imageUrl: booru.getIconUrl(),
+        imageUrl: getFavicon(booru.url),
       ),
     );
   }

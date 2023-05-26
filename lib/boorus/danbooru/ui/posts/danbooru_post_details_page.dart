@@ -319,10 +319,7 @@ class _DanbooruPostDetailsPageState
         switch (post.source) {
           WebSource s => Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: SourceSection(
-                url: s.sourceHost,
-                isIcoUrl: s.hasIcoLogoSource,
-              ),
+              child: SourceSection(source: s),
             ),
           _ => const SizedBox.shrink(),
         },

@@ -211,10 +211,7 @@ class _MoebooruPostDetailsPageState
           post: post,
         ),
         post.source.whenWeb(
-          (source) => SourceSection(
-            url: source.sourceHost,
-            isIcoUrl: source.hasIcoLogoSource,
-          ),
+          (source) => SourceSection(source: source),
           () => const SizedBox.shrink(),
         ),
       ],

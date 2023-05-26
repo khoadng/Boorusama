@@ -324,31 +324,51 @@ class DanbooruImageGridItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
     final settings = ref.watch(settingsProvider);
-    return ImageGridItem(
-      hideOverlay: hideOverlay,
-      isFaved: isFaved,
-      enableFav: enableFav,
-      onFavToggle: (isFaved) async {
-        if (!isFaved) {
-          ref.danbooruFavorites.remove(post.id);
-        } else {
-          ref.danbooruFavorites.add(post.id);
-        }
-      },
-      autoScrollOptions: autoScrollOptions,
-      onTap: onTap,
-      image: image ??
-          BooruImage(
-            fit: BoxFit.cover,
-            imageUrl: post.thumbnailFromSettings(settings),
-            placeholderUrl: post.thumbnailImageUrl,
+    return ConditionalParentWidget(
+      condition: post.isBanned,
+      conditionalBuilder: (child) => Stack(
+        children: [
+          child,
+          const Positioned.fill(
+            child: Center(
+              child: Text(
+                'Banned artist',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
-      isAnimated: post.isAnimated,
-      isTranslated: post.isTranslated,
-      hasComments: post.hasComment,
-      hasParentOrChildren: post.hasParentOrChildren,
-      hasSound: post.hasSound,
-      duration: post.duration,
+        ],
+      ),
+      child: ImageGridItem(
+        hideOverlay: hideOverlay,
+        isFaved: isFaved,
+        enableFav: enableFav,
+        onFavToggle: (isFaved) async {
+          if (!isFaved) {
+            ref.danbooruFavorites.remove(post.id);
+          } else {
+            ref.danbooruFavorites.add(post.id);
+          }
+        },
+        autoScrollOptions: autoScrollOptions,
+        onTap: onTap,
+        image: image ??
+            BooruImage(
+              fit: BoxFit.cover,
+              imageUrl: post.thumbnailFromSettings(settings),
+              placeholderUrl: post.thumbnailImageUrl,
+            ),
+        isAnimated: post.isAnimated,
+        isTranslated: post.isTranslated,
+        hasComments: post.hasComment,
+        hasParentOrChildren: post.hasParentOrChildren,
+        hasSound: post.hasSound,
+        duration: post.duration,
+      ),
     );
   }
 }

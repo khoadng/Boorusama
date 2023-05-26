@@ -2,7 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/utils.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
 class BooruData {
@@ -98,13 +97,6 @@ enum BooruEngine {
 enum LoginType {
   loginAndApiKey,
   loginAndPasswordHashed,
-}
-
-extension BooruX on Booru {
-  String getIconUrl({
-    int? size,
-  }) =>
-      getFavicon(url, size: size);
 }
 
 extension BooruTypeX on BooruType {

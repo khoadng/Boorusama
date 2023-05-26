@@ -4,18 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 
-// Project imports:
-import 'package:boorusama/core/infra/utils.dart';
-
 class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
     super.key,
     required this.url,
-    this.isIcoUrl = false,
   });
 
   final String url;
-  final bool isIcoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +25,7 @@ class WebsiteLogo extends StatelessWidget {
         fit: BoxFit.cover,
         fadeInDuration: const Duration(milliseconds: 50),
         fadeOutDuration: const Duration(milliseconds: 50),
-        imageUrl: isIcoUrl ? url : getFavicon(url),
+        imageUrl: url,
       ),
     );
   }

@@ -17,7 +17,9 @@ sealed class PostSource {
 
     return isWebSource(value)
         ? pixivId.toOption().fold(
-              () => SimpleWebSource(uri: Uri.parse(value)),
+              () => value.contains('lofter')
+                  ? LofterSource(uri: Uri.parse(value))
+                  : SimpleWebSource(uri: Uri.parse(value)),
               (pixivId) => PostSource.pixiv(pixivId),
             )
         : NonWebSource(value);
@@ -41,7 +43,7 @@ sealed class WebSource extends PostSource {
 
   final Uri uri;
   String get sourceHost => getHost(uri);
-  bool get hasIcoLogoSource => useIco(uri);
+  String get faviconUrl;
 
   String get url;
 }
@@ -53,6 +55,9 @@ class SimpleWebSource extends WebSource {
 
   @override
   String get url => uri.toString();
+
+  @override
+  String get faviconUrl => getFavicon(url);
 }
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
@@ -64,6 +69,21 @@ class PixivSource extends WebSource {
 
   @override
   String get url => uri.toString();
+
+  @override
+  String get faviconUrl => getFavicon(url);
+}
+
+class LofterSource extends WebSource {
+  LofterSource({
+    required super.uri,
+  });
+
+  @override
+  String get url => uri.toString();
+
+  @override
+  String get faviconUrl => 'https://www.lofter.com/favicon.ico';
 }
 
 extension PostSourceX on PostSource {
