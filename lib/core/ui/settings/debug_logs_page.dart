@@ -65,12 +65,17 @@ class DebugLogsPage extends ConsumerWidget {
                       TextSpan(
                         text: '[${log.serviceName}]: ',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w800,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       TextSpan(
                         text: log.message,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withAlpha(222)),
                       ),
                     ],
                   ),
