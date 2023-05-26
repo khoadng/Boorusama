@@ -1,4 +1,5 @@
 export 'appearance_page.dart';
+export 'debug_logs_page.dart';
 export 'download_page.dart';
 export 'general_page.dart';
 export 'language_page.dart';
