@@ -1,3 +1,6 @@
+// Project imports:
+import 'package:boorusama/functional.dart';
+
 bool isWebSource(String? url) {
   if (url == null || url.isEmpty) {
     return false;
@@ -31,14 +34,23 @@ String getHost(Uri uri) {
   if (uri.host.contains('ngfiles.com')) return 'https://newgrounds.com';
   if (uri.host.contains('i.pximg.net')) return 'https://pixiv.net';
   if (uri.host.contains('youtu.be')) return 'https://youtube.com';
-  if (uri.host.contains('lofter.com')) {
-    return 'https://www.lofter.com/favicon.ico';
-  }
 
   return '${uri.scheme}://${uri.host}';
 }
 
-bool useIco(Uri uri) {
-  if (uri.host.contains('lofter.com')) return true;
-  return false;
-}
+String _buildEndpoint(
+  String url, {
+  int? size,
+}) =>
+    'https://www.google.com/s2/favicons?domain=$url&sz=${size ?? 64}';
+
+String _buildSourceUrl(Uri uri) => '${uri.scheme}://${uri.host}/';
+
+String getFavicon(
+  String url, {
+  int? size,
+}) =>
+    tryParseUrl(url).fold(
+      () => _buildEndpoint(url, size: size),
+      (uri) => _buildEndpoint(_buildSourceUrl(uri), size: size),
+    );

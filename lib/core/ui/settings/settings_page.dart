@@ -13,6 +13,7 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';
+import 'package:boorusama/core/ui/settings/debug_logs_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/utils.dart';
@@ -101,6 +102,13 @@ class SettingsPage extends ConsumerWidget {
                               FontAwesomeIcons.solidNoteSticky,
                             ),
                             onTap: () => goToChanglog(context),
+                          ),
+                          ListTile(
+                            title: const Text('Debug Logs'),
+                            leading: const FaIcon(FontAwesomeIcons.bug),
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => const DebugLogsPage())),
                           ),
                           ListTile(
                             title: const Text('settings.information').tr(),

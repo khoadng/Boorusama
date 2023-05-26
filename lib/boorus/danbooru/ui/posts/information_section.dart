@@ -71,7 +71,7 @@ class InformationSection extends StatelessWidget {
               (source) => GestureDetector(
                 onTap: () => launchExternalUrl(source.uri),
                 child: WebsiteLogo(
-                  url: source.url,
+                  url: source.faviconUrl,
                 ),
               ),
               () => const SizedBox.shrink(),

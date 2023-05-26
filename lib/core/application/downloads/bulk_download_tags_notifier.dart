@@ -15,7 +15,10 @@ class BulkDownloadTagsNotifier extends Notifier<List<String>> {
   void addTag(String tag) {
     final currentManagerStatus = ref.read(bulkDownloadManagerStatusProvider);
 
-    if (currentManagerStatus != BulkDownloadManagerStatus.initial) {
+    if (![
+      BulkDownloadManagerStatus.initial,
+      BulkDownloadManagerStatus.dataSelected
+    ].contains(currentManagerStatus)) {
       return;
     }
 

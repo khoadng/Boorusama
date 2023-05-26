@@ -72,7 +72,8 @@ class RelatedPostsSection extends ConsumerWidget {
                                       Radius.circular(4)),
                                 ),
                                 child: post.source.whenWeb(
-                                    (source) => WebsiteLogo(url: source.url),
+                                    (source) =>
+                                        WebsiteLogo(url: source.faviconUrl),
                                     () => const SizedBox.shrink()),
                               ),
                               Container(
