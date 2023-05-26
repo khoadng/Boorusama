@@ -52,26 +52,27 @@ class BooruImage extends ConsumerWidget {
           memCacheHeight: cacheHeight,
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
-          placeholder: (context, url) => placeholderUrl != null
-              ? CachedNetworkImage(
-                  httpHeaders: {
-                    'User-Agent':
-                        ref.watch(userAgentGeneratorProvider).generate(),
-                  },
-                  fit: fit ?? BoxFit.fill,
-                  imageUrl: placeholderUrl!,
-                  cacheManager: previewCacheManager,
-                  fadeInDuration: Duration.zero,
-                  fadeOutDuration: Duration.zero,
-                  placeholder: (context, url) => ImagePlaceHolder(
-                    borderRadius: borderRadius ??
-                        const BorderRadius.all(Radius.circular(8)),
-                  ),
-                )
-              : ImagePlaceHolder(
-                  borderRadius: borderRadius ??
-                      const BorderRadius.all(Radius.circular(8)),
-                ),
+          placeholder: (context, url) =>
+              placeholderUrl != null && placeholderUrl!.isNotEmpty
+                  ? CachedNetworkImage(
+                      httpHeaders: {
+                        'User-Agent':
+                            ref.watch(userAgentGeneratorProvider).generate(),
+                      },
+                      fit: fit ?? BoxFit.fill,
+                      imageUrl: placeholderUrl!,
+                      cacheManager: previewCacheManager,
+                      fadeInDuration: Duration.zero,
+                      fadeOutDuration: Duration.zero,
+                      placeholder: (context, url) => ImagePlaceHolder(
+                        borderRadius: borderRadius ??
+                            const BorderRadius.all(Radius.circular(8)),
+                      ),
+                    )
+                  : ImagePlaceHolder(
+                      borderRadius: borderRadius ??
+                          const BorderRadius.all(Radius.circular(8)),
+                    ),
           errorWidget: (context, url, error) => ErrorPlaceholder(
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
