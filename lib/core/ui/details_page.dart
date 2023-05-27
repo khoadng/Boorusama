@@ -282,7 +282,11 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       },
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
-          _scrollNotification.value = notification;
+          // set the scroll notification to the value notifier on next frame
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            if (!mounted) return;
+            _scrollNotification.value = notification;
+          });
           return false;
         },
         child: Scaffold(

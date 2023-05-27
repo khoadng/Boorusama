@@ -66,25 +66,35 @@ class _ArtistSectionState extends State<ArtistSection> {
                   )
                 : const SizedBox.shrink(),
           ),
-          if (artistCommentary.hasCommentary)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: SelectableHtml(
-                style: {
-                  'body': Style(
-                    whiteSpace: WhiteSpace.PRE,
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: artistCommentary.isEmpty
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: SelectableHtml(
+                      style: {
+                        'body': Style(
+                          whiteSpace: WhiteSpace.PRE,
+                        ),
+                        'h2': Style(
+                          padding: const EdgeInsets.only(top: 4, bottom: 8),
+                        ),
+                      },
+                      data: getDescriptionText(display, artistCommentary),
+                      onLinkTap: (url, context, attributes, element) =>
+                          url != null
+                              ? launchExternalUrl(Uri.parse(url))
+                              : null,
+                    ),
                   ),
-                  'h2': Style(
-                    padding: const EdgeInsets.only(top: 4, bottom: 8),
-                  ),
-                },
-                data: getDescriptionText(display, artistCommentary),
-                onLinkTap: (url, context, attributes, element) =>
-                    url != null ? launchExternalUrl(Uri.parse(url)) : null,
-              ),
-            ),
+            crossFadeState: artistCommentary.isEmpty
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 80),
+          ),
         ],
       ),
     );

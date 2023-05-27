@@ -37,7 +37,8 @@ class WebmVideoController {
       if (_playing) {
         final currentPosition = await getCurrentTime();
         final totalDuration = await getDuration();
-        onCurrentPositionChanged?.call(currentPosition, totalDuration);
+        onCurrentPositionChanged?.call(
+            currentPosition, totalDuration.isNaN ? 0 : totalDuration);
       }
     });
   }

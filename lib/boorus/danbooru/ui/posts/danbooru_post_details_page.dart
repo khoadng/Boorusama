@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -324,6 +323,12 @@ class _DanbooruPostDetailsPageState
           child: DanbooruPostActionToolbar(post: post),
         ),
         const Divider(height: 8, thickness: 1),
+        TagsTile(
+            tags: tags
+                .where((e) => e.postId == post.id)
+                .map((e) => e.name)
+                .toList()),
+        const Divider(height: 8, thickness: 1),
         switch (post.source) {
           WebSource s => Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -331,12 +336,6 @@ class _DanbooruPostDetailsPageState
             ),
           _ => const SizedBox.shrink(),
         },
-        const Divider(height: 8, thickness: 1),
-        TagsTile(
-            tags: tags
-                .where((e) => e.postId == post.id)
-                .map((e) => e.name)
-                .toList()),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
@@ -387,19 +386,10 @@ class DanbooruArtistSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final commentary = ref.watch(danbooruArtistCommentaryProvider(post.id));
 
-    return AnimatedCrossFade(
-      firstChild: const SizedBox.shrink(),
-      secondChild: commentary.isEmpty
-          ? const SizedBox.shrink()
-          : ArtistSection(
-              artistCommentary: commentary,
-              artistTags: post.artistTags,
-              source: post.source.url,
-            ),
-      crossFadeState: commentary.isEmpty
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
-      duration: const Duration(milliseconds: 80),
+    return ArtistSection(
+      artistCommentary: commentary,
+      artistTags: post.artistTags,
+      source: post.source.url,
     );
   }
 }

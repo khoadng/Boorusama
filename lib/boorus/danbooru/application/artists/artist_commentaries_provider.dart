@@ -18,10 +18,19 @@ final danbooruArtistCommentaryRepoProvider =
   },
 );
 
-final danbooruArtistCommentaryProvider = NotifierProvider.autoDispose
-    .family<ArtistCommentaryNotifier, ArtistCommentary, int>(
-  ArtistCommentaryNotifier.new,
+final danbooruArtistCommentariesProvider =
+    NotifierProvider<ArtistCommentariesNotifier, Map<int, ArtistCommentary>>(
+  ArtistCommentariesNotifier.new,
   dependencies: [
     danbooruArtistCommentaryRepoProvider,
   ],
+);
+
+final danbooruArtistCommentaryProvider = Provider.family<ArtistCommentary, int>(
+  (ref, postId) {
+    final commentaries = ref.watch(danbooruArtistCommentariesProvider);
+    final commentary = commentaries[postId];
+
+    return commentary ?? ArtistCommentary.empty();
+  },
 );
