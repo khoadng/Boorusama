@@ -102,7 +102,7 @@ dependencies:
   video_player: ^2.6.1
   video_player_macos: ^2.0.1
   video_player_win: ^2.2.2
-  webview_flutter: ^4.2.0
+  webview_flutter: ^4.2.1
 
 dev_dependencies:
   build_runner: ^2.1.11
