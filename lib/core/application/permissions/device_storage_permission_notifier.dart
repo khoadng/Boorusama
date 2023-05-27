@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
+import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/provider.dart';
 
@@ -45,6 +46,14 @@ class DeviceStoragePermissionNotifier
     final logger = ref.watch(loggerProvider);
     logger.logI('Permission', 'Fetching storage permission');
     final status = await Permission.storage.status;
+
+    logger.log(
+      'Permission',
+      'Storage permission status: ${status.name}',
+      level:
+          status == PermissionStatus.granted ? LogLevel.info : LogLevel.error,
+    );
+
     state = state.copyWith(storagePermission: status);
   }
 

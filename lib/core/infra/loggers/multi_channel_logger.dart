@@ -28,4 +28,15 @@ class MultiChannelLogger implements LoggerService {
       logger.logW(serviceName, message);
     }
   }
+
+  @override
+  void log(
+    String serviceName,
+    String message, {
+    LogLevel? level,
+  }) {
+    for (final logger in loggers) {
+      logger.log(serviceName, message, level: level);
+    }
+  }
 }

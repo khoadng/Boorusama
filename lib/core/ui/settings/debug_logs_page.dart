@@ -22,7 +22,7 @@ class DebugLogsPage extends ConsumerWidget {
     void copyLogsToClipboard() {
       final StringBuffer buffer = StringBuffer();
       for (final log in logs) {
-        buffer.write('[${log.serviceName}]: ${log.message}\n');
+        buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
       }
       Clipboard.setData(ClipboardData(text: buffer.toString()));
 

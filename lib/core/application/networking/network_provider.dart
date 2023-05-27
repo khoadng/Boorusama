@@ -4,8 +4,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/networking.dart';
+import 'package:boorusama/core/provider.dart';
+
+const _serviceName = 'Connectivity';
 
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
+  final logger = ref.read(loggerProvider);
+  ref.listenSelf(
+    (previous, next) {
+      final fn = next.when(
+        data: (data) => switch (data) {
+          ConnectivityResult.none => () =>
+              logger.logW(_serviceName, 'Network disconnected'),
+          _ => () => logger.logI(_serviceName, 'Connected to ${data.name}'),
+        },
+        error: (error, stackTrace) => () => logger.logE(
+              _serviceName,
+              'Error: $error',
+            ),
+        loading: () => () => logger.logI(_serviceName, 'Network connecting...'),
+      );
+      fn.call();
+    },
+  );
+
   return Connectivity().onConnectivityChanged;
 });
 

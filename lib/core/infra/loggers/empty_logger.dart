@@ -12,4 +12,7 @@ class EmptyLogger implements LoggerService {
 
   @override
   void logW(String serviceName, String message) {}
+
+  @override
+  void log(String serviceName, String message, {LogLevel? level}) {}
 }

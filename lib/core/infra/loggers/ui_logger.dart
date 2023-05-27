@@ -31,5 +31,16 @@ class UILogger implements LoggerService {
     );
   }
 
+  @override
+  void log(
+    String serviceName,
+    String message, {
+    LogLevel? level,
+  }) {
+    _logs.add(
+      (dateTime: DateTime.now(), serviceName: serviceName, message: message),
+    );
+  }
+
   List<LogData> get logs => _logs;
 }

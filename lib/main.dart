@@ -176,7 +176,7 @@ void main() async {
   };
 
   logger.logI('Start up',
-      'Initializtion done in ${stopwatch.elapsed.inMilliseconds}ms');
+      'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
   stopwatch.stop();
 
   void run() {
