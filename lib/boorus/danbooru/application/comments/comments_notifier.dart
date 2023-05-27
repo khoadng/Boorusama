@@ -38,6 +38,7 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
         .then((comments) => comments
             .map((comment) => CommentData(
                   id: comment.id,
+                  score: comment.score,
                   authorName: comment.creator?.name ?? 'User',
                   authorLevel: comment.creator?.level ?? UserLevel.member,
                   authorId: comment.creator?.id ?? 0,

@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/danbooru/domain/users.dart';
 class CommentData extends Equatable {
   const CommentData({
     required this.id,
+    required this.score,
     required this.authorName,
     required this.authorLevel,
     required this.authorId,
@@ -19,6 +20,7 @@ class CommentData extends Equatable {
   });
 
   final int id;
+  final int score;
   final String authorName;
   final UserLevel authorLevel;
   final UserId authorId;
@@ -32,6 +34,7 @@ class CommentData extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        score,
         authorName,
         authorLevel,
         authorId,

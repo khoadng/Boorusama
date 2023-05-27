@@ -74,7 +74,7 @@ class CommentItem extends ConsumerWidget {
         if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           _VoteSection(
-            score: commentVote?.score ?? 0,
+            score: comment.score + (commentVote?.score ?? 0),
             voteState: commentVote?.voteState ?? CommentVoteState.unvote,
             onVote: (event) => onVoteChanged(event, commentVote),
             onReply: onReply,
