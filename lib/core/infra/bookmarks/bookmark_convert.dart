@@ -27,6 +27,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
                 width: hiveObject.width!,
                 height: hiveObject.height!,
                 md5: hiveObject.md5!,
+                tags: hiveObject.tags ?? [],
               ))
           .toList(),
       (o, s) {
@@ -51,21 +52,23 @@ Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
         width: hiveObject.width!,
         height: hiveObject.height!,
         md5: hiveObject.md5!,
+        tags: hiveObject.tags ?? [],
       ),
       (o, s) => BookmarkGetError.nullField,
     );
 
-BookmarkHiveObject favoriteToHiveObject(Bookmark favorite) {
+BookmarkHiveObject favoriteToHiveObject(Bookmark bookmark) {
   return BookmarkHiveObject(
-    booruId: favorite.booruId,
-    createdAt: favorite.createdAt,
-    updatedAt: favorite.updatedAt,
-    thumbnailUrl: favorite.thumbnailUrl,
-    sampleUrl: favorite.sampleUrl,
-    originalUrl: favorite.originalUrl,
-    sourceUrl: favorite.sourceUrl,
-    width: favorite.width,
-    height: favorite.height,
-    md5: favorite.md5,
+    booruId: bookmark.booruId,
+    createdAt: bookmark.createdAt,
+    updatedAt: bookmark.updatedAt,
+    thumbnailUrl: bookmark.thumbnailUrl,
+    sampleUrl: bookmark.sampleUrl,
+    originalUrl: bookmark.originalUrl,
+    sourceUrl: bookmark.sourceUrl,
+    width: bookmark.width,
+    height: bookmark.height,
+    md5: bookmark.md5,
+    tags: bookmark.tags,
   );
 }

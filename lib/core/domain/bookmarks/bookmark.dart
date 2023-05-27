@@ -6,6 +6,21 @@ import 'package:path/path.dart';
 import 'package:boorusama/core/domain/image.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin {
+  const Bookmark({
+    required this.id,
+    required this.booruId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.thumbnailUrl,
+    required this.sampleUrl,
+    required this.originalUrl,
+    required this.sourceUrl,
+    required this.width,
+    required this.height,
+    required this.md5,
+    required this.tags,
+  });
+
   final int id;
   final int booruId;
   final DateTime createdAt;
@@ -19,6 +34,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
   @override
   final double height;
   final String md5;
+  final List<String> tags;
 
   bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
 
@@ -34,21 +50,8 @@ class Bookmark extends Equatable with ImageInfoMixin {
     width: -1,
     height: -1,
     md5: '',
+    tags: const [],
   );
-
-  const Bookmark({
-    required this.id,
-    required this.booruId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.thumbnailUrl,
-    required this.sampleUrl,
-    required this.originalUrl,
-    required this.sourceUrl,
-    required this.width,
-    required this.height,
-    required this.md5,
-  });
 
   @override
   List<Object?> get props => [
@@ -63,6 +66,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
         width,
         height,
         md5,
+        tags,
       ];
 
   Bookmark copyWith({
@@ -77,6 +81,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
     double? width,
     double? height,
     String? md5,
+    List<String>? tags,
   }) {
     return Bookmark(
       id: id ?? this.id,
@@ -90,6 +95,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
       width: width ?? this.width,
       height: height ?? this.height,
       md5: md5 ?? this.md5,
+      tags: tags ?? this.tags,
     );
   }
 }
