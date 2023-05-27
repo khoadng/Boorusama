@@ -97,7 +97,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
               SearchHistorySection(
                 histories: histories.histories,
                 onHistoryTap: (history) {
-                  _onTagTap(history, ref);
+                  _onHistoryTap(history, ref);
                   widget.onHistoryTap?.call(history);
                 },
                 onHistoryRemoved: (value) => _onHistoryRemoved(ref, value),
@@ -107,7 +107,10 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     context,
                     onClear: () => _onHistoryCleared(ref),
                     onRemove: (value) => _onHistoryRemoved(ref, value),
-                    onTap: (value) => _onHistoryTap(context, value, ref),
+                    onTap: (value) {
+                      Navigator.of(context).pop();
+                      _onHistoryTap(value, ref);
+                    },
                   );
                 },
               ),
@@ -123,9 +126,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     ref.read(searchProvider.notifier).tapTag(value);
   }
 
-  void _onHistoryTap(BuildContext context, String value, WidgetRef ref) {
-    Navigator.of(context).pop();
-    ref.read(searchProvider.notifier).tapTag(value);
+  void _onHistoryTap(String value, WidgetRef ref) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    ref.read(searchProvider.notifier).tapHistoryTag(value);
   }
 
   void _onHistoryCleared(WidgetRef ref) =>

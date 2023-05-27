@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/infra/networks.dart';
 
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({
@@ -19,15 +20,16 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    final int statusCode = response.statusCode ?? -1;
     logger.logI('Network',
-        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: $statusCode');
+        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    logger.logE('Network', 'Error: ${err.message}');
+    final response = err.response;
+    logger.logI('Network',
+        'Completed ${response?.requestOptions.method} to ${response?.requestOptions.uri} with status: ${response?.statusCodeOrZero} and body ${response?.data}');
     super.onError(err, handler);
   }
 }

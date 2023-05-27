@@ -8,7 +8,7 @@ class ExploreRepositoryCacher implements ExploreRepository {
   final Duration mostViewedStaleDuration;
   final Duration hotStaleDuration;
 
-  final Map<String, Tuple2<DateTime, List<DanbooruPost>>> _cache = {};
+  final Map<String, (DateTime, List<DanbooruPost>)> _cache = {};
 
   ExploreRepositoryCacher({
     required this.repository,
@@ -23,7 +23,7 @@ class ExploreRepositoryCacher implements ExploreRepository {
   bool _isCached(String key, Duration staleDuration) {
     if (_cache.containsKey(key)) {
       final entry = _cache[key]!;
-      if (DateTime.now().difference(entry.first) <= staleDuration) {
+      if (DateTime.now().difference(entry.$1) <= staleDuration) {
         return true;
       }
     }
@@ -41,13 +41,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "popular-$truncatedDate-$page-$scale-$limit";
 
     if (_isCached(name, popularStaleDuration)) {
-      return TaskEither.of(_cache[name]!.second);
+      return TaskEither.of(_cache[name]!.$2);
     }
 
     return repository
         .getPopularPosts(date, page, scale, limit: limit)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = Tuple2(DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r);
               return Either.of(r);
             }));
   }
@@ -58,13 +58,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "mostViewed-$truncatedDate";
 
     if (_isCached(name, mostViewedStaleDuration)) {
-      return TaskEither.of(_cache[name]!.second);
+      return TaskEither.of(_cache[name]!.$2);
     }
 
     return repository
         .getMostViewedPosts(date)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = Tuple2(DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r);
               return Either.of(r);
             }));
   }
@@ -77,13 +77,13 @@ class ExploreRepositoryCacher implements ExploreRepository {
     final name = "hot-$page-$limit";
 
     if (_isCached(name, hotStaleDuration)) {
-      return TaskEither.of(_cache[name]!.second);
+      return TaskEither.of(_cache[name]!.$2);
     }
 
     return repository
         .getHotPosts(page, limit: limit)
         .flatMap((r) => TaskEither(() async {
-              _cache[name] = Tuple2(DateTime.now(), r);
+              _cache[name] = (DateTime.now(), r);
               return Either.of(r);
             }));
   }

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
 
 class FullHistoryView extends ConsumerWidget {
@@ -33,7 +34,7 @@ class FullHistoryView extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: SearchBar(
+          child: BooruSearchBar(
             onChanged: (value) =>
                 ref.read(searchHistoryProvider.notifier).filterHistories(value),
           ),
