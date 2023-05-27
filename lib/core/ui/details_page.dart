@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/mobile.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
@@ -183,6 +184,12 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
       setState(() {
         _pageSwipe = _controller.pageSwipe;
       });
+    }
+
+    if (_controller.hideOverlay.value) {
+      hideSystemStatus();
+    } else {
+      showSystemStatus();
     }
 
     final (slideShow, skipIndexes) = _controller.slideShow.value;
