@@ -59,68 +59,79 @@ class _BooruImageLegacyState extends ConsumerState<BooruImageLegacy> {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      httpHeaders: {
-        'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
-      },
-      memCacheWidth: widget.cacheWidth,
-      memCacheHeight: widget.cacheHeight,
-      imageUrl: widget.imageUrl,
-      errorListener: (e) => {},
-      imageBuilder: (context, imageProvider) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius ??
-                const BorderRadius.all(Radius.circular(8)),
-            image: DecorationImage(
-              image: myImage.image,
-              fit: widget.fit ?? BoxFit.cover,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius:
+            widget.borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 1,
+        ),
+      ),
+      child: CachedNetworkImage(
+        httpHeaders: {
+          'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
+        },
+        memCacheWidth: widget.cacheWidth,
+        memCacheHeight: widget.cacheHeight,
+        imageUrl: widget.imageUrl,
+        errorListener: (e) => {},
+        imageBuilder: (context, imageProvider) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(8)),
+              image: DecorationImage(
+                image: myImage.image,
+                fit: widget.fit ?? BoxFit.cover,
+              ),
             ),
-          ),
-        );
-      },
-      placeholder: (context, url) => widget.placeholderUrl != null
-          ? CachedNetworkImage(
-              httpHeaders: {
-                'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
-              },
-              errorListener: (e) => {},
-              imageUrl: widget.placeholderUrl!,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: widget.borderRadius ??
-                      const BorderRadius.all(Radius.circular(8)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: widget.fit ?? BoxFit.cover,
+          );
+        },
+        placeholder: (context, url) => widget.placeholderUrl != null
+            ? CachedNetworkImage(
+                httpHeaders: {
+                  'User-Agent':
+                      ref.watch(userAgentGeneratorProvider).generate(),
+                },
+                errorListener: (e) => {},
+                imageUrl: widget.placeholderUrl!,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: widget.borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: widget.fit ?? BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              placeholder: (context, url) => Container(
+                placeholder: (context, url) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: widget.borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                    color: Theme.of(context).cardColor,
+                  ),
+                ),
+              )
+            : Container(
                 decoration: BoxDecoration(
                   borderRadius: widget.borderRadius ??
                       const BorderRadius.all(Radius.circular(8)),
                   color: Theme.of(context).cardColor,
                 ),
               ),
-            )
-          : Container(
-              decoration: BoxDecoration(
-                borderRadius: widget.borderRadius ??
-                    const BorderRadius.all(Radius.circular(8)),
-                color: Theme.of(context).cardColor,
-              ),
-            ),
-      errorWidget: (context, url, error) => Container(
-        decoration: BoxDecoration(
-          borderRadius:
-              widget.borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-          color: Theme.of(context).cardColor,
+        errorWidget: (context, url, error) => Container(
+          decoration: BoxDecoration(
+            borderRadius: widget.borderRadius ??
+                const BorderRadius.all(Radius.circular(8)),
+            color: Theme.of(context).cardColor,
+          ),
+          child: const Center(child: Icon(Icons.broken_image_rounded)),
         ),
-        child: const Center(child: Icon(Icons.broken_image_rounded)),
+        fadeInDuration: const Duration(microseconds: 10),
+        fadeOutDuration: const Duration(microseconds: 500),
       ),
-      fadeInDuration: const Duration(microseconds: 10),
-      fadeOutDuration: const Duration(microseconds: 500),
     );
   }
 }
