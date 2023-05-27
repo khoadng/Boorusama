@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -17,9 +20,18 @@ class PostPreviewPreloaderImp implements PostPreviewPreloader {
   Future<void> preload(Post post) {
     if (post.thumbnailImageUrl.isEmpty) return Future.value();
 
-    return cache.downloadFile(
-      post.thumbnailImageUrl,
-      authHeaders: httpHeaders,
-    );
+    try {
+      return cache.downloadFile(
+        post.thumbnailImageUrl,
+        authHeaders: httpHeaders,
+      );
+    } catch (e) {
+      if (e is SocketException) {
+        // Do nothing
+        return Future.value();
+      } else {
+        rethrow;
+      }
+    }
   }
 }

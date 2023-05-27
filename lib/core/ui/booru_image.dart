@@ -48,6 +48,7 @@ class BooruImage extends ConsumerWidget {
           httpHeaders: {
             'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
           },
+          errorListener: (e) {},
           memCacheWidth: cacheWidth,
           memCacheHeight: cacheHeight,
           fit: fit ?? BoxFit.fill,
@@ -59,6 +60,7 @@ class BooruImage extends ConsumerWidget {
                         'User-Agent':
                             ref.watch(userAgentGeneratorProvider).generate(),
                       },
+                      errorListener: (e) {},
                       fit: fit ?? BoxFit.fill,
                       imageUrl: placeholderUrl!,
                       cacheManager: previewCacheManager,

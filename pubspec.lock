@@ -212,26 +212,29 @@ packages:
   cached_network_image:
     dependency: "direct main"
     description:
-      name: cached_network_image
-      sha256: fd3d0dc1d451f9a252b32d95d3f0c3c487bc41a75eba2e6097cb0b9c71491b15
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.3"
+      path: cached_network_image
+      ref: "feature/errorListener"
+      resolved-ref: e812bb8debb506e8715a93c9d83fd565a1ea00c6
+      url: "https://github.com/SuaMusica/flutter_cached_network_image.git"
+    source: git
+    version: "3.2.2"
   cached_network_image_platform_interface:
     dependency: transitive
     description:
-      name: cached_network_image_platform_interface
-      sha256: bb2b8403b4ccdc60ef5f25c70dead1f3d32d24b9d6117cfc087f496b178594a7
-      url: "https://pub.dev"
-    source: hosted
+      path: cached_network_image_platform_interface
+      ref: "feature/errorListener"
+      resolved-ref: e812bb8debb506e8715a93c9d83fd565a1ea00c6
+      url: "https://github.com/SuaMusica/flutter_cached_network_image.git"
+    source: git
     version: "2.0.0"
   cached_network_image_web:
     dependency: transitive
     description:
-      name: cached_network_image_web
-      sha256: b8eb814ebfcb4dea049680f8c1ffb2df399e4d03bf7a352c775e26fa06e02fa0
-      url: "https://pub.dev"
-    source: hosted
+      path: cached_network_image_web
+      ref: "feature/errorListener"
+      resolved-ref: e812bb8debb506e8715a93c9d83fd565a1ea00c6
+      url: "https://github.com/SuaMusica/flutter_cached_network_image.git"
+    source: git
     version: "1.0.2"
   carousel_slider:
     dependency: "direct main"
