@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
 import 'package:boorusama/core/application/posts/details.dart';
 import 'package:boorusama/core/application/tags.dart';
+import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
@@ -22,7 +23,7 @@ import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/interactive_booru_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
@@ -112,7 +113,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets = _buildWidgets(context, expanded, page, currentPage);
+        final widgets =
+            _buildWidgets(context, expanded, page, currentPage, ref);
         final artists =
             ref.watch(booruPostDetailsArtistProvider(posts[page].id));
 
@@ -163,7 +165,9 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
     bool expanded,
     int page,
     int currentPage,
+    WidgetRef ref,
   ) {
+    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
@@ -172,6 +176,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
                 url: post.sampleImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
+                backgroundColor:
+                    theme == ThemeMode.light ? Colors.white : Colors.black,
               )
             : BooruVideo(
                 url: post.sampleImageUrl,

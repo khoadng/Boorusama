@@ -88,6 +88,7 @@ class RelatedPostsSection extends ConsumerWidget {
                                   filesize(post.fileSize, 1),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -103,6 +104,7 @@ class RelatedPostsSection extends ConsumerWidget {
                                   '${post.width.toInt()}x${post.height.toInt()}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),

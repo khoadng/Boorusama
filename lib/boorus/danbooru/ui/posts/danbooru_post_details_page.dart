@@ -27,7 +27,7 @@ import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/post_media_item.dart';
+import 'package:boorusama/core/ui/interactive_booru_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
@@ -141,7 +141,8 @@ class _DanbooruPostDetailsPageState
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets = _buildWidgets(context, expanded, page, currentPage);
+        final widgets =
+            _buildWidgets(context, expanded, page, currentPage, ref);
         final artists =
             ref.watch(danbooruPostDetailsArtistProvider(posts[page].id));
         final characters =
@@ -266,7 +267,9 @@ class _DanbooruPostDetailsPageState
     bool expanded,
     int page,
     int currentPage,
+    WidgetRef ref,
   ) {
+    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final noteState = ref.watch(danbooruPostDetailsNoteProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
@@ -278,6 +281,8 @@ class _DanbooruPostDetailsPageState
                 url: post.sampleImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
+                backgroundColor:
+                    theme == ThemeMode.light ? Colors.white : Colors.black,
               )
             : BooruVideo(
                 url: post.videoUrl,

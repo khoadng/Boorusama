@@ -8,73 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
-import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-
-class PostMediaItem extends StatelessWidget {
-  const PostMediaItem({
-    super.key,
-    required this.post,
-    this.onCached,
-    this.onTap,
-    this.onZoomUpdated,
-    this.previewCacheManager,
-    this.imageOverlayBuilder,
-    this.useHero = true,
-    this.onCurrentPositionChanged,
-    this.onVisibilityChanged,
-  });
-
-  final Post post;
-  final void Function(String? path)? onCached;
-  final VoidCallback? onTap;
-  final void Function(bool zoom)? onZoomUpdated;
-  final CacheManager? previewCacheManager;
-  final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
-  final bool useHero;
-  final void Function(double current, double total, String url)?
-      onCurrentPositionChanged;
-  final void Function(bool value)? onVisibilityChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return post.isVideo
-        ? p.extension(post.sampleImageUrl) == '.webm'
-            ? EmbeddedWebViewWebm(
-                url: post.sampleImageUrl,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-            : BooruVideo(
-                url: post.sampleImageUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-        : InteractiveBooruImage(
-            useHero: useHero,
-            heroTag: "${post.id}_hero",
-            aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            onTap: onTap,
-            onCached: onCached,
-            previewCacheManager: previewCacheManager,
-            imageOverlayBuilder: imageOverlayBuilder,
-            width: post.width,
-            height: post.height,
-            onZoomUpdated: onZoomUpdated,
-          );
-  }
-}
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({

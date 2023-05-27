@@ -57,7 +57,7 @@ class SimpleWebSource extends WebSource {
   String get url => uri.toString();
 
   @override
-  String get faviconUrl => getFavicon(url);
+  String get faviconUrl => getFavicon(sourceHost);
 }
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
@@ -71,7 +71,7 @@ class PixivSource extends WebSource {
   String get url => uri.toString();
 
   @override
-  String get faviconUrl => getFavicon(url);
+  String get faviconUrl => getFavicon(sourceHost);
 }
 
 class LofterSource extends WebSource {

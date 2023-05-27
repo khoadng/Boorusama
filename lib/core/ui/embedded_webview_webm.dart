@@ -106,7 +106,11 @@ class WebmVideoController {
 }
 
 // url to html string
-String urlToHtml(String url) {
+String urlToHtml(
+  String url, {
+  Color backgroundColor = Colors.black,
+}) {
+  final colorText = backgroundColor == Colors.black ? 'black' : 'white';
   late final String videoHtml = '''
 <!DOCTYPE html>
 <html>
@@ -122,7 +126,7 @@ String urlToHtml(String url) {
 </style>
 </head>
 <body>
-  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:black;vertical-align: middle;display: inline-block;" muted loop>
+  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;vertical-align: middle;display: inline-block;" muted loop>
     <source src=$url#t=0.01 type="video/webm" />
   </video>
 </body>
@@ -137,9 +141,11 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     required this.url,
     this.onVisibilityChanged,
     this.onCurrentPositionChanged,
+    this.backgroundColor,
   });
 
   final String url;
+  final Color? backgroundColor;
   final void Function(bool value)? onVisibilityChanged;
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
@@ -158,7 +164,10 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
   @override
   void initState() {
     super.initState();
-    webmVideoController.load(urlToHtml(widget.url));
+    webmVideoController.load(urlToHtml(
+      widget.url,
+      backgroundColor: widget.backgroundColor ?? Colors.black,
+    ));
   }
 
   @override
@@ -179,7 +188,7 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
       child: Stack(
         children: [
           Container(
-            color: Colors.black,
+            color: widget.backgroundColor,
             height: MediaQuery.of(context).size.height,
             child: WebViewWidget(
                 controller: webmVideoController._webViewController),
