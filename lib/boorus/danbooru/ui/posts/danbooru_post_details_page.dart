@@ -108,24 +108,32 @@ class _DanbooruPostDetailsPageState
       onExit: widget.onExit,
       onPageChanged: onSwiped,
       bottomSheet: (page) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (posts[page].isVideo)
-              ValueListenableBuilder<VideoProgress>(
-                valueListenable: videoProgress,
-                builder: (_, progress, __) =>
-                    BooruVideoProgressBar(progress: progress),
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 1,
               ),
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: InformationSection(
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (posts[page].isVideo)
+                ValueListenableBuilder<VideoProgress>(
+                  valueListenable: videoProgress,
+                  builder: (_, progress, __) =>
+                      BooruVideoProgressBar(progress: progress),
+                ),
+              InformationSection(
                 post: posts[page],
                 showSource: true,
               ),
-            ),
-            DanbooruPostActionToolbar(post: posts[page]),
-          ],
+              DanbooruPostActionToolbar(post: posts[page]),
+            ],
+          ),
         );
       },
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
@@ -275,7 +283,7 @@ class _DanbooruPostDetailsPageState
                 .setImagePath(path ?? ''),
             previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             imageOverlayBuilder: (constraints) => [
-              if (expanded && noteState.enableNotes)
+              if (noteState.enableNotes)
                 ...noteState.notes
                     .map((e) => e.adjustNoteCoordFor(
                           posts[page],

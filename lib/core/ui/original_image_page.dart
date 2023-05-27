@@ -71,7 +71,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
           automaticallyImplyLeading: false,
           leading: overlay
               ? IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                 )
               : null,
@@ -91,6 +91,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                     });
                   }
                 },
+                color: Colors.white,
                 icon: currentRotation == Orientation.portrait
                     ? const Icon(Icons.rotate_left)
                     : const Icon(Icons.rotate_right),

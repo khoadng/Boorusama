@@ -40,47 +40,58 @@ class BooruImage extends ConsumerWidget {
       );
     }
 
-    return ClipRRect(
-      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-      child: AspectRatio(
-        aspectRatio: aspectRatio,
-        child: CachedNetworkImage(
-          httpHeaders: {
-            'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
-          },
-          errorListener: (e) {},
-          memCacheWidth: cacheWidth,
-          memCacheHeight: cacheHeight,
-          fit: fit ?? BoxFit.fill,
-          imageUrl: imageUrl,
-          placeholder: (context, url) =>
-              placeholderUrl != null && placeholderUrl!.isNotEmpty
-                  ? CachedNetworkImage(
-                      httpHeaders: {
-                        'User-Agent':
-                            ref.watch(userAgentGeneratorProvider).generate(),
-                      },
-                      errorListener: (e) {},
-                      fit: fit ?? BoxFit.fill,
-                      imageUrl: placeholderUrl!,
-                      cacheManager: previewCacheManager,
-                      fadeInDuration: Duration.zero,
-                      fadeOutDuration: Duration.zero,
-                      placeholder: (context, url) => ImagePlaceHolder(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius:
+            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius:
+            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        child: AspectRatio(
+          aspectRatio: aspectRatio,
+          child: CachedNetworkImage(
+            httpHeaders: {
+              'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
+            },
+            errorListener: (e) {},
+            memCacheWidth: cacheWidth,
+            memCacheHeight: cacheHeight,
+            fit: fit ?? BoxFit.fill,
+            imageUrl: imageUrl,
+            placeholder: (context, url) =>
+                placeholderUrl != null && placeholderUrl!.isNotEmpty
+                    ? CachedNetworkImage(
+                        httpHeaders: {
+                          'User-Agent':
+                              ref.watch(userAgentGeneratorProvider).generate(),
+                        },
+                        errorListener: (e) {},
+                        fit: fit ?? BoxFit.fill,
+                        imageUrl: placeholderUrl!,
+                        cacheManager: previewCacheManager,
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                        placeholder: (context, url) => ImagePlaceHolder(
+                          borderRadius: borderRadius ??
+                              const BorderRadius.all(Radius.circular(8)),
+                        ),
+                      )
+                    : ImagePlaceHolder(
                         borderRadius: borderRadius ??
                             const BorderRadius.all(Radius.circular(8)),
                       ),
-                    )
-                  : ImagePlaceHolder(
-                      borderRadius: borderRadius ??
-                          const BorderRadius.all(Radius.circular(8)),
-                    ),
-          errorWidget: (context, url, error) => ErrorPlaceholder(
-            borderRadius:
-                borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            errorWidget: (context, url, error) => ErrorPlaceholder(
+              borderRadius:
+                  borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            ),
+            fadeInDuration: const Duration(microseconds: 200),
+            fadeOutDuration: const Duration(microseconds: 500),
           ),
-          fadeInDuration: const Duration(microseconds: 200),
-          fadeOutDuration: const Duration(microseconds: 500),
         ),
       ),
     );

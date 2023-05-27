@@ -306,8 +306,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                   )
                 : const SizedBox.shrink(),
           ),
-          backgroundColor:
-              Colors.black.withOpacity(calculateBackgroundOpacity()),
           body: Stack(
             children: [
               _buildScrollContent(),
@@ -481,33 +479,35 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
               ),
               child: Transform.translate(
                 offset: Offset(0, _topRightButtonGroupOffset),
-                child: ButtonBar(
-                  children: [
-                    ValueListenableBuilder<bool>(
-                      valueListenable: isExpanded,
-                      builder: (context, expanded, child) => expanded
-                          ? const SizedBox.shrink()
-                          : CircularIconButton(
-                              icon: theme == ThemeMode.light
-                                  ? Icon(
-                                      Icons.home,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                    )
-                                  : const Icon(
-                                      Icons.keyboard_double_arrow_down),
-                              onPressed: () =>
-                                  controller.animateViewportInsetTo(
-                                      ViewportInset.expanded,
-                                      curve: Curves.easeOut,
-                                      duration:
-                                          const Duration(milliseconds: 150)),
-                            ),
-                    ),
-                    ...widget
-                        .topRightButtonsBuilder(controller.currentPage.value),
-                  ],
+                child: ValueListenableBuilder<int>(
+                  valueListenable: controller.currentPage,
+                  builder: (_, page, __) => ButtonBar(
+                    children: [
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isExpanded,
+                        builder: (context, expanded, child) => expanded
+                            ? const SizedBox.shrink()
+                            : CircularIconButton(
+                                icon: theme == ThemeMode.light
+                                    ? Icon(
+                                        Icons.keyboard_double_arrow_down,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
+                                      )
+                                    : const Icon(
+                                        Icons.keyboard_double_arrow_down),
+                                onPressed: () =>
+                                    controller.animateViewportInsetTo(
+                                        ViewportInset.expanded,
+                                        curve: Curves.easeOut,
+                                        duration:
+                                            const Duration(milliseconds: 150)),
+                              ),
+                      ),
+                      ...widget.topRightButtonsBuilder(page),
+                    ],
+                  ),
                 ),
               ),
             )

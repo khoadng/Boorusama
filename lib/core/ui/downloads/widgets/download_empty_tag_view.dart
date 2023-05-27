@@ -24,6 +24,10 @@ class DownloadEmptyTagView extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(4),
         child: SimpleTagSearchView(
+          backButton: IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.arrow_back),
+          ),
           textColorBuilder: (tag) => generateDanbooruAutocompleteTagColor(
               tag, theme), //FIXME: should be a provider
           closeOnSelected: false,
