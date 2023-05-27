@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/debounce_mixin.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
@@ -24,7 +25,8 @@ final shouldNotFetchSuggestionsProvider = Provider.autoDispose<bool>((ref) {
   return query.length == 1 && operator != FilterOperator.none;
 });
 
-class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>> {
+class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>>
+    with DebounceMixin {
   SuggestionsNotifier() : super();
 
   @override
@@ -32,7 +34,7 @@ class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>> {
     return [];
   }
 
-  void getSuggestions(String query) async {
+  void getSuggestions(String query) {
     if (ref.read(shouldNotFetchSuggestionsProvider)) {
       return;
     }
@@ -42,6 +44,11 @@ class SuggestionsNotifier extends AutoDisposeNotifier<List<AutocompleteData>> {
       return;
     }
 
-    state = await ref.read(autocompleteRepoProvider).getAutocomplete(query);
+    debounce(
+      'suggestions',
+      () async {
+        state = await ref.read(autocompleteRepoProvider).getAutocomplete(query);
+      },
+    );
   }
 }
