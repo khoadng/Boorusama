@@ -147,7 +147,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
         );
       },
       pageCount: widget.posts.length,
-      topRightButtonsBuilder: (page) => [
+      topRightButtonsBuilder: (page, expanded) => [
         GelbooruMoreActionButton(post: widget.posts[page]),
       ],
       onExpanded: (currentPage) => ref.read(tagsProvider.notifier).load(

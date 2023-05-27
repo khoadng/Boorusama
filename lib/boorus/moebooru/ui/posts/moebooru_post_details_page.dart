@@ -134,7 +134,7 @@ class _MoebooruPostDetailsPageState
         );
       },
       pageCount: widget.posts.length,
-      topRightButtonsBuilder: (currentPage) => [
+      topRightButtonsBuilder: (currentPage, expanded) => [
         MoebooruMoreActionButton(
           post: widget.posts[currentPage],
         ),

@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/application/comments.dart';
+import 'package:boorusama/boorus/danbooru/application/notes.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes.dart';
@@ -193,7 +194,7 @@ class _DanbooruPostDetailsPageState
         );
       },
       pageCount: posts.length,
-      topRightButtonsBuilder: (page) {
+      topRightButtonsBuilder: (page, expanded) {
         final noteState =
             ref.watch(danbooruPostDetailsNoteProvider(posts[page]));
 
@@ -203,6 +204,20 @@ class _DanbooruPostDetailsPageState
 
             if (!posts[page].isTranslated) {
               return const SizedBox.shrink();
+            }
+
+            if (!expanded && noteState.notes.isEmpty) {
+              return ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.background.withOpacity(0.8),
+                  padding: const EdgeInsets.all(4),
+                ),
+                icon: const Icon(Icons.download_rounded),
+                label: const Text('Notes'),
+                onPressed: () =>
+                    ref.read(danbooruNoteProvider(posts[page]).notifier).load(),
+              );
             }
 
             return CircularIconButton(
@@ -323,12 +338,17 @@ class _DanbooruPostDetailsPageState
           child: DanbooruPostActionToolbar(post: post),
         ),
         const Divider(height: 8, thickness: 1),
+        DanbooruArtistSection(post: post),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: DanbooruPostStatsTile(post: post),
+        ),
+        const Divider(height: 8, thickness: 1),
         TagsTile(
             tags: tags
                 .where((e) => e.postId == post.id)
                 .map((e) => e.name)
                 .toList()),
-        const Divider(height: 8, thickness: 1),
         switch (post.source) {
           WebSource s => Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -336,14 +356,7 @@ class _DanbooruPostDetailsPageState
             ),
           _ => const SizedBox.shrink(),
         },
-        const Divider(height: 8, thickness: 1),
         FileDetailsSection(post: post),
-        const Divider(height: 8, thickness: 1),
-        DanbooruArtistSection(post: post),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: DanbooruPostStatsTile(post: post),
-        ),
         const Divider(height: 8, thickness: 1),
       ],
     ];

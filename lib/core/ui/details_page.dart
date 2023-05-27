@@ -122,7 +122,8 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, int page, int currentPage,
       bool expanded, bool enableSwipe) expandedBuilder;
   final int pageCount;
-  final List<Widget> Function(int currentPage) topRightButtonsBuilder;
+  final List<Widget> Function(int currentPage, bool expanded)
+      topRightButtonsBuilder;
   final void Function(int currentPage)? onExpanded;
   final Widget? Function(int currentPage)? bottomSheet;
   final void Function(int index) onExit;
@@ -492,11 +493,11 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                 offset: Offset(0, _topRightButtonGroupOffset),
                 child: ValueListenableBuilder<int>(
                   valueListenable: controller.currentPage,
-                  builder: (_, page, __) => ButtonBar(
-                    children: [
-                      ValueListenableBuilder<bool>(
-                        valueListenable: isExpanded,
-                        builder: (context, expanded, child) => expanded
+                  builder: (_, page, __) => ValueListenableBuilder<bool>(
+                    valueListenable: isExpanded,
+                    builder: (_, expanded, __) => ButtonBar(
+                      children: [
+                        expanded
                             ? const SizedBox.shrink()
                             : CircularIconButton(
                                 icon: theme == ThemeMode.light
@@ -515,9 +516,9 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                                         duration:
                                             const Duration(milliseconds: 150)),
                               ),
-                      ),
-                      ...widget.topRightButtonsBuilder(page),
-                    ],
+                        ...widget.topRightButtonsBuilder(page, expanded),
+                      ],
+                    ),
                   ),
                 ),
               ),
