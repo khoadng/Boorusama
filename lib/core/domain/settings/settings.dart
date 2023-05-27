@@ -25,6 +25,7 @@ class Settings extends Equatable {
     required this.autoFocusSearchBar,
     required this.postsPerPage,
     required this.currentBooruConfigId,
+    required this.downloadQuality,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -59,6 +60,9 @@ class Settings extends Equatable {
         pageMode = json['contentOrganizationCategory'] != null
             ? PageMode.values[json['contentOrganizationCategory']]
             : PageMode.infinite,
+        downloadQuality = json['downloadQuality'] != null
+            ? DownloadQuality.values[json['downloadQuality']]
+            : DownloadQuality.original,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
@@ -84,6 +88,7 @@ class Settings extends Equatable {
     autoFocusSearchBar: true,
     postsPerPage: 60,
     currentBooruConfigId: -1,
+    downloadQuality: DownloadQuality.original,
   );
 
   final String blacklistedTags;
@@ -116,6 +121,8 @@ class Settings extends Equatable {
 
   final int currentBooruConfigId;
 
+  final DownloadQuality downloadQuality;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -135,6 +142,7 @@ class Settings extends Equatable {
     bool? autoFocusSearchBar,
     int? postsPerPage,
     int? currentBooruConfigId,
+    DownloadQuality? downloadQuality,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -157,6 +165,7 @@ class Settings extends Equatable {
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
+        downloadQuality: downloadQuality ?? this.downloadQuality,
       );
 
   Map<String, dynamic> toJson() => {
@@ -178,6 +187,7 @@ class Settings extends Equatable {
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
         'currentBooruConfigId': currentBooruConfigId,
+        'downloadQuality': downloadQuality.index,
       };
 
   @override
@@ -200,6 +210,7 @@ class Settings extends Equatable {
         autoFocusSearchBar,
         postsPerPage,
         currentBooruConfigId,
+        downloadQuality,
       ];
 }
 

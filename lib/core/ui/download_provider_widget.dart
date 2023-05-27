@@ -22,12 +22,16 @@ Future<void> _download(
 }) async {
   final service = ref.read(downloadServiceProvider);
   final fileNameGenerator = ref.read(downloadFileNameGeneratorProvider);
+  final downloadUrl = ref.read(downloadUrlProvider(downloadable));
 
   Future<void> download() async => service
       .downloadWithSettings(
         settings,
-        url: downloadable.downloadUrl,
-        fileNameBuilder: () => fileNameGenerator.generateFor(downloadable),
+        url: downloadUrl,
+        fileNameBuilder: () => fileNameGenerator.generateFor(
+          downloadable,
+          downloadUrl,
+        ),
       )
       .run();
 

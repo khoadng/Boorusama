@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
-import 'package:path/path.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
@@ -54,7 +53,7 @@ class FileDetailsSection extends StatelessWidget {
             ),
             _FileDetailTile(
               title: 'post.detail.file_format'.tr(),
-              value: extension(post.downloadUrl),
+              value: post.format,
             ),
           ],
         ),

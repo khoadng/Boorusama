@@ -20,7 +20,6 @@ class MoebooruPost extends Equatable
     required this.hasComment,
     required this.isTranslated,
     required this.hasParentOrChildren,
-    required this.downloadUrl,
     required this.format,
     required this.width,
     required this.height,
@@ -48,8 +47,6 @@ class MoebooruPost extends Equatable
   final bool isTranslated;
   @override
   final bool hasParentOrChildren;
-  @override
-  final String downloadUrl;
 
   @override
   final String format;

@@ -78,22 +78,24 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
         final items = itemStack.removeLast();
 
         for (var item in items) {
-          if (item.downloadUrl.isEmpty) continue;
+          final downloadUrl = ref.read(downloadUrlProvider(item));
+          if (downloadUrl.isEmpty) continue;
 
           downloader.enqueueDownload(
-            url: item.downloadUrl,
+            url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () => fileNameGenerator.generateFor(item),
+            fileNameBuilder: () =>
+                fileNameGenerator.generateFor(item, downloadUrl),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {
             ...ref.read(bulkDownloadThumbnailsProvider),
-            item.downloadUrl: item.thumbnailImageUrl,
+            downloadUrl: item.thumbnailImageUrl,
           };
 
           ref.read(bulkDownloadFileSizeProvider.notifier).state = {
             ...ref.read(bulkDownloadFileSizeProvider),
-            item.downloadUrl: item.fileSize,
+            downloadUrl: item.fileSize,
           };
 
           bulkDownloadState.addDownloadSize(item.fileSize);

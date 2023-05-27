@@ -47,9 +47,6 @@ class GelbooruPost extends Equatable
   final String _sampleImageUrl;
 
   @override
-  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
-
-  @override
   final String format;
 
   @override

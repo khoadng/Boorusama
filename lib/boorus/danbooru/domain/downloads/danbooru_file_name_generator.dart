@@ -9,16 +9,16 @@ import 'package:boorusama/core/domain/file_name_generator.dart';
 class BoorusamaStyledFileNameGenerator
     implements FileNameGenerator<DanbooruPost> {
   @override
-  String generateFor(DanbooruPost item) =>
-      '${generateFullReadableName(item)} - ${basename(item.downloadUrl)}'
+  String generateFor(DanbooruPost item, String fileUrl) =>
+      '${generateFullReadableName(item)} - ${basename(fileUrl)}'
           .fixInvalidCharacterForPathName();
 }
 
 class DanbooruMd5OnlyFileNameGenerator
     implements FileNameGenerator<DanbooruPost> {
   @override
-  String generateFor(DanbooruPost item) =>
-      '${item.md5}${extension(item.downloadUrl)}';
+  String generateFor(DanbooruPost item, String fileUrl) =>
+      '${item.md5}${extension(fileUrl)}';
 }
 
 extension InvalidFileCharsExtension on String {

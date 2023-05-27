@@ -18,7 +18,6 @@ abstract class Post extends Equatable
   bool get hasComment;
   bool get isTranslated;
   bool get hasParentOrChildren;
-  String get downloadUrl;
   PostSource get source;
 
   String getLink(String baseUrl);

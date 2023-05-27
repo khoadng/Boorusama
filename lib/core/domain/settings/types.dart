@@ -35,3 +35,9 @@ enum PageMode {
   infinite,
   paginated,
 }
+
+enum DownloadQuality {
+  original,
+  sample,
+  preview,
+}

@@ -106,35 +106,6 @@ void main() {
     });
   });
 
-  group('[download url]', () {
-    test('video format should use normal image url', () {
-      final posts = [..._videoFormat].map((e) => DanbooruPost.empty().copyWith(
-            format: e,
-            sampleImageUrl: 'foo',
-            originalImageUrl: 'bar',
-          ));
-
-      expect(
-        posts.every((post) => post.downloadUrl == post.sampleImageUrl),
-        isTrue,
-      );
-    });
-
-    test('non video format should use full image url', () {
-      final posts =
-          [..._imageFormat, 'gif'].map((e) => DanbooruPost.empty().copyWith(
-                format: e,
-                sampleImageUrl: 'foo',
-                originalImageUrl: 'bar',
-              ));
-
-      expect(
-        posts.every((post) => post.downloadUrl == post.originalImageUrl),
-        isTrue,
-      );
-    });
-  });
-
   group('[vote test]', () {
     test('total vote', () {
       final post = DanbooruPost.empty().copyWith(

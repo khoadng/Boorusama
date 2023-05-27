@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
+import 'package:boorusama/core/ui/settings/widgets/settings_tile.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
@@ -46,6 +48,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -56,11 +59,9 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                     ),
               ),
             ),
+            const SizedBox(height: 4),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Material(
                 child: Ink(
                   decoration: BoxDecoration(
@@ -114,6 +115,14 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                       allowedFolders: allowedFolders,
                     )
                   : const SizedBox.shrink(),
+            SettingsTile<DownloadQuality>(
+              title: const Text('Download image quality'),
+              selectedOption: settings.downloadQuality,
+              items: DownloadQuality.values,
+              onChanged: (value) =>
+                  ref.updateSettings(settings.copyWith(downloadQuality: value)),
+              optionBuilder: (value) => Text(value.name.sentenceCase),
+            ),
           ],
         ),
       ),

@@ -102,7 +102,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     hasComment: false,
     isTranslated: false,
     hasParentOrChildren: postDto.hasChildren ?? false,
-    downloadUrl: postDto.fileUrl ?? '',
     width: postDto.width!.toDouble(),
     height: postDto.height!.toDouble(),
     md5: postDto.md5 ?? '',

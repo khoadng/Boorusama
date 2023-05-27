@@ -124,9 +124,6 @@ class DanbooruPost extends Equatable
   @override
   bool get hasComment => lastCommentAt != null;
 
-  @override
-  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
-
   bool get hasParent => parentId != null;
   bool get hasBothParentAndChildren => hasChildren && hasParent;
   @override
