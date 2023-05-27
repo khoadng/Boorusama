@@ -66,6 +66,7 @@ class _BooruImageLegacyState extends ConsumerState<BooruImageLegacy> {
       memCacheWidth: widget.cacheWidth,
       memCacheHeight: widget.cacheHeight,
       imageUrl: widget.imageUrl,
+      errorListener: (e) => {},
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(
@@ -83,6 +84,7 @@ class _BooruImageLegacyState extends ConsumerState<BooruImageLegacy> {
               httpHeaders: {
                 'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
               },
+              errorListener: (e) => {},
               imageUrl: widget.placeholderUrl!,
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(

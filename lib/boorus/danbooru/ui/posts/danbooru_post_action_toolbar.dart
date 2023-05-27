@@ -57,6 +57,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ref.read(danbooruPostVotesProvider.notifier).downvote(post.id);
               },
             ),
+          BookmarkPostButton(post: post),
           _buildCommentButton(context),
           DownloadPostButton(post: post),
           SharePostButton(post: post),
