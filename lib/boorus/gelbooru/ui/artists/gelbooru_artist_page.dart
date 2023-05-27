@@ -33,16 +33,17 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
   @override
   Widget build(BuildContext context) {
     return PostScope(
-      fetcher: (page) => ref.watch(gelbooruPostRepoProvider).getPostsFromTags(
-            queryFromTagFilterCategory(
-              category: selectedCategory.value,
-              tag: widget.tagName,
-              builder: (category) => category == TagFilterCategory.popular
-                  ? some('sort:score:desc')
-                  : none(),
-            ),
-            page,
-          ),
+      fetcher: (page) =>
+          ref.watch(gelbooruArtistCharacterPostRepoProvider).getPostsFromTags(
+                queryFromTagFilterCategory(
+                  category: selectedCategory.value,
+                  tag: widget.tagName,
+                  builder: (category) => category == TagFilterCategory.popular
+                      ? some('sort:score:desc')
+                      : none(),
+                ),
+                page,
+              ),
       builder: (context, controller, errors) => GelbooruInfinitePostList(
         errors: errors,
         controller: controller,

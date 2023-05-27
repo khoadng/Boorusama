@@ -8,6 +8,10 @@ import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 import 'tags_providers.dart';
 
+final invalidTags = [
+  ':&lt;',
+];
+
 class TagsNotifier extends Notifier<List<TagGroupItem>> {
   @override
   List<TagGroupItem> build() {
@@ -21,7 +25,9 @@ class TagsNotifier extends Notifier<List<TagGroupItem>> {
     List<String> tagList, {
     void Function(List<TagGroupItem> tags)? onSuccess,
   }) async {
-    final tags = await repo.getTagsByNameComma(tagList.join(','), 1);
+    // filter tagList to remove invalid tags
+    final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
+    final tags = await repo.getTagsByNameComma(filtered.join(','), 1);
 
     tags.sort((a, b) => a.rawName.compareTo(b.rawName));
     final group = tags

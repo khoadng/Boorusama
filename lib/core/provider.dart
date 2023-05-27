@@ -52,6 +52,9 @@ final autocompleteRepoProvider =
 final postRepoProvider =
     Provider<PostRepository>((ref) => throw UnimplementedError());
 
+final postArtistCharacterRepoProvider =
+    Provider<PostRepository>((ref) => throw UnimplementedError());
+
 final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   () => throw UnimplementedError(),
   dependencies: [

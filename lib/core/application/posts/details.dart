@@ -56,7 +56,7 @@ final booruPostDetailsArtistProvider = NotifierProvider.autoDispose
     .family<BooruPostDetailsArtistNotifier, List<Recommend<Post>>, int>(
   BooruPostDetailsArtistNotifier.new,
   dependencies: [
-    postRepoProvider,
+    postArtistCharacterRepoProvider,
   ],
 );
 
@@ -64,7 +64,8 @@ class BooruPostDetailsArtistNotifier
     extends AutoDisposeFamilyNotifier<List<Recommend<Post>>, int>
     with PostRepositoryMixin, PostDetailsTagsX<Post> {
   @override
-  PostRepository get postRepository => ref.read(postRepoProvider);
+  PostRepository get postRepository =>
+      ref.read(postArtistCharacterRepoProvider);
 
   @override
   Future<List<Post>> Function(String tag, int page) get fetcher =>

@@ -32,6 +32,8 @@ class GelbooruProvider extends StatelessWidget {
             .overrideWithValue(Md5OnlyFileNameGenerator()),
         postRepoProvider
             .overrideWith((ref) => ref.watch(gelbooruPostRepoProvider)),
+        postArtistCharacterRepoProvider.overrideWith(
+            (ref) => ref.watch(gelbooruArtistCharacterPostRepoProvider)),
         autocompleteRepoProvider
             .overrideWith((ref) => ref.watch(gelbooruAutocompleteRepoProvider)),
         tagRepoProvider
