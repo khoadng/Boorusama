@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_image_grid_item.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/provider.dart';
@@ -117,6 +118,7 @@ class _FavoriteGroupDetailsPageState
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authenticationProvider);
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       floatingActionButton: editing
@@ -259,6 +261,12 @@ class _FavoriteGroupDetailsPageState
                                   child: child,
                                 ),
                                 child: DanbooruImageGridItem(
+                                  image: BooruImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl:
+                                        post.thumbnailFromSettings(settings),
+                                    placeholderUrl: post.thumbnailImageUrl,
+                                  ),
                                   enableFav: authState is Authenticated,
                                   hideOverlay: editing,
                                   autoScrollOptions: AutoScrollOptions(
@@ -298,77 +306,6 @@ class _FavoriteGroupDetailsPageState
                 ),
               ],
             ),
-    );
-  }
-}
-
-class DanbooruImageGridItem extends ConsumerWidget {
-  const DanbooruImageGridItem({
-    super.key,
-    required this.post,
-    required this.hideOverlay,
-    required this.autoScrollOptions,
-    required this.enableFav,
-    this.onTap,
-    this.image,
-  });
-
-  final DanbooruPost post;
-  final bool hideOverlay;
-  final AutoScrollOptions autoScrollOptions;
-  final VoidCallback? onTap;
-  final bool enableFav;
-  final Widget? image;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
-    final settings = ref.watch(settingsProvider);
-    return ConditionalParentWidget(
-      condition: post.isBanned,
-      conditionalBuilder: (child) => Stack(
-        children: [
-          child,
-          const Positioned.fill(
-            child: Center(
-              child: Text(
-                'Banned artist',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      child: ImageGridItem(
-        hideOverlay: hideOverlay,
-        isFaved: isFaved,
-        enableFav: enableFav,
-        onFavToggle: (isFaved) async {
-          if (!isFaved) {
-            ref.danbooruFavorites.remove(post.id);
-          } else {
-            ref.danbooruFavorites.add(post.id);
-          }
-        },
-        autoScrollOptions: autoScrollOptions,
-        onTap: onTap,
-        image: image ??
-            BooruImage(
-              fit: BoxFit.cover,
-              imageUrl: post.thumbnailFromSettings(settings),
-              placeholderUrl: post.thumbnailImageUrl,
-            ),
-        isAnimated: post.isAnimated,
-        isTranslated: post.isTranslated,
-        hasComments: post.hasComment,
-        hasParentOrChildren: post.hasParentOrChildren,
-        hasSound: post.hasSound,
-        duration: post.duration,
-      ),
     );
   }
 }

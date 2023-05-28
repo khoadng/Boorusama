@@ -24,7 +24,7 @@ class BooruImage extends ConsumerWidget {
 
   final String imageUrl;
   final String? placeholderUrl;
-  final BorderRadius? borderRadius;
+  final BorderRadiusGeometry? borderRadius;
   final BoxFit? fit;
   final double aspectRatio;
   final CacheManager? previewCacheManager;
@@ -103,7 +103,7 @@ class _Empty extends StatelessWidget {
     required this.borderRadius,
   });
 
-  final BorderRadius? borderRadius;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -118,17 +118,27 @@ class ImagePlaceHolder extends StatelessWidget {
   const ImagePlaceHolder({
     super.key,
     this.borderRadius,
+    this.width,
+    this.height,
   });
 
-  final BorderRadius? borderRadius;
+  final BorderRadiusGeometry? borderRadius;
+  final int? width;
+  final int? height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width?.toDouble(),
+      height: height?.toDouble(),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 1,
+        ),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) => Container(
@@ -149,7 +159,7 @@ class ErrorPlaceholder extends StatelessWidget {
     this.borderRadius,
   });
 
-  final BorderRadius? borderRadius;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {

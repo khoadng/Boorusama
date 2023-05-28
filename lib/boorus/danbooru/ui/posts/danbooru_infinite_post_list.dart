@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/danbooru_image_grid_item.dart';
 import 'package:boorusama/core/application/authentication.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts.dart';
@@ -115,7 +115,7 @@ class _DanbooruInfinitePostListState
         final post = items[index];
 
         return ContextMenuRegion(
-          isEnabled: !multiSelect,
+          isEnabled: !post.isBanned && !multiSelect,
           contextMenu: DanbooruPostContextMenu(
             hasAccount: authState is Authenticated,
             onMultiSelect: () {
@@ -144,7 +144,7 @@ class _DanbooruInfinitePostListState
               enableFav: !multiSelect && authState is Authenticated,
               image: settings.imageListType == ImageListType.masonry
                   ? BooruImage(
-                      aspectRatio: post.aspectRatio,
+                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
                       imageUrl: post.thumbnailFromSettings(settings),
                       borderRadius: BorderRadius.circular(
                         settings.imageBorderRadius,
