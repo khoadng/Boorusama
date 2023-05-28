@@ -407,7 +407,7 @@ class DanbooruArtistSection extends ConsumerWidget {
     return ArtistSection(
       artistCommentary: commentary,
       artistTags: post.artistTags,
-      source: post.source.url,
+      source: post.source,
     );
   }
 }

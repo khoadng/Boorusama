@@ -13,7 +13,7 @@ class SourceLink extends StatelessWidget {
   const SourceLink({
     super.key,
     required this.title,
-    required this.url,
+    this.url,
     required this.actionBuilder,
     required this.name,
   });
@@ -28,25 +28,27 @@ class SourceLink extends StatelessWidget {
     return ListTile(
       visualDensity: VisualDensity.compact,
       title: title,
-      subtitle: InkWell(
-        onLongPress: () =>
-            Clipboard.setData(ClipboardData(text: url.toString()))
-                .then((_) => showSimpleSnackBar(
-                      duration: const Duration(seconds: 1),
-                      context: context,
-                      content: const Text('post.detail.copied').tr(),
-                    )),
-        onTap: () {
-          if (url == null) return;
-          launchExternalUrl(Uri.parse(url!));
-        },
-        child: Text(
-          url.toString(),
-          maxLines: 1,
-          softWrap: false,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ),
+      subtitle: url != null
+          ? InkWell(
+              onLongPress: () =>
+                  Clipboard.setData(ClipboardData(text: url.toString()))
+                      .then((_) => showSimpleSnackBar(
+                            duration: const Duration(seconds: 1),
+                            context: context,
+                            content: const Text('post.detail.copied').tr(),
+                          )),
+              onTap: () {
+                if (url == null) return;
+                launchExternalUrl(Uri.parse(url!));
+              },
+              child: Text(
+                url.toString(),
+                maxLines: 1,
+                softWrap: false,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            )
+          : null,
       leading: CircleAvatar(
         backgroundColor: Theme.of(context).colorScheme.background,
         child: Center(

@@ -61,20 +61,20 @@ class RelatedPostsSection extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                margin: const EdgeInsets.all(1),
-                                width: 25,
-                                height: 25,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.7),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(4)),
+                              post.source.whenWeb(
+                                (source) => Container(
+                                  padding: const EdgeInsets.all(4),
+                                  margin: const EdgeInsets.all(1),
+                                  width: 25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.7),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4)),
+                                  ),
+                                  child: WebsiteLogo(url: source.faviconUrl),
                                 ),
-                                child: post.source.whenWeb(
-                                    (source) =>
-                                        WebsiteLogo(url: source.faviconUrl),
-                                    () => const SizedBox.shrink()),
+                                () => const SizedBox.shrink(),
                               ),
                               Container(
                                 padding: const EdgeInsets.all(4),

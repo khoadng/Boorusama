@@ -8,6 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
+import 'package:boorusama/core/domain/posts/sources/source.dart';
 import 'package:boorusama/core/ui/source_link.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -26,93 +27,95 @@ class ArtistSection extends StatefulWidget {
 
   final ArtistCommentary artistCommentary;
   final List<String> artistTags;
-  final String? source;
+  final PostSource source;
 
   @override
   State<ArtistSection> createState() => _ArtistSectionState();
 }
 
 class _ArtistSectionState extends State<ArtistSection> {
-  late final artistCommentaryDisplay = ValueNotifier(
-    (widget.artistCommentary.isTranslated)
-        ? ArtistCommentaryTranlationState.translated
-        : ArtistCommentaryTranlationState.original,
-  );
+  late final display = widget.artistCommentary.isTranslated
+      ? ArtistCommentaryTranlationState.translated
+      : ArtistCommentaryTranlationState.original;
 
   @override
   Widget build(BuildContext context) {
     final artistCommentary = widget.artistCommentary;
 
-    return ValueListenableBuilder<ArtistCommentaryTranlationState>(
-      valueListenable: artistCommentaryDisplay,
-      builder: (context, display, _) => Wrap(
-        children: [
-          SourceLink(
-            name: widget.artistTags.isEmpty ? '' : widget.artistTags.first,
-            title: Text(widget.artistTags.join(' ')),
-            url: widget.source,
-            actionBuilder: () => artistCommentary.isTranslated
-                ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    onSelected: (value) =>
-                        artistCommentaryDisplay.value = value,
-                    itemBuilder: (_) => [
-                      PopupMenuItem<ArtistCommentaryTranlationState>(
-                        value: getTranslationNextState(display),
-                        child: Text(getTranslationText(display)).tr(),
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: artistCommentary.isEmpty
-                ? const SizedBox.shrink()
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: SelectableHtml(
-                      style: {
-                        'body': Style(
-                          whiteSpace: WhiteSpace.PRE,
-                        ),
-                        'h2': Style(
-                          padding: const EdgeInsets.only(top: 4, bottom: 8),
-                        ),
-                      },
-                      data: getDescriptionText(display, artistCommentary),
-                      onLinkTap: (url, context, attributes, element) =>
-                          url != null
-                              ? launchExternalUrl(Uri.parse(url))
-                              : null,
-                    ),
+    return Wrap(
+      children: [
+        if (widget.artistTags.isNotEmpty)
+          switch (widget.source) {
+            WebSource source =>
+              _buildLink(artistCommentary, display, url: source.url),
+            NonWebSource _ => _buildLink(artistCommentary, display),
+            _ => const SizedBox.shrink(),
+          }
+        else
+          const SizedBox.shrink(),
+        AnimatedCrossFade(
+          firstChild: const SizedBox.shrink(),
+          secondChild: artistCommentary.isEmpty
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
                   ),
-            crossFadeState: artistCommentary.isEmpty
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 80),
-          ),
-        ],
-      ),
+                  child: SelectableHtml(
+                    style: {
+                      'body': Style(
+                        whiteSpace: WhiteSpace.PRE,
+                      ),
+                      'h2': Style(
+                        padding: const EdgeInsets.only(top: 4, bottom: 8),
+                      ),
+                    },
+                    data: getDescriptionText(display, artistCommentary),
+                    onLinkTap: (url, context, attributes, element) =>
+                        url != null ? launchExternalUrl(Uri.parse(url)) : null,
+                  ),
+                ),
+          crossFadeState: artistCommentary.isEmpty
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 80),
+        ),
+      ],
     );
   }
-}
 
-ArtistCommentaryTranlationState getTranslationNextState(
-  ArtistCommentaryTranlationState currentState,
-) {
-  return currentState == ArtistCommentaryTranlationState.translated
-      ? ArtistCommentaryTranlationState.original
-      : ArtistCommentaryTranlationState.translated;
-}
-
-String getTranslationText(ArtistCommentaryTranlationState currentState) {
-  return currentState == ArtistCommentaryTranlationState.translated
-      ? 'post.detail.show_original'
-      : 'post.detail.show_translated';
+  Widget _buildLink(
+    ArtistCommentary artistCommentary,
+    ArtistCommentaryTranlationState display, {
+    String? url,
+  }) {
+    return SourceLink(
+      name: widget.artistTags.first,
+      title: Text(widget.artistTags.join(' ')),
+      url: url,
+      actionBuilder: () => artistCommentary.isTranslated
+          ? PopupMenuButton<ArtistCommentaryTranlationState>(
+              padding: EdgeInsets.zero,
+              icon: const Icon(Icons.keyboard_arrow_down),
+              onSelected: (value) => setState(() {
+                display = value;
+              }),
+              itemBuilder: (_) => [
+                PopupMenuItem<ArtistCommentaryTranlationState>(
+                  value: display == ArtistCommentaryTranlationState.translated
+                      ? ArtistCommentaryTranlationState.original
+                      : ArtistCommentaryTranlationState.translated,
+                  child: Text(
+                          display == ArtistCommentaryTranlationState.translated
+                              ? 'post.detail.show_original'
+                              : 'post.detail.show_translated')
+                      .tr(),
+                ),
+              ],
+            )
+          : const SizedBox.shrink(),
+    );
+  }
 }
 
 String getDescriptionText(
