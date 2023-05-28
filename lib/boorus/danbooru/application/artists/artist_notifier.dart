@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,14 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'artists_provider.dart';
 
-class ArtistNotifier extends FamilyNotifier<Artist, String> {
+class ArtistNotifier extends FamilyAsyncNotifier<Artist, String> {
   @override
-  Artist build(String arg) {
-    load();
-    return Artist.empty();
+  FutureOr<Artist> build(String arg) {
+    return load();
   }
 
-  Future<void> load() async {
-    state = await ref.read(danbooruArtistRepoProvider).getArtist(arg);
+  Future<Artist> load() {
+    return ref.read(danbooruArtistRepoProvider).getArtist(arg);
   }
 }

@@ -34,7 +34,7 @@ class CharacterPageDesktop extends ConsumerWidget {
       tagName: characterName,
       otherNamesBuilder: (context) =>
           switch (ref.watch(danbooruWikiProvider(characterName))) {
-        WikiStateLoading _ => const SizedBox(height: 40, width: 40),
+        WikiStateLoading _ => const TagOtherNames(otherNames: null),
         WikiStateLoaded s => TagOtherNames(otherNames: s.wiki.otherNames),
         WikiStateError _ => const SizedBox.shrink(),
         WikiStateNotFound _ => const SizedBox.shrink(),

@@ -14,9 +14,6 @@ final danbooruArtistRepoProvider = Provider<ArtistRepository>((ref) {
 });
 
 final danbooruArtistProvider =
-    NotifierProvider.family<ArtistNotifier, Artist, String>(
+    AsyncNotifierProvider.family<ArtistNotifier, Artist, String>(
   ArtistNotifier.new,
-  dependencies: [
-    danbooruArtistRepoProvider,
-  ],
 );

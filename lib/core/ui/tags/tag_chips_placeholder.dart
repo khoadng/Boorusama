@@ -5,17 +5,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TagChipsPlaceholder extends StatelessWidget {
-  const TagChipsPlaceholder({super.key});
+  const TagChipsPlaceholder({
+    super.key,
+    this.height,
+    this.itemCount,
+  });
+
+  final double? height;
+  final int? itemCount;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 8),
-      height: 50,
+      height: height ?? 50,
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 20,
+        itemCount: itemCount ?? 20,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),

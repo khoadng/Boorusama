@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/core/display.dart';
@@ -55,16 +54,22 @@ class DanbooruArtistPage extends ConsumerWidget {
     return Screen.of(context).size == ScreenSize.small
         ? TagDetailPage(
             tagName: artistName,
-            otherNamesBuilder: (_) => artist.isEmpty
-                ? const SizedBox(height: 40, width: 40)
-                : TagOtherNames(otherNames: artist.otherNames),
+            otherNamesBuilder: (_) => artist.when(
+              data: (data) => TagOtherNames(otherNames: data.otherNames),
+              error: (error, stackTrace) =>
+                  const SizedBox(height: 40, width: 40),
+              loading: () => const TagOtherNames(otherNames: null),
+            ),
             backgroundImageUrl: backgroundImageUrl,
           )
         : TagDetailPageDesktop(
             tagName: artistName,
-            otherNamesBuilder: (_) => artist.isEmpty
-                ? const SizedBox(height: 40, width: 40)
-                : TagOtherNames(otherNames: artist.otherNames),
+            otherNamesBuilder: (_) => artist.when(
+              data: (data) => TagOtherNames(otherNames: data.otherNames),
+              error: (error, stackTrace) =>
+                  const SizedBox(height: 40, width: 40),
+              loading: () => const TagOtherNames(otherNames: null),
+            ),
           );
   }
 }
