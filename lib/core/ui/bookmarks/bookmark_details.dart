@@ -29,35 +29,45 @@ class BookmarkDetailsPage extends StatefulWidget {
 class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
   late var currentIndex = widget.initialIndex;
   late final pageController = PageController(initialPage: widget.initialIndex);
+  var hideOverlay = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              switch (value) {
-                case 'view_source':
-                  launchExternalUrl(
-                    Uri.parse(widget.bookmarks[currentIndex].sourceUrl),
-                  );
-                  break;
-                default:
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem(
-                  value: 'view_source',
-                  child: Text('View source'),
+      extendBodyBehindAppBar: true,
+      appBar: !hideOverlay
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              actions: [
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'view_source':
+                        launchExternalUrl(
+                          Uri.parse(widget.bookmarks[currentIndex].sourceUrl),
+                        );
+                        break;
+                      default:
+                    }
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      const PopupMenuItem(
+                        value: 'view_source',
+                        child: Text('View source'),
+                      ),
+                    ];
+                  },
                 ),
-              ];
-            },
-          ),
-        ],
-      ),
+              ],
+            )
+          : null,
       body: BookmarkSlider(
+        onTap: () => setState(() {
+          hideOverlay = !hideOverlay;
+        }),
         bookmarks: widget.bookmarks,
         initialPage: widget.initialIndex,
         onPageChange: (index) => setState(() {
@@ -76,12 +86,14 @@ class BookmarkSlider extends ConsumerStatefulWidget {
     required this.initialPage,
     required this.onPageChange,
     required this.fullscreen,
+    this.onTap,
   });
 
   final List<Bookmark> bookmarks;
   final int initialPage;
   final void Function(int index) onPageChange;
   final bool fullscreen;
+  final void Function()? onTap;
 
   @override
   ConsumerState<BookmarkSlider> createState() => _PostSliderState();
@@ -96,9 +108,9 @@ class _PostSliderState extends ConsumerState<BookmarkSlider> {
       itemCount: widget.bookmarks.length,
       itemBuilder: (context, index, realIndex) {
         final media = BookmarkMediaItem(
-          //TODO: this is used to preload image between page
           bookmark: widget.bookmarks[index],
           previewCacheManager: ref.watch(previewImageCacheManagerProvider),
+          onTap: widget.onTap,
           onZoomUpdated: (zoom) {
             final swipe = !zoom;
             if (swipe != enableSwipe) {
