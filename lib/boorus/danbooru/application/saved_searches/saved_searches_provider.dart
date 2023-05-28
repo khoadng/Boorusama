@@ -17,7 +17,7 @@ final danbooruSavedSearchRepoProvider = Provider<SavedSearchRepository>((ref) {
 });
 
 final danbooruSavedSearchesProvider =
-    NotifierProvider<SavedSearchesNotifier, List<SavedSearch>>(
+    NotifierProvider<SavedSearchesNotifier, List<SavedSearch>?>(
   SavedSearchesNotifier.new,
 );
 
@@ -26,7 +26,7 @@ final danbooruSavedSearchAvailableProvider = Provider<List<SavedSearch>>((ref) {
 
   return [
     SavedSearch.all(),
-    ...savedSearches,
+    ...savedSearches ?? [],
   ];
 });
 
@@ -35,6 +35,7 @@ final danbooruSavedSearchSelectedProvider =
   ref.listen(
     danbooruSavedSearchesProvider,
     (previous, next) {
+      if (next == null) return;
       final state = ref.controller.state;
       if (!next.contains(state)) {
         final search = next.firstWhereOrNull((e) => e.id == state.id);

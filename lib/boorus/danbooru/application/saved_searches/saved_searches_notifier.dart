@@ -7,12 +7,13 @@ import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/utils/collection_utils.dart';
 
-class SavedSearchesNotifier extends Notifier<List<SavedSearch>> {
+class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
   @override
-  List<SavedSearch> build() {
+  List<SavedSearch>? build() {
     ref.watch(currentBooruConfigProvider);
+    fetch();
 
-    return [];
+    return null;
   }
 
   SavedSearchRepository get repo => ref.read(danbooruSavedSearchRepoProvider);
@@ -42,7 +43,7 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>> {
       onFailure?.call();
     } else {
       state = _sort([
-        ...state,
+        ...state ?? [],
         savedSearch,
       ]);
 
@@ -55,12 +56,13 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>> {
     void Function(SavedSearch data)? onDeleted,
     void Function()? onFailure,
   }) async {
+    if (state == null) return;
     if (!savedSearch.canDelete) return;
 
     final success = await repo.deleteSavedSearch(savedSearch.id);
 
     if (success) {
-      state = state.where((d) => d.id != savedSearch.id).toList();
+      state = state!.where((d) => d.id != savedSearch.id).toList();
       onDeleted?.call(savedSearch);
     } else {
       onFailure?.call();
@@ -74,6 +76,7 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>> {
     void Function(SavedSearch data)? onUpdated,
     void Function()? onFailure,
   }) async {
+    if (state == null) return;
     final success = await repo.updateSavedSearch(
       id,
       query: query,
@@ -81,9 +84,9 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>> {
     );
 
     if (success) {
-      final index = state.indexWhere((e) => e.id == id);
-      final newSearch = state[index];
-      final newData = [...state].replaceAt(
+      final index = state!.indexWhere((e) => e.id == id);
+      final newSearch = state![index];
+      final newData = [...state!].replaceAt(
         index,
         newSearch.copyWith(
           query: query,

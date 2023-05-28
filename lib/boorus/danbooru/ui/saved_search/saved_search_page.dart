@@ -45,6 +45,12 @@ class _SuccessView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final savedSearches = ref.watch(danbooruSavedSearchesProvider);
 
+    if (savedSearches == null) {
+      return const Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+    }
+
     return savedSearches.isEmpty
         ? GenericNoDataBox(
             text: 'saved_search.empty_saved_search'.tr(),
