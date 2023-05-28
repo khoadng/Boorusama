@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
@@ -26,6 +27,13 @@ class PostTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(tagsProvider);
+
+    if (tags == null) {
+      return SpinKitPulse(
+        size: 42,
+        color: Theme.of(context).colorScheme.onBackground,
+      );
+    }
 
     final widgets = <Widget>[];
     for (final g in tags) {

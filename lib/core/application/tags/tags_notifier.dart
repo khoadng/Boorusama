@@ -12,11 +12,11 @@ final invalidTags = [
   ':&lt;',
 ];
 
-class TagsNotifier extends Notifier<List<TagGroupItem>> {
+class TagsNotifier extends Notifier<List<TagGroupItem>?> {
   @override
-  List<TagGroupItem> build() {
+  List<TagGroupItem>? build() {
     ref.watch(currentBooruConfigProvider);
-    return [];
+    return null;
   }
 
   TagRepository get repo => ref.read(tagRepoProvider);

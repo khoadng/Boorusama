@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -285,11 +286,16 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                             items,
                           ),
                           if (pageMode == PageMode.infinite && loading)
-                            const SliverPadding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
+                            SliverPadding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
                               sliver: SliverToBoxAdapter(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
+                                child: Center(
+                                  child: SpinKitPulse(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                  ),
+                                ),
                               ),
                             )
                           else
