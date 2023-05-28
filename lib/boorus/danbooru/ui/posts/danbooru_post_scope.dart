@@ -19,14 +19,21 @@ mixin DanbooruPostFetcherMixin<T extends StatefulWidget> on State<T> {
 
   BooruError? errors;
 
-  Future<List<DanbooruPost>> fetchPosts(int page) =>
-      fetcher(page).run().then((value) => value.fold(
-            (l) {
-              setState(() => errors = l);
-              return <DanbooruPost>[];
-            },
-            (r) => r,
-          ));
+  Future<List<DanbooruPost>> fetchPosts(int page) {
+    if (errors != null) {
+      setState(() {
+        errors = null;
+      });
+    }
+
+    return fetcher(page).run().then((value) => value.fold(
+          (l) {
+            setState(() => errors = l);
+            return <DanbooruPost>[];
+          },
+          (r) => r,
+        ));
+  }
 }
 
 class DanbooruPostScope extends ConsumerStatefulWidget {

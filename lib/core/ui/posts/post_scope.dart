@@ -17,14 +17,21 @@ mixin PostFetcherMixin<T extends StatefulWidget> on State<T> {
 
   BooruError? errors;
 
-  Future<List<Post>> fetchPosts(int page) =>
-      fetcher(page).run().then((value) => value.fold(
-            (l) {
-              setState(() => errors = l);
-              return <Post>[];
-            },
-            (r) => r,
-          ));
+  Future<List<Post>> fetchPosts(int page) {
+    if (errors != null) {
+      setState(() {
+        errors = null;
+      });
+    }
+
+    return fetcher(page).run().then((value) => value.fold(
+          (l) {
+            setState(() => errors = l);
+            return <Post>[];
+          },
+          (r) => r,
+        ));
+  }
 }
 
 class PostScope extends ConsumerStatefulWidget {

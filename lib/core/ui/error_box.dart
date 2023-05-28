@@ -10,10 +10,12 @@ class ErrorBox extends StatelessWidget {
     super.key,
     this.errorMessage,
     this.child,
+    this.onRetry,
   });
 
   final Widget? child;
   final String? errorMessage;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,11 @@ class ErrorBox extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ).tr(),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: onRetry,
+          child: const Text('Retry'),
         ),
       ],
     );

@@ -176,6 +176,7 @@ class _DanbooruInfinitePostListState
           refreshing: refreshing,
           error: widget.errors,
           data: data,
+          onRetry: () => widget.controller.refresh(),
         );
       },
     );

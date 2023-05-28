@@ -22,6 +22,7 @@ class SliverPostGrid extends ConsumerWidget {
   final bool refreshing;
   final BooruError? error;
   final List<Post> data;
+  final VoidCallback? onRetry;
 
   const SliverPostGrid({
     Key? key,
@@ -29,6 +30,7 @@ class SliverPostGrid extends ConsumerWidget {
     required this.refreshing,
     required this.error,
     required this.data,
+    required this.onRetry,
   }) : super(key: key);
 
   @override
@@ -48,9 +50,12 @@ class SliverPostGrid extends ConsumerWidget {
 
             return SliverToBoxAdapter(
               child: switch (error!) {
-                AppError _ => ErrorBox(errorMessage: message.tr()),
+                AppError _ => ErrorBox(
+                    errorMessage: message.tr(),
+                    onRetry: onRetry,
+                  ),
                 ServerError e => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Column(
                       children: [
                         Padding(
@@ -61,6 +66,12 @@ class SliverPostGrid extends ConsumerWidget {
                           ),
                         ),
                         Text(message).tr(),
+                        const SizedBox(height: 16),
+                        if (e.isServerError)
+                          ElevatedButton(
+                            onPressed: onRetry,
+                            child: const Text('Retry'),
+                          ),
                       ],
                     ),
                   ),
