@@ -17,7 +17,7 @@ import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
 
-class DanbooruProvider extends ConsumerStatefulWidget {
+class DanbooruProvider extends ConsumerWidget {
   const DanbooruProvider({
     super.key,
     required this.builder,
@@ -26,18 +26,7 @@ class DanbooruProvider extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context) builder;
 
   @override
-  ConsumerState<DanbooruProvider> createState() => _DanbooruProviderState();
-}
-
-class _DanbooruProviderState extends ConsumerState<DanbooruProvider> {
-  @override
-  void initState() {
-    super.initState();
-    ref.read(trendingTagsProvider.notifier).fetch();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
         postRepoProvider
@@ -51,7 +40,7 @@ class _DanbooruProviderState extends ConsumerState<DanbooruProvider> {
         autocompleteRepoProvider
             .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider))
       ],
-      child: Builder(builder: widget.builder),
+      child: Builder(builder: builder),
     );
   }
 }
