@@ -104,6 +104,7 @@ class DanbooruPost extends Equatable
   final String md5;
   final DateTime? lastCommentAt;
   final DateTime createdAt;
+  @override
   final int score;
   final int upScore;
   final int downScore;

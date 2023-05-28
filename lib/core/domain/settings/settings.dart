@@ -26,6 +26,7 @@ class Settings extends Equatable {
     required this.postsPerPage,
     required this.currentBooruConfigId,
     required this.downloadQuality,
+    required this.showScoresInGrid,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -63,6 +64,7 @@ class Settings extends Equatable {
         downloadQuality = json['downloadQuality'] != null
             ? DownloadQuality.values[json['downloadQuality']]
             : DownloadQuality.original,
+        showScoresInGrid = json['showScoresInGrid'] ?? false,
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
@@ -89,6 +91,7 @@ class Settings extends Equatable {
     postsPerPage: 60,
     currentBooruConfigId: -1,
     downloadQuality: DownloadQuality.original,
+    showScoresInGrid: false,
   );
 
   final String blacklistedTags;
@@ -123,6 +126,8 @@ class Settings extends Equatable {
 
   final DownloadQuality downloadQuality;
 
+  final bool showScoresInGrid;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -143,6 +148,7 @@ class Settings extends Equatable {
     int? postsPerPage,
     int? currentBooruConfigId,
     DownloadQuality? downloadQuality,
+    bool? showScoresInGrid,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -166,6 +172,7 @@ class Settings extends Equatable {
         postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
         downloadQuality: downloadQuality ?? this.downloadQuality,
+        showScoresInGrid: showScoresInGrid ?? this.showScoresInGrid,
       );
 
   Map<String, dynamic> toJson() => {
@@ -188,6 +195,7 @@ class Settings extends Equatable {
         'postsPerPage': postsPerPage,
         'currentBooruConfigId': currentBooruConfigId,
         'downloadQuality': downloadQuality.index,
+        'showScoresInGrid': showScoresInGrid,
       };
 
   @override
@@ -211,6 +219,7 @@ class Settings extends Equatable {
         postsPerPage,
         currentBooruConfigId,
         downloadQuality,
+        showScoresInGrid,
       ];
 }
 

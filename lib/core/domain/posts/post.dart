@@ -19,6 +19,7 @@ abstract class Post extends Equatable
   bool get isTranslated;
   bool get hasParentOrChildren;
   PostSource get source;
+  int get score;
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);

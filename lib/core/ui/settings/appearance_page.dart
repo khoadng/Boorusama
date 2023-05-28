@@ -136,6 +136,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ref.updateSettings(settings.copyWith(pageMode: value)),
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
+            SwitchListTile.adaptive(
+              title: const Text('Show scores'),
+              value: settings.showScoresInGrid,
+              onChanged: (value) => ref
+                  .updateSettings(settings.copyWith(showScoresInGrid: value)),
+            ),
             const SizedBox(
               height: 10,
             ),

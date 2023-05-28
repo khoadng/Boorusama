@@ -107,5 +107,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     md5: postDto.md5 ?? '',
     fileSize: postDto.fileSize ?? 0,
     format: postDto.fileUrl?.split('.').last ?? '',
+    score: postDto.score ?? 0,
   );
 }

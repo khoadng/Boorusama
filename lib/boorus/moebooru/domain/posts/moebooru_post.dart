@@ -25,6 +25,7 @@ class MoebooruPost extends Equatable
     required this.height,
     required this.md5,
     required this.fileSize,
+    required this.score,
   });
 
   @override
@@ -58,6 +59,8 @@ class MoebooruPost extends Equatable
   final String md5;
   @override
   final int fileSize;
+  @override
+  final int score;
 
   @override
   String getLink(String baseUrl) {

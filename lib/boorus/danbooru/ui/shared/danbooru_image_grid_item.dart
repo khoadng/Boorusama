@@ -11,6 +11,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
@@ -39,6 +40,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
     final isFaved =
         post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
     final artistTags = post.artistTags..remove('banned_artist');
+    final settings = ref.watch(settingsProvider);
 
     return ConditionalParentWidget(
       condition: post.isBanned,
@@ -129,6 +131,11 @@ class DanbooruImageGridItem extends ConsumerWidget {
         hasParentOrChildren: post.hasParentOrChildren,
         hasSound: post.hasSound,
         duration: post.duration,
+        score: post.isBanned
+            ? null
+            : settings.showScoresInGrid
+                ? post.score
+                : null,
       ),
     );
   }

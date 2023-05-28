@@ -25,6 +25,7 @@ class GelbooruPost extends Equatable
     required this.hasComment,
     required this.hasParentOrChildren,
     required this.fileSize,
+    required this.score,
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruPost.empty() => GelbooruPost(
@@ -42,6 +43,7 @@ class GelbooruPost extends Equatable
         hasComment: false,
         hasParentOrChildren: false,
         fileSize: 0,
+        score: 0,
       );
 
   final String _sampleImageUrl;
@@ -102,4 +104,7 @@ class GelbooruPost extends Equatable
 
   @override
   double get duration => -1;
+
+  @override
+  final int score;
 }

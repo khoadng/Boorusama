@@ -144,6 +144,7 @@ class _DanbooruInfinitePostListState
               isTranslated: post.isTranslated,
               hasComments: post.hasComment,
               hasParentOrChildren: post.hasParentOrChildren,
+              score: settings.showScoresInGrid ? post.score : null,
               image: settings.imageListType == ImageListType.masonry
                   ? BooruImage(
                       aspectRatio: post.aspectRatio,

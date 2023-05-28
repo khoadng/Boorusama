@@ -120,6 +120,7 @@ Post postDtoToPost(PostDto dto) {
     hasParentOrChildren: _boolFromString(dto.hasChildren) ||
         (dto.parentId != null && dto.parentId != 0),
     fileSize: 0,
+    score: dto.score ?? 0,
   );
 }
 

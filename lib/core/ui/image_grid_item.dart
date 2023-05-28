@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -38,6 +39,7 @@ class ImageGridItem extends StatelessWidget {
     this.hideOverlay = false,
     this.duration,
     this.hasSound = false,
+    this.score,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -54,6 +56,7 @@ class ImageGridItem extends StatelessWidget {
   final bool hideOverlay;
   final double? duration;
   final bool hasSound;
+  final int? score;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +99,31 @@ class ImageGridItem extends StatelessWidget {
                       color: isLiked ? Colors.redAccent : Colors.white,
                     );
                   },
+                ),
+              ),
+            ),
+          if (score != null)
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 32),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                child: Text(
+                  NumberFormat.compact().format(score),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: score! > 0
+                        ? Colors.green
+                        : score! < 0
+                            ? Colors.red
+                            : Colors.white,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ),

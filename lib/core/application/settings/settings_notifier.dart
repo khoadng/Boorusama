@@ -36,6 +36,7 @@ class SettingsNotifier extends Notifier<Settings> {
   Future<void> updateSettings(Settings settings) async {
     final success = await ref.read(settingsRepoProvider).save(settings);
     if (success) {
+      ref.read(loggerProvider).logI('Settings', 'Settings updated');
       state = settings;
     }
   }
