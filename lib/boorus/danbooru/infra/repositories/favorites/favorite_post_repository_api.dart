@@ -26,13 +26,12 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   @override
   Future<bool> addToFavorites(int postId) => _api
           .addToFavorites(
-        booruConfig.login,
-        booruConfig.apiKey,
-        postId,
-      )
-          .then((value) {
-        return true;
-      }).catchError((Object obj) {
+            booruConfig.login,
+            booruConfig.apiKey,
+            postId,
+          )
+          .then((value) => true)
+          .catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioError:
             final response = (obj as DioError).response;
@@ -46,14 +45,12 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   @override
   Future<bool> removeFromFavorites(int postId) => _api
           .removeFromFavorites(
-        postId,
-        booruConfig.login,
-        booruConfig.apiKey,
-        'delete',
-      )
-          .then((value) {
-        return true;
-      }).catchError((Object obj) {
+            postId,
+            booruConfig.login,
+            booruConfig.apiKey,
+          )
+          .then((value) => true)
+          .catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioError:
             final response = (obj as DioError).response;
