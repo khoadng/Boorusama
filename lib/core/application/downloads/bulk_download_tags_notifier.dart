@@ -11,7 +11,6 @@ class BulkDownloadTagsNotifier extends Notifier<List<String>> {
     return [];
   }
 
-  //FIXME: notify user when manager is not in initial state and user tries to add tags
   void addTag(String tag) {
     final currentManagerStatus = ref.read(bulkDownloadManagerStatusProvider);
 
