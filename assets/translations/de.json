@@ -13,7 +13,6 @@
             "cancel": "Abbrechen"
         }
     },
-
     "profile": {
         "profile": "Profil",
         "favorites": "Favoriten",
@@ -23,7 +22,6 @@
         "favorites_count": "Favoriten",
         "comments_count": "Kommentare"
     },
-
     "login": {
         "form": {
             "username": "Name",
@@ -41,11 +39,9 @@
         },
         "notice": "Nur Danbooru wird unterstützt."
     },
-
     "network": {
         "unavailable": "Netzwerk nicht verfügbar"
     },
-
     "tag": {
         "related": {
             "more": "Mehr",
@@ -58,7 +54,6 @@
             "popular": "Beliebt"
         }
     },
-
     "post": {
         "detail": {
             "view": "Anzeigen",
@@ -108,7 +103,6 @@
             "view_resized": "In veränderter Größe anzeigen"
         }
     },
-
     "comment": {
         "comments": "Kommentare",
         "create": {
@@ -130,16 +124,14 @@
             "other": "Kommentare"
         }
     },
-
     "explore": {
         "latest": "Neueste",
         "popular": "Beliebt",
         "curated": "Kuratiert",
-        "most_viewed": "Meist gesehen",
         "hot": "Aktuell",
+        "most_viewed": "Meist gesehen",
         "see_more": "Mehr anzeigen"
     },
-
     "search": {
         "errors": {
             "generic": "Etwas ist schief gegangen",
@@ -166,7 +158,6 @@
         "trending": "Aktuell",
         "remove_all_selected": "Ausgewählte Tags entfernen "
     },
-
     "pool": {
         "pool": "Pool",
         "pool_gallery": "Pool Gallerie",
@@ -186,13 +177,8 @@
         },
         "detail": {
             "last_updated": "Zuletzt aktualisiert"
-        },
-        "item": {
-            "one": "{} Item",
-            "other": "{} Items"
         }
     },
-
     "settings": {
         "settings": "Einstellungen",
         "app_settings": "App Einstellungen",
@@ -243,12 +229,7 @@
             "full_res_notice": "Basierend auf der größe des Bildes, wird das laden länger dauern"
         },
         "image_detail": {
-            "image_detail": "Bild-Detail",
-            "action_bar_display_behavior": {
-                "action_bar_display_behavior": "Anzeigeverhalten der Aktionsleiste",
-                "scrolling": "Bildlauf",
-                "static_at_bottom": "Unten statisch"
-            }
+            "image_detail": "Bild-Detail"
         },
         "language": {
             "language": "Sprache",
@@ -257,7 +238,7 @@
             "belarusian": "Belarussisch",
             "vietnamese": "Vietnamesisch",
             "japanese": "Japanisch",
-            "german" : "Deutsch"
+            "german": "Deutsch"
         },
         "theme": {
             "theme": "Theme",
@@ -276,7 +257,6 @@
         },
         "safe_mode": "Sicherer Modus"
     },
-
     "blacklisted_tags": {
         "remove": "Entfernen",
         "edit": "Bearbeiten",
@@ -285,20 +265,14 @@
         "updated": "Tags auf der Blacklist aktualisiert",
         "limitation_notice": "Unterstützt nur den <b>NOT</b> Operator und den <b>OR</b> Operator.\n\nBlacklisting mit Metatags funktioniert in der aktuellen Version nicht."
     },
-
     "download": {
         "download": "Download",
         "bulk_download": "Bulk download",
         "bulk_download_tag_confirmation": "Die folgenden Tags werden heruntergeladen",
         "bulk_download_save_to_folder": "In Ordner speichern",
-        "bulk_download_merge_images_to_folder": "Bilder in bestehenden Ordner zusammenführen",
-        "bulk_download_merge_explanation": "Wenn du diese Option deaktivierst, wird stattdessen ein neuer Ordner erstellt.",
         "bulk_download_total_count": "Gesamt",
         "bulk_download_done_count": "Fertig",
         "bulk_download_done_confirm": "Fertig",
-        "bulk_download_hidden_censored": "Zensierte Tags",
-        "bulk_download_hidden_banned": "Auf Wunsch des Künstlers entfernt",
-        "bulk_download_hidden": "Versteckt",
         "bulk_download_cancel": "Abbrechen",
         "bulk_download_duplicate": "Duplikat",
         "bulk_download_invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
@@ -318,15 +292,12 @@
         "bulk_download_download_more": "Mehr herunterladen",
         "open_app_settings": "Einstellungen öffnen",
         "storage_permission_explanation": "Zum Speichern von Downloaddateien ist eine Speichererlaubnis erforderlich.",
-        "alternative_method_reason": "Verwenden diese Option, wenn die Standardmethode nicht funktioniert. Diese Methode bietet auch eine bessere Benachrichtigungsunterstützung.",
-        "alternative_method_title": "Alternative Download Methode verwenden (EXPERIMENTAL)",
         "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden",
         "image_counter": {
             "one": "{} Bild herunterladen",
             "other": "{} Bilder herunterladen"
         }
     },
-
     "saved_search": {
         "saved_search": "Gespeicherte Suchen",
         "saved_search_counter": {
@@ -346,7 +317,6 @@
         "saved_search_labels": "Labels*",
         "saved_search_labels_description": "*Eine Liste von Tags zur Kategorisierung dieser Suche. Leerzeichen getrennt."
     },
-
     "favorites": {
         "counter": {
             "one": "Favorit",
@@ -354,12 +324,11 @@
         },
         "favorited": "Favorisiert",
         "favorite": "Favorit",
-        "unfavorite": "Aus Favoriten entfernen",
         "unfavorited": "Aus Favoriten entfernt",
+        "unfavorite": "Aus Favoriten entfernen",
         "failed_to_unfavorite": "Post konnte nicht aus den Favoriten entfernt werden",
         "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
     },
-
     "favorite_groups": {
         "favorite_groups": "Favorisierte Groups",
         "empty_group_notice": "Keine Favorisieren Gruppen vorhanden",
@@ -386,7 +355,6 @@
             "other": "{} Posts"
         }
     },
-
     "favorite_tags": {
         "favorites": "Favoriten",
         "or": "oder",
@@ -396,7 +364,6 @@
         "export": "Exportieren",
         "export_notification": "Tag-String in die Zwischenablage kopiert"
     },
-
     "rating": {
         "rate_request": "Diese App Bewerten",
         "rate": "Bewerten",
@@ -404,13 +371,11 @@
         "later": "Vielleicht später",
         "rationale": "Wenn dir die App gefällt, nimm dir bitte etwas Zeit, sie zu bewerten.\nEs dauert nicht länger als ein paar Sekunden und es hilft diesem Projekt sehr."
     },
-
     "sideMenu": {
         "login": "Anmeldung",
         "profile": "Profil",
         "settings": "Einstellungen"
     },
-
     "dateRange": {
         "day": "Tag",
         "week": "Woche",
