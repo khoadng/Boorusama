@@ -11,12 +11,16 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 final languages = {
-  'en': 'english',
-  'vi': 'vietnamese',
-  'ru': 'russian',
-  'be': 'belarusian',
-  'ja': 'japanese',
-  'de': 'german',
+  'en-US': 'english',
+  'vi-VN': 'vietnamese',
+  'ru-RU': 'russian',
+  'be-BY': 'belarusian',
+  'ja-JP': 'japanese',
+  'de-DE': 'german',
+  'pt-PT': 'portuguese',
+  'es-ES': 'spanish',
+  'zh-CN': 'chinese_simplified',
+  'zh-TW': 'chinese_traditional',
 };
 
 String getLanguageText(String value) {
@@ -55,7 +59,9 @@ class LanguagePage extends ConsumerWidget {
                   onChanged: (value) {
                     if (value == null) return;
                     ref.updateSettings(settings.copyWith(language: value));
-                    context.setLocale(Locale(value));
+                    final data = value.split('-');
+
+                    context.setLocale(Locale(data[0], data[1]));
                   },
                 ),
               )

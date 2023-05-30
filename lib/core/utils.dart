@@ -131,13 +131,17 @@ extension StringX on String {
 
 String dateTimeToStringTimeAgo(
   DateTime time, {
-  String locale = 'en',
+  Locale? locale,
 }) {
   final now = DateTime.now();
   final diff = now.difference(time);
   final ago = now.subtract(diff);
+  final l = locale ?? const Locale('en', 'US');
+  final str = l.countryCode != null
+      ? '${l.languageCode}-${l.countryCode}'
+      : l.languageCode;
 
-  return timeago.format(ago, locale: locale);
+  return timeago.format(ago, locale: str);
 }
 
 void showSimpleSnackBar({
