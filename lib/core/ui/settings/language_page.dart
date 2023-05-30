@@ -16,6 +16,7 @@ final languages = {
   'ru': 'russian',
   'be': 'belarusian',
   'ja': 'japanese',
+  'de': 'german',
 };
 
 String getLanguageText(String value) {

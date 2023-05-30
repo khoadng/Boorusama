@@ -255,7 +255,8 @@
             "russian" : "Tiếng Nga",
             "belarusian" : "Tiếng Belarus",
             "vietnamese" : "Tiếng Việt",
-            "japanese" : "Tiếng Nhật"
+            "japanese" : "Tiếng Nhật",
+            "german" : "Tiếng Đức"
         },
         "theme" : {
             "theme" : "Nền",

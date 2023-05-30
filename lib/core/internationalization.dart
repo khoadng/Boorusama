@@ -12,6 +12,7 @@ const supportedLocales = [
   Locale('ru', ''),
   Locale('be', ''),
   Locale('ja', ''),
+  Locale('de', ''),
 ];
 
 Future<void> ensureI18nInitialized() async {
@@ -22,6 +23,7 @@ Future<void> ensureI18nInitialized() async {
   setLocaleMessages('ru', RuMessages());
   setLocaleMessages('be', RuMessages());
   setLocaleMessages('ja', JaMessages());
+  setLocaleMessages('de', DeMessages());
 }
 
 class BooruLocalization extends StatelessWidget {

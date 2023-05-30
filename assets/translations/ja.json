@@ -256,7 +256,8 @@
             "russian" : "ロシア語",
             "belarusian" : "ベラルーシ語",
             "vietnamese" : "ベトナム語",
-            "japanese" : "日本語"
+            "japanese" : "日本語",
+            "german" : "ドイツ語"
         },
         "theme" : {
             "theme" : "テーマ",
