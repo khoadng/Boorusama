@@ -1,3 +1,380 @@
 {
-    
+    "generic": {
+        "done": "",
+        "errors": {
+            "no_data": "",
+            "unknown": ""
+        },
+        "action": {
+            "add": "",
+            "delete": "",
+            "edit": "",
+            "ok": "",
+            "cancel": ""
+        }
+    },
+    "profile": {
+        "profile": "",
+        "favorites": "",
+        "see_more": "",
+        "user_id": "",
+        "level": "",
+        "favorites_count": "",
+        "comments_count": ""
+    },
+    "login": {
+        "form": {
+            "username": "",
+            "password": "",
+            "login": "",
+            "greeting": "",
+            "cancel": "",
+            "open_web_browser": "",
+            "api_key_instruction": ""
+        },
+        "errors": {
+            "invalidUsernameOrPassword": "",
+            "missingUsername": "",
+            "missingPassword": ""
+        },
+        "notice": ""
+    },
+    "network": {
+        "unavailable": ""
+    },
+    "tag": {
+        "related": {
+            "more": "",
+            "related": "",
+            "add_to_current_search": "",
+            "open_wiki": ""
+        },
+        "explore": {
+            "new": "",
+            "popular": ""
+        }
+    },
+    "post": {
+        "detail": {
+            "view": "",
+            "slide_show": {
+                "interval": "",
+                "skip_anim": "",
+                "ok": "",
+                "cancel": ""
+            },
+            "view_in_browser": "",
+            "has_parent_notice": "",
+            "has_children_notice": "",
+            "file_details": "",
+            "size": "",
+            "resolution": "",
+            "rating": "",
+            "file_format": "",
+            "share": {
+                "source": "",
+                "booru": "",
+                "image": ""
+            },
+            "copied": "",
+            "show_original": "",
+            "show_translated": "",
+            "login_required_notice": "",
+            "open_wiki": "",
+            "add_to_blacklist": "",
+            "add_to_favorites": "",
+            "copy_and_open_saved_search": "",
+            "score": {
+                "other": ""
+            }
+        },
+        "parent_child": {
+            "children_of": ""
+        },
+        "action": {
+            "preview": "",
+            "view_comments": "",
+            "add_to_favorite_group": "",
+            "select": ""
+        },
+        "image_fullview": {
+            "view_original": "",
+            "view_resized": ""
+        }
+    },
+    "comment": {
+        "comments": "",
+        "create": {
+            "hint": "",
+            "loading": "",
+            "error": ""
+        },
+        "list": {
+            "edit": "",
+            "reply": "",
+            "reply_to": "",
+            "delete": "",
+            "noComments": "",
+            "last_updated": "",
+            "send": ""
+        },
+        "counter": {
+            "other": ""
+        }
+    },
+    "explore": {
+        "latest": "",
+        "popular": "",
+        "curated": "",
+        "hot": "",
+        "most_viewed": "",
+        "see_more": ""
+    },
+    "search": {
+        "errors": {
+            "generic": "",
+            "tag_limit": "",
+            "database_timeout": "",
+            "rate_limited": "",
+            "pagination_limit": "",
+            "max_capacity": "",
+            "down": "",
+            "access_denied": "",
+            "forbidden": "",
+            "unknown": ""
+        },
+        "hint": "",
+        "no_result": "",
+        "empty": "",
+        "search_options": "",
+        "metatags_notice": "",
+        "history": {
+            "history": "",
+            "clear": "",
+            "recent": ""
+        },
+        "trending": "",
+        "remove_all_selected": ""
+    },
+    "pool": {
+        "pool": "",
+        "pool_gallery": "",
+        "mature_banned_content": "",
+        "order": {
+            "recent": "",
+            "new": "",
+            "post_count": "",
+            "name": ""
+        },
+        "category": {
+            "series": "",
+            "collection": ""
+        },
+        "search": {
+            "hint": ""
+        },
+        "detail": {
+            "last_updated": ""
+        }
+    },
+    "settings": {
+        "settings": "",
+        "app_settings": "",
+        "appearance": "",
+        "general": "",
+        "search": "",
+        "information": "",
+        "changelog": "",
+        "general_data_source": "",
+        "infinite_scroll_warning": "",
+        "result_layout": {
+            "result_layout": "",
+            "infinite_scroll": "",
+            "pagination": ""
+        },
+        "details_style": {
+            "details_style": "",
+            "post_focused": "",
+            "image_focused": ""
+        },
+        "image_list": {
+            "image_list": "",
+            "standard": "",
+            "masonry": ""
+        },
+        "image_grid": {
+            "image_grid": "",
+            "grid_size": {
+                "grid_size": "",
+                "small": "",
+                "medium": "",
+                "large": ""
+            },
+            "image_quality": {
+                "image_quality": "",
+                "high_quality_notice": "",
+                "high": "",
+                "low": "",
+                "original": "",
+                "automatic": ""
+            },
+            "spacing": "",
+            "corner_radius": ""
+        },
+        "image_viewer": {
+            "image_viewer": "",
+            "full_res_as_default": "",
+            "full_res_notice": ""
+        },
+        "image_detail": {
+            "image_detail": ""
+        },
+        "language": {
+            "language": "語言",
+            "english": "英文",
+            "russian": "俄文",
+            "belarusian": "白俄羅斯文",
+            "vietnamese": "越南文",
+            "japanese": "日文",
+            "german": "德文",
+            "\nportuguese": "葡萄牙文",
+            "spanish": "西班牙文",
+            "chinese_simplified": "簡體中文",
+            "chinese_traditional": "繁體中文"
+        },
+        "theme": {
+            "theme": "",
+            "dark": "",
+            "light": "",
+            "amoled_dark": ""
+        },
+        "privacy": {
+            "privacy": "",
+            "send_error_data_notice": ""
+        },
+        "performance": {
+            "performance": "",
+            "posts_per_page": "",
+            "posts_per_page_explain": ""
+        },
+        "safe_mode": ""
+    },
+    "blacklisted_tags": {
+        "remove": "",
+        "edit": "",
+        "blacklisted_tags": "",
+        "load_error": "",
+        "updated": "",
+        "limitation_notice": ""
+    },
+    "download": {
+        "download": "",
+        "bulk_download": "",
+        "bulk_download_tag_confirmation": "",
+        "bulk_download_save_to_folder": "",
+        "bulk_download_total_count": "",
+        "bulk_download_done_count": "",
+        "bulk_download_done_confirm": "",
+        "bulk_download_cancel": "",
+        "bulk_download_duplicate": "",
+        "bulk_download_invalid_folder_name_error": "",
+        "bulk_download_only_download_new_images": "",
+        "bulk_download_stay_on_screen_request": "",
+        "bulk_download_folder_select_warning": "",
+        "bulk_download_select_a_folder": "",
+        "bulk_download_found_duplicate": "",
+        "bulk_download_downloaded_counter": {
+            "other": ""
+        },
+        "bulk_download_skipped_counter": {
+            "other": ""
+        },
+        "bulk_download_download_more": "",
+        "open_app_settings": "",
+        "storage_permission_explanation": "",
+        "app_restart_request": "",
+        "image_counter": {
+            "other": ""
+        }
+    },
+    "saved_search": {
+        "saved_search": "",
+        "saved_search_counter": {
+            "other": ""
+        },
+        "add_saved_search": "",
+        "saved_search_added": "",
+        "empty_saved_search": "",
+        "update_saved_search": "",
+        "saved_search_updated": "",
+        "saved_search_feed": "",
+        "saved_search_help": "",
+        "saved_search_examples": "",
+        "saved_search_try": "",
+        "saved_search_query": "",
+        "saved_search_labels": "",
+        "saved_search_labels_description": ""
+    },
+    "favorites": {
+        "counter": {
+            "other": ""
+        },
+        "favorited": "",
+        "favorite": "",
+        "unfavorited": "",
+        "unfavorite": "",
+        "failed_to_unfavorite": "",
+        "failed_to_favorite": ""
+    },
+    "favorite_groups": {
+        "favorite_groups": "",
+        "empty_group_notice": "",
+        "create_group": "",
+        "edit_group": "",
+        "add_to_group_dialog_title": "",
+        "add_to": "",
+        "create": "",
+        "private": "",
+        "view_more_popup": "",
+        "items_added_notification_popup": "",
+        "group_name": "",
+        "group_name_hint": "",
+        "all_posts": "",
+        "initial_posts_hint": "",
+        "is_private_group_option": "",
+        "create_group_cancel": "",
+        "create_group_confirm": "",
+        "max_limit_warning": "",
+        "duplicate_items_warning_notification": "",
+        "detete_confirmation": "",
+        "group_item_counter": {
+            "other": ""
+        }
+    },
+    "favorite_tags": {
+        "favorites": "",
+        "or": "",
+        "import": "",
+        "import_hint": "",
+        "cancel": "",
+        "export": "",
+        "export_notification": ""
+    },
+    "rating": {
+        "rate_request": "",
+        "rate": "",
+        "cancel": "",
+        "later": "",
+        "rationale": ""
+    },
+    "sideMenu": {
+        "login": "",
+        "profile": "",
+        "settings": ""
+    },
+    "dateRange": {
+        "day": "",
+        "week": "",
+        "month": ""
+    }
 }
