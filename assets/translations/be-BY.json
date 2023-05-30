@@ -240,7 +240,11 @@
             "belarusian": "Беларускі",
             "vietnamese": "В'етнамскі",
             "japanese": "Японский",
-            "german": "Нямецкі"
+            "german": "Нямецкі",
+            "\nportuguese": "Партугальская",
+            "spanish": "Іспанская",
+            "chinese_simplified": "Кітайская (спрошчаная)",
+            "chinese_traditional": "Кітайская (традыцыйная)"
         },
         "theme": {
             "theme": "Тэма",
