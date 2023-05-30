@@ -238,7 +238,11 @@
             "belarusian": "Belarusian",
             "vietnamese": "Vietnamese",
             "japanese": "Japanese",
-            "german": "German"
+            "german": "German",
+            "\nportuguese": "Portuguese",
+            "spanish": "Spanish",
+            "chinese_simplified": "Chinese (Simplified)",
+            "chinese_traditional": "Chinese (Traditional)"
         },
         "theme": {
             "theme": "Theme",
