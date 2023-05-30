@@ -62,7 +62,7 @@ class CommentItem extends ConsumerWidget {
             child: Text(
               '${'comment.list.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
                 comment.updatedAt,
-                locale: Localizations.localeOf(context).languageCode,
+                locale: Localizations.localeOf(context),
               )}',
               style: TextStyle(
                 color: Theme.of(context).hintColor,

@@ -38,7 +38,7 @@ class Settings extends Equatable {
         dataCollectingStatus = json['dataCollectingStatus'] != null
             ? DataCollectingStatus.values[json['dataCollectingStatus']]
             : DataCollectingStatus.allow,
-        language = json['language'] ?? 'en',
+        language = json['language'] ?? 'en-US',
         gridSize = json['gridSize'] != null
             ? GridSize.values[json['gridSize']]
             : GridSize.normal,
@@ -75,7 +75,7 @@ class Settings extends Equatable {
     safeMode: true,
     blacklistedTags: '',
     themeMode: ThemeMode.amoledDark,
-    language: 'en',
+    language: 'en-US',
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
     downloadPath: null,

@@ -6,33 +6,32 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:timeago/timeago.dart';
 
 const supportedLocales = [
-  //TODO: should parse from translation files instead of hardcoding
-  Locale('en', ''),
-  Locale('vi', ''),
-  Locale('ru', ''),
-  Locale('be', ''),
-  Locale('ja', ''),
-  Locale('de', ''),
-  Locale('fr', ''),
-  Locale('es', ''),
-  Locale('pt', ''),
-  Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
-  Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+  Locale('en', 'US'), // English (United States)
+  Locale('vi', 'VN'), // Vietnamese (Vietnam)
+  Locale('ru', 'RU'), // Russian (Russia)
+  Locale('be', 'BY'), // Belarusian (Belarus)
+  Locale('ja', 'JP'), // Japanese (Japan)
+  Locale('de', 'DE'), // German (Germany)
+  Locale('fr', 'FR'), // French (France)
+  Locale('es', 'ES'), // Spanish (Spain)
+  Locale('pt', 'PT'), // Portuguese (Portugal)
+  Locale('zh', 'CN'), // Simplified Chinese
+  Locale('zh', 'TW'), // Traditional Chinese
 ];
 
 Future<void> ensureI18nInitialized() async {
   await EasyLocalization.ensureInitialized();
 
   //TODO: shouldn't hardcode language.
-  setLocaleMessages('vi', ViMessages());
-  setLocaleMessages('ru', RuMessages());
-  setLocaleMessages('be', RuMessages());
-  setLocaleMessages('ja', JaMessages());
-  setLocaleMessages('de', DeMessages());
-  setLocaleMessages('pt', PtBrMessages());
-  setLocaleMessages('es', EsMessages());
-  setLocaleMessages('zh_hans', ZhCnMessages());
-  setLocaleMessages('zh_hant', ZhMessages());
+  setLocaleMessages('vi-VN', ViMessages());
+  setLocaleMessages('ru-RU', RuMessages());
+  setLocaleMessages('be-BY', RuMessages());
+  setLocaleMessages('ja-JP', JaMessages());
+  setLocaleMessages('de-DE', DeMessages());
+  setLocaleMessages('pt-PT', PtBrMessages());
+  setLocaleMessages('es-ES', EsMessages());
+  setLocaleMessages('zh_CN', ZhCnMessages());
+  setLocaleMessages('zh_TW', ZhMessages());
 }
 
 class BooruLocalization extends StatelessWidget {
@@ -46,10 +45,9 @@ class BooruLocalization extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EasyLocalization(
-      useOnlyLangCode: true,
       supportedLocales: supportedLocales,
       path: 'assets/translations',
-      fallbackLocale: const Locale('en', ''),
+      fallbackLocale: const Locale('en', 'US'),
       useFallbackTranslations: true,
       child: child,
     );

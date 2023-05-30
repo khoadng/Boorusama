@@ -85,7 +85,7 @@ class PoolDetailPage extends ConsumerWidget {
               subtitle: Text(
                 '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
                   pool.updatedAt,
-                  locale: Localizations.localeOf(context).languageCode,
+                  locale: Localizations.localeOf(context),
                 )}',
               ),
             ),
