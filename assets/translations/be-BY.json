@@ -83,12 +83,7 @@
             "open_wiki": "Адкрыць wiki",
             "add_to_blacklist": "Дадаць у чорны спіс",
             "add_to_favorites": "Add to favorites",
-            "copy_and_open_saved_search": "Copy and open saved search",
-            "score": {
-                "one": "Адзнака",
-                "few": "",
-                "other": "Адзнакі"
-            }
+            "copy_and_open_saved_search": "Copy and open saved search"
         },
         "parent_child": {
             "children_of": "Дачэрны для"
@@ -119,11 +114,6 @@
             "noComments": "Яшчэ няма каментарыяў",
             "last_updated": "Абноўлена",
             "send": "Адправіць"
-        },
-        "counter": {
-            "one": "Каментарый",
-            "few": "",
-            "other": "Каментарыі"
         }
     },
     "explore": {
@@ -287,33 +277,13 @@
         "bulk_download_folder_select_warning": "Прылажэнне можа захоўваць файлы толькі ў публічныя папкі <b>({0})</b> у Android 11+. <div>SD карты не падтрымліваюцца.</div> <div>Калі ласка, выберыце іншае размяшчэнне.</div> <div>Версія гэтага ўстройства - {1}.</div>",
         "bulk_download_select_a_folder": "Выберыце папку",
         "bulk_download_found_duplicate": "Знойдзена {} малюнкаў з аднолькавымі імёнамі. Яны будуць прапушчаны.",
-        "bulk_download_downloaded_counter": {
-            "one": "{} малюнак скачан",
-            "few": "",
-            "other": "{} малюнкаў скачана"
-        },
-        "bulk_download_skipped_counter": {
-            "one": "{} малюнак прапушчан",
-            "few": "",
-            "other": "{} малюнкаў прапушчано"
-        },
         "bulk_download_download_more": "Скачаць больш",
         "open_app_settings": "Адкрыць настройкі",
         "storage_permission_explanation": "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
-        "app_restart_request": "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу",
-        "image_counter": {
-            "one": "Скачаць {} малюнак",
-            "few": "",
-            "other": "Скачаць {} малюнкаў"
-        }
+        "app_restart_request": "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу"
     },
     "saved_search": {
         "saved_search": "Запыты",
-        "saved_search_counter": {
-            "one": "{} запыт",
-            "few": "",
-            "other": "{} запыты"
-        },
         "add_saved_search": "Дабавіць запыт",
         "saved_search_added": "Запыт быў дабаўлен",
         "empty_saved_search": "У вас няма ніводнага захаванага запыта",
@@ -328,11 +298,6 @@
         "saved_search_labels_description": "*A list of tags to help categorize this search. Space delimited."
     },
     "favorites": {
-        "counter": {
-            "one": "Дададзена у любімыя",
-            "few": "",
-            "other": "Дададзена у любімыя"
-        },
         "favorited": "У любімых",
         "favorite": "Любімае",
         "unfavorited": "Не ў любімых",
@@ -360,12 +325,7 @@
         "create_group_confirm": "OK",
         "max_limit_warning": "Member can only create 10 favorite groups",
         "duplicate_items_warning_notification": "The entered posts already exist in the group",
-        "detete_confirmation": "Are you sure you want to delete this favorite group",
-        "group_item_counter": {
-            "one": "{} item",
-            "few": "",
-            "other": "{} items"
-        }
+        "detete_confirmation": "Are you sure you want to delete this favorite group"
     },
     "favorite_tags": {
         "favorites": "Любімае",
