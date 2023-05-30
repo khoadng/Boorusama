@@ -59,7 +59,7 @@ class InformationSection extends StatelessWidget {
                 Text(
                   dateTimeToStringTimeAgo(
                     post.createdAt,
-                    locale: Localizations.localeOf(context).languageCode,
+                    locale: Localizations.localeOf(context),
                   ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
