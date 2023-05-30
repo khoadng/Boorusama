@@ -13,6 +13,11 @@ const supportedLocales = [
   Locale('be', ''),
   Locale('ja', ''),
   Locale('de', ''),
+  Locale('fr', ''),
+  Locale('es', ''),
+  Locale('pt', ''),
+  Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+  Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
 ];
 
 Future<void> ensureI18nInitialized() async {
@@ -24,6 +29,10 @@ Future<void> ensureI18nInitialized() async {
   setLocaleMessages('be', RuMessages());
   setLocaleMessages('ja', JaMessages());
   setLocaleMessages('de', DeMessages());
+  setLocaleMessages('pt', PtBrMessages());
+  setLocaleMessages('es', EsMessages());
+  setLocaleMessages('zh_hans', ZhCnMessages());
+  setLocaleMessages('zh_hant', ZhMessages());
 }
 
 class BooruLocalization extends StatelessWidget {
