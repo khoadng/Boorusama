@@ -175,9 +175,6 @@
         },
         "detail": {
             "last_updated": "最終更新"
-        },
-        "item": {
-            "other": ""
         }
     },
     "settings": {
@@ -230,12 +227,7 @@
             "full_res_notice": ""
         },
         "image_detail": {
-            "image_detail": "",
-            "action_bar_display_behavior": {
-                "action_bar_display_behavior": "",
-                "scrolling": "",
-                "static_at_bottom": ""
-            }
+            "image_detail": ""
         },
         "language": {
             "language": "言語",
@@ -276,14 +268,9 @@
         "bulk_download": "",
         "bulk_download_tag_confirmation": "",
         "bulk_download_save_to_folder": "",
-        "bulk_download_merge_images_to_folder": "",
-        "bulk_download_merge_explanation": "",
         "bulk_download_total_count": "",
         "bulk_download_done_count": "",
         "bulk_download_done_confirm": "",
-        "bulk_download_hidden_censored": "",
-        "bulk_download_hidden_banned": "",
-        "bulk_download_hidden": "",
         "bulk_download_cancel": "キャンセル",
         "bulk_download_duplicate": "",
         "bulk_download_invalid_folder_name_error": "",
@@ -301,8 +288,6 @@
         "bulk_download_download_more": "",
         "open_app_settings": "設定を開く",
         "storage_permission_explanation": "",
-        "alternative_method_reason": "",
-        "alternative_method_title": "",
         "app_restart_request": "",
         "image_counter": {
             "other": ""
