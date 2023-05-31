@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
+
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
@@ -25,7 +28,7 @@ class SourceSection extends StatelessWidget {
             horizontal: 12,
           ),
           child: Text(
-            'Source',
+            'post.detail.source_label'.tr(),
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   color: Theme.of(context).hintColor,
                   fontSize: 16,
