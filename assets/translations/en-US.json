@@ -22,23 +22,6 @@
         "favorites_count": "Favorites",
         "comments_count": "Comments"
     },
-    "login": {
-        "form": {
-            "username": "Name",
-            "password": "API Key",
-            "login": "Login",
-            "greeting": "Hi there!",
-            "cancel": "Cancel",
-            "open_web_browser": "Open web browser",
-            "api_key_instruction": "1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Invalid username or API key",
-            "missingUsername": "Please enter your username",
-            "missingPassword": "Please enter your API key"
-        },
-        "notice": "Only support Danbooru."
-    },
     "network": {
         "unavailable": "Network unavailable"
     },
