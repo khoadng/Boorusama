@@ -71,7 +71,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.appearance').tr(),
+          title: const Text('settings.appearance.appearance').tr(),
         ),
         body: child,
       ),
@@ -137,7 +137,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
             SwitchListTile.adaptive(
-              title: const Text('Show scores'),
+              title: const Text('settings.appearance.appearance').tr(),
               value: settings.showScoresInGrid,
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
