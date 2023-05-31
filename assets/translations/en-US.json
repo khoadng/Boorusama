@@ -236,7 +236,11 @@
             "clear_cache": "Clear",
             "cache_size_info": "{0} Mb in {1} files"
         },
-        "safe_mode": "Safe Mode"
+        "safe_mode": "Safe Mode",
+        "debug_logs": {
+            "debug_logs": "Debug logs",
+            "logs_copied": "Logs copied to clipboard"
+        }
     },
     "blacklisted_tags": {
         "remove": "Remove",
