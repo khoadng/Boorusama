@@ -365,6 +365,18 @@
         "month": "Month"
     },
     "booru": {
-        "addNew": "Add new booru"
+        "addNew": "Add new booru",
+        "add_booru_source_title": "Add a source, leave the login details empty to be anonymous",
+        "add_random_booru_warning": "This booru is not offically supported yet. It probally won't work.",
+        "booru_engine_input_label": "Booru engine (*)",
+        "config_name_label": "Config Name (*)",
+        "site_url_label": "Site URL",
+        "login_name_label": "Login",
+        "password_api_key_label": "API key",
+        "password_hashed_label": "Password Hashed (readonly)",
+        "password_label": "Password",
+        "content_filtering_label": "Content filtering",
+        "hide_deleted_label": "Hide deleted posts",
+        "config_booru_confirm": "OK"
     }
 }
