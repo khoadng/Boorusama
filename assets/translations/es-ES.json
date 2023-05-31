@@ -2,16 +2,7 @@
     "settings": {
         "language": {
             "language": "Idioma",
-            "english": "Inglés",
-            "russian": "Ruso",
-            "belarusian": "Bielorruso",
-            "vietnamese": "Vietnamita",
-            "japanese": "Japonés",
-            "german": "Alemán",
-            "portuguese": "Portugués",
-            "spanish": "Español",
-            "chinese_simplified": "Chino simplificado",
-            "chinese_traditional": "Chino tradicional"
+            "language_name": "Español"
         }
     }
 }
