@@ -367,9 +367,11 @@
         "rationale": "If you like the app, please take a little bit of your time to review it.\nIt wouldn't take more than a few seconds and it really helps this project."
     },
     "sideMenu": {
-        "login": "Login",
-        "profile": "Profile",
-        "settings": "Settings"
+        "settings": "Settings",
+        "manage_boorus": "Manage boorus",
+        "your_bookmarks": "Your bookmarks",
+        "your_blacklist": "Your blacklist",
+        "bulk_download": "Bulk download"
     },
     "dateRange": {
         "day": "Day",
