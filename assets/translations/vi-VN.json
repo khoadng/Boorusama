@@ -360,7 +360,7 @@
     },
     "sideMenu": {
         "settings": "Cài đặt",
-        "manage_boorus": "Quản lí Booru"
+        "manageBoorus": "Quản lí Booru"
     },
     "dateRange": {
         "day": "Ngày",
