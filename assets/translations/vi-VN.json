@@ -230,7 +230,17 @@
             "clear_cache": "Dọn",
             "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
         },
-        "safe_mode": "18+ mode"
+        "safe_mode": "18+ mode",
+        "download": {
+            "path": "Đường dẫn tới nơi lưu ảnh",
+            "select_folder_label": "Chọn thư mục",
+            "download_quality": "Chất lượng ảnh tải xuống",
+            "quality": {
+                "original": "Gốc",
+                "sample": "Mẫu",
+                "preview": "Xem trước"
+            }
+        }
     },
     "blacklisted_tags": {
         "remove": "Xóa",
@@ -268,6 +278,9 @@
         "app_restart_request": "Cần thoát app để thay đổi được áp dụng",
         "image_counter": {
             "other": "Tải {} ảnh"
+        },
+        "bulk": {
+            "all_done_notification_message": "Đã tải hết tất cả ảnh"
         }
     },
     "saved_search": {
