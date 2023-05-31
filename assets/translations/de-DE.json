@@ -367,8 +367,6 @@
         "rationale": "Wenn dir die App gefällt, nimm dir bitte etwas Zeit, sie zu bewerten.\nEs dauert nicht länger als ein paar Sekunden und es hilft diesem Projekt sehr."
     },
     "sideMenu": {
-        "login": "Anmeldung",
-        "profile": "Profil",
         "settings": "Einstellungen"
     },
     "dateRange": {
