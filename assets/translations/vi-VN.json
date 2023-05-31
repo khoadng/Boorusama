@@ -326,7 +326,10 @@
     },
     "sideMenu": {
         "settings": "Cài đặt",
-        "manage_boorus": "Quản lí Booru"
+        "manage_boorus": "Quản lí Booru",
+        "your_bookmarks": "Đánh dấu",
+        "your_blacklist": "Sổ đen",
+        "bulk_download": "Tải hàng loạt"
     },
     "dateRange": {
         "day": "Ngày",
