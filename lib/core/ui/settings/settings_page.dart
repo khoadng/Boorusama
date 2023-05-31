@@ -104,7 +104,8 @@ class SettingsPage extends ConsumerWidget {
                             onTap: () => goToChanglog(context),
                           ),
                           ListTile(
-                            title: const Text('Debug Logs'),
+                            title: const Text('settings.debug_logs.debug_logs')
+                                .tr(),
                             leading: const FaIcon(FontAwesomeIcons.bug),
                             onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute(

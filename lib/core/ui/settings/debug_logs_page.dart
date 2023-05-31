@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,13 +29,13 @@ class DebugLogsPage extends ConsumerWidget {
 
       showSimpleSnackBar(
         context: context,
-        content: const Text('Logs copied to clipboard'),
+        content: const Text('settings.debug_logs.logs_copied').tr(),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Debug Logs'),
+        title: const Text('settings.debug_logs.debug_logs').tr(),
         actions: [
           IconButton(
             icon: const Icon(Icons.copy),
