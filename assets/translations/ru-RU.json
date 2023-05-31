@@ -225,16 +225,7 @@
         },
         "language": {
             "language": "Язык",
-            "english": "Английский",
-            "russian": "Русский",
-            "belarusian": "Белорусский",
-            "vietnamese": "Вьетнамский",
-            "japanese": "Японский",
-            "german": "Немецкий",
-            "portuguese": "Португальский",
-            "spanish": "Испанский",
-            "chinese_simplified": "Китайский (упрощенный)",
-            "chinese_traditional": "Китайский (традиционный)"
+            "language_name": "Русский"
         },
         "theme": {
             "theme": "Тема",
