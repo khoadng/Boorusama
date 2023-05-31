@@ -233,16 +233,7 @@
         },
         "language": {
             "language": "Sprache",
-            "english": "Englisch",
-            "russian": "Russisch",
-            "belarusian": "Belarussisch",
-            "vietnamese": "Vietnamesisch",
-            "japanese": "Japanisch",
-            "german": "Deutsch",
-            "portuguese": "Portugiesisch",
-            "spanish": "Spanisch",
-            "chinese_simplified": "Chinesisch (vereinfacht)",
-            "chinese_traditional": "Chinesisch (traditionell)"
+            "language_name": "Deutsch"
         },
         "theme": {
             "theme": "Theme",
