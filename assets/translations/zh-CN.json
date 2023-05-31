@@ -1,3 +1,8 @@
 {
-    
+    "settings": {
+        "language": {
+            "language": "语言",
+            "language_name": "简体中文"
+        }
+    }
 }

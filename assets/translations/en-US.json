@@ -11,7 +11,8 @@
             "edit": "Edit",
             "ok": "OK",
             "cancel": "Cancel"
-        }
+        },
+        "view": "View"
     },
     "profile": {
         "profile": "Profile",
@@ -21,23 +22,6 @@
         "level": "Level",
         "favorites_count": "Favorites",
         "comments_count": "Comments"
-    },
-    "login": {
-        "form": {
-            "username": "Name",
-            "password": "API Key",
-            "login": "Login",
-            "greeting": "Hi there!",
-            "cancel": "Cancel",
-            "open_web_browser": "Open web browser",
-            "api_key_instruction": "1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Invalid username or API key",
-            "missingUsername": "Please enter your username",
-            "missingPassword": "Please enter your API key"
-        },
-        "notice": "Only support Danbooru."
     },
     "network": {
         "unavailable": "Network unavailable"
@@ -87,7 +71,9 @@
             "score": {
                 "one": "Point",
                 "other": "Points"
-            }
+            },
+            "source_label": "Source",
+            "related_posts": "Related posts"
         },
         "parent_child": {
             "children_of": "Children of"
@@ -182,7 +168,10 @@
     "settings": {
         "settings": "Settings",
         "app_settings": "App Settings",
-        "appearance": "Appearance",
+        "appearance": {
+            "appearance": "Appearance",
+            "show_scores": "Show scores"
+        },
         "general": "General",
         "search": "Search",
         "information": "Information",
@@ -233,12 +222,7 @@
         },
         "language": {
             "language": "Language",
-            "english": "English",
-            "russian": "Russian",
-            "belarusian": "Belarusian",
-            "vietnamese": "Vietnamese",
-            "japanese": "Japanese",
-            "german": "German"
+            "language_name": "English"
         },
         "theme": {
             "theme": "Theme",
@@ -253,9 +237,26 @@
         "performance": {
             "performance": "Performance",
             "posts_per_page": "Posts per page",
-            "posts_per_page_explain": "Number of thumbnails per page"
+            "posts_per_page_explain": "Number of thumbnails per page",
+            "cache_size": "Cache size",
+            "clear_cache": "Clear",
+            "cache_size_info": "{0} Mb in {1} files"
         },
-        "safe_mode": "Safe Mode"
+        "safe_mode": "Safe Mode",
+        "debug_logs": {
+            "debug_logs": "Debug logs",
+            "logs_copied": "Logs copied to clipboard"
+        },
+        "download": {
+            "path": "Download path",
+            "select_a_folder": "Select a folder",
+            "quality": "Download image quality",
+            "qualities": {
+                "original": "Original",
+                "sample": "Sample",
+                "preview": "Preview"
+            }
+        }
     },
     "blacklisted_tags": {
         "remove": "Remove",
@@ -296,6 +297,9 @@
         "image_counter": {
             "one": "Download {} image",
             "other": "Download {} images"
+        },
+        "bulk": {
+            "all_done_notification_message": "All downloads are done"
         }
     },
     "saved_search": {
@@ -372,13 +376,36 @@
         "rationale": "If you like the app, please take a little bit of your time to review it.\nIt wouldn't take more than a few seconds and it really helps this project."
     },
     "sideMenu": {
-        "login": "Login",
-        "profile": "Profile",
-        "settings": "Settings"
+        "settings": "Settings",
+        "manage_boorus": "Manage boorus",
+        "your_bookmarks": "Your bookmarks",
+        "your_blacklist": "Your blacklist",
+        "bulk_download": "Bulk download"
     },
     "dateRange": {
         "day": "Day",
         "week": "Week",
         "month": "Month"
+    },
+    "booru": {
+        "addNew": "Add new booru",
+        "add_booru_source_title": "Add a source, leave the login details empty to be anonymous",
+        "add_random_booru_warning": "This booru is not offically supported yet. It probally won't work.",
+        "booru_engine_input_label": "Booru engine (*)",
+        "config_name_label": "Config Name (*)",
+        "site_url_label": "Site URL",
+        "login_name_label": "Login",
+        "password_api_key_label": "API key",
+        "password_hashed_label": "Password Hashed (readonly)",
+        "password_label": "Password",
+        "content_filtering_label": "Content filtering",
+        "hide_deleted_label": "Hide deleted posts",
+        "config_booru_confirm": "OK"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Blacklist",
+            "empty_blacklist": "No blacklisted tags"
+        }
     }
 }

@@ -22,23 +22,6 @@
         "favorites_count": "Lượt yêu thích",
         "comments_count": "Tổng số bình luận"
     },
-    "login": {
-        "form": {
-            "username": "Tài khoản",
-            "password": "API Key",
-            "login": "Đăng nhập",
-            "greeting": "Hi!",
-            "cancel": "Hủy",
-            "open_web_browser": "Mở trình duyệt",
-            "api_key_instruction": "1. Đăng nhập vào tài khoản.\n2. Vào profile\n3. Tìm và copy API key vào form"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Tài khoản hoặc API key không chính xác",
-            "missingUsername": "Chưa nhập tên tài khoản",
-            "missingPassword": "Chưa nhập API key"
-        },
-        "notice": "Chỉ hỗ trợ Danbooru."
-    },
     "network": {
         "unavailable": "Không có mạng"
     },
@@ -86,16 +69,17 @@
             "copy_and_open_saved_search": "Copy và mở saved search",
             "score": {
                 "other": "Điểm"
-            }
+            },
+            "source_label": "Nguồn",
+            "related_posts": "Ảnh liên quan"
         },
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
         },
         "action": {
-            "preview": "Preview",
-            "view_comments": "View comments",
-            "add_to_favorite_group": "Add to favorite group",
-            "select": "Select"
+            "preview": "Xem nhanh",
+            "view_comments": "Xem bình luận",
+            "select": "Chọn"
         },
         "image_fullview": {
             "view_original": "Xem ảnh gốc",
@@ -135,13 +119,7 @@
             "generic": "Có lỗi xảy ra",
             "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
             "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
-            "rate_limited": "You're being rate limited. Please try again later",
-            "pagination_limit": "You're have reached pagination limit. It means you cannot scroll more",
-            "max_capacity": "Server is under heavy load and cannot handle the request be, please try again later",
-            "down": "Server is downn. please try again later",
-            "access_denied": "Access denied",
-            "forbidden": "Authentication failed",
-            "unknown": "Unknown server error, please report this issue to the developer"
+            "rate_limited": "You're being rate limited. Please try again later"
         },
         "hint": "Tìm...",
         "no_result": "Không tìm được kết quả phù hợp.",
@@ -180,7 +158,10 @@
     "settings": {
         "settings": "Cài đặt",
         "app_settings": "Cài đặt ứng dụng",
-        "appearance": "Hiển thị",
+        "appearance": {
+            "appearance": "Hiển thị",
+            "show_scores": "Hiện điểm"
+        },
         "general": "Chung",
         "search": "Tìm kiếm",
         "information": "Thông tin",
@@ -231,12 +212,7 @@
         },
         "language": {
             "language": "Ngôn ngữ",
-            "english": "Tiếng Anh",
-            "russian": "Tiếng Nga",
-            "belarusian": "Tiếng Belarus",
-            "vietnamese": "Tiếng Việt",
-            "japanese": "Tiếng Nhật",
-            "german": "Tiếng Đức"
+            "language_name": "Tiếng Việt"
         },
         "theme": {
             "theme": "Nền",
@@ -249,11 +225,24 @@
             "send_error_data_notice": "Tự động gửi lỗi cho dev"
         },
         "performance": {
-            "performance": "Performance",
-            "posts_per_page": "Posts per page",
-            "posts_per_page_explain": "Number of thumbnails per page"
+            "performance": "Hiệu năng",
+            "posts_per_page": "Lượng bài đăng ở mỗi trang",
+            "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
+            "cache_size": "Dung lượng cache",
+            "clear_cache": "Dọn",
+            "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
         },
-        "safe_mode": "18+ mode"
+        "safe_mode": "18+ mode",
+        "download": {
+            "path": "Đường dẫn tới nơi lưu ảnh",
+            "select_a_folder": "Chọn thư mục",
+            "quality": "Chất lượng ảnh tải xuống",
+            "qualities": {
+                "original": "Gốc",
+                "sample": "Mẫu",
+                "preview": "Xem trước"
+            }
+        }
     },
     "blacklisted_tags": {
         "remove": "Xóa",
@@ -291,6 +280,9 @@
         "app_restart_request": "Cần thoát app để thay đổi được áp dụng",
         "image_counter": {
             "other": "Tải {} ảnh"
+        },
+        "bulk": {
+            "all_done_notification_message": "Đã tải hết tất cả ảnh"
         }
     },
     "saved_search": {
@@ -323,29 +315,13 @@
         "failed_to_favorite": "Xảy ra lỗi khi xoá yêu thích ảnh này"
     },
     "favorite_groups": {
-        "favorite_groups": "Favorite Groups",
-        "empty_group_notice": "No favorite groups",
-        "create_group": "Create group",
-        "edit_group": "Edit group",
-        "add_to_group_dialog_title": "Add to favorite group",
-        "add_to": "Add to",
-        "create": "Create",
+        "add_to": "Thêm vào",
+        "create": "Tạo",
         "private": "Private",
-        "view_more_popup": "View",
-        "items_added_notification_popup": "{0} posts added to {1}",
-        "group_name": "Group name",
-        "group_name_hint": "New group",
-        "all_posts": "Posts",
-        "initial_posts_hint": "Enter ID numbers, separated by spaces (Optional)",
-        "is_private_group_option": "Private group",
-        "create_group_cancel": "Cancel",
-        "create_group_confirm": "OK",
-        "max_limit_warning": "Member can only create 10 favorite groups",
-        "duplicate_items_warning_notification": "The entered posts already exist in the group",
-        "detete_confirmation": "Are you sure you want to delete this favorite group",
-        "group_item_counter": {
-            "other": "{} item"
-        }
+        "view_more_popup": "Xem",
+        "items_added_notification_popup": "Đã thêm {0} ảnh vào  {1}",
+        "create_group_cancel": "Huỷ",
+        "create_group_confirm": "OK"
     },
     "favorite_tags": {
         "favorites": "Yêu thích",
@@ -364,13 +340,24 @@
         "rationale": "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
     },
     "sideMenu": {
-        "login": "Đăng nhập",
-        "profile": "Hồ sơ",
-        "settings": "Cài đặt"
+        "settings": "Cài đặt",
+        "manage_boorus": "Quản lí Booru",
+        "your_bookmarks": "Đánh dấu",
+        "your_blacklist": "Sổ đen",
+        "bulk_download": "Tải hàng loạt"
     },
     "dateRange": {
         "day": "Ngày",
         "week": "Tuần",
         "month": "Tháng"
+    },
+    "booru": {
+        "addNew": "Tạo thêm booru"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Sổ đen",
+            "empty_blacklist": "Sổ đen trống"
+        }
     }
 }

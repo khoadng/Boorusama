@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
@@ -52,7 +51,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Download path'.toUpperCase(),
+                'settings.download.path'.tr().toUpperCase(),
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontWeight: FontWeight.w800,
@@ -81,7 +80,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                             overflow: TextOverflow.fade,
                           )
                         : Text(
-                            'download.bulk_download_select_a_folder'.tr(),
+                            'settings.download.select_a_folder'.tr(),
                             overflow: TextOverflow.fade,
                             style: Theme.of(context)
                                 .textTheme
@@ -116,12 +115,13 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                     )
                   : const SizedBox.shrink(),
             SettingsTile<DownloadQuality>(
-              title: const Text('Download image quality'),
+              title: const Text('settings.download.quality').tr(),
               selectedOption: settings.downloadQuality,
               items: DownloadQuality.values,
               onChanged: (value) =>
                   ref.updateSettings(settings.copyWith(downloadQuality: value)),
-              optionBuilder: (value) => Text(value.name.sentenceCase),
+              optionBuilder: (value) =>
+                  Text('settings.download.qualities.${value.name}').tr(),
             ),
           ],
         ),

@@ -1,3 +1,8 @@
 {
-    
+    "settings": {
+        "language": {
+            "language": "Idioma",
+            "language_name": "Português"
+        }
+    }
 }

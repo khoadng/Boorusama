@@ -62,7 +62,8 @@ class SettingsPage extends ConsumerWidget {
                             leading: const FaIcon(
                               FontAwesomeIcons.paintRoller,
                             ),
-                            title: const Text('settings.appearance').tr(),
+                            title: const Text('settings.appearance.appearance')
+                                .tr(),
                             onTap: () => goToSettingsAppearance(context, this),
                           ),
                           ListTile(
@@ -104,7 +105,8 @@ class SettingsPage extends ConsumerWidget {
                             onTap: () => goToChanglog(context),
                           ),
                           ListTile(
-                            title: const Text('Debug Logs'),
+                            title: const Text('settings.debug_logs.debug_logs')
+                                .tr(),
                             leading: const FaIcon(FontAwesomeIcons.bug),
                             onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -174,7 +176,8 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                       ListTile(
                         textColor: index == 1 ? Colors.white : null,
                         tileColor: index == 1 ? Colors.grey[800] : null,
-                        title: const Text('settings.appearance').tr(),
+                        title:
+                            const Text('settings.appearance.appearance').tr(),
                         onTap: () => currentTab.value = 1,
                       ),
                       ListTile(

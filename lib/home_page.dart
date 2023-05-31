@@ -74,11 +74,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             context: context,
             duration: const Duration(seconds: 3),
             action: SnackBarAction(
-              label: 'View',
+              label: 'generic.view'.tr(),
               onPressed: () => goToBulkDownloadPage(context, [], ref: ref),
             ),
             behavior: SnackBarBehavior.fixed,
-            content: const Text('All downloads are done'),
+            content:
+                const Text('download.bulk.all_done_notification_message').tr(),
           );
         }
       },

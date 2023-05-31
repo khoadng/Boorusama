@@ -88,7 +88,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   ListTile(
                     textColor: index == 1 ? Colors.white : null,
                     tileColor: index == 1 ? Colors.grey[800] : null,
-                    title: const Text('settings.appearance').tr(),
+                    title: const Text('settings.appearance.appearance').tr(),
                     onTap: () => currentTab.value = 1,
                   ),
                   ListTile(

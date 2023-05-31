@@ -22,23 +22,6 @@
         "favorites_count": "Favoriten",
         "comments_count": "Kommentare"
     },
-    "login": {
-        "form": {
-            "username": "Name",
-            "password": "API Schlüssel",
-            "login": "Anmeldename",
-            "greeting": "Hallo!",
-            "cancel": "Abbrechen",
-            "open_web_browser": "Webbrowser öffnen",
-            "api_key_instruction": "1. Melde dich mit deinem Account an.\n2. Navigiere zu deinem Profil\n3. Finde und kopiere deinen API Schlüssel in das Anmeldeformular \n4. ???\n5. Profitiere"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Ungültiger Nutzername oder API Schlüssel",
-            "missingUsername": "Bitte gib deinen Benutzernamen ein",
-            "missingPassword": "Bitte gib deinen API Schlüssel ein"
-        },
-        "notice": "Nur Danbooru wird unterstützt."
-    },
     "network": {
         "unavailable": "Netzwerk nicht verfügbar"
     },
@@ -233,12 +216,7 @@
         },
         "language": {
             "language": "Sprache",
-            "english": "Englisch",
-            "russian": "Russisch",
-            "belarusian": "Belarussisch",
-            "vietnamese": "Vietnamesisch",
-            "japanese": "Japanisch",
-            "german": "Deutsch"
+            "language_name": "Deutsch"
         },
         "theme": {
             "theme": "Theme",
@@ -372,8 +350,6 @@
         "rationale": "Wenn dir die App gefällt, nimm dir bitte etwas Zeit, sie zu bewerten.\nEs dauert nicht länger als ein paar Sekunden und es hilft diesem Projekt sehr."
     },
     "sideMenu": {
-        "login": "Anmeldung",
-        "profile": "Profil",
         "settings": "Einstellungen"
     },
     "dateRange": {

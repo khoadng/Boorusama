@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -15,14 +16,14 @@ class BlacklistedTagPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blacklist'),
+        title: const Text('blacklist.manage.title').tr(),
       ),
       body: Builder(
         builder: (context) {
           final tags = ref.watch(globalBlacklistedTagsProvider);
           if (tags.isEmpty) {
-            return const Center(
-              child: Text('No blacklisted tags'),
+            return Center(
+              child: const Text('blacklist.manage.empty_blacklist').tr(),
             );
           }
           return ListView.builder(

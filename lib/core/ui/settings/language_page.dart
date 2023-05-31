@@ -10,23 +10,6 @@ import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
-final languages = {
-  'en-US': 'english',
-  'vi-VN': 'vietnamese',
-  'ru-RU': 'russian',
-  'be-BY': 'belarusian',
-  'ja-JP': 'japanese',
-  'de-DE': 'german',
-  'pt-PT': 'portuguese',
-  'es-ES': 'spanish',
-  'zh-CN': 'chinese_simplified',
-  'zh-TW': 'chinese_traditional',
-};
-
-String getLanguageText(String value) {
-  return 'settings.language.${languages[value]}';
-}
-
 class LanguagePage extends ConsumerWidget {
   const LanguagePage({
     super.key,
@@ -38,6 +21,7 @@ class LanguagePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final supportedLanguages = ref.watch(supportedLanguagesProvider);
 
     return ConditionalParentWidget(
       condition: hasAppBar,
@@ -49,17 +33,23 @@ class LanguagePage extends ConsumerWidget {
       ),
       child: SafeArea(
         child: Column(
-          children: languages.keys
+          children: supportedLanguages
+              .map((e) => e.name)
               .map(
                 (e) => RadioListTile<String>(
                   activeColor: Theme.of(context).colorScheme.primary,
                   groupValue: settings.language,
                   value: e,
-                  title: Text(getLanguageText(e).tr()),
+                  title: Text(e),
                   onChanged: (value) {
                     if (value == null) return;
+                    final locale = supportedLanguages
+                        .firstWhere(
+                          (element) => element.name == value,
+                        )
+                        .locale;
                     ref.updateSettings(settings.copyWith(language: value));
-                    final data = value.split('-');
+                    final data = locale.split('-');
 
                     context.setLocale(Locale(data[0], data[1]));
                   },

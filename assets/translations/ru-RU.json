@@ -22,23 +22,6 @@
         "favorites_count": "Любимое",
         "comments_count": "Комментарии"
     },
-    "login": {
-        "form": {
-            "username": "Имя",
-            "password": "API ключ",
-            "login": "Логин",
-            "greeting": "Привет!",
-            "cancel": "Отмена",
-            "open_web_browser": "Открыть в браузере",
-            "api_key_instruction": "1. Войдите в свой аккаунт.\n2. Откройте свой профиль\n3. Найдите и скопируйте свой API ключ в строку для логина\n4. ???\n5. Готово!"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Неправильное имя пользователя или Api ключ",
-            "missingUsername": "Пожалуйста, введите имя пользователя",
-            "missingPassword": "Пожалуйста, введите свой API ключ"
-        },
-        "notice": "Поддерживает только Danbooru."
-    },
     "network": {
         "unavailable": "Нет доступа к интернету"
     },
@@ -83,13 +66,7 @@
             "open_wiki": "Открыть wiki",
             "add_to_blacklist": "Добавить в чёрный список",
             "add_to_favorites": "Добавить в любимое",
-            "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос",
-            "score": {
-                "one": "Оценка",
-                "few": "",
-                "many": "",
-                "other": "Оценки"
-            }
+            "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос"
         },
         "parent_child": {
             "children_of": "Дочерний для"
@@ -120,12 +97,6 @@
             "noComments": "Ещё нет коментареев",
             "last_updated": "Обновленно",
             "send": "Отправить"
-        },
-        "counter": {
-            "one": "Коментарий",
-            "few": "",
-            "many": "",
-            "other": "Коментарии"
         }
     },
     "explore": {
@@ -237,12 +208,7 @@
         },
         "language": {
             "language": "Язык",
-            "english": "Английский",
-            "russian": "Русский",
-            "belarusian": "Белорусский",
-            "vietnamese": "Вьетнамский",
-            "japanese": "Японский",
-            "german": "Немецкий"
+            "language_name": "Русский"
         },
         "theme": {
             "theme": "Тема",
@@ -285,37 +251,13 @@
         "bulk_download_folder_select_warning": "Приложение может сохранять файлы только в публичные папки <b>({0})</b> в Android 11+. <div>SD карты также не поддерживаются.</div> <div>Пожалуйста, выберите другое расположение.</div> <div>Версия этого устройства - {1}.</div>",
         "bulk_download_select_a_folder": "Выберите папку",
         "bulk_download_found_duplicate": "Найдено {} с одинаковым именем. Они будут пропущенны.",
-        "bulk_download_downloaded_counter": {
-            "one": "{} изображение скачано",
-            "few": "",
-            "many": "",
-            "other": "{} изображений скачано"
-        },
-        "bulk_download_skipped_counter": {
-            "one": "{} изображение пропущенно",
-            "few": "",
-            "many": "",
-            "other": "{} изображений пропущено"
-        },
         "bulk_download_download_more": "Скачать больше",
         "open_app_settings": "Открыть настройки",
         "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
-        "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
-        "image_counter": {
-            "one": "Скачать {} изображение",
-            "few": "",
-            "many": "",
-            "other": "Скачать {} изображений"
-        }
+        "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу"
     },
     "saved_search": {
         "saved_search": "Поисковые запросы",
-        "saved_search_counter": {
-            "one": "{} запрос",
-            "few": "",
-            "many": "",
-            "other": "{} запросов"
-        },
         "add_saved_search": "Добавить запрос",
         "saved_search_added": "Поисковый запрос был добавлен",
         "empty_saved_search": "У вас нет ни одного сохранённого запроса",
@@ -330,12 +272,6 @@
         "saved_search_labels_description": "*A list of tags to help categorize this search. Space delimited."
     },
     "favorites": {
-        "counter": {
-            "one": "Добавлено в любимые",
-            "few": "",
-            "many": "",
-            "other": "Добавлено в любимые"
-        },
         "favorited": "В любимых",
         "favorite": "Любимое",
         "unfavorited": "Не в любимых",
@@ -363,13 +299,7 @@
         "create_group_confirm": "OK",
         "max_limit_warning": "Учасники могут создать только 10 сборников",
         "duplicate_items_warning_notification": "Это изображение уже присутствует в сборнике",
-        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник?",
-        "group_item_counter": {
-            "one": "{} предмет",
-            "few": "",
-            "many": "",
-            "other": "{} предмета/ов"
-        }
+        "detete_confirmation": "Вы уверенны в том, что хотите удалить этот сборник?"
     },
     "favorite_tags": {
         "favorites": "Любимые",
@@ -388,8 +318,6 @@
         "rationale": "Если вам понравилось приложение, не могли вы бы оценить его?\nЭто займёт лишь несколько секунд, и очень поможет проекту в развитии."
     },
     "sideMenu": {
-        "login": "Войти",
-        "profile": "Профиль",
         "settings": "Настройки"
     },
     "dateRange": {

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
@@ -85,12 +86,12 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                   vertical: 16,
                 ),
                 child: Text(
-                  'Add a source, leave the login details empty to be anonymous',
+                  'booru.add_booru_source_title',
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall!
                       .copyWith(fontWeight: FontWeight.w900),
-                ),
+                ).tr(),
               ),
               !state.unverifiedBooru
                   ? Card(
@@ -99,8 +100,8 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                       child: Text(state.selectedBooru.booruType.stringify()),
                     ))
                   : WarningContainer(
-                      contentBuilder: (context) => const Text(
-                          'This booru is not offically supported yet. It probally won\'t work.')),
+                      contentBuilder: (context) =>
+                          const Text('booru.add_random_booru_warning').tr()),
               const SizedBox(height: 8),
               const Divider(
                 thickness: 2,
@@ -114,7 +115,8 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                         vertical: 8,
                       ),
                       child: ListTile(
-                        title: const Text('Booru engine (*)'),
+                        title:
+                            const Text('booru.booru_engine_input_label').tr(),
                         trailing: ValueListenableBuilder<BooruEngine?>(
                           valueListenable: _engine,
                           builder: (_, engine, __) =>
@@ -143,7 +145,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                 child: LoginField(
                   validator: (p0) => null,
                   controller: nameController,
-                  labelText: 'Config Name (*)',
+                  labelText: 'booru.config_name_label'.tr(),
                   onChanged: changeConfigName,
                 ),
               ),
@@ -155,7 +157,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                 child: LoginField(
                   validator: (p0) => null,
                   controller: urlController,
-                  labelText: 'Site URL',
+                  labelText: 'booru.site_url_label'.tr(),
                   onChanged: changeUrl,
                 ),
               ),
@@ -170,7 +172,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                     LoginField(
                       validator: (p0) => null,
                       controller: loginController,
-                      labelText: 'Login',
+                      labelText: 'booru.login_name_label'.tr(),
                       onChanged: changeLogin,
                     ),
                     const SizedBox(height: 16),
@@ -185,10 +187,11 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                       controller: apiKeyController,
                       labelText: state.selectedBooru.loginType ==
                               LoginType.loginAndApiKey
-                          ? 'API key'
+                          ? 'booru.password_api_key_label'.tr()
                           : switch (arg) {
-                              UpdateConfig _ => 'Password Hashed (readonly)',
-                              _ => 'Password',
+                              UpdateConfig _ =>
+                                'booru.password_hashed_label'.tr(),
+                              _ => 'booru.password_label'.tr(),
                             },
                       onChanged: changeApiKey,
                       suffixIcon: IconButton(
@@ -207,7 +210,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                     ),
                     if (state.supportRatingFilter())
                       ListTile(
-                        title: const Text('Content filtering'),
+                        title: const Text('booru.content_filtering_label').tr(),
                         trailing: OptionDropDownButton<BooruConfigRatingFilter>(
                           value: state.ratingFilter,
                           onChanged: changeRatingFilter,
@@ -223,7 +226,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                     const SizedBox(height: 16),
                     if (state.supportHideDeleted())
                       SwitchListTile.adaptive(
-                        title: const Text('Hide deleted posts'),
+                        title: const Text('booru.hide_deleted_label').tr(),
                         value: state.deletedItemBehavior ==
                             BooruConfigDeletedItemBehavior.hide,
                         onChanged: (_) => toggleDeleted(),
@@ -237,7 +240,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                                       widget.setCurrentBooruOnSubmit);
                             }
                           : null,
-                      child: const Text('OK'),
+                      child: const Text('booru.config_booru_confirm').tr(),
                     ),
                   ],
                 ),
