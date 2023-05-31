@@ -234,7 +234,8 @@
         "download": {
             "path": "Đường dẫn tới nơi lưu ảnh",
             "select_a_folder": "Chọn thư mục",
-            "quality": {
+            "quality": "Chất lượng ảnh tải xuống",
+            "qualities": {
                 "original": "Gốc",
                 "sample": "Mẫu",
                 "preview": "Xem trước"
