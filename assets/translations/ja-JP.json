@@ -115,16 +115,7 @@
         "information": "情報",
         "language": {
             "language": "言語",
-            "english": "英語",
-            "russian": "ロシア語",
-            "belarusian": "ベラルーシ語",
-            "vietnamese": "ベトナム語",
-            "japanese": "日本語",
-            "german": "ドイツ語",
-            "portuguese": "ポルトガル語",
-            "spanish": "スペイン語",
-            "chinese_simplified": "簡体字中国語",
-            "chinese_traditional": "繁体字中国語"
+            "language_name": "日本語"
         },
         "theme": {
             "theme": "テーマ",
