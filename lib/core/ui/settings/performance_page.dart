@@ -78,13 +78,15 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
                 final size = ref.watch(cacheSizeProvider);
 
                 return ListTile(
-                  title: const Text('Cache Size'),
-                  subtitle:
-                      Text("${filesize(size.size)} in ${size.fileCount} files"),
+                  title: const Text('settings.performance.cache_size').tr(),
+                  subtitle: Text('settings.performance.cache_size_info'
+                      .tr()
+                      .replaceAll('{0}', filesize(size.size))
+                      .replaceAll('{1}', size.fileCount.toString())),
                   trailing: ElevatedButton(
                     onPressed: () =>
                         ref.read(cacheSizeProvider.notifier).clearAppCache(),
-                    child: const Text('Clear'),
+                    child: const Text('settings.performance.clear_cache').tr(),
                   ),
                 );
               },

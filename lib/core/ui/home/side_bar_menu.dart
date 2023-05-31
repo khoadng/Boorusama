@@ -108,7 +108,7 @@ class SideBarMenu extends ConsumerWidget {
             const Divider(),
             _SideMenuTile(
               icon: const Icon(Icons.manage_accounts),
-              title: const Text('Manage boorus'),
+              title: const Text('sideMenu.manage_boorus').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
                 goToManageBooruPage(context);
@@ -116,7 +116,7 @@ class SideBarMenu extends ConsumerWidget {
             ),
             _SideMenuTile(
               icon: const Icon(Icons.favorite),
-              title: const Text('Your Bookmarks'),
+              title: const Text('sideMenu.your_bookmarks').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
                 goToBookmarkPage(context);
@@ -124,7 +124,7 @@ class SideBarMenu extends ConsumerWidget {
             ),
             _SideMenuTile(
               icon: const Icon(Icons.list_alt),
-              title: const Text('Your Blacklist'),
+              title: const Text('sideMenu.your_blacklist').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
                 goToGlobalBlacklistedTagsPage(context);
@@ -132,7 +132,7 @@ class SideBarMenu extends ConsumerWidget {
             ),
             _SideMenuTile(
               icon: const Icon(Icons.download),
-              title: const Text('Bulk download'),
+              title: const Text('sideMenu.bulk_download').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
                 goToBulkDownloadPage(
