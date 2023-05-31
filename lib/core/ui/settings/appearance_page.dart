@@ -137,7 +137,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
             SwitchListTile.adaptive(
-              title: const Text('settings.appearance.appearance').tr(),
+              title: const Text('settings.appearance.show_scores').tr(),
               value: settings.showScoresInGrid,
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
