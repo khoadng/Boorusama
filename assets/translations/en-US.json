@@ -371,10 +371,10 @@
     },
     "sideMenu": {
         "settings": "Settings",
-        "manageBoorus": "Manage boorus",
-        "yourBookmarks": "Your bookmarks",
-        "yourBlacklist": "Your blacklist",
-        "bulkDownload": "Bulk download"
+        "manage_boorus": "Manage boorus",
+        "your_bookmarks": "Your bookmarks",
+        "your_blacklist": "Your blacklist",
+        "bulk_download": "Bulk download"
     },
     "dateRange": {
         "day": "Day",
