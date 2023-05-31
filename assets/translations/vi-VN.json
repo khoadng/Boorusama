@@ -22,23 +22,6 @@
         "favorites_count": "Lượt yêu thích",
         "comments_count": "Tổng số bình luận"
     },
-    "login": {
-        "form": {
-            "username": "Tài khoản",
-            "password": "API Key",
-            "login": "Đăng nhập",
-            "greeting": "Hi!",
-            "cancel": "Hủy",
-            "open_web_browser": "Mở trình duyệt",
-            "api_key_instruction": "1. Đăng nhập vào tài khoản.\n2. Vào profile\n3. Tìm và copy API key vào form"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Tài khoản hoặc API key không chính xác",
-            "missingUsername": "Chưa nhập tên tài khoản",
-            "missingPassword": "Chưa nhập API key"
-        },
-        "notice": "Chỉ hỗ trợ Danbooru."
-    },
     "network": {
         "unavailable": "Không có mạng"
     },
