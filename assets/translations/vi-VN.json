@@ -366,5 +366,8 @@
         "day": "Ngày",
         "week": "Tuần",
         "month": "Tháng"
+    },
+    "booru": {
+        "addNew": "Tạo thêm booru"
     }
 }
