@@ -244,6 +244,16 @@
         "debug_logs": {
             "debug_logs": "Debug logs",
             "logs_copied": "Logs copied to clipboard"
+        },
+        "download": {
+            "path": "Download path",
+            "select_folder_label": "Select a folder",
+            "download_quality": "Download image quality",
+            "quality": {
+                "original": "Original",
+                "sample": "Sample",
+                "preview": "Preview"
+            }
         }
     },
     "blacklisted_tags": {
