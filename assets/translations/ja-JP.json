@@ -148,7 +148,7 @@
     },
     "sideMenu": {
         "settings": "設定",
-        "manage_boorus": "ボールの管理"
+        "manageBoorus": "ボールの管理"
     },
     "dateRange": {
         "day": "デイリー",
