@@ -11,7 +11,8 @@
             "edit": "Edit",
             "ok": "OK",
             "cancel": "Cancel"
-        }
+        },
+        "view": "View"
     },
     "profile": {
         "profile": "Profile",
@@ -281,6 +282,9 @@
         "image_counter": {
             "one": "Download {} image",
             "other": "Download {} images"
+        },
+        "bulk": {
+            "all_done_notification_message": "All downloads are done"
         }
     },
     "saved_search": {
