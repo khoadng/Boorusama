@@ -249,12 +249,9 @@
             "performance": "Performance",
             "posts_per_page": "Posts per page",
             "posts_per_page_explain": "Number of thumbnails per page",
-            "title": "Performance",
-            "postsPerPage": "Posts per page",
-            "postsPerPageDetails": "Number of thumbnails per page",
-            "cacheSize": "Cache size",
-            "clearCache": "Clear",
-            "cacheSizeInfo": "{0} Mb in {1} files"
+            "cache_size": "Cache size",
+            "clear_cache": "Clear",
+            "cache_size_info": "{0} Mb in {1} files"
         },
         "safe_mode": "Safe Mode"
     },
