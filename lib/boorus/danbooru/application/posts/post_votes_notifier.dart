@@ -5,13 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/functional.dart';
 
-class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
+class PostVotesNotifier extends Notifier<IMap<int, PostVote?>> {
   @override
-  Map<int, PostVote?> build() {
+  IMap<int, PostVote?> build() {
     ref.watch(currentBooruConfigProvider);
 
-    return {};
+    return <int, PostVote?>{}.lock;
   }
 
   PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider);
@@ -19,10 +20,7 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
   void _vote(PostVote? postVote) {
     if (postVote == null) return;
 
-    state = {
-      ...state,
-      postVote.postId: postVote,
-    };
+    state = state.add(postVote.postId, postVote);
   }
 
   Future<void> upvote(
@@ -52,10 +50,7 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
   }
 
   void removeVote(int postId) {
-    final votes = {...state}..remove(postId);
-    state = {
-      ...votes,
-    };
+    state = state.remove(postId);
   }
 
   Future<void> getVotes(List<int> postIds) async {
@@ -73,10 +68,9 @@ class PostVotesNotifier extends Notifier<Map<int, PostVote?>> {
         for (var postVote in fetchedPostVotes) postVote.postId: postVote,
       };
 
-      state = {
-        ...state,
+      state = state.addMap({
         for (var id in postIds) id: voteMap[id],
-      };
+      });
     }
   }
 }

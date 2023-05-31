@@ -11,9 +11,10 @@ import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/functional.dart';
 
 class BookmarkDetailsPage extends StatefulWidget {
-  final List<Bookmark> bookmarks;
+  final IList<Bookmark> bookmarks;
   final int initialIndex;
 
   const BookmarkDetailsPage({
@@ -89,7 +90,7 @@ class BookmarkSlider extends ConsumerStatefulWidget {
     this.onTap,
   });
 
-  final List<Bookmark> bookmarks;
+  final IList<Bookmark> bookmarks;
   final int initialPage;
   final void Function(int index) onPageChange;
   final bool fullscreen;
