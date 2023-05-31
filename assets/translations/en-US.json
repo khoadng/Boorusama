@@ -166,7 +166,10 @@
     "settings": {
         "settings": "Settings",
         "app_settings": "App Settings",
-        "appearance": "Appearance",
+        "appearance": {
+            "appearance": "Appearance",
+            "show_scores": "Show scores"
+        },
         "general": "General",
         "search": "Search",
         "information": "Information",
