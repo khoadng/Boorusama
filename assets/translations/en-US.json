@@ -71,7 +71,9 @@
             "score": {
                 "one": "Point",
                 "other": "Points"
-            }
+            },
+            "source_label": "Source",
+            "related_posts": "Related posts"
         },
         "parent_child": {
             "children_of": "Children of"
