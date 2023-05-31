@@ -15,21 +15,6 @@
         "favorites_count": "ブックマーク",
         "comments_count": "コメント数"
     },
-    "login": {
-        "form": {
-            "username": "ユーザー名",
-            "password": "APIキー",
-            "login": "ログイン",
-            "cancel": "キャンセル",
-            "open_web_browser": "ウェブブラウザを開く",
-            "api_key_instruction": "1. 自分のアカウントにログインする。自分のプロファイルに移動する。ログインフォームにAPIキーをコピーする。???\n5. Profit"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "ユーザー名またはAPIキーが無効",
-            "missingUsername": "ユーザー名を入力してください。",
-            "missingPassword": "APIキーを入力してください。"
-        }
-    },
     "network": {
         "unavailable": "ネットワーク利用不可"
     },
