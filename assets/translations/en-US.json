@@ -248,7 +248,8 @@
         "download": {
             "path": "Download path",
             "select_a_folder": "Select a folder",
-            "quality": {
+            "quality": "Download image quality",
+            "qualities": {
                 "original": "Original",
                 "sample": "Sample",
                 "preview": "Preview"
