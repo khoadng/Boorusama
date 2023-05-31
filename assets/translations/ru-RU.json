@@ -22,23 +22,6 @@
         "favorites_count": "Любимое",
         "comments_count": "Комментарии"
     },
-    "login": {
-        "form": {
-            "username": "Имя",
-            "password": "API ключ",
-            "login": "Логин",
-            "greeting": "Привет!",
-            "cancel": "Отмена",
-            "open_web_browser": "Открыть в браузере",
-            "api_key_instruction": "1. Войдите в свой аккаунт.\n2. Откройте свой профиль\n3. Найдите и скопируйте свой API ключ в строку для логина\n4. ???\n5. Готово!"
-        },
-        "errors": {
-            "invalidUsernameOrPassword": "Неправильное имя пользователя или Api ключ",
-            "missingUsername": "Пожалуйста, введите имя пользователя",
-            "missingPassword": "Пожалуйста, введите свой API ключ"
-        },
-        "notice": "Поддерживает только Danbooru."
-    },
     "network": {
         "unavailable": "Нет доступа к интернету"
     },
