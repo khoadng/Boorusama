@@ -359,9 +359,8 @@
         "rationale": "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
     },
     "sideMenu": {
-        "login": "Đăng nhập",
-        "profile": "Hồ sơ",
-        "settings": "Cài đặt"
+        "settings": "Cài đặt",
+        "manage_boorus": "Quản lí Booru"
     },
     "dateRange": {
         "day": "Ngày",
