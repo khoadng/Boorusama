@@ -338,5 +338,11 @@
     },
     "booru": {
         "addNew": "Tạo thêm booru"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Sổ đen",
+            "empty_blacklist": "Sổ đen trống"
+        }
     }
 }
