@@ -163,6 +163,7 @@ void main() async {
   if (isWindows()) WindowsVideoPlayer.registerWith();
 
   await ensureI18nInitialized();
+  final supportedLanguages = await loadLanguageNames();
 
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
@@ -206,6 +207,7 @@ void main() async {
             packageInfoProvider.overrideWithValue(packageInfo),
             appInfoProvider.overrideWithValue(appInfo),
             uiLoggerProvider.overrideWithValue(uiLogger),
+            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
           ],
           child: App(settings: settings),
         ),
