@@ -389,5 +389,11 @@
         "content_filtering_label": "Content filtering",
         "hide_deleted_label": "Hide deleted posts",
         "config_booru_confirm": "OK"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Blacklist",
+            "empty_blacklist": "No blacklisted tags"
+        }
     }
 }
