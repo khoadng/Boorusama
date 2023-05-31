@@ -237,7 +237,7 @@
             "send_error_data_notice": "Tự động gửi lỗi cho dev"
         },
         "performance": {
-            "performance": "Performance",
+            "performance": "Hiệu năng",
             "posts_per_page": "Lượng bài đăng ở mỗi trang",
             "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
             "cache_size": "Dung lượng cache",
