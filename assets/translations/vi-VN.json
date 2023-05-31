@@ -69,7 +69,9 @@
             "copy_and_open_saved_search": "Copy và mở saved search",
             "score": {
                 "other": "Điểm"
-            }
+            },
+            "source_label": "Nguồn",
+            "related_posts": "Ảnh liên quan"
         },
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
