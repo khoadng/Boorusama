@@ -246,7 +246,10 @@
         "performance": {
             "performance": "Performance",
             "posts_per_page": "Posts per page",
-            "posts_per_page_explain": "Number of thumbnails per page"
+            "posts_per_page_explain": "Number of thumbnails per page",
+            "cache_size": "Dung lượng cache",
+            "clear_cache": "Dọn",
+            "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
         },
         "safe_mode": "18+ mode"
     },
