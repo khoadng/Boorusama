@@ -225,16 +225,7 @@
         },
         "language": {
             "language": "Мова",
-            "english": "Англійскі",
-            "russian": "Рускі",
-            "belarusian": "Беларускі",
-            "vietnamese": "В'етнамскі",
-            "japanese": "Японский",
-            "german": "Нямецкі",
-            "portuguese": "Партугальская",
-            "spanish": "Іспанская",
-            "chinese_simplified": "Кітайская (спрошчаная)",
-            "chinese_traditional": "Кітайская (традыцыйная)"
+            "language_name": "Беларуская"
         },
         "theme": {
             "theme": "Тэма",
