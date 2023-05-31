@@ -156,7 +156,10 @@
     "settings": {
         "settings": "Cài đặt",
         "app_settings": "Cài đặt ứng dụng",
-        "appearance": "Hiển thị",
+        "appearance": {
+            "appearance": "Hiển thị",
+            "show_scores": "Hiện điểm"
+        },
         "general": "Chung",
         "search": "Tìm kiếm",
         "information": "Thông tin",
