@@ -24,3 +24,6 @@ final danbooruCommentsProvider =
     currentBooruConfigProvider,
   ],
 );
+
+final danbooruCommentProvider = Provider.family<List<CommentData>?, int>(
+    (ref, postId) => ref.watch(danbooruCommentsProvider)[postId]);
