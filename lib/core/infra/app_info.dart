@@ -11,23 +11,27 @@ class AppInfo {
     required this.discordUrl,
     required this.githubUrl,
     required this.appName,
+    required this.translationProjectUrl,
   });
 
   factory AppInfo.fromJson(Map<String, dynamic> json) => AppInfo(
         discordUrl: json['discordUrl'],
         githubUrl: json['githubUrl'],
         appName: json['appName'],
+        translationProjectUrl: json['translationProjectUrl'],
       );
 
   static const empty = AppInfo(
     discordUrl: '',
     githubUrl: '',
     appName: '',
+    translationProjectUrl: '',
   );
 
   final String discordUrl;
   final String githubUrl;
   final String appName;
+  final String translationProjectUrl;
 }
 
 Future<AppInfo> getAppInfo() async {
