@@ -157,7 +157,9 @@
     "settings": {
         "settings": "Настройки",
         "app_settings": "Настройки приложения",
-        "appearance": "Внешний вид",
+        "appearance": {
+            "appearance": "Внешний вид"
+        },
         "general": "Генеральные",
         "search": "Поиск",
         "information": "Информация",
@@ -223,9 +225,21 @@
         "performance": {
             "performance": "Производительность",
             "posts_per_page": "Размер страницы",
-            "posts_per_page_explain": "Количество изображений на одной странице"
+            "posts_per_page_explain": "Количество изображений на одной странице",
+            "cache_size": "Размер кеша",
+            "clear_cache": "Очистить кеш",
+            "cache_size_info": "{0} МБ в {1} файле"
         },
-        "safe_mode": "Безопасный режим"
+        "safe_mode": "Безопасный режим",
+        "debug_logs": {
+            "logs_copied": "Логи скопированны в буфер обмена"
+        },
+        "download": {
+            "qualities": {
+                "original": "Оригинал",
+                "preview": "Превью"
+            }
+        }
     },
     "blacklisted_tags": {
         "remove": "Удалить",
@@ -318,11 +332,26 @@
         "rationale": "Если вам понравилось приложение, не могли вы бы оценить его?\nЭто займёт лишь несколько секунд, и очень поможет проекту в развитии."
     },
     "sideMenu": {
-        "settings": "Настройки"
+        "settings": "Настройки",
+        "your_bookmarks": "Ваши закладки",
+        "your_blacklist": "Ваш чёрный список",
+        "bulk_download": "Массовая загрузка"
     },
     "dateRange": {
         "day": "День",
         "week": "Неделя",
         "month": "Месяц"
+    },
+    "booru": {
+        "addNew": "Добавить новый источник",
+        "add_booru_source_title": "Добавьте источник, оставьте логин и пароль пустыми для анонимного использования",
+        "add_random_booru_warning": "Этот источник не поддерживается. Работоспособность не гарантированна.",
+        "booru_engine_input_label": "Движок источника (*)",
+        "site_url_label": "Ссылка на сайт",
+        "login_name_label": "Логин",
+        "password_api_key_label": "API ключ",
+        "password_hashed_label": "Хеш пароля (только чтение)",
+        "password_label": "Пароль",
+        "config_booru_confirm": "ОК"
     }
 }
