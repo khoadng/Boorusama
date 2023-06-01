@@ -26,6 +26,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
+    ref.watch(settingsProvider.select((value) => value.language));
 
     return Screen.of(context).size == ScreenSize.small
         ? Scaffold(
