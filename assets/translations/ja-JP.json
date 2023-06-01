@@ -94,7 +94,9 @@
     "settings": {
         "settings": "設定",
         "app_settings": "アプリ設定",
-        "appearance": "テーマ",
+        "appearance": {
+            "appearance": "テーマ"
+        },
         "general": "一般",
         "search": "検索",
         "information": "情報",
