@@ -165,7 +165,9 @@
     "settings": {
         "settings": "Einstellungen",
         "app_settings": "App Einstellungen",
-        "appearance": "Aussehen",
+        "appearance": {
+            "appearance": "Aussehen"
+        },
         "general": "Allgemein",
         "search": "Suche",
         "information": "Information",
