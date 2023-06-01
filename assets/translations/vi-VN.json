@@ -242,7 +242,9 @@
                 "sample": "Mẫu",
                 "preview": "Xem trước"
             }
-        }
+        },
+        "help_us_translate": "Hỗ trợ dịch app",
+        "other_settings": "Cài đặt khác"
     },
     "blacklisted_tags": {
         "remove": "Xóa",
