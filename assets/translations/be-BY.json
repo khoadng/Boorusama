@@ -157,7 +157,9 @@
     "settings": {
         "settings": "Настроікі",
         "app_settings": "Настроікі прылажэння",
-        "appearance": "Пастава",
+        "appearance": {
+            "appearance": "Пастава"
+        },
         "general": "Генеральныя",
         "search": "Пошук",
         "information": "Інфармацыя",
