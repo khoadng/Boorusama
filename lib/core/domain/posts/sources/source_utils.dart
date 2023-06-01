@@ -22,18 +22,25 @@ bool isWebSource(String? url) {
 }
 
 String getHost(Uri uri) {
-  if (uri.host.contains('artstation.com')) return 'https://artstation.com';
-  if (uri.host.contains('discordapp.com')) return 'https://discordapp.com';
-  if (uri.host.contains('kym-cdn.com')) return 'https://knowyourmeme.com';
-  if (uri.host.contains('images-wixmp')) return 'https://deviantart.com';
-  if (uri.host.contains('fantia.jp')) return 'https://fantia.jp';
-  if (uri.host.contains('hentai-foundry.com')) {
-    return 'https://hentai-foundry.com';
+  final hostMappings = {
+    'artstation.com': 'https://artstation.com',
+    'discordapp.com': 'https://discordapp.com',
+    'kym-cdn.com': 'https://knowyourmeme.com',
+    'images-wixmp': 'https://deviantart.com',
+    'fantia.jp': 'https://fantia.jp',
+    'hentai-foundry.com': 'https://hentai-foundry.com',
+    'exhentai.org': 'https://e-hentai.org',
+    'ngfiles.com': 'https://newgrounds.com',
+    'i.pximg.net': 'https://pixiv.net',
+    'youtu.be': 'https://youtube.com',
+    'tumblr.com': 'https://tumblr.com',
+  };
+
+  for (final mapping in hostMappings.entries) {
+    if (uri.host.contains(mapping.key)) {
+      return mapping.value;
+    }
   }
-  if (uri.host.contains('exhentai.org')) return 'https://e-hentai.org';
-  if (uri.host.contains('ngfiles.com')) return 'https://newgrounds.com';
-  if (uri.host.contains('i.pximg.net')) return 'https://pixiv.net';
-  if (uri.host.contains('youtu.be')) return 'https://youtube.com';
 
   return '${uri.scheme}://${uri.host}';
 }

@@ -9,6 +9,11 @@ sealed class PostSource {
 
   factory PostSource.pixiv(int pixivId) => PixivSource(pixivId: pixivId);
 
+  static final IMap<String, String> customFaviconUrlSite = <String, String>{
+    'lofter': 'https://www.lofter.com/favicon.ico',
+    'lolibooru': 'https://lolibooru.moe/favicon.ico',
+  }.lock;
+
   factory PostSource.from(
     String? value, {
     int? pixivId,
@@ -17,11 +22,22 @@ sealed class PostSource {
 
     return isWebSource(value)
         ? pixivId.toOption().fold(
-              () => value.contains('lofter')
-                  ? LofterSource(uri: Uri.parse(value))
-                  : SimpleWebSource(uri: Uri.parse(value)),
-              (pixivId) => PostSource.pixiv(pixivId),
-            )
+            () {
+              for (var key in customFaviconUrlSite.keys) {
+                if (value.contains(key)) {
+                  return RawWebSource(
+                    faviconUrl: customFaviconUrlSite[key]!,
+                    url: value,
+                    hasCustomFaviconUrl: true,
+                    uri: Uri.parse(value),
+                  );
+                }
+              }
+
+              return SimpleWebSource(uri: Uri.parse(value));
+            },
+            (pixivId) => PostSource.pixiv(pixivId),
+          )
         : NonWebSource(value);
   }
 }
@@ -44,8 +60,27 @@ sealed class WebSource extends PostSource {
   final Uri uri;
   String get sourceHost => getHost(uri);
   String get faviconUrl;
+  bool get hasCustomFaviconUrl;
 
   String get url;
+}
+
+class RawWebSource extends WebSource {
+  RawWebSource({
+    required this.faviconUrl,
+    required this.url,
+    required this.hasCustomFaviconUrl,
+    required super.uri,
+  });
+
+  @override
+  final String faviconUrl;
+
+  @override
+  final String url;
+
+  @override
+  final bool hasCustomFaviconUrl;
 }
 
 class SimpleWebSource extends WebSource {
@@ -58,6 +93,9 @@ class SimpleWebSource extends WebSource {
 
   @override
   String get faviconUrl => getFavicon(sourceHost);
+
+  @override
+  bool get hasCustomFaviconUrl => false;
 }
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
@@ -72,18 +110,9 @@ class PixivSource extends WebSource {
 
   @override
   String get faviconUrl => getFavicon(sourceHost);
-}
-
-class LofterSource extends WebSource {
-  LofterSource({
-    required super.uri,
-  });
 
   @override
-  String get url => uri.toString();
-
-  @override
-  String get faviconUrl => 'https://www.lofter.com/favicon.ico';
+  bool get hasCustomFaviconUrl => false;
 }
 
 extension PostSourceX on PostSource {
