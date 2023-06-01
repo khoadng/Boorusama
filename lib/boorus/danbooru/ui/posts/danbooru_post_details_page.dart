@@ -136,7 +136,9 @@ class _DanbooruPostDetailsPageState
         );
       },
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-        imageUrl: posts[page].url720x720,
+        imageUrl: posts[page].isGif
+            ? posts[page].urlOriginal
+            : posts[page].url720x720,
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
@@ -293,7 +295,9 @@ class _DanbooruPostDetailsPageState
             useHero: page == currentPage,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+            imageUrl: post.isGif
+                ? post.urlOriginal
+                : post.thumbnailFromSettings(ref.read(settingsProvider)),
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
             onCached: (path) => ref
