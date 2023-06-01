@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
+import 'package:boorusama/utils/duration_utils.dart';
 
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {
@@ -59,8 +60,8 @@ class _BooruVideoState extends State<BooruVideo> {
   }
 
   void _onChanged() {
-    final current = _videoPlayerController.value.position.inSeconds.toDouble();
-    final total = _videoPlayerController.value.duration.inSeconds.toDouble();
+    final current = _videoPlayerController.value.position.inPreciseSeconds;
+    final total = _videoPlayerController.value.duration.inPreciseSeconds;
     widget.onCurrentPositionChanged!(current, total, widget.url);
   }
 

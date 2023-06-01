@@ -11,6 +11,7 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/toast.dart';
+import 'package:boorusama/functional.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -25,7 +26,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
     getAllBookmarks();
-    return const BookmarkState();
+    return BookmarkState(bookmarks: <Bookmark>[].lock);
   }
 
   BookmarkRepository get bookmarkRepository => ref.read(bookmarkRepoProvider);
@@ -37,7 +38,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
-              bookmarks: bookmarks,
+              bookmarks: bookmarks.lock,
             ),
           ),
         );
@@ -53,7 +54,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final bookmarks = await bookmarkRepository.addBookmarks(booru, posts);
       onSuccess?.call();
       state = state.copyWith(
-        bookmarks: [...state.bookmarks, ...bookmarks],
+        bookmarks: state.bookmarks.addAll(bookmarks),
       );
     } catch (e) {
       onError?.call();
@@ -71,7 +72,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final bookmark = await bookmarkRepository.addBookmark(booru, post);
       onSuccess?.call();
       state = state.copyWith(
-        bookmarks: [...state.bookmarks, bookmark],
+        bookmarks: state.bookmarks.add(bookmark),
       );
     } catch (e) {
       onError?.call();
@@ -85,10 +86,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       await bookmarkRepository.removeBookmark(bookmark);
-      final newFavorites = List<Bookmark>.from(state.bookmarks)
-        ..remove(bookmark);
       onSuccess?.call();
-      state = state.copyWith(bookmarks: newFavorites);
+      state = state.copyWith(
+        bookmarks: state.bookmarks.remove(bookmark),
+      );
     } catch (e) {
       onError?.call();
     }
@@ -101,11 +102,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       await bookmarkRepository.updateBookmark(bookmark);
-      final index = state.bookmarks.indexWhere((f) => f.id == bookmark.id);
-      final newBookmarks = List<Bookmark>.from(state.bookmarks)
-        ..replaceRange(index, index + 1, [bookmark]);
       onSuccess?.call();
-      state = state.copyWith(bookmarks: newBookmarks);
+      state = state.copyWith(
+        bookmarks: state.bookmarks.replaceFirstWhere(
+          (item) => item.id == bookmark.id,
+          (item) => bookmark,
+        ),
+      );
     } catch (e) {
       onError?.call();
     }
@@ -169,16 +172,16 @@ extension BookmarkCubitToastX on BookmarkNotifier {
 }
 
 class BookmarkState extends Equatable {
-  final List<Bookmark> bookmarks;
+  final IList<Bookmark> bookmarks;
   final String error;
 
   const BookmarkState({
-    this.bookmarks = const [],
+    required this.bookmarks,
     this.error = '',
   });
 
   BookmarkState copyWith({
-    List<Bookmark>? bookmarks,
+    IList<Bookmark>? bookmarks,
     String? error,
   }) {
     return BookmarkState(

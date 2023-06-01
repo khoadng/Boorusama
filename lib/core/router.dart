@@ -33,6 +33,7 @@ import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
 import 'package:boorusama/core/ui/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
+import 'package:boorusama/functional.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'infra/package_info_provider.dart';
@@ -375,10 +376,11 @@ void goToBookmarkPage(BuildContext context) {
   ));
 }
 
-void goToBookmarkDetailsPage(
-    {required BuildContext context,
-    required List<Bookmark> bookmarks,
-    required int initialIndex}) {
+void goToBookmarkDetailsPage({
+  required BuildContext context,
+  required IList<Bookmark> bookmarks,
+  required int initialIndex,
+}) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (_) => BookmarkDetailsPage(
       bookmarks: bookmarks,

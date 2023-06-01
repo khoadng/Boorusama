@@ -25,6 +25,8 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appInfo = ref.watch(appInfoProvider);
+
     return Screen.of(context).size == ScreenSize.small
         ? Scaffold(
             appBar: AppBar(title: Text('settings.settings'.tr())),
@@ -97,6 +99,10 @@ class SettingsPage extends ConsumerWidget {
                                 const FaIcon(FontAwesomeIcons.shieldHalved),
                             onTap: () => goToSettingsPrivacy(context, this),
                           ),
+                          const Divider(),
+                          _SettingsSection(
+                            label: 'settings.other_settings'.tr(),
+                          ),
                           ListTile(
                             title: const Text('settings.changelog').tr(),
                             leading: const FaIcon(
@@ -111,6 +117,13 @@ class SettingsPage extends ConsumerWidget {
                             onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (_) => const DebugLogsPage())),
+                          ),
+                          ListTile(
+                            title:
+                                const Text('settings.help_us_translate').tr(),
+                            leading: const Icon(Icons.language),
+                            onTap: () => launchExternalUrlString(
+                                appInfo.translationProjectUrl),
                           ),
                           ListTile(
                             title: const Text('settings.information').tr(),

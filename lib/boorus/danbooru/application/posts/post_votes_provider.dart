@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/posts/posts.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/functional.dart';
 
 final danbooruPostVoteRepoProvider = Provider<PostVoteRepository>(
   (ref) {
@@ -31,7 +32,7 @@ final danbooruPostVoteRepoProvider = Provider<PostVoteRepository>(
 );
 
 final danbooruPostVotesProvider =
-    NotifierProvider<PostVotesNotifier, Map<int, PostVote?>>(
+    NotifierProvider<PostVotesNotifier, IMap<int, PostVote?>>(
   PostVotesNotifier.new,
   dependencies: [
     danbooruPostVoteRepoProvider,
