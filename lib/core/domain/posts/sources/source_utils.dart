@@ -34,6 +34,7 @@ String getHost(Uri uri) {
     'i.pximg.net': 'https://pixiv.net',
     'youtu.be': 'https://youtube.com',
     'tumblr.com': 'https://tumblr.com',
+    'biligame.com': 'https://bilibili.com',
   };
 
   for (final mapping in hostMappings.entries) {

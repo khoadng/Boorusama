@@ -85,6 +85,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               playedColor: widget.playedColor,
               bufferedColor: widget.bufferedColor,
               handleColor: widget.handleColor,
+              useHandle: false,
             ),
           ),
         ),
@@ -105,6 +106,7 @@ class _ProgressBarPainter extends CustomPainter {
     required this.playedColor,
     required this.bufferedColor,
     required this.handleColor,
+    required this.useHandle,
   });
 
   final Duration position;
@@ -117,6 +119,7 @@ class _ProgressBarPainter extends CustomPainter {
   final Color playedColor;
   final Color bufferedColor;
   final Color handleColor;
+  final bool useHandle;
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
@@ -168,23 +171,24 @@ class _ProgressBarPainter extends CustomPainter {
       ),
       Paint()..color = playedColor,
     );
+    if (useHandle) {
+      if (drawShadow) {
+        final Path shadowPath = Path()
+          ..addOval(
+            Rect.fromCircle(
+              center: Offset(playedPart, baseOffset + barHeight / 2),
+              radius: handleHeight,
+            ),
+          );
 
-    if (drawShadow) {
-      final Path shadowPath = Path()
-        ..addOval(
-          Rect.fromCircle(
-            center: Offset(playedPart, baseOffset + barHeight / 2),
-            radius: handleHeight,
-          ),
-        );
+        canvas.drawShadow(shadowPath, Colors.black, 0.2, false);
+      }
 
-      canvas.drawShadow(shadowPath, Colors.black, 0.2, false);
+      canvas.drawCircle(
+        Offset(playedPart, baseOffset + barHeight / 2),
+        handleHeight,
+        Paint()..color = handleColor,
+      );
     }
-
-    canvas.drawCircle(
-      Offset(playedPart, baseOffset + barHeight / 2),
-      handleHeight,
-      Paint()..color = handleColor,
-    );
   }
 }
