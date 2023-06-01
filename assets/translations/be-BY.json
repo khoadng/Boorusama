@@ -47,8 +47,6 @@
                 "cancel": "Адмена"
             },
             "view_in_browser": "Адкрыць у браўзэры",
-            "has_parent_notice": "Малюнак мае бацьку",
-            "has_children_notice": "Малюнак мае дачэрны малюнак",
             "file_details": "Дэталі",
             "size": "Памер",
             "resolution": "Разрашэнне",
@@ -171,11 +169,6 @@
             "infinite_scroll": "Бясконцая пракрутка",
             "pagination": "Пастаронкавае"
         },
-        "details_style": {
-            "details_style": "Пачатковае становіша пры адкрыцці",
-            "post_focused": "Адкрыт пост",
-            "image_focused": "Разгорнут малюнак"
-        },
         "image_list": {
             "image_list": "Адлюстраванне стужкі",
             "standard": "Стандартнае",
@@ -226,8 +219,7 @@
             "performance": "Performance",
             "posts_per_page": "Posts per page",
             "posts_per_page_explain": "Number of thumbnails per page"
-        },
-        "safe_mode": "Бяспечны рэжым"
+        }
     },
     "blacklisted_tags": {
         "remove": "Выдаліць",
