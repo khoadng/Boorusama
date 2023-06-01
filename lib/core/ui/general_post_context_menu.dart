@@ -46,7 +46,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
             onPressed: () => download(post),
           ),
           ContextMenuButtonConfig(
-            'Add to Bookmark',
+            'post.detail.add_to_bookmark'.tr(),
             onPressed: () => ref.bookmarks.addBookmarkWithToast(
               post.sampleImageUrl,
               booru,

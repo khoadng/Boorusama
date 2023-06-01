@@ -77,9 +77,9 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'add_to_bookmark',
-                child: Text('Add to Bookmark'),
+                child: const Text('post.detail.add_to_bookmark').tr(),
               ),
               if (authenticationState is Authenticated)
                 const PopupMenuItem(

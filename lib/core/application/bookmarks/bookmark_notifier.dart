@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -142,32 +143,35 @@ extension BookmarkCubitToastX on BookmarkNotifier {
         url,
         booru,
         post,
-        onSuccess: () => showSuccessToast('Bookmark added'),
-        onError: () => showErrorToast('Failed to add bookmark'),
+        onSuccess: () => showSuccessToast('bookmark.added'.tr()),
+        onError: () => showErrorToast('bookmark.failed_to_add'.tr()),
       );
 
   Future<void> addBookmarksWithToast(Booru booru, List<Post> posts) =>
       addBookmarks(
         booru,
         posts,
-        onSuccess: () => showSuccessToast('${posts.length} bookmarks added'),
-        onError: () => showErrorToast('Failed to add bookmarks'),
+        onSuccess: () => showSuccessToast(
+          'bookmark.many_added'.tr().replaceAll('{0}', '${posts.length}'),
+        ),
+        onError: () => showErrorToast('bookmark.failed_to_add_many'.tr()),
       );
 
   Future<void> removeBookmarkWithToast(Bookmark bookmark) => removeBookmark(
         bookmark,
-        onSuccess: () => showSuccessToast('Bookmark removed'),
-        onError: () => showErrorToast('Failed to remove bookmark'),
+        onSuccess: () => showSuccessToast('bookmark.removed'.tr()),
+        onError: () => showErrorToast('bookmark.failed_to_remove'.tr()),
       );
 
   Future<void> updateBookmarkWithToast(Bookmark bookmark) => updateBookmark(
         bookmark,
-        onSuccess: () => showSuccessToast('Bookmark updated'),
-        onError: () => showErrorToast('Failed to update bookmark'),
+        onSuccess: () => showSuccessToast('bookmark.updated'.tr()),
+        onError: () => showErrorToast('bookmark.failed_to_update'.tr()),
       );
 
   Future<void> getAllBookmarksWithToast() => getAllBookmarks(
-        onError: (error) => showErrorToast('Failed to load bookmarks: $error'),
+        onError: (error) => showErrorToast(
+            'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString())),
       );
 }
 
