@@ -47,8 +47,6 @@
                 "cancel": "Отмена"
             },
             "view_in_browser": "Открыть в браузере",
-            "has_parent_notice": "Пост имеет родителя",
-            "has_children_notice": "Пост имеет дочерний пост",
             "file_details": "Детали",
             "size": "Размер",
             "resolution": "Разрешение",
@@ -171,11 +169,6 @@
             "infinite_scroll": "Бесконечная прокрутка",
             "pagination": "Постраничное"
         },
-        "details_style": {
-            "details_style": "Начальное положение при открытии",
-            "post_focused": "Открыт пост",
-            "image_focused": "Развёрнуто изображение"
-        },
         "image_list": {
             "image_list": "Отображение ленты",
             "standard": "Стандартное",
@@ -230,7 +223,6 @@
             "clear_cache": "Очистить кеш",
             "cache_size_info": "{0} МБ в {1} файле"
         },
-        "safe_mode": "Безопасный режим",
         "debug_logs": {
             "logs_copied": "Логи скопированны в буфер обмена"
         },

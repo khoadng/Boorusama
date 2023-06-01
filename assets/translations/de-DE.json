@@ -47,8 +47,6 @@
                 "cancel": "Abbrechen"
             },
             "view_in_browser": "In Browser anzeigen",
-            "has_parent_notice": "Dieser Post gehört zu einem Parent und hat Children",
-            "has_children_notice": "Dieser Post hat Children",
             "file_details": "Datei-Infos",
             "size": "Größe",
             "resolution": "Auflösung",
@@ -179,11 +177,6 @@
             "infinite_scroll": "Endloses Scrollen",
             "pagination": "Seitennummerierung"
         },
-        "details_style": {
-            "details_style": "Standarddetailsstil",
-            "post_focused": "Beitrag fokussieren",
-            "image_focused": "Bild fokussieren"
-        },
         "image_list": {
             "image_list": "Bildliste",
             "standard": "Standart",
@@ -234,8 +227,7 @@
             "performance": "Leistung",
             "posts_per_page": "Posts pro Seite",
             "posts_per_page_explain": "Vorschaubilder pro Seite"
-        },
-        "safe_mode": "Sicherer Modus"
+        }
     },
     "blacklisted_tags": {
         "remove": "Entfernen",

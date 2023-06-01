@@ -47,8 +47,6 @@
                 "cancel": "Hủy"
             },
             "view_in_browser": "Xem bằng trình duyệt",
-            "has_parent_notice": "Ảnh này là một phần nhỏ trong bộ ảnh lớn hơn",
-            "has_children_notice": "Có những ảnh khác nằm chung bộ với ảnh này",
             "file_details": "Thông số ảnh",
             "size": "Kích thước",
             "resolution": "Độ phân giải",
@@ -71,7 +69,8 @@
                 "other": "Điểm"
             },
             "source_label": "Nguồn",
-            "related_posts": "Ảnh liên quan"
+            "related_posts": "Ảnh liên quan",
+            "add_to_bookmark": "Thêm đánh dấu"
         },
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
@@ -173,11 +172,6 @@
             "infinite_scroll": "Lướt vô tận",
             "pagination": "Chia trang"
         },
-        "details_style": {
-            "details_style": "Chi tiết",
-            "post_focused": "Thông tin là chủ đạo",
-            "image_focused": "Ảnh là chủ đạo"
-        },
         "image_list": {
             "image_list": "Kiểu list ảnh",
             "standard": "Tiêu chuẩn",
@@ -232,7 +226,6 @@
             "clear_cache": "Dọn",
             "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
         },
-        "safe_mode": "18+ mode",
         "download": {
             "path": "Đường dẫn tới nơi lưu ảnh",
             "select_a_folder": "Chọn thư mục",
@@ -361,5 +354,16 @@
             "title": "Sổ đen",
             "empty_blacklist": "Sổ đen trống"
         }
+    },
+    "bookmark": {
+        "added": "Đã đánh dấu",
+        "failed_to_add": "Đánh dấu không thành công",
+        "many_added": "Đã thêm {0} đánh dấu",
+        "failed_to_add_many": "Thêm đánh dấu không thành công",
+        "removed": "Đã xoá đánh dấu",
+        "updated": "Đã cập nhật",
+        "failed_to_remove": "Xoá đánh dấu không thành công",
+        "failed_to_update": "Cập nhật đánh dấu không thành công",
+        "failed_to_load": "Tải đánh dấu thất bại: {0}"
     }
 }

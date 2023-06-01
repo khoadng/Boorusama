@@ -8,11 +8,11 @@
     },
     "profile": {
         "profile": "プロフィール",
-        "favorites": "ブックマーク",
+        "favorites": "いいね",
         "see_more": "すべて見る",
         "user_id": "ユーザーID",
         "level": "レベル",
-        "favorites_count": "ブックマーク",
+        "favorites_count": "いいね",
         "comments_count": "コメント数"
     },
     "network": {
@@ -46,7 +46,7 @@
             "show_translated": "翻訳表示",
             "login_required_notice": "ログインする必要があります",
             "open_wiki": "Wikiを開く",
-            "add_to_favorites": "ブックマークする"
+            "add_to_favorites": "いいねする"
         }
     },
     "comment": {
@@ -125,7 +125,7 @@
     },
     "favorites": {
         "counter": {
-            "other": "ブックマーク"
+            "other": "いいね"
         }
     },
     "favorite_tags": {
