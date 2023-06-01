@@ -256,7 +256,9 @@
                 "sample": "Sample",
                 "preview": "Preview"
             }
-        }
+        },
+        "help_us_translate": "Help us translate",
+        "other_settings": "Other settings"
     },
     "blacklisted_tags": {
         "remove": "Remove",
