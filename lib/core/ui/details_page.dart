@@ -490,25 +490,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                     valueListenable: isExpanded,
                     builder: (_, expanded, __) => ButtonBar(
                       children: [
-                        expanded
-                            ? const SizedBox.shrink()
-                            : CircularIconButton(
-                                icon: theme == ThemeMode.light
-                                    ? Icon(
-                                        Icons.keyboard_double_arrow_down,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                      )
-                                    : const Icon(
-                                        Icons.keyboard_double_arrow_down),
-                                onPressed: () =>
-                                    controller.animateViewportInsetTo(
-                                        ViewportInset.expanded,
-                                        curve: Curves.easeOut,
-                                        duration:
-                                            const Duration(milliseconds: 150)),
-                              ),
                         ...widget.topRightButtonsBuilder(page, expanded),
                       ],
                     ),

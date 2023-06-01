@@ -35,7 +35,6 @@ import 'package:boorusama/core/ui/recommend_character_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/swipe_target_image.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
-import 'package:boorusama/functional.dart';
 
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {
   throw UnimplementedError();
@@ -378,16 +377,13 @@ class DanbooruPostStatsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final comments = ref.watch(danbooruCommentsProvider)[post.id];
+    final comments = ref.watch(danbooruCommentProvider(post.id));
 
     return RepaintBoundary(
-      child: comments.toOption().fold(
-            () => const SizedBox.shrink(),
-            (comments) => PostStatsTile(
-              post: post,
-              totalComments: comments.length,
-            ),
-          ),
+      child: PostStatsTile(
+        post: post,
+        totalComments: comments?.length ?? 0,
+      ),
     );
   }
 }
