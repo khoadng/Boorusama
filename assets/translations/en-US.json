@@ -48,8 +48,6 @@
                 "cancel": "Cancel"
             },
             "view_in_browser": "View in browser",
-            "has_parent_notice": "This post belongs to a parent and has siblings",
-            "has_children_notice": "This post has children",
             "file_details": "File details",
             "size": "Size",
             "resolution": "Resolution",
@@ -73,7 +71,8 @@
                 "other": "Points"
             },
             "source_label": "Source",
-            "related_posts": "Related posts"
+            "related_posts": "Related posts",
+            "add_to_bookmark": "Add to bookmark"
         },
         "parent_child": {
             "children_of": "Children of"
@@ -183,11 +182,6 @@
             "infinite_scroll": "Infinite scroll",
             "pagination": "Pagination"
         },
-        "details_style": {
-            "details_style": "Default details style",
-            "post_focused": "Post focused",
-            "image_focused": "Image focused"
-        },
         "image_list": {
             "image_list": "Image list",
             "standard": "Standard",
@@ -242,7 +236,6 @@
             "clear_cache": "Clear",
             "cache_size_info": "{0} Mb in {1} files"
         },
-        "safe_mode": "Safe Mode",
         "debug_logs": {
             "debug_logs": "Debug logs",
             "logs_copied": "Logs copied to clipboard"
@@ -409,5 +402,16 @@
             "title": "Blacklist",
             "empty_blacklist": "No blacklisted tags"
         }
+    },
+    "bookmark": {
+        "added": "Bookmark added",
+        "failed_to_add": "Failed to add bookmark",
+        "many_added": "{0} bookmarks added",
+        "failed_to_add_many": "Failed to add bookmarks",
+        "removed": "Bookmark removed",
+        "updated": "Bookmark updated",
+        "failed_to_remove": "Failed to remove bookmark",
+        "failed_to_update": "Failed to update bookmark",
+        "failed_to_load": "Failed to load bookmarks: {0}"
     }
 }
