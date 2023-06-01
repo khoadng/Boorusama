@@ -100,10 +100,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   value: 'view_original',
                   child: const Text('post.image_fullview.view_original').tr(),
                 ),
-              const PopupMenuItem(
-                value: 'toggle_slide_show',
-                child: Text('Toggle slide show'),
-              ),
+              // const PopupMenuItem(
+              //   value: 'toggle_slide_show',
+              //   child: Text('Toggle slide show'),
+              // ),
             ],
           ),
         ),
