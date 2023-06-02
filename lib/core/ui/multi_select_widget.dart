@@ -172,7 +172,7 @@ class _SelectableItemState extends State<SelectableItem>
           child: child,
         ),
         child: Stack(
-          alignment: Alignment.bottomLeft,
+          alignment: Alignment.bottomRight,
           children: [
             widget.itemBuilder(context, widget.index),
             if (widget.isSelected)
