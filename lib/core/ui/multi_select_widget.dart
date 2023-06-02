@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'multi_select_controller.dart';
@@ -90,15 +91,23 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
                 ? GestureDetector(
                     onTap: () => _controller.toggleSelection(item),
                     child: Stack(
-                      alignment: Alignment.topRight,
+                      alignment: Alignment.bottomLeft,
                       children: [
                         widget.itemBuilder(context, index),
                         if (multiSelect &&
                             _controller.selectedItems.contains(item))
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child:
-                                Icon(Icons.check_circle, color: Colors.green),
+                          Container(
+                            margin: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              FontAwesomeIcons.check,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
                           ),
                       ],
                     ),
