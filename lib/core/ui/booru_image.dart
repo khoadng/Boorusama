@@ -135,10 +135,6 @@ class ImagePlaceHolder extends StatelessWidget {
         color: Theme.of(context).cardColor,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 1,
-        ),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) => Container(

@@ -86,31 +86,14 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
           context,
           widget.items,
           (context, index) {
-            var item = widget.items[index];
             return multiSelect
-                ? GestureDetector(
-                    onTap: () => _controller.toggleSelection(item),
-                    child: Stack(
-                      alignment: Alignment.bottomLeft,
-                      children: [
-                        widget.itemBuilder(context, index),
-                        if (multiSelect &&
-                            _controller.selectedItems.contains(item))
-                          Container(
-                            margin: const EdgeInsets.all(8.0),
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              FontAwesomeIcons.check,
-                              size: 18,
-                              color: Theme.of(context).colorScheme.onBackground,
-                            ),
-                          ),
-                      ],
-                    ),
+                ? SelectableItem(
+                    index: index,
+                    isSelected:
+                        _controller.selectedItems.contains(widget.items[index]),
+                    onTap: () =>
+                        _controller.toggleSelection(widget.items[index]),
+                    itemBuilder: widget.itemBuilder,
                   )
                 : widget.itemBuilder(context, index);
           },
@@ -118,5 +101,97 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
         bottomSheet: multiSelect && widget.footerBuilder != null
             ? widget.footerBuilder!(context, _controller.selectedItems)
             : const SizedBox.shrink());
+  }
+}
+
+class SelectableItem extends StatefulWidget {
+  final int index;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final IndexedWidgetBuilder itemBuilder;
+
+  const SelectableItem({
+    Key? key,
+    required this.isSelected,
+    required this.onTap,
+    required this.itemBuilder,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  State<SelectableItem> createState() => _SelectableItemState();
+}
+
+class _SelectableItemState extends State<SelectableItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 80),
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.97,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(SelectableItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.isSelected != widget.isSelected) {
+      _animationController
+          .forward()
+          .then((value) => _animationController.reverse());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) => Transform.scale(
+          scale: _scaleAnimation.value,
+          child: child,
+        ),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            widget.itemBuilder(context, widget.index),
+            if (widget.isSelected)
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  FontAwesomeIcons.check,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
