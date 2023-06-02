@@ -35,6 +35,7 @@ String getHost(Uri uri) {
     'youtu.be': 'https://youtube.com',
     'tumblr.com': 'https://tumblr.com',
     'biligame.com': 'https://bilibili.com',
+    'dlsite.jp': 'https://dlsite.jp',
   };
 
   for (final mapping in hostMappings.entries) {
