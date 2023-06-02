@@ -151,6 +151,7 @@ class _SearchBar extends ConsumerWidget {
 
     return BooruSearchBar(
       leading: IconButton(
+        splashRadius: 16,
         onPressed: () => Navigator.of(context).pop(),
         icon: const Icon(
           Icons.arrow_back,

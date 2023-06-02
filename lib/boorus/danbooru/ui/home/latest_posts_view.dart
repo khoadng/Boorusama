@@ -109,6 +109,7 @@ class _AppBar extends StatelessWidget {
         enabled: false,
         leading: onMenuTap != null
             ? IconButton(
+                splashRadius: 16,
                 icon: const Icon(Icons.menu),
                 onPressed: () => onMenuTap!(),
               )

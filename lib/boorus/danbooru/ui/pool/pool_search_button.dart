@@ -16,6 +16,7 @@ class PoolSearchButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
+      splashRadius: 24,
       onPressed: () {
         goToPoolSearchPage(context, ref);
       },

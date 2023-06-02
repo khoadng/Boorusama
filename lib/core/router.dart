@@ -448,6 +448,7 @@ void goToQuickSearchPage(
                   : SimpleTagSearchView(
                       onSubmitted: onSubmitted,
                       backButton: IconButton(
+                        splashRadius: 16,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),
@@ -475,6 +476,7 @@ void goToQuickSearchPage(
                       onSubmitted: (_, text) =>
                           onSubmitted?.call(context, text),
                       backButton: IconButton(
+                        splashRadius: 16,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),
@@ -504,6 +506,7 @@ void goToQuickSearchPage(
                       onSubmitted: (_, text) =>
                           onSubmitted?.call(context, text),
                       backButton: IconButton(
+                        splashRadius: 16,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),

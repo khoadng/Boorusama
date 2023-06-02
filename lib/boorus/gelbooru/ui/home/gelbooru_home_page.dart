@@ -68,6 +68,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                               enabled: false,
                               leading: widget.onMenuTap != null
                                   ? IconButton(
+                                      splashRadius: 16,
                                       icon: const Icon(Icons.menu),
                                       onPressed: () => widget.onMenuTap?.call(),
                                     )

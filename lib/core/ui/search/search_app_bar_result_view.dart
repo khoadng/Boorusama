@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 
 class SearchAppBarResultView extends ConsumerWidget {
@@ -18,32 +17,20 @@ class SearchAppBarResultView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliverAppBar(
       titleSpacing: 0,
-      toolbarHeight: kToolbarHeight * 1.9,
+      toolbarHeight: kToolbarHeight * 1.2,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       shadowColor: Colors.transparent,
-      title: SizedBox(
-        height: kToolbarHeight * 1.85,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: BooruSearchBar(
-                enabled: false,
-                onTap: () =>
-                    ref.read(searchProvider.notifier).goToSuggestions(),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () =>
-                      ref.read(searchProvider.notifier).resetToOptions(),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            const SelectedTagListWithData(),
-          ],
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: BooruSearchBar(
+          enabled: false,
+          onTap: () => ref.read(searchProvider.notifier).goToSuggestions(),
+          leading: IconButton(
+            splashRadius: 16,
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => ref.read(searchProvider.notifier).resetToOptions(),
+          ),
         ),
       ),
       floating: true,
