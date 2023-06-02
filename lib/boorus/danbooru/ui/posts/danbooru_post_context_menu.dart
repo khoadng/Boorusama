@@ -33,6 +33,8 @@ class DanbooruPostContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booru = ref.watch(currentBooruProvider);
+    final bookmarkState = ref.watch(bookmarkProvider);
+    final isBookmarked = bookmarkState.isBookmarked(post, booru.booruType);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -50,15 +52,24 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             'download.download'.tr(),
             onPressed: () => download(post),
           ),
-          ContextMenuButtonConfig(
-            'post.detail.add_to_bookmark'.tr(),
-            onPressed: () => ref.bookmarks
-              ..addBookmarkWithToast(
-                post.sampleImageUrl,
-                booru,
-                post,
-              ),
-          ),
+          if (!isBookmarked)
+            ContextMenuButtonConfig(
+              'post.detail.add_to_bookmark'.tr(),
+              onPressed: () => ref.bookmarks
+                ..addBookmarkWithToast(
+                  post.sampleImageUrl,
+                  booru,
+                  post,
+                ),
+            )
+          else
+            ContextMenuButtonConfig(
+              'post.detail.remove_from_bookmark'.tr(),
+              onPressed: () => ref.bookmarks
+                ..removeBookmarkWithToast(
+                  bookmarkState.getBookmark(post, booru.booruType)!,
+                ),
+            ),
           if (hasAccount)
             ContextMenuButtonConfig(
               'post.action.add_to_favorite_group'.tr(),
