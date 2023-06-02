@@ -87,7 +87,9 @@ Widget createRandomPlaceholderContainer(
 }) {
   return AspectRatio(
     aspectRatio: _aspectRatio[Random().nextInt(_aspectRatio.length - 1)],
-    child: const ImagePlaceHolder(),
+    child: ImagePlaceHolder(
+      borderRadius: borderRadius,
+    ),
   );
 }
 
