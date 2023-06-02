@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
@@ -38,13 +37,6 @@ class MoebooruMoreActionButton extends ConsumerWidget {
                 case 'download':
                   download(post);
                   break;
-                case 'add_to_bookmark':
-                  ref.bookmarks.addBookmarkWithToast(
-                    post.sampleImageUrl,
-                    booru,
-                    post,
-                  );
-                  break;
                 case 'view_in_browser':
                   launchExternalUrl(
                     post.getUriLink(booru.url),
@@ -61,10 +53,6 @@ class MoebooruMoreActionButton extends ConsumerWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
-              ),
-              PopupMenuItem(
-                value: 'add_to_bookmark',
-                child: const Text('post.detail.add_to_bookmark').tr(),
               ),
               PopupMenuItem(
                 value: 'view_in_browser',

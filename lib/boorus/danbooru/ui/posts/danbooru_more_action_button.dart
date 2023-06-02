@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
@@ -44,13 +43,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'download':
                   download(post);
                   break;
-                case 'add_to_bookmark':
-                  ref.bookmarks.addBookmarkWithToast(
-                    post.sampleImageUrl,
-                    booru,
-                    post,
-                  );
-                  break;
                 case 'add_to_favgroup':
                   goToAddToFavoriteGroupSelectionPage(context, [post]);
                   break;
@@ -76,10 +68,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
-              ),
-              PopupMenuItem(
-                value: 'add_to_bookmark',
-                child: const Text('post.detail.add_to_bookmark').tr(),
               ),
               if (authenticationState is Authenticated)
                 const PopupMenuItem(
