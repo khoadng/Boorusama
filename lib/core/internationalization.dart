@@ -74,6 +74,7 @@ Future<void> ensureI18nInitialized() async {
   await EasyLocalization.ensureInitialized();
 
   //TODO: shouldn't hardcode language.
+  setLocaleMessages('en-US', EnMessages());
   setLocaleMessages('vi-VN', ViMessages());
   setLocaleMessages('ru-RU', RuMessages());
   setLocaleMessages('be-BY', RuMessages());

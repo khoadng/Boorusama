@@ -104,25 +104,25 @@ class ImageGridItem extends StatelessWidget {
             ),
           if (score != null)
             Positioned(
-              top: 4,
-              right: 4,
+              bottom: 4,
+              left: 4,
               child: Container(
-                constraints: const BoxConstraints(minWidth: 32),
+                constraints: const BoxConstraints(minWidth: 28),
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 decoration: const BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Text(
                   NumberFormat.compact().format(score),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: score! > 0
-                        ? Colors.green
+                        ? Colors.red
                         : score! < 0
-                            ? Colors.red
+                            ? Colors.blue
                             : Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
