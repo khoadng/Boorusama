@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/application/tags/tags_providers.dart';
 import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
@@ -32,7 +31,6 @@ import 'package:boorusama/core/ui/post_video.dart';
 import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/recommend_character_list.dart';
-import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/swipe_target_image.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 
@@ -340,7 +338,10 @@ class _DanbooruPostDetailsPageState
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
         PoolTiles(pools: pools),
-        InformationSection(post: post),
+        InformationSection(
+          post: post,
+          showSource: true,
+        ),
         const Divider(height: 8, thickness: 1),
         RepaintBoundary(
           child: DanbooruPostActionToolbar(post: post),
@@ -357,13 +358,6 @@ class _DanbooruPostDetailsPageState
                 .where((e) => e.postId == post.id)
                 .map((e) => e.name)
                 .toList()),
-        switch (post.source) {
-          WebSource s => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: SourceSection(source: s),
-            ),
-          _ => const SizedBox.shrink(),
-        },
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
       ],
