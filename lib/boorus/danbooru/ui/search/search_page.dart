@@ -193,6 +193,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             return ResultView(
               headerBuilder: () => [
                 const SearchAppBarResultView(),
+                const SliverToBoxAdapter(child: SelectedTagListWithData()),
                 const SliverToBoxAdapter(child: SearchDivider(height: 7)),
               ],
             );

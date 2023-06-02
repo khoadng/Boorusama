@@ -256,6 +256,7 @@ class _SearchBarState extends ConsumerState<_SearchBar> {
       ),
       trailing: query.isNotEmpty
           ? IconButton(
+              splashRadius: 16,
               icon: const Icon(Icons.close),
               onPressed: () => ref.read(_queryProvider.notifier).state = '',
             )

@@ -176,6 +176,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                 controller: controller,
                 sliverHeaderBuilder: (context) => [
                   const SearchAppBarResultView(),
+                  const SliverToBoxAdapter(child: SelectedTagListWithData()),
                   const SliverToBoxAdapter(child: SearchDivider(height: 7)),
                   const SliverToBoxAdapter(
                     child: Row(

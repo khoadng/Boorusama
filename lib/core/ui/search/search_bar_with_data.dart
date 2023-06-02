@@ -31,6 +31,7 @@ class SearchBarWithData extends ConsumerWidget {
       focus: focusNode,
       queryEditingController: queryEditingController,
       leading: IconButton(
+        splashRadius: 16,
         icon: const Icon(Icons.arrow_back),
         onPressed: () => displayState != DisplayState.options
             ? ref.read(searchProvider.notifier).resetToOptions()
@@ -38,6 +39,7 @@ class SearchBarWithData extends ConsumerWidget {
       ),
       trailing: currentQuery.isNotEmpty
           ? IconButton(
+              splashRadius: 16,
               icon: const Icon(Icons.close),
               onPressed: () =>
                   ref.read(searchQueryProvider.notifier).state = '',

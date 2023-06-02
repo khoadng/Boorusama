@@ -25,6 +25,7 @@ class DownloadEmptyTagView extends ConsumerWidget {
         padding: const EdgeInsets.all(4),
         child: SimpleTagSearchView(
           backButton: IconButton(
+            splashRadius: 16,
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.arrow_back),
           ),
