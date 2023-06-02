@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:recase/recase.dart';
@@ -7,9 +7,14 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/theme/theme_mode.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
+import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/functional.dart';
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
@@ -44,6 +49,8 @@ class InformationSection extends StatelessWidget {
                           .titleCase,
                   overflow: TextOverflow.fade,
                   style: Theme.of(context).textTheme.titleLarge,
+                  maxLines: 1,
+                  softWrap: false,
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -54,15 +61,55 @@ class InformationSection extends StatelessWidget {
                           .titleCase,
                   overflow: TextOverflow.fade,
                   style: Theme.of(context).textTheme.bodyMedium,
+                  maxLines: 1,
+                  softWrap: false,
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  dateTimeToStringTimeAgo(
-                    post.createdAt,
-                    locale: Localizations.localeOf(context),
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Row(
+                  children: [
+                    if (showSource)
+                      Flexible(
+                        child: post.artistTags.firstOrNull.toOption().fold(
+                              () => const SizedBox.shrink(),
+                              (artist) => Material(
+                                borderRadius: BorderRadius.circular(6),
+                                color: getTagColor(
+                                  TagCategory.artist,
+                                  ThemeMode.amoledDark,
+                                ),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(6),
+                                  onTap: () => goToArtistPage(context, artist),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 2,
+                                      horizontal: 4,
+                                    ),
+                                    child: Text(
+                                      artist.removeUnderscoreWithSpace(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                      ),
+                    if (showSource)
+                      post.artistTags.firstOrNull.toOption().fold(
+                            () => const SizedBox.shrink(),
+                            (_) => const SizedBox(width: 5),
+                          ),
+                    Text(
+                      dateTimeToStringTimeAgo(
+                        post.createdAt,
+                        locale: Localizations.localeOf(context),
+                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                )
               ],
             ),
           ),

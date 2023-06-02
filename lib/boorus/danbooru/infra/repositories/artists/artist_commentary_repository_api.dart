@@ -25,7 +25,8 @@ class ArtistCommentaryRepositoryApi
     int postId, {
     CancelToken? cancelToken,
   }) async {
-    if (exist('$postId')) return Future.value(get('$postId'));
+    final cached = get('$postId');
+    if (cached != null) return cached;
 
     try {
       final value = await _api.getArtistCommentary(
