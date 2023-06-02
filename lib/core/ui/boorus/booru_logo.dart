@@ -14,7 +14,7 @@ class BooruLogo extends StatelessWidget {
     required this.booru,
   });
 
-  final BooruConfig booru;
+  final Booru booru;
 
   @override
   Widget build(BuildContext context) {
