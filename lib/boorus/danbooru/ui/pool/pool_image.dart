@@ -27,7 +27,7 @@ class PoolImage extends ConsumerWidget {
     return cover != null
         ? cover.url != null
             ? BooruImage(
-                aspectRatio: cover.aspectRatio,
+                aspectRatio: 0.6,
                 imageUrl: cover.url!,
                 fit: BoxFit.cover,
               )

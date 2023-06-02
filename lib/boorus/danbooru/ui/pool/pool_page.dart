@@ -59,7 +59,7 @@ class _PostList extends ConsumerWidget {
             builderDelegate: builder,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.5,
+              childAspectRatio: 0.6,
             ),
           ),
         ),
