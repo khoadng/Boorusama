@@ -67,40 +67,38 @@ class InformationSection extends StatelessWidget {
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    if (showSource)
-                      Flexible(
-                        child: post.artistTags.firstOrNull.toOption().fold(
-                              () => const SizedBox.shrink(),
-                              (artist) => Material(
+                    Flexible(
+                      child: post.artistTags.firstOrNull.toOption().fold(
+                            () => const SizedBox.shrink(),
+                            (artist) => Material(
+                              borderRadius: BorderRadius.circular(6),
+                              color: getTagColor(
+                                TagCategory.artist,
+                                ThemeMode.amoledDark,
+                              ),
+                              child: InkWell(
                                 borderRadius: BorderRadius.circular(6),
-                                color: getTagColor(
-                                  TagCategory.artist,
-                                  ThemeMode.amoledDark,
-                                ),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(6),
-                                  onTap: () => goToArtistPage(context, artist),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 2,
-                                      horizontal: 4,
-                                    ),
-                                    child: Text(
-                                      artist.removeUnderscoreWithSpace(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                onTap: () => goToArtistPage(context, artist),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 4,
+                                  ),
+                                  child: Text(
+                                    artist.removeUnderscoreWithSpace(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                      ),
-                    if (showSource)
-                      post.artistTags.firstOrNull.toOption().fold(
-                            () => const SizedBox.shrink(),
-                            (_) => const SizedBox(width: 5),
                           ),
+                    ),
+                    post.artistTags.firstOrNull.toOption().fold(
+                          () => const SizedBox.shrink(),
+                          (_) => const SizedBox(width: 5),
+                        ),
                     Text(
                       dateTimeToStringTimeAgo(
                         post.createdAt,
