@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -12,7 +11,8 @@ import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/ui/comment/widgets/youtube_preview_box.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
+import 'package:boorusama/utils/time_utils.dart';
 import 'comment_header.dart';
 
 class CommentItem extends ConsumerWidget {
@@ -60,10 +60,7 @@ class CommentItem extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
-              '${'comment.list.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                comment.updatedAt,
-                locale: Localizations.localeOf(context),
-              )}',
+              '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               style: TextStyle(
                 color: Theme.of(context).hintColor,
                 fontStyle: FontStyle.italic,

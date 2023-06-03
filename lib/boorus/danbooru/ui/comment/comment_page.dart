@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/comments.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
 import 'widgets/comment_section.dart';
 
 class CommentPage extends ConsumerStatefulWidget {

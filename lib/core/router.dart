@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/ui/blacklists.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/utils.dart';
+import 'package:boorusama/i18n.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
 import 'platform.dart';

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -17,6 +16,8 @@ import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({
@@ -140,7 +141,8 @@ class _FavoriteGroupList extends ConsumerWidget {
             title: Text(
               group.name.replaceAll('_', ' '),
             ),
-            subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
+            subtitle: Text(group.updatedAt
+                .fuzzify(locale: Localizations.localeOf(context))),
             trailing: Text('favorite_groups.group_item_counter'.plural(
               group.postIds.length,
             )),

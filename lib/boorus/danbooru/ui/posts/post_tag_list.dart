@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
@@ -22,6 +21,7 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 
 class PostTagList extends ConsumerWidget {
   const PostTagList({

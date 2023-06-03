@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -24,6 +23,7 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/home/side_bar_menu.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({

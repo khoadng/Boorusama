@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -11,6 +10,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/display.dart';
+import 'package:boorusama/i18n.dart';
 
 class PoolOptionsHeader extends ConsumerWidget {
   const PoolOptionsHeader({

@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 // Project imports:
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/i18n.dart';
 
 RateMyApp _createRateMyApp() => RateMyApp(
       minDays: 14,

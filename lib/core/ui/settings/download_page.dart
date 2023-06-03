@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +15,7 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/ui/settings/widgets/settings_tile.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/i18n.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({

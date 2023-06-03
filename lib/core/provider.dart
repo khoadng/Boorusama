@@ -23,7 +23,6 @@ import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
-import 'package:boorusama/core/internationalization.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
 final booruFactoryProvider =
@@ -132,8 +131,4 @@ final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
       'User-Agent': userAgentGenerator.generate(),
     },
   );
-});
-
-final supportedLanguagesProvider = Provider<List<BooruLanguage>>((ref) {
-  throw UnimplementedError();
 });

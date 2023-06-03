@@ -43,10 +43,10 @@ import 'package:boorusama/core/infra/repositories/search_histories.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/settings/settings.dart';
 import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
-import 'package:boorusama/core/internationalization.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'app.dart';
+import 'i18n.dart';
 
 void main() async {
   final uiLogger = UILogger();

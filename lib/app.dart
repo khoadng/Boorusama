@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/i18n.dart';
 import 'package:boorusama/router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +15,8 @@ import 'package:boorusama/boorus/danbooru/ui/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
@@ -76,10 +77,7 @@ class PoolDetailPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
-                '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                  pool.updatedAt,
-                  locale: Localizations.localeOf(context),
-                )}',
+                '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               ),
             ),
           ),

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recase/recase.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/ui/downloads/widgets/bulk_download_tile.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
 
 enum BulkDownloadFilter {
   all,

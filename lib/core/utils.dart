@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -129,21 +128,6 @@ Future<bool> launchExternalUrlString(
 
 extension StringX on String {
   String removeUnderscoreWithSpace() => replaceAll('_', ' ');
-}
-
-String dateTimeToStringTimeAgo(
-  DateTime time, {
-  Locale? locale,
-}) {
-  final now = DateTime.now();
-  final diff = now.difference(time);
-  final ago = now.subtract(diff);
-  final l = locale ?? const Locale('en', 'US');
-  final str = l.countryCode != null
-      ? '${l.languageCode}-${l.countryCode}'
-      : l.languageCode;
-
-  return timeago.format(ago, locale: str);
 }
 
 void showSimpleSnackBar({

@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/ui/search/selected_tag_chip.dart';
+import 'package:boorusama/i18n.dart';
 
 class SelectedTagList extends StatelessWidget {
   const SelectedTagList({
