@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
+import 'package:boorusama/core/ui/utils.dart';
 
 class DownloadEmptyTagView extends ConsumerWidget {
   const DownloadEmptyTagView({
@@ -29,8 +29,7 @@ class DownloadEmptyTagView extends ConsumerWidget {
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.arrow_back),
           ),
-          textColorBuilder: (tag) => generateDanbooruAutocompleteTagColor(
-              tag, theme), //FIXME: should be a provider
+          textColorBuilder: (tag) => generateAutocompleteTagColor(tag, theme),
           closeOnSelected: false,
           ensureValidTag: false,
           onSelected: (tag) {

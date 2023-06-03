@@ -15,9 +15,7 @@ import 'package:page_transition/page_transition.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
@@ -33,6 +31,7 @@ import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
 import 'package:boorusama/core/ui/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
+import 'package:boorusama/core/ui/utils.dart';
 import 'package:boorusama/functional.dart';
 import 'domain/searches.dart';
 import 'domain/tags/metatag.dart';
@@ -443,7 +442,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateDanbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: onSubmitted,
@@ -455,7 +454,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateDanbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     ),
             );
           case BooruType.gelbooru:
@@ -470,7 +469,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -483,7 +482,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     ),
             );
           case BooruType.konachan:
@@ -500,7 +499,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -513,7 +512,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateGelbooruAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, theme),
                     ),
             );
         }

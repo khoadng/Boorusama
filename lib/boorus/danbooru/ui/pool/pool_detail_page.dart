@@ -1,11 +1,7 @@
-// Dart imports:
-import 'dart:collection';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,11 +21,9 @@ class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
     super.key,
     required this.pool,
-    required this.postIds,
   });
 
   final Pool pool;
-  final Queue<int> postIds;
 
   static Widget of(
     BuildContext context, {
@@ -39,7 +33,6 @@ class PoolDetailPage extends ConsumerWidget {
         builder: (_) => CustomContextMenuOverlay(
           child: PoolDetailPage(
             pool: pool,
-            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
           ),
         ),
       );
