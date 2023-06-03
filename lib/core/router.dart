@@ -19,8 +19,6 @@ import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
-import 'package:boorusama/core/ui/boorus/add_booru_page.dart';
-import 'package:boorusama/core/ui/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/core/ui/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/ui/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/ui/utils.dart';
@@ -196,23 +194,6 @@ void goToSearchHistoryPage(
       ),
     ),
   );
-}
-
-void goToManageBooruPage(BuildContext context) {
-  Navigator.of(context).push(PageTransition(
-    type: PageTransitionType.rightToLeft,
-    child: const ManageBooruPage(),
-  ));
-}
-
-void goToAddBooruPage(
-  BuildContext context, {
-  bool setCurrentBooruOnSubmit = false,
-}) {
-  Navigator.of(context).push(PageTransition(
-    type: PageTransitionType.rightToLeft,
-    child: AddBooruPage(setCurrentBooruOnSubmit: setCurrentBooruOnSubmit),
-  ));
 }
 
 void goToQuickSearchPage(

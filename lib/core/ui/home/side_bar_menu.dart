@@ -112,7 +112,7 @@ class SideBarMenu extends ConsumerWidget {
               title: const Text('sideMenu.manage_boorus').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
-                goToManageBooruPage(context);
+                context.go('/boorus');
               },
             ),
             _SideMenuTile(

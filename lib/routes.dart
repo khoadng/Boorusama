@@ -6,12 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 import 'package:boorusama/utils/string_utils.dart';
 import 'boorus/danbooru/router.dart';
 import 'core/application/app_rating.dart';
 import 'core/platform.dart';
 import 'core/ui/bookmarks/bookmark_details.dart';
 import 'core/ui/bookmarks/bookmark_page.dart';
+import 'core/ui/boorus/add_booru_page.dart';
+import 'core/ui/boorus/manage_booru_user_page.dart';
 import 'core/ui/custom_context_menu_overlay.dart';
 import 'core/ui/route_transition_builder.dart';
 import 'core/ui/settings/appearance_page.dart';
@@ -27,7 +31,35 @@ import 'core/ui/widgets/conditional_parent_widget.dart';
 import 'home_page.dart';
 import 'router.dart';
 
+class BoorusRoutes {
+  BoorusRoutes._();
+
+  static GoRoute add() => GoRoute(
+        path: 'add',
+        builder: (context, state) => AddBooruPage(
+          setCurrentBooruOnSubmit:
+              state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+        ),
+      );
+
+  static GoRoute update(Ref ref) => GoRoute(
+        path: ':id/update',
+        builder: (context, state) {
+          final id = state.pathParameters['id']?.toInt();
+          final config = ref
+              .read(booruConfigProvider)
+              .firstWhere((element) => element.id == id);
+
+          return ConfigBooruPage(
+            arg: UpdateConfig(config),
+          );
+        },
+      );
+}
+
 class SettingsRoutes {
+  SettingsRoutes._();
+
   static GoRoute appearance() => GoRoute(
         path: 'appearance',
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -114,8 +146,22 @@ class Routes {
           ),
         ),
         routes: [
+          boorus(ref),
           settings(),
           bookmarks(),
+        ],
+      );
+
+  static GoRoute boorus(Ref ref) => GoRoute(
+        path: 'boorus',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ManageBooruPage(),
+          transitionsBuilder: leftToRightTransitionBuilder(),
+        ),
+        routes: [
+          BoorusRoutes.add(),
+          BoorusRoutes.update(ref),
         ],
       );
 

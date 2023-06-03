@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
-import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
+import 'package:boorusama/router.dart';
 
 class ManageBooruPage extends ConsumerWidget {
   const ManageBooruPage({
@@ -27,7 +25,7 @@ class ManageBooruPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => goToAddBooruPage(context),
+        onPressed: () => context.go('/boorus/add'),
         child: const Icon(Icons.add),
       ),
       body: ListView.builder(
@@ -44,16 +42,11 @@ class ManageBooruPage extends ConsumerWidget {
             trailing: !isCurrent
                 ? IconButton(
                     onPressed: () =>
-                        ref.read(booruConfigProvider.notifier).add(config),
+                        ref.read(booruConfigProvider.notifier).delete(config),
                     icon: const Icon(Icons.close),
                   )
                 : null,
-            onTap: () => showMaterialModalBottomSheet(
-              context: context,
-              builder: (_) => ConfigBooruPage(
-                arg: UpdateConfig(config),
-              ),
-            ),
+            onTap: () => context.go('/boorus/${config.id}/update'),
           );
         },
       ),
