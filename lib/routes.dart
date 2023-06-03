@@ -36,6 +36,7 @@ class BoorusRoutes {
 
   static GoRoute add() => GoRoute(
         path: 'add',
+        name: '/boorus/add',
         builder: (context, state) => AddBooruPage(
           setCurrentBooruOnSubmit:
               state.queryParameters["setAsCurrent"]?.toBool() ?? false,
@@ -44,14 +45,19 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: ':id/update',
-        builder: (context, state) {
-          final id = state.pathParameters['id']?.toInt();
+        pageBuilder: (context, state) {
+          final idParam = state.pathParameters['id'];
+          final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
-          return ConfigBooruPage(
-            arg: UpdateConfig(config),
+          return MaterialPage(
+            key: state.pageKey,
+            name: '/boorus/$idParam/update',
+            child: ConfigBooruPage(
+              arg: UpdateConfig(config),
+            ),
           );
         },
       );
@@ -62,8 +68,10 @@ class SettingsRoutes {
 
   static GoRoute appearance() => GoRoute(
         path: 'appearance',
+        name: '/settings/appearance',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const AppearancePage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -71,8 +79,10 @@ class SettingsRoutes {
 
   static GoRoute download() => GoRoute(
         path: 'download',
+        name: '/settings/download',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const DownloadPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -80,8 +90,10 @@ class SettingsRoutes {
 
   static GoRoute language() => GoRoute(
         path: 'language',
+        name: '/settings/language',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const LanguagePage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -89,8 +101,10 @@ class SettingsRoutes {
 
   static GoRoute performance() => GoRoute(
         path: 'performance',
+        name: '/settings/performance',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const PerformancePage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -98,8 +112,10 @@ class SettingsRoutes {
 
   static GoRoute privacy() => GoRoute(
         path: 'privacy',
+        name: '/settings/privacy',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const PrivacyPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -107,8 +123,10 @@ class SettingsRoutes {
 
   static GoRoute search() => GoRoute(
         path: 'search',
+        name: '/settings/search',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const SearchSettingsPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -116,8 +134,10 @@ class SettingsRoutes {
 
   static GoRoute changelog() => GoRoute(
         path: 'changelog',
+        name: '/settings/changelog',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const ChangelogPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -154,8 +174,10 @@ class Routes {
 
   static GoRoute boorus(Ref ref) => GoRoute(
         path: 'boorus',
+        name: '/boorus',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: const ManageBooruPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
@@ -167,15 +189,20 @@ class Routes {
 
   static GoRoute bookmarks() => GoRoute(
         path: 'bookmarks',
+        name: '/bookmarks',
         pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
           child: const BookmarkPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
           GoRoute(
             path: 'details',
+            name: '/bookmarks/details',
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
+              name: '${state.name}?index=${state.queryParameters['index']}',
               child: BookmarkDetailsPage(
                 initialIndex: state.queryParameters['index']?.toInt() ?? 0,
               ),
@@ -187,8 +214,10 @@ class Routes {
 
   static GoRoute settings() => GoRoute(
         path: 'settings',
+        name: '/settings',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          name: state.name,
           child: isMobilePlatform()
               ? const SettingsPage()
               : const SettingsPageDesktop(),

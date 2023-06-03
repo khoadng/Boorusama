@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/ui/settings/about_page.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';
 import 'package:boorusama/core/ui/settings/debug_logs_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
@@ -129,7 +130,10 @@ class SettingsPage extends ConsumerWidget {
                           ListTile(
                             title: const Text('settings.information').tr(),
                             leading: const Icon(Icons.info),
-                            onTap: () => context.go('/settings/about'),
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (context) => const AboutPage(),
+                            ),
                           ),
                         ],
                       ),

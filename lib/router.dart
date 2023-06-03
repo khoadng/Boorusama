@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
+import 'package:boorusama/core/infra/loggers/logger.dart';
 import 'core/analytics.dart';
 import 'core/provider.dart';
 import 'routes.dart';
@@ -14,10 +16,12 @@ export 'package:go_router/go_router.dart' hide GoRouterHelper;
 
 final routerProvider = Provider((ref) {
   final settings = ref.watch(settingsProvider);
+  final logger = ref.watch(loggerProvider);
 
   return GoRouter(
     observers: [
       if (isAnalyticsEnabled(settings)) getAnalyticsObserver(),
+      if (!kReleaseMode) AppNavigatorObserver(logger),
     ],
     routes: [
       Routes.home(ref),
@@ -38,6 +42,24 @@ extension RouterX on BuildContext {
         location,
         extra: extra,
       );
+}
+
+class AppNavigatorObserver extends NavigatorObserver {
+  AppNavigatorObserver(this.logger);
+
+  final LoggerService logger;
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    logger.logI('Router',
+        'Pushed from ${previousRoute?.settings.name} to ${route.settings.name}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    logger.logI('Router',
+        'Popped from ${route.settings.name} to ${previousRoute?.settings.name}');
+  }
 }
 
 class DialogPage<T> extends Page<T> {
