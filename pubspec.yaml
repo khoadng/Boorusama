@@ -67,7 +67,7 @@ dependencies:
   intl: ^0.18.0
   jiffy: ^6.1.0
   like_button: ^2.0.5
-  lottie: ^2.3.2
+  lottie: ^2.4.0
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^3.0.0-pre
   number_inc_dec:
