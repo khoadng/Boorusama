@@ -9,11 +9,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';
 import 'package:boorusama/core/ui/editable_mixin.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
+import 'package:boorusama/router.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -101,11 +101,8 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                     final bookmark = state.bookmarks[index];
 
                     return GestureDetector(
-                      onTap: () => goToBookmarkDetailsPage(
-                        context: context,
-                        bookmarks: state.bookmarks,
-                        initialIndex: index,
-                      ),
+                      onTap: () =>
+                          context.go('/bookmarks/details?index=$index'),
                       child: Stack(
                         children: [
                           BooruImage(

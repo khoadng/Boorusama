@@ -1,35 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-RouteTransitionsBuilder parallaxSlideInTransitionBuilder(
-  Widget enterWidget,
-  Widget oldWidget,
-) =>
-    (context, animation, secondaryAnimation, child) => Stack(
-          children: <Widget>[
-            SlideTransition(
-              position: Tween<Offset>(
-                begin: Offset.zero,
-                end: const Offset(-1, 0),
-              ).animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.fastOutSlowIn,
-                ),
-              ),
-              child: oldWidget,
-            ),
-            SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: Offset.zero,
-              ).animate(
-                CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
-              ),
-              child: enterWidget,
-            ),
-          ],
-        );
+// Project imports:
+import 'package:boorusama/core/ui/route_transition_builder.dart';
 
 class ParallaxSlideInPageRoute extends PageRouteBuilder {
   ParallaxSlideInPageRoute({

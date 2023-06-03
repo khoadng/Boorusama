@@ -14,6 +14,7 @@ import 'package:boorusama/core/ui/boorus/booru_logo.dart';
 import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 import 'package:boorusama/core/ui/widgets/square_chip.dart';
+import 'package:boorusama/router.dart';
 
 class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
@@ -119,7 +120,7 @@ class SideBarMenu extends ConsumerWidget {
               title: const Text('sideMenu.your_bookmarks').tr(),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
-                goToBookmarkPage(context);
+                context.go('/bookmarks');
               },
             ),
             _SideMenuTile(
@@ -147,7 +148,7 @@ class SideBarMenu extends ConsumerWidget {
               title: Text('sideMenu.settings'.tr()),
               onTap: () {
                 if (popOnSelect) Navigator.of(context).pop();
-                goToSettingsPage(context);
+                context.go('/settings');
               },
             ),
           ],
