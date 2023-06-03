@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
+import 'package:boorusama/i18n.dart';
 import 'widgets/modal_saved_search_action.dart';
 
 class SavedSearchPage extends ConsumerWidget {

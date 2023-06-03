@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
@@ -10,6 +9,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/ui/pool/pool_grid_item.dart';
+import 'package:boorusama/i18n.dart';
 import 'pool_options_header.dart';
 import 'pool_search_button.dart';
 

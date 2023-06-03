@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts/slide_show_configuration.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/ui/widgets/modal.dart';
+import 'package:boorusama/i18n.dart';
 
 class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({

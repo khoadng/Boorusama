@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:lottie/lottie.dart';
+
+// Project imports:
+import 'package:boorusama/i18n.dart';
 
 class NoDataBox extends StatelessWidget {
   const NoDataBox({

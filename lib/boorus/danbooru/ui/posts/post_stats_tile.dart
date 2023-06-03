@@ -1,13 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:easy_localization/easy_localization.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/i18n.dart';
 
 class PostStatsTile extends StatelessWidget {
   const PostStatsTile({

@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/i18n.dart';
 
 class InfoChips extends StatelessWidget {
   const InfoChips({

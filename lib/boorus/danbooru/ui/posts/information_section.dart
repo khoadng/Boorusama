@@ -15,6 +15,7 @@ import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
@@ -100,10 +101,8 @@ class InformationSection extends StatelessWidget {
                           (_) => const SizedBox(width: 5),
                         ),
                     Text(
-                      dateTimeToStringTimeAgo(
-                        post.createdAt,
-                        locale: Localizations.localeOf(context),
-                      ),
+                      post.createdAt
+                          .fuzzify(locale: Localizations.localeOf(context)),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

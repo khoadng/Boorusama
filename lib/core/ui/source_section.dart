@@ -1,13 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:easy_localization/easy_localization.dart';
-
 // Project imports:
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 
 class SourceSection extends StatelessWidget {
   const SourceSection({

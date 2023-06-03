@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/toast.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,

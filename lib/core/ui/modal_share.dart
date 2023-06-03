@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// Project imports:
+import 'package:boorusama/i18n.dart';
 
 class ModalShare extends StatelessWidget {
   const ModalShare({

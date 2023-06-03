@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/i18n.dart';
 
 class BlacklistedTagsPage extends ConsumerWidget {
   const BlacklistedTagsPage({

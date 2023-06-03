@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 
 class SavedSearchLandingView extends ConsumerWidget {
   const SavedSearchLandingView({super.key});

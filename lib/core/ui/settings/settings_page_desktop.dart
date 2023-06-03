@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +17,7 @@ import 'package:boorusama/core/ui/settings/performance_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({

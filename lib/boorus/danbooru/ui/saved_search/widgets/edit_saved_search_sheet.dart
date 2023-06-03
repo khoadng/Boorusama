@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:basic_utils/basic_utils.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/i18n.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends ConsumerStatefulWidget {

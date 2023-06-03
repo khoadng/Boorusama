@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 import 'pool_grid_item.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {

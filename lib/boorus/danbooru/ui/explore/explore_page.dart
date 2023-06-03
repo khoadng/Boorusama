@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -16,6 +15,7 @@ import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';
 

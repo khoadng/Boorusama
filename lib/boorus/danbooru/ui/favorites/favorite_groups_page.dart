@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/i18n.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
   const FavoriteGroupsPage({

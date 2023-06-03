@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/i18n.dart';
 
 class MoebooruMoreActionButton extends ConsumerWidget {
   const MoebooruMoreActionButton({

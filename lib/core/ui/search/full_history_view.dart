@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/searches.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/utils/time_utils.dart';
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
@@ -53,7 +53,8 @@ class FullHistoryView extends ConsumerWidget {
               animation: animation,
               child: ListTile(
                 title: Text(history.query),
-                subtitle: Text(dateTimeToStringTimeAgo(history.createdAt)),
+                subtitle: Text(history.createdAt
+                    .fuzzify(locale: Localizations.localeOf(context))),
                 onTap: () {
                   onHistoryTap(history.query);
                 },
