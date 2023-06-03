@@ -24,10 +24,10 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   }
 
   Future<void> delete(
-    BooruConfig config,
+    BooruConfig config, {
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
-  ) async {
+  }) async {
     try {
       await ref.read(booruConfigRepoProvider).remove(config);
       final tmp = [...state];

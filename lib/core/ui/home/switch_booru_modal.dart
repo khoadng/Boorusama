@@ -9,8 +9,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/boorus/booru_config_info_tile.dart';
+import 'package:boorusama/router.dart';
 
 class SwitchBooruModal extends ConsumerWidget {
   const SwitchBooruModal({
@@ -45,10 +45,7 @@ class SwitchBooruModal extends ConsumerWidget {
               title: const Text('Add new booru'),
               onTap: () {
                 Navigator.of(context).pop();
-                goToAddBooruPage(
-                  context,
-                  setCurrentBooruOnSubmit: true,
-                );
+                context.go('/boorus/add?setAsCurrent=true');
               },
               leading: const Icon(Icons.add),
             ),
@@ -65,8 +62,6 @@ class SwitchBooruModal extends ConsumerWidget {
                     config: config,
                     isCurrent: false,
                     onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
                       ref
                           .read(currentBooruConfigProvider.notifier)
                           .update(config);

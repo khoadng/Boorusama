@@ -28,4 +28,5 @@ extension StringX on String {
   }
 
   int? toInt() => int.tryParse(this);
+  bool? toBool() => bool.tryParse(this);
 }
