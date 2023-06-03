@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
-import 'user_level_colors.dart';
+import 'package:boorusama/core/ui/user_level_colors.dart';
 
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({

@@ -9,7 +9,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -21,6 +20,7 @@ import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
+import 'package:boorusama/core/ui/utils.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
@@ -181,7 +181,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     Expanded(
                       child: TagSuggestionItemsWithData(
                         textColorBuilder: (tag) =>
-                            generateDanbooruAutocompleteTagColor(tag, theme),
+                            generateAutocompleteTagColor(tag, theme),
                       ),
                     ),
                   ],

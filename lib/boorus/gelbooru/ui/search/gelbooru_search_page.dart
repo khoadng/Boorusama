@@ -10,7 +10,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/gelbooru/application/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
-import 'package:boorusama/boorus/gelbooru/ui/utils.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
@@ -23,6 +22,7 @@ import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
+import 'package:boorusama/core/ui/utils.dart';
 
 class GelbooruSearchPage extends ConsumerStatefulWidget {
   const GelbooruSearchPage({
@@ -156,7 +156,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                     Expanded(
                       child: TagSuggestionItemsWithData(
                         textColorBuilder: (tag) =>
-                            generateGelbooruAutocompleteTagColor(tag, theme),
+                            generateAutocompleteTagColor(tag, theme),
                       ),
                     ),
                   ],

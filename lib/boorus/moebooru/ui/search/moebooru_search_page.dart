@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/utils.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/search.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/ui/search/search_divider.dart';
 import 'package:boorusama/core/ui/search/search_landing_view.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/ui/search/tag_suggestion_items.dart';
+import 'package:boorusama/core/ui/utils.dart';
 
 class MoebooruSearchPage extends ConsumerStatefulWidget {
   const MoebooruSearchPage({
@@ -155,7 +155,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                     Expanded(
                       child: TagSuggestionItemsWithData(
                         textColorBuilder: (tag) =>
-                            generateDanbooruAutocompleteTagColor(tag, theme),
+                            generateAutocompleteTagColor(tag, theme),
                       ),
                     ),
                   ],
