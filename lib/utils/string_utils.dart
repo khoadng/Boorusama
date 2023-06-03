@@ -26,4 +26,6 @@ extension StringX on String {
 
     return t;
   }
+
+  int? toInt() => int.tryParse(this);
 }

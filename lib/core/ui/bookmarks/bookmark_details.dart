@@ -7,33 +7,35 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/application/bookmarks.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
 
-class BookmarkDetailsPage extends StatefulWidget {
-  final IList<Bookmark> bookmarks;
+class BookmarkDetailsPage extends ConsumerStatefulWidget {
+  const BookmarkDetailsPage({
+    super.key,
+    required this.initialIndex,
+  });
+
   final int initialIndex;
 
-  const BookmarkDetailsPage({
-    Key? key,
-    required this.bookmarks,
-    required this.initialIndex,
-  }) : super(key: key);
-
   @override
-  State<BookmarkDetailsPage> createState() => _BookmarkDetailsPageState();
+  ConsumerState<BookmarkDetailsPage> createState() =>
+      _BookmarkDetailsPageState();
 }
 
-class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
+class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
   late var currentIndex = widget.initialIndex;
   late final pageController = PageController(initialPage: widget.initialIndex);
   var hideOverlay = false;
 
   @override
   Widget build(BuildContext context) {
+    final bookmarks = ref.watch(bookmarkProvider).bookmarks;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: !hideOverlay
@@ -47,7 +49,7 @@ class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
                     switch (value) {
                       case 'view_source':
                         launchExternalUrl(
-                          Uri.parse(widget.bookmarks[currentIndex].sourceUrl),
+                          Uri.parse(bookmarks[currentIndex].sourceUrl),
                         );
                         break;
                       default:
@@ -69,7 +71,7 @@ class _BookmarkDetailsPageState extends State<BookmarkDetailsPage> {
         onTap: () => setState(() {
           hideOverlay = !hideOverlay;
         }),
-        bookmarks: widget.bookmarks,
+        bookmarks: bookmarks,
         initialPage: widget.initialIndex,
         onPageChange: (index) => setState(() {
           currentIndex = index;

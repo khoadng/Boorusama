@@ -11,12 +11,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';
 import 'package:boorusama/core/ui/settings/debug_logs_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/router.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({
@@ -67,38 +67,38 @@ class SettingsPage extends ConsumerWidget {
                             ),
                             title: const Text('settings.appearance.appearance')
                                 .tr(),
-                            onTap: () => goToSettingsAppearance(context, this),
+                            onTap: () => context.go('/settings/appearance'),
                           ),
                           ListTile(
                             title:
                                 const Text('settings.language.language').tr(),
                             leading: const Icon(Icons.translate),
-                            onTap: () => goToSettingsLanguage(context, this),
+                            onTap: () => context.go('/settings/language'),
                           ),
                           ListTile(
                             title: const Text('download.download').tr(),
                             leading: const FaIcon(FontAwesomeIcons.download),
-                            onTap: () => goToSettingsDownload(context, this),
+                            onTap: () => context.go('/settings/download'),
                           ),
                           ListTile(
                             title: const Text(
                               'settings.performance.performance',
                             ).tr(),
                             leading: const FaIcon(FontAwesomeIcons.gear),
-                            onTap: () => goToSettingsPerformance(context, this),
+                            onTap: () => context.go('/settings/performance'),
                           ),
                           ListTile(
                             title: const Text('settings.search').tr(),
                             leading: const FaIcon(
                               FontAwesomeIcons.magnifyingGlass,
                             ),
-                            onTap: () => goToSettingsSearch(context, this),
+                            onTap: () => context.go('/settings/search'),
                           ),
                           ListTile(
                             title: const Text('settings.privacy.privacy').tr(),
                             leading:
                                 const FaIcon(FontAwesomeIcons.shieldHalved),
-                            onTap: () => goToSettingsPrivacy(context, this),
+                            onTap: () => context.go('/settings/privacy'),
                           ),
                           const Divider(),
                           _SettingsSection(
@@ -109,7 +109,7 @@ class SettingsPage extends ConsumerWidget {
                             leading: const FaIcon(
                               FontAwesomeIcons.solidNoteSticky,
                             ),
-                            onTap: () => goToChanglog(context),
+                            onTap: () => context.go('/settings/changelog'),
                           ),
                           ListTile(
                             title: const Text('settings.debug_logs.debug_logs')
@@ -129,7 +129,7 @@ class SettingsPage extends ConsumerWidget {
                           ListTile(
                             title: const Text('settings.information').tr(),
                             leading: const Icon(Icons.info),
-                            onTap: () => goToAppAboutPage(context, ref),
+                            onTap: () => context.go('/settings/about'),
                           ),
                         ],
                       ),
