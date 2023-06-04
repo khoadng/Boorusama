@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class PostTagList extends ConsumerWidget {

@@ -33,7 +33,6 @@ export 'source_link.dart';
 export 'swipe_target_image.dart';
 export 'tags/category_toggle_switch.dart';
 export 'tags/tag_chips_placeholder.dart';
-export 'tags/tag_colors.dart';
 export 'tags/tag_other_names.dart';
 export 'tags/tag_suggestion_items.dart';
 export 'tags/tag_title_name.dart';

@@ -9,6 +9,7 @@ export 'metatag.dart';
 export 'tag.dart';
 export 'tag_cacher.dart';
 export 'tag_category.dart';
+export 'tag_colors.dart';
 export 'tag_filter_category.dart';
 export 'tag_info_service.dart';
 export 'tag_repository.dart';
