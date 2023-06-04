@@ -7,9 +7,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/ui/artists/gelbooru_artist_page.dart';
-import 'package:boorusama/boorus/gelbooru/ui/posts.dart';
-import 'package:boorusama/boorus/gelbooru/ui/search/gelbooru_search_page.dart';
+import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
+import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';

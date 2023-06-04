@@ -6,15 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
-import 'package:boorusama/boorus/gelbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/gelbooru/application/posts.dart';
-import 'package:boorusama/boorus/gelbooru/application/tags/tags_provider.dart';
-import 'package:boorusama/boorus/gelbooru/infra/autocompletes/gelbooru_autocomplete_repository_api.dart';
+import 'package:boorusama/boorus/gelbooru/features/downloads/download_provider.dart';
+import 'package:boorusama/boorus/gelbooru/features/tags/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
+import 'features/posts/posts.dart';
 
 class GelbooruProvider extends StatelessWidget {
   const GelbooruProvider({
