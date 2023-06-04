@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
+import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/utils.dart';
 
 class DownloadEmptyTagView extends ConsumerWidget {
   const DownloadEmptyTagView({
