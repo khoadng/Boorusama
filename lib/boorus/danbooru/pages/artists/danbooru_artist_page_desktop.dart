@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/tag_other_names.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/pages/shared/tag_detail_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 
 class DanbooruArtistPageDesktop extends ConsumerWidget {
   const DanbooruArtistPageDesktop({
