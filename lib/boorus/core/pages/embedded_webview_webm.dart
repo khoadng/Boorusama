@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/widgets/center_play_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class WebmVideoController {
   WebmVideoController({this.onCurrentPositionChanged}) {

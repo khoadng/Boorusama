@@ -11,11 +11,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/pages/image_grid_item.dart';
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruImageGridItem extends ConsumerWidget {
   const DanbooruImageGridItem({

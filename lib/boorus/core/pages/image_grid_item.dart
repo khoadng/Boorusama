@@ -9,9 +9,8 @@ import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/utils/time_utils.dart';
-import 'widgets/faster_ink_splash.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class AutoScrollOptions {
   const AutoScrollOptions({

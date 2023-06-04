@@ -22,7 +22,6 @@ import 'package:boorusama/boorus/core/pages/posts.dart';
 import 'package:boorusama/boorus/core/pages/recommend_artist_list.dart';
 import 'package:boorusama/boorus/core/pages/recommend_character_list.dart';
 import 'package:boorusama/boorus/core/pages/swipe_target_image.dart';
-import 'package:boorusama/boorus/core/pages/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
@@ -33,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {
   throw UnimplementedError();

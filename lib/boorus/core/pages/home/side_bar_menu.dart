@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/booru_logo.dart';
 import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/pages/side_bar.dart';
-import 'package:boorusama/boorus/core/pages/widgets/square_chip.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({

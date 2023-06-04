@@ -13,8 +13,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 final _aspectRatio = [
   ...List<double>.generate(20, (_) => 0.71),

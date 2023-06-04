@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/boorus/core/pages/widgets/modal.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({

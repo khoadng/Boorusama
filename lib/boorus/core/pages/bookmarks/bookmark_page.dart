@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/boorus/booru_logo.dart';
 import 'package:boorusama/boorus/core/pages/editable_mixin.dart';
-import 'package:boorusama/boorus/core/pages/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);

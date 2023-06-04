@@ -10,11 +10,11 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/boorus/core/pages/settings/widgets/settings_tile.dart';
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({

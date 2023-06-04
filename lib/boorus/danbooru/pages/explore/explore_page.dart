@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
-import 'package:boorusama/boorus/core/pages/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/explores/explore_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/app/transformer.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';
 

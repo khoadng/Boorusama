@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'widgets/conditional_parent_widget.dart';
-import 'widgets/network_unavailable_indicator.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class NetworkUnavailableIndicatorWithState extends ConsumerWidget {
   const NetworkUnavailableIndicatorWithState({

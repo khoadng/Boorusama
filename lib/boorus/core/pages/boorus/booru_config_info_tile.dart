@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/booru_logo.dart';
-import 'package:boorusama/boorus/core/pages/widgets/square_chip.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruConfigInfoTile extends StatelessWidget {
   const BooruConfigInfoTile({

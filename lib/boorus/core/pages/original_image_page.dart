@@ -8,10 +8,10 @@ import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({

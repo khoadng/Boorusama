@@ -12,8 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/interactive_image.dart';
-import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({

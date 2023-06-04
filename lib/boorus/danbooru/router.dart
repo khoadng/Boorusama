@@ -12,7 +12,6 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/blacklists.dart';
 import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/pages/widgets/side_sheet.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -50,6 +49,7 @@ import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {

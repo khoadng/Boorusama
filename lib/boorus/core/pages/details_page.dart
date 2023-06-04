@@ -11,12 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/auto_slide_mixin.dart';
 import 'package:boorusama/boorus/core/pages/swipe_down_to_dismiss_mixin.dart';
-import 'package:boorusama/boorus/core/pages/widgets/circular_icon_button.dart';
-import 'package:boorusama/boorus/core/pages/widgets/hide_on_scroll.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
