@@ -5,7 +5,7 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/core/http_parser.dart';
+import 'package:boorusama/core/networks/networks.dart';
 
 List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(
       value: value,

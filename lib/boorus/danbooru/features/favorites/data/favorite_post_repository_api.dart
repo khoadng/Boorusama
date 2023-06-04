@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/http_parser.dart';
+import 'package:boorusama/core/networks/networks.dart';
 
 List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parse(
       value: value,

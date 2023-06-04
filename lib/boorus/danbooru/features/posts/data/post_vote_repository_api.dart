@@ -5,7 +5,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/http_parser.dart';
+import 'package:boorusama/core/networks/networks.dart';
 import '../models/post_vote.dart';
 import '../models/post_vote_repository.dart';
 import 'post_vote_dto.dart';

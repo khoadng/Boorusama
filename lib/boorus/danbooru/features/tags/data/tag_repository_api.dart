@@ -5,7 +5,7 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/http_parser.dart';
+import 'package:boorusama/core/networks/networks.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'tag_dto.dart';
 
