@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 

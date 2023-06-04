@@ -7,7 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/search/search.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_config_icon_button.dart';
 import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';

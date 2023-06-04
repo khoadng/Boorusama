@@ -6,7 +6,7 @@ import 'package:filesize/filesize.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class FileDetailsSection extends StatelessWidget {

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
-import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/feat/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/feat/posts/posts.dart';

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';

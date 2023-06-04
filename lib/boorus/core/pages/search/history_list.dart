@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/search/search.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class HistoryList extends StatelessWidget {

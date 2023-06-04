@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
+import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({

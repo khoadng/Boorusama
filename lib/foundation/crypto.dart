@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 
 String hashPasswordSHA1({
   required String salt,

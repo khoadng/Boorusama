@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 
 typedef ItemFetcher<T> = Future<List<T>> Function(int page);
 typedef ItemRefresher<T> = Future<List<T>> Function();

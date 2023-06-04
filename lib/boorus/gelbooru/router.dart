@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
-import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';

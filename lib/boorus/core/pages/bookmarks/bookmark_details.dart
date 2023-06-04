@@ -7,7 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';

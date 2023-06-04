@@ -3,9 +3,9 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/core/feat/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feat/posts/posts.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';

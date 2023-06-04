@@ -9,8 +9,8 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/providers.dart';
-import 'package:boorusama/boorus/core/feat/tags/tags_providers.dart';
+import 'package:boorusama/boorus/core/feats/posts/providers.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/booru_video_progress_bar.dart';
 import 'package:boorusama/boorus/core/pages/details_page.dart';

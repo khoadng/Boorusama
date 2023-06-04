@@ -6,7 +6,7 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/pages/preview_post_grid.dart';

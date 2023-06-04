@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
-import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';

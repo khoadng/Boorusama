@@ -5,8 +5,8 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
-import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';

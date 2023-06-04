@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/pages/image_grid_item.dart';
 import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';

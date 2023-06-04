@@ -3,8 +3,8 @@ import 'package:quiver/iterables.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
-import 'package:boorusama/boorus/core/feat/search/filter_operator.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 

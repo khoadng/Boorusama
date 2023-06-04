@@ -7,12 +7,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feat/downloads/bulk_download_provider.dart';
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
-import 'package:boorusama/boorus/core/feat/search/search.dart';
-import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/blacklists.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';

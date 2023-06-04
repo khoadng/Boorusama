@@ -6,8 +6,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/boorus/core/pages/settings/widgets/settings_tile.dart';
 import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';

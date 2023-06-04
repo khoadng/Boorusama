@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feat/search/filter_operator.dart';
-import 'package:boorusama/boorus/core/feat/search/selected_tags_notifier.dart';
-import 'package:boorusama/boorus/core/feat/search/suggestions_notifier.dart';
-import 'package:boorusama/boorus/core/feat/search/tag_search_item.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
+import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
+import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
+import 'package:boorusama/boorus/core/feats/search/tag_search_item.dart';
 import 'package:boorusama/boorus/core/pages/search_bar.dart';
 import 'package:boorusama/boorus/core/pages/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/pages/utils.dart';

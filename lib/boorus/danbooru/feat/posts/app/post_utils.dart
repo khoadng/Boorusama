@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/tags/tag_filter_category.dart';
+import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/danbooru/feat/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feat/comments/comments.dart';
 import 'package:boorusama/functional.dart';

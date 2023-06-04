@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/login_field.dart';
 import 'package:boorusama/boorus/core/pages/option_dropdown_button.dart';
 import 'package:boorusama/boorus/core/pages/warning_container.dart';

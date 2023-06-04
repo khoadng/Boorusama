@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/boorus/core/pages/download_provider_widget.dart';
 

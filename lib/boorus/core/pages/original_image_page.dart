@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/mobile.dart';

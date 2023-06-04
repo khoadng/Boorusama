@@ -2,7 +2,7 @@
 import 'package:path/path.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/downloads/file_name_generator.dart';
+import 'package:boorusama/boorus/core/feats/downloads/file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/feat/posts/utils.dart';
 

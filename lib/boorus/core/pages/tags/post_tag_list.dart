@@ -8,7 +8,7 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/platform.dart';

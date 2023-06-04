@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/login_field.dart';
 import 'package:boorusama/boorus/core/pages/warning_container.dart';
