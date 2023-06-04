@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends ConsumerStatefulWidget {

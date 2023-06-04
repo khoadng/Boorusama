@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/time_utils.dart';
 import 'comment_header.dart';
 

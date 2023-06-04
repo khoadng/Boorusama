@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
 import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostActionToolbar extends ConsumerWidget {
   const DanbooruPostActionToolbar({

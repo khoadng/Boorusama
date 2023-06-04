@@ -10,7 +10,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class MoebooruMoreActionButton extends ConsumerWidget {
   const MoebooruMoreActionButton({

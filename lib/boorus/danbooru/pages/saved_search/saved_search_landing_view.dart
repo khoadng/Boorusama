@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/features/saved_searches/saved_searches
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class SavedSearchLandingView extends ConsumerWidget {
   const SavedSearchLandingView({super.key});

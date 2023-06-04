@@ -17,7 +17,7 @@ import 'package:boorusama/core/ui/settings/performance_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/ui/settings/search_settings_page.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({

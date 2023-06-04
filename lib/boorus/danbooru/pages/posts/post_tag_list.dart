@@ -17,8 +17,8 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 
 class PostTagList extends ConsumerWidget {
   const PostTagList({

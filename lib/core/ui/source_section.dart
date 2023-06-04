@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class SourceSection extends StatelessWidget {
   const SourceSection({

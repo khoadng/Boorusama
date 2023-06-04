@@ -16,7 +16,7 @@ import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 
 class SettingsPage extends ConsumerWidget {

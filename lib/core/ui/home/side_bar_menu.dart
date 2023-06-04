@@ -12,7 +12,7 @@ import 'package:boorusama/core/ui/boorus/booru_logo.dart';
 import 'package:boorusama/core/ui/home/switch_booru_modal.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 import 'package:boorusama/core/ui/widgets/square_chip.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 
 class SideBarMenu extends ConsumerWidget {

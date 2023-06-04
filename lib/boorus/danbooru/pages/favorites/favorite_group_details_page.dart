@@ -27,12 +27,9 @@ import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 // Flutter imports:
-
-
-
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
   const FavoriteGroupDetailsPage({

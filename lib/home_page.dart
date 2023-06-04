@@ -18,10 +18,10 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/home/side_bar_menu.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/i18n.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({

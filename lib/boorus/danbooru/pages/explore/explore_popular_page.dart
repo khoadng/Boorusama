@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'datetime_selector.dart';
 import 'time_scale_toggle_switch.dart';
 

@@ -14,8 +14,8 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/i18n.dart';
 import 'package:boorusama/utils/time_utils.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {

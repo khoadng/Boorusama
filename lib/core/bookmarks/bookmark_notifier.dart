@@ -11,8 +11,8 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/toast.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/i18n.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,

@@ -11,7 +11,7 @@ import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class RelatedTagActionSheet extends ConsumerWidget {
   const RelatedTagActionSheet({

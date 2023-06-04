@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class LanguagePage extends ConsumerWidget {
   const LanguagePage({

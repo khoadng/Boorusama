@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 
 RateMyApp _createRateMyApp() => RateMyApp(
       minDays: 14,

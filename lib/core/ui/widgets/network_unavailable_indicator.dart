@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 
 class NetworkUnavailableIndicator extends StatelessWidget {
   const NetworkUnavailableIndicator({

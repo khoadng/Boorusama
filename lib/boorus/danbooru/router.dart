@@ -47,8 +47,8 @@ import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 import 'features/posts/models.dart';
 import 'router_page_constant.dart';
 

@@ -8,7 +8,7 @@ import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/ui/widgets/modal.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({

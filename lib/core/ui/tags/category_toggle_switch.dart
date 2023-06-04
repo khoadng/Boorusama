@@ -6,7 +6,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tag_filter_category.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class CategoryToggleSwitch extends StatefulWidget {
   const CategoryToggleSwitch({

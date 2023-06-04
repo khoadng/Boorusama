@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class ModalFavoriteGroupAction extends StatelessWidget {
   const ModalFavoriteGroupAction({

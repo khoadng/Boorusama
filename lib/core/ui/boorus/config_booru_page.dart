@@ -11,7 +11,7 @@ import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class ConfigBooruPage extends ConsumerStatefulWidget {
   const ConfigBooruPage({

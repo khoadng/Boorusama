@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
   const FavoriteGroupsPage({

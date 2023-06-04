@@ -13,8 +13,8 @@ import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.
 import 'package:boorusama/core/ui/settings/widgets/settings_tile.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({

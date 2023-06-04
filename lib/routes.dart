@@ -11,7 +11,6 @@ import 'package:boorusama/core/ui/boorus/config_booru_page.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/utils/string_utils.dart';
 import 'boorus/danbooru/router.dart';
-import 'core/app_rating.dart';
 import 'core/ui/bookmarks/bookmark_details.dart';
 import 'core/ui/bookmarks/bookmark_page.dart';
 import 'core/ui/boorus/add_booru_page.dart';
@@ -28,6 +27,7 @@ import 'core/ui/settings/search_settings_page.dart';
 import 'core/ui/settings/settings_page.dart';
 import 'core/ui/settings/settings_page_desktop.dart';
 import 'core/ui/widgets/conditional_parent_widget.dart';
+import 'foundation/rating/rating.dart';
 import 'home_page.dart';
 import 'router.dart';
 

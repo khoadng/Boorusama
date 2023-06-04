@@ -12,8 +12,8 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/i18n.dart';
 
 class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({

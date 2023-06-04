@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'pool_grid_item.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {

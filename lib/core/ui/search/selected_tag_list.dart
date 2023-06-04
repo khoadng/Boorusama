@@ -7,7 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/ui/search/selected_tag_chip.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class SelectedTagList extends StatelessWidget {
   const SelectedTagList({

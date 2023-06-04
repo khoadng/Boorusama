@@ -10,8 +10,8 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/ui/downloads/widgets/bulk_download_tile.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/i18n.dart';
 
 enum BulkDownloadFilter {
   all,

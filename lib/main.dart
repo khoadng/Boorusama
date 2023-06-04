@@ -38,7 +38,7 @@ import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
-import 'i18n.dart';
+import 'foundation/i18n.dart';
 
 void main() async {
   final uiLogger = UILogger();

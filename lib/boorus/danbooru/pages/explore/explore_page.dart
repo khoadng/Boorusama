@@ -16,7 +16,7 @@ import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';
 

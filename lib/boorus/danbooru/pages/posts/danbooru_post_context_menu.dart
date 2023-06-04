@@ -16,7 +16,7 @@ import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({

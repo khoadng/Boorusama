@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 
 class BlacklistedTagPage extends ConsumerWidget {
   const BlacklistedTagPage({super.key});

@@ -10,7 +10,7 @@ import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/settings_tile.dart';
 
 class GeneralPage extends ConsumerStatefulWidget {
