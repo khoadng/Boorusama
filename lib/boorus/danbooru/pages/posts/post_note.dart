@@ -6,7 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/features/notes/notes.dart';
+import 'package:boorusama/boorus/danbooru/feat/notes/notes.dart';
 
 class PostNote extends StatefulWidget {
   const PostNote({

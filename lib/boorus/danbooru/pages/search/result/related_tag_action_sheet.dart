@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class RelatedTagActionSheet extends ConsumerWidget {

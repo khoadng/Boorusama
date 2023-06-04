@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feat/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/download_provider_widget.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/core/feat/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/gelbooru/features/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feat/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/functional.dart';
 

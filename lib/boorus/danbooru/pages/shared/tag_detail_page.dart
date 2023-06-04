@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/core/feat/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_config_icon_button.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 
 class TagDetailPage extends ConsumerStatefulWidget {

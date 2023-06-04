@@ -9,9 +9,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/pages/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

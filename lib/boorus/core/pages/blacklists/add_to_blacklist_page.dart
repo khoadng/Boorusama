@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
 
 class AddToBlacklistPage extends ConsumerWidget {
   const AddToBlacklistPage({

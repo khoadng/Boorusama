@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/pages/user_level_colors.dart';
-import 'package:boorusama/boorus/danbooru/features/users/users.dart';
+import 'package:boorusama/boorus/danbooru/feat/users/users.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 Color? generateAutocompleteTagColor(

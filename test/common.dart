@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feat/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/danbooru/features/users/users.dart';
+import 'package:boorusama/boorus/danbooru/feat/users/users.dart';
 
 class MockBooruUserIdentityProvider extends Mock
     implements BooruUserIdentityProvider {}

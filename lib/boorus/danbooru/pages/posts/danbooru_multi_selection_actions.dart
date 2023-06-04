@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/boorus/core/pages/download_provider_widget.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 
 class ParentChildData {
   const ParentChildData({

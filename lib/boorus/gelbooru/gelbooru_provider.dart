@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/gelbooru/features/downloads/download_provider.dart';
-import 'package:boorusama/boorus/gelbooru/features/tags/tags.dart';
-import 'features/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feat/downloads/downloads.dart';
+import 'package:boorusama/boorus/gelbooru/feat/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feat/tags/tags.dart';
 
 class GelbooruProvider extends StatelessWidget {
   const GelbooruProvider({

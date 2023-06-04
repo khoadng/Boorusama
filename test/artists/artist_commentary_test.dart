@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/features/artists/models/artist_commentary.dart';
+import 'package:boorusama/boorus/danbooru/feat/artists/artists.dart';
 
 void main() {
   group('[artist commentary test]', () {

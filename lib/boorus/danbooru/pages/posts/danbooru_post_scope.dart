@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feat/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/foundation/error.dart';
 

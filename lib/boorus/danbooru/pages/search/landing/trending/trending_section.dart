@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'trending_tags.dart';
 

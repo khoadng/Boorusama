@@ -8,8 +8,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/boorus/core/feat/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/source_link.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/feat/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/feat/comments/comments.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 enum ArtistCommentaryTranlationState {

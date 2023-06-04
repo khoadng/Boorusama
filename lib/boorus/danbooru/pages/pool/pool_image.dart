@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
-import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/feat/pools/pools.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 // Project imports:

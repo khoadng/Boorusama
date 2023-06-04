@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feat/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
-import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/datetime_selector.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feat/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 
