@@ -6,7 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/core/comment_parser.dart';
+import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/source_link.dart';
 import 'package:boorusama/core/utils.dart';
