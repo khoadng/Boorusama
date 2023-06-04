@@ -9,9 +9,9 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'pool_grid_item.dart';
 
 class PoolSearchPage extends ConsumerStatefulWidget {

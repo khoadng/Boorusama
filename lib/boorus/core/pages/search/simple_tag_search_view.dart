@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {

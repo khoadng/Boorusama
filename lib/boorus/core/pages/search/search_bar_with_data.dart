@@ -7,7 +7,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 
 class SearchBarWithData extends ConsumerWidget {
   const SearchBarWithData({

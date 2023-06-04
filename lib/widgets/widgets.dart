@@ -34,7 +34,6 @@ export 'platforms/windows/window_buttons.dart';
 export 'platforms/windows/windows.dart';
 export 'result_counter.dart';
 export 'route_transition_builder.dart';
-export 'search_bar.dart';
 export 'selectable_icon_button.dart';
 export 'server_icon_box.dart';
 export 'shadow_gradient_overlay.dart';

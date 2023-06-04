@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/core/feats/search/tag_search_item.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 final _selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(

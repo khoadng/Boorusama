@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/utils/time_utils.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({

@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/boorus/core/widgets/error_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;

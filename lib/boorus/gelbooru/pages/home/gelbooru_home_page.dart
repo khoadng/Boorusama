@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
