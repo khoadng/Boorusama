@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/tags/tag_info_service.dart';
 import 'package:boorusama/utils/string_utils.dart';
 import 'filter_operator.dart';
 

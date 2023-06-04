@@ -6,7 +6,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/infra/caching/lru_cacher.dart';
+import 'package:boorusama/core/caching/lru_cacher.dart';
 import 'package:boorusama/core/provider.dart';
 
 final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {

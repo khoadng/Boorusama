@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/repositories/metatags.dart';
+import 'package:boorusama/core/metatags/metatags.dart';
 import 'tags_provider.dart';
 
 class UserMetatagsNotifier extends Notifier<List<String>> {

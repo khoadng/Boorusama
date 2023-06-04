@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/http_parser.dart';
 import '../comments.dart';
 
 const String commentResourceApiParam =

@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/gelbooru/features/tags/utils.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/error.dart';
-import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/core/networks/http_utils.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';

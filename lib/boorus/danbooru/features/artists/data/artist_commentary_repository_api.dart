@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/infra/cache_mixin.dart';
+import 'package:boorusama/core/cache_mixin.dart';
 
 class ArtistCommentaryRepositoryApi
     with CacheMixin<ArtistCommentary>

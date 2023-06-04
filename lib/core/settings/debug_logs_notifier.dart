@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/loggers/loggers.dart';
 
 final uiLoggerProvider = Provider<UILogger>((ref) {
   throw UnimplementedError();

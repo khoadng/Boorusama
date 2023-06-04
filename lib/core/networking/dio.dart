@@ -7,8 +7,8 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/loggers.dart';
-import 'package:boorusama/core/infra/networks/dio_logger_interceptor.dart';
+import 'package:boorusama/core/loggers/loggers.dart';
+import 'package:boorusama/core/networks/dio_logger_interceptor.dart';
 import 'package:boorusama/core/user_agent_generator.dart';
 
 Dio dio(

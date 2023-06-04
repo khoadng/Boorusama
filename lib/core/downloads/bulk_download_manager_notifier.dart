@@ -4,7 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/loggers/loggers.dart';
 import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';

@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/data.dart';
 import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/infra/caching/lru_cacher.dart';
+import 'package:boorusama/core/caching/lru_cacher.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import '../models/danbooru_post.dart';

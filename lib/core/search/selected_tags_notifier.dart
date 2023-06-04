@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tag_info_service.dart';
 
 final selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(

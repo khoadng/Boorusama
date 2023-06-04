@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/loggers.dart';
+import 'package:boorusama/core/loggers/loggers.dart';
 import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/provider.dart';
 

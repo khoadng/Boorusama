@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/android.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/file_name_generator.dart';
-import 'package:boorusama/core/infra/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 

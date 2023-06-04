@@ -6,8 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/vendors/firebase_crashlytics.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'firebase/firebase.dart';
 
 enum AppErrorType {
   failedToLoadBooruConfig,

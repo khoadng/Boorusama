@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/package_info_provider.dart';
+import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/provider.dart';
 
 class AboutPage extends ConsumerWidget {

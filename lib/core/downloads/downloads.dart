@@ -5,6 +5,7 @@ export 'bulk_download_status.dart';
 export 'bulk_download_tags_notifier.dart';
 export 'bulk_download_types.dart';
 export 'bulk_downloader.dart';
+export 'crossplatform_bulk_downloader.dart';
 export 'download.dart';
 export 'download_options.dart';
 export 'download_path_handler.dart';

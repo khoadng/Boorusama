@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/settings/about_page.dart';
 import 'package:boorusama/core/ui/settings/appearance_page.dart';

@@ -2,8 +2,8 @@
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/infra/cache_mixin.dart';
-import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/core/cache_mixin.dart';
+import 'package:boorusama/core/networks/http_utils.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
