@@ -11,7 +11,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/cache_notifier.dart';
+import 'package:boorusama/core/caching/caching.dart';
 import 'package:boorusama/core/device_info_service.dart';
 import 'package:boorusama/core/loggers/loggers.dart';
 import 'package:boorusama/core/networking/networking.dart';

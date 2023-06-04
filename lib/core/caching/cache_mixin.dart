@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/caching/lru_cacher.dart';
+import 'package:boorusama/core/caching/caching.dart';
 
 class Cache<T> with CacheMixin<T> {
   Cache({

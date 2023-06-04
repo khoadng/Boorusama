@@ -5,7 +5,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/cache_mixin.dart';
+import 'package:boorusama/core/caching/caching.dart';
 import 'package:boorusama/core/http_parser.dart';
 import 'package:boorusama/core/networks/request_deduplicator_mixin.dart';
 

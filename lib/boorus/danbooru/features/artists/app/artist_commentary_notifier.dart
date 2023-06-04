@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/core/cache_mixin.dart';
+import 'package:boorusama/core/caching/caching.dart';
 
 class ArtistCommentariesNotifier extends Notifier<Map<int, ArtistCommentary>> {
   @override
