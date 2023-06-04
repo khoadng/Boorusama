@@ -27,7 +27,7 @@ import 'boorus/core/pages/settings/settings_page.dart';
 import 'boorus/core/pages/settings/settings_page_desktop.dart';
 import 'boorus/danbooru/router.dart';
 import 'foundation/rating/rating.dart';
-import 'home_page.dart';
+import 'boorus/home_page.dart';
 import 'router.dart';
 
 class BoorusRoutes {
