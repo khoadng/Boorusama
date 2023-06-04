@@ -22,6 +22,8 @@ import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'post_stats_tile.dart';
+import 'post_tag_list.dart';
 
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {
   throw UnimplementedError();
