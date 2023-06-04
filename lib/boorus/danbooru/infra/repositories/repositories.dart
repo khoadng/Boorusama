@@ -1,6 +1,6 @@
 export 'artists/artists.dart';
 export 'autocomplete/autocomplete.dart';
-export 'comments/comments.dart';
+export '../../features/comments/data/comments.dart';
 export 'favorites/favorites.dart';
 export 'notes/notes.dart';
 export 'pool/pool.dart';

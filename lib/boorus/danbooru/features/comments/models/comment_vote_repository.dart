@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
+import '../comments.dart';
 
 abstract class CommentVoteRepository {
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds);

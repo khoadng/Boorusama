@@ -2,9 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'comment_votes_provider.dart';
+import '../comments.dart';
 
 class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
   @override

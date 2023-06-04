@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comments.dart';
+import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
 import 'package:boorusama/i18n.dart';
 
 class ReplyHeader extends StatelessWidget {

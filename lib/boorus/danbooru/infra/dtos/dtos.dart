@@ -1,8 +1,6 @@
 export 'artist_commentary_dto.dart';
 export 'artist_dto.dart';
 export 'autocomplete_dto.dart';
-export 'comment_dto.dart';
-export 'comment_vote_dto.dart';
 export 'creator_dto.dart';
 export 'favorite_dto.dart';
 export 'favorite_group_dto.dart';

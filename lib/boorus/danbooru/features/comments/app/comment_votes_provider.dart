@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/comments/comments.dart';
 import 'package:boorusama/core/application/boorus.dart';
-import 'comment_votes_notifier.dart';
+import '../comments.dart';
 
 final danbooruCommentVoteRepoProvider =
     Provider<CommentVoteApiRepository>((ref) {
