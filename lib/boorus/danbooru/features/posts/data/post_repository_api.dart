@@ -1,12 +1,12 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/infra/cache_mixin.dart';
 import 'package:boorusama/core/infra/networks.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';
