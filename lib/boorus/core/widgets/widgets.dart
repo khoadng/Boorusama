@@ -10,6 +10,7 @@ export 'infinite_load_list.dart';
 export 'interactive_booru_image.dart';
 export 'interactive_image.dart';
 export 'network_indicator_with_state.dart';
+export 'network_unavailable_indicator.dart';
 export 'no_data_box.dart';
 export 'original_image_page.dart';
 export 'posts/default_multi_selection_actions.dart';

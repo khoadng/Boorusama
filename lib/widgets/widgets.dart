@@ -27,7 +27,6 @@ export 'modal_share.dart';
 export 'multi_select_controller.dart';
 export 'multi_select_widget.dart';
 export 'multi_selectable_mixin.dart';
-export 'network_unavailable_indicator.dart';
 export 'option_dropdown_button.dart';
 export 'pagination.dart';
 export 'parallax_slide_in_page_route.dart';
