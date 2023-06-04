@@ -12,10 +12,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
-import 'package:boorusama/boorus/core/pages/search_bar.dart';
 import 'package:boorusama/boorus/core/pages/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {

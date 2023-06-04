@@ -16,7 +16,6 @@ import 'boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'boorus/core/pages/boorus/add_booru_page.dart';
 import 'boorus/core/pages/boorus/manage_booru_user_page.dart';
 import 'boorus/core/pages/custom_context_menu_overlay.dart';
-import 'boorus/core/pages/route_transition_builder.dart';
 import 'boorus/core/pages/settings/appearance_page.dart';
 import 'boorus/core/pages/settings/changelog_page.dart';
 import 'boorus/core/pages/settings/download_page.dart';

@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/pages/warning_container.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/warning_container.dart';
 
 class DownloadTagSelectionView extends ConsumerStatefulWidget {
   const DownloadTagSelectionView({

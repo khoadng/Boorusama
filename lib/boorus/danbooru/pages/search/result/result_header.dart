@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/result_counter.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class ResultHeader extends StatelessWidget {
   const ResultHeader({

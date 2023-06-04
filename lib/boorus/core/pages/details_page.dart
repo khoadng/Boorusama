@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/auto_slide_mixin.dart';
-import 'package:boorusama/boorus/core/pages/swipe_down_to_dismiss_mixin.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/platform.dart';

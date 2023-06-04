@@ -11,7 +11,6 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/widgets/platforms/windows/windows.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';

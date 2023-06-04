@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/pages/search_bar.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class SearchAppBarResultView extends ConsumerWidget {
   const SearchAppBarResultView({

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/route_transition_builder.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class ParallaxSlideInPageRoute extends PageRouteBuilder {
   ParallaxSlideInPageRoute({
