@@ -6,19 +6,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/app_info.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/device_info_service.dart';
 import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/preloaders/preloaders.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/user_agent_generator.dart';
+import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';

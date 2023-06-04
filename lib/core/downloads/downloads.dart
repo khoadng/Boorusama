@@ -12,5 +12,6 @@ export 'download_path_handler.dart';
 export 'download_provider.dart';
 export 'download_service.dart';
 export 'download_utils.dart';
+export 'file_name_generator.dart';
 export 'notification.dart';
 export 'types.dart';

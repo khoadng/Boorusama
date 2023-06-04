@@ -17,12 +17,10 @@ import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
-import 'package:boorusama/core/app_info.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/device_info_service.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/metatags/metatags.dart';
 import 'package:boorusama/core/package_info_provider.dart';
@@ -31,9 +29,11 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/user_agent_generator.dart';
 import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/app_info.dart';
+import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/platform.dart';

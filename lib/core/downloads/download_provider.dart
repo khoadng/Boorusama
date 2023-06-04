@@ -4,7 +4,6 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/file_name_generator.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';

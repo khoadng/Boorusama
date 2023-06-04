@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/user_agent_generator.dart';
+import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class CrossplatformBulkDownloader implements BulkDownloader {
