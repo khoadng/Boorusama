@@ -16,41 +16,32 @@ import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/application/blacklists.dart';
-import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/networking.dart';
-import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
-import 'package:boorusama/core/error.dart';
-import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.dart';
-import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
-import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
-import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';
-import 'package:boorusama/core/infra/infra.dart';
-import 'package:boorusama/core/infra/loggers.dart' as l;
-import 'package:boorusama/core/infra/loggers.dart';
-import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
-import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
-import 'package:boorusama/core/infra/repositories/metatags.dart';
-import 'package:boorusama/core/infra/repositories/search_histories.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/core/infra/settings/settings.dart';
-import 'package:boorusama/core/infra/settings/settings_repository_logger_interceptor.dart';
-import 'package:boorusama/core/platform.dart';
-import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feats/boorus/booru_config_repository_hive.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/metatags/metatags.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/feats/search_histories/search_histories.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/app_info.dart';
+import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/http/user_agent_generator.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
-import 'i18n.dart';
+import 'foundation/i18n.dart';
 
 void main() async {
   final uiLogger = UILogger();
-  final logger = await l.loggerWith(uiLogger);
+  final logger = await loggerWith(uiLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
 
@@ -227,7 +218,7 @@ class DioProvider {
 
   final Directory dir;
   final UserAgentGenerator generator;
-  final l.LoggerService loggerService;
+  final LoggerService loggerService;
 
   Dio getDio(String? baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }

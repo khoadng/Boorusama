@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/moebooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/moebooru/application/posts.dart';
-import 'package:boorusama/boorus/moebooru/domain/tags.dart';
-import 'package:boorusama/boorus/moebooru/infra/autocompletes/moebooru_autocomplete_repository.dart';
-import 'package:boorusama/boorus/moebooru/infra/tags.dart';
-import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/api/moebooru/moebooru_api.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/moebooru/feats/downloads/download_provider.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 
 class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
