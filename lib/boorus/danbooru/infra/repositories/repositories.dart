@@ -5,6 +5,6 @@ export 'favorites/favorites.dart';
 export 'notes/notes.dart';
 export 'pool/pool.dart';
 export 'profiles/profiles.dart';
-export 'tags/tags.dart';
+export '../../features/tags/data/tags.dart';
 export 'users/users.dart';
 export 'wiki/wiki.dart';

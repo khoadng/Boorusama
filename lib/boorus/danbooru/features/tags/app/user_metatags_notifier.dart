@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
+import 'tags_provider.dart';
 
 class UserMetatagsNotifier extends Notifier<List<String>> {
   @override
