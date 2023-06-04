@@ -9,7 +9,6 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';

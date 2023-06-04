@@ -7,9 +7,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/boorus/booru_logo.dart';
 import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

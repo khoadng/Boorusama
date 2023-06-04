@@ -1,6 +1,7 @@
 export 'bookmark_post_button.dart';
 export 'booru_image.dart';
 export 'booru_image_legacy.dart';
+export 'booru_logo.dart';
 export 'category_toggle_switch.dart';
 export 'custom_context_menu_overlay.dart';
 export 'default_multi_selection_actions.dart';
