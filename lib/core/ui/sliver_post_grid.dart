@@ -7,13 +7,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/i18n.dart';
 
 class SliverPostGrid extends ConsumerWidget {

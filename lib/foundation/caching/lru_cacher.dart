@@ -2,7 +2,7 @@
 import 'dart:collection';
 
 // Project imports:
-import 'package:boorusama/core/caching/caching.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 class CacheObject<K, V> {
   const CacheObject(this.node, this.value);

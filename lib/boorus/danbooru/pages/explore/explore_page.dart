@@ -11,11 +11,11 @@ import 'package:boorusama/boorus/danbooru/features/posts/models/danbooru_post.da
 import 'package:boorusama/boorus/danbooru/features/posts/models/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/i18n.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';

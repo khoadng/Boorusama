@@ -11,11 +11,11 @@ import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.da
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({

@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/features/posts/utils.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/utils/time_utils.dart';
 

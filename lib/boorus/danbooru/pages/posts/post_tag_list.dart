@@ -12,12 +12,12 @@ import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/i18n.dart';
 
 class PostTagList extends ConsumerWidget {

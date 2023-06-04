@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 bool isFirebaseAnalyticsSupportedPlatforms() =>
     isAndroid() || isIOS() || isMacOS() || isWeb();

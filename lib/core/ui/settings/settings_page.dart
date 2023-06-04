@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/settings/about_page.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/core/ui/settings/debug_logs_page.dart';
 import 'package:boorusama/core/ui/settings/language_page.dart';
 import 'package:boorusama/core/ui/settings/privacy_page.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/i18n.dart';
 import 'package:boorusama/router.dart';
 

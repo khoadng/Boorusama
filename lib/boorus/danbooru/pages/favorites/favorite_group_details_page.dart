@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/shared/danbooru_image_grid_item.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
@@ -27,7 +26,13 @@ import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/i18n.dart';
+
+// Flutter imports:
+
+
+
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
   const FavoriteGroupDetailsPage({

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
-import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class TrendingTags extends StatelessWidget {
   const TrendingTags({

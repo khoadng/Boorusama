@@ -5,7 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class NotificationError {
   NotificationError(this.message);

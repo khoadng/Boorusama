@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/mobile.dart';
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/foundation/mobile.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({

@@ -15,7 +15,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
@@ -27,6 +26,7 @@ import 'package:boorusama/core/ui/posts.dart';
 import 'package:boorusama/core/ui/recommend_artist_list.dart';
 import 'package:boorusama/core/ui/source_section.dart';
 import 'package:boorusama/core/ui/swipe_target_image.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailPage({

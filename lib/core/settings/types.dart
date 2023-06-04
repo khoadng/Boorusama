@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 enum ImageQuality {
   automatic,

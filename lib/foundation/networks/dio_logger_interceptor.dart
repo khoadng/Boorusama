@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/loggers/loggers.dart';
-import 'package:boorusama/core/networks/http_utils.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/networks/http_utils.dart';
 
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({

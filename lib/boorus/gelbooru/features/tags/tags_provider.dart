@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/core/caching/lru_cacher.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import 'gelbooru_tag_repository_api.dart';
 
 final gelbooruTagRepoProvider = Provider<TagRepository>(

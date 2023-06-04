@@ -9,14 +9,14 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/auto_slide_mixin.dart';
 import 'package:boorusama/core/ui/swipe_down_to_dismiss_mixin.dart';
 import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/core/ui/widgets/hide_on_scroll.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 

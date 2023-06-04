@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/caching/caching.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 
 class PostRepositoryCacher implements PostRepository {

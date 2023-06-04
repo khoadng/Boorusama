@@ -7,7 +7,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/settings.dart';
-import 'firebase/firebase.dart';
+import '../foundation/firebase/firebase.dart';
 
 bool isAnalyticsEnabled(Settings settings) =>
     settings.dataCollectingStatus == DataCollectingStatus.allow &&

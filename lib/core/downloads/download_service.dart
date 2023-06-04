@@ -5,8 +5,8 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
 enum DownloadErrorType {

@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/caching/caching.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 mixin PostDetailsTagsX<T extends Post>
     on AutoDisposeFamilyNotifier<List<Recommend<T>>, int> {

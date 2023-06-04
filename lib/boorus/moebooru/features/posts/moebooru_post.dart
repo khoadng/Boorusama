@@ -2,9 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/image.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/video.dart';
+import 'package:boorusama/foundation/image.dart';
+import 'package:boorusama/foundation/video.dart';
 
 class MoebooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin

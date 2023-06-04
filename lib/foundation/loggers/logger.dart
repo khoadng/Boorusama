@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 
 enum LogLevel {
   info,

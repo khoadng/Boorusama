@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/caching/caching.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 class TagCacher implements TagRepository {
   TagCacher({

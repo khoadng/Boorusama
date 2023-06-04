@@ -8,10 +8,10 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/tags.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class PostTagList extends ConsumerWidget {
   const PostTagList({

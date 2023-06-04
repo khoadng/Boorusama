@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/networks/networks.dart';
+import 'package:boorusama/foundation/networks/networks.dart';
 
 const favoriteGroupApiParams =
     'id,name,post_ids,created_at,updated_at,is_public,creator';

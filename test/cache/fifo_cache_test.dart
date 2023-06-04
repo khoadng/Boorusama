@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/caching/fifo_cacher.dart';
+import 'package:boorusama/foundation/caching/fifo_cacher.dart';
 
 void main() {
   test(

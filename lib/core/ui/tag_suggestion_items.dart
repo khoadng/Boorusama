@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({

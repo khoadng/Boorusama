@@ -13,10 +13,10 @@ import 'package:path/path.dart' as p;
 // Project imports:
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class BookmarkMediaItem extends ConsumerStatefulWidget {
   const BookmarkMediaItem({

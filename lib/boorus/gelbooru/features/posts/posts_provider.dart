@@ -6,10 +6,10 @@ import 'package:boorusama/boorus/gelbooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/caching/lru_cacher.dart';
 import 'package:boorusama/core/posts/post_repository_cacher.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruPostRepoProvider = Provider<PostRepository>(
   (ref) {

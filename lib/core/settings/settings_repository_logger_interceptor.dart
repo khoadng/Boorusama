@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/loggers/loggers.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 
 class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
   final SettingsRepository repository;

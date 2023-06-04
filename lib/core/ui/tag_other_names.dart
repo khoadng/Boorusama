@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/foundation/display.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({

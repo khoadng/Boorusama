@@ -8,10 +8,10 @@ import 'package:permission_handler/permission_handler.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/permissions/permissions.dart';
-import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 Future<void> _download(
   BuildContext context,

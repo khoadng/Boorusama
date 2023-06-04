@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
 import 'package:boorusama/core/networking/network_provider.dart';
 import 'package:boorusama/core/networking/network_state.dart';
 import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'bottom_bar_widget.dart';
 import 'other_features_page.dart';
 

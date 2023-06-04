@@ -8,9 +8,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/modal_share.dart';
+import 'package:boorusama/foundation/display.dart';
 
 class SharePostButton extends ConsumerWidget {
   const SharePostButton({
