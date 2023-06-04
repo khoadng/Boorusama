@@ -10,7 +10,6 @@ export 'conditional_render_widget.dart';
 export 'context_menu.dart';
 export 'editable_mixin.dart';
 export 'embedded_webview_webm.dart';
-export 'error_box.dart';
 export 'fade_page_route.dart';
 export 'faster_ink_splash.dart';
 export 'floating_glassy_card.dart';
