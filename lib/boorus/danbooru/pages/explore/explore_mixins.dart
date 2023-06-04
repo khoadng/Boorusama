@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 
 mixin PostExplorerMixin<T extends StatefulWidget, E> on State<T> {
   PostGridController<E> get controller;

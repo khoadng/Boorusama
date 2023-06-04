@@ -8,9 +8,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/pages/post_grid_config_icon_button.dart';
-import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
@@ -18,8 +15,8 @@ import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
-import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 

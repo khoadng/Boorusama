@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/booru_image.dart';
-import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/explores/explore_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/app/transformer.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/models/danbooru_post.dart';

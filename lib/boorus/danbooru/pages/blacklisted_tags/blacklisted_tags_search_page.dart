@@ -11,9 +11,8 @@ import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
 import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
 import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
 import 'package:boorusama/boorus/core/feats/search/tag_search_item.dart';
-import 'package:boorusama/boorus/core/pages/tag_suggestion_items.dart';
-import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _selectedTagsProvider =

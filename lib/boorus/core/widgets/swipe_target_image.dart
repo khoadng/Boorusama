@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/interactive_booru_image.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 
 class SwipeTargetImage extends StatelessWidget {
   const SwipeTargetImage({

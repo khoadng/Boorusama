@@ -11,16 +11,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
-import 'package:boorusama/boorus/core/pages/booru_image.dart';
-import 'package:boorusama/boorus/core/pages/details_page.dart';
-import 'package:boorusama/boorus/core/pages/file_details_section.dart';
-import 'package:boorusama/boorus/core/pages/interactive_booru_image.dart';
-import 'package:boorusama/boorus/core/pages/post_video.dart';
-import 'package:boorusama/boorus/core/pages/posts.dart';
-import 'package:boorusama/boorus/core/pages/recommend_artist_list.dart';
-import 'package:boorusama/boorus/core/pages/recommend_character_list.dart';
-import 'package:boorusama/boorus/core/pages/swipe_target_image.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';

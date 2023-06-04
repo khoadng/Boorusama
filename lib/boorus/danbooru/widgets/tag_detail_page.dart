@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
-import 'package:boorusama/boorus/core/pages/post_grid_config_icon_button.dart';
-import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 

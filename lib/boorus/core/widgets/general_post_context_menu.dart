@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/download_provider_widget.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
