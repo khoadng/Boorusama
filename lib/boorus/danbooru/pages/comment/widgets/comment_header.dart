@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/user_level_colors.dart';
-import 'package:boorusama/boorus/danbooru/feat/users/users.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({

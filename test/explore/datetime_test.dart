@@ -2,8 +2,8 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feat/explores/explore_utils.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/explores/explore_utils.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 
 void main() {
   group('[explore time test]', () {

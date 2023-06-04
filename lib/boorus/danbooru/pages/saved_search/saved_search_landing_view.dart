@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/generic_no_data_box.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/feat/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

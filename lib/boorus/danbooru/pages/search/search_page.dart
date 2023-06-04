@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 

@@ -16,10 +16,11 @@ import 'package:boorusama/boorus/core/pages/widgets/side_sheet.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feat/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/feat/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_search_page.dart';
@@ -49,7 +50,6 @@ import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'feat/posts/models.dart';
 import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {

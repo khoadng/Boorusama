@@ -10,7 +10,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:boorusama/boorus/core/pages/search_bar.dart';
 import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/feat/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'pool_grid_item.dart';
 

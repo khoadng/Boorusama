@@ -7,7 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/widgets/side_sheet.dart';
-import 'package:boorusama/boorus/danbooru/feat/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';

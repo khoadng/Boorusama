@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feat/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';

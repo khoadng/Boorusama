@@ -14,11 +14,11 @@ import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dar
 import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/danbooru_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/feat/downloads/download_provider.dart';
-import 'feat/autocomplete/autocomplete.dart';
-import 'feat/posts/app.dart';
-import 'feat/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/feats/danbooru_file_name_generator.dart';
+import 'package:boorusama/boorus/danbooru/feats/downloads/download_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 
 class DanbooruProvider extends ConsumerWidget {
   const DanbooruProvider({

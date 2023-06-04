@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/warning_container.dart';
-import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';

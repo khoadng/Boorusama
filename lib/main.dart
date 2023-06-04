@@ -27,7 +27,7 @@ import 'package:boorusama/boorus/core/feats/search_histories/search_histories.da
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';

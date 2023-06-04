@@ -9,7 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_config_icon_button.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/functional.dart';
 import 'related_tag_section.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class TimeScaleToggleSwitch extends StatefulWidget {

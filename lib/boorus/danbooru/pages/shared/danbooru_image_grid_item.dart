@@ -14,8 +14,8 @@ import 'package:boorusama/boorus/core/pages/image_grid_item.dart';
 import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/feat/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 
 class DanbooruImageGridItem extends ConsumerWidget {
   const DanbooruImageGridItem({

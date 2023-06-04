@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feat/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'comment_item.dart';
 

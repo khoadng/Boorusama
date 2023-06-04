@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

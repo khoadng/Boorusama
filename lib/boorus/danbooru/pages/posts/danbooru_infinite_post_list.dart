@@ -19,7 +19,7 @@ import 'package:boorusama/boorus/core/pages/post_grid.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
 import 'package:boorusama/boorus/core/pages/sliver_post_grid.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/danbooru/feat/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/shared/danbooru_image_grid_item.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';

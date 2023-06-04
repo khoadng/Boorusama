@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags_section.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
   const DanbooruMetatagsSection({
