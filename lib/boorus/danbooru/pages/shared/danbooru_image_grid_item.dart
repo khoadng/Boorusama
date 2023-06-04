@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruImageGridItem extends ConsumerWidget {

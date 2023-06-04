@@ -5,8 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/app.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {

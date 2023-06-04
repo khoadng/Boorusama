@@ -5,9 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/functional.dart';
-import '../models/danbooru_post.dart';
-import 'posts_provider.dart';
 
 Option<String> tagFilterCategoryToString(TagFilterCategory category) =>
     category == TagFilterCategory.popular ? const Some('order:score') : none();

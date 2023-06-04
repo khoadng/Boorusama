@@ -1,5 +1,5 @@
 // Project imports:
-import 'models/danbooru_post.dart';
+import '../models/danbooru_post.dart';
 
 String generateFullReadableName(DanbooruPost post) =>
     '${generateCharacterOnlyReadableName(post)} (${generateCopyrightOnlyReadableName(post)}) drawn by ${post.artistTags.join(' ')}';

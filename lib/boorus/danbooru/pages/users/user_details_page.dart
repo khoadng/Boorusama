@@ -9,7 +9,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/preview_post_grid.dart';
 import 'package:boorusama/boorus/core/pages/user_level_colors.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 

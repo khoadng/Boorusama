@@ -1,4 +1,3 @@
-export 'app/app.dart';
 export 'app/comment_data.dart';
 export 'app/comment_parser.dart';
 export 'app/comment_votes_notifier.dart';
