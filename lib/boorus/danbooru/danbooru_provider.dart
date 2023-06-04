@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/danbooru_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
+import 'features/autocomplete/autocomplete.dart';
 import 'features/posts/app.dart';
 import 'features/tags/tags.dart';
 

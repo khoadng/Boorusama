@@ -4,8 +4,8 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/features/users/data/users.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/users/users.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import '../comments.dart';

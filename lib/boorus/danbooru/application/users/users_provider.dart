@@ -7,8 +7,8 @@ import 'package:boorusama/boorus/danbooru/application/users/users_notifier.dart'
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/features/users/data/users.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 

@@ -4,9 +4,9 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/features/profile/data/profile_dto.dart';
 import 'package:boorusama/boorus/danbooru/features/profile/models/profile.dart';
 import 'package:boorusama/boorus/danbooru/features/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 
 class ProfileRepositoryApi implements ProfileRepository {

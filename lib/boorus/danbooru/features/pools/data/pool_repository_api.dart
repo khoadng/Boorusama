@@ -4,11 +4,11 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/cache_mixin.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks/request_deduplicator_mixin.dart';
+import 'pool_dto.dart';
 
 List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
       value: value,

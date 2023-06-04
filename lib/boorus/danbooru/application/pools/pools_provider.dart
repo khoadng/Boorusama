@@ -5,9 +5,9 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/data/pool.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/data/pool_cacher.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool_cacher.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/provider.dart';

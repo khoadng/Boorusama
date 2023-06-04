@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/artists.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/features/artists/data/artists.dart';
 
 final danbooruArtistRepoProvider = Provider<ArtistRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);

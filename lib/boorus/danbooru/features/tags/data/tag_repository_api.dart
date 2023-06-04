@@ -4,10 +4,10 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'tag_dto.dart';
 
 List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
       value: value,
