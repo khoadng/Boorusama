@@ -9,7 +9,6 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/pages/auto_slide_mixin.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/foundation/platform.dart';

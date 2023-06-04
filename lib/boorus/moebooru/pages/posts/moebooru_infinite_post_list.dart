@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/core/pages/booru_image.dart';
 import 'package:boorusama/boorus/core/pages/booru_image_legacy.dart';
 import 'package:boorusama/boorus/core/pages/default_multi_selection_actions.dart';
 import 'package:boorusama/boorus/core/pages/general_post_context_menu.dart';
-import 'package:boorusama/boorus/core/pages/image_grid_item.dart';
 import 'package:boorusama/boorus/core/pages/multi_select_controller.dart';
 import 'package:boorusama/boorus/core/pages/post_grid.dart';
 import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
@@ -23,6 +22,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/utils/double_utils.dart';
+import 'package:boorusama/widgets/image_grid_item.dart';
 
 class MoebooruInfinitePostList extends ConsumerStatefulWidget {
   const MoebooruInfinitePostList({

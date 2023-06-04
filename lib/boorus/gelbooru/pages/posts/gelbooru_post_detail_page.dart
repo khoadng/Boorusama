@@ -12,9 +12,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/booru_image.dart';
-import 'package:boorusama/boorus/core/pages/booru_video_progress_bar.dart';
 import 'package:boorusama/boorus/core/pages/details_page.dart';
-import 'package:boorusama/boorus/core/pages/embedded_webview_webm.dart';
 import 'package:boorusama/boorus/core/pages/file_details_section.dart';
 import 'package:boorusama/boorus/core/pages/interactive_booru_image.dart';
 import 'package:boorusama/boorus/core/pages/post_video.dart';
@@ -27,6 +25,8 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/widgets/booru_video_progress_bar.dart';
+import 'package:boorusama/widgets/embedded_webview_webm.dart';
 
 class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailPage({
