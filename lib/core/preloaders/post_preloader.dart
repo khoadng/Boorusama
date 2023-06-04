@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/preloader.dart';
-import 'post.dart';
+import '../posts/post.dart';
+import 'preloader.dart';
 
 abstract class PostPreviewPreloader extends Preloader<Post> {}
 

@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/preloaders/preloaders.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/tags/tags.dart';
 

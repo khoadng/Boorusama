@@ -18,7 +18,7 @@ import 'package:boorusama/core/networking/networking.dart';
 import 'package:boorusama/core/networks/user_agent_generator_impl.dart';
 import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/preloader/preloader.dart';
+import 'package:boorusama/core/preloaders/preloaders.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/theme/theme_mode.dart';
