@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/boorus/providers.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class OtherFeaturesPage extends ConsumerWidget {

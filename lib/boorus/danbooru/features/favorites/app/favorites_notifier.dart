@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/boorus/providers.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/provider.dart';
 import 'favorites_provider.dart';
 
 class FavoritesNotifier extends Notifier<Map<int, bool>> {

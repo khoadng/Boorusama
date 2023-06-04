@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,

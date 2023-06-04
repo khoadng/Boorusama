@@ -9,6 +9,21 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/posts/providers.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/tags/tags_providers.dart';
+import 'package:boorusama/boorus/core/ui/booru_image.dart';
+import 'package:boorusama/boorus/core/ui/booru_video_progress_bar.dart';
+import 'package:boorusama/boorus/core/ui/details_page.dart';
+import 'package:boorusama/boorus/core/ui/embedded_webview_webm.dart';
+import 'package:boorusama/boorus/core/ui/file_details_section.dart';
+import 'package:boorusama/boorus/core/ui/interactive_booru_image.dart';
+import 'package:boorusama/boorus/core/ui/post_video.dart';
+import 'package:boorusama/boorus/core/ui/posts.dart';
+import 'package:boorusama/boorus/core/ui/recommend_artist_list.dart';
+import 'package:boorusama/boorus/core/ui/recommend_character_list.dart';
+import 'package:boorusama/boorus/core/ui/swipe_target_image.dart';
+import 'package:boorusama/boorus/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
@@ -17,21 +32,6 @@ import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/posts/providers.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/tags/tags_providers.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
-import 'package:boorusama/core/ui/details_page.dart';
-import 'package:boorusama/core/ui/embedded_webview_webm.dart';
-import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/interactive_booru_image.dart';
-import 'package:boorusama/core/ui/post_video.dart';
-import 'package:boorusama/core/ui/posts.dart';
-import 'package:boorusama/core/ui/recommend_artist_list.dart';
-import 'package:boorusama/core/ui/recommend_character_list.dart';
-import 'package:boorusama/core/ui/swipe_target_image.dart';
-import 'package:boorusama/core/ui/widgets/circular_icon_button.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {

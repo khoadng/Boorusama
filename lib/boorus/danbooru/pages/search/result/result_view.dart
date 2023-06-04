@@ -7,10 +7,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/search/selected_tags_notifier.dart';
+import 'package:boorusama/boorus/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
-import 'package:boorusama/core/search/selected_tags_notifier.dart';
-import 'package:boorusama/core/ui/post_grid_config_icon_button.dart';
 import 'package:boorusama/functional.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';

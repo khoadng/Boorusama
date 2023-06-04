@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/settings/settings.dart';
 import 'firebase/firebase.dart';
 
 bool isAnalyticsEnabled(Settings settings) =>

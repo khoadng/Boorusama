@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/settings/settings.dart';
 import 'firebase/firebase.dart';
 
 enum AppErrorType {

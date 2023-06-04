@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/ui/posts.dart';
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/ui/posts.dart';
 
 class MoebooruPostActionToolbar extends StatelessWidget {
   const MoebooruPostActionToolbar({

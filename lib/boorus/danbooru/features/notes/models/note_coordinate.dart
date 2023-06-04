@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/posts/posts.dart';
 import 'note.dart';
 
 class NoteCoordinate extends Equatable {

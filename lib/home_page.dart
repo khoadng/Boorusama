@@ -6,18 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/ui/custom_context_menu_overlay.dart';
+import 'package:boorusama/boorus/core/ui/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/home.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/home/side_bar_menu.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';

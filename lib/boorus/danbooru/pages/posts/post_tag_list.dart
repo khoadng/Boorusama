@@ -8,15 +8,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
+import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/ui/tags.dart';
+import 'package:boorusama/boorus/core/ui/widgets/context_menu.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/ui/tags.dart';
-import 'package:boorusama/core/ui/widgets/context_menu.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 

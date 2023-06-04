@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/ui/generic_no_data_box.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/ui/generic_no_data_box.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class SavedSearchLandingView extends ConsumerWidget {

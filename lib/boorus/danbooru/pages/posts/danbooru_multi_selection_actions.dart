@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/ui/bookmarks/add_bookmarks_button.dart';
+import 'package:boorusama/boorus/core/ui/download_provider_widget.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/ui/bookmarks/add_bookmarks_button.dart';
-import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({

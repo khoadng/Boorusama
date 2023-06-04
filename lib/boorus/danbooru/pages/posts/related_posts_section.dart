@@ -6,15 +6,15 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/ui/booru_image.dart';
+import 'package:boorusama/boorus/core/ui/boorus/website_logo.dart';
+import 'package:boorusama/boorus/core/ui/preview_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/boorus/website_logo.dart';
-import 'package:boorusama/core/ui/preview_post_grid.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class RelatedPostsSection extends ConsumerWidget {

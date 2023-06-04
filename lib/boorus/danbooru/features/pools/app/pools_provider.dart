@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/boorus/providers.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 part 'pools_search_provider.dart';

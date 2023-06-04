@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class PostStatsTile extends StatelessWidget {

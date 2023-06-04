@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/ui/tags/post_tag_list.dart';
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/ui/tags/post_tag_list.dart';
 
 class TagsTile extends StatelessWidget {
   const TagsTile({

@@ -5,12 +5,12 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/preloaders/preloaders.dart';
+import 'package:boorusama/boorus/core/search/filter_operator.dart';
+import 'package:boorusama/boorus/core/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
-import 'package:boorusama/core/booru_user_identity_provider.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/preloaders/preloaders.dart';
-import 'package:boorusama/core/search/filter_operator.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import '../models/danbooru_post.dart';
 import '../models/filter.dart';
 

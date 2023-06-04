@@ -4,14 +4,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/data.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
-import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/provider.dart';
 
 typedef ScaleAndTime = ({
   TimeScale scale,

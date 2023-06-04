@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/provider.dart';
 
 class CurrentUserNotifier extends Notifier<UserSelf?> {
   @override

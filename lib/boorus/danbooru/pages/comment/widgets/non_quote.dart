@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 
 class NonQuote extends StatelessWidget {
   const NonQuote({super.key, required this.text});

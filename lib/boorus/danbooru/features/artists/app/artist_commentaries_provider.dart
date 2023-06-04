@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/boorus/providers.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
-import 'package:boorusama/core/boorus/providers.dart';
 
 final danbooruArtistCommentaryRepoProvider =
     Provider<ArtistCommentaryRepository>(

@@ -3,10 +3,10 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';

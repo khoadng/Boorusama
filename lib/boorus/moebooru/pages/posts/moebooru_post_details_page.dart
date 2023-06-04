@@ -8,23 +8,23 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/ui/booru_image.dart';
+import 'package:boorusama/boorus/core/ui/booru_video_progress_bar.dart';
+import 'package:boorusama/boorus/core/ui/details_page.dart';
+import 'package:boorusama/boorus/core/ui/embedded_webview_webm.dart';
+import 'package:boorusama/boorus/core/ui/file_details_section.dart';
+import 'package:boorusama/boorus/core/ui/interactive_booru_image.dart';
+import 'package:boorusama/boorus/core/ui/post_video.dart';
+import 'package:boorusama/boorus/core/ui/posts.dart';
+import 'package:boorusama/boorus/core/ui/source_section.dart';
+import 'package:boorusama/boorus/core/ui/swipe_target_image.dart';
+import 'package:boorusama/boorus/core/ui/tags/basic_tag_list.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
-import 'package:boorusama/core/ui/details_page.dart';
-import 'package:boorusama/core/ui/embedded_webview_webm.dart';
-import 'package:boorusama/core/ui/file_details_section.dart';
-import 'package:boorusama/core/ui/interactive_booru_image.dart';
-import 'package:boorusama/core/ui/post_video.dart';
-import 'package:boorusama/core/ui/posts.dart';
-import 'package:boorusama/core/ui/source_section.dart';
-import 'package:boorusama/core/ui/swipe_target_image.dart';
-import 'package:boorusama/core/ui/tags/basic_tag_list.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {

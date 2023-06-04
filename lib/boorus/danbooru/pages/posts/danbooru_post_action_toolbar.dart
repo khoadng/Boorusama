@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/ui/posts.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/ui/posts.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostActionToolbar extends ConsumerWidget {

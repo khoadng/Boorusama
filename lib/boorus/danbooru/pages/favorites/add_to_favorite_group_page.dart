@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/ui/booru_image.dart';
+import 'package:boorusama/boorus/core/ui/search_bar.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/utils/time_utils.dart';

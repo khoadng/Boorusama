@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/booru_user_identity_provider.dart';
-import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/tags/tags.dart';
 import 'blacklisted_tags_provider.dart';
 
 class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/tags/tags.dart';
 
 class RelatedTag extends Equatable {
   const RelatedTag({
