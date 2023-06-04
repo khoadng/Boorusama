@@ -18,12 +18,18 @@ import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'artist_section.dart';
+import 'danbooru_more_action_button.dart';
+import 'danbooru_post_action_toolbar.dart';
+import 'information_section.dart';
+import 'pool_tiles.dart';
+import 'post_note.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
+import 'related_posts_section.dart';
 
 final danbooruPostProvider = Provider<DanbooruPost>((ref) {
   throw UnimplementedError();

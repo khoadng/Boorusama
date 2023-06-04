@@ -39,7 +39,7 @@ import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_search_sheet.dart';
