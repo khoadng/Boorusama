@@ -6,9 +6,8 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_post.dart';
-import 'package:boorusama/boorus/moebooru/domain/utils.dart';
-import 'package:boorusama/boorus/moebooru/infra/posts.dart';
+import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/features/tags/utils.dart';
 import 'package:boorusama/core/application/posts.dart';
 import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
 import 'package:boorusama/core/domain/boorus.dart';

@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
+import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
+import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/boorus/moebooru/ui/home/moebooru_bottom_bar.dart';
-import 'package:boorusama/boorus/moebooru/ui/popular/moebooru_popular_page.dart';
-import 'package:boorusama/boorus/moebooru/ui/posts.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';

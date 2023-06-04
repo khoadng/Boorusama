@@ -4,8 +4,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/moebooru/domain/tags.dart';
-import 'package:boorusama/boorus/moebooru/infra/tags.dart';
+import 'package:boorusama/boorus/moebooru/features/tags/tags.dart';
 import 'package:boorusama/core/infra/networks/request_deduplicator_mixin.dart';
 
 class MoebooruTagSummaryRepository

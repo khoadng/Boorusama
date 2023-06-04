@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/ui/home.dart';
+import 'package:boorusama/boorus/moebooru/pages/home.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/permissions.dart';

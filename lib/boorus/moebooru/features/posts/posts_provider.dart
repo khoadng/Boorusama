@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/domain/posts/moebooru_popular_repository.dart';
-import 'package:boorusama/boorus/moebooru/infra/posts.dart';
-import 'package:boorusama/boorus/moebooru/infra/posts/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/features/tags/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/features/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
