@@ -6,7 +6,6 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/infra.dart';
-import 'saved_search_dto.dart';
 
 List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) => parse(
       value: value,

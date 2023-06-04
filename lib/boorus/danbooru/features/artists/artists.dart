@@ -1,3 +1,11 @@
+export 'app/artist_commentaries_provider.dart';
+export 'app/artist_commentary_notifier.dart';
+export 'app/artist_notifier.dart';
+export 'app/artists_provider.dart';
+export 'data/artist_commentary_dto.dart';
+export 'data/artist_commentary_repository_api.dart';
+export 'data/artist_dto.dart';
+export 'data/artist_repository_api.dart';
 export 'models/artist.dart';
 export 'models/artist_commentary.dart';
 export 'models/artist_commentary_repository.dart';

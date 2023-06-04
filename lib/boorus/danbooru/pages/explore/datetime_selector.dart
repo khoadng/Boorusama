@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/features/explores/explore_utils.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/time_scale.dart';
 
 class DateTimeSelector extends StatelessWidget {

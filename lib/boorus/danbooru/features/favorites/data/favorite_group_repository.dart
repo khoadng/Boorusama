@@ -7,7 +7,6 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
-import 'favorite_group_dto.dart';
 
 const favoriteGroupApiParams =
     'id,name,post_ids,created_at,updated_at,is_public,creator';

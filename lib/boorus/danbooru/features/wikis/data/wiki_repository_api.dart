@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
-import 'wiki_dto.dart';
 
 class WikiRepositoryApi implements WikiRepository {
   WikiRepositoryApi(DanbooruApi api) : _api = api;

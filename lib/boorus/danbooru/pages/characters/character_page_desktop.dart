@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/wikis.dart';
+import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/pages/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/core/ui/tag_other_names.dart';
 import 'character_page.dart';

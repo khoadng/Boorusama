@@ -6,7 +6,6 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/notes/notes.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
-import 'note_dto.dart';
 
 List<Note> parseNote(HttpResponse<dynamic> value) => parse(
       value: value,

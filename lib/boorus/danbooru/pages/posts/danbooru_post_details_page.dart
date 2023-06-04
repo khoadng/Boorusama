@@ -9,11 +9,10 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artists.dart';
-import 'package:boorusama/boorus/danbooru/application/notes.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/features/notes/models/note_coordinate.dart';
+import 'package:boorusama/boorus/danbooru/features/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';

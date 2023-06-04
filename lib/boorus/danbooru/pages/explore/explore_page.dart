@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/explores.dart';
+import 'package:boorusama/boorus/danbooru/features/explores/explore_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app/transformer.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/time_scale.dart';
