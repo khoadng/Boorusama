@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/error.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 
 typedef DataFetcher = Future<HttpResponse<dynamic>> Function();

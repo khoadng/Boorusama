@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
+import 'package:boorusama/foundation/error.dart';
 
 typedef PostFetcher = PostsOrError Function(int page);
 

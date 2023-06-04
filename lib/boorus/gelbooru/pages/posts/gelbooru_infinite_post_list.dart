@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
 class GelbooruInfinitePostList extends ConsumerStatefulWidget {

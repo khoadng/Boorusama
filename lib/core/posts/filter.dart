@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 
 TaskEither<BooruError, List<T>> tryFilterBlacklisted<T extends Post>(

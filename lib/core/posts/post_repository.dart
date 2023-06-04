@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/error.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 import 'post.dart';
 

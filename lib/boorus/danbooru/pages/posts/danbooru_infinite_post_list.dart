@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/shared/danbooru_image_grid_item.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -24,6 +23,7 @@ import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/post_grid.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';
 import 'package:boorusama/core/ui/sliver_post_grid.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/utils/double_utils.dart';
 
 class DanbooruInfinitePostList extends ConsumerStatefulWidget {

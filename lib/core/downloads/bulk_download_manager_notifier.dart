@@ -4,10 +4,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/permission.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/permissions/permission.dart';
 
 const _serviceName = 'Bulk Download Manager';
 

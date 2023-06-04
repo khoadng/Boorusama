@@ -7,8 +7,8 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/models/utils.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
