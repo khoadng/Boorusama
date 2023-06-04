@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/authentication/authentication.dart';
-import 'package:boorusama/boorus/core/ui/posts.dart';
+import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/pages/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';

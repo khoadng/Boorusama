@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feat/search/filter_operator.dart';
+import 'package:boorusama/boorus/core/feat/search/selected_tags_notifier.dart';
+import 'package:boorusama/boorus/core/feat/search/suggestions_notifier.dart';
+import 'package:boorusama/boorus/core/feat/search/tag_search_item.dart';
+import 'package:boorusama/boorus/core/pages/search_bar.dart';
+import 'package:boorusama/boorus/core/pages/tag_suggestion_items.dart';
+import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/search/filter_operator.dart';
-import 'package:boorusama/boorus/core/search/selected_tags_notifier.dart';
-import 'package:boorusama/boorus/core/search/suggestions_notifier.dart';
-import 'package:boorusama/boorus/core/search/tag_search_item.dart';
-import 'package:boorusama/boorus/core/ui/search_bar.dart';
-import 'package:boorusama/boorus/core/ui/tag_suggestion_items.dart';
-import 'package:boorusama/boorus/core/ui/utils.dart';
 
 final _selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(

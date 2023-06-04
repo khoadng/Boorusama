@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 

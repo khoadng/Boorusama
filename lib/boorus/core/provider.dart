@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/boorus/core/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
-import 'package:boorusama/boorus/core/preloaders/preloaders.dart';
-import 'package:boorusama/boorus/core/settings/settings.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feat/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feat/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/preloaders/preloaders.dart';
+import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/device_info_service.dart';

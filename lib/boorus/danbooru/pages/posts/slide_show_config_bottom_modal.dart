@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/boorus/core/ui/widgets/modal.dart';
+import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/boorus/core/pages/widgets/modal.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

@@ -3,7 +3,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';

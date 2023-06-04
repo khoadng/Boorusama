@@ -9,11 +9,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/core/feat/search/search.dart';
+import 'package:boorusama/boorus/core/pages/blacklists.dart';
+import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
+import 'package:boorusama/boorus/core/pages/widgets/side_sheet.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/search/search.dart';
-import 'package:boorusama/boorus/core/ui/blacklists.dart';
-import 'package:boorusama/boorus/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/ui/widgets/side_sheet.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';

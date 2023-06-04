@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/models/utils.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';

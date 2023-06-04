@@ -6,10 +6,10 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru.dart';
-import 'package:boorusama/boorus/core/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
-import 'package:boorusama/boorus/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/feat/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/settings/settings.dart';
 import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/features/tags/utils.dart';
 import 'package:boorusama/foundation/error.dart';

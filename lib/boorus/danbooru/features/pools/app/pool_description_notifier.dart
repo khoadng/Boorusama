@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
 import '../pools.dart';
 
 final poolDescriptionProvider =

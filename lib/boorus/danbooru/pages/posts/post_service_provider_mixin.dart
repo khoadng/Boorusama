@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/preloaders/preloaders.dart';
+import 'package:boorusama/boorus/core/feat/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/preloaders/preloaders.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';

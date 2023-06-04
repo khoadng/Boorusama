@@ -6,13 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/authentication/authentication.dart';
-import 'package:boorusama/boorus/core/boorus/providers.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/pages/tags.dart';
+import 'package:boorusama/boorus/core/pages/widgets/context_menu.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
-import 'package:boorusama/boorus/core/ui/tags.dart';
-import 'package:boorusama/boorus/core/ui/widgets/context_menu.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';

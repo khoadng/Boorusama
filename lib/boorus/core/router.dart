@@ -7,29 +7,29 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/downloads/bulk_download_provider.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/downloads/bulk_download_provider.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/search/search.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
+import 'package:boorusama/boorus/core/pages/blacklists.dart';
+import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/search/search.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
-import 'package:boorusama/boorus/core/ui/blacklists.dart';
-import 'package:boorusama/boorus/core/ui/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/ui/search/simple_tag_search_view.dart';
-import 'package:boorusama/boorus/core/ui/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'ui/booru_image.dart';
-import 'ui/image_grid_item.dart';
-import 'ui/info_container.dart';
-import 'ui/original_image_page.dart';
-import 'ui/search/favorite_tags/import_favorite_tag_dialog.dart';
-import 'ui/search/full_history_view.dart';
+import 'pages/booru_image.dart';
+import 'pages/image_grid_item.dart';
+import 'pages/info_container.dart';
+import 'pages/original_image_page.dart';
+import 'pages/search/favorite_tags/import_favorite_tag_dialog.dart';
+import 'pages/search/full_history_view.dart';
 import 'utils.dart';
 
 void goToHomePage(

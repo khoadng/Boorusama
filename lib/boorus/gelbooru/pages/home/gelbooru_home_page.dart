@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/pages/network_indicator_with_state.dart';
+import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
+import 'package:boorusama/boorus/core/pages/search_bar.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/ui/network_indicator_with_state.dart';
-import 'package:boorusama/boorus/core/ui/posts/post_scope.dart';
-import 'package:boorusama/boorus/core/ui/search_bar.dart';
 import 'package:boorusama/boorus/gelbooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';

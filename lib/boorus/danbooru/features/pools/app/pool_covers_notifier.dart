@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';

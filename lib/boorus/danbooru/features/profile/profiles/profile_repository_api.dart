@@ -4,7 +4,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/features/profile/data/profile_dto.dart';
 import 'package:boorusama/boorus/danbooru/features/profile/models/profile.dart';
 import 'package:boorusama/boorus/danbooru/features/profile/profile.dart';

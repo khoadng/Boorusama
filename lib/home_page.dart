@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
+import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/ui/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';

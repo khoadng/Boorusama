@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
-import 'package:boorusama/boorus/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/boorus/providers.dart';
-import 'package:boorusama/boorus/core/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feat/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feat/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
 import 'package:boorusama/boorus/gelbooru/features/downloads/download_provider.dart';
 import 'package:boorusama/boorus/gelbooru/features/tags/tags.dart';
 import 'features/posts/posts.dart';

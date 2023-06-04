@@ -1,9 +1,9 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/posts/posts.dart';
-import 'package:boorusama/boorus/core/settings/settings.dart';
+import 'package:boorusama/boorus/core/feat/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/settings/settings.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';

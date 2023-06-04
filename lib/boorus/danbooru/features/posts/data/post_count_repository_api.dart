@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import '../models/post_count_repository.dart';
 
 class PostCountRepositoryApi implements PostCountRepository {

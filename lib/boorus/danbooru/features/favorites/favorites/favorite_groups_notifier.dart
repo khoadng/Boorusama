@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';

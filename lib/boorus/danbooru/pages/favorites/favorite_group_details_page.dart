@@ -11,15 +11,15 @@ import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/pages/booru_image.dart';
+import 'package:boorusama/boorus/core/pages/image_grid_item.dart';
+import 'package:boorusama/boorus/core/pages/infinite_load_list.dart';
+import 'package:boorusama/boorus/core/pages/post_grid_controller.dart';
+import 'package:boorusama/boorus/core/pages/widgets/circular_icon_button.dart';
+import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/ui/booru_image.dart';
-import 'package:boorusama/boorus/core/ui/image_grid_item.dart';
-import 'package:boorusama/boorus/core/ui/infinite_load_list.dart';
-import 'package:boorusama/boorus/core/ui/post_grid_controller.dart';
-import 'package:boorusama/boorus/core/ui/widgets/circular_icon_button.dart';
-import 'package:boorusama/boorus/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';

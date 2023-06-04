@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/ui/widgets/faster_ink_splash.dart';
+import 'package:boorusama/boorus/core/pages/widgets/faster_ink_splash.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';

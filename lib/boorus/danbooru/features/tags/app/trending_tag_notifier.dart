@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 

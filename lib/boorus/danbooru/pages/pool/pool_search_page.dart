@@ -7,8 +7,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/ui/search_bar.dart';
-import 'package:boorusama/boorus/core/ui/tags.dart';
+import 'package:boorusama/boorus/core/pages/search_bar.dart';
+import 'package:boorusama/boorus/core/pages/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/foundation/i18n.dart';

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/ui/tag_other_names.dart';
+import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
+import 'package:boorusama/boorus/core/pages/tag_other_names.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/pages/shared/tag_detail_page.dart';

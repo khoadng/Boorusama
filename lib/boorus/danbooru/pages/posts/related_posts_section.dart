@@ -6,11 +6,11 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/posts/posts.dart';
+import 'package:boorusama/boorus/core/feat/posts/posts.dart';
+import 'package:boorusama/boorus/core/pages/booru_image.dart';
+import 'package:boorusama/boorus/core/pages/boorus/website_logo.dart';
+import 'package:boorusama/boorus/core/pages/preview_post_grid.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/ui/booru_image.dart';
-import 'package:boorusama/boorus/core/ui/boorus/website_logo.dart';
-import 'package:boorusama/boorus/core/ui/preview_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';

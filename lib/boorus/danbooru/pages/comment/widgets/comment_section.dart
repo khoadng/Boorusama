@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feat/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'comment_box.dart';

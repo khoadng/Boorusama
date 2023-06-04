@@ -4,7 +4,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/gelbooru.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'tag_dto.dart';
 
 class GelbooruTagRepositoryApi implements TagRepository {

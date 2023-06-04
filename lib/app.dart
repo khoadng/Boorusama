@@ -10,10 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/pages/platforms/windows/windows.dart';
+import 'package:boorusama/boorus/core/pages/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/settings/settings.dart';
-import 'package:boorusama/boorus/core/ui/platforms/windows/windows.dart';
-import 'package:boorusama/boorus/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

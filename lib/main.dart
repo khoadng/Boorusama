@@ -16,17 +16,17 @@ import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/boorus/core/boorus/booru_config_repository_hive.dart';
-import 'package:boorusama/boorus/core/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/metatags/metatags.dart';
+import 'package:boorusama/boorus/core/feat/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feat/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feat/boorus/booru_config_repository_hive.dart';
+import 'package:boorusama/boorus/core/feat/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feat/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feat/metatags/metatags.dart';
+import 'package:boorusama/boorus/core/feat/search/search.dart';
+import 'package:boorusama/boorus/core/feat/search_histories/search_histories.dart';
+import 'package:boorusama/boorus/core/feat/settings/settings.dart';
+import 'package:boorusama/boorus/core/feat/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/search/search.dart';
-import 'package:boorusama/boorus/core/search_histories/search_histories.dart';
-import 'package:boorusama/boorus/core/settings/settings.dart';
-import 'package:boorusama/boorus/core/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
