@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/pages/blacklists.dart';
 import 'package:boorusama/boorus/core/pages/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';

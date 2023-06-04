@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,7 +14,6 @@ import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dar
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/pages/blacklists.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/core/pages/utils.dart';
