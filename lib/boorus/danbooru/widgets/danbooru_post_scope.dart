@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'post_service_provider_mixin.dart';
 
 typedef DanbooruPostFetcher = DanbooruPostsOrError Function(int page);
 

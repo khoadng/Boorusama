@@ -10,7 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/posts.dart';
+import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
