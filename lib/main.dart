@@ -18,11 +18,10 @@ import 'package:video_player_win/video_player_win.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/error.dart';
-import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_repository.dart';
 import 'package:boorusama/core/infra/boorus/booru_config_repository_hive.dart';

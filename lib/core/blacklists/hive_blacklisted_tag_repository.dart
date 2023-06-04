@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/infra/blacklists/blacklisted_tag_hive_object.dart';
 
 class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   static const _boxName = 'blacklisted_tags';
