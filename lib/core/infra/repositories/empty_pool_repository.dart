@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 
 class EmptyPoolRepository implements PoolRepository {
   @override

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/features/users/users.dart';
 
 int getUserHexColor(UserLevel level) => switch (level) {
       UserLevel.member => 0xff0073ff,

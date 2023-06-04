@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 
 class FavoriteGroupFilterableNotifier
     extends AutoDisposeNotifier<List<FavoriteGroup>?> {

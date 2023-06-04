@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/users.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/core/application/boorus.dart';

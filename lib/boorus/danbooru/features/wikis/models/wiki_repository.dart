@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/wikis/wiki.dart';
+import 'package:boorusama/boorus/danbooru/features/wikis/models/wiki.dart';
 
 abstract class WikiRepository {
   Future<Wiki?> getWikiFor(

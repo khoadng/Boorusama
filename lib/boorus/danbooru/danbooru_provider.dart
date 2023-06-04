@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/downloads/danbooru_file_name_generator.dart';
+import 'package:boorusama/boorus/danbooru/features/danbooru_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/downloads.dart';

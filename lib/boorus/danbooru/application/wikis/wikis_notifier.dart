@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/wikis/wikis_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
+import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
 import 'package:boorusama/core/application/boorus.dart';
 
 class WikisNotifier extends Notifier<Map<String, Wiki?>> {

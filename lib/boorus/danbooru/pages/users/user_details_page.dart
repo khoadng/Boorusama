@@ -8,8 +8,8 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/users.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/features/users/models/user.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/preview_post_grid.dart';
 import 'package:boorusama/core/ui/user_level_colors.dart';

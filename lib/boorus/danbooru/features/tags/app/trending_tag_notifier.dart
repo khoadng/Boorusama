@@ -5,11 +5,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
+import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
-import 'tags_provider.dart';
 
 final trendingTagsProvider =
     AsyncNotifierProvider<TrendingTagNotifier, List<Search>>(

@@ -2,8 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'tags_provider.dart';
+import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 
 class RelatedTagsNotifier extends Notifier<Map<String, RelatedTag>> {
   @override

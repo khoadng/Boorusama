@@ -5,7 +5,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 
 class PoolKey extends Equatable {
   final int page;

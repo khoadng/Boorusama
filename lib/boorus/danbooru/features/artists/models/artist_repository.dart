@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
+import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 
 abstract class ArtistRepository {
   Future<Artist> getArtist(

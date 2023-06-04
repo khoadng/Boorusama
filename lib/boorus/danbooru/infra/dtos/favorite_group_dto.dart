@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'creator_dto.dart';
 
 class FavoriteGroupDto {

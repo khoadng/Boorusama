@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists.dart';
+import 'package:boorusama/boorus/danbooru/features/artists/artists.dart';
 import 'artists_provider.dart';
 
 class ArtistNotifier extends FamilyAsyncNotifier<Artist, String> {

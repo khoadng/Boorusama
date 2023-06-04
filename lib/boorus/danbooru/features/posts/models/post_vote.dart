@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/features/users/users.dart';
 import 'vote_state.dart';
 
 typedef PostVoteId = int;

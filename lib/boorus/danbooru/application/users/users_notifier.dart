@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/users.dart';
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/features/users/users.dart';
 import 'package:boorusama/core/application/boorus.dart';
 
 class UserNotifier extends FamilyAsyncNotifier<User, int> {

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
+import 'package:boorusama/boorus/danbooru/features/users/users.dart';
 import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/tags.dart';

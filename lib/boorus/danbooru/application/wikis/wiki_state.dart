@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/wikis.dart';
+import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
 
 sealed class WikiState {
   const WikiState();

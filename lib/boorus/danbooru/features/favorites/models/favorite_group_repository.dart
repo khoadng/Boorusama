@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
+import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 
 abstract class FavoriteGroupRepository {
   Future<List<FavoriteGroup>> getFavoriteGroups({

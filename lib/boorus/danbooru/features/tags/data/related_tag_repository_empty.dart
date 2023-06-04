@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
+import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 
 class RelatedTagRepositoryEmpty implements RelatedTagRepository {
   @override

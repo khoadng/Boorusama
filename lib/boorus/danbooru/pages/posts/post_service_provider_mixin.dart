@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool_repository.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/models/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/boorus.dart';

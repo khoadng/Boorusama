@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
+import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/provider.dart';

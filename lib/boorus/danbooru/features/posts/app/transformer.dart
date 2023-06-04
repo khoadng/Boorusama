@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/application/booru_user_identity_provider.dart';
 import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/domain/boorus.dart';

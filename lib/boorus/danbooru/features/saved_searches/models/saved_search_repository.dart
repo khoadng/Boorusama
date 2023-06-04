@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_search.dart';
+import 'package:boorusama/boorus/danbooru/features/saved_searches/models/saved_search.dart';
 
 abstract class SavedSearchRepository {
   Future<List<SavedSearch>> getSavedSearches({

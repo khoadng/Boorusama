@@ -8,7 +8,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
+import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/i18n.dart';
 
