@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/embedded_webview_webm.dart';
 import 'package:boorusama/core/ui/interactive_image.dart';
 import 'package:boorusama/core/ui/post_video.dart';

@@ -6,8 +6,8 @@ import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/features/tags/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/features/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/core/application/blacklists.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/provider.dart';
 

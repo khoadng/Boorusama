@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/ui/search/selected_tag_list.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {

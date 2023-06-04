@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 
 class SearchBarWithData extends ConsumerWidget {

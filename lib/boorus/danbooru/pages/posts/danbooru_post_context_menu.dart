@@ -10,9 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/bookmarks.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/authentication/authentication.dart';
+import 'package:boorusama/core/bookmarks/bookmark_notifier.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';

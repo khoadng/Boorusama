@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/wikis/wikis.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 
 final danbooruWikiRepoProvider = Provider<WikiRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);

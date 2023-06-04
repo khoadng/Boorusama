@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/searches/search_history.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/core/ui/search/search_history_section.dart';
 

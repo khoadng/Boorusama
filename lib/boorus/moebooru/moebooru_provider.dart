@@ -9,9 +9,9 @@ import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/features/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/features/tags/tags.dart';
-import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/provider.dart';
 
 class MoebooruProvider extends StatelessWidget {

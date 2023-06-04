@@ -5,8 +5,8 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
-import 'package:boorusama/core/application/search/filter_operator.dart';
 import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/search/filter_operator.dart';
 
 DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       id: id,

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/application/parse_util.dart';
+import 'package:boorusama/core/parse_util.dart';
 import 'package:boorusama/utils/string_utils.dart';
 
 String parseDtext(String text) => text.pipe([

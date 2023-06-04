@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/downloads.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 
 class DownloadOptions extends Equatable with DownloadMixin {
   const DownloadOptions({

@@ -189,3 +189,8 @@ Future<T?> showAdaptiveBottomSheet<T>(
           ),
         );
 }
+
+Future<bool> launchWikiPage(String endpoint, String tag) => launchExternalUrl(
+      Uri.parse('$endpoint/wiki_pages/$tag'),
+      mode: LaunchMode.platformDefault,
+    );

@@ -3,7 +3,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
+import 'package:boorusama/core/booru_user_identity_provider.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import '../models/post_vote.dart';

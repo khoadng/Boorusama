@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/cache_mixin.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
 
 mixin PostDetailsTagsX<T extends Post>

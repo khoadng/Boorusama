@@ -7,8 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
-import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/utils.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/utils.dart';

@@ -40,10 +40,10 @@ import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_
 import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
-import 'package:boorusama/core/application/search.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/ui/blacklists.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';

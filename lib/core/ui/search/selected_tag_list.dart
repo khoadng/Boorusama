@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/ui/search/selected_tag_chip.dart';
 import 'package:boorusama/i18n.dart';
 

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/theme.dart';
 import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/i18n.dart';
 import 'widgets/settings_header.dart';

@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/authentication/authentication.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/domain/posts.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/i18n.dart';
 
 class SimplePostTagList extends ConsumerWidget {

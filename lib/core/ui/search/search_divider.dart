@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/selected_tags_notifier.dart';
+import 'package:boorusama/core/search/selected_tags_notifier.dart';
 
 class SearchDivider extends ConsumerWidget {
   const SearchDivider({

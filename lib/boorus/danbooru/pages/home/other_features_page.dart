@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/authentication.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/authentication/authentication.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/i18n.dart';
 
 class OtherFeaturesPage extends ConsumerWidget {

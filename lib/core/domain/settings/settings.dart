@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'types.dart';
 
 class Settings extends Equatable {

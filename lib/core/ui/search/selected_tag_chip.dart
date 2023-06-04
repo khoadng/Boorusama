@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search.dart';
+import 'package:boorusama/core/search/search.dart';
+
+// Project imports:
 
 class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({

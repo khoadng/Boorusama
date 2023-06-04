@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/booru_user_identity_provider.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/provider.dart';

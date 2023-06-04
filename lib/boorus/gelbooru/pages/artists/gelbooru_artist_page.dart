@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
-import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tag_filter_category.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 import 'package:boorusama/core/ui/tags.dart';
 import 'package:boorusama/functional.dart';

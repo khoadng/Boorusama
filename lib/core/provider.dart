@@ -6,11 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/application/cache_notifier.dart';
-import 'package:boorusama/core/application/networking.dart';
-import 'package:boorusama/core/application/settings.dart';
-import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/booru_user_identity_provider.dart';
+import 'package:boorusama/core/cache_notifier.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/domain/bookmarks.dart';
 import 'package:boorusama/core/domain/boorus.dart';
@@ -23,6 +20,9 @@ import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
+import 'package:boorusama/core/networking/networking.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
 final booruFactoryProvider =

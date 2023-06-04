@@ -10,10 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/search/suggestions_notifier.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/search/suggestions_notifier.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/tag_suggestion_items.dart';
 

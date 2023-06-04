@@ -8,9 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
-import 'package:boorusama/core/application/networking.dart';
-import 'package:boorusama/core/application/theme.dart';
+import 'package:boorusama/core/networking/network_provider.dart';
+import 'package:boorusama/core/networking/network_state.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/network_indicator_with_state.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';

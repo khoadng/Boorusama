@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/android.dart';
-import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/settings.dart';
 import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/core/ui/settings/widgets/settings_tile.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';

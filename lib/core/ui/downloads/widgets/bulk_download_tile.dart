@@ -10,8 +10,8 @@ import 'package:path/path.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/domain/downloads.dart';
+import 'package:boorusama/core/downloads/bulk_download_provider.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 

@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
-import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/application/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
+import 'package:boorusama/core/comment_parser.dart';
 import 'package:boorusama/core/provider.dart';
 
 const youtubeUrl = 'www.youtube.com';
