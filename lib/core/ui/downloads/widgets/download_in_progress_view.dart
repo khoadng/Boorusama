@@ -7,8 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/downloads.dart';
-import 'package:boorusama/core/downloads/bulk_download_provider.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/ui/downloads/widgets/bulk_download_tile.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/functional.dart';

@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/downloads.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/functional.dart';
 

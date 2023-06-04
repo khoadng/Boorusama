@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 
 class TagSummary {
   final int category;

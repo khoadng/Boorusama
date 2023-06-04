@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 enum RecommendType {
   artist,

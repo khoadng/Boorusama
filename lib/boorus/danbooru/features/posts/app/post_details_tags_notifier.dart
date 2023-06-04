@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import '../models/danbooru_post.dart';
 
 class PostDetailsTagsNotifier

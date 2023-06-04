@@ -7,11 +7,10 @@ import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/post_preloader.dart';
-import 'package:boorusama/core/domain/tags/blacklisted_tags_repository.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
     on ConsumerState<T> {

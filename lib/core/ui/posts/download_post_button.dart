@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class DownloadPostButton extends StatelessWidget {

@@ -2,7 +2,6 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 void main() {

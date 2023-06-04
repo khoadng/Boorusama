@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/bookmarks.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/toast.dart';
 import 'package:boorusama/functional.dart';

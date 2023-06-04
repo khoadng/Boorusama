@@ -7,7 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/settings/settings.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {

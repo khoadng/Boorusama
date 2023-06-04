@@ -2,14 +2,13 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/image.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/post.dart' as base;
-import 'package:boorusama/core/domain/video.dart';
+import 'package:boorusama/core/image.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/video.dart';
 
 class GelbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
-    implements base.Post {
+    implements Post {
   const GelbooruPost({
     required this.format,
     required this.height,

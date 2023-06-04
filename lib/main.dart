@@ -20,9 +20,6 @@ import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/blacklists/hive_blacklisted_tag_repository.dart';
@@ -45,6 +42,7 @@ import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/user_agent_generator.dart';
 import 'app.dart';
 import 'i18n.dart';
 

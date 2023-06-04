@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags/favorite_tag.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 part 'favorite_tag_hive_object.g.dart';
 

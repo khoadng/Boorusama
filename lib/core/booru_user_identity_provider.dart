@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
 
 abstract class BooruUserIdentityProvider {
   Future<int?> getAccountIdFromConfig(BooruConfig? config);

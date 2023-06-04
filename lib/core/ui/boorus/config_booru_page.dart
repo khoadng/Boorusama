@@ -8,7 +8,6 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/ui/login_field.dart';
 import 'package:boorusama/core/ui/option_dropdown_button.dart';
 import 'package:boorusama/core/ui/warning_container.dart';

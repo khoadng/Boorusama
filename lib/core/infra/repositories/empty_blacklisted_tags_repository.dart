@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 class EmptyBlacklistedTagsRepository implements BlacklistedTagsRepository {
   @override

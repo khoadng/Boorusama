@@ -8,8 +8,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 void goToMoebooruSearchPage(
   WidgetRef ref,

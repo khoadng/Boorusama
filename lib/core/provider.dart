@@ -6,23 +6,22 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/cache_notifier.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/domain/bookmarks.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/tags.dart';
-import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/loggers.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/networking/networking.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/theme/theme_mode.dart';
+import 'package:boorusama/core/user_agent_generator.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
 final booruFactoryProvider =

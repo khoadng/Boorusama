@@ -6,10 +6,10 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/models/utils.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/post_variant.dart';

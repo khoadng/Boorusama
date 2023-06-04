@@ -7,8 +7,7 @@ import 'package:boorusama/boorus/danbooru/features/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/features/users/users.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
 
 class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {
   @override

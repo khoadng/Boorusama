@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 enum MoebooruTimePeriod { day, week, month, year }
 

@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings/types.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/file_name_generator.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 final downloadFileNameGeneratorProvider = Provider<FileNameGenerator>((ref) {
   throw UnimplementedError();

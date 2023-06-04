@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/tags.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/repositories/metatags.dart';
 import 'package:boorusama/core/infra/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 part 'related_tags_provider.dart';
 

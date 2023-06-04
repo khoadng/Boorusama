@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';
 

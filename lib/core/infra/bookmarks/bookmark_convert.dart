@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/bookmarks.dart';
+import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/infra/bookmarks/bookmark_hive_object.dart';
 import 'package:boorusama/functional.dart';
 

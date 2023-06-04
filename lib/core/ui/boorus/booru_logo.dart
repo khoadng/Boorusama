@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/sources/source_utils.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/posts/posts.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({

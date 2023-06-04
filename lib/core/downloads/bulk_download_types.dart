@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/downloads.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 
 enum BulkDownloadManagerStatus {
   initial,

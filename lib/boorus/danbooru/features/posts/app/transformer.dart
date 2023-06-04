@@ -7,10 +7,10 @@ import 'package:collection/collection.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/pools/pools.dart';
 import 'package:boorusama/core/booru_user_identity_provider.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/search/filter_operator.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import '../models/danbooru_post.dart';
 import '../models/filter.dart';
 

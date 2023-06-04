@@ -1,5 +1,15 @@
 export 'details.dart';
 export 'filter.dart';
+export 'media_info_mixin.dart';
+export 'post.dart';
+export 'post_details_tag.dart';
+export 'post_preloader.dart';
+export 'post_repository.dart';
 export 'post_share_notifier.dart';
 export 'providers.dart';
+export 'rating.dart';
+export 'recommend.dart';
 export 'share_post_button.dart';
+export 'sources/source.dart';
+export 'sources/source_utils.dart';
+export 'translatable_mixin.dart';

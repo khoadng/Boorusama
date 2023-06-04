@@ -2,10 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/image.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/domain/video.dart';
+import 'package:boorusama/core/image.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/video.dart';
 
 abstract class Post extends Equatable
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/booru_video_progress_bar.dart';
 import 'package:boorusama/core/ui/details_page.dart';
 

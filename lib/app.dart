@@ -1,4 +1,6 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -9,9 +11,9 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/core/app_theme.dart';
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/platform.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';

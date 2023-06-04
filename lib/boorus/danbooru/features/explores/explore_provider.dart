@@ -9,9 +9,8 @@ import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/data.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/core/blacklists/global_blacklisted_tags_provider.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 
 typedef ScaleAndTime = ({

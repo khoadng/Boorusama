@@ -2,8 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/downloads.dart';
-import 'package:boorusama/core/downloads/bulk_download_provider.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 
 class BulkDownloadStateNotifier extends Notifier<BulkDownloadState> {
   @override

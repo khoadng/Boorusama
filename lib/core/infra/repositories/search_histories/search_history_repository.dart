@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'search_history_hive_object.dart';
 
 class SearchHistoryRepositoryHive implements SearchHistoryRepository {

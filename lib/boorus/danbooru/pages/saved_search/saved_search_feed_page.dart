@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/features/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/post_grid_controller.dart';

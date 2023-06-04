@@ -2,9 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/crypto.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'booru_config_notifier.dart';
 
 class AddOrUpdateBooruState extends Equatable {
   final String login;

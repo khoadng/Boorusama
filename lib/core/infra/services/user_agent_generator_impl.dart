@@ -2,7 +2,7 @@
 import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/user_agent_generator.dart';
+import 'package:boorusama/core/user_agent_generator.dart';
 
 class UserAgentGeneratorImpl implements UserAgentGenerator {
   UserAgentGeneratorImpl({

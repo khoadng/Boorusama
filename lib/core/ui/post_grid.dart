@@ -9,9 +9,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/multi_select_controller.dart';
 import 'package:boorusama/core/ui/multi_select_widget.dart';
 import 'package:boorusama/core/ui/pagination.dart';

@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/permissions/permissions.dart';
 import 'package:boorusama/core/platform.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 Future<void> _download(
   BuildContext context,

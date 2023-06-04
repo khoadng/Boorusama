@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/tags/favorite_tag.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 abstract class FavoriteTagRepository {
   Future<List<FavoriteTag>> get(String name);

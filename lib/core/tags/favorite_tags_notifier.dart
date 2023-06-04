@@ -2,9 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/utils/collection_utils.dart';
-import 'favorite_tags_provider.dart';
 
 class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   @override

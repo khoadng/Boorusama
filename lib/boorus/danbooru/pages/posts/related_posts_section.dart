@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
 import 'package:boorusama/boorus/danbooru/features/posts/models/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/pages/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/domain/posts/sources/source.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/website_logo.dart';

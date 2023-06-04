@@ -1,5 +1,7 @@
 // Project imports:
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag.dart';
+
+// Project imports:
+import 'package:boorusama/core/blacklists/blacklists.dart';
 
 abstract class GlobalBlacklistedTagRepository {
   Future<BlacklistedTag> addTag(String tag);

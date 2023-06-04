@@ -2,9 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/global_blacklisted_tags_notifier.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
 
 final globalBlacklistedTagRepoProvider =
     Provider<GlobalBlacklistedTagRepository>(

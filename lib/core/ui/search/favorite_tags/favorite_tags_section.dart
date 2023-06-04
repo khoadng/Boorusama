@@ -7,7 +7,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags/favorite_tag.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';

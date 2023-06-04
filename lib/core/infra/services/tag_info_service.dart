@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:boorusama/core/tags/tags.dart';
 
 const String _assetUrl = 'assets/tagdef.json';
 

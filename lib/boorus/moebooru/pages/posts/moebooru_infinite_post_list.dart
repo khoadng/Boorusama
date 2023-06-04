@@ -9,11 +9,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/posts/post.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/default_multi_selection_actions.dart';

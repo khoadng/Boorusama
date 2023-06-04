@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 final gridSizeSettingsProvider = Provider<GridSize>(
     (ref) => ref.watch(settingsProvider.select((value) => value.gridSize)));

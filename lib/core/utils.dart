@@ -11,8 +11,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 

@@ -8,14 +8,13 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/moebooru.dart';
 import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/features/tags/utils.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 class ParseMoebooruPostArguments {

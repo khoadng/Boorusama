@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'recommend_section.dart';
 
 class RecommendCharacterList<T extends Post> extends StatelessWidget {

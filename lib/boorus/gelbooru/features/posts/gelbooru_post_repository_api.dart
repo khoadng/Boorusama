@@ -9,13 +9,12 @@ import 'package:retrofit/retrofit.dart';
 import 'package:boorusama/api/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/features/posts/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/features/tags/utils.dart';
-import 'package:boorusama/core/domain/blacklists/blacklisted_tag_repository.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-import 'package:boorusama/core/domain/error.dart';
-import 'package:boorusama/core/domain/posts.dart';
-import 'package:boorusama/core/domain/settings.dart';
+import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
+import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/networks.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 import 'post_dto.dart';
 
@@ -25,7 +24,7 @@ class ParsePostArguments {
   ParsePostArguments(this.value);
 }
 
-List<Post> parsePost(HttpResponse<dynamic> value) {
+List<GelbooruPost> parsePost(HttpResponse<dynamic> value) {
   final dtos = <PostDto>[];
   dynamic data;
   try {
@@ -44,13 +43,13 @@ List<Post> parsePost(HttpResponse<dynamic> value) {
   }).toList();
 }
 
-List<Post> _parsePostInIsolate(ParsePostArguments arguments) =>
+List<GelbooruPost> _parsePostInIsolate(ParsePostArguments arguments) =>
     parsePost(arguments.value);
 
-Future<List<Post>> parsePostAsync(HttpResponse<dynamic> value) =>
+Future<List<GelbooruPost>> parsePostAsync(HttpResponse<dynamic> value) =>
     compute(_parsePostInIsolate, ParsePostArguments(value));
 
-TaskEither<BooruError, List<Post>> tryParsePosts(
+TaskEither<BooruError, List<GelbooruPost>> tryParsePosts(
         HttpResponse<dynamic> response) =>
     TaskEither.tryCatch(
       () => parsePostAsync(response),
@@ -103,7 +102,7 @@ class GelbooruPostRepositoryApi
       ).flatMap(tryParsePosts).flatMap(tryFilterBlacklistedTags);
 }
 
-Post postDtoToPost(PostDto dto) {
+GelbooruPost postDtoToPost(PostDto dto) {
   return GelbooruPost(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',

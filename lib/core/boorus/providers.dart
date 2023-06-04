@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus/boorus.dart';
-import 'package:boorusama/core/domain/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 
 final booruConfigProvider =

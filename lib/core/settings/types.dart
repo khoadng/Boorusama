@@ -3,7 +3,50 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme/theme_mode.dart';
-import 'types.dart';
+
+enum ImageQuality {
+  automatic,
+  low,
+  high,
+  original,
+}
+
+enum GridSize {
+  small,
+  normal,
+  large,
+}
+
+enum ImageListType {
+  standard,
+  masonry,
+}
+
+enum DataCollectingStatus {
+  allow,
+  prohibit,
+}
+
+enum ActionBarDisplayBehavior {
+  scrolling,
+  staticAtBottom,
+}
+
+enum DetailsDisplay {
+  postFocus,
+  imageFocus,
+}
+
+enum PageMode {
+  infinite,
+  paginated,
+}
+
+enum DownloadQuality {
+  original,
+  sample,
+  preview,
+}
 
 class Settings extends Equatable {
   const Settings({

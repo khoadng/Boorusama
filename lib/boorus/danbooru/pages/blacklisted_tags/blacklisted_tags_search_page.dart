@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/autocompletes.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/search/filter_operator.dart';
 import 'package:boorusama/core/search/selected_tags_notifier.dart';

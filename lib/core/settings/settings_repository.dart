@@ -1,5 +1,4 @@
 // Project imports:
-import 'package:boorusama/core/domain/settings.dart';
 import 'package:boorusama/functional.dart';
 import 'settings.dart';
 

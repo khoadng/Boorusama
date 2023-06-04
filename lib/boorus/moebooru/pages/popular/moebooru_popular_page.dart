@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/pages/explore/time_scale_toggle_switch
 import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/ui/posts/post_scope.dart';
 
 class MoebooruPopularPage extends ConsumerStatefulWidget {

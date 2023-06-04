@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/core/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/core/domain/boorus.dart';
+import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/boorus/booru_logo.dart';

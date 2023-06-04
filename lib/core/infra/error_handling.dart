@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/error.dart';
 
 void rethrowError(Object error) {
   if (error is DioError) {

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/search/common/option_tags_arena.dart';
 
 class MetatagsSection extends StatefulWidget {

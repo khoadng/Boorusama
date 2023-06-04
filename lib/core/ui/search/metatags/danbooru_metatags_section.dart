@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/tags.dart';
+import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/ui/search/metatags_section.dart';
 import 'package:boorusama/core/utils.dart';
 

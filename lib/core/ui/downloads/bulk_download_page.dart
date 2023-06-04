@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/downloads.dart';
-import 'package:boorusama/core/downloads/bulk_download_provider.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_empty_tag_view.dart';
 import 'package:boorusama/core/ui/downloads/widgets/download_tag_selection_view.dart';
 import 'widgets/download_in_progress_view.dart';

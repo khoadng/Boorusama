@@ -1,4 +1,6 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,8 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/danbooru_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/features/downloads/download_provider.dart';
+import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/downloads/bulk_download_provider.dart';
 import 'package:boorusama/core/downloads/download_provider.dart';
 import 'package:boorusama/core/provider.dart';

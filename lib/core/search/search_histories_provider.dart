@@ -2,8 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/searches.dart';
-import 'search_history_notifier.dart';
+import 'package:boorusama/core/search/search.dart';
 
 final searchHistoryRepoProvider =
     Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());

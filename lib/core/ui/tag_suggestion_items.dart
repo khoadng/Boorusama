@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/theme/theme_mode.dart';
 

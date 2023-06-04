@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/authentication/authentication.dart';
 import 'package:boorusama/core/bookmarks/bookmark_notifier.dart';
 import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/domain/posts.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/i18n.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/domain/searches.dart';
+import 'package:boorusama/core/search/search.dart';
 
 class SearchHistoryState {
   SearchHistoryState({
