@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
-import 'package:boorusama/core/infra/loggers/logger.dart';
-import 'core/analytics.dart';
-import 'core/provider.dart';
+import 'package:boorusama/foundation/loggers/logger.dart';
+import 'boorus/core/provider.dart';
+import 'foundation/analytics.dart';
 import 'routes.dart';
 
 export 'package:go_router/go_router.dart' hide GoRouterHelper;

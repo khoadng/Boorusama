@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/foundation/error.dart';
 
 String translateBooruError(BooruError error) => switch (error) {
       AppError e => switch (e.type) {

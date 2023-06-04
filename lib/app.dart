@@ -1,4 +1,6 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -8,15 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/core/app_theme.dart';
-import 'package:boorusama/core/application/theme.dart';
-import 'package:boorusama/core/domain/settings.dart';
-import 'package:boorusama/core/platform.dart';
-import 'package:boorusama/core/provider.dart';
-import 'package:boorusama/core/ui/platforms/windows/windows.dart';
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/i18n.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 

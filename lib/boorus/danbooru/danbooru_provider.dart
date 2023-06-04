@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/downloads/danbooru_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
-import 'package:boorusama/core/application/boorus.dart';
-import 'package:boorusama/core/application/downloads.dart';
-import 'package:boorusama/core/application/tags.dart';
-import 'package:boorusama/core/domain/autocompletes.dart';
-import 'package:boorusama/core/provider.dart';
+import 'package:boorusama/api/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
+import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 
 class DanbooruProvider extends ConsumerWidget {
   const DanbooruProvider({
