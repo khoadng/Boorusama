@@ -9,9 +9,9 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/bulk_download_tile.dart';
-import 'package:boorusama/boorus/core/pages/option_dropdown_button.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 enum BulkDownloadFilter {
   all,
