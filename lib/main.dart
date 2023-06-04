@@ -23,7 +23,6 @@ import 'package:boorusama/core/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/metatags/metatags.dart';
-import 'package:boorusama/core/package_info_provider.dart';
 import 'package:boorusama/core/provider.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
