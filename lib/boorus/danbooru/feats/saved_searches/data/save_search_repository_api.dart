@@ -7,7 +7,8 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) => parse(
+List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) =>
+    parseResponse(
       value: value,
       converter: (item) => SavedSearchDto.fromJson(item),
     ).map(savedSearchDtoToSaveSearch).toList();

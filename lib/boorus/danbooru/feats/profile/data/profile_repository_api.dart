@@ -7,7 +7,6 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/profile/models/profile.dart';
 import 'package:boorusama/boorus/danbooru/feats/profile/profile.dart';
-import 'profile_dto.dart';
 
 class ProfileRepositoryApi implements ProfileRepository {
   ProfileRepositoryApi({

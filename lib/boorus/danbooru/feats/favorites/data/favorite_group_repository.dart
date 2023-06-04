@@ -13,7 +13,8 @@ const favoriteGroupApiParams =
 
 const _favGroupLimit = 1000;
 
-List<FavoriteGroup> parseFavoriteGroups(HttpResponse<dynamic> value) => parse(
+List<FavoriteGroup> parseFavoriteGroups(HttpResponse<dynamic> value) =>
+    parseResponse(
       value: value,
       converter: (item) => FavoriteGroupDto.fromJson(item),
     ).map(favoriteGroupDtoToFavoriteGroup).toList();

@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
+List<Pool> parsePool(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => PoolDto.fromJson(item),
     ).map(poolDtoToPool).toList();

@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/dio.dart';
 
-List<T> parse<T>({
+List<T> parseResponse<T>({
   required HttpResponse<dynamic> value,
   required T Function(dynamic item) converter,
 }) {

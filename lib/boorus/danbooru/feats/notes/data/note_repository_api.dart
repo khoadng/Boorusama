@@ -7,7 +7,7 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<Note> parseNote(HttpResponse<dynamic> value) => parse(
+List<Note> parseNote(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => NoteDto.fromJson(item),
     ).map((e) => e.toEntity()).toList();

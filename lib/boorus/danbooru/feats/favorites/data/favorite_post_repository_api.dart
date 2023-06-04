@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parse(
+List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => FavoriteDto.fromJson(item),
     ).map(favoriteDtoToFavorite).toList();

@@ -7,7 +7,8 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import '../comments.dart';
 
-List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
+List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) =>
+    parseResponse(
       value: value,
       converter: (item) => CommentVoteDto.fromJson(item),
     ).map(commentVoteDtoToCommentVote).toList();

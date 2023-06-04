@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'tag_dto.dart';
 
-List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
+List<Tag> parseTag(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => TagDto.fromJson(item),
     ).map(tagDtoToTag).toList();

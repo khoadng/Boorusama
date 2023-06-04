@@ -6,6 +6,7 @@ export 'app/comment_votes_provider.dart';
 export 'app/comments_notifier.dart';
 export 'app/comments_provider.dart';
 export 'app/dtext_parser.dart';
+export 'app/parse_utils.dart';
 export 'data/comment_dto.dart';
 export 'data/comment_repository_api.dart';
 export 'data/comment_vote_dto.dart';

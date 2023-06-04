@@ -14,7 +14,7 @@ import 'moebooru_post_repository_api.dart';
 List<MoebooruPost> parsePost(
   HttpResponse<dynamic> value,
 ) =>
-    parse(
+    parseResponse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();

@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
+List<Search> parseSearch(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => Search(
         keyword: item[0],

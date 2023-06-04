@@ -10,7 +10,7 @@ import '../models/post_vote.dart';
 import '../models/post_vote_repository.dart';
 import 'post_vote_dto.dart';
 
-List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
+List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => PostVoteDto.fromJson(item),
     ).map(postVoteDtoToPostVote).toList();

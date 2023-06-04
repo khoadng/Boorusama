@@ -33,7 +33,7 @@ Future<List<DanbooruPost>> parsePostAsync(
 List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
 ) =>
-    parse(
+    parseResponse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();

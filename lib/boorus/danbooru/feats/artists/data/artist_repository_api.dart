@@ -7,7 +7,7 @@ import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
-List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(
+List<Artist> parseArtist(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => ArtistDto.fromJson(item),
     ).map((e) => e.toEntity()).toList();

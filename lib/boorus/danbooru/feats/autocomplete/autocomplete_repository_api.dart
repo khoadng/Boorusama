@@ -9,7 +9,8 @@ import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete_dto.da
 import 'package:boorusama/foundation/http/http.dart';
 
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
-    parse(value: value, converter: (data) => AutocompleteDto.fromJson(data));
+    parseResponse(
+        value: value, converter: (data) => AutocompleteDto.fromJson(data));
 
 List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .map((e) {

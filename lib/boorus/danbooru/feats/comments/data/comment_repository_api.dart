@@ -12,7 +12,7 @@ import '../comments.dart';
 const String commentResourceApiParam =
     'creator,id,post_id,body,score,is_deleted,created_at,updated_at,is_sticky,do_not_bump_post,updater_id';
 
-List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
+List<Comment> parseComment(HttpResponse<dynamic> value) => parseResponse(
       value: value,
       converter: (item) => CommentDto.fromJson(item),
     ).map(commentDtoToComment).toList();

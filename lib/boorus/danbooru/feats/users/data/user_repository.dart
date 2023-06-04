@@ -11,7 +11,7 @@ import 'package:boorusama/foundation/http/http.dart';
 List<User> parseUser(
   HttpResponse<dynamic> value,
 ) =>
-    parse(
+    parseResponse(
       value: value,
       converter: (item) => UserDto.fromJson(item),
     ).map((u) => userDtoToUser(u)).toList();
@@ -20,7 +20,7 @@ List<UserSelf> parseUserSelf(
   HttpResponse<dynamic> value,
   List<String> defaultBlacklistedTags,
 ) =>
-    parse(
+    parseResponse(
       value: value,
       converter: (item) => UserSelfDto.fromJson(item),
     ).map((u) => userDtoToUserSelf(u, defaultBlacklistedTags)).toList();
