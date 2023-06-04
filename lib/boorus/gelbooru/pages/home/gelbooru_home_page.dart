@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/pages/network_indicator_with_state.dart';
 import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/pages/search_bar.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/gelbooru/feat/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';

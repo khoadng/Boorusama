@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 
 abstract class TagSummaryRepository {
   Future<List<TagSummary>> getTagSummaries();

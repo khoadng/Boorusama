@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/pages/posts/post_scope.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/models.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/datetime_selector.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/moebooru/feat/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 

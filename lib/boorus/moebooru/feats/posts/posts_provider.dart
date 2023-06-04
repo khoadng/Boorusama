@@ -6,9 +6,9 @@ import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_p
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/moebooru/feat/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feat/tags/moebooru_post_repository_api.dart';
-import 'package:boorusama/boorus/moebooru/feat/tags/tags.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 
 final moebooruPostRepoProvider = Provider<PostRepository>(

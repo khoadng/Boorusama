@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.d
 import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/pages/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/gelbooru/feat/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 
