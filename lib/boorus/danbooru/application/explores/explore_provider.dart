@@ -2,11 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/explore_repository_cacher.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/features/posts/app.dart';
+import 'package:boorusama/boorus/danbooru/features/posts/data.dart';
+import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 import 'package:boorusama/core/application/blacklists.dart';
 import 'package:boorusama/core/application/boorus.dart';
 import 'package:boorusama/core/domain/boorus.dart';

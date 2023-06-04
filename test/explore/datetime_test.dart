@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explores.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
+import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
 
 void main() {
   group('[explore time test]', () {

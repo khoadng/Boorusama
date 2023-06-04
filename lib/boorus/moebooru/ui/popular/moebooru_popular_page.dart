@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/datetime_selector.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/time_scale_toggle_switch.dart';
+import 'package:boorusama/boorus/danbooru/features/posts/models.dart';
+import 'package:boorusama/boorus/danbooru/pages/explore/datetime_selector.dart';
+import 'package:boorusama/boorus/danbooru/pages/explore/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/moebooru/application/posts.dart';
 import 'package:boorusama/boorus/moebooru/domain/posts.dart';
 import 'package:boorusama/boorus/moebooru/ui/popular/types.dart';

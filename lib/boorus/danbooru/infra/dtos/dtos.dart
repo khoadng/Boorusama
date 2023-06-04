@@ -8,8 +8,6 @@ export 'favorite_dto.dart';
 export 'favorite_group_dto.dart';
 export 'note_dto.dart';
 export 'pool_dto.dart';
-export 'post_dto.dart';
-export 'post_vote_dto.dart';
 export 'profile_dto.dart';
 export 'related_tag_dto.dart';
 export 'saved_search_dto.dart';

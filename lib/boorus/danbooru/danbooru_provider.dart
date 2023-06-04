@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/download_provider.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
 import 'package:boorusama/boorus/danbooru/application/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/danbooru_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/core/application/downloads.dart';
 import 'package:boorusama/core/application/tags.dart';
 import 'package:boorusama/core/domain/autocompletes.dart';
 import 'package:boorusama/core/provider.dart';
+import 'features/posts/app.dart';
 
 class DanbooruProvider extends ConsumerWidget {
   const DanbooruProvider({

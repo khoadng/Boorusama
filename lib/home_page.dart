@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/ui/home/danbooru_home_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/ui/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
