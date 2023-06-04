@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
