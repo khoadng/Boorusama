@@ -7,10 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/login_field.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class AddBooruPage extends ConsumerStatefulWidget {
   const AddBooruPage({super.key, required this.setCurrentBooruOnSubmit});

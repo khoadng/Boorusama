@@ -8,10 +8,9 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/login_field.dart';
 import 'package:boorusama/boorus/core/pages/option_dropdown_button.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class ConfigBooruPage extends ConsumerStatefulWidget {
   const ConfigBooruPage({

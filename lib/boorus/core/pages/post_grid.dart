@@ -11,9 +11,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/pages/multi_select_controller.dart';
-import 'package:boorusama/boorus/core/pages/multi_select_widget.dart';
 import 'package:boorusama/boorus/core/pages/pagination.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_controller.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
