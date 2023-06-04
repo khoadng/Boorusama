@@ -65,7 +65,7 @@ dependencies:
   html: ^0.15.2
   infinite_scroll_pagination: ^3.2.0
   intl: ^0.18.0
-  jiffy: ^6.1.0
+  jiffy: ^6.2.1
   like_button: ^2.0.5
   lottie: ^2.3.2
   media_scanner: ^2.1.0
