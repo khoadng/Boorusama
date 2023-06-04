@@ -2,7 +2,7 @@
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/features/tags/tags.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networks/networks.dart';
+import 'package:boorusama/foundation/http/http.dart';
 
 class RelatedTagRepositoryApi implements RelatedTagRepository {
   const RelatedTagRepositoryApi(DanbooruApi api) : _api = api;

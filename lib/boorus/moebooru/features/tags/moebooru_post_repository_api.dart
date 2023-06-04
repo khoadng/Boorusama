@@ -13,7 +13,7 @@ import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/networks/networks.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 
 class ParseMoebooruPostArguments {

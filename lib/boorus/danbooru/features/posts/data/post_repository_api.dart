@@ -5,7 +5,7 @@ import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/networks/http_utils.dart';
+import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';

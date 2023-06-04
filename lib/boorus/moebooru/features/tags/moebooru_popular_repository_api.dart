@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/moebooru/features/posts/posts.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networks/networks.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 import 'moebooru_post_repository_api.dart';
 

@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru.dart';
 import 'package:boorusama/core/boorus/boorus.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networks/networks.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'tag_dto.dart';
 
 List<Tag> parseTag(HttpResponse<dynamic> value) => parse(

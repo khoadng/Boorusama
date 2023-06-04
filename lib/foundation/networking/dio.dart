@@ -8,8 +8,8 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 
 // Project imports:
 import 'package:boorusama/core/user_agent_generator.dart';
+import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/foundation/networks/dio_logger_interceptor.dart';
 
 Dio dio(
   Directory dir,
