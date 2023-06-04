@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'user_info_box.dart';
+import 'user_stats_group.dart';
 
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
@@ -45,10 +44,10 @@ class UserDetailsPage extends ConsumerWidget {
                     [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: _UserInfoBox(user: user),
+                        child: UserInfoBox(user: user),
                       ),
                       const SizedBox(height: 12),
-                      _UserStatsGroup(user),
+                      UserStatsGroup(user: user),
                       _UserUploads(uid: uid, user: user),
                       _UserFavorites(uid: uid, user: user),
                     ],
@@ -137,137 +136,6 @@ class _UserUploads extends ConsumerWidget {
           : const SizedBox.shrink(),
       error: (error, stackTrace) => const SizedBox.shrink(),
       loading: () => const SizedBox.shrink(),
-    );
-  }
-}
-
-class _UserStatsGroup extends StatelessWidget {
-  const _UserStatsGroup(this.user);
-
-  final User user;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _StatsButton(
-              num: user.uploadCount,
-              title: 'Uploads',
-            ),
-            const SizedBox(height: 12),
-            _StatsButton(
-              num: user.favoriteGroupCount,
-              title: 'Favgroups',
-            ),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _StatsButton(
-              num: user.tagEditCount,
-              title: 'Tag edits',
-            ),
-            const SizedBox(height: 12),
-            _StatsButton(
-              num: user.commentCount,
-              title: 'Comments',
-            ),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _StatsButton(
-              num: user.noteEditCount,
-              title: 'Note edits',
-            ),
-            const SizedBox(height: 12),
-            _StatsButton(
-              num: user.forumPostCount,
-              title: 'Forum posts',
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _UserInfoBox extends StatelessWidget {
-  const _UserInfoBox({
-    required this.user,
-  });
-
-  final User user;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                const SizedBox(height: 8),
-                Text(
-                  user.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: user.level.toColor(),
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 4),
-            Chip(
-              label: Text(user.level.name.sentenceCase),
-              visualDensity: const VisualDensity(vertical: -4),
-              backgroundColor: user.level.toColor(),
-            ),
-          ],
-        ),
-        Text(
-          DateFormat('yyyy-MM-dd').format(user.joinedDate),
-          style: TextStyle(
-            color: Theme.of(context).hintColor,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatsButton extends StatelessWidget {
-  const _StatsButton({
-    required this.num,
-    required this.title,
-  });
-
-  final int num;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          NumberFormat.compact().format(num),
-          style: const TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
-        ),
-        Text(
-          title,
-          style: TextStyle(color: Theme.of(context).hintColor),
-        ),
-      ],
     );
   }
 }
