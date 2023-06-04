@@ -37,5 +37,4 @@ export 'tags/tag_colors.dart';
 export 'tags/tag_other_names.dart';
 export 'tags/tag_suggestion_items.dart';
 export 'tags/tag_title_name.dart';
-export 'user_level_colors.dart';
 export 'utils.dart';
