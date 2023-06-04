@@ -2,7 +2,7 @@
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/api/moebooru.dart';
+import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';

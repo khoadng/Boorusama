@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
 import 'package:boorusama/foundation/http/http.dart';
 

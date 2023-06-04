@@ -2,7 +2,7 @@
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/api/gelbooru.dart';
+import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'autocomplete_dto.dart';

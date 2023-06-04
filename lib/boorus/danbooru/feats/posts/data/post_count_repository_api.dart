@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/api/danbooru.dart';
+import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import '../models/post_count_repository.dart';
 
