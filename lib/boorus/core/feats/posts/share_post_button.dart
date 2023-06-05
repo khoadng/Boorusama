@@ -25,6 +25,7 @@ class SharePostButton extends ConsumerWidget {
     final state = ref.watch(postShareProvider(post));
 
     return IconButton(
+      splashRadius: 16,
       onPressed: () => Screen.of(context).size == ScreenSize.small
           ? showMaterialModalBottomSheet(
               expand: false,
@@ -54,6 +55,7 @@ class SharePostButton extends ConsumerWidget {
             ),
       icon: const FaIcon(
         FontAwesomeIcons.share,
+        size: 20,
       ),
     );
   }

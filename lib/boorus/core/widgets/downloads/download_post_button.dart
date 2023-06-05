@@ -20,8 +20,12 @@ class DownloadPostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return DownloadProviderWidget(
       builder: (context, download) => IconButton(
+        splashRadius: 16,
         onPressed: () => download(post),
-        icon: const FaIcon(FontAwesomeIcons.download),
+        icon: const FaIcon(
+          FontAwesomeIcons.download,
+          size: 20,
+        ),
       ),
     );
   }

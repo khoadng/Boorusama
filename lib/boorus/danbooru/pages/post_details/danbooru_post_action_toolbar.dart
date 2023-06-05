@@ -42,6 +42,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 Icons.arrow_upward,
                 color: voteState == VoteState.upvoted ? Colors.redAccent : null,
               ),
+              splashRadius: 16,
               onPressed: () {
                 ref.read(danbooruPostVotesProvider.notifier).upvote(post.id);
               },
@@ -53,6 +54,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 color:
                     voteState == VoteState.downvoted ? Colors.blueAccent : null,
               ),
+              splashRadius: 16,
               onPressed: () {
                 ref.read(danbooruPostVotesProvider.notifier).downvote(post.id);
               },
@@ -68,9 +70,11 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
 
   Widget _buildCommentButton(BuildContext context) {
     return IconButton(
+      splashRadius: 16,
       onPressed: () => goToCommentPage(context, post.id),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
+        size: 20,
       ),
     );
   }
@@ -89,6 +93,7 @@ class _FavoriteButton extends ConsumerWidget {
     final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
 
     return IconButton(
+      splashRadius: 16,
       onPressed: () async {
         if (authState is Unauthenticated) {
           showSimpleSnackBar(
@@ -111,9 +116,11 @@ class _FavoriteButton extends ConsumerWidget {
           ? const FaIcon(
               FontAwesomeIcons.solidHeart,
               color: Colors.red,
+              size: 20,
             )
           : const FaIcon(
               FontAwesomeIcons.heart,
+              size: 20,
             ),
     );
   }
