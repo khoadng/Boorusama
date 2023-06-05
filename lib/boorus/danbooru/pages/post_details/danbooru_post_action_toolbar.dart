@@ -26,8 +26,8 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
-    final voteState = ref.watch(danbooruPostVoteProvider(post.id))?.voteState ??
-        VoteState.unvote;
+    final postVote = ref.watch(danbooruPostVoteProvider(post.id));
+    final voteState = postVote?.voteState ?? VoteState.unvote;
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
