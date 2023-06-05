@@ -27,6 +27,7 @@ class BookmarkPostButton extends ConsumerWidget {
 
     return isBookmarked
         ? IconButton(
+            splashRadius: 16,
             onPressed: () {
               ref.bookmarks.removeBookmarkWithToast(
                 bookmarkState.getBookmark(post, booru.booruType)!,
@@ -35,9 +36,11 @@ class BookmarkPostButton extends ConsumerWidget {
             icon: const FaIcon(
               FontAwesomeIcons.solidBookmark,
               color: Colors.red,
+              size: 20,
             ),
           )
         : IconButton(
+            splashRadius: 16,
             onPressed: () {
               ref.bookmarks.addBookmarkWithToast(
                 "",
@@ -45,7 +48,10 @@ class BookmarkPostButton extends ConsumerWidget {
                 post,
               );
             },
-            icon: const FaIcon(FontAwesomeIcons.bookmark),
+            icon: const FaIcon(
+              FontAwesomeIcons.bookmark,
+              size: 20,
+            ),
           );
   }
 }
