@@ -36,7 +36,7 @@ class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
-    final router = ref.watch(routerProvider);
+    final router = ref.watch(routerProvider(widget.settings));
 
     return Portal(
       child: OKToast(
