@@ -16,6 +16,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/widgets/platforms/windows/windows.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
