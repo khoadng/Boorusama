@@ -86,10 +86,13 @@ class DanbooruImageGridItem extends ConsumerWidget {
                               maxLines: 1,
                             ),
                             backgroundColor: Colors.redAccent,
-                            onPressed: () => switch (post.source) {
-                              WebSource source =>
-                                launchExternalUrlString(source.url),
-                              _ => null,
+                            onPressed: () {
+                              Clipboard.setData(
+                                      ClipboardData(text: artistTags.join(' ')))
+                                  .then((value) => showToast(
+                                        'Tag copied to clipboard',
+                                        position: ToastPosition.bottom,
+                                      ));
                             },
                           ),
                       ],
@@ -114,12 +117,9 @@ class DanbooruImageGridItem extends ConsumerWidget {
         },
         autoScrollOptions: autoScrollOptions,
         onTap: post.isBanned
-            ? () {
-                Clipboard.setData(ClipboardData(text: artistTags.join(' ')))
-                    .then((value) => showToast(
-                          'Tag copied to clipboard',
-                          position: ToastPosition.bottom,
-                        ));
+            ? switch (post.source) {
+                WebSource source => () => launchExternalUrlString(source.url),
+                _ => null,
               }
             : onTap,
         image: image,
