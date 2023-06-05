@@ -36,7 +36,7 @@ class CommentSection extends ConsumerWidget {
         Expanded(
           child: CommentList(
             comments: comments,
-            authenticated: auth is Authenticated,
+            authenticated: auth.isAuthenticated,
             onEdit: (comment) {
               goToCommentUpdatePage(
                 context,
@@ -66,7 +66,7 @@ class CommentSection extends ConsumerWidget {
                 .unvote(commentVote),
           ),
         ),
-        if (auth is Authenticated)
+        if (auth.isAuthenticated)
           CommentBox(
             focus: focus,
             commentReply: commentReply,

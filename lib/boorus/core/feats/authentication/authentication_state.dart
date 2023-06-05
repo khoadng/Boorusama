@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 
-abstract class AuthenticationState extends Equatable {
+sealed class AuthenticationState extends Equatable {
   const AuthenticationState();
 }
 
-class Authenticated extends AuthenticationState {
+final class Authenticated extends AuthenticationState {
   const Authenticated({
     required this.booruConfig,
   });
@@ -19,7 +19,11 @@ class Authenticated extends AuthenticationState {
   List<Object?> get props => [booruConfig];
 }
 
-class Unauthenticated extends AuthenticationState {
+final class Unauthenticated extends AuthenticationState {
   @override
   List<Object?> get props => ['unauthenticated'];
+}
+
+extension AuthenticationStateX on AuthenticationState {
+  bool get isAuthenticated => this is Authenticated;
 }

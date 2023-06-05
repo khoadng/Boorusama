@@ -126,7 +126,7 @@ class _DanbooruInfinitePostListState
                     }
                   : null,
               isFaved: false,
-              enableFav: authState is Authenticated,
+              enableFav: authState.isAuthenticated,
               onFavToggle: (isFaved) async {},
               autoScrollOptions: AutoScrollOptions(
                 controller: _autoScrollController,

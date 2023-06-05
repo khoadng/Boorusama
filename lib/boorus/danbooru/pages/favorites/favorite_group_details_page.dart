@@ -251,7 +251,7 @@ class _FavoriteGroupDetailsPageState
                                     ContextMenuRegion(
                                   contextMenu: DanbooruPostContextMenu(
                                     post: post,
-                                    hasAccount: authState is Authenticated,
+                                    hasAccount: authState.isAuthenticated,
                                   ),
                                   child: child,
                                 ),
@@ -262,7 +262,7 @@ class _FavoriteGroupDetailsPageState
                                         post.thumbnailFromSettings(settings),
                                     placeholderUrl: post.thumbnailImageUrl,
                                   ),
-                                  enableFav: authState is Authenticated,
+                                  enableFav: authState.isAuthenticated,
                                   hideOverlay: editing,
                                   autoScrollOptions: AutoScrollOptions(
                                     controller: scrollController,

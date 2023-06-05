@@ -121,7 +121,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
             'download.download'.tr(),
             onPressed: () => download(post),
           ),
-          if (authState is Authenticated)
+          if (authState.isAuthenticated)
             ContextMenuButtonConfig(
               'Remove from favorite group',
               onPressed: () {

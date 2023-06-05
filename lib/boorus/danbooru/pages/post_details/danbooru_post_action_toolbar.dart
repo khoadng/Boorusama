@@ -36,23 +36,22 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _FavoriteButton(post: post),
-          if (authState is Authenticated)
+          if (authState.isAuthenticated)
             IconButton(
               icon: Icon(
                 Icons.arrow_upward,
-                color: voteState == VoteState.upvoted ? Colors.redAccent : null,
+                color: voteState.isUpvoted ? Colors.redAccent : null,
               ),
               splashRadius: 16,
               onPressed: () {
                 ref.read(danbooruPostVotesProvider.notifier).upvote(post.id);
               },
             ),
-          if (authState is Authenticated)
+          if (authState.isAuthenticated)
             IconButton(
               icon: Icon(
                 Icons.arrow_downward,
-                color:
-                    voteState == VoteState.downvoted ? Colors.blueAccent : null,
+                color: voteState.isDownvoted ? Colors.blueAccent : null,
               ),
               splashRadius: 16,
               onPressed: () {
