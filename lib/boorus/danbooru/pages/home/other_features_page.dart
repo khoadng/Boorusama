@@ -31,7 +31,7 @@ class OtherFeaturesPage extends ConsumerWidget {
                   goToPoolPage(context, ref);
                 },
               ),
-              if (authState is Authenticated) ...[
+              if (authState.isAuthenticated) ...[
                 ListTile(
                   leading: const Icon(Icons.favorite_outline),
                   title: Text('profile.favorites'.tr()),

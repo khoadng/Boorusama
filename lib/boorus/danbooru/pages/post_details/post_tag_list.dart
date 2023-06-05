@@ -102,12 +102,12 @@ class PostTagList extends ConsumerWidget {
               value: 'add_to_favorites',
               child: const Text('post.detail.add_to_favorites').tr(),
             ),
-            if (authenticationState is Authenticated)
+            if (authenticationState.isAuthenticated)
               PopupMenuItem(
                 value: 'blacklist',
                 child: const Text('post.detail.add_to_blacklist').tr(),
               ),
-            if (authenticationState is Authenticated)
+            if (authenticationState.isAuthenticated)
               PopupMenuItem(
                 value: 'copy_and_move_to_saved_search',
                 child: const Text(

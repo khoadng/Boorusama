@@ -47,7 +47,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           posts: selectedPosts,
           onPressed: endMultiSelect,
         ),
-        if (authenticationState is Authenticated)
+        if (authenticationState.isAuthenticated)
           IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () async {

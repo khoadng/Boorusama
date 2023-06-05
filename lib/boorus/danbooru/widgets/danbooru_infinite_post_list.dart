@@ -109,7 +109,7 @@ class _DanbooruInfinitePostListState
         return ContextMenuRegion(
           isEnabled: !post.isBanned && !multiSelect,
           contextMenu: DanbooruPostContextMenu(
-            hasAccount: authState is Authenticated,
+            hasAccount: authState.isAuthenticated,
             onMultiSelect: () {
               _multiSelectController.enableMultiSelect();
             },
@@ -133,7 +133,7 @@ class _DanbooruInfinitePostListState
                       );
                     }
                   : null,
-              enableFav: !multiSelect && authState is Authenticated,
+              enableFav: !multiSelect && authState.isAuthenticated,
               image: settings.imageListType == ImageListType.masonry
                   ? BooruImage(
                       aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
@@ -208,7 +208,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
             icon: const Icon(Icons.download),
           ),
         ),
-        if (authenticationState is Authenticated)
+        if (authenticationState.isAuthenticated)
           IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () {
