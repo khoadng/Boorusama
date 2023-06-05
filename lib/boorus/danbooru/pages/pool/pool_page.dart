@@ -49,7 +49,9 @@ class _PostList extends ConsumerWidget {
         ),
         RiverPagedBuilder.autoDispose(
           firstPageProgressIndicatorBuilder: (context, controller) =>
-              const CircularProgressIndicator.adaptive(),
+              const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
           pullToRefresh: false,
           firstPageKey: const PoolKey(page: 1),
           provider: danbooruPoolsProvider,
