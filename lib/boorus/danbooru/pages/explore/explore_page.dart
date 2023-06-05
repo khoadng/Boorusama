@@ -269,10 +269,19 @@ class _ExploreListState extends State<_ExploreList> {
                     imageUrl: post.url720x720,
                     placeholderUrl: post.thumbnailImageUrl,
                   ),
+                  if (post.isAnimated)
+                    Positioned(
+                      top: 5,
+                      left: 5,
+                      child: VideoPlayDurationIcon(
+                        duration: post.duration,
+                        hasSound: post.hasSound,
+                      ),
+                    ),
                   Positioned.fill(
                     child: ShadowGradientOverlay(
                       alignment: Alignment.bottomCenter,
-                      colors: <Color>[
+                      colors: [
                         const Color(0xC2000000),
                         Colors.black12.withOpacity(0),
                       ],
