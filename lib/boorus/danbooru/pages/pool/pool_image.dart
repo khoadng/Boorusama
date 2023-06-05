@@ -29,20 +29,27 @@ class PoolImage extends ConsumerWidget {
                 aspectRatio: 0.6,
                 imageUrl: cover.url!,
                 fit: BoxFit.cover,
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
               )
-            : Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(4)),
-                ),
-                child: Center(
-                  child: const Text('pool.mature_banned_content').tr(),
+            : AspectRatio(
+                aspectRatio: 0.6,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                  ),
+                  child: Center(
+                    child: const Text('pool.mature_banned_content').tr(),
+                  ),
                 ),
               )
-        : Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
+        : AspectRatio(
+            aspectRatio: 0.6,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+              ),
             ),
           );
   }

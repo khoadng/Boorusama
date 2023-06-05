@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/utils/html_utils.dart';
 import 'package:boorusama/utils/time_utils.dart';
 
 class PoolDetailPage extends ConsumerWidget {
@@ -80,19 +81,19 @@ class PoolDetailPage extends ConsumerWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: poolDesc.description.isNotEmpty
-                ? Html(
-                    onLinkTap: (url, context, attributes, element) =>
-                        _onHtmlLinkTapped(
-                      attributes,
-                      url,
-                      poolDesc.descriptionEndpointRefUrl,
-                    ),
-                    data: poolDesc.description,
-                  )
-                : const SizedBox.shrink(),
-          ),
+          if (poolDesc.description.isNotEmpty &&
+              hasTextBetweenDiv(poolDesc.description))
+            SliverToBoxAdapter(
+              child: Html(
+                onLinkTap: (url, context, attributes, element) =>
+                    _onHtmlLinkTapped(
+                  attributes,
+                  url,
+                  poolDesc.descriptionEndpointRefUrl,
+                ),
+                data: poolDesc.description,
+              ),
+            ),
         ],
       ),
     );
