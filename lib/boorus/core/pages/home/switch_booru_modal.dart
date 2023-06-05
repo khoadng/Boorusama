@@ -61,6 +61,7 @@ class SwitchBooruModal extends ConsumerWidget {
                     config: config,
                     isCurrent: false,
                     onTap: () {
+                      Navigator.of(context).pop();
                       ref
                           .read(currentBooruConfigProvider.notifier)
                           .update(config);
