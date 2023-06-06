@@ -80,11 +80,12 @@ Help us translate Boorusama to make it more accessible. Here are the steps:
 
 |Language|Contributors|Source|
 |--------|------------|------|
-|English| [@khoadng](https://github.com/khoadng) |[`en.json`](./assets/translations/en.json)|
-|Vietnamese| [@khoadng](https://github.com/khoadng) |[`vi.json`](./assets/translations/vi.json)|
-|Japanese| [@khoadng](https://github.com/khoadng) |[`ja.json`](./assets/translations/ja.json)|
-|Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru.json`](./assets/translations/ru.json)|
-|Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be.json`](./assets/translations/be.json)|
+|English| [@khoadng](https://github.com/khoadng) |[`en-US.json`](./assets/translations/en-US.json)|
+|Vietnamese| [@khoadng](https://github.com/khoadng) |[`vi-VN.json`](./assets/translations/vi-VN.json)|
+|Japanese| [@khoadng](https://github.com/khoadng) |[`ja-JP.json`](./assets/translations/ja-JP.json)|
+|Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru-RU.json`](./assets/translations/ru-RU.json)|
+|Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be-BY.json`](./assets/translations/be-BY.json)|
+|German| [@Forsaken5687](https://github.com/Forsaken5687) |[`de-DE.json`](./assets/translations/de-DE.json)|
 
 Alternatively, you can assist with translations on [POEditor](https://poeditor.com/join/project/uNPcakFEut).
 
