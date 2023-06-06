@@ -47,10 +47,10 @@ final danbooruExploreRepoProvider = Provider<ExploreRepository>(
         blacklistedTagRepository: blacklistedTagRepository,
         shouldFilter: switch (config.ratingFilter) {
           BooruConfigRatingFilter.hideNSFW => (post) =>
-              post.rating != Rating.general,
+              post.rating != Rating.general || !post.viewable,
           BooruConfigRatingFilter.hideExplicit => (post) =>
-              post.rating.isNSFW(),
-          BooruConfigRatingFilter.none => null,
+              post.rating.isNSFW() || !post.viewable,
+          BooruConfigRatingFilter.none => (post) => !post.viewable,
         },
       ),
       popularStaleDuration: const Duration(minutes: 20),
