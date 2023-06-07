@@ -42,17 +42,11 @@ class AddOrUpdateBooruNotifier extends AutoDisposeFamilyNotifier<
       UpdateConfig a => AddOrUpdateBooruState.fromConfig(
           config: a.oldConfig,
           factory: booruFactory,
-        ).copyWith(
-          unverifiedBooru:
-              intToBooruType(a.oldConfig.booruId) == BooruType.unknown,
         ),
       AddNewConfig a => AddOrUpdateBooruState.initial(booruFactory).copyWith(
           selectedBooru: booruFactory.from(
               type: getBooruType(a.uri.toString(), booruFactory.booruData)),
           url: a.uri.toString(),
-          unverifiedBooru:
-              getBooruType(a.uri.toString(), booruFactory.booruData) ==
-                  BooruType.unknown,
         )
     };
   }
@@ -79,12 +73,6 @@ class AddOrUpdateBooruNotifier extends AutoDisposeFamilyNotifier<
     state = state.copyWith(
       selectedBooru: booru,
     );
-  }
-
-  void changeBooruEngine(BooruEngine? engine) {
-    if (engine == null) return;
-    final booru = booruEngineToBooruType(engine);
-    changeBooru(booru);
   }
 
   void changeRatingFilter(BooruConfigRatingFilter? ratingFilter) {
@@ -161,10 +149,6 @@ mixin AddOrUpdateBooruNotifierMixin<T extends ConsumerStatefulWidget>
   void changeRatingFilter(BooruConfigRatingFilter? ratingFilter) => ref
       .read(addOrUpdateBooruProvider(arg).notifier)
       .changeRatingFilter(ratingFilter);
-
-  void changeBooruEngine(BooruEngine? engine) => ref
-      .read(addOrUpdateBooruProvider(arg).notifier)
-      .changeBooruEngine(engine);
 
   void submit({
     bool setCurrentBooruOnSubmit = false,

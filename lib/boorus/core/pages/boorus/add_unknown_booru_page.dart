@@ -4,44 +4,33 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/add_unknown_booru_providers.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class ConfigBooruPage extends ConsumerStatefulWidget {
-  const ConfigBooruPage({
+class AddUnknownBooruPage extends ConsumerStatefulWidget {
+  const AddUnknownBooruPage({
     super.key,
-    required this.arg,
     this.setCurrentBooruOnSubmit = false,
+    required this.url,
   });
 
-  final AddOrUpdateBooruArg arg;
   final bool setCurrentBooruOnSubmit;
+  final String url;
 
   @override
-  ConsumerState<ConfigBooruPage> createState() => _AddBooruPageState();
+  ConsumerState<AddUnknownBooruPage> createState() => _AddBooruPageState();
 }
 
-class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
-    with AddOrUpdateBooruNotifierMixin {
+class _AddBooruPageState extends ConsumerState<AddUnknownBooruPage> {
   final loginController = TextEditingController();
   final apiKeyController = TextEditingController();
   final nameController = TextEditingController();
-  final urlController = TextEditingController();
-
-  @override
-  AddOrUpdateBooruArg get arg => widget.arg;
-
-  @override
-  void initState() {
-    super.initState();
-    urlController.text = ref.read(addOrUpdateBooruProvider(arg)).url;
-    loginController.text = ref.read(addOrUpdateBooruProvider(arg)).login;
-    apiKeyController.text = ref.read(addOrUpdateBooruProvider(arg)).apiKey;
-    nameController.text = ref.read(addOrUpdateBooruProvider(arg)).configName;
-  }
+  late final urlController = TextEditingController(text: widget.url);
 
   @override
   void dispose() {
@@ -54,7 +43,10 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(addOrUpdateBooruProvider(arg));
+    final engine = ref.watch(booruEngineProvider);
+    final revealApiKey = ref.watch(booruRevealKeyProvider);
+    final allowSubmit = ref.watch(booruAllowSubmitProvider);
+    final ratingFilter = ref.watch(booruRatingFilterProvider);
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -87,16 +79,35 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                       .copyWith(fontWeight: FontWeight.w900),
                 ).tr(),
               ),
-              Card(
-                  child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(state.selectedBooru.booruType.stringify()),
-              )),
+              WarningContainer(
+                  contentBuilder: (context) =>
+                      const Text('booru.add_random_booru_warning').tr()),
               const SizedBox(height: 8),
               const Divider(
                 thickness: 2,
                 endIndent: 16,
                 indent: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
+                child: ListTile(
+                  title: const Text('booru.booru_engine_input_label').tr(),
+                  trailing: OptionDropDownButton<BooruEngine?>(
+                    value: engine,
+                    onChanged: (value) {
+                      ref.read(booruEngineProvider.notifier).state = value;
+                    },
+                    items: BooruEngine.values
+                        .map((value) => DropdownMenuItem<BooruEngine>(
+                              value: value,
+                              child: Text(value.name.sentenceCase),
+                            ))
+                        .toList(),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -107,7 +118,8 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                   validator: (p0) => null,
                   controller: nameController,
                   labelText: 'booru.config_name_label'.tr(),
-                  onChanged: changeConfigName,
+                  onChanged: (value) =>
+                      ref.read(booruConfigNameProvider.notifier).state = value,
                 ),
               ),
               Padding(
@@ -116,10 +128,10 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                   vertical: 8,
                 ),
                 child: LoginField(
+                  readOnly: true,
                   validator: (p0) => null,
                   controller: urlController,
                   labelText: 'booru.site_url_label'.tr(),
-                  onChanged: changeUrl,
                 ),
               ),
               Padding(
@@ -134,30 +146,20 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                       validator: (p0) => null,
                       controller: loginController,
                       labelText: 'booru.login_name_label'.tr(),
-                      onChanged: changeLogin,
+                      onChanged: (value) =>
+                          ref.read(booruLoginProvider.notifier).state = value,
                     ),
                     const SizedBox(height: 16),
                     LoginField(
-                      readOnly: switch (arg) {
-                        UpdateConfig _ => state.selectedBooru.loginType ==
-                            LoginType.loginAndPasswordHashed,
-                        _ => false,
-                      },
                       validator: (p0) => null,
-                      obscureText: !state.revealKey,
+                      obscureText: !revealApiKey,
                       controller: apiKeyController,
-                      labelText: state.selectedBooru.loginType ==
-                              LoginType.loginAndApiKey
-                          ? 'booru.password_api_key_label'.tr()
-                          : switch (arg) {
-                              UpdateConfig _ =>
-                                'booru.password_hashed_label'.tr(),
-                              _ => 'booru.password_label'.tr(),
-                            },
-                      onChanged: changeApiKey,
+                      labelText: 'booru.password_api_key_label'.tr(),
+                      onChanged: (value) =>
+                          ref.read(booruApiKeyProvider.notifier).state = value,
                       suffixIcon: IconButton(
                         splashColor: Colors.transparent,
-                        icon: state.revealKey
+                        icon: revealApiKey
                             ? const FaIcon(
                                 FontAwesomeIcons.solidEyeSlash,
                                 size: 18,
@@ -166,39 +168,42 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                                 FontAwesomeIcons.solidEye,
                                 size: 18,
                               ),
-                        onPressed: toggleApiKey,
+                        onPressed: () {
+                          ref.read(booruRevealKeyProvider.notifier).state =
+                              !revealApiKey;
+                        },
                       ),
                     ),
-                    if (state.supportRatingFilter())
-                      ListTile(
-                        title: const Text('booru.content_filtering_label').tr(),
-                        trailing: OptionDropDownButton<BooruConfigRatingFilter>(
-                          value: state.ratingFilter,
-                          onChanged: changeRatingFilter,
-                          items: BooruConfigRatingFilter.values
-                              .map((value) =>
-                                  DropdownMenuItem<BooruConfigRatingFilter>(
-                                    value: value,
-                                    child: Text(value.getFilterRatingTerm()),
-                                  ))
-                              .toList(),
-                        ),
+                    ListTile(
+                      title: const Text('booru.content_filtering_label').tr(),
+                      trailing: OptionDropDownButton<BooruConfigRatingFilter>(
+                        value: ratingFilter,
+                        onChanged: (value) {
+                          if (value == null) return;
+                          ref.read(booruRatingFilterProvider.notifier).state =
+                              value;
+                        },
+                        items: BooruConfigRatingFilter.values
+                            .map((value) =>
+                                DropdownMenuItem<BooruConfigRatingFilter>(
+                                  value: value,
+                                  child: Text(value.getFilterRatingTerm()),
+                                ))
+                            .toList(),
                       ),
-                    const SizedBox(height: 16),
-                    if (state.supportHideDeleted())
-                      SwitchListTile.adaptive(
-                        title: const Text('booru.hide_deleted_label').tr(),
-                        value: state.deletedItemBehavior ==
-                            BooruConfigDeletedItemBehavior.hide,
-                        onChanged: (_) => toggleDeleted(),
-                      ),
+                    ),
                     ElevatedButton(
-                      onPressed: state.allowSubmit()
+                      onPressed: allowSubmit
                           ? () {
                               Navigator.of(context).pop();
-                              submit(
-                                  setCurrentBooruOnSubmit:
-                                      widget.setCurrentBooruOnSubmit);
+                              ref
+                                  .read(booruConfigProvider.notifier)
+                                  .addFromAddBooruConfig(
+                                    newConfig: ref.read(
+                                        newbooruConfigProvider(widget.url)),
+                                    setAsCurrent:
+                                        widget.setCurrentBooruOnSubmit,
+                                  );
                             }
                           : null,
                       child: const Text('booru.config_booru_confirm').tr(),
