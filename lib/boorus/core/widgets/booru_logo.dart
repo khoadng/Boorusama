@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({
     super.key,
-    required this.booru,
+    required this.url,
   });
 
-  final Booru booru;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class BooruLogo extends StatelessWidget {
         fit: BoxFit.cover,
         fadeInDuration: const Duration(milliseconds: 100),
         fadeOutDuration: const Duration(milliseconds: 200),
-        imageUrl: getFavicon(booru.url),
+        imageUrl: getFavicon(url),
       ),
     );
   }

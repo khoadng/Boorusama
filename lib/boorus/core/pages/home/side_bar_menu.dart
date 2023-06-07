@@ -47,7 +47,7 @@ class SideBarMenu extends ConsumerWidget {
                 return ListTile(
                   horizontalTitleGap: 0,
                   minLeadingWidth: 28,
-                  leading: BooruLogo(booru: booru),
+                  leading: BooruLogo(url: booru.url),
                   title: Wrap(
                     children: [
                       Text(
