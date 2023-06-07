@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/functional.dart';
@@ -94,12 +95,23 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                     (uri) => ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => ConfigBooruPage(
-                                    setCurrentBooruOnSubmit:
-                                        widget.setCurrentBooruOnSubmit,
-                                    arg: AddNewConfig(uri),
-                                  )));
+                          if (getBooruType(uri.toString(),
+                                  ref.watch(booruFactoryProvider).booruData) ==
+                              BooruType.unknown) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => AddUnknownBooruPage(
+                                      url: uri.toString(),
+                                      setCurrentBooruOnSubmit:
+                                          widget.setCurrentBooruOnSubmit,
+                                    )));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => ConfigBooruPage(
+                                      setCurrentBooruOnSubmit:
+                                          widget.setCurrentBooruOnSubmit,
+                                      arg: AddNewConfig(uri),
+                                    )));
+                          }
                         },
                         child: const Text('Next')),
                   ),
