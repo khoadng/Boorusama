@@ -117,8 +117,9 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                             top: 5,
                             left: 5,
                             child: BooruLogo(
-                              booru: booruFactory.from(
-                                  type: intToBooruType(bookmark.booruId)),
+                              url: booruFactory
+                                  .from(type: intToBooruType(bookmark.booruId))
+                                  .url,
                             ),
                           ),
                           if (edit)
