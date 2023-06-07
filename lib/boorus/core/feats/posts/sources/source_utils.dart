@@ -36,6 +36,9 @@ String getHost(Uri uri) {
     'tumblr.com': 'https://tumblr.com',
     'biligame.com': 'https://bilibili.com',
     'dlsite.jp': 'https://dlsite.jp',
+    'yande.re': 'https://yande.re',
+    'blog.livedoor.jp': 'https://blog.livedoor.jp',
+    'rule34.xxx': 'https://rule34.xxx',
   };
 
   for (final mapping in hostMappings.entries) {
