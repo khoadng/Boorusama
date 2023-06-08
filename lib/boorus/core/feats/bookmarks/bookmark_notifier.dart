@@ -202,12 +202,14 @@ extension BookmarkCubitX on BookmarkState {
   // check if a post is bookmarked
   bool isBookmarked(Post post, BooruType booru) {
     return bookmarks.any((b) =>
-        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
+        b.booruId == booru.toBooruId() &&
+        b.originalUrl == post.originalImageUrl);
   }
 
   // get bookmark from Post
   Bookmark? getBookmark(Post post, BooruType booru) {
     return bookmarks.firstWhereOrNull((b) =>
-        b.booruId == booru.index && b.originalUrl == post.originalImageUrl);
+        b.booruId == booru.toBooruId() &&
+        b.originalUrl == post.originalImageUrl);
   }
 }

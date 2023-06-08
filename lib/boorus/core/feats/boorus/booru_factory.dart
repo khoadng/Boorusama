@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 // Project imports:
 import 'package:boorusama/utils/collection_utils.dart';
 import 'booru.dart';
+import 'booru_data.dart';
 
 class BooruFactory {
   const BooruFactory._({

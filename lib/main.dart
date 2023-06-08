@@ -18,7 +18,6 @@ import 'package:video_player_win/video_player_win.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
-import 'package:boorusama/boorus/core/feats/boorus/booru_config_repository_hive.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/metatags/metatags.dart';
