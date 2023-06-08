@@ -43,6 +43,7 @@ enum BooruType {
   yandere,
   sakugabooru,
   rule34xxx,
+  lolibooru,
 }
 
 enum BooruEngine {
@@ -77,7 +78,8 @@ extension BooruTypeX on BooruType {
         BooruType.aibooru => 'AIBooru',
         BooruType.konachan => 'Konachan',
         BooruType.yandere => 'Yandere',
-        BooruType.sakugabooru => 'Sakugabooru'
+        BooruType.sakugabooru => 'Sakugabooru',
+        BooruType.lolibooru => 'Lolibooru',
       };
 
   bool get isGelbooruBased =>
@@ -87,6 +89,7 @@ extension BooruTypeX on BooruType {
         BooruType.sakugabooru,
         BooruType.yandere,
         BooruType.konachan,
+        BooruType.lolibooru,
       ].contains(this);
 
   bool get isDanbooruBased => [
@@ -108,6 +111,7 @@ extension BooruTypeX on BooruType {
         BooruType.yandere => 7,
         BooruType.sakugabooru => 8,
         BooruType.rule34xxx => 9,
+        BooruType.lolibooru => 10,
         BooruType.unknown => 0,
       };
 }
@@ -128,6 +132,7 @@ BooruType intToBooruType(int value) => switch (value) {
       7 => BooruType.yandere,
       8 => BooruType.sakugabooru,
       9 => BooruType.rule34xxx,
+      10 => BooruType.lolibooru,
       _ => BooruType.unknown
     };
 
@@ -141,6 +146,7 @@ BooruType stringToBooruType(String value) => switch (value) {
       'konachan' => BooruType.konachan,
       'yandere' => BooruType.yandere,
       'sakugabooru' => BooruType.sakugabooru,
+      'lolibooru' => BooruType.lolibooru,
       _ => BooruType.unknown
     };
 

@@ -278,6 +278,7 @@ void goToQuickSearchPage(
           case BooruType.konachan:
           case BooruType.yandere:
           case BooruType.sakugabooru:
+          case BooruType.lolibooru:
             return MoebooruProvider(
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
@@ -368,6 +369,7 @@ Future<void> goToBulkDownloadPage(
         case BooruType.konachan:
         case BooruType.yandere:
         case BooruType.sakugabooru:
+        case BooruType.lolibooru:
           return MoebooruProvider(
             builder: (context) => const BulkDownloadPage(),
           );

@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
@@ -97,6 +98,9 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                   childCount: state.bookmarks.length,
                   itemBuilder: (context, index) {
                     final bookmark = state.bookmarks[index];
+                    final source = PostSource.from(booruFactory
+                        .from(type: intToBooruType(bookmark.booruId))
+                        .url);
 
                     return GestureDetector(
                       onTap: () =>
@@ -113,14 +117,15 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                                 : bookmark.sampleUrl,
                             placeholderUrl: bookmark.thumbnailUrl,
                           ),
-                          Positioned(
-                            top: 5,
-                            left: 5,
-                            child: BooruLogo(
-                              url: booruFactory
-                                  .from(type: intToBooruType(bookmark.booruId))
-                                  .url,
+                          source.whenWeb(
+                            (url) => Positioned(
+                              bottom: 5,
+                              right: 5,
+                              child: BooruLogo(
+                                source: url,
+                              ),
                             ),
+                            () => const SizedBox(),
                           ),
                           if (edit)
                             Positioned(

@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -47,12 +48,15 @@ class SideBarMenu extends ConsumerWidget {
                 return ListTile(
                   horizontalTitleGap: 0,
                   minLeadingWidth: 28,
-                  leading: BooruLogo(url: booru.url),
+                  leading: switch (PostSource.from(booruConfig.url)) {
+                    WebSource s => BooruLogo(source: s),
+                    _ => null,
+                  },
                   title: Wrap(
                     children: [
                       Text(
                         booruConfig.isUnverified(booru)
-                            ? booruConfig.url
+                            ? Uri.parse(booruConfig.url).host
                             : booru.booruType.stringify(),
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,

@@ -130,6 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.konachan:
             case BooruType.yandere:
             case BooruType.sakugabooru:
+            case BooruType.lolibooru:
               final gkey = ValueKey(config.id);
 
               return MoebooruProvider(
