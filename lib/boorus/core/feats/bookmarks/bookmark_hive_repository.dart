@@ -15,7 +15,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
   @override
   Future<Bookmark> addBookmark(Booru booru, Post post) async {
     final favoriteHiveObject = BookmarkHiveObject(
-      booruId: booru.booruType.index,
+      booruId: booru.booruType.toBooruId(),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       thumbnailUrl: post.thumbnailImageUrl,

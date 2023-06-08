@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/add_unknown_booru_providers.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -103,7 +101,7 @@ class _AddBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                     items: BooruEngine.values
                         .map((value) => DropdownMenuItem<BooruEngine>(
                               value: value,
-                              child: Text(value.name.sentenceCase),
+                              child: Text(value.stringify()),
                             ))
                         .toList(),
                   ),

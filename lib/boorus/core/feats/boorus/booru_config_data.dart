@@ -19,7 +19,7 @@ class BooruConfigData {
     required String url,
   }) =>
       BooruConfigData(
-        booruId: booru.index,
+        booruId: booru.toBooruId(),
         apiKey: '',
         login: '',
         url: url,

@@ -3,51 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/utils/collection_utils.dart';
-
-class BooruData {
-  BooruData({
-    required this.name,
-    required this.url,
-    required this.cheatsheet,
-    required this.loginType,
-  });
-
-  factory BooruData.fromJson(Map<String, dynamic> json) => BooruData(
-        name: json['name'],
-        url: json['url'],
-        cheatsheet: json['cheatsheet'],
-        loginType: json['login_type'],
-      );
-
-  final String name;
-  final String url;
-  final String cheatsheet;
-  final String loginType;
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'url': url,
-        'cheatsheet': cheatsheet,
-        'login_type': loginType,
-      };
-}
-
-class BooruSaltData {
-  final String booru;
-  final String salt;
-
-  BooruSaltData({
-    required this.booru,
-    required this.salt,
-  });
-
-  factory BooruSaltData.fromJson(Map<String, dynamic> json) {
-    return BooruSaltData(
-      booru: json['booru'],
-      salt: json['salt'],
-    );
-  }
-}
+import 'booru_data.dart';
 
 class Booru extends Equatable {
   const Booru({
@@ -101,6 +57,15 @@ enum LoginType {
   loginAndPasswordHashed,
 }
 
+extension BooruEngineX on BooruEngine {
+  String stringify() => switch (this) {
+        BooruEngine.danbooru => 'Danbooru',
+        BooruEngine.gelbooru => 'Gelbooru',
+        BooruEngine.gelbooruV0Dot2 => 'Gelbooru v0.2',
+        BooruEngine.moebooru => 'Moebooru',
+      };
+}
+
 extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
         BooruType.unknown => '<UNKNOWN>',
@@ -132,34 +97,19 @@ extension BooruTypeX on BooruType {
       ].contains(this);
 
   bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
-}
 
-Booru safebooru() => booruDataToBooru(
-      BooruData(
-        name: 'safebooru',
-        url: 'https://safebooru.donmai.us/',
-        cheatsheet: 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet',
-        loginType: 'login_api_key',
-      ),
-    );
-
-Booru unknownBooru() => booruDataToBooru(
-      BooruData(
-        name: '',
-        url: '',
-        cheatsheet: '',
-        loginType: 'login_api_key',
-      ),
-    );
-
-Booru booruDataToBooru(BooruData d) {
-  return Booru(
-    url: d.url,
-    booruType: stringToBooruType(d.name),
-    name: d.name,
-    cheatsheet: d.cheatsheet,
-    loginType: stringToLoginType(d.loginType),
-  );
+  int toBooruId() => switch (this) {
+        BooruType.danbooru => 1,
+        BooruType.safebooru => 2,
+        BooruType.testbooru => 3,
+        BooruType.gelbooru => 4,
+        BooruType.aibooru => 5,
+        BooruType.konachan => 6,
+        BooruType.yandere => 7,
+        BooruType.sakugabooru => 8,
+        BooruType.rule34xxx => 9,
+        BooruType.unknown => 0,
+      };
 }
 
 LoginType stringToLoginType(String value) => switch (value) {
@@ -179,19 +129,6 @@ BooruType intToBooruType(int value) => switch (value) {
       8 => BooruType.sakugabooru,
       9 => BooruType.rule34xxx,
       _ => BooruType.unknown
-    };
-
-int booruTypeToInt(BooruType booru) => switch (booru) {
-      BooruType.danbooru => 1,
-      BooruType.safebooru => 2,
-      BooruType.testbooru => 3,
-      BooruType.gelbooru => 4,
-      BooruType.aibooru => 5,
-      BooruType.konachan => 6,
-      BooruType.yandere => 7,
-      BooruType.sakugabooru => 8,
-      BooruType.rule34xxx => 9,
-      _ => 0
     };
 
 BooruType stringToBooruType(String value) => switch (value) {

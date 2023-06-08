@@ -55,12 +55,12 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
             ratingFilter: config.ratingFilter.index,
             name: config.configName,
             url: config.url,
-            booruId: config.booru.index,
+            booruId: config.booru.toBooruId(),
           )
         : BooruConfigData(
             login: config.login,
             apiKey: config.apiKey,
-            booruId: config.booru.index,
+            booruId: config.booru.toBooruId(),
             deletedItemBehavior: config.hideDeleted
                 ? BooruConfigDeletedItemBehavior.hide.index
                 : BooruConfigDeletedItemBehavior.show.index,
@@ -126,7 +126,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
           ratingFilter: newConfig.ratingFilter.index,
           name: newConfig.configName,
           url: newConfig.url,
-          booruId: newConfig.booru.index,
+          booruId: newConfig.booru.toBooruId(),
         );
 
         final config =

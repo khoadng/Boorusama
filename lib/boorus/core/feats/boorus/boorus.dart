@@ -1,10 +1,13 @@
 export 'add_or_update_booru_notifier.dart';
 export 'add_or_update_booru_state.dart';
+export 'add_unknown_booru_providers.dart';
 export 'booru.dart';
 export 'booru_config.dart';
 export 'booru_config_data.dart';
 export 'booru_config_notifier.dart';
 export 'booru_config_repository.dart';
+export 'booru_config_repository_hive.dart';
+export 'booru_data.dart';
 export 'booru_factory.dart';
 export 'booru_url_error.dart';
 export 'booru_url_validator.dart';
