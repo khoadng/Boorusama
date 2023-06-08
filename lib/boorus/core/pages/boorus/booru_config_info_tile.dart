@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/booru_logo.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -34,7 +35,10 @@ class BooruConfigInfoTile extends StatelessWidget {
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BooruLogo(url: config.url),
+          switch (PostSource.from(config.url)) {
+            WebSource s => BooruLogo(source: s),
+            _ => const SizedBox.shrink(),
+          },
         ],
       ),
       selected: selected ?? false,
