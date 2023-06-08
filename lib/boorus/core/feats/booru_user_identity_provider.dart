@@ -42,6 +42,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
 
     switch (booru.booruType) {
       case BooruType.gelbooru:
+      case BooruType.rule34xxx:
         accountId = int.tryParse(login);
         break;
       case BooruType.unknown:

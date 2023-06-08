@@ -86,11 +86,13 @@ enum BooruType {
   konachan,
   yandere,
   sakugabooru,
+  rule34xxx,
 }
 
 enum BooruEngine {
   danbooru,
   gelbooru,
+  gelbooruV0Dot2,
   moebooru,
 }
 
@@ -106,11 +108,30 @@ extension BooruTypeX on BooruType {
         BooruType.safebooru => 'Danbooru (G)',
         BooruType.testbooru => 'Testbooru',
         BooruType.gelbooru => 'Gelbooru',
+        BooruType.rule34xxx => 'Rule34',
         BooruType.aibooru => 'AIBooru',
         BooruType.konachan => 'Konachan',
         BooruType.yandere => 'Yandere',
         BooruType.sakugabooru => 'Sakugabooru'
       };
+
+  bool get isGelbooruBased =>
+      this == BooruType.gelbooru || this == BooruType.rule34xxx;
+
+  bool get isMoeBooruBased => [
+        BooruType.sakugabooru,
+        BooruType.yandere,
+        BooruType.konachan,
+      ].contains(this);
+
+  bool get isDanbooruBased => [
+        BooruType.aibooru,
+        BooruType.danbooru,
+        BooruType.testbooru,
+        BooruType.safebooru,
+      ].contains(this);
+
+  bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
 }
 
 Booru safebooru() => booruDataToBooru(
@@ -130,16 +151,6 @@ Booru unknownBooru() => booruDataToBooru(
         loginType: 'login_api_key',
       ),
     );
-
-List<BooruType> getSelectableBoorus() => [
-      BooruType.danbooru,
-      BooruType.gelbooru,
-      BooruType.aibooru,
-      BooruType.safebooru,
-      BooruType.konachan,
-      BooruType.yandere,
-      BooruType.sakugabooru,
-    ];
 
 Booru booruDataToBooru(BooruData d) {
   return Booru(
@@ -166,7 +177,21 @@ BooruType intToBooruType(int value) => switch (value) {
       6 => BooruType.konachan,
       7 => BooruType.yandere,
       8 => BooruType.sakugabooru,
+      9 => BooruType.rule34xxx,
       _ => BooruType.unknown
+    };
+
+int booruTypeToInt(BooruType booru) => switch (booru) {
+      BooruType.danbooru => 1,
+      BooruType.safebooru => 2,
+      BooruType.testbooru => 3,
+      BooruType.gelbooru => 4,
+      BooruType.aibooru => 5,
+      BooruType.konachan => 6,
+      BooruType.yandere => 7,
+      BooruType.sakugabooru => 8,
+      BooruType.rule34xxx => 9,
+      _ => 0
     };
 
 BooruType stringToBooruType(String value) => switch (value) {
@@ -174,6 +199,7 @@ BooruType stringToBooruType(String value) => switch (value) {
       'safebooru' => BooruType.safebooru,
       'testbooru' => BooruType.testbooru,
       'gelbooru' => BooruType.gelbooru,
+      'rule34xxx' => BooruType.rule34xxx,
       'aibooru' => BooruType.aibooru,
       'konachan' => BooruType.konachan,
       'yandere' => BooruType.yandere,
@@ -188,5 +214,6 @@ BooruType getBooruType(String url, List<BooruData> booruDataList) =>
 BooruType booruEngineToBooruType(BooruEngine engine) => switch (engine) {
       BooruEngine.danbooru => BooruType.danbooru,
       BooruEngine.gelbooru => BooruType.gelbooru,
+      BooruEngine.gelbooruV0Dot2 => BooruType.rule34xxx,
       BooruEngine.moebooru => BooruType.yandere
     };
