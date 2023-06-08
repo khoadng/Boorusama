@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
@@ -17,8 +18,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
-import 'package:boorusama/widgets/booru_video_progress_bar.dart';
-import 'package:boorusama/widgets/embedded_webview_webm.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailPage({
@@ -27,12 +27,14 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.fullscreen,
     required this.onExit,
+    this.hasDetailsTagList = true,
   });
 
   final int initialIndex;
   final List<Post> posts;
   final bool fullscreen;
   final void Function(int page) onExit;
+  final bool hasDetailsTagList;
 
   static MaterialPageRoute routeOf(
     WidgetRef ref,
@@ -50,6 +52,8 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
             initialIndex: initialIndex,
             onExit: (page) => scrollController?.scrollToIndex(page),
             fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
+            hasDetailsTagList:
+                ref.watch(currentBooruProvider).booruType.supportTagDetails,
           );
         },
       ),
@@ -142,11 +146,13 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       topRightButtonsBuilder: (page, expanded) => [
         GelbooruMoreActionButton(post: widget.posts[page]),
       ],
-      onExpanded: (currentPage) => ref.read(tagsProvider.notifier).load(
-            posts[currentPage].tags,
-            onSuccess: (tags) =>
-                posts[currentPage].loadArtistPostsFrom(ref, tags),
-          ),
+      onExpanded: widget.hasDetailsTagList
+          ? (currentPage) => ref.read(tagsProvider.notifier).load(
+                posts[currentPage].tags,
+                onSuccess: (tags) =>
+                    posts[currentPage].loadArtistPostsFrom(ref, tags),
+              )
+          : null,
     );
   }
 
@@ -208,11 +214,17 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       if (!expandedOnCurrentPage)
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
-        TagsTile(
-          post: post,
-          onTagTap: (tag) =>
-              goToGelbooruSearchPage(ref, context, tag: tag.rawName),
-        ),
+        if (widget.hasDetailsTagList)
+          TagsTile(
+            post: post,
+            onTagTap: (tag) =>
+                goToGelbooruSearchPage(ref, context, tag: tag.rawName),
+          )
+        else
+          BasicTagList(
+            tags: post.tags,
+            onTap: (tag) => goToGelbooruSearchPage(ref, context, tag: tag),
+          ),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(
           post: post,

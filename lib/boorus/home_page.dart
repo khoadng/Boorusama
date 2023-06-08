@@ -115,6 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               );
             case BooruType.gelbooru:
+            case BooruType.rule34xxx:
               final gkey = ValueKey(config.id);
 
               return GelbooruProvider(

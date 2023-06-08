@@ -28,6 +28,23 @@ final gelbooruPostRepoProvider = Provider<PostRepository>(
   },
 );
 
+final rule34xxxPostRepoProvider = Provider<PostRepository>(
+  (ref) {
+    final api = ref.watch(rule34xxxApiProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final blacklistedTagRepository =
+        ref.watch(globalBlacklistedTagRepoProvider);
+    final settingsRepository = ref.watch(settingsRepoProvider);
+
+    return Rule34xxxPostRepositoryApi(
+      api: api,
+      booruConfig: booruConfig,
+      blacklistedTagRepository: blacklistedTagRepository,
+      settingsRepository: settingsRepository,
+    );
+  },
+);
+
 final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
   (ref) {
     final api = ref.watch(gelbooruApiProvider);

@@ -1,5 +1,5 @@
-class PostDto {
-  PostDto({
+class GelbooruPostDto {
+  GelbooruPostDto({
     required this.id,
     required this.createdAt,
     required this.score,
@@ -30,7 +30,8 @@ class PostDto {
     required this.postLocked,
     required this.hasChildren,
   });
-  factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
+  factory GelbooruPostDto.fromJson(Map<String, dynamic> json) =>
+      GelbooruPostDto(
         id: json['id'],
         createdAt: json['created_at'],
         score: json['score'],

@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.d
 import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 
@@ -177,7 +176,7 @@ class _ResultView extends ConsumerWidget {
     final selectedTags = ref.watch(selectedRawTagStringProvider);
 
     return PostScope(
-      fetcher: (page) => ref.watch(gelbooruPostRepoProvider).getPostsFromTags(
+      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
             selectedTags.join(' '),
             page,
           ),

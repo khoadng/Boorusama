@@ -247,6 +247,7 @@ void goToQuickSearchPage(
                     ),
             );
           case BooruType.gelbooru:
+          case BooruType.rule34xxx:
             return GelbooruProvider(
               builder: (gcontext) => isMobile
                   ? SimpleTagSearchView(
@@ -378,6 +379,7 @@ Future<void> goToBulkDownloadPage(
             builder: (context) => const BulkDownloadPage(),
           );
         case BooruType.gelbooru:
+        case BooruType.rule34xxx:
           return GelbooruProvider(
             builder: (context) => const BulkDownloadPage(),
           );

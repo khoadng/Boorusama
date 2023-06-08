@@ -1,5 +1,5 @@
-class AutocompleteDto {
-  AutocompleteDto({
+class GelbooruAutocompleteDto {
+  GelbooruAutocompleteDto({
     required this.type,
     required this.label,
     required this.value,
@@ -7,8 +7,8 @@ class AutocompleteDto {
     required this.category,
   });
 
-  factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
-    return AutocompleteDto(
+  factory GelbooruAutocompleteDto.fromJson(Map<String, dynamic> json) {
+    return GelbooruAutocompleteDto(
       type: json['type'],
       label: json['label'],
       value: json['value'],
