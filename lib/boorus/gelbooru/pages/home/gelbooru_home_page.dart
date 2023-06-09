@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
@@ -61,15 +62,8 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                             backgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
-                            title: BooruSearchBar(
-                              enabled: false,
-                              leading: widget.onMenuTap != null
-                                  ? IconButton(
-                                      splashRadius: 16,
-                                      icon: const Icon(Icons.menu),
-                                      onPressed: () => widget.onMenuTap?.call(),
-                                    )
-                                  : null,
+                            title: HomeSearchBar(
+                              onMenuTap: widget.onMenuTap,
                               onTap: () => goToGelbooruSearchPage(ref, context),
                             ),
                             floating: true,

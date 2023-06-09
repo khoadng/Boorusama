@@ -63,6 +63,7 @@ dependencies:
   go_router: ^7.1.1
   hive: ^2.2.3
   html: ^0.15.2
+  http: ^0.13.6
   infinite_scroll_pagination: ^3.2.0
   intl: ^0.18.0
   jiffy: ^6.2.1
@@ -103,6 +104,7 @@ dependencies:
   timeago: ^3.3.0
   toggle_switch: ^2.1.0
   url_launcher: ^6.1.10
+  version: ^3.0.2
   video_player: ^2.6.1
   video_player_macos: ^2.0.1
   video_player_win: ^2.2.2

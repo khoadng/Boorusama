@@ -4,7 +4,6 @@ import 'dart:io';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/utils/file_utils.dart';
 
@@ -131,8 +131,4 @@ final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
       'User-Agent': userAgentGenerator.generate(),
     },
   );
-});
-
-final packageInfoProvider = Provider<PackageInfo>((ref) {
-  throw UnimplementedError();
 });

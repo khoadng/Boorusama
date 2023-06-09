@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/package_info.dart';
 
 class AboutPage extends ConsumerWidget {
   const AboutPage({

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -105,15 +105,8 @@ class _AppBar extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
       primary: primary ?? true,
-      title: BooruSearchBar(
-        enabled: false,
-        leading: onMenuTap != null
-            ? IconButton(
-                splashRadius: 16,
-                icon: const Icon(Icons.menu),
-                onPressed: () => onMenuTap!(),
-              )
-            : null,
+      title: HomeSearchBar(
+        onMenuTap: onMenuTap,
         onTap: () => goToSearchPage(context),
       ),
       floating: true,
