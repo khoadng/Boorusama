@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/router.dart';
 
 class SettingsPage extends ConsumerWidget {

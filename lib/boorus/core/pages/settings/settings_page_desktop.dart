@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/core/pages/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/package_info.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({

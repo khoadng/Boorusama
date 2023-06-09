@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
@@ -66,15 +67,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                             backgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
-                            title: BooruSearchBar(
-                              enabled: false,
-                              leading: widget.onMenuTap != null
-                                  ? IconButton(
-                                      splashRadius: 16,
-                                      icon: const Icon(Icons.menu),
-                                      onPressed: () => widget.onMenuTap?.call(),
-                                    )
-                                  : null,
+                            title: HomeSearchBar(
+                              onMenuTap: widget.onMenuTap,
                               onTap: () => goToMoebooruSearchPage(ref, context),
                             ),
                             floating: true,
