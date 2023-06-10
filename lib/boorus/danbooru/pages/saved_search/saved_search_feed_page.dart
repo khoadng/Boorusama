@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/functional.dart';
 import 'saved_search_landing_view.dart';
 
 class SavedSearchFeedPage extends ConsumerWidget {
@@ -123,7 +124,7 @@ class _SavedSearchList extends ConsumerWidget {
       itemBuilder: (context, index) {
         final isSelected = selectedSearch == searches[index];
 
-        final text = searches[index].labels.first.removeUnderscoreWithSpace();
+        final text = searches[index].labels.firstOption;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -140,7 +141,10 @@ class _SavedSearchList extends ConsumerWidget {
             },
             padding: EdgeInsets.symmetric(
               vertical: 4,
-              horizontal: text.length < 4 ? 12 : 4,
+              horizontal: text.fold(
+                () => 12,
+                (t) => t.length < 4 ? 12 : 4,
+              ),
             ),
             labelPadding: const EdgeInsets.all(1),
             visualDensity: VisualDensity.compact,
@@ -149,7 +153,10 @@ class _SavedSearchList extends ConsumerWidget {
               color: Theme.of(context).hintColor,
             ),
             label: Text(
-              text,
+              text.fold(
+                () => '<empty>',
+                (t) => t.removeUnderscoreWithSpace(),
+              ),
               overflow: TextOverflow.fade,
             ),
           ),
