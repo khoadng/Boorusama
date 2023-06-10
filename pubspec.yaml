@@ -112,7 +112,7 @@ dependencies:
   xml: ^6.3.0
 
 dev_dependencies:
-  build_runner: ^2.1.11
+  build_runner: ^2.4.5
   flutter_launcher_icons: ^0.13.0
   flutter_lints: ^2.0.1
   flutter_localizations:
