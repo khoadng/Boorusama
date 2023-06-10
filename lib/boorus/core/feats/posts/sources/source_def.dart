@@ -2,7 +2,7 @@ Map<String, String> getHosts() => {
       'artstation.com': 'https://artstation.com',
       'discordapp.com': 'https://discordapp.com',
       'kym-cdn.com': 'https://knowyourmeme.com',
-      'images-wixmp': 'https://deviantart.com',
+      'wixmp.com': 'https://deviantart.com',
       'fantia.jp': 'https://fantia.jp',
       'hentai-foundry.com': 'https://hentai-foundry.com',
       'exhentai.org': 'https://e-hentai.org',
