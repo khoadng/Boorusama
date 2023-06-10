@@ -14,13 +14,7 @@
         }
     },
     "profile": {
-        "profile": "Профіль",
-        "favorites": "Любімае",
-        "see_more": "Прагледзець больш",
-        "user_id": "ID карыстальніка",
-        "level": "Узровень акаўнта",
-        "favorites_count": "Любімае",
-        "comments_count": "Каментарыі"
+        "favorites": "Любімае"
     },
     "network": {
         "unavailable": "Няма доступу да Інтэрнэту"
