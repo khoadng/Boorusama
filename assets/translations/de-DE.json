@@ -14,13 +14,7 @@
         }
     },
     "profile": {
-        "profile": "Profil",
-        "favorites": "Favoriten",
-        "see_more": "Mehr anzeigen",
-        "user_id": "Nutzer ID",
-        "level": "Level",
-        "favorites_count": "Favoriten",
-        "comments_count": "Kommentare"
+        "favorites": "Favoriten"
     },
     "network": {
         "unavailable": "Netzwerk nicht verfügbar"
@@ -227,12 +221,13 @@
             "performance": "Leistung",
             "posts_per_page": "Posts pro Seite",
             "posts_per_page_explain": "Vorschaubilder pro Seite"
-        }
+        },
+        "help_us_translate": "Helfen Sie uns zu übersetzen"
     },
     "blacklisted_tags": {
         "remove": "Entfernen",
         "edit": "Bearbeiten",
-        "blacklisted_tags": "Auf der schwarzen Blacklist stehende Tags",
+        "blacklisted_tags": "Auf der Blacklist stehende Tags",
         "load_error": "Die Tags auf der Blacklist konnten nicht geladen werden",
         "updated": "Tags auf der Blacklist aktualisiert",
         "limitation_notice": "Unterstützt nur den <b>NOT</b> Operator und den <b>OR</b> Operator.\n\nBlacklisting mit Metatags funktioniert in der aktuellen Version nicht."
