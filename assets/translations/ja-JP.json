@@ -7,13 +7,7 @@
         }
     },
     "profile": {
-        "profile": "プロフィール",
-        "favorites": "いいね",
-        "see_more": "すべて見る",
-        "user_id": "ユーザーID",
-        "level": "レベル",
-        "favorites_count": "いいね",
-        "comments_count": "コメント数"
+        "favorites": "いいね"
     },
     "network": {
         "unavailable": "ネットワーク利用不可"
@@ -112,7 +106,8 @@
         },
         "privacy": {
             "privacy": "プライバシー"
-        }
+        },
+        "help_us_translate": "翻訳に協力する"
     },
     "blacklisted_tags": {
         "remove": "削除",

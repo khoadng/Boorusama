@@ -14,13 +14,7 @@
         }
     },
     "profile": {
-        "profile": "Профиль",
-        "favorites": "Любимое",
-        "see_more": "Просмотреть больше",
-        "user_id": "ID пользователя",
-        "level": "Уровень",
-        "favorites_count": "Любимое",
-        "comments_count": "Комментарии"
+        "favorites": "Любимое"
     },
     "network": {
         "unavailable": "Нет доступа к интернету"
@@ -231,7 +225,8 @@
                 "original": "Оригинал",
                 "preview": "Превью"
             }
-        }
+        },
+        "help_us_translate": "помогите нам перевести"
     },
     "blacklisted_tags": {
         "remove": "Удалить",

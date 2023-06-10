@@ -14,13 +14,7 @@
         }
     },
     "profile": {
-        "profile": "Hồ sơ",
-        "favorites": "Yêu thích",
-        "see_more": "Xem thêm",
-        "user_id": "ID người dùng",
-        "level": "Cấp độ",
-        "favorites_count": "Lượt yêu thích",
-        "comments_count": "Tổng số bình luận"
+        "favorites": "Yêu thích"
     },
     "network": {
         "unavailable": "Không có mạng"
@@ -70,7 +64,8 @@
             },
             "source_label": "Nguồn",
             "related_posts": "Ảnh liên quan",
-            "add_to_bookmark": "Thêm đánh dấu"
+            "add_to_bookmark": "Thêm đánh dấu",
+            "remove_from_bookmark": "Xoá đánh dấu"
         },
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
@@ -365,5 +360,11 @@
         "failed_to_remove": "Xoá đánh dấu không thành công",
         "failed_to_update": "Cập nhật đánh dấu không thành công",
         "failed_to_load": "Tải đánh dấu thất bại: {0}"
+    },
+    "app_update": {
+        "update": "Cập nhật",
+        "later": "Để sau",
+        "whats_new": "Có gì mới?",
+        "update_available": "Có cập nhật mới"
     }
 }
