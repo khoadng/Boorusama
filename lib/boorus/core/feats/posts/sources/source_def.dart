@@ -17,4 +17,6 @@ Map<String, String> getHosts() => {
       'rule34.xxx': 'https://rule34.xxx',
       'sakura.ne.jp': 'https://sakura.ne.jp',
       'fc2.com': 'https://fc2.com',
+      'poipiku.com': 'https://poipiku.com',
+      'moon-stone.jp': 'https://moon-stone.jp',
     };

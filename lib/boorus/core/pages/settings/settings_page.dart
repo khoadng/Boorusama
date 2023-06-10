@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/pages/settings/language_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/privacy_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -50,7 +51,7 @@ class SettingsPage extends ConsumerWidget {
                           //   title: const Text('settings.safe_mode').tr(),
                           //   trailing: Switch(
                           //       activeColor:
-                          //           Theme.of(context).colorScheme.primary,
+                          //           context.theme.colorScheme.primary,
                           //       value: settings.safeMode,
                           //       onChanged: (value) {
                           //         context.read<SettingsCubit>().update(
@@ -116,7 +117,7 @@ class SettingsPage extends ConsumerWidget {
                             title: const Text('settings.debug_logs.debug_logs')
                                 .tr(),
                             leading: const FaIcon(FontAwesomeIcons.bug),
-                            onTap: () => Navigator.of(context).push(
+                            onTap: () => context.navigator.push(
                                 MaterialPageRoute(
                                     builder: (_) => const DebugLogsPage())),
                           ),
@@ -326,10 +327,8 @@ class _SettingsSection extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Text(
         label.toUpperCase(),
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: Theme.of(context).hintColor),
+        style: context.textTheme.titleSmall!
+            .copyWith(color: context.theme.hintColor),
       ),
     );
   }

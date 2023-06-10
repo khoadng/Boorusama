@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 
 class BooruImage extends ConsumerWidget {
   const BooruImage({
@@ -45,7 +46,7 @@ class BooruImage extends ConsumerWidget {
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          color: Theme.of(context).dividerColor,
+          color: context.theme.dividerColor,
           width: 1,
         ),
       ),
@@ -132,7 +133,7 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width?.toDouble(),
       height: height?.toDouble(),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: context.theme.cardColor,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -161,7 +162,7 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: context.theme.cardColor,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
@@ -173,7 +174,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: Theme.of(context).colorScheme.background.withOpacity(0.7),
+            color: context.colorScheme.background.withOpacity(0.7),
           ),
         ),
       ),

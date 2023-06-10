@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_chip.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class SelectedTagList extends StatelessWidget {
@@ -112,7 +113,7 @@ class ModalSelectedTag extends StatelessWidget {
               title: const Text('search.remove_all_selected').tr(),
               leading: const Icon(Icons.clear_all),
               onTap: () {
-                Navigator.of(context).pop();
+                context.navigator.pop();
                 onClear?.call();
               },
             ),
@@ -120,7 +121,7 @@ class ModalSelectedTag extends StatelessWidget {
               title: const Text('download.bulk_download').tr(),
               leading: const Icon(Icons.download),
               onTap: () {
-                Navigator.of(context).pop();
+                context.navigator.pop();
                 onBulkDownload?.call();
               },
             ),

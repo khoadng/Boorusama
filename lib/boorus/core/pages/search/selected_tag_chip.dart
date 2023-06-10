@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/flutter.dart';
 
 // Project imports:
 
@@ -47,7 +48,7 @@ class SelectedTagChip extends StatelessWidget {
         if (hasMeta)
           Chip(
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: context.colorScheme.secondary,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: _getOutlineBorderForMetaChip(hasOperator),
             label: Text(

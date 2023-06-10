@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ModalShare extends StatelessWidget {
@@ -36,7 +37,7 @@ class ModalShare extends StatelessWidget {
                 title: const Text('post.detail.share.source').tr(),
                 leading: const FaIcon(FontAwesomeIcons.link),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.navigator.pop();
                   onTap.call(sourceLink);
                 },
               ),
@@ -44,7 +45,7 @@ class ModalShare extends StatelessWidget {
               title: const Text('post.detail.share.booru').tr(),
               leading: const FaIcon(FontAwesomeIcons.box),
               onTap: () {
-                Navigator.of(context).pop();
+                context.navigator.pop();
                 onTap.call(booruLink);
               },
             ),
@@ -53,7 +54,7 @@ class ModalShare extends StatelessWidget {
                 title: const Text('post.detail.share.image').tr(),
                 leading: const FaIcon(FontAwesomeIcons.fileImage),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.navigator.pop();
                   onTapFile.call(imagePath);
                 },
               ),

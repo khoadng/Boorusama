@@ -9,6 +9,7 @@ import 'package:html/parser.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
@@ -38,15 +39,13 @@ class YoutubePreviewBox extends StatelessWidget {
                   children: [
                     Text(
                       data.siteName,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: context.textTheme.bodySmall,
                     ),
                     TextButton(
                       onPressed: () => launchExternalUrl(uri),
                       child: Text(
                         data.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
+                        style: context.textTheme.titleMedium!
                             .copyWith(color: Colors.blue),
                       ),
                     ),

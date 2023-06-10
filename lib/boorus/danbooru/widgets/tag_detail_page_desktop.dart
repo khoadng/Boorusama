@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'tag_detail_page.dart';
 
 class TagDetailPageDesktop extends StatelessWidget {
@@ -27,7 +28,7 @@ class TagDetailPageDesktop extends StatelessWidget {
                 Align(
                   alignment: const Alignment(-0.9, -0.9),
                   child: IconButton(
-                    onPressed: Navigator.of(context).pop,
+                    onPressed: context.navigator.pop,
                     icon: const Icon(Icons.close),
                   ),
                 ),

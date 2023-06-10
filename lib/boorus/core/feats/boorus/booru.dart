@@ -1,8 +1,8 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/utils/collection_utils.dart';
 import 'booru_data.dart';
 
 class Booru extends Equatable {
@@ -152,7 +152,7 @@ BooruType stringToBooruType(String value) => switch (value) {
 
 BooruType getBooruType(String url, List<BooruData> booruDataList) =>
     stringToBooruType(
-        booruDataList.firstOrNull((e) => e.url == url)?.name ?? '');
+        booruDataList.firstWhereOrNull((e) => e.url == url)?.name ?? '');
 
 BooruType booruEngineToBooruType(BooruEngine engine) => switch (engine) {
       BooruEngine.danbooru => BooruType.danbooru,

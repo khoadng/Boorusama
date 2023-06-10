@@ -9,7 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/utils/time_utils.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
@@ -61,7 +62,7 @@ class FullHistoryView extends ConsumerWidget {
                   onPressed: () => onHistoryRemoved(history),
                   icon: Icon(
                     Icons.close,
-                    color: Theme.of(context).hintColor,
+                    color: context.theme.hintColor,
                   ),
                 ),
               ),

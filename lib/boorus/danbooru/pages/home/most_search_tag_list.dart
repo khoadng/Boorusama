@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/flutter.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -38,10 +39,9 @@ class MostSearchTagList extends ConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChoiceChip(
-                      disabledColor: Theme.of(context).chipTheme.disabledColor,
-                      backgroundColor:
-                          Theme.of(context).chipTheme.backgroundColor,
-                      selectedColor: Theme.of(context).chipTheme.selectedColor,
+                      disabledColor: context.theme.chipTheme.disabledColor,
+                      backgroundColor: context.theme.chipTheme.backgroundColor,
+                      selectedColor: context.theme.chipTheme.selectedColor,
                       selected: isSelected,
                       onSelected: (selected) => onSelected(searches[index]),
                       padding: const EdgeInsets.all(4),
@@ -49,7 +49,7 @@ class MostSearchTagList extends ConsumerWidget {
                       visualDensity: VisualDensity.compact,
                       side: BorderSide(
                         width: 0.5,
-                        color: Theme.of(context).hintColor,
+                        color: context.theme.hintColor,
                       ),
                       label: ConstrainedBox(
                         constraints: BoxConstraints(

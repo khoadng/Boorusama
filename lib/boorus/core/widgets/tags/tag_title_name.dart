@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 
 class TagTitleName extends StatelessWidget {
   const TagTitleName({
@@ -19,9 +20,9 @@ class TagTitleName extends StatelessWidget {
       child: Text(
         tagName.removeUnderscoreWithSpace(),
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.w900,
-            ),
+        style: context.textTheme.titleLarge!.copyWith(
+          fontWeight: FontWeight.w900,
+        ),
       ),
     );
   }

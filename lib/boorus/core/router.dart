@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import '../../widgets/image_grid_item.dart';
@@ -35,11 +36,11 @@ void goToHomePage(
   BuildContext context, {
   bool replace = false,
 }) {
-  Navigator.of(context).popUntil((route) => route.isFirst);
+  context.navigator.popUntil((route) => route.isFirst);
 }
 
 void goToOriginalImagePage(BuildContext context, Post post) {
-  Navigator.of(context).push(PageTransition(
+  context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
     settings: const RouteSettings(
       name: RouterPageConstant.originalImage,
@@ -52,7 +53,7 @@ void goToOriginalImagePage(BuildContext context, Post post) {
 }
 
 void goToGlobalBlacklistedTagsPage(BuildContext context) {
-  Navigator.of(context).push(PageTransition(
+  context.navigator.push(PageTransition(
     type: PageTransitionType.rightToLeft,
     settings: const RouteSettings(
       name: RouterPageConstant.globalBlacklistedTags,
@@ -77,7 +78,7 @@ void goToMetatagsPage(
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.navigator.pop,
             icon: const Icon(Icons.close),
           ),
         ],
@@ -165,15 +166,14 @@ void goToSearchHistoryPage(
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      foregroundColor: context.colorScheme.onBackground,
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.navigator.pop(),
                     child: const Text('generic.action.cancel').tr(),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                       onClear();
                     },
                     child: const Text('generic.action.ok').tr(),
@@ -237,7 +237,7 @@ void goToQuickSearchPage(
                       onSubmitted: onSubmitted,
                       backButton: IconButton(
                         splashRadius: 16,
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.navigator.pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),
                       ensureValidTag: ensureValidTag,
@@ -266,7 +266,7 @@ void goToQuickSearchPage(
                           onSubmitted?.call(context, text),
                       backButton: IconButton(
                         splashRadius: 16,
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.navigator.pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),
                       ensureValidTag: ensureValidTag,
@@ -297,7 +297,7 @@ void goToQuickSearchPage(
                           onSubmitted?.call(context, text),
                       backButton: IconButton(
                         splashRadius: 16,
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.navigator.pop(),
                         icon: const Icon(Icons.arrow_back),
                       ),
                       ensureValidTag: ensureValidTag,
@@ -329,7 +329,7 @@ Future<T?> showDesktopDialogWindow<T>(
       barrierColor: Colors.black87,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+          backgroundColor: backgroundColor ?? context.theme.cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -360,7 +360,7 @@ Future<void> goToBulkDownloadPage(
   final booru = ref.read(currentBooruProvider);
   ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
 
-  Navigator.of(context).push(PageTransition(
+  context.navigator.push(PageTransition(
     type: PageTransitionType.rightToLeft,
     child: Builder(builder: (_) {
       switch (booru.booruType) {

@@ -10,8 +10,9 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/utils/time_utils.dart';
 import 'comment_header.dart';
 
 class CommentItem extends ConsumerWidget {
@@ -61,7 +62,7 @@ class CommentItem extends ConsumerWidget {
             child: Text(
               '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               style: TextStyle(
-                color: Theme.of(context).hintColor,
+                color: context.theme.hintColor,
                 fontStyle: FontStyle.italic,
                 fontSize: 12,
               ),
@@ -125,7 +126,7 @@ class _VoteSection extends StatelessWidget {
               FontAwesomeIcons.arrowUp,
               color: voteState == CommentVoteState.upvoted
                   ? Colors.redAccent
-                  : Theme.of(context).iconTheme.color,
+                  : context.iconTheme.color,
             ),
           ),
           Text(
@@ -148,7 +149,7 @@ class _VoteSection extends StatelessWidget {
               FontAwesomeIcons.arrowDown,
               color: voteState == CommentVoteState.downvoted
                   ? Colors.redAccent
-                  : Theme.of(context).iconTheme.color,
+                  : context.iconTheme.color,
             ),
           ),
           TextButton(

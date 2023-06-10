@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 
 class Quote extends StatelessWidget {
   const Quote({super.key, required this.text});
@@ -15,9 +16,9 @@ class Quote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: context.theme.cardColor,
         border: Border.all(
-          color: Theme.of(context).hintColor,
+          color: context.theme.hintColor,
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),

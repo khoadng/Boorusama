@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -46,7 +47,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                   onPressed: () => endEditMode(),
                   icon: Icon(
                     Icons.check,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.theme.colorScheme.primary,
                   ),
                 )
               : null,

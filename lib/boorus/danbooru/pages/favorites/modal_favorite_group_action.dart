@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ModalFavoriteGroupAction extends StatelessWidget {
@@ -17,7 +18,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.background,
+      color: context.colorScheme.background,
       child: SafeArea(
         top: false,
         child: Column(
@@ -27,7 +28,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
               title: const Text('generic.action.edit').tr(),
               leading: const Icon(Icons.edit),
               onTap: () {
-                Navigator.of(context).pop();
+                context.navigator.pop();
                 onEdit?.call();
               },
             ),
@@ -35,7 +36,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
               title: const Text('generic.action.delete').tr(),
               leading: const Icon(Icons.clear),
               onTap: () {
-                Navigator.of(context).pop();
+                context.navigator.pop();
                 onDelete?.call();
               },
             ),

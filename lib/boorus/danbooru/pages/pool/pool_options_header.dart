@@ -8,6 +8,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
@@ -39,8 +40,8 @@ class PoolOptionsHeader extends ConsumerWidget {
                 cornerRadius: 10,
                 totalSwitches: 2,
                 borderWidth: 1,
-                inactiveBgColor: Theme.of(context).chipTheme.backgroundColor,
-                activeBgColor: [Theme.of(context).colorScheme.primary],
+                inactiveBgColor: context.theme.chipTheme.backgroundColor,
+                activeBgColor: [context.colorScheme.primary],
                 labels: [
                   _poolCategoryToString(PoolCategory.series).tr(),
                   _poolCategoryToString(PoolCategory.collection).tr(),
@@ -62,9 +63,8 @@ class PoolOptionsHeader extends ConsumerWidget {
 
               return TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor:
-                      Theme.of(context).textTheme.titleLarge!.color,
-                  backgroundColor: Theme.of(context).cardColor,
+                  foregroundColor: context.textTheme.titleLarge!.color,
+                  backgroundColor: context.theme.cardColor,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
@@ -112,7 +112,7 @@ class _OrderMenu extends ConsumerWidget {
               .map((e) => ListTile(
                     title: Text(_poolOrderToString(e)).tr(),
                     onTap: () {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                       ref
                           .read(danbooruSelectedPoolOrderProvider.notifier)
                           .state = e;

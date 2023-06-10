@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/utils/object_utils.dart';
+import 'package:boorusama/dart.dart';
 
 void main() {
   group('toDoubleOrNull', () {

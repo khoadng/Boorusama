@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DebugLogsPage extends ConsumerWidget {
@@ -57,7 +58,7 @@ class DebugLogsPage extends ConsumerWidget {
                 Text(
                   log.dateTime.toString(),
                   style: TextStyle(
-                    color: Theme.of(context).hintColor,
+                    color: context.theme.hintColor,
                   ),
                 ),
                 RichText(
@@ -67,15 +68,13 @@ class DebugLogsPage extends ConsumerWidget {
                         text: '[${log.serviceName}]: ',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.colorScheme.primary,
                         ),
                       ),
                       TextSpan(
                         text: log.message,
                         style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onBackground
+                            color: context.colorScheme.onBackground
                                 .withAlpha(222)),
                       ),
                     ],

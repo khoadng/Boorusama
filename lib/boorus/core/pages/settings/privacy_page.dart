@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -35,7 +36,7 @@ class PrivacyPage extends ConsumerWidget {
           ListTile(
             title: const Text('settings.privacy.send_error_data_notice').tr(),
             trailing: Switch(
-              activeColor: Theme.of(context).colorScheme.primary,
+              activeColor: context.colorScheme.primary,
               value:
                   settings.dataCollectingStatus == DataCollectingStatus.allow,
               onChanged: (value) {

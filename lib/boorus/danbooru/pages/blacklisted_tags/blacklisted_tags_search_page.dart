@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/feats/search/tag_search_item.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 
 final _selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
@@ -172,7 +173,7 @@ class _BlacklistedTagsSearchPageState
       children: [
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: context.colorScheme.secondary,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -251,7 +252,7 @@ class _SearchBarState extends ConsumerState<_SearchBar> {
       queryEditingController: queryEditingController,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.navigator.pop(),
       ),
       trailing: query.isNotEmpty
           ? IconButton(

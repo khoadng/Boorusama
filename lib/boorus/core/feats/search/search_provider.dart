@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/utils/string_utils.dart';
+import 'package:boorusama/dart.dart';
 
 final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
 

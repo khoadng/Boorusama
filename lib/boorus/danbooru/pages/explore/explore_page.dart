@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/models/danbooru_post.dart'
 import 'package:boorusama/boorus/danbooru/feats/posts/models/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
@@ -289,9 +290,7 @@ class _ExploreListState extends State<_ExploreList> {
                     bottom: 1,
                     child: Text(
                       '${index + 1}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayMedium!
+                      style: context.textTheme.displayMedium!
                           .copyWith(color: Colors.white),
                     ),
                   ),

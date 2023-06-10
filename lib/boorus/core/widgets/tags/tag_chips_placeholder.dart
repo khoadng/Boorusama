@@ -4,6 +4,9 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class TagChipsPlaceholder extends StatelessWidget {
   const TagChipsPlaceholder({
     super.key,
@@ -27,7 +30,7 @@ class TagChipsPlaceholder extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: ChoiceChip(
-              disabledColor: Theme.of(context).cardColor,
+              disabledColor: context.theme.cardColor,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
               padding: const EdgeInsets.all(4),

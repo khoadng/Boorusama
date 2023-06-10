@@ -3,7 +3,6 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/utils/json_utils.dart';
 
 void main() {
   test('tryDecodeJson returns Right with valid input', () {

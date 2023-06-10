@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/download_tag_selection_view.dart';
 import 'package:boorusama/boorus/core/pages/settings/widgets/settings_tile.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -51,10 +52,10 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'settings.download.path'.tr().toUpperCase(),
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Theme.of(context).hintColor,
-                      fontWeight: FontWeight.w800,
-                    ),
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.theme.hintColor,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             const SizedBox(height: 4),
@@ -63,9 +64,9 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
               child: Material(
                 child: Ink(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
+                    color: context.theme.cardColor,
                     border: Border.fromBorderSide(
-                      BorderSide(color: Theme.of(context).hintColor),
+                      BorderSide(color: context.theme.hintColor),
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
@@ -81,10 +82,8 @@ class _DownloadPageState extends ConsumerState<DownloadPage>
                         : Text(
                             'settings.download.select_a_folder'.tr(),
                             overflow: TextOverflow.fade,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(color: Theme.of(context).hintColor),
+                            style: context.textTheme.titleMedium!
+                                .copyWith(color: context.theme.hintColor),
                           ),
                     trailing: IconButton(
                       onPressed: () => _pickFolder(settings),

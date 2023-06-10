@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
+import 'package:boorusama/flutter.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,
@@ -22,7 +23,7 @@ void goToGelbooruPostDetailsPage({
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
-  Navigator.of(context).push(GelbooruPostDetailPage.routeOf(
+  context.navigator.push(GelbooruPostDetailPage.routeOf(
     ref,
     context,
     posts: posts,
@@ -37,15 +38,14 @@ void goToGelbooruSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context)
-        .push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
+    context.navigator.push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
 
 void goToGelbooruArtistPage(
   WidgetRef ref,
   BuildContext context,
   String artist,
 ) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => provideArtistPageDependencies(
       ref,
       context,

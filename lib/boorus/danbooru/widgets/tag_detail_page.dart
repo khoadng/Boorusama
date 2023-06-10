@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/flutter.dart';
 import 'danbooru_infinite_post_list.dart';
 import 'danbooru_post_scope.dart';
 
@@ -54,7 +55,7 @@ class _TagDetailPageState extends ConsumerState<TagDetailPage> {
               floating: true,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
               actions: [
                 IconButton(
                   onPressed: () {

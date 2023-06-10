@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostActionToolbar extends ConsumerWidget {
@@ -30,7 +31,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
     final voteState = postVote?.voteState ?? VoteState.unvote;
 
     return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: context.theme.scaffoldBackgroundColor,
       child: ButtonBar(
         buttonPadding: EdgeInsets.zero,
         alignment: MainAxisAlignment.spaceEvenly,

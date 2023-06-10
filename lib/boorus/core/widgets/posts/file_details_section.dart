@@ -7,6 +7,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class FileDetailsSection extends StatelessWidget {
@@ -29,10 +30,10 @@ class FileDetailsSection extends StatelessWidget {
           ),
           child: Text(
             'post.detail.file_details'.tr(),
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).hintColor,
-                  fontSize: 16,
-                ),
+            style: context.textTheme.titleLarge!.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 16,
+            ),
           ),
         ),
         Column(
@@ -77,16 +78,16 @@ class _FileDetailTile extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       leading: Text(
         title,
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+        style: context.textTheme.titleLarge!.copyWith(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+        ),
       ),
       trailing: LayoutBuilder(
         builder: (context, constrainst) => Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: context.theme.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.5,

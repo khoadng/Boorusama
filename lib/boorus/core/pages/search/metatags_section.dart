@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/search/common/option_tags_arena.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/flutter.dart';
 
 class MetatagsSection extends StatefulWidget {
   const MetatagsSection({
@@ -76,7 +77,7 @@ class _MetatagsSectionState extends State<MetatagsSection> {
             context,
             metatags: metatags,
             onSelected: (tag) => setState(() {
-              Navigator.of(context).pop();
+              context.navigator.pop();
               widget.onUserMetatagAdded(tag);
             }),
           ),

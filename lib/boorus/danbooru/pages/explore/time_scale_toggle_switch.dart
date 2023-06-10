@@ -6,6 +6,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class TimeScaleToggleSwitch extends StatefulWidget {
@@ -40,10 +41,10 @@ class _TimeScaleToggleSwitchState extends State<TimeScaleToggleSwitch> {
             _timeScaleToString(TimeScale.week).tr(),
             _timeScaleToString(TimeScale.month).tr(),
           ],
-          activeBgColor: [Theme.of(context).colorScheme.primary],
-          inactiveBgColor: Theme.of(context).colorScheme.background,
+          activeBgColor: [context.colorScheme.primary],
+          inactiveBgColor: context.colorScheme.background,
           borderWidth: 1,
-          borderColor: [Theme.of(context).hintColor],
+          borderColor: [context.theme.hintColor],
           onToggle: (index) {
             if (index == 0) {
               widget.onToggle(TimeScale.day);

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
@@ -32,7 +33,7 @@ class TagSuggestionItems extends ConsumerWidget {
     final theme = ref.watch(themeProvider);
 
     return Material(
-      color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+      color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: Padding(
@@ -45,7 +46,7 @@ class TagSuggestionItems extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: ListTile(
-                hoverColor: Theme.of(context).cardColor,
+                hoverColor: context.theme.cardColor,
                 onTap: () => onItemTap(_tags[index]),
                 trailing: tag.hasCount
                     ? Text(

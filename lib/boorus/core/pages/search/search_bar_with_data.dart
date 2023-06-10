@@ -8,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 
 class SearchBarWithData extends ConsumerWidget {
   const SearchBarWithData({
@@ -35,7 +36,7 @@ class SearchBarWithData extends ConsumerWidget {
         icon: const Icon(Icons.arrow_back),
         onPressed: () => displayState != DisplayState.options
             ? ref.read(searchProvider.notifier).resetToOptions()
-            : Navigator.of(context).pop(),
+            : context.navigator.pop(),
       ),
       trailing: currentQuery.isNotEmpty
           ? IconButton(
