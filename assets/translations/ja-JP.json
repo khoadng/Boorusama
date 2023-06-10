@@ -1,0 +1,140 @@
+{
+    "generic": {
+        "action": {
+            "delete": "削除",
+            "ok": "OK",
+            "cancel": "キャンセル"
+        }
+    },
+    "profile": {
+        "favorites": "いいね"
+    },
+    "network": {
+        "unavailable": "ネットワーク利用不可"
+    },
+    "tag": {
+        "related": {
+            "more": "すべて見る",
+            "open_wiki": "Wikiを開く"
+        }
+    },
+    "post": {
+        "detail": {
+            "slide_show": {
+                "ok": "OK",
+                "cancel": "キャンセル"
+            },
+            "view_in_browser": "ブラウザで開く",
+            "file_details": "ファイルの詳細",
+            "size": "サイズ",
+            "resolution": "解像度",
+            "rating": "レーティング",
+            "file_format": "フォーマット",
+            "share": {
+                "source": "ソースリンクを共有する",
+                "booru": "booruのリンクを共有する",
+                "image": "画像を共有する"
+            },
+            "copied": "コピー",
+            "show_original": "オリジナルを表示",
+            "show_translated": "翻訳表示",
+            "login_required_notice": "ログインする必要があります",
+            "open_wiki": "Wikiを開く",
+            "add_to_favorites": "いいねする"
+        }
+    },
+    "comment": {
+        "comments": "コメント",
+        "create": {
+            "hint": "コメント"
+        },
+        "list": {
+            "edit": "編集",
+            "reply": "返信",
+            "delete": "削除",
+            "noComments": "コメントなし",
+            "last_updated": "最終更新",
+            "send": "送信"
+        },
+        "counter": {
+            "other": "コメント"
+        }
+    },
+    "explore": {
+        "see_more": "すべて見る"
+    },
+    "search": {
+        "errors": {
+            "tag_limit": "タグの上限に達しました。",
+            "database_timeout": "検索に時間がかかりすぎたため、検索がキャンセルされました。"
+        },
+        "hint": "検索...",
+        "history": {
+            "history": "履歴",
+            "clear": "消去",
+            "recent": "最近"
+        },
+        "trending": "トレンド",
+        "remove_all_selected": "すべて削除"
+    },
+    "pool": {
+        "order": {
+            "recent": "最近"
+        },
+        "detail": {
+            "last_updated": "最終更新"
+        }
+    },
+    "settings": {
+        "settings": "設定",
+        "app_settings": "アプリ設定",
+        "appearance": {
+            "appearance": "テーマ"
+        },
+        "general": "一般",
+        "search": "検索",
+        "information": "情報",
+        "language": {
+            "language": "言語",
+            "language_name": "日本語"
+        },
+        "theme": {
+            "theme": "テーマ",
+            "dark": "ダーク",
+            "light": "ライト",
+            "amoled_dark": "AMOLEDダーク"
+        },
+        "privacy": {
+            "privacy": "プライバシー"
+        },
+        "help_us_translate": "翻訳に協力する"
+    },
+    "blacklisted_tags": {
+        "remove": "削除",
+        "edit": "編集"
+    },
+    "download": {
+        "download": "ダウンロード",
+        "bulk_download_cancel": "キャンセル",
+        "open_app_settings": "設定を開く"
+    },
+    "favorites": {
+        "counter": {
+            "other": "いいね"
+        }
+    },
+    "favorite_tags": {
+        "import": "インポート",
+        "cancel": "キャンセル",
+        "export": "エクスポート"
+    },
+    "sideMenu": {
+        "settings": "設定",
+        "manage_boorus": "ボールの管理"
+    },
+    "dateRange": {
+        "day": "デイリー",
+        "week": "ウィークリー",
+        "month": "マンスリー"
+    }
+}

@@ -1,6 +1,5 @@
 import UIKit
 import Flutter
-import flutter_downloader
 import flutter_local_notifications
 
 @UIApplicationMain
@@ -19,13 +18,6 @@ import flutter_local_notifications
     }
 
     GeneratedPluginRegistrant.register(with: self)
-    FlutterDownloaderPlugin.setPluginRegistrantCallback(registerPlugins)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-}
-
-private func registerPlugins(registry: FlutterPluginRegistry) {
-    if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
-       FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
-    }
 }

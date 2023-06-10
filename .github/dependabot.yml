@@ -18,4 +18,5 @@ updates:
       day: "saturday"
       time: "17:00"
     target-branch: "dev"
+    open-pull-requests-limit: 15
 

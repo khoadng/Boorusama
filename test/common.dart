@@ -2,26 +2,22 @@
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
-class MockAccountRepo extends Mock implements AccountRepository {}
-
-AccountRepository mockAccountRepo({
-  Account? account,
-}) {
-  final repo = MockAccountRepo();
-  when(() => repo.get()).thenAnswer((_) async => account ?? Account.empty);
-
-  return repo;
-}
-
-AccountRepository emptyAccountRepo() => mockAccountRepo();
-AccountRepository fakeAccountRepo() => mockAccountRepo(
-      account: Account.create('foo', 'bar', 0),
-    );
+class MockBooruUserIdentityProvider extends Mock
+    implements BooruUserIdentityProvider {}
 
 class MockUserRepo extends Mock implements UserRepository {}
+
+BooruUserIdentityProvider createIdentityProvider() {
+  final mock = MockBooruUserIdentityProvider();
+
+  when(() => mock.getAccountIdFromConfig(any()))
+      .thenAnswer((invocation) async => 1);
+
+  return mock;
+}
 
 UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();
