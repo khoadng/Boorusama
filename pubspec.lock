@@ -724,10 +724,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "7b25c10de1fea883f3c4f9b8389506b54053cd00807beab69fd65c8653a2711f"
+      sha256: dc6d5258653f6857135b32896ccda7f7af0c54dcec832495ad6835154c6c77c0
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.14"
+    version: "0.6.15"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

@@ -52,7 +52,7 @@ dependencies:
       ref: fix-rebuild
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^14.1.0
-  flutter_markdown: ^0.6.14
+  flutter_markdown: ^0.6.15
   flutter_portal: ^1.1.4
   flutter_riverpod: ^2.3.6
   flutter_spinkit: ^5.2.0
