@@ -10,6 +10,10 @@ abstract class AppUpdateChecker {
   Future<UpdateStatus> checkForUpdate();
 }
 
+final shouldCheckForUpdateProvider = Provider<bool>((ref) {
+  return isAndroid();
+});
+
 final appUpdateCheckerProvider = Provider<AppUpdateChecker>(
   (ref) => isAndroid()
       ? PlayStoreUpdateChecker(
@@ -21,6 +25,10 @@ final appUpdateCheckerProvider = Provider<AppUpdateChecker>(
 );
 
 final appUpdateStatusProvider = FutureProvider<UpdateStatus>((ref) async {
+  if (!ref.watch(shouldCheckForUpdateProvider)) {
+    return const UpdateNotAvailable();
+  }
+
   final checker = ref.watch(appUpdateCheckerProvider);
   return checker.checkForUpdate();
 });

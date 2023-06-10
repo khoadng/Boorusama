@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/foundation/app_update/app_update.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'booru_search_bar.dart';
 
 class HomeSearchBar extends ConsumerWidget {
@@ -64,11 +65,11 @@ class HomeSearchBar extends ConsumerWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Update available',
+                                      'app_update.update_available',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleLarge,
-                                    ),
+                                    ).tr(),
                                   ],
                                 ),
                               ),
@@ -82,14 +83,14 @@ class HomeSearchBar extends ConsumerWidget {
                               Row(
                                 children: [
                                   Text(
-                                    'What\'s new?',
+                                    'app_update.whats_new',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
                                         ?.copyWith(
                                           fontWeight: FontWeight.bold,
                                         ),
-                                  ),
+                                  ).tr(),
                                 ],
                               ),
                               Flexible(
@@ -119,7 +120,7 @@ class HomeSearchBar extends ConsumerWidget {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('Later'),
+                                    child: const Text('app_update.later').tr(),
                                   ),
                                   const SizedBox(width: 16),
                                   ElevatedButton(
@@ -127,7 +128,7 @@ class HomeSearchBar extends ConsumerWidget {
                                       launchExternalUrlString(d.storeUrl);
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('Update'),
+                                    child: const Text('app_update.update').tr(),
                                   ),
                                 ],
                               ),
