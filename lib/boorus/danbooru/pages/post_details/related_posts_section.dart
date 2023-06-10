@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/website_logo.dart';
 import 'danbooru_post_details_page.dart';
 
@@ -24,9 +25,7 @@ class RelatedPostsSection extends ConsumerWidget {
     final posts = ref.watch(danbooruPostDetailsChildrenProvider(post.id));
 
     if (posts.isEmpty) {
-      return const SliverToBoxAdapter(
-        child: SizedBox.shrink(),
-      );
+      return const SliverSizedBox.shrink();
     }
 
     return SliverList(

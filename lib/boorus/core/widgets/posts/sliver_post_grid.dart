@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;
@@ -132,9 +133,7 @@ class _Placeholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return usePlaceholder
         ? const SliverPostGridPlaceHolder()
-        : const SliverToBoxAdapter(
-            child: SizedBox.shrink(),
-          );
+        : const SliverSizedBox.shrink();
   }
 }
 

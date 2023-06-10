@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_controller.dart';
 
@@ -296,7 +297,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                               ),
                             )
                           else
-                            const SliverToBoxAdapter(child: SizedBox.shrink()),
+                            const SliverSizedBox.shrink()
                         ],
                       ),
                     ),

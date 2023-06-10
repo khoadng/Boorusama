@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class FavoritesPage extends ConsumerWidget {
   const FavoritesPage({
@@ -45,11 +46,7 @@ class FavoritesPage extends ConsumerWidget {
             shadowColor: Colors.transparent,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 5,
-            ),
-          ),
+          const SliverSizedBox(height: 5),
         ],
       ),
     );

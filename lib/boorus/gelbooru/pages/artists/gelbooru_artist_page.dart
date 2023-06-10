@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class GelbooruArtistPage extends ConsumerStatefulWidget {
   const GelbooruArtistPage({
@@ -75,8 +76,7 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
                 ],
               ),
             ),
-          if (widget.includeHeaders)
-            const SliverToBoxAdapter(child: SizedBox(height: 50)),
+          if (widget.includeHeaders) const SliverSizedBox(height: 50),
           SliverPadding(
             padding: const EdgeInsets.only(bottom: 10),
             sliver: SliverToBoxAdapter(

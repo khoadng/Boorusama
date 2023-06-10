@@ -8,6 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+// Project imports:
+import 'package:boorusama/widgets/sliver_sized_box.dart';
+
 class InfiniteLoadList extends StatefulWidget {
   const InfiniteLoadList({
     super.key,
@@ -248,7 +251,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
               ),
             )
           else
-            const SliverToBoxAdapter(child: SizedBox.shrink()),
+            const SliverSizedBox.shrink(),
         ],
       ),
     );
