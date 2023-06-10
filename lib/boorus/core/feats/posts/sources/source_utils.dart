@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/functional.dart';
+import 'source_def.dart';
 
 bool isWebSource(String? url) {
   if (url == null || url.isEmpty) {
@@ -22,26 +23,7 @@ bool isWebSource(String? url) {
 }
 
 String getHost(Uri uri) {
-  final hostMappings = {
-    'artstation.com': 'https://artstation.com',
-    'discordapp.com': 'https://discordapp.com',
-    'kym-cdn.com': 'https://knowyourmeme.com',
-    'images-wixmp': 'https://deviantart.com',
-    'fantia.jp': 'https://fantia.jp',
-    'hentai-foundry.com': 'https://hentai-foundry.com',
-    'exhentai.org': 'https://e-hentai.org',
-    'ngfiles.com': 'https://newgrounds.com',
-    'i.pximg.net': 'https://pixiv.net',
-    'youtu.be': 'https://youtube.com',
-    'tumblr.com': 'https://tumblr.com',
-    'biligame.com': 'https://bilibili.com',
-    'dlsite.jp': 'https://dlsite.jp',
-    'yande.re': 'https://yande.re',
-    'blog.livedoor.jp': 'https://blog.livedoor.jp',
-    'rule34.xxx': 'https://rule34.xxx',
-  };
-
-  for (final mapping in hostMappings.entries) {
+  for (final mapping in getHosts().entries) {
     if (uri.host.contains(mapping.key)) {
       return mapping.value;
     }
