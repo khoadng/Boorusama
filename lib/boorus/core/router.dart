@@ -134,7 +134,7 @@ void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
         placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
-        previewCacheManager: ref.watch(previewImageCacheManagerProvider),
+        previewCacheManager: ref.read(previewImageCacheManagerProvider),
       ),
     ),
   );

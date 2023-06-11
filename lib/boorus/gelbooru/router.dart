@@ -25,7 +25,6 @@ void goToGelbooruPostDetailsPage({
 }) {
   context.navigator.push(GelbooruPostDetailPage.routeOf(
     ref,
-    context,
     posts: posts,
     initialIndex: initialIndex,
     scrollController: scrollController,
@@ -48,7 +47,6 @@ void goToGelbooruArtistPage(
   context.navigator.push(MaterialPageRoute(
     builder: (_) => provideArtistPageDependencies(
       ref,
-      context,
       artist: artist,
       page: GelbooruArtistPage(
         tagName: artist,
@@ -58,8 +56,7 @@ void goToGelbooruArtistPage(
 }
 
 Widget provideArtistPageDependencies(
-  WidgetRef ref,
-  BuildContext context, {
+  WidgetRef ref, {
   required String artist,
   required Widget page,
 }) {
