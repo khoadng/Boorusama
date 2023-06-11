@@ -48,7 +48,10 @@ List<Tag> parseTags(HttpResponse<dynamic> value) {
       dtos.add(TagDto.fromXml(item));
     }
   } else {
-    for (final item in value.data['tag']) {
+    final data = value.data['tag'];
+    if (data == null) return [];
+
+    for (final item in data) {
       dtos.add(TagDto.fromJson(item));
     }
   }

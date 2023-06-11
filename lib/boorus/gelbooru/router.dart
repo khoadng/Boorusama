@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -23,8 +24,9 @@ void goToGelbooruPostDetailsPage({
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
+  final booru = ref.read(currentBooruProvider);
   context.navigator.push(GelbooruPostDetailPage.routeOf(
-    ref,
+    booru: booru,
     posts: posts,
     initialIndex: initialIndex,
     scrollController: scrollController,
