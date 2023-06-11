@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'user_info_box.dart';
 import 'user_stats_group.dart';
 
@@ -34,7 +35,7 @@ class UserDetailsPage extends ConsumerWidget {
           data: (user) => Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             child: CustomScrollView(

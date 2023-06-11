@@ -11,6 +11,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'post_grid_controller.dart';
 
@@ -184,7 +186,7 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
     return WillPopScope(
         onWillPop: _onWillPop,
         child: ColoredBox(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: context.theme.scaffoldBackgroundColor,
           child: SafeArea(
             child: MultiSelectWidget<T>(
               footerBuilder: widget.footerBuilder,
@@ -288,15 +290,14 @@ class _InfinitePostListState<T> extends State<PostGrid<T>>
                               sliver: SliverToBoxAdapter(
                                 child: Center(
                                   child: SpinKitPulse(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
+                                    color:
+                                        context.theme.colorScheme.onBackground,
                                   ),
                                 ),
                               ),
                             )
                           else
-                            const SliverToBoxAdapter(child: SizedBox.shrink()),
+                            const SliverSizedBox.shrink()
                         ],
                       ),
                     ),

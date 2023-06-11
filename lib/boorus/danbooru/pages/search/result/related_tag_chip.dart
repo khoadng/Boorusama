@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class RelatedTagButton extends StatelessWidget {
   const RelatedTagButton({
     super.key,
@@ -21,12 +24,12 @@ class RelatedTagButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           foregroundColor: backgroundColor,
           padding: const EdgeInsets.only(left: 6, right: 2),
-          backgroundColor: Theme.of(context).cardColor,
+          backgroundColor: context.theme.cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           side: BorderSide(
-            color: Theme.of(context).hintColor,
+            color: context.theme.hintColor,
           ),
         ),
         onPressed: onPressed,

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/utils/time_utils.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/video_progress_bar.dart';
 
 // Class to store duration and position of video
@@ -35,7 +36,7 @@ class BooruVideoProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: context.theme.scaffoldBackgroundColor,
       child: Row(
         children: [
           const SizedBox(

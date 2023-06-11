@@ -8,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/search/search_bar_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
@@ -25,7 +26,7 @@ class SearchAppBar extends ConsumerWidget {
 
     return AppBar(
       elevation: 0,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,

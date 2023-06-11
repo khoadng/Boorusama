@@ -13,9 +13,10 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/utils/time_utils.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({
@@ -32,11 +33,11 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
         elevation: 0,
         title: Text(
           'favorite_groups.add_to_group_dialog_title',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: context.textTheme.titleLarge,
         ).tr(),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: context.colorScheme.background,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,9 +64,9 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
               visualDensity: VisualDensity.compact,
               title: Text(
                 'favorite_groups.add_to'.tr().toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                style: context.theme.textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               trailing: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -170,7 +171,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                               ),
                         ),
                       );
-                      Navigator.of(context).pop(true);
+                      context.navigator.pop(true);
                     },
                   );
             },

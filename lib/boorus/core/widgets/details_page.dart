@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -265,7 +266,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   Future<void> _onBackButtonPressed() async {
     _keepBottomSheetDown = true;
-    Navigator.of(context).pop();
+    context.navigator.pop();
     widget.onExit(controller.currentPage.value);
   }
 
@@ -440,8 +441,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                           child: theme == ThemeMode.light
                               ? Icon(
                                   Icons.arrow_back_ios,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: context.colorScheme.onPrimary,
                                 )
                               : const Icon(Icons.arrow_back_ios),
                         ),
@@ -456,7 +456,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
                         icon: theme == ThemeMode.light
                             ? Icon(
                                 Icons.home,
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: context.colorScheme.onPrimary,
                               )
                             : const Icon(Icons.home),
                         onPressed: () => goToHomePage(context),

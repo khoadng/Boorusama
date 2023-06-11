@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -113,7 +114,7 @@ class SideBarMenu extends ConsumerWidget {
               icon: const Icon(Icons.manage_accounts),
               title: const Text('sideMenu.manage_boorus').tr(),
               onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
+                if (popOnSelect) context.navigator.pop();
                 context.go('/boorus');
               },
             ),
@@ -121,7 +122,7 @@ class SideBarMenu extends ConsumerWidget {
               icon: const Icon(Icons.favorite),
               title: const Text('sideMenu.your_bookmarks').tr(),
               onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
+                if (popOnSelect) context.navigator.pop();
                 context.go('/bookmarks');
               },
             ),
@@ -129,7 +130,7 @@ class SideBarMenu extends ConsumerWidget {
               icon: const Icon(Icons.list_alt),
               title: const Text('sideMenu.your_blacklist').tr(),
               onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
+                if (popOnSelect) context.navigator.pop();
                 goToGlobalBlacklistedTagsPage(context);
               },
             ),
@@ -137,7 +138,7 @@ class SideBarMenu extends ConsumerWidget {
               icon: const Icon(Icons.download),
               title: const Text('sideMenu.bulk_download').tr(),
               onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
+                if (popOnSelect) context.navigator.pop();
                 goToBulkDownloadPage(
                   context,
                   null,
@@ -149,7 +150,7 @@ class SideBarMenu extends ConsumerWidget {
               icon: const Icon(Icons.settings_outlined),
               title: Text('sideMenu.settings'.tr()),
               onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
+                if (popOnSelect) context.navigator.pop();
                 context.go('/settings');
               },
             ),

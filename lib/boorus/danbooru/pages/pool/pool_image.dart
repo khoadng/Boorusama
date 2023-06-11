@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 // Project imports:
@@ -35,7 +36,7 @@ class PoolImage extends ConsumerWidget {
                 aspectRatio: 0.6,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
+                    color: context.theme.cardColor,
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
                   child: Center(
@@ -47,7 +48,7 @@ class PoolImage extends ConsumerWidget {
             aspectRatio: 0.6,
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: context.theme.cardColor,
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
             ),

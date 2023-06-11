@@ -7,6 +7,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/image_grid_item.dart';
 
 class PreviewPostGrid<T extends Post> extends StatelessWidget {
@@ -33,8 +35,13 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
         context: context,
         removeTop: true,
         child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: switch (Screen.of(context).size) {
+              ScreenSize.small => 3,
+              ScreenSize.medium => 4,
+              ScreenSize.large => 6,
+              ScreenSize.veryLarge => 7,
+            },
             crossAxisSpacing: 3,
             mainAxisSpacing: 3,
           ),
@@ -84,7 +91,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: context.screenHeight * 0.22,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: MediaQuery.removePadding(

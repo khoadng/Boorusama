@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ExploreSection extends StatelessWidget {
@@ -23,16 +24,14 @@ class ExploreSection extends StatelessWidget {
         ListTile(
           title: Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
+            style: context.textTheme.titleLarge!
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
             onPressed: onPressed,
             child: Text(
               'explore.see_more',
-              style: Theme.of(context).textTheme.labelLarge,
+              style: context.textTheme.labelLarge,
             ).tr(),
           ),
         ),

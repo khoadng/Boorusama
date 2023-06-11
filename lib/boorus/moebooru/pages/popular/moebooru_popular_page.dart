@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/pages/explore/time_scale_toggle_switch
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
+import 'package:boorusama/flutter.dart';
 
 class MoebooruPopularPage extends ConsumerStatefulWidget {
   const MoebooruPopularPage({
@@ -50,8 +51,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
           builder: (context, controller, errors) => Column(
             children: [
               Container(
-                color:
-                    Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                color: context.theme.bottomNavigationBarTheme.backgroundColor,
                 child: ValueListenableBuilder<DateTime>(
                   valueListenable: selectedDateNotifier,
                   builder: (context, d, __) =>

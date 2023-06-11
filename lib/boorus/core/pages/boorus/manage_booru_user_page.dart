@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/booru_config_info_tile.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 
 class ManageBooruPage extends ConsumerWidget {
@@ -98,7 +99,7 @@ class _AddAccountSheetState extends State<_AddAccountSheet> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.navigator.pop();
               widget.onSubmit.call(
                 loginController.text,
                 apiKeyController.text,

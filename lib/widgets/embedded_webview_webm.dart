@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
+import 'center_play_button.dart';
 
 class WebmVideoController {
   WebmVideoController({this.onCurrentPositionChanged}) {
@@ -54,7 +55,7 @@ class WebmVideoController {
 
     final duration = await _webViewController.runJavaScriptReturningResult(
         'document.getElementById("video").duration;');
-    _duration ??= duration is int ? duration.toDouble() : duration as double;
+    _duration ??= duration.toDoubleOrNull() ?? 0;
     return _duration!;
   }
 
@@ -62,7 +63,7 @@ class WebmVideoController {
   Future<double> getCurrentTime() async {
     final currentTime = await _webViewController.runJavaScriptReturningResult(
         'document.getElementById("video").currentTime;');
-    return currentTime is int ? currentTime.toDouble() : currentTime as double;
+    return currentTime.toDoubleOrNull() ?? 0;
   }
 
   Future<void> play() async {

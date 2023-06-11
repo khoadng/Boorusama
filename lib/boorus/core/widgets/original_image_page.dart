@@ -9,6 +9,7 @@ import 'package:photo_view/photo_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -72,7 +73,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
           leading: overlay
               ? IconButton(
                   icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => context.navigator.pop(),
                 )
               : null,
           actions: [

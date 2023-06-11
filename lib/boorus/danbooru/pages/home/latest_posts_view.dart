@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
@@ -102,7 +103,7 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
       primary: primary ?? true,
       title: HomeSearchBar(

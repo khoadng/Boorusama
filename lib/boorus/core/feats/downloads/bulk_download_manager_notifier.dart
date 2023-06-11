@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions/permission.dart';
+import 'package:boorusama/utils/duration_utils.dart';
 
 const _serviceName = 'Bulk Download Manager';
 
@@ -100,7 +101,7 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
           bulkDownloadState.addDownloadSize(item.fileSize);
         }
 
-        await Future.delayed(const Duration(milliseconds: 200));
+        await const Duration(milliseconds: 200).future;
 
         page += 1;
         final next = await getPosts(tags, page);

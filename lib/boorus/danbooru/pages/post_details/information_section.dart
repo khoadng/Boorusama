@@ -10,9 +10,10 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/utils/time_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InformationSection extends StatelessWidget {
@@ -47,7 +48,7 @@ class InformationSection extends StatelessWidget {
                           .removeUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: context.textTheme.titleLarge,
                   maxLines: 1,
                   softWrap: false,
                 ),
@@ -59,7 +60,7 @@ class InformationSection extends StatelessWidget {
                           .removeUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: context.textTheme.bodyMedium,
                   maxLines: 1,
                   softWrap: false,
                 ),
@@ -101,7 +102,7 @@ class InformationSection extends StatelessWidget {
                     Text(
                       post.createdAt
                           .fuzzify(locale: Localizations.localeOf(context)),
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: context.textTheme.bodySmall,
                     ),
                   ],
                 )

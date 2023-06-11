@@ -12,8 +12,11 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/functional.dart';
 import 'saved_search_landing_view.dart';
 
 class SavedSearchFeedPage extends ConsumerWidget {
@@ -66,12 +69,10 @@ class _PostList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(
       danbooruSavedSearchSelectedProvider,
-      (previous, next) {
+      (previous, next) async {
         if (previous != next) {
-          Future.delayed(
-            const Duration(milliseconds: 100),
-            () => controller.refresh(),
-          );
+          await const Duration(milliseconds: 100).future;
+          controller.refresh();
         }
       },
     );
@@ -85,7 +86,7 @@ class _PostList extends ConsumerWidget {
           floating: true,
           elevation: 0,
           shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: context.theme.scaffoldBackgroundColor,
           actions: [
             IconButton(
               onPressed: () => goToSavedSearchEditPage(context),
@@ -123,14 +124,14 @@ class _SavedSearchList extends ConsumerWidget {
       itemBuilder: (context, index) {
         final isSelected = selectedSearch == searches[index];
 
-        final text = searches[index].labels.first.removeUnderscoreWithSpace();
+        final text = searches[index].labels.firstOption;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ChoiceChip(
-            disabledColor: Theme.of(context).chipTheme.disabledColor,
-            backgroundColor: Theme.of(context).chipTheme.backgroundColor,
-            selectedColor: Theme.of(context).chipTheme.selectedColor,
+            disabledColor: context.theme.chipTheme.disabledColor,
+            backgroundColor: context.theme.chipTheme.backgroundColor,
+            selectedColor: context.theme.chipTheme.selectedColor,
             selected: isSelected,
             onSelected: (selected) {
               if (!isSelected) {
@@ -140,16 +141,22 @@ class _SavedSearchList extends ConsumerWidget {
             },
             padding: EdgeInsets.symmetric(
               vertical: 4,
-              horizontal: text.length < 4 ? 12 : 4,
+              horizontal: text.fold(
+                () => 12,
+                (t) => t.length < 4 ? 12 : 4,
+              ),
             ),
             labelPadding: const EdgeInsets.all(1),
             visualDensity: VisualDensity.compact,
             side: BorderSide(
               width: 0.5,
-              color: Theme.of(context).hintColor,
+              color: context.theme.hintColor,
             ),
             label: Text(
-              text,
+              text.fold(
+                () => '<empty>',
+                (t) => t.removeUnderscoreWithSpace(),
+              ),
               overflow: TextOverflow.fade,
             ),
           ),

@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/flutter.dart';
 
 class GelbooruSearchPage extends ConsumerStatefulWidget {
   const GelbooruSearchPage({
@@ -46,7 +47,7 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
                 selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
               ],
               child: GelbooruSearchPage(
-                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                metatagHighlightColor: context.colorScheme.primary,
                 initialQuery: tag,
               ),
             ),
@@ -111,7 +112,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
     );
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => context.focusScope.unfocus(),
       child: Builder(builder: (context) {
         switch (displayState) {
           case DisplayState.options:

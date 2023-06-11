@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class EditorSpacer extends StatelessWidget {
   const EditorSpacer({
     super.key,
@@ -12,7 +15,7 @@ class EditorSpacer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12),
       width: double.infinity,
       height: 1,
-      color: Theme.of(context).dividerColor,
+      color: context.theme.dividerColor,
     );
   }
 }

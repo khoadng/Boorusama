@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'multi_select_controller.dart';
 
 typedef ScrollableWidgetBuilder<T> = Widget Function(
@@ -182,13 +183,13 @@ class _SelectableItemState extends State<SelectableItem>
                 margin: const EdgeInsets.all(8.0),
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   FontAwesomeIcons.check,
                   size: 18,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: context.colorScheme.onBackground,
                 ),
               ),
           ],

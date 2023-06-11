@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ImportFavoriteTagsDialog extends ConsumerStatefulWidget {
@@ -54,7 +55,7 @@ class _ImportFavoriteTagsDialogState
               Center(
                 child: Text(
                   'favorite_tags.import'.tr(),
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: context.textTheme.titleLarge,
                 ),
               ),
               const SizedBox(
@@ -69,7 +70,7 @@ class _ImportFavoriteTagsDialogState
                     hintMaxLines: 6,
                     hintText: '${'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
                     filled: true,
-                    fillColor: Theme.of(context).cardColor,
+                    fillColor: context.theme.cardColor,
                     enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       borderSide: BorderSide.none,
@@ -77,7 +78,7 @@ class _ImportFavoriteTagsDialogState
                     focusedBorder: OutlineInputBorder(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                       borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: context.theme.colorScheme.secondary,
                         width: 2,
                       ),
                     ),
@@ -91,7 +92,7 @@ class _ImportFavoriteTagsDialogState
                 builder: (context, value, child) => ElevatedButton(
                   onPressed: value.text.isNotEmpty
                       ? () {
-                          Navigator.of(context).pop();
+                          context.navigator.pop();
                           ref
                               .read(favoriteTagsProvider.notifier)
                               .import(value.text);
@@ -102,7 +103,7 @@ class _ImportFavoriteTagsDialogState
               ),
               SizedBox(height: widget.padding ?? 0),
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.navigator.pop(),
                 child: const Text('favorite_tags.cancel').tr(),
               ),
             ],

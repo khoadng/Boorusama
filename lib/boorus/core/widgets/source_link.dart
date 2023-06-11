@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/utils/string_utils.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({
@@ -43,12 +44,12 @@ class SourceLink extends StatelessWidget {
                 url.toString(),
                 maxLines: 1,
                 softWrap: false,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: context.textTheme.bodySmall,
               ),
             )
           : null,
       leading: CircleAvatar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: context.colorScheme.background,
         child: Center(
           child: Text(name.getFirstCharacter().toUpperCase()),
         ),

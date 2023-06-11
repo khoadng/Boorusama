@@ -4,8 +4,10 @@ import 'dart:convert';
 // Flutter imports:
 import 'package:flutter/services.dart';
 
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
-import 'package:boorusama/utils/collection_utils.dart';
 import 'booru.dart';
 import 'booru_data.dart';
 
@@ -36,7 +38,8 @@ class BooruFactory {
 
   String getSalt(Booru booru) =>
       booruSaltData
-          .firstOrNull((e) => stringToBooruType(e.booru) == booru.booruType)
+          .firstWhereOrNull(
+              (e) => stringToBooruType(e.booru) == booru.booruType)
           ?.salt ??
       '';
 

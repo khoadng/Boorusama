@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader({
     super.key,
@@ -16,7 +19,7 @@ class SettingsHeader extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
+          color: context.colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),

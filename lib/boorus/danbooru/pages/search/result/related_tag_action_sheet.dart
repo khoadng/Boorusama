@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class RelatedTagActionSheet extends ConsumerWidget {
@@ -31,7 +32,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.navigator.pop,
             icon: const Icon(Icons.close),
           ),
         ],
@@ -60,8 +61,8 @@ class RelatedTagActionSheet extends ConsumerWidget {
                   visualDensity:
                       const VisualDensity(horizontal: -4, vertical: -4),
                   onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
+                    context.navigator.pop();
                     //FIXME: implement this
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
@@ -77,7 +78,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
                   visualDensity:
                       const VisualDensity(horizontal: -4, vertical: -4),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
                     launchWikiPage(
                       booru.url,
                       relatedTag.tags[index].tag,

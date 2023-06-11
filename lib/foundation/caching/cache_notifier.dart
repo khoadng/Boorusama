@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/utils/file_utils.dart';
+import 'package:boorusama/dart.dart';
 
 class CacheSizeNotifier extends Notifier<DirectorySizeInfo> {
   @override

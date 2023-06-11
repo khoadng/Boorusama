@@ -37,8 +37,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   final bool hasDetailsTagList;
 
   static MaterialPageRoute routeOf(
-    WidgetRef ref,
-    BuildContext context, {
+    WidgetRef ref, {
     required Settings settings,
     required List<Post> posts,
     required int initialIndex,
@@ -53,7 +52,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
             onExit: (page) => scrollController?.scrollToIndex(page),
             fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             hasDetailsTagList:
-                ref.watch(currentBooruProvider).booruType.supportTagDetails,
+                ref.read(currentBooruProvider).booruType.supportTagDetails,
           );
         },
       ),

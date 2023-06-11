@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -13,7 +14,7 @@ class NetworkUnavailableIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.primary,
+      color: context.colorScheme.primary,
       child: Padding(
         padding: EdgeInsets.only(
           bottom: 8,
@@ -45,7 +46,7 @@ class NetworkConnectingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.primary,
+      color: context.theme.colorScheme.primary,
       child: Padding(
         padding: EdgeInsets.only(
           bottom: 8,

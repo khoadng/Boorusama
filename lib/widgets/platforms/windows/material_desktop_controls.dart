@@ -18,6 +18,9 @@ import 'package:chewie/src/notifiers/index.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class MaterialDesktopControls extends StatefulWidget {
   const MaterialDesktopControls({
     this.showPlayButton = true,
@@ -269,7 +272,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
   AnimatedOpacity _buildBottomBar(
     BuildContext context,
   ) {
-    final iconColor = Theme.of(context).textTheme.labelLarge!.color;
+    final iconColor = context.textTheme.labelLarge!.color;
 
     return AnimatedOpacity(
       opacity: notifier.hideStuff ? 0.0 : 1.0,
@@ -602,11 +605,11 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         },
         colors: chewieController.materialProgressColors ??
             ChewieProgressColors(
-              playedColor: Theme.of(context).colorScheme.secondary,
-              handleColor: Theme.of(context).colorScheme.secondary,
+              playedColor: context.theme.colorScheme.secondary,
+              handleColor: context.theme.colorScheme.secondary,
               bufferedColor:
-                  Theme.of(context).colorScheme.background.withOpacity(0.5),
-              backgroundColor: Theme.of(context).disabledColor.withOpacity(0.5),
+                  context.theme.colorScheme.background.withOpacity(0.5),
+              backgroundColor: context.theme.disabledColor.withOpacity(0.5),
             ),
       ),
     );

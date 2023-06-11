@@ -12,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
@@ -88,7 +89,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               padding: const EdgeInsets.only(top: 24, bottom: 8),
               child: Text(
                 widget.title ?? 'saved_search.add_saved_search'.tr(),
-                style: Theme.of(context).textTheme.titleLarge,
+                style: context.textTheme.titleLarge,
               ),
             ),
             const SizedBox(
@@ -125,7 +126,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                             );
                         },
                         onSubmitted: (context, text) {
-                          Navigator.of(context).pop();
+                          context.navigator.pop();
 
                           queryTextController.text =
                               '${queryTextController.text} $text';
@@ -160,12 +161,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
               margin: const EdgeInsets.all(8),
               child: Text(
                 'saved_search.saved_search_labels_description'.tr(),
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Theme.of(context).hintColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
-                    ),
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.theme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
             Container(
@@ -175,14 +176,14 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).iconTheme.color,
-                      backgroundColor: Theme.of(context).cardColor,
+                      foregroundColor: context.iconTheme.color,
+                      backgroundColor: context.theme.cardColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                     },
                     child: const Text('generic.action.cancel').tr(),
                   ),
@@ -190,7 +191,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                     valueListenable: queryHasText,
                     builder: (context, enable, _) => ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Theme.of(context).iconTheme.color,
+                        foregroundColor: context.iconTheme.color,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
@@ -201,7 +202,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                                 queryTextController.text,
                                 labelTextController.text,
                               );
-                              Navigator.of(context).pop();
+                              context.navigator.pop();
                             }
                           : null,
                       child: const Text('generic.action.ok').tr(),
@@ -246,7 +247,7 @@ InputDecoration _getDecoration({
       suffixIcon: suffixIcon,
       hintText: hint,
       filled: true,
-      fillColor: Theme.of(context).cardColor,
+      fillColor: context.theme.cardColor,
       enabledBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
         borderSide: BorderSide.none,
@@ -254,18 +255,17 @@ InputDecoration _getDecoration({
       focusedBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.secondary,
+          color: context.colorScheme.secondary,
           width: 2,
         ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+        borderSide: BorderSide(color: context.colorScheme.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+        borderSide: BorderSide(color: context.colorScheme.error, width: 2),
       ),
       contentPadding: const EdgeInsets.all(12),
     );

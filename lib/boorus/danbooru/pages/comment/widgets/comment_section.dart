@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'comment_box.dart';
 import 'comment_list.dart';
 
@@ -45,12 +46,10 @@ class CommentSection extends ConsumerWidget {
                 commentBody: comment.body,
               );
             },
-            onReply: (comment) {
+            onReply: (comment) async {
               commentReply.value = comment;
-              Future.delayed(
-                const Duration(milliseconds: 100),
-                focus.requestFocus,
-              );
+              await const Duration(milliseconds: 100).future;
+              focus.requestFocus();
             },
             onDelete: (comment) => ref
                 .read(danbooruCommentsProvider.notifier)

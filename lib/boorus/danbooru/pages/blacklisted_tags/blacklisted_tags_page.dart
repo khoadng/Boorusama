@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/warning_container.dart';
@@ -40,7 +41,7 @@ class BlacklistedTagsPage extends ConsumerWidget {
             ref
                 .read(danbooruBlacklistedTagsProvider.notifier)
                 .add(tag: tagItems.map((e) => e.toString()).join(' '));
-            Navigator.of(context).pop();
+            context.navigator.pop();
           },
         );
       },
@@ -93,7 +94,7 @@ class BlacklistedTagsList extends ConsumerWidget {
                                       .map((e) => e.toString())
                                       .join(' '),
                                 );
-                            Navigator.of(context).pop();
+                            context.navigator.pop();
                           },
                         );
                       },
@@ -140,7 +141,7 @@ class BlacklistedTagTile extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
                     onRemoveTag.call(tag);
                   },
                   title: const Text('blacklisted_tags.remove').tr(),
@@ -154,7 +155,7 @@ class BlacklistedTagTile extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
                     onEditTap.call();
                   },
                   title: const Text('blacklisted_tags.edit').tr(),

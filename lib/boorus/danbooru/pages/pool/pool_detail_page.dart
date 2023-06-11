@@ -14,9 +14,10 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/html_utils.dart';
-import 'package:boorusama/utils/time_utils.dart';
 
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
@@ -56,7 +57,7 @@ class PoolDetailPage extends ConsumerWidget {
             floating: true,
             elevation: 0,
             shadowColor: Colors.transparent,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
             actions: [
               IconButton(
                 onPressed: () {
@@ -74,7 +75,7 @@ class PoolDetailPage extends ConsumerWidget {
             child: ListTile(
               title: Text(
                 pool.name.removeUnderscoreWithSpace(),
-                style: Theme.of(context).textTheme.titleLarge,
+                style: context.theme.textTheme.titleLarge,
               ),
               subtitle: Text(
                 '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',

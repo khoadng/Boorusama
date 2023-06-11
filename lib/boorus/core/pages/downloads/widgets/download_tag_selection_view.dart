@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -49,9 +50,7 @@ class _DownloadTagSelectionViewState
             child: Text(
               'download.bulk_download_tag_confirmation',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
+              style: context.textTheme.headlineSmall!
                   .copyWith(fontWeight: FontWeight.w900),
             ).tr(),
           ),
@@ -74,7 +73,7 @@ class _DownloadTagSelectionViewState
                           deleteIcon: Icon(
                             Icons.close,
                             size: 16,
-                            color: Theme.of(context).colorScheme.error,
+                            color: context.theme.colorScheme.error,
                           ),
                           onDeleted: () => ref
                               .read(bulkDownloadSelectedTagsProvider.notifier)
@@ -88,7 +87,7 @@ class _DownloadTagSelectionViewState
                           context,
                           ref: ref,
                           onSubmitted: (context, text) {
-                            Navigator.of(context).pop();
+                            context.navigator.pop();
                             ref
                                 .read(bulkDownloadSelectedTagsProvider.notifier)
                                 .addTag(text);
@@ -117,10 +116,10 @@ class _DownloadTagSelectionViewState
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'download.bulk_download_save_to_folder'.tr().toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).hintColor,
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: context.theme.textTheme.titleSmall!.copyWith(
+                color: context.theme.hintColor,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           Padding(
@@ -135,9 +134,9 @@ class _DownloadTagSelectionViewState
                 return Material(
                   child: Ink(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
+                      color: context.theme.cardColor,
                       border: Border.fromBorderSide(
-                        BorderSide(color: Theme.of(context).hintColor),
+                        BorderSide(color: context.theme.hintColor),
                       ),
                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                     ),
@@ -153,10 +152,8 @@ class _DownloadTagSelectionViewState
                           : Text(
                               'download.bulk_download_select_a_folder'.tr(),
                               overflow: TextOverflow.fade,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(color: Theme.of(context).hintColor),
+                              style: context.theme.textTheme.titleMedium!
+                                  .copyWith(color: context.theme.hintColor),
                             ),
                       trailing: IconButton(
                         onPressed: () => _pickFolder(context, options),

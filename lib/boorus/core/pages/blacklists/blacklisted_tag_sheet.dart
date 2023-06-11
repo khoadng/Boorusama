@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
@@ -64,7 +65,7 @@ class _BlacklistedTagSheetState extends State<BlacklistedTagSheet> {
               padding: const EdgeInsets.only(top: 24, bottom: 8),
               child: Text(
                 widget.title ?? 'Add a tag',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: context.textTheme.titleLarge,
               ),
             ),
             const SizedBox(
@@ -89,14 +90,14 @@ class _BlacklistedTagSheetState extends State<BlacklistedTagSheet> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).iconTheme.color,
-                      backgroundColor: Theme.of(context).cardColor,
+                      foregroundColor: context.theme.iconTheme.color,
+                      backgroundColor: context.theme.cardColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                     },
                     child: const Text('generic.action.cancel').tr(),
                   ),
@@ -104,7 +105,7 @@ class _BlacklistedTagSheetState extends State<BlacklistedTagSheet> {
                     valueListenable: queryHasText,
                     builder: (context, enable, _) => ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Theme.of(context).iconTheme.color,
+                        foregroundColor: context.theme.iconTheme.color,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
@@ -114,7 +115,7 @@ class _BlacklistedTagSheetState extends State<BlacklistedTagSheet> {
                               widget.onSubmit(
                                 queryTextController.text,
                               );
-                              Navigator.of(context).pop();
+                              context.navigator.pop();
                             }
                           : null,
                       child: const Text('generic.action.ok').tr(),
@@ -139,7 +140,7 @@ InputDecoration _getDecoration({
       suffixIcon: suffixIcon,
       hintText: hint,
       filled: true,
-      fillColor: Theme.of(context).cardColor,
+      fillColor: context.theme.cardColor,
       enabledBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
         borderSide: BorderSide.none,
@@ -147,18 +148,18 @@ InputDecoration _getDecoration({
       focusedBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.secondary,
+          color: context.theme.colorScheme.secondary,
           width: 2,
         ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+        borderSide: BorderSide(color: context.theme.colorScheme.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+            BorderSide(color: context.theme.colorScheme.error, width: 2),
       ),
       contentPadding: const EdgeInsets.all(12),
     );

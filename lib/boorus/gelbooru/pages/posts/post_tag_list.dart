@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class PostTagList extends ConsumerWidget {
@@ -29,7 +30,7 @@ class PostTagList extends ConsumerWidget {
     if (tags == null) {
       return SpinKitPulse(
         size: 42,
-        color: Theme.of(context).colorScheme.onBackground,
+        color: context.colorScheme.onBackground,
       );
     }
 
@@ -173,10 +174,8 @@ class _TagHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge!
-            .copyWith(fontWeight: FontWeight.w900),
+        style:
+            context.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w900),
       ),
     );
   }

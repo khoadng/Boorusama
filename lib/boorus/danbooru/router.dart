@@ -46,6 +46,7 @@ import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_
 import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -54,7 +55,7 @@ import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => DanbooruArtistPage.of(context, artist),
     ));
   } else {
@@ -67,7 +68,7 @@ void goToArtistPage(BuildContext context, String artist) {
 
 void goToCharacterPage(BuildContext context, String tag) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => CharacterPage.of(context, tag),
     ));
   } else {
@@ -79,13 +80,13 @@ void goToCharacterPage(BuildContext context, String tag) {
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => FavoritesPage.of(context, username: username!),
   ));
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
@@ -97,7 +98,7 @@ Future<void> goToDetailPage({
   AutoScrollController? scrollController,
   bool hero = false,
 }) {
-  return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
+  return context.navigator.push(DanbooruPostDetailsPage.routeOf(
     context,
     posts: posts,
     scrollController: scrollController,
@@ -124,20 +125,20 @@ void goToSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context).push(SearchPage.routeOf(context, tag: tag));
+    context.navigator.push(SearchPage.routeOf(context, tag: tag));
 
 void goToExplorePopularPage(BuildContext context) =>
-    Navigator.of(context).push(ExplorePopularPage.routeOf(context));
+    context.navigator.push(ExplorePopularPage.routeOf(context));
 
 void goToExploreHotPage(BuildContext context) =>
-    Navigator.of(context).push(ExploreHotPage.routeOf(context));
+    context.navigator.push(ExploreHotPage.routeOf(context));
 
 void goToExploreMostViewedPage(BuildContext context) =>
-    Navigator.of(context).push(ExploreMostViewedPage.routeOf(context));
+    context.navigator.push(ExploreMostViewedPage.routeOf(context));
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => SavedSearchFeedPage.of(context),
     ));
   } else {
@@ -149,7 +150,7 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 }
 
 void goToSavedSearchEditPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) {
       return DanbooruProvider(
         builder: (_) => const SavedSearchPage(),
@@ -159,7 +160,7 @@ void goToSavedSearchEditPage(BuildContext context) {
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => const PoolPage(),
     ),
@@ -168,7 +169,7 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 
 void goToBlacklistedTagPage(BuildContext context) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => provideBlacklistedTagPageDependencies(
         context,
         page: const BlacklistedTagsPage(),
@@ -199,7 +200,7 @@ void goToBlacklistedTagsSearchPage(
   required void Function(List<TagSearchItem> tags) onSelectDone,
   List<String>? initialTags,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => BlacklistedTagsSearchPage(
         initialTags: initialTags,
@@ -233,7 +234,7 @@ void goToCommentCreatePage(
   required int postId,
   String? initialContent,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => CommentCreatePage(
         postId: postId,
@@ -253,7 +254,7 @@ void goToCommentUpdatePage(
   required String commentBody,
   String? initialContent,
 }) {
-  Navigator.of(context).push(
+  context.navigator.push(
     MaterialPageRoute(
       builder: (_) => DanbooruProvider(
         builder: (_) => CommentUpdatePage(
@@ -274,7 +275,7 @@ void goToUserDetailsPage(
   BuildContext context, {
   required int uid,
 }) {
-  Navigator.of(context).push(
+  context.navigator.push(
     MaterialPageRoute(
       builder: (_) => DanbooruProvider(
         builder: (_) => UserDetailsPage(
@@ -289,7 +290,7 @@ void goToUserDetailsPage(
 }
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => const PoolSearchPage(),
     ),
@@ -345,7 +346,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: context.colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
         onSubmit: (query, label) =>
@@ -371,7 +372,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: context.colorScheme.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -417,7 +418,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: context.colorScheme.background,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
@@ -473,7 +474,7 @@ Future<Object?> goToFavoriteGroupEditPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => const FavoriteGroupsPage(),
     ),
@@ -484,7 +485,7 @@ void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
 ) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruProvider(
       builder: (_) => CustomContextMenuOverlay(
         child: FavoriteGroupDetailsPage(

@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/pages/search/favorite_tags/favorite_tags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_history_section.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/flutter.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
@@ -79,7 +80,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     context,
                     ref: ref,
                     onSubmitted: (context, text) {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                       ref.read(favoriteTagsProvider.notifier).add(text);
                     },
                     onSelected: (tag) =>
@@ -107,7 +108,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     onClear: () => _onHistoryCleared(ref),
                     onRemove: (value) => _onHistoryRemoved(ref, value),
                     onTap: (value) {
-                      Navigator.of(context).pop();
+                      context.navigator.pop();
                       _onHistoryTap(value, ref);
                     },
                   );

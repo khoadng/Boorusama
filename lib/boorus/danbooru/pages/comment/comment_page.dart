@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
@@ -79,7 +80,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
             ? AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.keyboard_arrow_down),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => context.navigator.pop(),
                 ),
               )
             : null,
@@ -128,7 +129,7 @@ Future<T?> showCommentPage<T>(
                   Container(
                     height: kToolbarHeight * 0.8,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.background,
+                      color: context.colorScheme.background,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(6),
                       ),
@@ -139,7 +140,7 @@ Future<T?> showCommentPage<T>(
                         const SizedBox(width: 8),
                         Text(
                           'comment.comments',
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: context.textTheme.titleLarge,
                         ).tr(),
                         const Spacer(),
                         Material(
@@ -147,7 +148,7 @@ Future<T?> showCommentPage<T>(
                           child: InkWell(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
-                            onTap: Navigator.of(context).pop,
+                            onTap: context.navigator.pop,
                             child: const Icon(Icons.close),
                           ),
                         ),

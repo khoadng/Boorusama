@@ -9,6 +9,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/bulk_download_tile.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -66,7 +67,7 @@ class DownloadInProgressView extends ConsumerWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
-            color: Theme.of(context).cardColor,
+            color: context.theme.cardColor,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -185,11 +186,11 @@ class BulkDownloadIndicator extends StatelessWidget {
           ),
           Text(
             subtitle.toUpperCase(),
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).hintColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+            style: context.theme.textTheme.titleMedium?.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

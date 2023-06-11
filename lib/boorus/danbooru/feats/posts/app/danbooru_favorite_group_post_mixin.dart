@@ -5,7 +5,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/utils/collection_utils.dart';
+import 'package:boorusama/dart.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';
 

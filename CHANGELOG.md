@@ -1,3 +1,7 @@
+# 3.0.1
+- Fix display issues on tablets
+- Various bug fixes
+
 # 3.0.0
 - Support other boorus sites
 - Redesign details page

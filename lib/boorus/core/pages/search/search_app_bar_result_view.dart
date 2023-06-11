@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 
 class SearchAppBarResultView extends ConsumerWidget {
   const SearchAppBarResultView({
@@ -18,7 +19,7 @@ class SearchAppBarResultView extends ConsumerWidget {
     return SliverAppBar(
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       elevation: 0,
       shadowColor: Colors.transparent,
       title: Padding(

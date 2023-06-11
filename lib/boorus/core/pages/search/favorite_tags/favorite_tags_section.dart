@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
@@ -96,7 +97,7 @@ class FavoriteTagsSection extends ConsumerWidget {
           padding: const EdgeInsets.only(top: 12, right: 8),
           child: Text(
             'favorite_tags.or'.tr(),
-            style: Theme.of(context).textTheme.titleLarge,
+            style: context.textTheme.titleLarge,
           ),
         ),
         const ImportTagButton(),

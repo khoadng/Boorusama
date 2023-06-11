@@ -7,6 +7,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:flutter/services.dart';
 import 'firebase/firebase.dart';
 
 enum AppErrorType {
@@ -78,6 +79,12 @@ void initializeErrorHandlers(Settings settings) {
     if (kReleaseMode &&
         isFirebaseCrashlyticsSupportedPlatforms() &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      // Ignore video errors
+      if (details.exception is PlatformException) {
+        final exception = details.exception as PlatformException;
+        if (exception.code == 'VideoError') return;
+      }
+
       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
 
       return;

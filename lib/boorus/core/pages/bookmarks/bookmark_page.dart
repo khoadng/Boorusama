@@ -11,6 +11,8 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -46,7 +48,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                   onPressed: () => endEditMode(),
                   icon: Icon(
                     Icons.check,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.theme.colorScheme.primary,
                   ),
                 )
               : null,
@@ -92,7 +94,12 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
             return CustomScrollView(
               slivers: [
                 SliverMasonryGrid.count(
-                  crossAxisCount: 2,
+                  crossAxisCount: switch (Screen.of(context).size) {
+                    ScreenSize.small => 2,
+                    ScreenSize.medium => 3,
+                    ScreenSize.large => 5,
+                    ScreenSize.veryLarge => 6,
+                  },
                   mainAxisSpacing: settings.imageGridSpacing,
                   crossAxisSpacing: settings.imageGridSpacing,
                   childCount: state.bookmarks.length,

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/booru_video_progress_bar.dart';
 
 mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
     on State<T> {

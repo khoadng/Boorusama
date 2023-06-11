@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/utils/double_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class MoebooruInfinitePostList extends ConsumerStatefulWidget {

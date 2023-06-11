@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 Future<T?> showRadioOptionsModalBottomSheet<T>({
@@ -42,13 +43,13 @@ class SettingsOptions<T> extends StatelessWidget {
         items: items,
         itemBuilder: (context, item) => RadioListTile<T>(
           value: item,
-          activeColor: Theme.of(context).colorScheme.primary,
+          activeColor: context.colorScheme.primary,
           title: titleBuilder(item),
           subtitle: subtitleBuilder?.call(item),
           groupValue: groupValue,
           onChanged: (value) {
             if (value == null) return;
-            Navigator.of(context).pop();
+            context.navigator.pop();
             onChanged(value);
           },
         ),

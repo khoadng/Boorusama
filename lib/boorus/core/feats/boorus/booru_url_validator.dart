@@ -1,7 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/booru_url_error.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/utils/fp_utils.dart';
 
 // Returns a Uri for the given URL, or an BooruUrlError if the URL is invalid.
 BooruUriOrError mapBooruUrlToUri(

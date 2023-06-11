@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/editor_spacer.dart';
 
@@ -53,7 +54,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                     child: Row(
                       children: <Widget>[
                         IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () => context.navigator.pop(),
                           icon: const Icon(
                             Icons.close,
                           ),
@@ -63,7 +64,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                         ),
                         IconButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            context.navigator.pop();
                             _handleSave(textEditingController.text);
                           },
                           icon: const Icon(Icons.save),
@@ -95,7 +96,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
   }
 
   void _handleSave(String content) {
-    FocusScope.of(context).unfocus();
+    context.focusScope.unfocus();
     ref.read(danbooruCommentsProvider.notifier).update(
           postId: widget.postId,
           commentId: widget.commentId,

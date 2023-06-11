@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -65,7 +65,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                         sliverHeaderBuilder: (context) => [
                           SliverAppBar(
                             backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
+                                context.theme.scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
                             title: HomeSearchBar(
                               onMenuTap: widget.onMenuTap,
