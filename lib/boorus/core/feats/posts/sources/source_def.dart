@@ -1,13 +1,14 @@
 Map<String, String> getHosts() => {
       'artstation.com': 'https://artstation.com',
       'discordapp.com': 'https://discordapp.com',
+      'discordapp.net': 'https://discordapp.com',
       'kym-cdn.com': 'https://knowyourmeme.com',
       'wixmp.com': 'https://deviantart.com',
       'fantia.jp': 'https://fantia.jp',
       'hentai-foundry.com': 'https://hentai-foundry.com',
       'exhentai.org': 'https://e-hentai.org',
       'ngfiles.com': 'https://newgrounds.com',
-      'i.pximg.net': 'https://pixiv.net',
+      'pximg.net': 'https://pixiv.net',
       'pixiv.net': 'https://pixiv.net',
       'youtu.be': 'https://youtube.com',
       'tumblr.com': 'https://tumblr.com',
@@ -30,4 +31,5 @@ Map<String, String> getHosts() => {
       'redgifs.com': 'https://redgifs.com',
       'imhentai.xxx': 'https://imhentai.xxx',
       'bdsmlr.com': 'https://bdsmlr.com',
+      'hitomi.la': 'https://hitomi.la',
     };
