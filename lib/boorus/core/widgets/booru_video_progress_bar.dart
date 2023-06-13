@@ -6,7 +6,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/video_progress_bar.dart';
 
 // Class to store duration and position of video
@@ -35,43 +34,40 @@ class BooruVideoProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.theme.scaffoldBackgroundColor,
-      child: Row(
-        children: [
-          const SizedBox(
-            width: 8,
-          ),
-          Text(formatDurationForMedia(progress.position)),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              color: Colors.transparent,
-              height: 30,
-              child: VideoProgressBar(
-                duration: progress.duration,
-                position: progress.position,
-                buffered: const [],
-                seekTo: (position) {
-                  // webmVideoController.value
-                  //     ?.seek(position.inSeconds.toDouble());
-                },
-                barHeight: 2.0,
-                handleHeight: 5.0,
-                drawShadow: true,
-                backgroundColor: Colors.grey,
-                playedColor: Colors.blue,
-                bufferedColor: Colors.lightBlue,
-                handleColor: Colors.white,
-              ),
+    return Row(
+      children: [
+        const SizedBox(
+          width: 8,
+        ),
+        Text(formatDurationForMedia(progress.position)),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            color: Colors.transparent,
+            height: 30,
+            child: VideoProgressBar(
+              duration: progress.duration,
+              position: progress.position,
+              buffered: const [],
+              seekTo: (position) {
+                // webmVideoController.value
+                //     ?.seek(position.inSeconds.toDouble());
+              },
+              barHeight: 2.0,
+              handleHeight: 5.0,
+              drawShadow: true,
+              backgroundColor: Colors.grey,
+              playedColor: Colors.blue,
+              bufferedColor: Colors.lightBlue,
+              handleColor: Colors.white,
             ),
           ),
-          Text(formatDurationForMedia(progress.duration)),
-          const SizedBox(
-            width: 8,
-          ),
-        ],
-      ),
+        ),
+        Text(formatDurationForMedia(progress.duration)),
+        const SizedBox(
+          width: 8,
+        ),
+      ],
     );
   }
 }
