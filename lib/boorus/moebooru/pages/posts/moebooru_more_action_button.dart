@@ -42,6 +42,9 @@ class MoebooruMoreActionButton extends ConsumerWidget {
                     post.getUriLink(booru.url),
                   );
                   break;
+                case 'add_to_global_blacklist':
+                  goToAddToGlobalBlacklistPage(context, post.extractTags());
+                  break;
                 case 'view_original':
                   goToOriginalImagePage(context, post);
                   break;
@@ -57,6 +60,10 @@ class MoebooruMoreActionButton extends ConsumerWidget {
               PopupMenuItem(
                 value: 'view_in_browser',
                 child: const Text('post.detail.view_in_browser').tr(),
+              ),
+              const PopupMenuItem(
+                value: 'add_to_global_blacklist',
+                child: Text('Add to global blacklist'),
               ),
               if (post.hasFullView)
                 PopupMenuItem(

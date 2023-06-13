@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/add_to_global_blacklist_page.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
@@ -191,6 +193,18 @@ void goToSearchHistoryPage(
         onHistoryRemoved: (value) => onRemove(value),
       ),
     ),
+  );
+}
+
+Future<bool?> goToAddToGlobalBlacklistPage(
+  BuildContext context,
+  List<Tag> tags,
+) {
+  return showMaterialModalBottomSheet<bool>(
+    context: navigatorKey.currentContext ?? context,
+    duration: const Duration(milliseconds: 200),
+    expand: true,
+    builder: (dialogContext) => AddToGlobalBlacklistPage(tags: tags),
   );
 }
 
