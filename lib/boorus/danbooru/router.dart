@@ -3,65 +3,59 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/pools.dart';
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/application/users.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dart';
+import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/boorus/danbooru/ui/artists/danbooru_artist_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/blacklisted_tags/blacklisted_tags_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/characters/character_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/characters/character_page_desktop.dart';
-import 'package:boorusama/boorus/danbooru/ui/comment/comment_create_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/comment/comment_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/comment/comment_update_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/explore_hot_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/explore_most_viewed_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/explore/explore_popular_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/add_to_favorite_group_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/create_favorite_group_dialog.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_group_details_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/pool/pool_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/saved_search/saved_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/saved_search/widgets/edit_saved_search_sheet.dart';
-import 'package:boorusama/boorus/danbooru/ui/search/result/related_tag_action_sheet.dart';
-import 'package:boorusama/boorus/danbooru/ui/search/search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/users/user_details_page.dart';
-import 'package:boorusama/core/application/search.dart';
-import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/platform.dart';
-import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/ui/blacklists.dart';
-import 'package:boorusama/core/ui/custom_context_menu_overlay.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/characters/character_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment/comment_create_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment/comment_update_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/explore/explore_hot_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/explore/explore_most_viewed_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/explore/explore_popular_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/add_to_favorite_group_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/create_favorite_group_dialog.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_group_details_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_search_sheet.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_action_sheet.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => DanbooruArtistPage.of(context, artist),
     ));
   } else {
@@ -74,7 +68,7 @@ void goToArtistPage(BuildContext context, String artist) {
 
 void goToCharacterPage(BuildContext context, String tag) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => CharacterPage.of(context, tag),
     ));
   } else {
@@ -86,13 +80,13 @@ void goToCharacterPage(BuildContext context, String tag) {
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => FavoritesPage.of(context, username: username!),
   ));
 }
 
 void goToPoolDetailPage(BuildContext context, Pool pool) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
@@ -103,9 +97,8 @@ Future<void> goToDetailPage({
   required int initialIndex,
   AutoScrollController? scrollController,
   bool hero = false,
-  // PostBloc? postBloc,
 }) {
-  return Navigator.of(context).push(DanbooruPostDetailsPage.routeOf(
+  return context.navigator.push(DanbooruPostDetailsPage.routeOf(
     context,
     posts: posts,
     scrollController: scrollController,
@@ -132,20 +125,20 @@ void goToSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context).push(SearchPage.routeOf(context, tag: tag));
+    context.navigator.push(SearchPage.routeOf(context, tag: tag));
 
 void goToExplorePopularPage(BuildContext context) =>
-    Navigator.of(context).push(ExplorePopularPage.routeOf(context));
+    context.navigator.push(ExplorePopularPage.routeOf(context));
 
 void goToExploreHotPage(BuildContext context) =>
-    Navigator.of(context).push(ExploreHotPage.routeOf(context));
+    context.navigator.push(ExploreHotPage.routeOf(context));
 
 void goToExploreMostViewedPage(BuildContext context) =>
-    Navigator.of(context).push(ExploreMostViewedPage.routeOf(context));
+    context.navigator.push(ExploreMostViewedPage.routeOf(context));
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => SavedSearchFeedPage.of(context),
     ));
   } else {
@@ -157,49 +150,26 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 }
 
 void goToSavedSearchEditPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) {
-      return DanbooruProvider.of(
-        context,
-        builder: (dcontext) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(
-              value: dcontext.read<SavedSearchBloc>()
-                ..add(const SavedSearchFetched()),
-            ),
-          ],
-          child: const SavedSearchPage(),
-        ),
+      return DanbooruProvider(
+        builder: (_) => const SavedSearchPage(),
       );
     },
   ));
 }
 
-void goToPoolPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => PoolBloc(
-              poolRepository: context.read<PoolRepository>(),
-              postRepository: context.read<DanbooruPostRepository>(),
-            )..add(const PoolRefreshed(
-                category: PoolCategory.series,
-                order: PoolOrder.latest,
-              )),
-          ),
-        ],
-        child: const PoolPage(),
-      ),
+void goToPoolPage(BuildContext context, WidgetRef ref) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const PoolPage(),
     ),
   ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
   if (isMobilePlatform()) {
-    Navigator.of(context).push(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => provideBlacklistedTagPageDependencies(
         context,
         page: const BlacklistedTagsPage(),
@@ -222,30 +192,17 @@ void goToBlacklistedTagPage(BuildContext context) {
 Widget provideBlacklistedTagPageDependencies(
   BuildContext context, {
   required Widget page,
-}) {
-  return DanbooruProvider.of(
-    context,
-    builder: (dcontext) => MultiBlocProvider(
-      providers: [
-        BlocProvider.value(
-          value: dcontext.read<BlacklistedTagsBloc>()
-            ..add(const BlacklistedTagRequested()),
-        ),
-      ],
-      child: page,
-    ),
-  );
-}
+}) =>
+    DanbooruProvider(builder: (_) => page);
 
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {
   required void Function(List<TagSearchItem> tags) onSelectDone,
   List<String>? initialTags,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlacklistedTagsSearchPage(
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => BlacklistedTagsSearchPage(
         initialTags: initialTags,
         onSelectedDone: onSelectDone,
       ),
@@ -263,9 +220,8 @@ void goToCommentPage(BuildContext context, int postId) {
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (_, useAppBar) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => CommentPage(
+    builder: (_, useAppBar) => DanbooruProvider(
+      builder: (_) => CommentPage(
         useAppBar: useAppBar,
         postId: postId,
       ),
@@ -278,10 +234,9 @@ void goToCommentCreatePage(
   required int postId,
   String? initialContent,
 }) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (context) => CommentCreatePage(
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => CommentCreatePage(
         postId: postId,
         initialContent: initialContent,
       ),
@@ -299,11 +254,10 @@ void goToCommentUpdatePage(
   required String commentBody,
   String? initialContent,
 }) {
-  Navigator.of(context).push(
+  context.navigator.push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider.of(
-        context,
-        builder: (context) => CommentUpdatePage(
+      builder: (_) => DanbooruProvider(
+        builder: (_) => CommentUpdatePage(
           postId: postId,
           commentId: commentId,
           initialContent: commentBody,
@@ -317,19 +271,15 @@ void goToCommentUpdatePage(
 }
 
 void goToUserDetailsPage(
+  WidgetRef ref,
   BuildContext context, {
   required int uid,
 }) {
-  Navigator.of(context).push(
+  context.navigator.push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider.of(
-        context,
-        builder: (dcontext) => BlocProvider(
-          create: (_) => UserBloc(
-            userRepository: dcontext.read<UserRepository>(),
-            postRepository: dcontext.read<DanbooruPostRepository>(),
-          )..add(UserFetched(uid: uid)),
-          child: const UserDetailsPage(),
+      builder: (_) => DanbooruProvider(
+        builder: (_) => UserDetailsPage(
+          uid: uid,
         ),
       ),
       settings: const RouteSettings(
@@ -339,26 +289,10 @@ void goToUserDetailsPage(
   );
 }
 
-void goToPoolSearchPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => PoolBloc(
-              poolRepository: dcontext.read<PoolRepository>(),
-              postRepository: dcontext.read<DanbooruPostRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => PoolSearchBloc(
-              poolRepository: dcontext.read<PoolRepository>(),
-            ),
-          ),
-        ],
-        child: const PoolSearchPage(),
-      ),
+void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const PoolSearchPage(),
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
@@ -394,79 +328,37 @@ void goToRelatedTagsPage(
 }
 
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.postFavoriters,
-    ),
-    height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocProvider(
-        create: (_) => PostFavoriteBloc(
-          favoritePostRepository: dcontext.read<FavoritePostRepository>(),
-          userRepository: dcontext.read<UserRepository>(),
-        )..add(PostFavoriteFetched(
-            postId: post.id,
-            refresh: true,
-          )),
-        child: FavoriterDetailsView(
-          post: post,
-        ),
-      ),
-    ),
-  );
+  //FIXME: re enable this later
 }
 
 void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.postVoters,
-    ),
-    height: MediaQuery.of(context).size.height * 0.65,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocProvider(
-        create: (_) => PostVoteInfoBloc(
-          postVoteRepository: dcontext.read<PostVoteRepository>(),
-          userRepository: dcontext.read<UserRepository>(),
-        )..add(PostVoteInfoFetched(
-            postId: post.id,
-            refresh: true,
-          )),
-        child: VoterDetailsView(
-          post: post,
-        ),
-      ),
-    ),
-  );
+  //FIXME: re enable this later
 }
 
 void goToSavedSearchCreatePage(
+  WidgetRef ref,
   BuildContext context, {
   SavedSearch? initialValue,
 }) {
-  final bloc = context.read<SavedSearchBloc>();
-
   if (isMobilePlatform()) {
     showMaterialModalBottomSheet(
       context: context,
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: context.colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
-        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-          query: query,
-          label: label,
-          onCreated: (data) => showSimpleSnackBar(
-            context: context,
-            duration: const Duration(seconds: 1),
-            content: const Text('saved_search.saved_search_added').tr(),
-          ),
-        )),
+        onSubmit: (query, label) =>
+            ref.read(danbooruSavedSearchesProvider.notifier).create(
+                  query: query,
+                  label: label,
+                  onCreated: (data) => showSimpleSnackBar(
+                    context: context,
+                    duration: const Duration(seconds: 1),
+                    content: const Text('saved_search.saved_search_added').tr(),
+                  ),
+                ),
       ),
     );
   } else {
@@ -480,7 +372,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: context.colorScheme.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -497,15 +389,17 @@ void goToSavedSearchCreatePage(
               ),
             ),
             child: EditSavedSearchSheet(
-              onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-                query: query,
-                label: label,
-                onCreated: (data) => showSimpleSnackBar(
-                  context: context,
-                  duration: const Duration(seconds: 1),
-                  content: const Text('saved_search.saved_search_added').tr(),
-                ),
-              )),
+              onSubmit: (query, label) =>
+                  ref.read(danbooruSavedSearchesProvider.notifier).create(
+                        query: query,
+                        label: label,
+                        onCreated: (data) => showSimpleSnackBar(
+                          context: context,
+                          duration: const Duration(seconds: 1),
+                          content: const Text('saved_search.saved_search_added')
+                              .tr(),
+                        ),
+                      ),
             ),
           ),
         );
@@ -515,59 +409,49 @@ void goToSavedSearchCreatePage(
 }
 
 void goToSavedSearchPatchPage(
+  WidgetRef ref,
   BuildContext context,
   SavedSearch savedSearch,
-  SavedSearchBloc bloc,
 ) {
   showMaterialModalBottomSheet(
     context: context,
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: context.colorScheme.background,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
-      onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
-        id: savedSearch.id,
-        label: label,
-        query: query,
-        onUpdated: (data) => showSimpleSnackBar(
-          context: context,
-          duration: const Duration(
-            seconds: 1,
-          ),
-          content: const Text(
-            'saved_search.saved_search_updated',
-          ).tr(),
-        ),
-      )),
+      onSubmit: (query, label) =>
+          ref.read(danbooruSavedSearchesProvider.notifier).update(
+                id: savedSearch.id,
+                label: label,
+                query: query,
+                onUpdated: (data) => showSimpleSnackBar(
+                  context: context,
+                  duration: const Duration(
+                    seconds: 1,
+                  ),
+                  content: const Text(
+                    'saved_search.saved_search_updated',
+                  ).tr(),
+                ),
+              ),
     ),
   );
 }
 
 Future<Object?> goToFavoriteGroupCreatePage(
-  BuildContext context,
-  FavoriteGroupsBloc bloc, {
+  BuildContext context, {
   bool enableManualPostInput = true,
 }) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (___, _, __) => DanbooruProvider.of(
-      context,
-      builder: (context) => EditFavoriteGroupDialog(
+    pageBuilder: (___, _, __) => DanbooruProvider(
+      builder: (_) => EditFavoriteGroupDialog(
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.create_group'.tr(),
         enableManualDataInput: enableManualPostInput,
-        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
-          name: name,
-          initialIds: ids,
-          isPrivate: isPrivate,
-          onFailure: (message, translatable) => showSimpleSnackBar(
-            context: context,
-            content: translatable ? Text(message).tr() : Text(message),
-          ),
-        )),
       ),
     ),
   );
@@ -575,80 +459,42 @@ Future<Object?> goToFavoriteGroupCreatePage(
 
 Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
-  FavoriteGroupsBloc bloc,
   FavoriteGroup group,
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (dialogContext, _, __) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => EditFavoriteGroupDialog(
+    pageBuilder: (dialogContext, _, __) => DanbooruProvider(
+      builder: (_) => EditFavoriteGroupDialog(
         initialData: group,
         padding: isMobilePlatform() ? 0 : 8,
         title: 'favorite_groups.edit_group'.tr(),
-        onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
-          group: group,
-          name: name,
-          initialIds: ids,
-          isPrivate: isPrivate,
-          onFailure: (message) {
-            showSimpleSnackBar(
-              context: context,
-              content: Text(message.toString()),
-            );
-          },
-        )),
       ),
     ),
   );
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => FavoriteGroupsBloc.of(
-                  dcontext,
-                  currentUser: state.user,
-                )..add(
-                    const FavoriteGroupsRefreshed(includePreviews: true),
-                  ),
-              ),
-            ],
-            child: const FavoriteGroupsPage(),
-          );
-        },
-      ),
-    );
-  }));
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const FavoriteGroupsPage(),
+    ),
+  ));
 }
 
 void goToFavoriteGroupDetailsPage(
   BuildContext context,
   FavoriteGroup group,
-  FavoriteGroupsBloc bloc,
 ) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    return DanbooruProvider.of(
-      context,
-      builder: (dcontext) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: bloc),
-        ],
-        child: CustomContextMenuOverlay(
-          child: FavoriteGroupDetailsPage(
-            group: group,
-            postIds: QueueList.from(group.postIds),
-          ),
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => CustomContextMenuOverlay(
+        child: FavoriteGroupDetailsPage(
+          group: group,
+          postIds: QueueList.from(group.postIds),
         ),
       ),
-    );
-  }));
+    ),
+  ));
 }
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
@@ -659,20 +505,9 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (_) => DanbooruProvider.of(
-      context,
-      builder: (dcontext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (_, state) {
-          return BlocProvider(
-            create: (_) => FavoriteGroupsBloc.of(
-              dcontext,
-              currentUser: state.user,
-            )..add(const FavoriteGroupsRefreshed()),
-            child: AddToFavoriteGroupPage(
-              posts: posts,
-            ),
-          );
-        },
+    builder: (_) => DanbooruProvider(
+      builder: (_) => AddToFavoriteGroupPage(
+        posts: posts,
       ),
     ),
   );
@@ -682,26 +517,12 @@ Future<bool?> goToAddToBlacklistPage(
   BuildContext context,
   DanbooruPost post,
 ) {
-  final bloc = context.read<BlacklistedTagsBloc>();
-
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => AddToBlacklistPage(
       tags: post.extractTags(),
-      onAdded: (tag) => bloc.add(BlacklistedTagAdded(
-        tag: tag.rawName,
-        onFailure: (message) => showSimpleSnackBar(
-          context: context,
-          content: Text(message),
-        ),
-        onSuccess: (_) => showSimpleSnackBar(
-          context: context,
-          duration: const Duration(seconds: 2),
-          content: const Text('Blacklisted tags updated'),
-        ),
-      )),
     ),
   );
 }

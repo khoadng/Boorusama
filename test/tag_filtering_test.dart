@@ -3,10 +3,9 @@ import 'package:quiver/iterables.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
-import 'package:boorusama/core/application/search/filter_operator.dart';
-import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 
 DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       id: id,
@@ -24,7 +23,7 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       format: '',
       md5: '',
       lastCommentAt: null,
-      source: null,
+      source: PostSource.none(),
       createdAt: DateTime.now(),
       score: 1,
       upScore: 1,
@@ -33,7 +32,6 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       uploaderId: 1,
       rating: Rating.explicit,
       fileSize: 1,
-      pixivId: null,
       isBanned: false,
       hasChildren: false,
       parentId: null,

@@ -8,22 +8,23 @@ part 'danbooru_api.g.dart';
 
 @RestApi()
 abstract class DanbooruApi {
-  factory DanbooruApi(Dio dio, {String baseUrl}) = _DanbooruApi;
+  factory DanbooruApi(
+    Dio dio, {
+    String baseUrl,
+  }) = _DanbooruApi;
 
-  @POST('/favorites')
+  @POST('/favorites.json')
   Future<HttpResponse> addToFavorites(
     @Query('login') String? login,
     @Query('api_key') String? apiKey,
     @Query('post_id') int postId,
   );
 
-  @POST('/favorites/{postId}')
-  @FormUrlEncoded()
+  @DELETE('/favorites/{postId}.json')
   Future<HttpResponse> removeFromFavorites(
     @Path() int postId,
     @Query('login') String? login,
     @Query('api_key') String? apiKey,
-    @Field('_method') String method,
   );
 
   @GET('/favorites.json')
@@ -129,13 +130,6 @@ abstract class DanbooruApi {
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
-
-  @GET('/posts/{postId}')
-  Future<HttpResponse> getPost(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
-    @Path() int postId,
-  );
 
   @GET('/counts/posts.json')
   Future<HttpResponse> countPosts(

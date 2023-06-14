@@ -1,3 +1,10 @@
+# 3.0.0
+- Support other boorus sites
+- Redesign details page
+- Improve performance when loading images
+- Bulk download is now out of beta, no need to stay in the screen to keep the download going
+- Add a translation project for the app
+
 # 2.11.2
 - Fixed broken thumbnails
 

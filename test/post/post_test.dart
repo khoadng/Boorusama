@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 
 const _videoFormat = [
   'mp4',
@@ -103,35 +103,6 @@ void main() {
       final post = DanbooruPost.empty();
 
       expect(post.hasComment, isFalse);
-    });
-  });
-
-  group('[download url]', () {
-    test('video format should use normal image url', () {
-      final posts = [..._videoFormat].map((e) => DanbooruPost.empty().copyWith(
-            format: e,
-            sampleImageUrl: 'foo',
-            originalImageUrl: 'bar',
-          ));
-
-      expect(
-        posts.every((post) => post.downloadUrl == post.sampleImageUrl),
-        isTrue,
-      );
-    });
-
-    test('non video format should use full image url', () {
-      final posts =
-          [..._imageFormat, 'gif'].map((e) => DanbooruPost.empty().copyWith(
-                format: e,
-                sampleImageUrl: 'foo',
-                originalImageUrl: 'bar',
-              ));
-
-      expect(
-        posts.every((post) => post.downloadUrl == post.originalImageUrl),
-        isTrue,
-      );
     });
   });
 
@@ -244,18 +215,6 @@ void main() {
       );
 
       expect(post.hasParentOrChildren, isFalse);
-    });
-  });
-
-  group('[source]', () {
-    test('pixiv', () {
-      final post = DanbooruPost.empty().copyWith(pixivId: 1, source: 'foo');
-      expect(post.source, '${pixivLinkUrl}1');
-    });
-
-    test('other', () {
-      final post = DanbooruPost.empty().copyWith(source: 'foo');
-      expect(post.source, 'foo');
     });
   });
 }

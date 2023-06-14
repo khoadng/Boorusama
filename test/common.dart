@@ -2,48 +2,11 @@
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users.dart';
-import 'package:boorusama/core/application/booru_user_identity_provider.dart';
-import 'package:boorusama/core/domain/boorus.dart';
-
-class MockCurrentUserBooruRepository extends Mock
-    implements CurrentBooruConfigRepository {}
+import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class MockBooruUserIdentityProvider extends Mock
     implements BooruUserIdentityProvider {}
-
-CurrentBooruConfigRepository mockUserBooruRepo({
-  BooruConfig? booruConfig,
-}) {
-  final repo = MockCurrentUserBooruRepository();
-  when(() => repo.get()).thenAnswer((_) async =>
-      booruConfig ??
-      const BooruConfig(
-        id: 0,
-        booruId: 0,
-        apiKey: '',
-        login: '',
-        url: '',
-        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
-        name: '',
-        ratingFilter: BooruConfigRatingFilter.none,
-      ));
-
-  return repo;
-}
-
-CurrentBooruConfigRepository fakeCurrentUserBooruRepo() => mockUserBooruRepo(
-      booruConfig: const BooruConfig(
-        id: 1,
-        booruId: 1,
-        apiKey: 'apiKey',
-        login: 'login',
-        url: '',
-        deletedItemBehavior: BooruConfigDeletedItemBehavior.hide,
-        name: 'foo',
-        ratingFilter: BooruConfigRatingFilter.none,
-      ),
-    );
 
 class MockUserRepo extends Mock implements UserRepository {}
 
