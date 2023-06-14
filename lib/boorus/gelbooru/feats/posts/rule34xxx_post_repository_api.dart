@@ -101,5 +101,6 @@ GelbooruPost _postDtoToPost(Rule34xxxPostDto dto) {
     hasParentOrChildren: (dto.parentId != null && dto.parentId != 0),
     fileSize: 0,
     score: dto.score ?? 0,
+    createdAt: null,
   );
 }

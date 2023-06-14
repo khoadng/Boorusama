@@ -29,6 +29,9 @@ class BooruLogo extends StatelessWidget {
         fadeInDuration: const Duration(milliseconds: 100),
         fadeOutDuration: const Duration(milliseconds: 200),
         imageUrl: source.faviconUrl,
+        errorListener: (e) {
+          // Ignore error
+        },
       ),
     );
   }

@@ -10,12 +10,15 @@ final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
 
 final sanitizedQueryProvider = Provider.autoDispose<String>((ref) {
   final query = ref.watch(searchQueryProvider);
-  return query.trimLeft().replaceAll(' ', '_');
+  final trimmed = query.trim().replaceAll(' ', '_');
+  final operator = stringToFilterOperator(trimmed.getFirstCharacter());
+
+  return stripFilterOperator(trimmed, operator);
 });
 
 final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
-  final query = ref.watch(sanitizedQueryProvider);
-  return stringToFilterOperator(query.getFirstCharacter());
+  final query = ref.watch(searchQueryProvider);
+  return stringToFilterOperator(query.trim().getFirstCharacter());
 });
 
 final allowSearchProvider = Provider.autoDispose<bool>((ref) {

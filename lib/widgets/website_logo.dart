@@ -26,6 +26,9 @@ class WebsiteLogo extends StatelessWidget {
         fadeInDuration: const Duration(milliseconds: 50),
         fadeOutDuration: const Duration(milliseconds: 50),
         imageUrl: url,
+        errorListener: (e) {
+          // Ignore error
+        },
       ),
     );
   }

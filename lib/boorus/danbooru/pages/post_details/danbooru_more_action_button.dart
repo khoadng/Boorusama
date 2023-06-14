@@ -49,6 +49,9 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'add_to_blacklist':
                   goToAddToBlacklistPage(context, post);
                   break;
+                case 'add_to_global_blacklist':
+                  goToAddToGlobalBlacklistPage(context, post.extractTags());
+                  break;
                 case 'view_in_browser':
                   launchExternalUrl(
                     post.getUriLink(booru.url),
@@ -79,6 +82,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   value: 'add_to_blacklist',
                   child: Text('Add to blacklist'),
                 ),
+              const PopupMenuItem(
+                value: 'add_to_global_blacklist',
+                child: Text('Add to global blacklist'),
+              ),
               PopupMenuItem(
                 value: 'view_in_browser',
                 child: const Text('post.detail.view_in_browser').tr(),

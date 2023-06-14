@@ -1,4 +1,15 @@
 {
+    "tag": {
+        "explore": {
+            "popular": "流行"
+        }
+    },
+    "explore": {
+        "popular": "流行"
+    },
+    "search": {
+        "hint": "搜尋..."
+    },
     "settings": {
         "settings": "設定",
         "language": {

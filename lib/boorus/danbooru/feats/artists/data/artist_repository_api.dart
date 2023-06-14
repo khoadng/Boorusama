@@ -26,8 +26,8 @@ class ArtistRepositoryApi implements ArtistRepository {
           .getArtist(name, cancelToken: cancelToken)
           .then(parseArtist)
           .then((artists) => artists.isEmpty ? Artist.empty() : artists.first);
-    } on DioError catch (e, stackTrace) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e, stackTrace) {
+      if (e.type == DioExceptionType.cancel) {
         // Cancel token triggered, skip this request
         return Artist.empty();
       } else if (e.response == null) {

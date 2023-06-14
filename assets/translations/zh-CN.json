@@ -1,4 +1,23 @@
 {
+    "tag": {
+        "explore": {
+            "popular": "流行"
+        }
+    },
+    "post": {
+        "action": {
+            "view_comments": "查看评论"
+        }
+    },
+    "comment": {
+        "comments": "评论"
+    },
+    "explore": {
+        "popular": "流行"
+    },
+    "search": {
+        "hint": "搜索..."
+    },
     "settings": {
         "settings": "设置",
         "language": {

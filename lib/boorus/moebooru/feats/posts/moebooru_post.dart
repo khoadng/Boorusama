@@ -26,6 +26,7 @@ class MoebooruPost extends Equatable
     required this.md5,
     required this.fileSize,
     required this.score,
+    required this.createdAt,
   });
 
   @override
@@ -77,4 +78,7 @@ class MoebooruPost extends Equatable
 
   @override
   double get duration => -1;
+
+  @override
+  final DateTime? createdAt;
 }

@@ -139,7 +139,7 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
             postIdsString: itemIds?.join(' '),
           )
           .then((value) => true);
-    } on DioError catch (e, stackTrace) {
+    } on DioException catch (e, stackTrace) {
       if (e.response?.statusCode == 422) {
         Error.throwWithStackTrace(
           Exception(e.response?.data['errors']['base'].first),

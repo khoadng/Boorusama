@@ -10,7 +10,9 @@ import 'package:boorusama/foundation/http/http.dart';
 
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
     parseResponse(
-        value: value, converter: (data) => AutocompleteDto.fromJson(data));
+      value: value,
+      converter: (data) => AutocompleteDto.fromJson(data),
+    );
 
 List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .map((e) {
@@ -54,21 +56,21 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
-    required DanbooruApi api,
+    required this.api,
     required this.booruConfig,
-  }) : _api = api;
+  });
 
-  final DanbooruApi _api;
+  final DanbooruApi api;
   final BooruConfig booruConfig;
 
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) async => _api
+  Future<List<AutocompleteData>> getAutocomplete(String query) => api
       .autocomplete(
         booruConfig.login,
         booruConfig.apiKey,
         query,
         'tag_query',
-        10,
+        20,
       )
       .then(parseAutocomplete)
       .then(mapDtoToAutocomplete)

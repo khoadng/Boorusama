@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/functional.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {
@@ -77,14 +78,14 @@ class SimpleTagSearchView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suggestionTags = ref.watch(suggestionsQuickSearchProvider);
     final query = ref.watch(_queryProvider);
+    final suggestionTags = ref.watch(suggestionsQuickSearchProvider)[query] ??
+        <AutocompleteData>[].lock;
     final tags = ensureValidTag
-        ? suggestionTags.where((e) => e.category != null).toList()
+        ? suggestionTags.where((e) => e.category != null).toIList()
         : suggestionTags;
 
     return Scaffold(
-      backgroundColor: context.theme.cardColor,
       floatingActionButton: floatingActionButton?.call(query),
       body: Column(
         children: [

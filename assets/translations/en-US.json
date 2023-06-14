@@ -170,7 +170,6 @@
         "search": "Search",
         "information": "Information",
         "changelog": "Changelog",
-        "general_data_source": "Data source",
         "infinite_scroll_warning": "Might crash the app if you scroll for a long time",
         "result_layout": {
             "result_layout": "Page mode",

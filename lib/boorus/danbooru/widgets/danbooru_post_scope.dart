@@ -59,8 +59,16 @@ class _DanbooruPostScopeState extends ConsumerState<DanbooruPostScope>
         DanbooruPostServiceProviderMixin,
         DanbooruPostFetcherMixin {
   late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => fetchPosts(page).then(transform),
-    refresher: () => fetchPosts(1).then(transform),
+    fetcher: (page) async {
+      final posts = fetchPosts(page);
+      if (!mounted) return <DanbooruPost>[];
+      return posts;
+    },
+    refresher: () async {
+      final posts = await fetchPosts(1);
+      if (!mounted) return <DanbooruPost>[];
+      return transform(posts);
+    },
     pageMode: ref.read(pageModeSettingsProvider),
   );
 
