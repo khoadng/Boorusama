@@ -11,6 +11,7 @@ import 'package:boorusama/foundation/video.dart';
 abstract class Post extends Equatable
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
   int get id;
+  DateTime? get createdAt;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
   String get originalImageUrl;

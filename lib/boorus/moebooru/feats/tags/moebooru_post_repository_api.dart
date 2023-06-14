@@ -105,5 +105,8 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     fileSize: postDto.fileSize ?? 0,
     format: postDto.fileUrl?.split('.').last ?? '',
     score: postDto.score ?? 0,
+    createdAt: postDto.createdAt != null
+        ? DateTime.fromMicrosecondsSinceEpoch(postDto.createdAt! * 1000)
+        : null,
   );
 }

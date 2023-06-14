@@ -111,6 +111,7 @@ GelbooruPost _postDtoToPost(GelbooruPostDto dto) {
         (dto.parentId != null && dto.parentId != 0),
     fileSize: 0,
     score: dto.score ?? 0,
+    createdAt: dto.createdAt != null ? DateTime.parse(dto.createdAt!) : null,
   );
 }
 
