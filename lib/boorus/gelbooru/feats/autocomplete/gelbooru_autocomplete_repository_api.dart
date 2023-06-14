@@ -45,7 +45,7 @@ class GelbooruAutocompleteRepositoryApi implements AutocompleteRepository {
 
   @override
   Future<List<AutocompleteData>> getAutocomplete(String query) => api
-      .autocomplete(null, null, 'autocomplete2', 'tag_query', 10, query)
+      .autocomplete(null, null, 'autocomplete2', 'tag_query', 20, query)
       .then(_parseAutocomplete)
       .then(_mapDtoToAutocomplete);
 }
