@@ -11,18 +11,31 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
-class DebugLogsPage extends ConsumerWidget {
+class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DebugLogsPage> createState() => _DebugLogsPageState();
+}
+
+class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final logs = ref.watch(debugLogsProvider);
 
     // Function to copy logs to clipboard
     void copyLogsToClipboard() {
-      final StringBuffer buffer = StringBuffer();
+      final buffer = StringBuffer();
       for (final log in logs) {
         buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
       }
@@ -44,7 +57,20 @@ class DebugLogsPage extends ConsumerWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          });
+        },
+        child: const Icon(Icons.arrow_downward),
+      ),
       body: ListView.builder(
+        controller: scrollController,
         itemCount: logs.length,
         itemBuilder: (context, index) {
           final log = logs[index];
@@ -74,8 +100,10 @@ class DebugLogsPage extends ConsumerWidget {
                       TextSpan(
                         text: log.message,
                         style: TextStyle(
-                            color: context.colorScheme.onBackground
-                                .withAlpha(222)),
+                          fontSize: 13,
+                          color:
+                              context.colorScheme.onBackground.withAlpha(222),
+                        ),
                       ),
                     ],
                   ),
