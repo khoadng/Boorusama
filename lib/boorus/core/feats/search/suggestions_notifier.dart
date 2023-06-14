@@ -18,10 +18,15 @@ final suggestionsProvider = NotifierProvider<SuggestionsNotifier,
   ],
 );
 
+final fallbackSuggestionsProvider =
+    StateProvider<IList<AutocompleteData>>((ref) {
+  return <AutocompleteData>[].lock;
+});
+
 final suggestionProvider = Provider.family<IList<AutocompleteData>, String>(
   (ref, tag) {
     final suggestions = ref.watch(suggestionsProvider);
-    return suggestions[tag] ?? <AutocompleteData>[].lock;
+    return suggestions[tag] ?? ref.watch(fallbackSuggestionsProvider);
   },
   dependencies: [
     suggestionsProvider,
@@ -74,6 +79,7 @@ class SuggestionsNotifier
         final data =
             await ref.read(autocompleteRepoProvider).getAutocomplete(query);
         state = state.add(query, data.lock);
+        ref.read(fallbackSuggestionsProvider.notifier).state = data.lock;
       },
       duration: const Duration(milliseconds: 200),
     );
