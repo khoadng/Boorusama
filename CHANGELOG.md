@@ -1,3 +1,10 @@
+# 3.0.2
+- Fix a bug where '-' and '~' search operators don't work
+- Add a quick action context menu for adding tags to global blacklist in post details
+- Add a page input field when using pagination
+- Add translation for Portuguese (BR)
+- A few minor UI adjustments and bug fixes
+
 # 3.0.1
 - Fix display issues on tablets
 - Various bug fixes
