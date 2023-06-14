@@ -76,6 +76,7 @@ Widget _getTitle(
   String currentQuery,
   Color? color,
 ) {
+  final query = currentQuery.replaceAll('_', ' ').toLowerCase();
   return tag.hasAlias
       ? Html(
           style: {
@@ -89,7 +90,7 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(currentQuery, '<b>$currentQuery</b>')} ➞ ${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
         )
       : Html(
           style: {
@@ -103,6 +104,6 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+              '<p>${tag.label.replaceAll(query.replaceAll('_', ' '), '<b>$query</b>')}</p>',
         );
 }

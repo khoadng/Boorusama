@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/utils.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
@@ -111,7 +112,7 @@ GelbooruPost _postDtoToPost(GelbooruPostDto dto) {
         (dto.parentId != null && dto.parentId != 0),
     fileSize: 0,
     score: dto.score ?? 0,
-    createdAt: dto.createdAt != null ? DateTime.parse(dto.createdAt!) : null,
+    createdAt: dto.createdAt != null ? parseRFC822String(dto.createdAt!) : null,
   );
 }
 
