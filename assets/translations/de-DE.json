@@ -164,7 +164,6 @@
         "search": "Suche",
         "information": "Information",
         "changelog": "Änderungsprotokoll",
-        "general_data_source": "Datenquelle",
         "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst ",
         "result_layout": {
             "result_layout": "Endlayout",

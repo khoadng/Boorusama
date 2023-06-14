@@ -1,10 +1,40 @@
 {
+    "tag": {
+        "explore": {
+            "popular": "Popular"
+        }
+    },
+    "post": {
+        "action": {
+            "view_comments": "Ver comentarios"
+        }
+    },
+    "comment": {
+        "comments": "Comentarios"
+    },
+    "explore": {
+        "popular": "Popular",
+        "most_viewed": "Los más vistos"
+    },
+    "search": {
+        "hint": "Buscar..."
+    },
     "settings": {
         "settings": "Ajustes",
+        "app_settings": "Ajustes de aplicación",
+        "appearance": {
+            "appearance": "Apariencia"
+        },
         "language": {
             "language": "Idioma",
             "language_name": "Español"
         },
+        "privacy": {
+            "privacy": "Privacidad"
+        },
         "help_us_translate": "Ayúdenos a traducir"
+    },
+    "download": {
+        "download": "Descargar"
     }
 }
