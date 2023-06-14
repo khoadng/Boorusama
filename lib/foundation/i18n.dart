@@ -33,6 +33,7 @@ const supportedLocales = [
   Locale('de', 'DE'), // German (Germany)
   Locale('es', 'ES'), // Spanish (Spain)
   Locale('pt', 'PT'), // Portuguese (Portugal)
+  Locale('pt', 'BR'), // Portuguese (Brazil)
   Locale('zh', 'CN'), // Simplified Chinese
   Locale('zh', 'TW'), // Traditional Chinese
 ];
@@ -46,6 +47,7 @@ LookupMessages getMessagesForLocale(Locale locale) =>
       'ja-JP' => JaMessages(),
       'de-DE' => DeMessages(),
       'pt-PT' => PtBrMessages(),
+      'pt-BR' => PtBrMessages(),
       'es-ES' => EsMessages(),
       'zh-CN' => ZhCnMessages(),
       'zh-TW' => ZhMessages(),
