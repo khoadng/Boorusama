@@ -37,8 +37,8 @@ class ProfileRepositoryApi implements ProfileRepository {
       }
 
       return profileDtoToProfile(ProfileDto.fromJson(value.response.data));
-    } on DioError catch (e, stackTrace) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e, stackTrace) {
+      if (e.type == DioExceptionType.cancel) {
         // Cancel token triggered, skip this request
         return null;
       } else {

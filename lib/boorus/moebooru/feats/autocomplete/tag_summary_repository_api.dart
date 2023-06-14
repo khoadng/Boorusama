@@ -26,8 +26,8 @@ class MoebooruTagSummaryRepository
         throw Exception(
             'Failed to get tag summaries: ${response.response.statusCode}');
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
         rethrow;
       } else {
         throw Exception('Failed to get tag summaries: ${e.message}');
