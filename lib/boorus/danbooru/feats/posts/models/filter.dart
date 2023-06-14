@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
-import 'package:boorusama/utils/string_utils.dart';
+import 'package:boorusama/dart.dart';
 
 enum FilterGroupType {
   single,

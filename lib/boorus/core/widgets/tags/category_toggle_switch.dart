@@ -6,6 +6,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class CategoryToggleSwitch extends StatefulWidget {
@@ -42,10 +43,10 @@ class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
             'tag.explore.new'.tr(),
             'tag.explore.popular'.tr(),
           ],
-          activeBgColor: [Theme.of(context).colorScheme.primary],
-          inactiveBgColor: Theme.of(context).colorScheme.background,
+          activeBgColor: [context.colorScheme.primary],
+          inactiveBgColor: context.colorScheme.background,
           borderWidth: 1,
-          borderColor: [Theme.of(context).hintColor],
+          borderColor: [context.theme.hintColor],
           onToggle: (index) {
             index == 0
                 ? widget.onToggle(TagFilterCategory.newest)

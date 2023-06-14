@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class UserStatsGroup extends StatelessWidget {
@@ -87,7 +88,7 @@ class _StatsButton extends StatelessWidget {
         ),
         Text(
           title,
-          style: TextStyle(color: Theme.of(context).hintColor),
+          style: TextStyle(color: context.theme.hintColor),
         ),
       ],
     );

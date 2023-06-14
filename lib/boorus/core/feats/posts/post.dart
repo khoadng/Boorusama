@@ -4,12 +4,14 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 abstract class Post extends Equatable
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
   int get id;
+  DateTime? get createdAt;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
   String get originalImageUrl;
@@ -35,4 +37,16 @@ extension PostImageX on Post {
         ImageQuality.high => sampleImageUrl,
         ImageQuality.original => originalImageUrl
       };
+}
+
+extension PostX on Post {
+  List<Tag> extractTags() {
+    final tags = <Tag>[];
+
+    for (final t in this.tags) {
+      tags.add(Tag(name: t, category: TagCategory.general, postCount: 0));
+    }
+
+    return tags;
+  }
 }

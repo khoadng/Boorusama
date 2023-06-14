@@ -31,8 +31,8 @@ class NoteRepositoryApi implements NoteRepository {
             cancelToken: cancelToken,
           )
           .then(parseNote);
-    } on DioError catch (e, stackTrace) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e, stackTrace) {
+      if (e.type == DioExceptionType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/booru_logo.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BooruConfigInfoTile extends StatelessWidget {
@@ -63,7 +64,7 @@ class BooruConfigInfoTile extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              color: Theme.of(context).colorScheme.primary,
+              color: context.colorScheme.primary,
             ),
           ],
           if (config.ratingFilter == BooruConfigRatingFilter.hideNSFW) ...[

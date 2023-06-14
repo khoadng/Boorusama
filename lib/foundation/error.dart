@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
@@ -78,6 +79,12 @@ void initializeErrorHandlers(Settings settings) {
     if (kReleaseMode &&
         isFirebaseCrashlyticsSupportedPlatforms() &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      // Ignore video errors
+      if (details.exception is PlatformException) {
+        final exception = details.exception as PlatformException;
+        if (exception.code == 'VideoError') return;
+      }
+
       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
 
       return;

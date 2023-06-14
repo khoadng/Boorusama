@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'tag_detail_page.dart';
 
 class TagDetailPageDesktop extends StatelessWidget {
@@ -24,24 +25,28 @@ class TagDetailPageDesktop extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.3,
             child: Stack(
               children: [
-                Align(
-                  alignment: const Alignment(-0.9, -0.9),
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 10),
+                        TagTitleName(tagName: tagName),
+                        const SizedBox(height: 8),
+                        Expanded(child: otherNamesBuilder(context)),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 12,
+                  top: 32,
                   child: IconButton(
-                    onPressed: Navigator.of(context).pop,
+                    onPressed: context.navigator.pop,
                     icon: const Icon(Icons.close),
                   ),
-                ),
-                Align(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 70),
-                      TagTitleName(tagName: tagName),
-                      const SizedBox(height: 8),
-                      Expanded(child: otherNamesBuilder(context)),
-                    ],
-                  ),
-                ),
+                )
               ],
             ),
           ),

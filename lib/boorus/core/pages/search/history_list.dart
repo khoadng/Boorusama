@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class HistoryList extends StatelessWidget {
@@ -71,9 +72,9 @@ class _HistoryHeader extends StatelessWidget {
         children: [
           Text(
             'search.history.history'.tr().toUpperCase(),
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: context.textTheme.titleSmall!.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           IconButton(
             onPressed: onFullHistoryRequested,

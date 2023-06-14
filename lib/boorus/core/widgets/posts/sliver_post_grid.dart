@@ -11,9 +11,11 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/errors.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;
@@ -60,7 +62,7 @@ class SliverPostGrid extends ConsumerWidget {
                           padding: const EdgeInsets.only(top: 48, bottom: 16),
                           child: Text(
                             e.httpStatusCode.toString(),
-                            style: Theme.of(context).textTheme.headlineMedium,
+                            style: context.textTheme.headlineMedium,
                           ),
                         ),
                         Text(message).tr(),
@@ -132,9 +134,7 @@ class _Placeholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return usePlaceholder
         ? const SliverPostGridPlaceHolder()
-        : const SliverToBoxAdapter(
-            child: SizedBox.shrink(),
-          );
+        : const SliverSizedBox.shrink();
   }
 }
 
@@ -170,7 +170,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             (context, _) {
               return Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: context.theme.cardColor,
                   borderRadius: BorderRadius.circular(
                     imageBorderRadius,
                   ),

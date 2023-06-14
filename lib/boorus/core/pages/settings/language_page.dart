@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -37,7 +38,7 @@ class LanguagePage extends ConsumerWidget {
               .map((e) => e.name)
               .map(
                 (e) => RadioListTile<String>(
-                  activeColor: Theme.of(context).colorScheme.primary,
+                  activeColor: context.colorScheme.primary,
                   groupValue: settings.language,
                   value: e,
                   title: Text(e),

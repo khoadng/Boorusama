@@ -13,8 +13,10 @@ import 'package:boorusama/boorus/danbooru/feats/posts/models/danbooru_post.dart'
 import 'package:boorusama/boorus/danbooru/feats/posts/models/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';
@@ -39,18 +41,14 @@ class ExplorePage extends ConsumerWidget {
       child: CustomScrollView(
         primary: false,
         slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height:
-                  useAppBarPadding ? MediaQuery.of(context).viewPadding.top : 0,
-            ),
+          SliverSizedBox(
+            height:
+                useAppBarPadding ? MediaQuery.of(context).viewPadding.top : 0,
           ),
           const SliverToBoxAdapter(child: _PopularExplore()),
           const SliverToBoxAdapter(child: _HotExplore()),
           const SliverToBoxAdapter(child: _MostViewedExplore()),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: kBottomNavigationBarHeight + 20),
-          ),
+          const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
         ],
       ),
     );
@@ -292,9 +290,7 @@ class _ExploreListState extends State<_ExploreList> {
                     bottom: 1,
                     child: Text(
                       '${index + 1}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayMedium!
+                      style: context.textTheme.displayMedium!
                           .copyWith(color: Colors.white),
                     ),
                   ),

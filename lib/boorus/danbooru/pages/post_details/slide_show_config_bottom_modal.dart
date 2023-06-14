@@ -6,6 +6,7 @@ import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -99,11 +100,11 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
               alignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(null),
+                  onPressed: () => context.navigator.pop(null),
                   child: const Text('post.detail.slide_show.cancel').tr(),
                 ),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(config.value),
+                  onPressed: () => context.navigator.pop(config.value),
                   child: const Text('post.detail.slide_show.ok').tr(),
                 ),
               ],

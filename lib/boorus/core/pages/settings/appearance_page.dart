@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -114,7 +115,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ? Text(
                       'settings.image_grid.image_quality.high_quality_notice',
                       style: TextStyle(
-                        color: Theme.of(context).hintColor,
+                        color: context.theme.hintColor,
                       ),
                     ).tr()
                   : null,

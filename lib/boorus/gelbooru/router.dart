@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -13,6 +14,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
+import 'package:boorusama/flutter.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,
@@ -22,9 +24,9 @@ void goToGelbooruPostDetailsPage({
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
-  Navigator.of(context).push(GelbooruPostDetailPage.routeOf(
-    ref,
-    context,
+  final booru = ref.read(currentBooruProvider);
+  context.navigator.push(GelbooruPostDetailPage.routeOf(
+    booru: booru,
     posts: posts,
     initialIndex: initialIndex,
     scrollController: scrollController,
@@ -37,18 +39,16 @@ void goToGelbooruSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    Navigator.of(context)
-        .push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
+    context.navigator.push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
 
 void goToGelbooruArtistPage(
   WidgetRef ref,
   BuildContext context,
   String artist,
 ) {
-  Navigator.of(context).push(MaterialPageRoute(
+  context.navigator.push(MaterialPageRoute(
     builder: (_) => provideArtistPageDependencies(
       ref,
-      context,
       artist: artist,
       page: GelbooruArtistPage(
         tagName: artist,
@@ -58,8 +58,7 @@ void goToGelbooruArtistPage(
 }
 
 Widget provideArtistPageDependencies(
-  WidgetRef ref,
-  BuildContext context, {
+  WidgetRef ref, {
   required String artist,
   required Widget page,
 }) {

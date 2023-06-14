@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -57,7 +58,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
     final state = ref.watch(addOrUpdateBooruProvider(arg));
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => context.focusScope.unfocus(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -65,7 +66,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
           shadowColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.navigator.pop,
             icon: const Icon(Icons.close),
           ),
         ),
@@ -81,9 +82,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                 ),
                 child: Text(
                   'booru.add_booru_source_title',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
+                  style: context.textTheme.headlineSmall!
                       .copyWith(fontWeight: FontWeight.w900),
                 ).tr(),
               ),
@@ -195,7 +194,7 @@ class _AddBooruPageState extends ConsumerState<ConfigBooruPage>
                     ElevatedButton(
                       onPressed: state.allowSubmit()
                           ? () {
-                              Navigator.of(context).pop();
+                              context.navigator.pop();
                               submit(
                                   setCurrentBooruOnSubmit:
                                       widget.setCurrentBooruOnSubmit);

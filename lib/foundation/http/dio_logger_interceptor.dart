@@ -26,7 +26,7 @@ class LoggingInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
     logger.logI('Network',
         'Completed ${response?.requestOptions.method} to ${response?.requestOptions.uri} with status: ${response?.statusCodeOrZero} and body ${response?.data}');

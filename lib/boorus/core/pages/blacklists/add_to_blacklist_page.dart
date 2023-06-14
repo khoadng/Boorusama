@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/flutter.dart';
 
 class AddToBlacklistPage extends ConsumerWidget {
   const AddToBlacklistPage({
@@ -26,7 +27,7 @@ class AddToBlacklistPage extends ConsumerWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.navigator.pop,
             icon: const Icon(Icons.close),
           ),
         ],
@@ -44,7 +45,7 @@ class AddToBlacklistPage extends ConsumerWidget {
             ),
             onTap: () {
               final tag = tags[index];
-              Navigator.of(context).pop();
+              context.navigator.pop();
               ref.read(danbooruBlacklistedTagsProvider.notifier).add(
                     tag: tag.rawName,
                     onFailure: (message) => showSimpleSnackBar(

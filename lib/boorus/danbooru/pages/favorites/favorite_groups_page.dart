@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
@@ -102,14 +103,14 @@ class FavoriteGroupsPage extends ConsumerWidget {
             actions: [
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onBackground,
+                  foregroundColor: context.colorScheme.onBackground,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.navigator.pop(),
                 child: const Text('generic.action.cancel').tr(),
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  context.navigator.pop();
                   ref
                       .read(danbooruFavoriteGroupsProvider.notifier)
                       .delete(group: favGroup);

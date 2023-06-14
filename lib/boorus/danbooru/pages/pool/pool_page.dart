@@ -9,6 +9,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_grid_item.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'pool_options_header.dart';
 import 'pool_search_button.dart';
@@ -59,8 +60,13 @@ class _PostList extends ConsumerWidget {
           pagedBuilder: (controller, builder) => PagedSliverGrid(
             pagingController: controller,
             builderDelegate: builder,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: switch (Screen.of(context).size) {
+                ScreenSize.small => 2,
+                ScreenSize.medium => 3,
+                ScreenSize.large => 5,
+                ScreenSize.veryLarge => 6,
+              },
               childAspectRatio: 0.6,
             ),
           ),

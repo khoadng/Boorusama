@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/pages/settings/privacy_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 
@@ -32,11 +33,11 @@ class SettingsPageDesktop extends StatelessWidget {
           children: [
             Text(
               'settings.settings'.tr(),
-              style: Theme.of(context).textTheme.titleLarge,
+              style: context.textTheme.titleLarge,
             ),
             const Spacer(),
             IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.navigator.pop(),
               icon: const Icon(Icons.close),
             ),
           ],
@@ -232,10 +233,8 @@ class _SettingsSection extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Text(
         label.toUpperCase(),
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: Theme.of(context).hintColor),
+        style: context.textTheme.titleSmall!
+            .copyWith(color: context.theme.hintColor),
       ),
     );
   }

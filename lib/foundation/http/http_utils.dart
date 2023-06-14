@@ -13,7 +13,7 @@ TaskEither<BooruError, HttpResponse<dynamic>> tryParseResponse({
 }) =>
     TaskEither.tryCatch(
       () => fetcher(),
-      (error, stackTrace) => error is DioError
+      (error, stackTrace) => error is DioException
           ? error.response.toOption().fold(
                 () => AppError(type: AppErrorType.cannotReachServer),
                 (response) => ServerError(

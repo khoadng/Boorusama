@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 
 class BooruImageLegacy extends ConsumerWidget {
   const BooruImageLegacy({
@@ -43,7 +44,7 @@ class BooruImageLegacy extends ConsumerWidget {
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          color: Theme.of(context).dividerColor,
+          color: context.theme.dividerColor,
           width: 1,
         ),
       ),

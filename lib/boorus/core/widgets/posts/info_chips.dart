@@ -7,6 +7,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class InfoChips extends StatelessWidget {
@@ -25,20 +26,20 @@ class InfoChips extends StatelessWidget {
         _InfoChip(
           leftLabel: const Text('post.detail.rating').tr(),
           rightLabel: Text(post.rating.toString().split('.').last.pascalCase),
-          leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).colorScheme.background,
+          leftColor: context.theme.cardColor,
+          rightColor: context.colorScheme.background,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
           rightLabel: Text(filesize(post.fileSize, 1)),
-          leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).colorScheme.background,
+          leftColor: context.theme.cardColor,
+          rightColor: context.colorScheme.background,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.resolution').tr(),
           rightLabel: Text('${post.width.toInt()}x${post.height.toInt()}'),
-          leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).colorScheme.background,
+          leftColor: context.theme.cardColor,
+          rightColor: context.colorScheme.background,
         ),
       ],
     );
@@ -68,7 +69,7 @@ class _InfoChip extends StatelessWidget {
           backgroundColor: leftColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
+            side: BorderSide(color: context.theme.hintColor),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8),
               bottomLeft: Radius.circular(8),
@@ -80,7 +81,7 @@ class _InfoChip extends StatelessWidget {
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           backgroundColor: rightColor,
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
+            side: BorderSide(color: context.theme.hintColor),
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(8),
               bottomRight: Radius.circular(8),

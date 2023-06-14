@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class BooruSearchBar extends StatefulWidget {
@@ -63,7 +64,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
         constraints: widget.constraints ?? const BoxConstraints(maxWidth: 600),
         child: Card(
           elevation: 4,
-          color: widget.backgroundColor ?? Theme.of(context).cardColor,
+          color: widget.backgroundColor ?? context.theme.cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(6)),
           ),
@@ -97,7 +98,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                     ),
                     autofocus: widget.autofocus,
                     controller: _textEditingController,
-                    style: Theme.of(context).inputDecorationTheme.hintStyle,
+                    style: context.theme.inputDecorationTheme.hintStyle,
                   ),
                 ),
                 widget.trailing ?? const SizedBox.shrink(),

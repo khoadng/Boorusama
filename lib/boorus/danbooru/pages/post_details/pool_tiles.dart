@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 
 class PoolTiles extends StatelessWidget {
   const PoolTiles({
@@ -21,7 +22,7 @@ class PoolTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).cardColor,
+      color: context.theme.cardColor,
       child: Column(
         children: [
           ...pools.mapIndexed(
@@ -34,7 +35,7 @@ class PoolTiles extends StatelessWidget {
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: context.textTheme.titleSmall,
               ),
               trailing: const FaIcon(
                 FontAwesomeIcons.angleRight,

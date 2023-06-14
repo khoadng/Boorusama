@@ -74,7 +74,12 @@ class SearchNotifier extends AutoDisposeNotifier<DisplayState>
   }
 
   void tapTag(String tag) {
-    _selectedTags.addTag(tag);
+    _selectedTags.addTag(
+      tag,
+      operator: ref.read(filterOperatorProvider),
+    );
+    _query.state = '';
+
     if (state == DisplayState.suggestion) {
       resetToOptions();
     }

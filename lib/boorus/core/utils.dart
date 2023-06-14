@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -146,7 +147,7 @@ void showSimpleSnackBar({
     width: _calculateSnackBarWidth(context, snackBarBehavior),
     content: content,
   );
-  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  context.scaffoldMessenger.showSnackBar(snackbar);
 }
 
 double? _calculateSnackBarWidth(

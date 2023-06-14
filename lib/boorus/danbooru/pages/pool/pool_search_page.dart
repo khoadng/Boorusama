@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'pool_grid_item.dart';
 
@@ -151,7 +152,7 @@ class _SearchBar extends ConsumerWidget {
     return BooruSearchBar(
       leading: IconButton(
         splashRadius: 16,
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.navigator.pop(),
         icon: const Icon(
           Icons.arrow_back,
         ),

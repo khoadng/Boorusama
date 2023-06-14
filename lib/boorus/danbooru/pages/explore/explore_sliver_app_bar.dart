@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
     super.key,
@@ -14,15 +17,13 @@ class ExploreSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(fontWeight: FontWeight.w700),
+        style:
+            context.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
       ),
       floating: true,
       elevation: 0,
       shadowColor: Colors.transparent,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/flutter.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({super.key});
@@ -68,12 +69,12 @@ class PostGridActionSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(pageMode.name.sentenceCase,
-                    style: TextStyle(color: Theme.of(context).hintColor)),
+                    style: TextStyle(color: context.theme.hintColor)),
                 const Icon(Icons.chevron_right),
               ],
             ),
             onTap: () {
-              Navigator.of(context).pop();
+              context.navigator.pop();
               showMaterialModalBottomSheet(
                 context: context,
                 builder: (_) => PageModeActionSheet(
@@ -88,12 +89,12 @@ class PostGridActionSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(gridSize.name.sentenceCase,
-                    style: TextStyle(color: Theme.of(context).hintColor)),
+                    style: TextStyle(color: context.theme.hintColor)),
                 const Icon(Icons.chevron_right),
               ],
             ),
             onTap: () {
-              Navigator.of(context).pop();
+              context.navigator.pop();
               showMaterialModalBottomSheet(
                 context: context,
                 builder: (_) => GridSizeActionSheet(
@@ -108,12 +109,12 @@ class PostGridActionSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(imageListType.name.sentenceCase,
-                    style: TextStyle(color: Theme.of(context).hintColor)),
+                    style: TextStyle(color: context.theme.hintColor)),
                 const Icon(Icons.chevron_right),
               ],
             ),
             onTap: () {
-              Navigator.of(context).pop();
+              context.navigator.pop();
               showMaterialModalBottomSheet(
                 context: context,
                 builder: (_) => OptionActionSheet<ImageListType>(
@@ -153,7 +154,7 @@ class OptionActionSheet<T> extends StatelessWidget {
             .map((e) => ListTile(
                   title: Text(optionName(e)),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
                     onChanged(e);
                   },
                 ))
@@ -181,7 +182,7 @@ class GridSizeActionSheet extends StatelessWidget {
             .map((e) => ListTile(
                   title: Text(e.name.sentenceCase),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    context.navigator.pop();
                     onChanged(e);
                   },
                 ))
@@ -211,7 +212,7 @@ class PageModeActionSheet extends StatelessWidget {
               (e) => ListTile(
                 title: Text(e.name.sentenceCase),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.navigator.pop();
                   onModeChanged(e);
                 },
               ),

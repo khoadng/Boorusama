@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -27,10 +28,10 @@ class SourceSection extends StatelessWidget {
           ),
           child: Text(
             'post.detail.source_label'.tr(),
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).hintColor,
-                  fontSize: 16,
-                ),
+            style: context.textTheme.titleLarge!.copyWith(
+              color: context.theme.hintColor,
+              fontSize: 16,
+            ),
           ),
         ),
         Padding(
@@ -42,7 +43,7 @@ class SourceSection extends StatelessWidget {
               onTap: () => launchExternalUrlString(source.url),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).hintColor),
+                  border: Border.all(color: context.theme.hintColor),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ViewMoreTagButton extends StatelessWidget {
@@ -18,10 +19,10 @@ class ViewMoreTagButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Theme.of(context).iconTheme.color,
-        backgroundColor: Theme.of(context).cardColor,
+        foregroundColor: context.iconTheme.color,
+        backgroundColor: context.theme.cardColor,
         side: BorderSide(
-          color: Theme.of(context).hintColor,
+          color: context.theme.hintColor,
         ),
       ),
       onPressed: () => goToRelatedTagsPage(context, relatedTag: relatedTag),

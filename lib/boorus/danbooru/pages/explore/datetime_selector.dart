@@ -8,6 +8,7 @@ import 'package:jiffy/jiffy.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/explores/explore_utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/models/time_scale.dart';
+import 'package:boorusama/flutter.dart';
 
 class DateTimeSelector extends StatelessWidget {
   const DateTimeSelector({
@@ -39,8 +40,8 @@ class DateTimeSelector extends StatelessWidget {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).textTheme.titleLarge!.color,
-            backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+            foregroundColor: context.textTheme.titleLarge!.color,
+            backgroundColor: backgroundColor ?? context.theme.cardColor,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(18)),
             ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/post_tag_list.dart';
+import 'package:boorusama/flutter.dart';
 
 class TagsTile extends StatelessWidget {
   const TagsTile({
@@ -21,7 +22,7 @@ class TagsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${post.tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,

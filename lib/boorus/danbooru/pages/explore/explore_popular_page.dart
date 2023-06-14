@@ -12,8 +12,10 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/utils/duration_utils.dart';
 import 'datetime_selector.dart';
 import 'time_scale_toggle_switch.dart';
 
@@ -70,12 +72,11 @@ class _PopularContent extends ConsumerWidget {
 
     ref.listen(
       timeAndDateProvider,
-      (previous, next) {
+      (previous, next) async {
         if (previous != next) {
           // Delay 100ms, this is a hack
-          Future.delayed(const Duration(milliseconds: 100), () {
-            controller.refresh();
-          });
+          await const Duration(milliseconds: 100).future;
+          controller.refresh();
         }
       },
     );
@@ -105,7 +106,7 @@ class _PopularContent extends ConsumerWidget {
           ),
         ),
         Container(
-          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          color: context.theme.bottomNavigationBarTheme.backgroundColor,
           child: DateTimeSelector(
             onDateChanged: (date) =>
                 ref.read(dateProvider.notifier).state = date,

@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'artist_section.dart';
@@ -104,10 +105,10 @@ class _DanbooruPostDetailsPageState
       bottomSheet: (page) {
         return Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
             border: Border(
               top: BorderSide(
-                color: Theme.of(context).dividerColor,
+                color: context.theme.dividerColor,
                 width: 1,
               ),
             ),
@@ -207,7 +208,7 @@ class _DanbooruPostDetailsPageState
               return ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      Theme.of(context).colorScheme.background.withOpacity(0.8),
+                      context.colorScheme.background.withOpacity(0.8),
                   padding: const EdgeInsets.all(4),
                 ),
                 icon: const Icon(Icons.download_rounded),
@@ -225,7 +226,7 @@ class _DanbooruPostDetailsPageState
                         FontAwesomeIcons.eyeSlash,
                         size: 18,
                         color: theme == ThemeMode.light
-                            ? Theme.of(context).colorScheme.onPrimary
+                            ? context.colorScheme.onPrimary
                             : null,
                       ),
                     )
@@ -235,7 +236,7 @@ class _DanbooruPostDetailsPageState
                         FontAwesomeIcons.eye,
                         size: 18,
                         color: theme == ThemeMode.light
-                            ? Theme.of(context).colorScheme.onPrimary
+                            ? context.colorScheme.onPrimary
                             : null,
                       ),
                     ),
@@ -415,7 +416,7 @@ class TagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Theme(
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,

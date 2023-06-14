@@ -7,6 +7,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class UserInfoBox extends StatelessWidget {
@@ -30,9 +31,9 @@ class UserInfoBox extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   user.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: user.level.toColor(),
-                      ),
+                  style: context.textTheme.titleLarge?.copyWith(
+                    color: user.level.toColor(),
+                  ),
                 ),
               ],
             ),
@@ -47,7 +48,7 @@ class UserInfoBox extends StatelessWidget {
         Text(
           DateFormat('yyyy-MM-dd').format(user.joinedDate),
           style: TextStyle(
-            color: Theme.of(context).hintColor,
+            color: context.theme.hintColor,
           ),
         ),
       ],

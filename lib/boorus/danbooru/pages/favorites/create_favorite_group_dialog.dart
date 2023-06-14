@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
@@ -76,7 +77,7 @@ class _EditFavoriteGroupDialogState
               Center(
                 child: Text(
                   widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: context.textTheme.titleLarge,
                 ),
               ),
               const SizedBox(
@@ -86,9 +87,9 @@ class _EditFavoriteGroupDialogState
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   'favorite_groups.group_name'.tr().toUpperCase(),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                  style: context.textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               TextField(
@@ -98,7 +99,7 @@ class _EditFavoriteGroupDialogState
                 decoration: InputDecoration(
                   hintText: 'favorite_groups.group_name_hint'.tr(),
                   filled: true,
-                  fillColor: Theme.of(context).cardColor,
+                  fillColor: context.theme.cardColor,
                   enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     borderSide: BorderSide.none,
@@ -106,7 +107,7 @@ class _EditFavoriteGroupDialogState
                   focusedBorder: OutlineInputBorder(
                     borderRadius: const BorderRadius.all(Radius.circular(8)),
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: context.colorScheme.secondary,
                       width: 2,
                     ),
                   ),
@@ -120,9 +121,9 @@ class _EditFavoriteGroupDialogState
               if (widget.enableManualDataInput)
                 Text(
                   'favorite_groups.all_posts'.tr().toUpperCase(),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                  style: context.textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               if (widget.enableManualDataInput)
                 const SizedBox(
@@ -139,7 +140,7 @@ class _EditFavoriteGroupDialogState
                       hintText:
                           '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
                       filled: true,
-                      fillColor: Theme.of(context).cardColor,
+                      fillColor: context.theme.cardColor,
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide.none,
@@ -148,7 +149,7 @@ class _EditFavoriteGroupDialogState
                         borderRadius:
                             const BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: context.colorScheme.secondary,
                           width: 2,
                         ),
                       ),
@@ -163,10 +164,9 @@ class _EditFavoriteGroupDialogState
               ButtonBar(
                 children: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.navigator.pop(),
                     style: TextButton.styleFrom(
-                      foregroundColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      foregroundColor: context.colorScheme.onBackground,
                     ),
                     child:
                         const Text('favorite_groups.create_group_cancel').tr(),
@@ -176,7 +176,7 @@ class _EditFavoriteGroupDialogState
                     builder: (context, value, child) => ElevatedButton(
                       onPressed: nameController.text.isNotEmpty
                           ? () {
-                              Navigator.of(context).pop();
+                              context.navigator.pop();
                               if (widget.initialData == null) {
                                 ref
                                     .read(

@@ -12,6 +12,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class BulkDownloadTile extends ConsumerWidget {
@@ -28,7 +29,7 @@ class BulkDownloadTile extends ConsumerWidget {
     final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
 
     return Card(
-      color: Theme.of(context).colorScheme.background,
+      color: context.colorScheme.background,
       child: Row(
         children: [
           SizedBox(
@@ -50,8 +51,7 @@ class BulkDownloadTile extends ConsumerWidget {
                               horizontal: -4,
                               vertical: -4,
                             ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                            backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
                               'File exists',
                               style: TextStyle(
@@ -163,7 +163,7 @@ class BulkDownloadTile extends ConsumerWidget {
                       title: _Title(
                         data: data,
                         strikeThrough: true,
-                        color: Theme.of(context).hintColor,
+                        color: context.theme.hintColor,
                       ),
                       subtitle: const Text('Canceled', maxLines: 1),
                     ),

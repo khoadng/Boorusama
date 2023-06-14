@@ -14,7 +14,9 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/functional.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {
@@ -34,14 +36,14 @@ void showSimpleTagSearchView(
     showDesktopDialogWindow(
       context,
       settings: settings,
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: context.theme.cardColor,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(MediaQuery.of(context).size.width * 0.7, 600),
       height: min(MediaQuery.of(context).size.height * 0.7, 500),
       builder: (context) => CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.escape): () =>
-              Navigator.of(context).pop(),
+              context.navigator.pop(),
         },
         child: Focus(
           autofocus: true,
@@ -76,21 +78,21 @@ class SimpleTagSearchView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suggestionTags = ref.watch(suggestionsQuickSearchProvider);
     final query = ref.watch(_queryProvider);
+    final suggestionTags = ref.watch(suggestionsQuickSearchProvider)[query] ??
+        <AutocompleteData>[].lock;
     final tags = ensureValidTag
-        ? suggestionTags.where((e) => e.category != null).toList()
+        ? suggestionTags.where((e) => e.category != null).toIList()
         : suggestionTags;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
       floatingActionButton: floatingActionButton?.call(query),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             child: BooruSearchBar(
-              backgroundColor: Theme.of(context).colorScheme.background,
+              backgroundColor: context.colorScheme.background,
               leading: backButton,
               autofocus: true,
               onSubmitted: (text) => onSubmitted?.call(context, text),
@@ -108,11 +110,11 @@ class SimpleTagSearchView extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: TagSuggestionItems(
                       textColorBuilder: textColorBuilder,
-                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundColor: context.colorScheme.background,
                       tags: tags,
                       onItemTap: (tag) {
                         if (closeOnSelected) {
-                          Navigator.of(context).pop();
+                          context.navigator.pop();
                         }
                         onSelected(tag);
                       },

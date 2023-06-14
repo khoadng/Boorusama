@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class ChangelogPage extends ConsumerWidget {
@@ -23,7 +24,7 @@ class ChangelogPage extends ConsumerWidget {
         elevation: 0,
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.navigator.pop(),
             icon: const Icon(
               Icons.close,
               size: 24,

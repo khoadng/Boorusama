@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -36,7 +37,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => context.focusScope.unfocus(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -44,7 +45,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           shadowColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.navigator.pop,
             icon: const Icon(Icons.close),
           ),
         ),
@@ -60,9 +61,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 ),
                 child: Text(
                   'Add a booru',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
+                  style: context.textTheme.headlineSmall!
                       .copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
@@ -94,18 +93,18 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                     (e) => const SizedBox.shrink(),
                     (uri) => ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          context.navigator.pop();
                           if (getBooruType(uri.toString(),
                                   ref.watch(booruFactoryProvider).booruData) ==
                               BooruType.unknown) {
-                            Navigator.of(context).push(MaterialPageRoute(
+                            context.navigator.push(MaterialPageRoute(
                                 builder: (_) => AddUnknownBooruPage(
                                       url: uri.toString(),
                                       setCurrentBooruOnSubmit:
                                           widget.setCurrentBooruOnSubmit,
                                     )));
                           } else {
-                            Navigator.of(context).push(MaterialPageRoute(
+                            context.navigator.push(MaterialPageRoute(
                                 builder: (_) => ConfigBooruPage(
                                       setCurrentBooruOnSubmit:
                                           widget.setCurrentBooruOnSubmit,
@@ -129,9 +128,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                         valueListenable: inputText,
                         builder: (_, input, __) => Text(
                           e.message(input),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
+                          style: context.theme.textTheme.bodyLarge!
                               .copyWith(color: Colors.red),
                         ),
                       )),
