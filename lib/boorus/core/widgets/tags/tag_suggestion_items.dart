@@ -11,18 +11,19 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/functional.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
     super.key,
-    required List<AutocompleteData> tags,
+    required IList<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
     this.backgroundColor,
     this.textColorBuilder,
   }) : _tags = tags;
 
-  final List<AutocompleteData> _tags;
+  final IList<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
   final String currentQuery;
   final Color? backgroundColor;

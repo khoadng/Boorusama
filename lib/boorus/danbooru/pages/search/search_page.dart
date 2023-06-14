@@ -101,7 +101,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final metatags = ref.watch(metatagsProvider);
     // listen to query provider
     ref.listen(
-      sanitizedQueryProvider,
+      searchQueryProvider,
       (prev, curr) {
         if (prev != curr) {
           final displayState = ref.read(searchProvider);
