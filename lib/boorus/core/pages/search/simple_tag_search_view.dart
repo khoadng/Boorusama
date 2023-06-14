@@ -86,7 +86,6 @@ class SimpleTagSearchView extends ConsumerWidget {
         : suggestionTags;
 
     return Scaffold(
-      backgroundColor: context.theme.cardColor,
       floatingActionButton: floatingActionButton?.call(query),
       body: Column(
         children: [
