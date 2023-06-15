@@ -1,4 +1,24 @@
 {
+    "tag": {
+        "explore": {
+            "popular": "Popular"
+        }
+    },
+    "post": {
+        "action": {
+            "view_comments": "Ver comentários"
+        }
+    },
+    "comment": {
+        "comments": "Comentários"
+    },
+    "explore": {
+        "popular": "Popular",
+        "most_viewed": "Mais vistos"
+    },
+    "search": {
+        "hint": "Procurar..."
+    },
     "settings": {
         "settings": "Definições",
         "language": {
@@ -6,5 +26,8 @@
             "language_name": "Português"
         },
         "help_us_translate": "Ajude-nos a traduzir"
+    },
+    "download": {
+        "download": "Descarregar"
     }
 }

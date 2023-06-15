@@ -11,18 +11,19 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/functional.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
     super.key,
-    required List<AutocompleteData> tags,
+    required IList<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
     this.backgroundColor,
     this.textColorBuilder,
   }) : _tags = tags;
 
-  final List<AutocompleteData> _tags;
+  final IList<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
   final String currentQuery;
   final Color? backgroundColor;
@@ -75,6 +76,7 @@ Widget _getTitle(
   String currentQuery,
   Color? color,
 ) {
+  final query = currentQuery.replaceAll('_', ' ').toLowerCase();
   return tag.hasAlias
       ? Html(
           style: {
@@ -88,7 +90,7 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(currentQuery, '<b>$currentQuery</b>')} ➞ ${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
         )
       : Html(
           style: {
@@ -102,6 +104,6 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+              '<p>${tag.label.replaceAll(query.replaceAll('_', ' '), '<b>$query</b>')}</p>',
         );
 }

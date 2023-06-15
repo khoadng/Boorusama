@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
 import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
 import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
@@ -15,6 +16,7 @@ import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/functional.dart';
 
 final _selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
@@ -25,10 +27,13 @@ final _selectedTagsProvider =
 
 final _queryProvider = StateProvider<String>((ref) => '');
 
-final _suggestionsProvider =
-    NotifierProvider.autoDispose<SuggestionsNotifier, List<AutocompleteData>>(
+final _suggestionsProvider = NotifierProvider<SuggestionsNotifier,
+    IMap<String, IList<AutocompleteData>>>(
   SuggestionsNotifier.new,
-  dependencies: [autocompleteRepoProvider],
+  dependencies: [
+    autocompleteRepoProvider,
+    currentBooruConfigProvider,
+  ],
 );
 
 class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
@@ -121,7 +126,7 @@ class _BlacklistedTagsSearchPageState
               child: TagSuggestionItems(
                 textColorBuilder: (tag) =>
                     generateAutocompleteTagColor(tag, theme),
-                tags: suggestions,
+                tags: suggestions[query] ?? <AutocompleteData>[].lock,
                 currentQuery: query,
                 onItemTap: (tag) {
                   ref.read(_selectedTagsProvider.notifier).addTag(

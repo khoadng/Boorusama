@@ -160,7 +160,6 @@
         "search": "Tìm kiếm",
         "information": "Thông tin",
         "changelog": "Changelog",
-        "general_data_source": "Nguồn ảnh",
         "infinite_scroll_warning": "Có khả năng crash app nếu lướt quá lâu",
         "result_layout": {
             "result_layout": "Kiểu layout",

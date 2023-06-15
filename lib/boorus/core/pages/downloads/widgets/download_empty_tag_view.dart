@@ -21,7 +21,6 @@ class DownloadEmptyTagView extends ConsumerWidget {
     final theme = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: context.theme.cardColor,
       body: Padding(
         padding: const EdgeInsets.all(4),
         child: SimpleTagSearchView(

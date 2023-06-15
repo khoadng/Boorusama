@@ -18,8 +18,8 @@ class TagSuggestionItemsWithData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentQuery = ref.watch(searchQueryProvider);
-    final suggestionTags = ref.watch(suggestionsProvider);
+    final currentQuery = ref.watch(sanitizedQueryProvider);
+    final suggestionTags = ref.watch(suggestionProvider(currentQuery));
 
     return TagSuggestionItems(
       tags: suggestionTags,

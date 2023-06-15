@@ -99,14 +99,14 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     hasComment: false,
     isTranslated: false,
     hasParentOrChildren: postDto.hasChildren ?? false,
-    width: postDto.width!.toDouble(),
-    height: postDto.height!.toDouble(),
+    width: postDto.width?.toDouble() ?? 1,
+    height: postDto.height?.toDouble() ?? 1,
     md5: postDto.md5 ?? '',
     fileSize: postDto.fileSize ?? 0,
-    format: postDto.fileUrl?.split('.').last ?? '',
+    format: postDto.fileUrl?.split('.').lastOrNull ?? '',
     score: postDto.score ?? 0,
     createdAt: postDto.createdAt != null
-        ? DateTime.fromMicrosecondsSinceEpoch(postDto.createdAt! * 1000)
+        ? DateTime.fromMillisecondsSinceEpoch(postDto.createdAt! * 1000)
         : null,
   );
 }

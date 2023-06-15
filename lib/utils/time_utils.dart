@@ -20,6 +20,47 @@ String formatDurationForMedia(Duration duration) {
   }
 }
 
+int? parseMonthStringToInt(String value) => switch (value) {
+      'Jan' => 1,
+      'Feb' => 2,
+      'Mar' => 3,
+      'Apr' => 4,
+      'May' => 5,
+      'Jun' => 6,
+      'Jul' => 7,
+      'Aug' => 8,
+      'Sep' => 9,
+      'Oct' => 10,
+      'Nov' => 11,
+      'Dec' => 12,
+      _ => null,
+    };
+
+DateTime? parseRFC822String(String input) {
+  try {
+    final parts = input.split(' ');
+
+    final monthStr = parts[1];
+    final day = parts[2];
+    final time = parts[3];
+    final offset = parts[4];
+    final year = parts[5];
+
+    final month = parseMonthStringToInt(monthStr)!;
+
+    // Construct an ISO8601 string
+    final iso8601 =
+        '$year-${month < 10 ? "0$month" : month}-${day}T$time$offset';
+
+    // Parse it to DateTime
+    final dt = DateTime.parse(iso8601);
+
+    return dt;
+  } catch (e) {
+    return null;
+  }
+}
+
 extension DateTimeX on DateTime {
   String fuzzify({
     Locale locale = const Locale('en', 'US'),

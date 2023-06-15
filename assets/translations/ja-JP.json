@@ -41,6 +41,9 @@
             "login_required_notice": "ログインする必要があります",
             "open_wiki": "Wikiを開く",
             "add_to_favorites": "いいねする"
+        },
+        "action": {
+            "view_comments": "コメントを見る"
         }
     },
     "comment": {

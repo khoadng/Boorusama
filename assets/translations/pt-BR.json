@@ -1,0 +1,62 @@
+{
+    "generic": {
+        "done": "Pronto",
+        "errors": {
+            "no_data": "Nenhum dado disponível",
+            "unknown": "Algo de errado ocorreu"
+        },
+        "action": {
+            "add": "Adicionar",
+            "delete": "Deletar",
+            "edit": "Editar",
+            "ok": "Certo",
+            "cancel": "Cancelar"
+        }
+    },
+    "profile": {
+        "favorites": "Favoritos"
+    },
+    "network": {
+        "unavailable": "Conexão indisponível"
+    },
+    "tag": {
+        "related": {
+            "more": "Mais"
+        },
+        "explore": {
+            "popular": "Popular"
+        }
+    },
+    "post": {
+        "action": {
+            "view_comments": "Ver comentários"
+        }
+    },
+    "comment": {
+        "comments": "Comentários"
+    },
+    "explore": {
+        "popular": "Popular",
+        "most_viewed": "Mais visualizados"
+    },
+    "search": {
+        "hint": "Pesquisar..."
+    },
+    "settings": {
+        "settings": "Configurações",
+        "app_settings": "Config. do aplicativo",
+        "appearance": {
+            "appearance": "Aparência"
+        },
+        "language": {
+            "language": "Idioma",
+            "language_name": "Português do Brasil"
+        },
+        "privacy": {
+            "privacy": "Privacidade"
+        }
+    },
+    "download": {
+        "download": "Download"
+    }
+}

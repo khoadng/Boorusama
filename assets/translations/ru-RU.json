@@ -156,7 +156,6 @@
         "search": "Поиск",
         "information": "Информация",
         "changelog": "История изменений",
-        "general_data_source": "Источник",
         "infinite_scroll_warning": "Может произойти ошибка, если вы слишком долго скроллите ленту",
         "result_layout": {
             "result_layout": "Режим отображения",
