@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 
 part 'posts_count_provider.dart';
 part 'posts_details_provider.dart';
@@ -21,12 +25,14 @@ final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
 
   final settingsRepo = ref.watch(settingsRepoProvider);
   final globalBlacklistedTagRepo = ref.watch(globalBlacklistedTagRepoProvider);
+  final logger = ref.watch(loggerProvider);
 
   return PostRepositoryApi(
     api,
     booruConfig,
     settingsRepo,
     globalBlacklistedTagRepo,
+    !kReleaseMode ? logger : EmptyLogger(),
   );
 });
 

@@ -4,21 +4,28 @@ import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/foundation/benchmark.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
+import 'package:boorusama/foundation/loggers/logger.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';
 import 'common.dart';
 
 class PostRepositoryApi
-    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
+    with
+        SettingsRepositoryMixin,
+        GlobalBlacklistedTagFilterMixin,
+        LoggerMixin,
+        BenchmarkMixin
     implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
     this.booruConfig,
     this.settingsRepository,
     this.blacklistedTagRepository,
+    this.logger,
   ) : _api = api;
 
   final BooruConfig booruConfig;
@@ -31,6 +38,8 @@ class PostRepositoryApi
     maxCapacity: 5,
     staleDuration: const Duration(seconds: 10),
   );
+  @override
+  final LoggerService logger;
 
   String _buildKey(String tags, int page) => '$tags-$page';
 
@@ -60,7 +69,13 @@ class PostRepositoryApi
           ),
         );
 
-        final data = await $(tryParseData(response));
+        final data = await benchmark(
+          () => $(tryParseData(response)),
+          onResult: (elapsed) => logI(
+            'Performance',
+            'Parse data for ($tags, $page, limit: $limit) took ${elapsed.inMilliseconds}ms',
+          ),
+        );
 
         final filtered = await $(tryFilterBlacklistedTags(data));
 
