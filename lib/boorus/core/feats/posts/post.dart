@@ -35,6 +35,7 @@ extension PostImageX on Post {
         ImageQuality.automatic => thumbnailImageUrl,
         ImageQuality.low => thumbnailImageUrl,
         ImageQuality.high => sampleImageUrl,
+        ImageQuality.highest => sampleImageUrl,
         ImageQuality.original => originalImageUrl
       };
 }

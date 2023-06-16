@@ -33,6 +33,7 @@ String _themeModeToString(ThemeMode theme) => switch (theme) {
     };
 
 String _imageQualityToString(ImageQuality quality) => switch (quality) {
+      ImageQuality.highest => 'settings.image_grid.image_quality.highest',
       ImageQuality.high => 'settings.image_grid.image_quality.high',
       ImageQuality.low => 'settings.image_grid.image_quality.low',
       ImageQuality.original => 'settings.image_grid.image_quality.original',
@@ -111,7 +112,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               title: const Text(
                 'settings.image_grid.image_quality.image_quality',
               ).tr(),
-              subtitle: settings.imageQuality == ImageQuality.high
+              subtitle: settings.imageQuality == ImageQuality.highest
                   ? Text(
                       'settings.image_grid.image_quality.high_quality_notice',
                       style: TextStyle(

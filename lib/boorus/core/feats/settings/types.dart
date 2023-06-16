@@ -9,6 +9,7 @@ enum ImageQuality {
   low,
   high,
   original,
+  highest,
 }
 
 enum GridSize {
