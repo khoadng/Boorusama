@@ -19,16 +19,17 @@ class BooruLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        minWidth: 20,
-        minHeight: 20,
-        maxWidth: 20,
-        maxHeight: 20,
+        minWidth: 25,
+        minHeight: 25,
+        maxWidth: 25,
+        maxHeight: 25,
       ),
       child: CachedNetworkImage(
         fit: BoxFit.cover,
         fadeInDuration: const Duration(milliseconds: 100),
         fadeOutDuration: const Duration(milliseconds: 200),
         imageUrl: source.faviconUrl,
+        errorWidget: (context, url, error) => const SizedBox.shrink(),
         errorListener: (e) {
           // Ignore error
         },
