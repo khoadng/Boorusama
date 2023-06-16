@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -34,8 +35,9 @@ class FavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DanbooruPostScope(
-      fetcher: (page) =>
-          ref.read(danbooruPostRepoProvider).getPosts('ordfav:$username', page),
+      fetcher: (page) => ref
+          .read(danbooruPostRepoProvider)
+          .getPosts(buildFavoriteQuery(username), page),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,

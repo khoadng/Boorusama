@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -92,8 +93,10 @@ class _UserFavorites extends ConsumerWidget {
                 ),
                 _PreviewList(
                   posts: favorites,
-                  onViewMore: () =>
-                      goToSearchPage(context, tag: 'ordfav:${user.name}'),
+                  onViewMore: () => goToSearchPage(
+                    context,
+                    tag: buildFavoriteQuery(user.name),
+                  ),
                   title: 'Favorites',
                 ),
               ],
