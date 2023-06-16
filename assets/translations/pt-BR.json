@@ -9,9 +9,10 @@
             "add": "Adicionar",
             "delete": "Deletar",
             "edit": "Editar",
-            "ok": "Certo",
+            "ok": "De acordo",
             "cancel": "Cancelar"
-        }
+        },
+        "view": ""
     },
     "profile": {
         "favorites": "Favoritos"
@@ -21,42 +22,403 @@
     },
     "tag": {
         "related": {
-            "more": "Mais"
+            "more": "Mais",
+            "related": "Relacionado",
+            "add_to_current_search": "Adicionar à pesquisa atual",
+            "open_wiki": "Abrir wiki"
         },
         "explore": {
+            "new": "Novo",
             "popular": "Popular"
         }
     },
     "post": {
+        "detail": {
+            "view": "Visualizar",
+            "slide_show": {
+                "interval": "Intervalo (segundos)",
+                "skip_anim": "Animação de Skip",
+                "ok": "De acordo",
+                "cancel": "Cancelar"
+            },
+            "view_in_browser": "Visualizar no navegador",
+            "file_details": "Detalhes do arquivo",
+            "size": "Tamanho",
+            "resolution": "Resolução",
+            "rating": "Avaliação",
+            "file_format": "Formato do arquivo",
+            "share": {
+                "source": "Compartilhar link de origem",
+                "booru": "Compartilhar link do booru",
+                "image": "Compartilhar imagem"
+            },
+            "copied": "Copiado",
+            "show_original": "Mostrar original",
+            "show_translated": "Mostrar traduzido",
+            "login_required_notice": "Você precisa fazer login para executar esta ação",
+            "open_wiki": "Abrir wiki",
+            "add_to_blacklist": "Adicionar na lista negra",
+            "add_to_favorites": "Adicionar aos favoritos",
+            "copy_and_open_saved_search": "Copiar e abrir pesquisa salva",
+            "score": {
+                "one": "Ponto",
+                "other": "Pontos"
+            },
+            "source_label": "",
+            "related_posts": "",
+            "add_to_bookmark": "",
+            "remove_from_bookmark": ""
+        },
+        "parent_child": {
+            "children_of": "Filho de"
+        },
         "action": {
-            "view_comments": "Ver comentários"
+            "preview": "Pré-visualização",
+            "view_comments": "Ver comentários",
+            "add_to_favorite_group": "Adicionar ao grupo favorito",
+            "select": "Selecionar"
+        },
+        "image_fullview": {
+            "view_original": "Ver original",
+            "view_resized": "Ver completo"
         }
     },
     "comment": {
-        "comments": "Comentários"
+        "comments": "Comentários",
+        "create": {
+            "hint": "Comentário",
+            "loading": "Por favor, aguarde...",
+            "error": "Erro"
+        },
+        "list": {
+            "edit": "Editar",
+            "reply": "Responder",
+            "reply_to": "Respondendo a",
+            "delete": "Excluir",
+            "noComments": "Não há comentários",
+            "last_updated": "Última atualização",
+            "send": "Enviar"
+        },
+        "counter": {
+            "one": "Comentário",
+            "other": "Comentários"
+        }
     },
     "explore": {
+        "latest": "Novidades",
         "popular": "Popular",
-        "most_viewed": "Mais visualizados"
+        "curated": "",
+        "hot": "",
+        "most_viewed": "Mais visualizados",
+        "see_more": ""
     },
     "search": {
-        "hint": "Pesquisar..."
+        "errors": {
+            "generic": "",
+            "tag_limit": "",
+            "database_timeout": "",
+            "rate_limited": "",
+            "pagination_limit": "",
+            "max_capacity": "",
+            "down": "",
+            "access_denied": "",
+            "forbidden": "",
+            "unknown": ""
+        },
+        "hint": "Pesquisar...",
+        "no_result": "",
+        "empty": "",
+        "search_options": "",
+        "metatags_notice": "",
+        "history": {
+            "history": "",
+            "clear": "",
+            "recent": ""
+        },
+        "trending": "",
+        "remove_all_selected": ""
+    },
+    "pool": {
+        "pool": "",
+        "pool_gallery": "",
+        "mature_banned_content": "",
+        "order": {
+            "recent": "",
+            "new": "",
+            "post_count": "",
+            "name": ""
+        },
+        "category": {
+            "series": "",
+            "collection": ""
+        },
+        "search": {
+            "hint": ""
+        },
+        "detail": {
+            "last_updated": ""
+        }
     },
     "settings": {
         "settings": "Configurações",
         "app_settings": "Config. do aplicativo",
         "appearance": {
-            "appearance": "Aparência"
+            "appearance": "Aparência",
+            "show_scores": ""
+        },
+        "general": "",
+        "search": "",
+        "information": "",
+        "changelog": "",
+        "infinite_scroll_warning": "",
+        "result_layout": {
+            "result_layout": "",
+            "infinite_scroll": "",
+            "pagination": ""
+        },
+        "image_list": {
+            "image_list": "",
+            "standard": "",
+            "masonry": ""
+        },
+        "image_grid": {
+            "image_grid": "",
+            "grid_size": {
+                "grid_size": "",
+                "small": "",
+                "medium": "",
+                "large": ""
+            },
+            "image_quality": {
+                "image_quality": "",
+                "high_quality_notice": "",
+                "high": "",
+                "low": "",
+                "original": "",
+                "automatic": ""
+            },
+            "spacing": "",
+            "corner_radius": ""
+        },
+        "image_viewer": {
+            "image_viewer": "",
+            "full_res_as_default": "",
+            "full_res_notice": ""
+        },
+        "image_detail": {
+            "image_detail": ""
         },
         "language": {
             "language": "Idioma",
             "language_name": "Português do Brasil"
         },
+        "theme": {
+            "theme": "",
+            "dark": "",
+            "light": "",
+            "amoled_dark": ""
+        },
         "privacy": {
-            "privacy": "Privacidade"
-        }
+            "privacy": "Privacidade",
+            "send_error_data_notice": ""
+        },
+        "performance": {
+            "performance": "",
+            "posts_per_page": "",
+            "posts_per_page_explain": "",
+            "cache_size": "",
+            "clear_cache": "",
+            "cache_size_info": ""
+        },
+        "debug_logs": {
+            "debug_logs": "",
+            "logs_copied": ""
+        },
+        "download": {
+            "path": "",
+            "select_a_folder": "",
+            "quality": "",
+            "qualities": {
+                "original": "",
+                "sample": "",
+                "preview": ""
+            }
+        },
+        "help_us_translate": "",
+        "other_settings": ""
+    },
+    "blacklisted_tags": {
+        "remove": "",
+        "edit": "",
+        "blacklisted_tags": "",
+        "load_error": "",
+        "updated": "",
+        "limitation_notice": ""
     },
     "download": {
-        "download": "Download"
+        "download": "Download",
+        "bulk_download": "",
+        "bulk_download_tag_confirmation": "",
+        "bulk_download_save_to_folder": "",
+        "bulk_download_total_count": "",
+        "bulk_download_done_count": "",
+        "bulk_download_done_confirm": "",
+        "bulk_download_cancel": "",
+        "bulk_download_duplicate": "",
+        "bulk_download_invalid_folder_name_error": "",
+        "bulk_download_only_download_new_images": "",
+        "bulk_download_stay_on_screen_request": "",
+        "bulk_download_folder_select_warning": "",
+        "bulk_download_select_a_folder": "",
+        "bulk_download_found_duplicate": "",
+        "bulk_download_downloaded_counter": {
+            "one": "",
+            "other": ""
+        },
+        "bulk_download_skipped_counter": {
+            "one": "",
+            "other": ""
+        },
+        "bulk_download_download_more": "",
+        "open_app_settings": "",
+        "storage_permission_explanation": "",
+        "app_restart_request": "",
+        "image_counter": {
+            "one": "",
+            "other": ""
+        },
+        "bulk": {
+            "all_done_notification_message": ""
+        }
+    },
+    "saved_search": {
+        "saved_search": "",
+        "saved_search_counter": {
+            "one": "",
+            "other": ""
+        },
+        "add_saved_search": "",
+        "saved_search_added": "",
+        "empty_saved_search": "",
+        "update_saved_search": "",
+        "saved_search_updated": "",
+        "saved_search_feed": "",
+        "saved_search_help": "",
+        "saved_search_examples": "",
+        "saved_search_try": "",
+        "saved_search_query": "",
+        "saved_search_labels": "",
+        "saved_search_labels_description": ""
+    },
+    "favorites": {
+        "counter": {
+            "one": "",
+            "other": ""
+        },
+        "favorited": "",
+        "favorite": "",
+        "unfavorited": "",
+        "unfavorite": "",
+        "failed_to_unfavorite": "",
+        "failed_to_favorite": ""
+    },
+    "favorite_groups": {
+        "favorite_groups": "",
+        "empty_group_notice": "",
+        "create_group": "",
+        "edit_group": "",
+        "add_to_group_dialog_title": "",
+        "add_to": "",
+        "create": "",
+        "private": "",
+        "view_more_popup": "",
+        "items_added_notification_popup": "",
+        "group_name": "",
+        "group_name_hint": "",
+        "all_posts": "",
+        "initial_posts_hint": "",
+        "is_private_group_option": "",
+        "create_group_cancel": "",
+        "create_group_confirm": "",
+        "max_limit_warning": "",
+        "duplicate_items_warning_notification": "",
+        "detete_confirmation": "",
+        "group_item_counter": {
+            "one": "",
+            "other": ""
+        }
+    },
+    "favorite_tags": {
+        "favorites": "",
+        "or": "",
+        "import": "",
+        "import_hint": "",
+        "cancel": "",
+        "export": "",
+        "export_notification": ""
+    },
+    "rating": {
+        "rate_request": "",
+        "rate": "",
+        "cancel": "",
+        "later": "",
+        "rationale": ""
+    },
+    "sideMenu": {
+        "settings": "",
+        "manage_boorus": "",
+        "your_bookmarks": "",
+        "your_blacklist": "",
+        "bulk_download": ""
+    },
+    "dateRange": {
+        "day": "",
+        "week": "",
+        "month": ""
+    },
+    "booru": {
+        "addNew": "",
+        "add_booru_source_title": "",
+        "add_random_booru_warning": "",
+        "booru_engine_input_label": "",
+        "config_name_label": "",
+        "site_url_label": "",
+        "login_name_label": "",
+        "password_api_key_label": "",
+        "password_hashed_label": "",
+        "password_label": "",
+        "content_filtering_label": "",
+        "hide_deleted_label": "",
+        "config_booru_confirm": ""
+    },
+    "blacklist": {
+        "manage": {
+            "title": "",
+            "empty_blacklist": ""
+        }
+    },
+    "bookmark": {
+        "added": "",
+        "failed_to_add": "",
+        "many_added": "",
+        "failed_to_add_many": "",
+        "removed": "",
+        "updated": "",
+        "failed_to_remove": "",
+        "failed_to_update": "",
+        "failed_to_load": ""
+    },
+    "app_update": {
+        "update": "",
+        "later": "",
+        "whats_new": "",
+        "update_available": ""
+    },
+    " \"settings": {
+        "image_grid": {
+            "image_quality": {
+                "highest": ""
+            }
+        }
     }
 }
