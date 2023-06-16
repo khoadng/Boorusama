@@ -413,5 +413,12 @@
         "later": "Later",
         "whats_new": "What's new?",
         "update_available": "Update available"
+    },
+    " \"settings": {
+        "image_grid": {
+            "image_quality": {
+                "highest": "Highest"
+            }
+        }
     }
 }
