@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 
 // Flutter imports:
+import 'package:boorusama/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -129,21 +130,22 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   ],
                 );
               },
-              progressIndicatorBuilder: (context, url, progress) => FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  height: widget.height,
-                  width: widget.width,
-                  child: Stack(children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: LinearProgressIndicator(
-                        value: progress.progress,
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
+              placeholderFadeInDuration: Duration.zero,
+              fadeOutDuration: Duration.zero,
+              fadeInDuration: Duration.zero,
+              placeholder: widget.placeholderImageUrl.isNotNullAndEmpty()
+                  ? (context, url) => CachedNetworkImage(
+                        httpHeaders: {
+                          'User-Agent':
+                              ref.watch(userAgentGeneratorProvider).generate(),
+                        },
+                        fit: BoxFit.fill,
+                        imageUrl: widget.placeholderImageUrl!,
+                        cacheManager: widget.previewCacheManager,
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                      )
+                  : null,
             ),
           ),
         ),

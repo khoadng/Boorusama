@@ -294,7 +294,11 @@ class _DanbooruPostDetailsPageState
             imageUrl: post.isGif
                 ? post.urlOriginal
                 : post.thumbnailFromSettings(ref.read(settingsProvider)),
-            placeholderImageUrl: post.thumbnailImageUrl,
+            // Prevent placeholder image from showing when first loaded a post with translated image
+            placeholderImageUrl:
+                currentPage == widget.intitialIndex && post.isTranslated
+                    ? null
+                    : post.thumbnailImageUrl,
             onTap: onImageTap,
             onCached: (path) => ref
                 .read(postShareProvider(post).notifier)
