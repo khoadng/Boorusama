@@ -60,7 +60,8 @@ class _AppState extends ConsumerState<App> {
               ],
             ),
             child: ScrollConfiguration(
-              behavior: AppScrollBehavior(),
+              behavior:
+                  const MaterialScrollBehavior().copyWith(overscroll: false),
               child: child!,
             ),
           ),
@@ -79,14 +80,4 @@ class _AppState extends ConsumerState<App> {
       ),
     );
   }
-}
-
-class AppScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildScrollbar(
-    BuildContext context,
-    Widget child,
-    ScrollableDetails details,
-  ) =>
-      child;
 }

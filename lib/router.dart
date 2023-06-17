@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,19 +8,15 @@ import 'package:go_router/go_router.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
-import 'boorus/core/provider.dart';
 import 'foundation/analytics.dart';
 import 'routes.dart';
 
 export 'package:go_router/go_router.dart' hide GoRouterHelper;
 
 final routerProvider = Provider.family<GoRouter, Settings>((ref, settings) {
-  final logger = ref.watch(loggerProvider);
-
   return GoRouter(
     observers: [
       if (isAnalyticsEnabled(settings)) getAnalyticsObserver(),
-      if (!kReleaseMode) AppNavigatorObserver(logger),
     ],
     routes: [
       Routes.home(ref),
