@@ -22,7 +22,7 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     required this.heroTag,
     required this.aspectRatio,
     required this.imageUrl,
-    required this.placeholderImageUrl,
+    this.placeholderImageUrl,
     this.previewCacheManager,
     this.onCached,
     this.imageOverlayBuilder,
@@ -31,20 +31,17 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     this.onZoomUpdated,
   });
 
-  // ontap
   final VoidCallback? onTap;
-  //useHero
   final bool useHero;
   final String heroTag;
   final double aspectRatio;
   final String imageUrl;
-  final String placeholderImageUrl;
+  final String? placeholderImageUrl;
   final CacheManager? previewCacheManager;
   final void Function(String? path)? onCached;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;
-  //zoom updated
   final void Function(bool zoom)? onZoomUpdated;
 
   @override
@@ -132,33 +129,19 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   ],
                 );
               },
-              placeholderFadeInDuration: Duration.zero,
-              fadeOutDuration: Duration.zero,
-              fadeInDuration: Duration.zero,
-              placeholder: (context, url) => CachedNetworkImage(
-                httpHeaders: {
-                  'User-Agent':
-                      ref.watch(userAgentGeneratorProvider).generate(),
-                },
-                fit: BoxFit.fill,
-                imageUrl: widget.placeholderImageUrl,
-                cacheManager: widget.previewCacheManager,
-                fadeInDuration: Duration.zero,
-                fadeOutDuration: Duration.zero,
-                progressIndicatorBuilder: (context, url, progress) => FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    height: widget.height,
-                    width: widget.width,
-                    child: Stack(children: [
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: LinearProgressIndicator(
-                          value: progress.progress,
-                        ),
+              progressIndicatorBuilder: (context, url, progress) => FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  height: widget.height,
+                  width: widget.width,
+                  child: Stack(children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LinearProgressIndicator(
+                        value: progress.progress,
                       ),
-                    ]),
-                  ),
+                    ),
+                  ]),
                 ),
               ),
             ),
