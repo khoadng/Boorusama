@@ -80,7 +80,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     return controller.page != controller.page?.round();
   }
 
-  var _keepBottomSheetDown = false;
+  final _keepBottomSheetDown = ValueNotifier(false);
   var _pageSwipe = true;
 
   @override
@@ -122,7 +122,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   void _updateShouldSlideDown() {
-    if (_keepBottomSheetDown) return;
+    if (_keepBottomSheetDown.value) return;
     _shouldSlideDownNotifier.value = isSwipingDown.value ||
         isExpanded.value ||
         _controller.hideOverlay.value;
@@ -163,7 +163,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 
   Future<void> _onBackButtonPressed() async {
-    _keepBottomSheetDown = true;
+    _keepBottomSheetDown.value = true;
     context.navigator.pop();
     widget.onExit(controller.currentPage.value);
   }
@@ -248,73 +248,78 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           valueListenable: isExpanded,
           builder: (context, expanded, _) {
             final offstage = swipingDown && !expanded;
-            return Stack(
-              children: [
-                Offstage(
-                  offstage: offstage,
-                  child: Listener(
-                    onPointerMove: (event) =>
-                        _handlePointerMove(event, expanded),
-                    onPointerUp: (event) => _handlePointerUp(event, expanded),
-                    child: ExprollablePageView(
-                      controller: controller,
-                      onViewportChanged: (metrics) {
-                        if (metrics.isPageExpanded == isExpanded.value) {
-                          return;
-                        }
+            return ValueListenableBuilder(
+              valueListenable: _keepBottomSheetDown,
+              builder: (_, keepDown, __) => Stack(
+                children: [
+                  if (!keepDown)
+                    Offstage(
+                      offstage: offstage,
+                      child: Listener(
+                        onPointerMove: (event) =>
+                            _handlePointerMove(event, expanded),
+                        onPointerUp: (event) =>
+                            _handlePointerUp(event, expanded),
+                        child: ExprollablePageView(
+                          controller: controller,
+                          onViewportChanged: (metrics) {
+                            if (metrics.isPageExpanded == isExpanded.value) {
+                              return;
+                            }
 
-                        isExpanded.value = metrics.isPageExpanded;
-                        if (isExpanded.value) {
-                          widget.onExpanded?.call(currentPage);
-                        }
-                      },
-                      onPageChanged: widget.onPageChanged,
-                      physics: _pageSwipe
-                          ? const DefaultPageViewScrollPhysics()
-                          : const NeverScrollableScrollPhysics(),
-                      itemCount: widget.pageCount,
-                      itemBuilder: (context, page) {
-                        return ValueListenableBuilder(
-                          valueListenable: isExpanded,
-                          builder: (context, value, child) =>
-                              widget.expandedBuilder(
-                            context,
-                            page,
-                            currentPage,
-                            value,
-                            _pageSwipe,
-                          ),
-                        );
-                      },
+                            isExpanded.value = metrics.isPageExpanded;
+                            if (isExpanded.value) {
+                              widget.onExpanded?.call(currentPage);
+                            }
+                          },
+                          onPageChanged: widget.onPageChanged,
+                          physics: _pageSwipe
+                              ? const DefaultPageViewScrollPhysics()
+                              : const NeverScrollableScrollPhysics(),
+                          itemCount: widget.pageCount,
+                          itemBuilder: (context, page) {
+                            return ValueListenableBuilder(
+                              valueListenable: isExpanded,
+                              builder: (context, value, child) =>
+                                  widget.expandedBuilder(
+                                context,
+                                page,
+                                currentPage,
+                                value,
+                                _pageSwipe,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Offstage(
-                  offstage: !offstage,
-                  child: ValueListenableBuilder(
-                    valueListenable: dragDistance,
-                    builder: (context, dd, child) => ValueListenableBuilder(
-                      valueListenable: dragDistanceX,
-                      builder: (context, ddx, child) => Transform.translate(
-                        offset: Offset(ddx, dd),
-                        child: Listener(
-                          onPointerMove: (event) =>
-                              _handlePointerMove(event, expanded),
-                          onPointerUp: (event) =>
-                              _handlePointerUp(event, expanded),
-                          child: Transform.scale(
-                            scale: scale,
-                            child: widget.targetSwipeDownBuilder(
-                              context,
-                              currentPage,
+                  Offstage(
+                    offstage: !offstage || keepDown,
+                    child: ValueListenableBuilder(
+                      valueListenable: dragDistance,
+                      builder: (context, dd, child) => ValueListenableBuilder(
+                        valueListenable: dragDistanceX,
+                        builder: (context, ddx, child) => Transform.translate(
+                          offset: Offset(ddx, dd),
+                          child: Listener(
+                            onPointerMove: (event) =>
+                                _handlePointerMove(event, expanded),
+                            onPointerUp: (event) =>
+                                _handlePointerUp(event, expanded),
+                            child: Transform.scale(
+                              scale: scale,
+                              child: widget.targetSwipeDownBuilder(
+                                context,
+                                currentPage,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             );
           },
         ),
