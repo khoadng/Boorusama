@@ -92,13 +92,15 @@ class HomeSearchBar extends ConsumerWidget {
                               ),
                               Flexible(
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 4),
                                   child: SingleChildScrollView(
                                     child: Row(
                                       children: [
-                                        MarkdownBody(
-                                          data: d.releaseNotes,
+                                        Expanded(
+                                          child: MarkdownBody(
+                                            data: d.releaseNotes,
+                                          ),
                                         ),
                                       ],
                                     ),
