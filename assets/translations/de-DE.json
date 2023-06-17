@@ -195,7 +195,8 @@
                 "high": "Hoch",
                 "low": "Niedrig",
                 "original": "Original",
-                "automatic": "Automatisch"
+                "automatic": "Automatisch",
+                "highest": "Höchste"
             },
             "spacing": "Abstand",
             "corner_radius": "Eckradius"
@@ -413,12 +414,5 @@
         "later": "Später",
         "whats_new": "Was ist neu?",
         "update_available": "Update verfügbar"
-    },
-    " \"settings": {
-        "image_grid": {
-            "image_quality": {
-                "highest": "Höchste"
-            }
-        }
     }
 }

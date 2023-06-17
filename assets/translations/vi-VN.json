@@ -193,7 +193,8 @@
                 "high": "Cao",
                 "low": "Thấp",
                 "original": "Gốc",
-                "automatic": "Tự động"
+                "automatic": "Tự động",
+                "highest": "Cao nhất"
             },
             "spacing": "Độ dãn cách",
             "corner_radius": "Bo góc"
@@ -405,12 +406,5 @@
         "later": "Để sau",
         "whats_new": "Có gì mới?",
         "update_available": "Có cập nhật mới"
-    },
-    " \"settings": {
-        "image_grid": {
-            "image_quality": {
-                "highest": "Cao nhất"
-            }
-        }
     }
 }
