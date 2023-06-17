@@ -448,10 +448,10 @@ packages:
     dependency: "direct main"
     description:
       name: exprollable_page_view
-      sha256: "125847529f2060e6ce79509b82d33de1bfe11cd08ccfa8fa271e460e4e2c4f3c"
+      sha256: a5c889e88d26ec77cf3c97d505b08d61122a4d895f5cd846456b8fa4e1b46d80
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-rc.1"
+    version: "1.0.0-rc.2"
   fake_async:
     dependency: transitive
     description:
