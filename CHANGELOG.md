@@ -1,3 +1,10 @@
+# 3.0.3
+- Adjust the sensitivity of the swipe to dismiss gesture
+- Fix an issue where you can't tap on the translation notes
+- Add a highest quality option for choosing image quality
+- Update translations for German and Portuguese (BR)
+- Fix a few UI glitches
+
 # 3.0.2
 - Fix a bug where '-' and '~' search operators don't work
 - Add a quick action context menu for adding tags to global blacklist in post details
