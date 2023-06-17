@@ -11,7 +11,8 @@
             "edit": "Sửa",
             "ok": "OK",
             "cancel": "Huỷ"
-        }
+        },
+        "view": "Xem"
     },
     "profile": {
         "favorites": "Yêu thích"
@@ -73,6 +74,7 @@
         "action": {
             "preview": "Xem nhanh",
             "view_comments": "Xem bình luận",
+            "add_to_favorite_group": "Thêm vào nhóm yêu thích",
             "select": "Chọn"
         },
         "image_fullview": {
@@ -113,7 +115,13 @@
             "generic": "Có lỗi xảy ra",
             "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
             "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
-            "rate_limited": "You're being rate limited. Please try again later"
+            "rate_limited": "You're being rate limited. Please try again later",
+            "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
+            "max_capacity": "Server không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
+            "down": "Server đang sập, thử lại sau.",
+            "access_denied": "Truy cập bị từ chối",
+            "forbidden": "Không có quyền truy cập",
+            "unknown": "Lỗi server không xác định, vui lòng báo cho dev"
         },
         "hint": "Tìm...",
         "no_result": "Không tìm được kết quả phù hợp.",
@@ -220,6 +228,10 @@
             "clear_cache": "Dọn",
             "cache_size_info": "Chiếm {0} Mb trong {1} tệp"
         },
+        "debug_logs": {
+            "debug_logs": "Logs sửa lỗi",
+            "logs_copied": "Đã chép vào clipboard"
+        },
         "download": {
             "path": "Đường dẫn tới nơi lưu ảnh",
             "select_a_folder": "Chọn thư mục",
@@ -304,13 +316,29 @@
         "failed_to_favorite": "Xảy ra lỗi khi xoá yêu thích ảnh này"
     },
     "favorite_groups": {
+        "favorite_groups": "Nhóm yêu thích",
+        "empty_group_notice": "Chưa thêm nhóm nào",
+        "create_group": "Tạo nhóm",
+        "edit_group": "Sửa nhóm",
+        "add_to_group_dialog_title": "Thêm vào nhóm yêu thích",
         "add_to": "Thêm vào",
         "create": "Tạo",
         "private": "Private",
         "view_more_popup": "Xem",
         "items_added_notification_popup": "Đã thêm {0} ảnh vào  {1}",
+        "group_name": "Tên nhóm",
+        "group_name_hint": "Nhóm mới",
+        "all_posts": "Ảnh",
+        "initial_posts_hint": "Nhập các ID, cách nhau bằng dấu cách (Không bắt buộc)",
+        "is_private_group_option": "Nhóm kín",
         "create_group_cancel": "Huỷ",
-        "create_group_confirm": "OK"
+        "create_group_confirm": "OK",
+        "max_limit_warning": "Member thường chỉ có thể tạo 10 nhóm",
+        "duplicate_items_warning_notification": "Có ID bị trùng trong nhóm",
+        "detete_confirmation": "Bạn có chắc là muốn xoá nhóm này không",
+        "group_item_counter": {
+            "other": "{} ảnh"
+        }
     },
     "favorite_tags": {
         "favorites": "Yêu thích",
@@ -341,7 +369,19 @@
         "month": "Tháng"
     },
     "booru": {
-        "addNew": "Tạo thêm booru"
+        "addNew": "Tạo thêm booru",
+        "add_booru_source_title": "Thêm nguồn, để trống để ẩn danh",
+        "add_random_booru_warning": "Nguồn này chưa được hỗ trợ chính thức. Khả năng cao là không chạy được.",
+        "booru_engine_input_label": "Booru engine (*)",
+        "config_name_label": "Tên config (*)",
+        "site_url_label": "URL của web",
+        "login_name_label": "Tên đăng nhập",
+        "password_api_key_label": "API key",
+        "password_hashed_label": "Mật khẩu đã được mã hóa (chỉ đọc)",
+        "password_label": "Mật khẩu",
+        "content_filtering_label": "Lọc nội dung",
+        "hide_deleted_label": "Ẩn ảnh bị xoá",
+        "config_booru_confirm": "Chốt"
     },
     "blacklist": {
         "manage": {
@@ -365,5 +405,12 @@
         "later": "Để sau",
         "whats_new": "Có gì mới?",
         "update_available": "Có cập nhật mới"
+    },
+    " \"settings": {
+        "image_grid": {
+            "image_quality": {
+                "highest": "Cao nhất"
+            }
+        }
     }
 }
