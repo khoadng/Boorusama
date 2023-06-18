@@ -38,6 +38,11 @@ extension PostImageX on Post {
         ImageQuality.highest => sampleImageUrl,
         ImageQuality.original => originalImageUrl
       };
+
+  bool get hasNoImage =>
+      thumbnailImageUrl.isEmpty &&
+      sampleImageUrl.isEmpty &&
+      originalImageUrl.isEmpty;
 }
 
 extension PostX on Post {

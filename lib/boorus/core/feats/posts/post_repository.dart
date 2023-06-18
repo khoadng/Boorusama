@@ -3,7 +3,9 @@ import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 import 'post.dart';
 
-typedef PostsOrError = TaskEither<BooruError, List<Post>>;
+typedef PostsOrErrorCore<T extends Post> = TaskEither<BooruError, List<T>>;
+
+typedef PostsOrError = PostsOrErrorCore<Post>;
 
 abstract class PostRepository {
   PostsOrError getPostsFromTags(
