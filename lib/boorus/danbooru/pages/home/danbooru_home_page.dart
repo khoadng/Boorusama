@@ -14,7 +14,7 @@ import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'bottom_bar_widget.dart';
+import 'danbooru_bottom_bar.dart';
 import 'other_features_page.dart';
 
 class DanbooruHomePage extends ConsumerStatefulWidget {
@@ -64,7 +64,7 @@ class _HomePageState extends ConsumerState<DanbooruHomePage> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomBar(
+        bottomNavigationBar: DanbooruBottomBar(
           initialValue: viewIndex.value,
           onTabChanged: (value) => viewIndex.value = value,
         ),
