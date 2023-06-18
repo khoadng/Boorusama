@@ -23,9 +23,9 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'artist_section.dart';
+import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
-import 'information_section.dart';
 import 'pool_tiles.dart';
 import 'post_note.dart';
 import 'post_stats_tile.dart';
@@ -122,7 +122,7 @@ class _DanbooruPostDetailsPageState
                   builder: (_, progress, __) =>
                       BooruVideoProgressBar(progress: progress),
                 ),
-              InformationSection(
+              DanbooruInformationSection(
                 post: posts[page],
                 showSource: true,
               ),
@@ -336,7 +336,7 @@ class _DanbooruPostDetailsPageState
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
         PoolTiles(pools: pools),
-        InformationSection(
+        DanbooruInformationSection(
           post: post,
           showSource: true,
         ),

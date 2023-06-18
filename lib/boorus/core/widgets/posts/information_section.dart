@@ -8,8 +8,6 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
@@ -19,14 +17,25 @@ import 'package:boorusama/widgets/widgets.dart';
 class InformationSection extends StatelessWidget {
   const InformationSection({
     super.key,
-    required this.post,
     this.padding,
+    required this.characterTags,
+    required this.artistTags,
+    required this.copyrightTags,
+    required this.createdAt,
+    required this.source,
+    this.onArtistTagTap,
     this.showSource = false,
   });
 
-  final DanbooruPost post;
   final EdgeInsetsGeometry? padding;
   final bool showSource;
+  final List<String> characterTags;
+  final List<String> artistTags;
+  final List<String> copyrightTags;
+  final DateTime createdAt;
+  final PostSource source;
+
+  final void Function(BuildContext context, String artist)? onArtistTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +51,9 @@ class InformationSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post.characterTags.isEmpty
+                  characterTags.isEmpty
                       ? 'Original'
-                      : generateCharacterOnlyReadableName(post)
+                      : generateCharacterOnlyReadableName(characterTags)
                           .removeUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
@@ -54,9 +63,9 @@ class InformationSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  post.copyrightTags.isEmpty
+                  copyrightTags.isEmpty
                       ? 'Original'
-                      : generateCopyrightOnlyReadableName(post)
+                      : generateCopyrightOnlyReadableName(copyrightTags)
                           .removeUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
@@ -68,7 +77,7 @@ class InformationSection extends StatelessWidget {
                 Row(
                   children: [
                     Flexible(
-                      child: post.artistTags.firstOrNull.toOption().fold(
+                      child: artistTags.firstOrNull.toOption().fold(
                             () => const SizedBox.shrink(),
                             (artist) => Material(
                               borderRadius: BorderRadius.circular(6),
@@ -78,7 +87,8 @@ class InformationSection extends StatelessWidget {
                               ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(6),
-                                onTap: () => goToArtistPage(context, artist),
+                                onTap: () =>
+                                    onArtistTagTap?.call(context, artist),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 2,
@@ -95,13 +105,13 @@ class InformationSection extends StatelessWidget {
                             ),
                           ),
                     ),
-                    post.artistTags.firstOrNull.toOption().fold(
+                    artistTags.firstOrNull.toOption().fold(
                           () => const SizedBox.shrink(),
                           (_) => const SizedBox(width: 5),
                         ),
                     Text(
-                      post.createdAt
-                          .fuzzify(locale: Localizations.localeOf(context)),
+                      createdAt.fuzzify(
+                          locale: Localizations.localeOf(context)),
                       style: context.textTheme.bodySmall,
                     ),
                   ],
@@ -110,7 +120,7 @@ class InformationSection extends StatelessWidget {
             ),
           ),
           if (showSource)
-            post.source.whenWeb(
+            source.whenWeb(
               (source) => GestureDetector(
                 onTap: () => launchExternalUrl(source.uri),
                 child: WebsiteLogo(
