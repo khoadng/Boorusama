@@ -58,7 +58,7 @@ class _PageSelectorState extends State<PageSelector> {
   @override
   Widget build(BuildContext context) {
     return ButtonBar(
-      buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
+      buttonPadding: EdgeInsets.zero,
       alignment: MainAxisAlignment.center,
       children: [
         IconButton(
@@ -74,6 +74,7 @@ class _PageSelectorState extends State<PageSelector> {
           itemPerPage: widget.itemPerPage,
         ).map((page) => ElevatedButton(
               style: ElevatedButton.styleFrom(
+                minimumSize: const Size(36, 36),
                 shape: const CircleBorder(),
                 shadowColor: Colors.transparent,
                 backgroundColor: page == widget.currentPage

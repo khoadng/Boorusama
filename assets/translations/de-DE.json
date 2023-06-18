@@ -11,7 +11,8 @@
             "edit": "Bearbeiten",
             "ok": "OK",
             "cancel": "Abbrechen"
-        }
+        },
+        "view": "Anzeigen"
     },
     "profile": {
         "favorites": "Favoriten"
@@ -23,7 +24,7 @@
         "related": {
             "more": "Mehr",
             "related": "Ähnliche",
-            "add_to_current_search": "Zu aktueller Suche hinzufügen ",
+            "add_to_current_search": "Zu aktueller Suche hinzufügen",
             "open_wiki": "Wiki öffnen"
         },
         "explore": {
@@ -47,7 +48,7 @@
             "rating": "Rating",
             "file_format": "Dateiformat",
             "share": {
-                "source": "Link zur Quelle teilen",
+                "source": "Quelllink teilen",
                 "booru": "Booru link teilen",
                 "image": "Bild teilen"
             },
@@ -56,13 +57,17 @@
             "show_translated": "Übersetzt anzeigen",
             "login_required_notice": "Du musst dich anmelden, um diese Aktion durchzuführen",
             "open_wiki": "Wiki öffnen",
-            "add_to_blacklist": "Zu Blacklist hinzufügen",
+            "add_to_blacklist": "Zu schwarzer Liste hinzufügen",
             "add_to_favorites": "Zu Favoriten hinzufügen",
             "copy_and_open_saved_search": "Gespeicherte Suche kopieren und öffnen",
             "score": {
                 "one": "Punkt",
                 "other": "Punkte"
-            }
+            },
+            "source_label": "Quelle",
+            "related_posts": "Ähnliche Beiträge",
+            "add_to_bookmark": "Lesezeichen hinzufügen",
+            "remove_from_bookmark": "Lesezeichen entfernen"
         },
         "parent_child": {
             "children_of": "Children von"
@@ -131,7 +136,7 @@
             "recent": "Neueste"
         },
         "trending": "Aktuell",
-        "remove_all_selected": "Ausgewählte Tags entfernen "
+        "remove_all_selected": "Ausgewählte Tags entfernen"
     },
     "pool": {
         "pool": "Pool",
@@ -140,7 +145,7 @@
         "order": {
             "recent": "Neueste",
             "new": "Neu",
-            "post_count": "Post Anzahl",
+            "post_count": "Anzahl der Beiträge",
             "name": "Name"
         },
         "category": {
@@ -158,13 +163,14 @@
         "settings": "Einstellungen",
         "app_settings": "App Einstellungen",
         "appearance": {
-            "appearance": "Aussehen"
+            "appearance": "Aussehen",
+            "show_scores": "Scores anzeigen"
         },
         "general": "Allgemein",
         "search": "Suche",
         "information": "Information",
         "changelog": "Änderungsprotokoll",
-        "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst ",
+        "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst",
         "result_layout": {
             "result_layout": "Endlayout",
             "infinite_scroll": "Endloses Scrollen",
@@ -189,7 +195,8 @@
                 "high": "Hoch",
                 "low": "Niedrig",
                 "original": "Original",
-                "automatic": "Automatisch"
+                "automatic": "Automatisch",
+                "highest": "Höchste"
             },
             "spacing": "Abstand",
             "corner_radius": "Eckradius"
@@ -218,22 +225,40 @@
         },
         "performance": {
             "performance": "Leistung",
-            "posts_per_page": "Posts pro Seite",
-            "posts_per_page_explain": "Vorschaubilder pro Seite"
+            "posts_per_page": "Beiträge pro Seite",
+            "posts_per_page_explain": "Vorschaubilder pro Seite",
+            "cache_size": "Cache Größe",
+            "clear_cache": "Löschen",
+            "cache_size_info": "{0} Mb in {1} Dateien"
         },
-        "help_us_translate": "Helfen Sie uns zu übersetzen"
+        "debug_logs": {
+            "debug_logs": "Debug-Protokolle",
+            "logs_copied": "Protokolle in die Zwischenablage kopiert"
+        },
+        "download": {
+            "path": "Downloadpfad",
+            "select_a_folder": "Ordner auswählen",
+            "quality": "Bild-Downloadqualität",
+            "qualities": {
+                "original": "Original",
+                "sample": "Beispiel",
+                "preview": "Vorschau"
+            }
+        },
+        "help_us_translate": "Helfen Sie uns zu übersetzen",
+        "other_settings": "Andere Einstellungen"
     },
     "blacklisted_tags": {
         "remove": "Entfernen",
         "edit": "Bearbeiten",
-        "blacklisted_tags": "Auf der Blacklist stehende Tags",
-        "load_error": "Die Tags auf der Blacklist konnten nicht geladen werden",
-        "updated": "Tags auf der Blacklist aktualisiert",
+        "blacklisted_tags": "Auf der schwarzen Liste stehende Tags",
+        "load_error": "Die Tags auf der schwarzen Liste konnten nicht geladen werden",
+        "updated": "Tags auf der schwarzen Liste aktualisiert",
         "limitation_notice": "Unterstützt nur den <b>NOT</b> Operator und den <b>OR</b> Operator.\n\nBlacklisting mit Metatags funktioniert in der aktuellen Version nicht."
     },
     "download": {
         "download": "Download",
-        "bulk_download": "Bulk download",
+        "bulk_download": "Massen-Download",
         "bulk_download_tag_confirmation": "Die folgenden Tags werden heruntergeladen",
         "bulk_download_save_to_folder": "In Ordner speichern",
         "bulk_download_total_count": "Gesamt",
@@ -257,11 +282,14 @@
         },
         "bulk_download_download_more": "Mehr herunterladen",
         "open_app_settings": "Einstellungen öffnen",
-        "storage_permission_explanation": "Zum Speichern von Downloaddateien ist eine Speichererlaubnis erforderlich.",
+        "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
         "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden",
         "image_counter": {
             "one": "{} Bild herunterladen",
             "other": "{} Bilder herunterladen"
+        },
+        "bulk": {
+            "all_done_notification_message": "Alle Downloads sind abgeschlossen"
         }
     },
     "saved_search": {
@@ -271,10 +299,10 @@
             "other": "{} Suchen"
         },
         "add_saved_search": "Suche speichern",
-        "saved_search_added": "Gespeicherte Suche hinzugefügt ",
+        "saved_search_added": "Gespeicherte Suche hinzugefügt",
         "empty_saved_search": "Du hast noch keine suchen hinzugefügt",
         "update_saved_search": "Gespeicherte Suche aktualisieren",
-        "saved_search_updated": "Gespeicherte Suche wurde aktualisiert ",
+        "saved_search_updated": "Gespeicherte Suche wurde aktualisiert",
         "saved_search_feed": "Feed",
         "saved_search_help": "Was ist es?",
         "saved_search_examples": "Beispiele",
@@ -296,17 +324,17 @@
         "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
     },
     "favorite_groups": {
-        "favorite_groups": "Favorisierte Groups",
-        "empty_group_notice": "Keine Favorisieren Gruppen vorhanden",
+        "favorite_groups": "Favorisierte Gruppen",
+        "empty_group_notice": "Keine Favorisierten Gruppen vorhanden",
         "create_group": "Gruppe erstellen",
         "edit_group": "Gruppe bearbeiten",
-        "add_to_group_dialog_title": "Zu Favorisierter Gruppe hinzufügen ",
+        "add_to_group_dialog_title": "Zu Favorisierter Gruppe hinzufügen",
         "add_to": "Hinzufügen zu",
         "create": "Erstellen",
         "private": "Privat",
         "view_more_popup": "Anzeigen",
         "items_added_notification_popup": "{0} Posts zu {1} hinzugefügt",
-        "group_name": "Gruppennamen",
+        "group_name": "Gruppenname",
         "group_name_hint": "Neue Gruppe",
         "all_posts": "Posts",
         "initial_posts_hint": "ID-Nummern getrennt durch Leerzeichen eingeben (optional)",
@@ -338,11 +366,53 @@
         "rationale": "Wenn dir die App gefällt, nimm dir bitte etwas Zeit, sie zu bewerten.\nEs dauert nicht länger als ein paar Sekunden und es hilft diesem Projekt sehr."
     },
     "sideMenu": {
-        "settings": "Einstellungen"
+        "settings": "Einstellungen",
+        "manage_boorus": "Boorus verwalten",
+        "your_bookmarks": "Deine Lesezeichen",
+        "your_blacklist": "Deine schwarze Liste",
+        "bulk_download": "Massen-Download"
     },
     "dateRange": {
         "day": "Tag",
         "week": "Woche",
         "month": "Monat"
+    },
+    "booru": {
+        "addNew": "Neues Booru hinzufügen",
+        "add_booru_source_title": "Eine Quelle hinzufügen. Anmeldedaten leer lassen, um anonym zu bleiben",
+        "add_random_booru_warning": "Dieser Booru wird noch nicht offiziell unterstützt. Wahrscheinlich wird es nicht funktionieren.",
+        "booru_engine_input_label": "Booru Engine (*)",
+        "config_name_label": "Konfigurationsname (*)",
+        "site_url_label": "Seiten-URL",
+        "login_name_label": "Login",
+        "password_api_key_label": "API Schlüssel",
+        "password_hashed_label": "Passwort gehasht (schreibgeschützt)",
+        "password_label": "Passwort",
+        "content_filtering_label": "Inhaltsfilterung",
+        "hide_deleted_label": "Gelöschte Beiträge ausblenden",
+        "config_booru_confirm": "OK"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Schwarze Liste",
+            "empty_blacklist": "Keine Tags auf der schwarzen Liste"
+        }
+    },
+    "bookmark": {
+        "added": "Lesezeichen hinzugefügt",
+        "failed_to_add": "Lesezeichen konnte nicht hinzugefügt werden",
+        "many_added": "{0} Lesezeichen hinzugefügt",
+        "failed_to_add_many": "Lesezeichen konnten nicht hinzugefügt werden",
+        "removed": "Lesezeichen entfernt",
+        "updated": "Lesezeichen aktualisiert",
+        "failed_to_remove": "Lesezeichen konnte nicht entfernt werden",
+        "failed_to_update": "Lesezeichen konnte nicht aktualisiert werden",
+        "failed_to_load": "Lesezeichen konnten nicht geladen werden: {0}"
+    },
+    "app_update": {
+        "update": "Update",
+        "later": "Später",
+        "whats_new": "Was ist neu?",
+        "update_available": "Update verfügbar"
     }
 }

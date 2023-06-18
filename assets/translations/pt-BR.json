@@ -9,9 +9,10 @@
             "add": "Adicionar",
             "delete": "Deletar",
             "edit": "Editar",
-            "ok": "Certo",
+            "ok": "De acordo",
             "cancel": "Cancelar"
-        }
+        },
+        "view": "Visualizar"
     },
     "profile": {
         "favorites": "Favoritos"
@@ -21,21 +22,86 @@
     },
     "tag": {
         "related": {
-            "more": "Mais"
+            "more": "Mais",
+            "related": "Relacionado",
+            "add_to_current_search": "Adicionar à pesquisa atual",
+            "open_wiki": "Abrir wiki"
         },
         "explore": {
+            "new": "Novo",
             "popular": "Popular"
         }
     },
     "post": {
+        "detail": {
+            "view": "Visualizar",
+            "slide_show": {
+                "interval": "Intervalo (segundos)",
+                "skip_anim": "Animação de Skip",
+                "ok": "De acordo",
+                "cancel": "Cancelar"
+            },
+            "view_in_browser": "Visualizar no navegador",
+            "file_details": "Detalhes do arquivo",
+            "size": "Tamanho",
+            "resolution": "Resolução",
+            "rating": "Avaliação",
+            "file_format": "Formato do arquivo",
+            "share": {
+                "source": "Compartilhar link de origem",
+                "booru": "Compartilhar link do booru",
+                "image": "Compartilhar imagem"
+            },
+            "copied": "Copiado",
+            "show_original": "Mostrar original",
+            "show_translated": "Mostrar traduzido",
+            "login_required_notice": "Você precisa fazer login para executar esta ação",
+            "open_wiki": "Abrir wiki",
+            "add_to_blacklist": "Adicionar na lista negra",
+            "add_to_favorites": "Adicionar aos favoritos",
+            "copy_and_open_saved_search": "Copiar e abrir pesquisa salva",
+            "score": {
+                "one": "Ponto",
+                "other": "Pontos"
+            }
+        },
+        "parent_child": {
+            "children_of": "Filho de"
+        },
         "action": {
-            "view_comments": "Ver comentários"
+            "preview": "Pré-visualização",
+            "view_comments": "Ver comentários",
+            "add_to_favorite_group": "Adicionar ao grupo favorito",
+            "select": "Selecionar"
+        },
+        "image_fullview": {
+            "view_original": "Ver original",
+            "view_resized": "Ver completo"
         }
     },
     "comment": {
-        "comments": "Comentários"
+        "comments": "Comentários",
+        "create": {
+            "hint": "Comentário",
+            "loading": "Por favor, aguarde...",
+            "error": "Erro"
+        },
+        "list": {
+            "edit": "Editar",
+            "reply": "Responder",
+            "reply_to": "Respondendo a",
+            "delete": "Excluir",
+            "noComments": "Não há comentários",
+            "last_updated": "Última atualização",
+            "send": "Enviar"
+        },
+        "counter": {
+            "one": "Comentário",
+            "other": "Comentários"
+        }
     },
     "explore": {
+        "latest": "Novidades",
         "popular": "Popular",
         "most_viewed": "Mais visualizados"
     },

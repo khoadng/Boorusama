@@ -195,7 +195,8 @@
                 "high": "High",
                 "low": "Low",
                 "original": "Original",
-                "automatic": "Automatic"
+                "automatic": "Automatic",
+                "highest": "Highest"
             },
             "spacing": "Spacing",
             "corner_radius": "Corner radius"

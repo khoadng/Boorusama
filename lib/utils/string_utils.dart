@@ -30,3 +30,7 @@ extension StringX on String {
   int? toInt() => int.tryParse(this);
   bool? toBool() => bool.tryParse(this);
 }
+
+extension StringNullX on String? {
+  bool isNotNullAndEmpty() => this != null && this != '';
+}
