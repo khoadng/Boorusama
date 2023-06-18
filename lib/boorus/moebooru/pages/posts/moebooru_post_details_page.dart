@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -24,26 +23,18 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
     super.key,
     required this.posts,
     required this.initialPage,
-    required this.fullscreen,
-    // required this.onPageChanged,
-    // required this.onCachedImagePathUpdate,
     required this.onExit,
   });
 
   final List<Post> posts;
   final int initialPage;
-  final bool fullscreen;
-  // final void Function(int page) onPageChanged;
-  // final void Function(String? imagePath) onCachedImagePathUpdate;
   final void Function(int page) onExit;
 
   static MaterialPageRoute routeOf(
-    BuildContext context,
-    WidgetRef ref, {
+    BuildContext context, {
     required List<Post> posts,
     required int initialIndex,
     AutoScrollController? scrollController,
-    required Settings settings,
   }) {
     return MaterialPageRoute(
       builder: (_) {
@@ -52,7 +43,6 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
             posts: posts,
             onExit: (page) => scrollController?.scrollToIndex(page),
             initialPage: initialIndex,
-            fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
           ),
         );
       },

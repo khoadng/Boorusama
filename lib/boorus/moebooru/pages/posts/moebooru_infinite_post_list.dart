@@ -116,12 +116,10 @@ class _MoebooruInfinitePostListState
               onTap: !multiSelect
                   ? () {
                       goToMoebooruDetailsPage(
-                        ref: ref,
                         context: context,
                         posts: items,
                         initialPage: index,
                         scrollController: _autoScrollController,
-                        settings: ref.read(settingsProvider),
                       );
                     }
                   : null,
