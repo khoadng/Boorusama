@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
-class GelbooruMoreActionButton extends ConsumerWidget {
-  const GelbooruMoreActionButton({
+class GeneralMoreActionButton extends ConsumerWidget {
+  const GeneralMoreActionButton({
     super.key,
     required this.post,
   });

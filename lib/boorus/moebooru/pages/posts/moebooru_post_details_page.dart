@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
@@ -127,7 +128,7 @@ class _MoebooruPostDetailsPageState
       },
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (currentPage, expanded) => [
-        MoebooruMoreActionButton(
+        GeneralMoreActionButton(
           post: widget.posts[currentPage],
         ),
       ],
