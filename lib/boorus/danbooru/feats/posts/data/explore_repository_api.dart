@@ -7,11 +7,11 @@ import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import '../models/danbooru_post.dart';
 import '../models/danbooru_post_repository.dart';
 import '../models/explore_repository.dart';
-import '../models/time_scale.dart';
 import 'common.dart';
 
 class ExploreRepositoryApi

@@ -5,11 +5,12 @@ enum Rating {
   general,
 }
 
-Rating mapStringToRating(String str) => switch (str) {
+Rating mapStringToRating(String? str) => switch (str) {
       's' || 'sensitive' => Rating.sensitive,
       'e' || 'explicit' => Rating.explicit,
       'g' || 'general' => Rating.general,
-      _ => Rating.questionable,
+      'q' || 'questionable' => Rating.questionable,
+      _ => Rating.sensitive,
     };
 
 extension RatingX on Rating {

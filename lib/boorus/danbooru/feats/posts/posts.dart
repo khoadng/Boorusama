@@ -32,5 +32,4 @@ export 'models/post_count_repository.dart';
 export 'models/post_variant.dart';
 export 'models/post_vote.dart';
 export 'models/post_vote_repository.dart';
-export 'models/time_scale.dart';
 export 'models/vote_state.dart';

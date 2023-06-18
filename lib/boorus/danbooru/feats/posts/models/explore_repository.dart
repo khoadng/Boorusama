@@ -1,6 +1,6 @@
 // Project imports:
+import 'package:boorusama/boorus/core/feats/types.dart';
 import 'danbooru_post_repository.dart';
-import 'time_scale.dart';
 
 abstract class ExploreRepository {
   DanbooruPostsOrError getPopularPosts(
