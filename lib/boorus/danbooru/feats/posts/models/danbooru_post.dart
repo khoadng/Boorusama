@@ -276,6 +276,8 @@ extension DanbooruPostImageX on DanbooruPost {
         ImageQuality.automatic => url720x720
       };
 
-  String thumbnailFromSettings(Settings settings) =>
-      thumbnailFromImageQuality(settings.imageQuality);
+  String thumbnailFromSettings(Settings settings) {
+    if (isGif) return urlSample;
+    return thumbnailFromImageQuality(settings.imageQuality);
+  }
 }

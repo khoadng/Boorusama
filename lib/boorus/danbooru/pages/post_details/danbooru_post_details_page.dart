@@ -132,9 +132,7 @@ class _DanbooruPostDetailsPageState
         );
       },
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-        imageUrl: posts[page].isGif
-            ? posts[page].urlOriginal
-            : posts[page].url720x720,
+        imageUrl: posts[page].thumbnailFromSettings(ref.read(settingsProvider)),
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
@@ -291,9 +289,7 @@ class _DanbooruPostDetailsPageState
             useHero: page == currentPage,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.isGif
-                ? post.urlOriginal
-                : post.thumbnailFromSettings(ref.read(settingsProvider)),
+            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
             // Prevent placeholder image from showing when first loaded a post with translated image
             placeholderImageUrl:
                 currentPage == widget.intitialIndex && post.isTranslated

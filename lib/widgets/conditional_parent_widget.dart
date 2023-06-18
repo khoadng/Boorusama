@@ -37,8 +37,8 @@ class ConditionalParentWidget extends StatelessWidget {
   const ConditionalParentWidget({
     super.key,
     required this.condition,
-    required this.child,
     required this.conditionalBuilder,
+    required this.child,
   });
 
   final Widget child;

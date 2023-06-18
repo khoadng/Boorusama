@@ -252,76 +252,95 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
               valueListenable: _keepBottomSheetDown,
               builder: (_, keepDown, __) => Stack(
                 children: [
-                  if (!keepDown)
-                    Offstage(
-                      offstage: offstage,
-                      child: Listener(
-                        onPointerMove: (event) =>
-                            _handlePointerMove(event, expanded),
-                        onPointerUp: (event) =>
-                            _handlePointerUp(event, expanded),
-                        child: ExprollablePageView(
-                          controller: controller,
-                          onViewportChanged: (metrics) {
-                            if (metrics.isPageExpanded == isExpanded.value) {
-                              return;
-                            }
-
-                            isExpanded.value = metrics.isPageExpanded;
-                            if (isExpanded.value) {
-                              widget.onExpanded?.call(currentPage);
-                            }
-                          },
-                          onPageChanged: widget.onPageChanged,
-                          physics: _pageSwipe
-                              ? const DefaultPageViewScrollPhysics()
-                              : const NeverScrollableScrollPhysics(),
-                          itemCount: widget.pageCount,
-                          itemBuilder: (context, page) {
-                            return ValueListenableBuilder(
-                              valueListenable: isExpanded,
-                              builder: (context, value, child) =>
-                                  widget.expandedBuilder(
-                                context,
-                                page,
-                                currentPage,
-                                value,
-                                _pageSwipe,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  Offstage(
-                    offstage: !offstage || keepDown,
-                    child: ValueListenableBuilder(
-                      valueListenable: dragDistance,
-                      builder: (context, dd, child) => ValueListenableBuilder(
-                        valueListenable: dragDistanceX,
-                        builder: (context, ddx, child) => Transform.translate(
-                          offset: Offset(ddx, dd),
-                          child: Listener(
-                            onPointerMove: (event) =>
-                                _handlePointerMove(event, expanded),
-                            onPointerUp: (event) =>
-                                _handlePointerUp(event, expanded),
-                            child: Transform.scale(
-                              scale: scale,
-                              child: widget.targetSwipeDownBuilder(
-                                context,
-                                currentPage,
-                              ),
-                            ),
+                  ValueListenableBuilder(
+                    valueListenable: dragDistance,
+                    builder: (_, drag, __) => drag > 0 && keepDown
+                        ? const SizedBox.shrink()
+                        : Offstage(
+                            offstage: offstage,
+                            child: _buildPageView(expanded, currentPage),
                           ),
-                        ),
-                      ),
-                    ),
-                  )
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: dragDistance,
+                    builder: (_, drag, __) => drag > 0
+                        ? ConditionalParentWidget(
+                            condition: !keepDown,
+                            conditionalBuilder: (child) => Offstage(
+                              offstage: !offstage,
+                              child: child,
+                            ),
+                            child: _buildSwipeTarget(expanded, currentPage),
+                          )
+                        : Offstage(
+                            offstage: !offstage,
+                            child: _buildSwipeTarget(expanded, currentPage),
+                          ),
+                  ),
                 ],
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageView(bool expanded, int currentPage) {
+    return Listener(
+      onPointerMove: (event) => _handlePointerMove(event, expanded),
+      onPointerUp: (event) => _handlePointerUp(event, expanded),
+      child: ExprollablePageView(
+        controller: controller,
+        onViewportChanged: (metrics) {
+          if (metrics.isPageExpanded == isExpanded.value) {
+            return;
+          }
+
+          isExpanded.value = metrics.isPageExpanded;
+          if (isExpanded.value) {
+            widget.onExpanded?.call(currentPage);
+          }
+        },
+        onPageChanged: widget.onPageChanged,
+        physics: _pageSwipe
+            ? const DefaultPageViewScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        itemCount: widget.pageCount,
+        itemBuilder: (context, page) {
+          return ValueListenableBuilder(
+            valueListenable: isExpanded,
+            builder: (context, value, child) => widget.expandedBuilder(
+              context,
+              page,
+              currentPage,
+              value,
+              _pageSwipe,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSwipeTarget(bool expanded, int currentPage) {
+    return ValueListenableBuilder(
+      valueListenable: dragDistance,
+      builder: (context, dd, child) => ValueListenableBuilder(
+        valueListenable: dragDistanceX,
+        builder: (context, ddx, child) => Transform.translate(
+          offset: Offset(ddx, dd),
+          child: Listener(
+            onPointerMove: (event) => _handlePointerMove(event, expanded),
+            onPointerUp: (event) => _handlePointerUp(event, expanded),
+            child: Transform.scale(
+              scale: scale,
+              child: widget.targetSwipeDownBuilder(
+                context,
+                currentPage,
+              ),
+            ),
+          ),
         ),
       ),
     );
