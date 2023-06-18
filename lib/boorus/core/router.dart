@@ -231,6 +231,10 @@ void goToQuickSearchPage(
         switch (booru.booruType) {
           case BooruType.unknown:
             throw UnimplementedError();
+          case BooruType.e621:
+          case BooruType.e926:
+            //FIXME: Implement e621 autocomplete
+            throw UnimplementedError();
           case BooruType.danbooru:
           case BooruType.safebooru:
           case BooruType.testbooru:
@@ -378,6 +382,10 @@ Future<void> goToBulkDownloadPage(
     type: PageTransitionType.rightToLeft,
     child: Builder(builder: (_) {
       switch (booru.booruType) {
+        case BooruType.e621:
+        case BooruType.e926:
+          //FIXME: Implement e621 bulk download
+          throw UnimplementedError();
         case BooruType.unknown:
           throw UnimplementedError();
         case BooruType.konachan:

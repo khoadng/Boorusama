@@ -27,7 +27,7 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
   ) builder;
 
   @override
-  ConsumerState<PostScope> createState() => _PostScopeState();
+  ConsumerState<PostScope<T>> createState() => _PostScopeState();
 }
 
 class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
