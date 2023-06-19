@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 
 class E621Provider extends StatelessWidget {
@@ -28,8 +29,8 @@ class E621Provider extends StatelessWidget {
         postRepoProvider.overrideWith((ref) => ref.watch(e621PostRepoProvider)),
         // downloadFileNameGeneratorProvider.overrideWith(
         //     (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
-        // autocompleteRepoProvider
-        //     .overrideWith((ref) => ref.watch(moebooruAutocompleteRepoProvider))
+        autocompleteRepoProvider
+            .overrideWith((ref) => ref.watch(e621AutocompleteRepoProvider))
       ],
       child: Builder(
         builder: builder,

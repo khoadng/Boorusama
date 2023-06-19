@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -72,8 +73,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
                             toolbarHeight: kToolbarHeight * 1.2,
                             title: HomeSearchBar(
                               onMenuTap: widget.onMenuTap,
-                              //FIXME: go to search page
-                              // onTap: () => goToMoebooruSearchPage(ref, context),
+                              onTap: () => goToE621SearchPage(context),
                             ),
                             floating: true,
                             snap: true,

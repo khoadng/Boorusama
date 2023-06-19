@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
+import 'package:boorusama/boorus/e621/pages/search/e621_search_page.dart';
 import 'package:boorusama/flutter.dart';
 
 void goToE621DetailsPage({
@@ -26,6 +27,12 @@ void goToE621DetailsPage({
     ),
   );
 }
+
+void goToE621SearchPage(
+  BuildContext context, {
+  String? tag,
+}) =>
+    context.navigator.push(E621SearchPage.routeOf(tag: tag));
 
 void goToE621FavoritesPage(BuildContext context, String? username) {
   context.navigator.push(MaterialPageRoute(
