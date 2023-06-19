@@ -27,11 +27,13 @@ class E621PostRepositoryApi
     this.api,
     this.booruConfig,
     this.settingsRepository,
-    this.blacklistedTagRepository,
-  );
+    this.blacklistedTagRepository, {
+    required this.onFetch,
+  });
 
   final E621Api api;
   final BooruConfig booruConfig;
+  final void Function(List<E621Post> posts) onFetch;
 
   @override
   final SettingsRepository settingsRepository;
@@ -74,6 +76,8 @@ class E621PostRepositoryApi
         final data = await $(tryParseData(response));
 
         final filtered = await $(tryFilterBlacklistedTags(data));
+
+        onFetch.call(filtered);
 
         _cache.set(key, filtered);
 

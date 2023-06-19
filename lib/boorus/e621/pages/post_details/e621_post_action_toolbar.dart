@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/posts/favorite_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 
@@ -23,6 +24,7 @@ class E621PostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
+    final isFaved = ref.watch(e621FavoriteProvider(post.id));
 
     return Material(
       color: context.theme.scaffoldBackgroundColor,
@@ -31,15 +33,12 @@ class E621PostActionToolbar extends ConsumerWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           FavoritePostButton(
-            isFaved: post.isFavorited,
-            isAuthorized: authState.isAuthenticated,
-            addFavorite: () async {
-              //FIXME: implement addFavorite
-            },
-            removeFavorite: () async {
-              //FIXME: implement removeFavorite
-            },
-          ),
+              isFaved: isFaved,
+              isAuthorized: authState.isAuthenticated,
+              addFavorite: () =>
+                  ref.read(e621FavoritesProvider.notifier).add(post.id),
+              removeFavorite: () =>
+                  ref.read(e621FavoritesProvider.notifier).remove(post.id)),
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),
           SharePostButton(post: post),

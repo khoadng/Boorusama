@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/dart.dart';
@@ -85,6 +86,7 @@ class _MoebooruInfinitePostListState
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authenticationProvider);
+    final favorites = ref.watch(e621FavoritesProvider);
 
     final settings = ref.watch(settingsProvider);
 
@@ -125,10 +127,15 @@ class _MoebooruInfinitePostListState
                       );
                     }
                   : null,
-              isFaved: post.isFavorited,
+              isFaved: favorites[post.id] ?? false,
               enableFav: authState.isAuthenticated,
-              //FIXME: implement fav toggle
-              onFavToggle: (isFaved) async {},
+              onFavToggle: (isFaved) {
+                if (!isFaved) {
+                  ref.read(e621FavoritesProvider.notifier).remove(post.id);
+                } else {
+                  ref.read(e621FavoritesProvider.notifier).add(post.id);
+                }
+              },
               autoScrollOptions: AutoScrollOptions(
                 controller: _autoScrollController,
                 index: index,

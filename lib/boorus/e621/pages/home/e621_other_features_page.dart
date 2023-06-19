@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
@@ -16,8 +15,6 @@ class E621OtherFeaturesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -26,9 +23,7 @@ class E621OtherFeaturesPage extends ConsumerWidget {
               ListTile(
                 leading: const Icon(Icons.favorite_outline),
                 title: Text('profile.favorites'.tr()),
-                onTap: () {
-                  goToE621FavoritesPage(context, booruConfig.login);
-                },
+                onTap: () => goToE621FavoritesPage(context),
               ),
             ],
           ),

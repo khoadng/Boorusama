@@ -34,8 +34,8 @@ void goToE621SearchPage(
 }) =>
     context.navigator.push(E621SearchPage.routeOf(tag: tag));
 
-void goToE621FavoritesPage(BuildContext context, String? username) {
+void goToE621FavoritesPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => E621FavoritesPage.of(context, username: username!),
+    builder: (_) => E621FavoritesPage.of(context),
   ));
 }
