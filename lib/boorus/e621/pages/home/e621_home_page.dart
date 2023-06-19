@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
@@ -15,6 +16,7 @@ import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'e621_other_features_page.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -35,6 +37,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
+    final auth = ref.watch(authenticationProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -79,7 +82,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
                         ],
                       ),
                     ),
-                    const E621PopularPage()
+                    const E621PopularPage(),
+                    const E621OtherFeaturesPage(),
                   ],
                 ),
               ),
@@ -89,6 +93,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
         bottomNavigationBar: E621BottomBar(
           initialValue: viewIndex.value,
           onTabChanged: (value) => viewIndex.value = value,
+          isAuthenticated: auth.isAuthenticated,
         ),
       ),
     );

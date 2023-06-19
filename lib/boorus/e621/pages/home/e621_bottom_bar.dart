@@ -9,10 +9,12 @@ class E621BottomBar extends StatelessWidget {
     super.key,
     required this.onTabChanged,
     this.initialValue = 0,
+    this.isAuthenticated = false,
   });
 
   final ValueChanged<int> onTabChanged;
   final int initialValue;
+  final bool isAuthenticated;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,13 @@ class E621BottomBar extends StatelessWidget {
               ? const Icon(Icons.explore)
               : const Icon(Icons.explore_outlined),
         ),
+        if (isAuthenticated)
+          BottomNavigationBarItem(
+            label: 'More',
+            icon: currentIndex == 2
+                ? const Icon(Icons.more_horiz)
+                : const Icon(Icons.more_horiz_outlined),
+          ),
       ],
     );
   }
