@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/pages/post_details/artist_section.dart
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
 import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
@@ -127,8 +128,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets =
             _buildWidgets(context, expanded, page, currentPage, ref);
-        final artist = posts[page].artistTags.firstOrNull;
-        final artistAsync = ref.watch(e621ArtistPostsProvider(artist));
+
         // final characters =
         //     ref.watch(danbooruPostDetailsCharacterProvider(posts[page].id));
 
@@ -145,22 +145,29 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                 ),
               ),
               // const RelatedPostsSection(),
-              artistAsync.maybeWhen(
-                data: (posts) => RecommendPosts(
-                  title: artist ?? '',
-                  items: posts.take(30).toList(),
-                  onTap: (index) => goToE621DetailsPage(
-                    context: context,
-                    posts: posts,
-                    initialPage: index,
-                  ),
-                  onHeaderTap: () => goToE621ArtistPage(context, artist ?? ''),
-                  imageUrl: (item) => item.thumbnailFromSettings(
-                    ref.read(settingsProvider),
-                  ),
+              if (expanded && page == currentPage)
+                Builder(
+                  builder: (context) {
+                    final artist = posts[page].artistTags.firstOrNull;
+                    return ref.watch(e621ArtistPostsProvider(artist)).maybeWhen(
+                          data: (posts) => RecommendPosts(
+                            title: artist?.replaceAll('_', ' ') ?? '',
+                            items: posts.take(30).toList(),
+                            onTap: (index) => goToE621DetailsPage(
+                              context: context,
+                              posts: posts,
+                              initialPage: index,
+                            ),
+                            onHeaderTap: () =>
+                                goToE621ArtistPage(context, artist ?? ''),
+                            imageUrl: (item) => item.thumbnailFromSettings(
+                              ref.read(settingsProvider),
+                            ),
+                          ),
+                          orElse: () => const SliverSizedBox.shrink(),
+                        );
+                  },
                 ),
-                orElse: () => const SliverSizedBox.shrink(),
-              ),
               // RecommendCharacterList(
               //   onHeaderTap: (index) =>
               //       goToCharacterPage(context, characters[index].tag),
@@ -343,12 +350,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
         //   child: DanbooruPostStatsTile(post: post),
         // ),
         const Divider(height: 8, thickness: 1),
-        //FIXME: implement tags tile
-        // TagsTile(
-        //     tags: post.tags
-        //         .where((e) => e.postId == post.id)
-        //         .map((e) => e.name)
-        //         .toList()),
+        E621TagsTile(post: post),
         FileDetailsSection(post: post),
         const Divider(height: 8, thickness: 1),
       ],
@@ -403,32 +405,29 @@ class E621ArtistSection extends ConsumerWidget {
   }
 }
 
-// ignore: prefer-single-widget-per-file
-// class TagsTile extends ConsumerWidget {
-//   const TagsTile({
-//     super.key,
-//     required this.tags,
-//   });
+class E621TagsTile extends ConsumerWidget {
+  const E621TagsTile({
+    super.key,
+    required this.post,
+  });
 
-//   final List<String> tags;
+  final E621Post post;
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Theme(
-//       data: context.theme.copyWith(dividerColor: Colors.transparent),
-//       child: ExpansionTile(
-//         title: Text('${tags.length} tags'),
-//         controlAffinity: ListTileControlAffinity.leading,
-//         onExpansionChanged: (value) =>
-//             value ? ref.read(tagsProvider.notifier).load(tags) : null,
-//         children: const [
-//           Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 12),
-//             child: PostTagList(),
-//           ),
-//           SizedBox(height: 8),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Theme(
+      data: context.theme.copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text('${post.tags.length} tags'),
+        controlAffinity: ListTileControlAffinity.leading,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: E621PostTagList(post: post),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}

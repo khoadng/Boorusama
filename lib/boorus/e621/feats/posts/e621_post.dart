@@ -119,7 +119,7 @@ extension PostImageX on E621Post {
 
   String thumbnailFromSettings(Settings settings) =>
       switch (settings.imageQuality) {
-        ImageQuality.automatic => thumbnailImageUrl,
+        ImageQuality.automatic => sampleImageUrl,
         ImageQuality.low => thumbnailImageUrl,
         ImageQuality.high => sampleImageUrl,
         ImageQuality.highest => sampleImageUrl,
