@@ -34,12 +34,15 @@ class E621Post extends Equatable
     required this.generalTags,
     required this.metaTags,
     required this.speciesTags,
+    required this.invalidTags,
+    required this.loreTags,
     required this.upScore,
     required this.downScore,
     required this.favCount,
     required this.isFavorited,
     required this.sources,
     required this.description,
+    required this.videoUrl,
   });
 
   @override
@@ -51,12 +54,16 @@ class E621Post extends Equatable
         ...generalTags,
         ...metaTags,
         ...speciesTags,
+        ...invalidTags,
+        ...loreTags,
       ];
   final List<String> copyrightTags;
   final List<String> characterTags;
   final List<String> artistTags;
   final List<String> generalTags;
   final List<String> metaTags;
+  final List<String> loreTags;
+  final List<String> invalidTags;
   final List<String> speciesTags;
   @override
   final PostSource source;
@@ -93,11 +100,11 @@ class E621Post extends Equatable
   final int favCount;
   final bool isFavorited;
   final String description;
+  final String videoUrl;
 
   @override
-  String getLink(String baseUrl) {
-    return '$baseUrl/posts/$id';
-  }
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
 
   @override
   Uri getUriLink(String baseUrl) {

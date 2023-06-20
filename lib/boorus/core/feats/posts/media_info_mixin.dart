@@ -13,6 +13,7 @@ mixin MediaInfoMixin {
   bool get isFlash => format == 'swf';
 
   bool get isWebm => format == 'webm';
+  bool get isMp4 => format == 'mp4';
 
   bool get isAnimated {
     return isVideo || (format == 'gif');

@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/api/e621/e621_api.dart';
@@ -86,6 +87,9 @@ class E621PostRepositoryApi
 }
 
 E621Post postDtoToPost(E621PostDto dto) {
+  final videoUrl = extractSampleVideoUrl(dto);
+  final format = videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
+
   return E621Post(
     id: dto.id ?? 0,
     source: PostSource.from(dto.sources?.firstOrNull),
@@ -97,7 +101,8 @@ E621Post postDtoToPost(E621PostDto dto) {
     isTranslated: dto.hasNotes ?? false,
     hasParentOrChildren: dto.relationships?.hasChildren ??
         false || dto.relationships?.parentId != null,
-    format: dto.file?.ext ?? '',
+    format: format.isEmpty ? dto.file?.ext ?? '' : format,
+    videoUrl: videoUrl,
     width: dto.file?.width?.toDouble() ?? 0,
     height: dto.file?.height?.toDouble() ?? 0,
     md5: dto.file?.md5 ?? '',
@@ -111,6 +116,8 @@ E621Post postDtoToPost(E621PostDto dto) {
     generalTags: List<String>.from(dto.tags?['general'] ?? []).toList(),
     metaTags: List<String>.from(dto.tags?['meta'] ?? []).toList(),
     speciesTags: List<String>.from(dto.tags?['species'] ?? []).toList(),
+    loreTags: List<String>.from(dto.tags?['lore'] ?? []).toList(),
+    invalidTags: List<String>.from(dto.tags?['invalid'] ?? []).toList(),
     upScore: dto.score?.up ?? 0,
     downScore: dto.score?.down ?? 0,
     favCount: dto.favCount ?? 0,
@@ -118,4 +125,24 @@ E621Post postDtoToPost(E621PostDto dto) {
     sources: dto.sources?.map(PostSource.from).toList() ?? [],
     description: dto.description ?? '',
   );
+}
+
+String extractSampleVideoUrl(E621PostDto dto) {
+  final p720 = dto.sample?.alternates?['720p']?.urls
+          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
+      '';
+
+  final p480 = dto.sample?.alternates?['480p']?.urls
+          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
+      '';
+
+  final pOriginal = dto.sample?.alternates?['original']?.urls
+          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
+      '';
+
+  return p720.isNotEmpty
+      ? p720
+      : p480.isNotEmpty
+          ? p480
+          : pOriginal;
 }

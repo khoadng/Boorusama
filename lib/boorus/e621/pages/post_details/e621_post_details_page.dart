@@ -278,7 +278,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
               )
             //FIXME: check if this is correct
             : BooruVideo(
-                url: post.originalImageUrl,
+                url: post.videoUrl,
                 aspectRatio: post.aspectRatio,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,

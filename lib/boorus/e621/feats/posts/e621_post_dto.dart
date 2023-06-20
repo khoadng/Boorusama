@@ -132,7 +132,7 @@ class E621SampleDto {
   final int? height;
   final int? width;
   final String? url;
-  final Map<String, dynamic>? alternates;
+  final Map<String, E621SampleAlternatesDto>? alternates;
 
   E621SampleDto({
     this.has,
@@ -148,7 +148,32 @@ class E621SampleDto {
       height: json['height'],
       width: json['width'],
       url: json['url'],
-      alternates: json['alternates'],
+      alternates: (json['alternates'] as Map<String, dynamic>).map(
+        (key, value) => MapEntry(key, E621SampleAlternatesDto.fromJson(value)),
+      ),
+    );
+  }
+}
+
+class E621SampleAlternatesDto {
+  final String? type;
+  final int? height;
+  final int? width;
+  final List<String>? urls;
+
+  E621SampleAlternatesDto({
+    this.type,
+    this.height,
+    this.width,
+    this.urls,
+  });
+
+  factory E621SampleAlternatesDto.fromJson(Map<String, dynamic> json) {
+    return E621SampleAlternatesDto(
+      type: json['type'],
+      height: json['height'],
+      width: json['width'],
+      urls: List<String>.from(json['urls'].where((x) => x != null)),
     );
   }
 }
