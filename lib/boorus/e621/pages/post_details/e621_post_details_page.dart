@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -267,16 +266,14 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
     // final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
-        ? extension(post.sampleImageUrl) == '.webm'
+        ? post.format == 'webm'
             ? EmbeddedWebViewWebm(
-                //FIXME: check if this is correct
                 url: post.originalImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
                 backgroundColor:
                     theme == ThemeMode.light ? Colors.white : Colors.black,
               )
-            //FIXME: check if this is correct
             : BooruVideo(
                 url: post.videoUrl,
                 aspectRatio: post.aspectRatio,
@@ -325,8 +322,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
         )
       else if (post.isVideo)
         BooruImage(
-          //FIXME: check if this is correct
-          imageUrl: post.originalImageUrl,
+          imageUrl: post.thumbnailFromSettings(ref.watch(settingsProvider)),
           fit: BoxFit.contain,
         )
       else
