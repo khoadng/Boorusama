@@ -36,8 +36,14 @@ abstract class E621Api {
   });
 
   @GET('/artists.json')
-  Future<HttpResponse> getArtist(
+  Future<HttpResponse> getArtists(
     @Query('search[name]') String name, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
+  @GET('/artists/{nameOrId}.json')
+  Future<HttpResponse> getArtist(
+    @Path() String nameOrId, {
     @CancelRequest() CancelToken? cancelToken,
   });
 

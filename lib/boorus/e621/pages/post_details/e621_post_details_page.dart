@@ -11,13 +11,17 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/artist_section.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
+import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'e621_information_section.dart';
 import 'e621_post_action_toolbar.dart';
@@ -123,8 +127,8 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
         final widgets =
             _buildWidgets(context, expanded, page, currentPage, ref);
-        // final artists =
-        //     ref.watch(danbooruPostDetailsArtistProvider(posts[page].id));
+        final artist = posts[page].artistTags.firstOrNull;
+        final artistAsync = ref.watch(e621ArtistPostsProvider(artist));
         // final characters =
         //     ref.watch(danbooruPostDetailsCharacterProvider(posts[page].id));
 
@@ -140,20 +144,23 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                   childCount: widgets.length,
                 ),
               ),
-
               // const RelatedPostsSection(),
-              //FIXME: add artist and character section back
-              // RecommendArtistList(
-              //   onTap: (recommendIndex, postIndex) => goToDetailPage(
-              //     context: context,
-              //     posts: artists[recommendIndex].posts,
-              //     initialIndex: postIndex,
-              //   ),
-              //   onHeaderTap: (index) =>
-              //       goToArtistPage(context, artists[index].tag),
-              //   recommends: artists,
-              //   imageUrl: (item) => item.url360x360,
-              // ),
+              artistAsync.maybeWhen(
+                data: (posts) => RecommendPosts(
+                  title: artist ?? '',
+                  items: posts.take(30).toList(),
+                  onTap: (index) => goToE621DetailsPage(
+                    context: context,
+                    posts: posts,
+                    initialPage: index,
+                  ),
+                  onHeaderTap: () => goToE621ArtistPage(context, artist ?? ''),
+                  imageUrl: (item) => item.thumbnailFromSettings(
+                    ref.read(settingsProvider),
+                  ),
+                ),
+                orElse: () => const SliverSizedBox.shrink(),
+              ),
               // RecommendCharacterList(
               //   onHeaderTap: (index) =>
               //       goToCharacterPage(context, characters[index].tag),

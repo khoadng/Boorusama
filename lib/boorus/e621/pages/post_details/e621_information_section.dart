@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 
 class E621InformationSection extends StatelessWidget {
   const E621InformationSection({
@@ -27,8 +28,7 @@ class E621InformationSection extends StatelessWidget {
       copyrightTags: post.copyrightTags,
       createdAt: post.createdAt,
       source: post.source,
-      //FIXME: Uncomment this when artist page is implemented
-      // onArtistTagTap: (context, artist) => goToArtistPage(context, artist),
+      onArtistTagTap: (context, artist) => goToE621ArtistPage(context, artist),
     );
   }
 }

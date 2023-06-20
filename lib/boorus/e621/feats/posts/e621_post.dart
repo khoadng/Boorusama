@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
@@ -111,4 +112,22 @@ class E621Post extends Equatable
 
   @override
   final DateTime createdAt;
+}
+
+extension PostImageX on E621Post {
+  bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
+
+  String thumbnailFromSettings(Settings settings) =>
+      switch (settings.imageQuality) {
+        ImageQuality.automatic => thumbnailImageUrl,
+        ImageQuality.low => thumbnailImageUrl,
+        ImageQuality.high => sampleImageUrl,
+        ImageQuality.highest => sampleImageUrl,
+        ImageQuality.original => originalImageUrl
+      };
+
+  bool get hasNoImage =>
+      thumbnailImageUrl.isEmpty &&
+      sampleImageUrl.isEmpty &&
+      originalImageUrl.isEmpty;
 }

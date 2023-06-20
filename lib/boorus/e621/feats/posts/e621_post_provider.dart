@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 
-final e621PostRepoProvider = Provider<E621PostRepositoryApi>((ref) {
+final e621PostRepoProvider = Provider<E621PostRepository>((ref) {
   return E621PostRepositoryApi(
     ref.watch(e621ApiProvider),
     ref.watch(currentBooruConfigProvider),
