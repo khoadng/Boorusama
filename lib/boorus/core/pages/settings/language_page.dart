@@ -22,7 +22,8 @@ class LanguagePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final supportedLanguages = ref.watch(supportedLanguagesProvider);
+    final supportedLanguages = ref.watch(supportedLanguagesProvider)
+      ..sort((a, b) => a.name.compareTo(b.name));
 
     return ConditionalParentWidget(
       condition: hasAppBar,
@@ -33,30 +34,29 @@ class LanguagePage extends ConsumerWidget {
         body: child,
       ),
       child: SafeArea(
-        child: Column(
-          children: supportedLanguages
-              .map((e) => e.name)
-              .map(
-                (e) => RadioListTile<String>(
-                  activeColor: context.colorScheme.primary,
-                  groupValue: settings.language,
-                  value: e,
-                  title: Text(e),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    final locale = supportedLanguages
-                        .firstWhere(
-                          (element) => element.name == value,
-                        )
-                        .locale;
-                    ref.updateSettings(settings.copyWith(language: value));
-                    final data = locale.split('-');
+        child: ListView.builder(
+          itemCount: supportedLanguages.length,
+          itemBuilder: (context, index) {
+            final e = supportedLanguages[index].name;
+            return RadioListTile<String>(
+              activeColor: context.colorScheme.primary,
+              groupValue: settings.language,
+              value: e,
+              title: Text(e),
+              onChanged: (value) {
+                if (value == null) return;
+                final locale = supportedLanguages
+                    .firstWhere(
+                      (element) => element.name == value,
+                    )
+                    .locale;
+                ref.updateSettings(settings.copyWith(language: value));
+                final data = locale.split('-');
 
-                    context.setLocale(Locale(data[0], data[1]));
-                  },
-                ),
-              )
-              .toList(),
+                context.setLocale(Locale(data[0], data[1]));
+              },
+            );
+          },
         ),
       ),
     );
