@@ -11,7 +11,8 @@
             "edit": "Éditer",
             "ok": "OK",
             "cancel": "Annuler"
-        }
+        },
+        "view": "Voir"
     },
     "profile": {
         "favorites": "Favoris"
@@ -63,7 +64,11 @@
                 "one": "Point",
                 "many": "Points",
                 "other": "Points"
-            }
+            },
+            "source_label": "Source",
+            "related_posts": "Posts en lien",
+            "add_to_bookmark": "Ajouter à un marque-page",
+            "remove_from_bookmark": "Supprimé du marque-page"
         },
         "parent_child": {
             "children_of": "En lien avec"
@@ -160,7 +165,8 @@
         "settings": "Paramètres",
         "app_settings": "Paramètres de l'application",
         "appearance": {
-            "appearance": "Apparence"
+            "appearance": "Apparence",
+            "show_scores": "Voir les notes"
         },
         "general": "Général",
         "search": "Recherche",
@@ -191,7 +197,8 @@
                 "high": "Haute",
                 "low": "Basse",
                 "original": "Original",
-                "automatic": "Automatique"
+                "automatic": "Automatique",
+                "highest": "Très haute"
             },
             "spacing": "Espace",
             "corner_radius": "Arrondis des angles"
@@ -221,8 +228,27 @@
         "performance": {
             "performance": "Performance",
             "posts_per_page": "Posts par page",
-            "posts_per_page_explain": "Nombre de vignettes par page"
-        }
+            "posts_per_page_explain": "Nombre de vignettes par page",
+            "cache_size": "Taille du cache",
+            "clear_cache": "Nettoyer",
+            "cache_size_info": "{0} Mb dans {1} fichiers"
+        },
+        "debug_logs": {
+            "debug_logs": "Journal de débogage",
+            "logs_copied": "Journal copié dans le presse-papiers"
+        },
+        "download": {
+            "path": "Chemin de téléchargement",
+            "select_a_folder": "Sélectionnez un fichier",
+            "quality": "Qualité des images téléchargées",
+            "qualities": {
+                "original": "Original",
+                "sample": "Simple",
+                "preview": "Aperçu"
+            }
+        },
+        "help_us_translate": "Aidez-nous à traduire",
+        "other_settings": "Autres paramètres"
     },
     "blacklisted_tags": {
         "remove": "Retirer",
@@ -266,6 +292,9 @@
             "one": "Téléchargement de {} image",
             "many": "Téléchargement de {} images",
             "other": "Téléchargement de {} images"
+        },
+        "bulk": {
+            "all_done_notification_message": "Tous les téléchargements sont terminés"
         }
     },
     "saved_search": {
@@ -285,7 +314,7 @@
         "saved_search_examples": "Exemples",
         "saved_search_try": "Essayez",
         "saved_search_query": "Question",
-        "saved_search_labels": "Labels*",
+        "saved_search_labels": "Étiquettes*",
         "saved_search_labels_description": "*Une liste de tags pour aider à catégoriser cette recherche. Espace limité."
     },
     "favorites": {
@@ -297,6 +326,101 @@
         "favorited": "Mis en favoris",
         "favorite": "Mettre en favoris",
         "unfavorited": "Enlevé des favoris",
-        "unfavorite": "Enlever des favoris"
+        "unfavorite": "Enlever des favoris",
+        "failed_to_unfavorite": "Échec de l'enlèvement des favoris",
+        "failed_to_favorite": "Échec de l'ajout aux favoris"
+    },
+    "favorite_groups": {
+        "favorite_groups": "Groupes de favoris",
+        "empty_group_notice": "Aucun groupe de favoris",
+        "create_group": "Créer un groupe",
+        "edit_group": "Éditer un groupe",
+        "add_to_group_dialog_title": "Ajouter à un groupe de favoris",
+        "add_to": "Ajouter à",
+        "create": "Créer",
+        "private": "Privé",
+        "view_more_popup": "Voir",
+        "items_added_notification_popup": "{0} posts ajoutés à {1}",
+        "group_name": "Nom de groupe",
+        "group_name_hint": "Nouveau groupe",
+        "all_posts": "Posts",
+        "initial_posts_hint": "Entre ",
+        "is_private_group_option": "Groupe privé",
+        "create_group_cancel": "Annuler",
+        "create_group_confirm": "OK",
+        "max_limit_warning": "Les membres ne peuvent créer que 10 groupes de favoris",
+        "duplicate_items_warning_notification": "Les posts sélectionnés sont déjà dans le groupe",
+        "detete_confirmation": "Êtes-vous sûr de vouloir supprimer ce groupe de favoris",
+        "group_item_counter": {
+            "one": "{} post",
+            "many": "{} posts",
+            "other": "{} posts"
+        }
+    },
+    "favorite_tags": {
+        "favorites": "Favories",
+        "or": "ou",
+        "import": "Importer",
+        "import_hint": "Entrez votre série de tags ici. Espace limité.",
+        "cancel": "Annuler",
+        "export": "Exporter",
+        "export_notification": "Série de tags copiée dans le presse-papiers"
+    },
+    "rating": {
+        "rate_request": "Noter cette application",
+        "rate": "Note",
+        "cancel": "Non merci",
+        "later": "Peut-être plus tard",
+        "rationale": "Si vous aimez cette application, s'il vous plaît prenez un peu de votre temps pour la noter.\nCela ne prendra pas plus de quelques secondes et cela aide réellement ce projet."
+    },
+    "sideMenu": {
+        "settings": "Paramètres",
+        "manage_boorus": "Gestions des boorus",
+        "your_bookmarks": "Vos marque-pages",
+        "your_blacklist": "Votre blacklist",
+        "bulk_download": "Téléchargement en masse"
+    },
+    "dateRange": {
+        "day": "Jour",
+        "week": "Semaine",
+        "month": "Mois"
+    },
+    "booru": {
+        "addNew": "Ajouter un nouveau booru",
+        "add_booru_source_title": "Ajoutez une source, laisser les détails de connexion vides pour être anonyme",
+        "add_random_booru_warning": "Ce booru n'est officiellement pas supporté. Cela ne va probablement pas fonctionner.",
+        "booru_engine_input_label": "Moteur booru (*)",
+        "config_name_label": "Nom de la configuration (*)",
+        "site_url_label": "URL du site",
+        "login_name_label": "Nom d'utilisateur",
+        "password_api_key_label": "Clé API",
+        "password_hashed_label": "Mot de passe (lecture seule)",
+        "password_label": "Mot de passe",
+        "content_filtering_label": "Filtre du contenu",
+        "hide_deleted_label": "Cacher les posts supprimés",
+        "config_booru_confirm": "OK"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Blacklist",
+            "empty_blacklist": "Aucun tag blacklisté"
+        }
+    },
+    "bookmark": {
+        "added": "Marque-page ajouté",
+        "failed_to_add": "Échec de l'ajout du marque-page",
+        "many_added": "{0} marque-pages ajoutés",
+        "failed_to_add_many": "Échec de l'ajout des marque-pages",
+        "removed": "Marque-page supprimé",
+        "updated": "Marque-page mis à jour",
+        "failed_to_remove": "Échec de la suppression du marque-page",
+        "failed_to_update": "Échec de la mise à jour du marque-page",
+        "failed_to_load": "Échec du chargement de marque-pages : {0}"
+    },
+    "app_update": {
+        "update": "Mise à jour",
+        "later": "Plus tard",
+        "whats_new": "Quoi de neuf ?",
+        "update_available": "Mise à jour disponible"
     }
 }
