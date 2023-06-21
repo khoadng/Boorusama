@@ -234,8 +234,31 @@ void goToQuickSearchPage(
             throw UnimplementedError();
           case BooruType.e621:
           case BooruType.e926:
-            //FIXME: Implement e621 autocomplete
-            throw UnimplementedError();
+            return E621Provider(
+              builder: (_) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, theme),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      backButton: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => context.navigator.pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, theme),
+                    ),
+            );
           case BooruType.danbooru:
           case BooruType.safebooru:
           case BooruType.testbooru:

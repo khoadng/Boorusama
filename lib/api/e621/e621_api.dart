@@ -75,4 +75,10 @@ abstract class E621Api {
     @Query('search[order]') String order,
     @Query('limit') int limit,
   );
+
+  @GET('/tags/autocomplete.json')
+  Future<HttpResponse> autocomplete(
+    @Query('search[name_matches]') String query,
+    @Query('expiry') int expiry,
+  );
 }

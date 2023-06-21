@@ -16,7 +16,7 @@ enum E621TagSortOrder {
 }
 
 abstract interface class E621TagRepository {
-  Future<List<E621Tag>> getTags(
+  Future<List<E621Tag>> getTagsWithWildcard(
     String tag, {
     E621TagSortOrder order = E621TagSortOrder.count,
   });
@@ -29,7 +29,7 @@ class E621TagRepositoryApi implements E621TagRepository {
   final BooruConfig booruConfig;
 
   @override
-  Future<List<E621Tag>> getTags(
+  Future<List<E621Tag>> getTagsWithWildcard(
     String tag, {
     E621TagSortOrder order = E621TagSortOrder.count,
   }) =>
