@@ -1,29 +1,382 @@
 {
+    "generic": {
+        "done": "完成",
+        "errors": {
+            "no_data": "没有数据",
+            "unknown": "发生错误"
+        },
+        "action": {
+            "add": "添加",
+            "delete": "删除",
+            "edit": "编辑",
+            "ok": "确定",
+            "cancel": "取消"
+        },
+        "view": "显示"
+    },
+    "profile": {
+        "favorites": "喜爱"
+    },
+    "network": {
+        "unavailable": "网络无法连接"
+    },
     "tag": {
+        "related": {
+            "more": "更多",
+            "related": "相关的",
+            "add_to_current_search": "添加到当前搜索",
+            "open_wiki": "打开wiki"
+        },
         "explore": {
+            "new": "新的",
             "popular": "流行"
         }
     },
     "post": {
+        "detail": {
+            "view": "显示",
+            "slide_show": {
+                "interval": "间隔（秒）",
+                "skip_anim": "跳过动画",
+                "ok": "确定",
+                "cancel": "取消"
+            },
+            "view_in_browser": "在浏览器中打开",
+            "file_details": "文件详情",
+            "size": "大小",
+            "resolution": "分辨率",
+            "rating": "评级",
+            "file_format": "文件格式",
+            "share": {
+                "source": "分享资源链接",
+                "booru": "分享booru链接",
+                "image": "分享图片"
+            },
+            "copied": "已复制",
+            "show_original": "显示原图",
+            "show_translated": "显示翻译",
+            "login_required_notice": "你需要登陆来完成该操作",
+            "open_wiki": "打开wiki",
+            "add_to_blacklist": "添加到黑名单",
+            "add_to_favorites": "添加到喜爱中",
+            "source_label": "来源",
+            "related_posts": "相关帖子",
+            "add_to_bookmark": "添加到书签",
+            "remove_from_bookmark": "从书签移除"
+        },
+        "parent_child": {
+            "children_of": "的孩子"
+        },
         "action": {
-            "view_comments": "查看评论"
+            "preview": "预览",
+            "view_comments": "查看评论",
+            "add_to_favorite_group": "添加到喜爱组",
+            "select": "选择"
+        },
+        "image_fullview": {
+            "view_original": "显示原图"
         }
     },
     "comment": {
-        "comments": "评论"
+        "comments": "评论",
+        "create": {
+            "hint": "评论",
+            "loading": "请稍后……",
+            "error": "错误"
+        },
+        "list": {
+            "edit": "编辑",
+            "reply": "回复",
+            "reply_to": "回复给",
+            "delete": "删除",
+            "noComments": "没有评价",
+            "last_updated": "最近更新",
+            "send": "发送"
+        },
+        "counter": {
+            "other": "评论"
+        }
     },
     "explore": {
-        "popular": "流行"
+        "latest": "最新的",
+        "popular": "最受欢迎的",
+        "hot": "热度",
+        "most_viewed": "最多观看",
+        "see_more": "查看更多"
     },
     "search": {
-        "hint": "搜索..."
+        "errors": {
+            "generic": "发生错误",
+            "tag_limit": "达到最大tag数限制。升级你的账户，以便能同时使用更多tag进行搜索。",
+            "database_timeout": "你的搜索消耗了过长的时间，已取消。",
+            "rate_limited": "你的搜索速度太快，请稍后再试",
+            "pagination_limit": "已到达末尾。",
+            "max_capacity": "服务器负载过高，无法处理请求，请稍后再试",
+            "down": "服务器宕机，请稍后再试",
+            "access_denied": "权限不足",
+            "forbidden": "授权失败",
+            "unknown": "未知服务器错误，请将此错误反馈给开发者"
+        },
+        "hint": "搜索...",
+        "no_result": "我们搜遍了，但是没找到任何结果。",
+        "search_options": "搜索选项",
+        "metatags_notice": "免费的元标签不计入搜索标签限制",
+        "history": {
+            "history": "历史",
+            "clear": "清除",
+            "recent": "最近"
+        },
+        "trending": "趋势",
+        "remove_all_selected": "移除所有已选标签"
+    },
+    "pool": {
+        "mature_banned_content": "成人/禁止内容",
+        "order": {
+            "recent": "最近",
+            "new": "新的",
+            "post_count": "提交次数",
+            "name": "名字"
+        },
+        "category": {
+            "series": "系列",
+            "collection": "收集"
+        },
+        "detail": {
+            "last_updated": "最近更新"
+        }
     },
     "settings": {
         "settings": "设置",
+        "app_settings": "应用设置",
+        "appearance": {
+            "appearance": "外观",
+            "show_scores": "显示评分"
+        },
+        "general": "通用",
+        "search": "搜索",
+        "information": "消息",
+        "changelog": "更新日志",
+        "infinite_scroll_warning": "如果你长时间滚动，应用可能会崩溃",
+        "result_layout": {
+            "result_layout": "页面模式",
+            "infinite_scroll": "无限滚动",
+            "pagination": "分页"
+        },
+        "image_list": {
+            "image_list": "图片列表",
+            "standard": "标准",
+            "masonry": "紧凑"
+        },
+        "image_grid": {
+            "image_grid": "图像网格",
+            "grid_size": {
+                "grid_size": "网格大小",
+                "small": "小",
+                "medium": "中",
+                "large": "大"
+            },
+            "image_quality": {
+                "image_quality": "图片质量",
+                "high_quality_notice": "高质量图片需要更长时间加载。",
+                "high": "高",
+                "low": "低",
+                "original": "原图",
+                "automatic": "自动",
+                "highest": "最高的"
+            },
+            "spacing": "间距",
+            "corner_radius": "圆角"
+        },
+        "image_viewer": {
+            "image_viewer": "图片查看器",
+            "full_res_as_default": "默认显示原始分辨率",
+            "full_res_notice": "加载时间取决于图片大小"
+        },
+        "image_detail": {
+            "image_detail": "图片详情"
+        },
         "language": {
             "language": "语言",
-            "language_name": "简体中文"
+            "language_name": "英语"
         },
-        "help_us_translate": "帮助我们翻译"
+        "theme": {
+            "theme": "主题",
+            "dark": "黑暗",
+            "light": "明亮",
+            "amoled_dark": "AMOLED黑暗"
+        },
+        "privacy": {
+            "privacy": "隐私",
+            "send_error_data_notice": "发送匿名错误日志"
+        },
+        "performance": {
+            "performance": "性能",
+            "posts_per_page": "每页数量",
+            "posts_per_page_explain": "每页显示的缩略图数量",
+            "cache_size": "缓存大小",
+            "clear_cache": "清除",
+            "cache_size_info": "共 {1} 个文件，占用 {0} Mb"
+        },
+        "debug_logs": {
+            "debug_logs": "调试日志",
+            "logs_copied": "日志已复制到剪切板"
+        },
+        "download": {
+            "path": "下载路径",
+            "select_a_folder": "选择文件夹",
+            "quality": "下载图片质量",
+            "qualities": {
+                "original": "原图",
+                "sample": "样品",
+                "preview": "预览"
+            }
+        },
+        "help_us_translate": "帮助我们翻译",
+        "other_settings": "其他设置"
+    },
+    "blacklisted_tags": {
+        "remove": "移除",
+        "edit": "编辑",
+        "blacklisted_tags": "标签黑名单",
+        "load_error": "加载标签黑名单失败",
+        "updated": "标签黑名单已更新",
+        "limitation_notice": "仅支持 <b>NOT</b> 操作和 <b>OR</b> 操作。\n\n使用元数据的黑名单在当前版本不可用。"
+    },
+    "download": {
+        "download": "下载",
+        "bulk_download": "批量下载",
+        "bulk_download_tag_confirmation": "以下标签的图像会被下载",
+        "bulk_download_save_to_folder": "保存到文件夹",
+        "bulk_download_total_count": "合计",
+        "bulk_download_done_count": "完成",
+        "bulk_download_done_confirm": "完成",
+        "bulk_download_cancel": "取消",
+        "bulk_download_duplicate": "复制",
+        "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符：␣",
+        "bulk_download_only_download_new_images": "仅下载新图片",
+        "bulk_download_stay_on_screen_request": "在下载完成之前，请不要离开该页面",
+        "bulk_download_folder_select_warning": "在Android 11+上，此应用只能将文件保存在 内部公共目录 <b>({0})</b> 中. <div>不支持SD卡。</div> <div>请选择其他路径。</div> <div>此设备的版本是 {1}.</div>",
+        "bulk_download_select_a_folder": "选择文件夹",
+        "bulk_download_found_duplicate": "找到 {} 个同名的图片，这些同名图片将会跳过。",
+        "bulk_download_download_more": "下载更多",
+        "open_app_settings": "打开设置",
+        "storage_permission_explanation": "需要存储权限来保存文件。",
+        "app_restart_request": "该修改需要重启应用生效",
+        "image_counter": {
+            "other": "下载{}图像"
+        },
+        "bulk": {
+            "all_done_notification_message": "所有下载已完成"
+        }
+    },
+    "saved_search": {
+        "saved_search": "保存搜索",
+        "add_saved_search": "添加已保存的搜索",
+        "saved_search_added": "已保存搜索已添加",
+        "empty_saved_search": "你还没有添加任何搜索",
+        "update_saved_search": "更新已保存搜索",
+        "saved_search_updated": "已保存的搜索已更新",
+        "saved_search_help": "这是什么鬼？",
+        "saved_search_examples": "样例",
+        "saved_search_try": "尝试",
+        "saved_search_query": "询问",
+        "saved_search_labels": "标签*",
+        "saved_search_labels_description": "*标签列表有助于分类这些搜索。使用空格分隔"
+    },
+    "favorites": {
+        "favorited": "已加进喜爱中",
+        "favorite": "喜爱",
+        "unfavorited": "已从喜爱中移除",
+        "unfavorite": "从喜爱中移除",
+        "failed_to_unfavorite": "从喜爱中移除失败",
+        "failed_to_favorite": "添加到喜爱中失败"
+    },
+    "favorite_groups": {
+        "favorite_groups": "喜爱组",
+        "empty_group_notice": "没有喜爱组",
+        "create_group": "创建组",
+        "edit_group": "编辑组",
+        "add_to_group_dialog_title": "添加到喜爱组",
+        "add_to": "添加到",
+        "create": "创建",
+        "private": "私有",
+        "view_more_popup": "显示",
+        "items_added_notification_popup": "{0} 个结果已添加进 {1}",
+        "group_name": "组名",
+        "group_name_hint": "新建组",
+        "all_posts": "帖子",
+        "initial_posts_hint": "输入ID，使用空格隔开（可选）",
+        "is_private_group_option": "私有组",
+        "create_group_cancel": "取消",
+        "create_group_confirm": "确认",
+        "max_limit_warning": "成员只能创建10个喜爱组",
+        "duplicate_items_warning_notification": "输入的帖子已存在组中",
+        "detete_confirmation": "是否删除该喜爱组"
+    },
+    "favorite_tags": {
+        "favorites": "喜爱",
+        "or": "或",
+        "import": "导入",
+        "import_hint": "在此输入标签，使用空格分隔",
+        "cancel": "取消",
+        "export": "导出",
+        "export_notification": "标签已复制到剪切板"
+    },
+    "rating": {
+        "rate_request": "评价此应用",
+        "rate": "评价",
+        "cancel": "不了，谢谢",
+        "later": "以后再说",
+        "rationale": "如果你喜欢这个应用，请花一些时间去评价。不会花费太多时间，而且对此应用有很大帮助。"
+    },
+    "sideMenu": {
+        "settings": "设置",
+        "manage_boorus": "管理booru",
+        "your_bookmarks": "书签",
+        "your_blacklist": "黑名单",
+        "bulk_download": "批量下载"
+    },
+    "dateRange": {
+        "day": "日",
+        "week": "周",
+        "month": "月"
+    },
+    "booru": {
+        "addNew": "添加新booru",
+        "add_booru_source_title": "添加一个来源，登陆信息为空的将使用匿名",
+        "add_random_booru_warning": "这个booru当前尚未支持，可能无法正常使用。",
+        "booru_engine_input_label": "Booru引擎 (*)",
+        "config_name_label": "配置名 (*)",
+        "site_url_label": "网站地址",
+        "login_name_label": "登陆",
+        "password_api_key_label": "API key",
+        "password_hashed_label": "密码Hash（只读）",
+        "password_label": "密码",
+        "content_filtering_label": "内容过滤",
+        "hide_deleted_label": "隐藏已删除帖子",
+        "config_booru_confirm": "确认"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "黑名单",
+            "empty_blacklist": "标签黑名单为空"
+        }
+    },
+    "bookmark": {
+        "added": "已添加书签",
+        "failed_to_add": "添加书签失败",
+        "many_added": "已添加 {0} 个书签",
+        "failed_to_add_many": "添加书签失败",
+        "removed": "书签已移除",
+        "updated": "书签已更新",
+        "failed_to_remove": "移除书签失败",
+        "failed_to_update": "更新书签失败",
+        "failed_to_load": "加载书签失败： {0}"
+    },
+    "app_update": {
+        "update": "更新",
+        "later": "稍后再说",
+        "whats_new": "更新了什么？",
+        "update_available": "有更新"
     }
 }
