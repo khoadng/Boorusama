@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/flutter.dart';
@@ -384,8 +385,9 @@ Future<void> goToBulkDownloadPage(
       switch (booru.booruType) {
         case BooruType.e621:
         case BooruType.e926:
-          //FIXME: Implement e621 bulk download
-          throw UnimplementedError();
+          return E621Provider(
+            builder: (context) => const BulkDownloadPage(),
+          );
         case BooruType.unknown:
           throw UnimplementedError();
         case BooruType.konachan:
