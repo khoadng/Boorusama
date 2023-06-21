@@ -9,14 +9,15 @@ import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
@@ -27,7 +28,6 @@ import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'pool_tiles.dart';
-import 'post_note.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
 import 'related_posts_section.dart';
@@ -191,8 +191,7 @@ class _DanbooruPostDetailsPageState
       },
       pageCount: posts.length,
       topRightButtonsBuilder: (page, expanded) {
-        final noteState =
-            ref.watch(danbooruPostDetailsNoteProvider(posts[page]));
+        final noteState = ref.watch(notesControllerProvider(posts[page]));
 
         return [
           Builder(builder: (_) {
@@ -211,8 +210,9 @@ class _DanbooruPostDetailsPageState
                 ),
                 icon: const Icon(Icons.download_rounded),
                 label: const Text('Notes'),
-                onPressed: () =>
-                    ref.read(danbooruNoteProvider(posts[page]).notifier).load(),
+                onPressed: () => ref
+                    .read(notesControllerProvider(posts[page]).notifier)
+                    .load(),
               );
             }
 
@@ -239,7 +239,7 @@ class _DanbooruPostDetailsPageState
                       ),
                     ),
               onPressed: () => ref
-                  .read(danbooruPostDetailsNoteProvider(posts[page]).notifier)
+                  .read(notesControllerProvider(posts[page]).notifier)
                   .toggleNoteVisibility(),
             );
           }),
@@ -266,7 +266,7 @@ class _DanbooruPostDetailsPageState
   ) {
     final theme = ref.watch(themeProvider);
     final post = posts[page];
-    final noteState = ref.watch(danbooruPostDetailsNoteProvider(post));
+    final noteState = ref.watch(notesControllerProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;

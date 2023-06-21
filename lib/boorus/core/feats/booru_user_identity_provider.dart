@@ -64,6 +64,8 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.yandere:
       case BooruType.sakugabooru:
       case BooruType.lolibooru:
+      case BooruType.e621:
+      case BooruType.e926:
         accountId = 0;
         break;
     }

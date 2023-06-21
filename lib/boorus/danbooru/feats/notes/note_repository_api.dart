@@ -4,8 +4,9 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'note_dto.dart';
 
 List<Note> parseNote(HttpResponse<dynamic> value) => parseResponse(
       value: value,
@@ -19,7 +20,7 @@ class NoteRepositoryApi implements NoteRepository {
   final DanbooruApi _api;
 
   @override
-  Future<List<Note>> getNotesFrom(
+  Future<List<Note>> getNotes(
     int postId, {
     CancelToken? cancelToken,
   }) async {

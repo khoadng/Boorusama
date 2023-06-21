@@ -33,4 +33,5 @@ extension StringX on String {
 
 extension StringNullX on String? {
   bool isNotNullAndEmpty() => this != null && this != '';
+  List<String> splitByWhitespace() => this?.split(' ') ?? [];
 }

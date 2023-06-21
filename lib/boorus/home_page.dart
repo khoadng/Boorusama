@@ -14,6 +14,8 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
+import 'package:boorusama/boorus/e621/e621_provider.dart';
+import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
@@ -99,6 +101,18 @@ class _HomePageState extends ConsumerState<HomePage> {
             case BooruType.unknown:
               return const Center(
                 child: Text('Unknown booru'),
+              );
+            case BooruType.e621:
+            case BooruType.e926:
+              return E621Provider(
+                builder: (context) {
+                  return CustomContextMenuOverlay(
+                    child: E621HomePage(
+                      onMenuTap: _onMenuTap,
+                      key: ValueKey(config.id),
+                    ),
+                  );
+                },
               );
             case BooruType.aibooru:
             case BooruType.danbooru:
