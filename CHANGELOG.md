@@ -1,3 +1,8 @@
+# 3.1.0
+- Add support for e621/e926
+- Add some translations for Turkish and Ukrainian
+- Add and update translations for French and Chinese (Simplified)
+
 # 3.0.3
 - Adjust the sensitivity of the swipe to dismiss gesture
 - Fix an issue where you can't tap on the translation notes
