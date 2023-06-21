@@ -4,12 +4,15 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
@@ -185,59 +188,60 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
       },
       pageCount: posts.length,
       topRightButtonsBuilder: (page, expanded) {
-        // final noteState =
-        //     ref.watch(danbooruPostDetailsNoteProvider(posts[page]));
+        final noteState = ref.watch(notesControllerProvider(posts[page]));
 
         return [
-          //FIXME: add note back
-          // Builder(builder: (_) {
-          //   final theme = ref.watch(themeProvider);
+          Builder(
+            builder: (_) {
+              final theme = ref.watch(themeProvider);
 
-          //   if (!posts[page].isTranslated) {
-          //     return const SizedBox.shrink();
-          //   }
+              if (!posts[page].isTranslated) {
+                return const SizedBox.shrink();
+              }
 
-          //   if (!expanded && noteState.notes.isEmpty) {
-          //     return ElevatedButton.icon(
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor:
-          //             context.colorScheme.background.withOpacity(0.8),
-          //         padding: const EdgeInsets.all(4),
-          //       ),
-          //       icon: const Icon(Icons.download_rounded),
-          //       label: const Text('Notes'),
-          //       onPressed: () =>
-          //           ref.read(danbooruNoteProvider(posts[page]).notifier).load(),
-          //     );
-          //   }
+              if (!expanded && noteState.notes.isEmpty) {
+                return ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        context.colorScheme.background.withOpacity(0.8),
+                    padding: const EdgeInsets.all(4),
+                  ),
+                  icon: const Icon(Icons.download_rounded),
+                  label: const Text('Notes'),
+                  onPressed: () => ref
+                      .read(notesControllerProvider(posts[page]).notifier)
+                      .load(),
+                );
+              }
 
-          //   return CircularIconButton(
-          //     icon: noteState.enableNotes
-          //         ? Padding(
-          //             padding: const EdgeInsets.all(3),
-          //             child: FaIcon(
-          //               FontAwesomeIcons.eyeSlash,
-          //               size: 18,
-          //               color: theme == ThemeMode.light
-          //                   ? context.colorScheme.onPrimary
-          //                   : null,
-          //             ),
-          //           )
-          //         : Padding(
-          //             padding: const EdgeInsets.all(4),
-          //             child: FaIcon(
-          //               FontAwesomeIcons.eye,
-          //               size: 18,
-          //               color: theme == ThemeMode.light
-          //                   ? context.colorScheme.onPrimary
-          //                   : null,
-          //             ),
-          //           ),
-          //     onPressed: () => ref
-          //         .read(danbooruPostDetailsNoteProvider(posts[page]).notifier)
-          //         .toggleNoteVisibility(),
-          //   );
-          // }),
+              return CircularIconButton(
+                icon: noteState.enableNotes
+                    ? Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: FaIcon(
+                          FontAwesomeIcons.eyeSlash,
+                          size: 18,
+                          color: theme == ThemeMode.light
+                              ? context.colorScheme.onPrimary
+                              : null,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: FaIcon(
+                          FontAwesomeIcons.eye,
+                          size: 18,
+                          color: theme == ThemeMode.light
+                              ? context.colorScheme.onPrimary
+                              : null,
+                        ),
+                      ),
+                onPressed: () => ref
+                    .read(notesControllerProvider(posts[page]).notifier)
+                    .toggleNoteVisibility(),
+              );
+            },
+          ),
           GeneralMoreActionButton(
             post: posts[page],
           ),
@@ -261,7 +265,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
   ) {
     final theme = ref.watch(themeProvider);
     final post = posts[page];
-    // final noteState = ref.watch(danbooruPostDetailsNoteProvider(post));
+    final noteState = ref.watch(notesControllerProvider(post));
     // final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     // final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;
@@ -296,17 +300,17 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                 .setImagePath(path ?? ''),
             previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             imageOverlayBuilder: (constraints) => [
-              // if (noteState.enableNotes)
-              //   ...noteState.notes
-              //       .map((e) => e.adjustNoteCoordFor(
-              //             posts[page],
-              //             widthConstraint: constraints.maxWidth,
-              //             heightConstraint: constraints.maxHeight,
-              //           ))
-              //       .map((e) => PostNote(
-              //             coordinate: e.coordinate,
-              //             content: e.content,
-              //           )),
+              if (noteState.enableNotes)
+                ...noteState.notes
+                    .map((e) => e.adjustNoteCoordFor(
+                          posts[page],
+                          widthConstraint: constraints.maxWidth,
+                          heightConstraint: constraints.maxHeight,
+                        ))
+                    .map((e) => PostNote(
+                          coordinate: e.coordinate,
+                          content: e.content,
+                        )),
             ],
             width: post.width,
             height: post.height,

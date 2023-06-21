@@ -24,14 +24,6 @@ final danbooruPostDetailsChildrenProvider = NotifierProvider.autoDispose
   ],
 );
 
-final danbooruPostDetailsNoteProvider = NotifierProvider.autoDispose
-    .family<PostDetailsNoteNotifier, PostDetailsNoteState, Post>(
-  PostDetailsNoteNotifier.new,
-  dependencies: [
-    danbooruNoteProvider,
-  ],
-);
-
 final danbooruPostDetailsPoolsProvider = NotifierProvider.autoDispose
     .family<PostDetailsPoolsNotifier, List<Pool>, int>(
   PostDetailsPoolsNotifier.new,

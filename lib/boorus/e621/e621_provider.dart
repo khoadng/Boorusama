@@ -8,9 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/notes/note_provider.dart';
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
+import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 
 class E621Provider extends StatelessWidget {
@@ -31,7 +34,8 @@ class E621Provider extends StatelessWidget {
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(e621DownloadFileNameGeneratorProvider)),
         autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(e621AutocompleteRepoProvider))
+            .overrideWith((ref) => ref.watch(e621AutocompleteRepoProvider)),
+        noteRepoProvider.overrideWith((ref) => ref.watch(e621NoteRepoProvider)),
       ],
       child: Builder(
         builder: builder,

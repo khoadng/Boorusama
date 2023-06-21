@@ -10,10 +10,12 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 
@@ -38,7 +40,9 @@ class DanbooruProvider extends ConsumerWidget {
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
         autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider))
+            .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider)),
+        noteRepoProvider
+            .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
       ],
       child: Builder(builder: builder),
     );

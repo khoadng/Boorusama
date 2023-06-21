@@ -81,4 +81,11 @@ abstract class E621Api {
     @Query('search[name_matches]') String query,
     @Query('expiry') int expiry,
   );
+
+  @GET('/notes.json')
+  Future<HttpResponse> getNotes(
+    @Query('search[post_id]') int postId,
+    @Query('limit') int limit, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

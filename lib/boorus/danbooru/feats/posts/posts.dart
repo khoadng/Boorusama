@@ -4,7 +4,6 @@ export 'app/post_count_state.dart';
 export 'app/post_details_artist_notifier.dart';
 export 'app/post_details_character_notifier.dart';
 export 'app/post_details_children_notifier.dart';
-export 'app/post_details_note_notifier.dart';
 export 'app/post_details_pools_notifier.dart';
 export 'app/post_details_tags_notifier.dart';
 export 'app/post_utils.dart';
