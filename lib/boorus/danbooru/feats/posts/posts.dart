@@ -22,7 +22,6 @@ export 'data/post_dto.dart';
 export 'data/post_repository_api.dart';
 export 'data/post_vote_dto.dart';
 export 'data/post_vote_repository_api.dart';
-export 'data/utils.dart';
 export 'models/danbooru_post.dart';
 export 'models/danbooru_post_repository.dart';
 export 'models/explore_repository.dart';

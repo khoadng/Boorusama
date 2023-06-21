@@ -247,12 +247,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
           ),
         ];
       },
-      onExpanded: (currentPage) {
-        // final post = posts[currentPage];
-
-        //FIXME: show load details
-        // post.loadDetailsFrom(ref);
-      },
     );
   }
 

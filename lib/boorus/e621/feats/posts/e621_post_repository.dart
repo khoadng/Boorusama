@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/e621/feats/posts/utils.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
@@ -67,8 +68,7 @@ class E621PostRepositoryApi
                   booruConfig.login,
                   booruConfig.apiKey,
                   page,
-                  //FIXME: should apply config tags here
-                  tags,
+                  getTags(booruConfig, tags).join(' '),
                   limit ?? lim,
                 )),
           ),
