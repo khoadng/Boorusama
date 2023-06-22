@@ -12,6 +12,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/compact_chip.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InformationSection extends StatelessWidget {
@@ -79,28 +80,13 @@ class InformationSection extends StatelessWidget {
                     Flexible(
                       child: artistTags.firstOrNull.toOption().fold(
                             () => const SizedBox.shrink(),
-                            (artist) => Material(
-                              borderRadius: BorderRadius.circular(6),
-                              color: getTagColor(
+                            (artist) => CompactChip(
+                              label: artist.removeUnderscoreWithSpace(),
+                              onTap: () =>
+                                  onArtistTagTap?.call(context, artist),
+                              backgroundColor: getTagColor(
                                 TagCategory.artist,
                                 ThemeMode.amoledDark,
-                              ),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(6),
-                                onTap: () =>
-                                    onArtistTagTap?.call(context, artist),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                    horizontal: 4,
-                                  ),
-                                  child: Text(
-                                    artist.removeUnderscoreWithSpace(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
                               ),
                             ),
                           ),

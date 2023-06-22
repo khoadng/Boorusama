@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/models/creator.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/creator.dart';
 
 class FavoriteGroup extends Equatable {
   const FavoriteGroup({

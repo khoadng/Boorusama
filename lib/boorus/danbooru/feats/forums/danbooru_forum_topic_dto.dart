@@ -1,7 +1,10 @@
+// Project imports:
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+
 class DanbooruForumTopicDto {
   final int? id;
-  final int? creatorId;
-  final int? updaterId;
+  final CreatorDto? creator;
+  final CreatorDto? updater;
   final String? title;
   final int? responseCount;
   final bool? isSticky;
@@ -14,8 +17,8 @@ class DanbooruForumTopicDto {
 
   DanbooruForumTopicDto({
     this.id,
-    this.creatorId,
-    this.updaterId,
+    this.creator,
+    this.updater,
     this.title,
     this.responseCount,
     this.isSticky,
@@ -30,8 +33,10 @@ class DanbooruForumTopicDto {
   factory DanbooruForumTopicDto.fromJson(Map<String, dynamic> json) {
     return DanbooruForumTopicDto(
       id: json['id'],
-      creatorId: json['creator_id'],
-      updaterId: json['updater_id'],
+      creator:
+          json['creator'] != null ? CreatorDto.fromJson(json['creator']) : null,
+      updater:
+          json['updater'] != null ? CreatorDto.fromJson(json['updater']) : null,
       title: json['title'],
       responseCount: json['response_count'],
       isSticky: json['is_sticky'],

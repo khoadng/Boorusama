@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/feats/users/creator.dart';
+
 enum DanbooruTopicCategory {
   general,
   tags,
@@ -10,8 +13,8 @@ enum DanbooruTopicCategory {
 class DanbooruForumTopic extends Equatable {
   const DanbooruForumTopic({
     required this.id,
-    required this.creatorId,
-    required this.updaterId,
+    required this.creator,
+    required this.updater,
     required this.title,
     required this.responseCount,
     required this.isSticky,
@@ -23,8 +26,8 @@ class DanbooruForumTopic extends Equatable {
   });
 
   final int id;
-  final int creatorId;
-  final int updaterId;
+  final Creator creator;
+  final Creator updater;
   final String title;
   final int responseCount;
   final bool isSticky;
@@ -37,8 +40,8 @@ class DanbooruForumTopic extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        creatorId,
-        updaterId,
+        creator,
+        updater,
         title,
         responseCount,
         isSticky,

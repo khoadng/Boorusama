@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
@@ -20,6 +21,9 @@ extension DanbooruForumTopicRepositoryX on DanbooruForumTopicRepository {
           .then((value) => value.getOrElse((e) => <DanbooruForumTopic>[].lock));
 }
 
+const _forumParams =
+    'id,creator,updater,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level';
+
 class DanbooruForumTopicRepositoryApi implements DanbooruForumTopicRepository {
   DanbooruForumTopicRepositoryApi({
     required this.api,
@@ -35,6 +39,7 @@ class DanbooruForumTopicRepositoryApi implements DanbooruForumTopicRepository {
             order: 'sticky',
             page: page,
             limit: 50,
+            only: _forumParams,
           ),
         ));
 
@@ -52,8 +57,8 @@ DanbooruForumTopic danbooruForumTopicDtoToDanbooruForumTopic(
 ) =>
     DanbooruForumTopic(
       id: dto.id ?? 0,
-      creatorId: dto.creatorId ?? 0,
-      updaterId: dto.updaterId ?? 0,
+      creator: creatorDtoToCreator(dto.creator),
+      updater: creatorDtoToCreator(dto.updater),
       title: dto.title ?? '',
       responseCount: dto.responseCount ?? 0,
       isSticky: dto.isSticky ?? false,

@@ -304,7 +304,8 @@ abstract class DanbooruApi {
   @GET('/forum_topics.json')
   Future<HttpResponse> getForumTopics({
     @Query('page') int? page,
-    @Query('order]') String? order,
+    @Query('search[order]') String? order,
     @Query('limit') int? limit,
+    @Query('only') String? only,
   });
 }
