@@ -31,6 +31,13 @@ class OtherFeaturesPage extends ConsumerWidget {
                   goToPoolPage(context, ref);
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.forum_outlined),
+                title: const Text('Forum'),
+                onTap: () {
+                  goToForumPage(context);
+                },
+              ),
               if (authState.isAuthenticated) ...[
                 ListTile(
                   leading: const Icon(Icons.favorite_outline),

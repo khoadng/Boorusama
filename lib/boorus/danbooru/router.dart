@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -525,4 +526,12 @@ Future<bool?> goToAddToBlacklistPage(
       tags: post.extractTags(),
     ),
   );
+}
+
+void goToForumPage(BuildContext context) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruProvider(
+      builder: (_) => const DanbooruForumPage(),
+    ),
+  ));
 }
