@@ -10,57 +10,50 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 
-typedef PostFetcher = PostsOrError Function(int page);
+typedef PostFetcher<T extends Post> = PostsOrErrorCore<T> Function(int page);
 
-mixin PostFetcherMixin<T extends StatefulWidget> on State<T> {
-  PostFetcher get fetcher;
-
-  BooruError? errors;
-
-  Future<List<Post>> fetchPosts(int page) {
-    if (errors != null) {
-      setState(() {
-        errors = null;
-      });
-    }
-
-    return fetcher(page).run().then((value) => value.fold(
-          (l) {
-            setState(() => errors = l);
-            return <Post>[];
-          },
-          (r) => r,
-        ));
-  }
-}
-
-class PostScope extends ConsumerStatefulWidget {
+class PostScope<T extends Post> extends ConsumerStatefulWidget {
   const PostScope({
     super.key,
     required this.fetcher,
     required this.builder,
   });
 
-  final PostFetcher fetcher;
+  final PostFetcher<T> fetcher;
   final Widget Function(
     BuildContext context,
-    PostGridController<Post> controller,
+    PostGridController<T> controller,
     BooruError? errors,
   ) builder;
 
   @override
-  ConsumerState<PostScope> createState() => _PostScopeState();
+  ConsumerState<PostScope<T>> createState() => _PostScopeState();
 }
 
-class _PostScopeState extends ConsumerState<PostScope> with PostFetcherMixin {
-  late final _controller = PostGridController<Post>(
+class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
+  late final _controller = PostGridController<T>(
     fetcher: (page) => fetchPosts(page),
     refresher: () => fetchPosts(1),
     pageMode: ref.read(pageModeSettingsProvider),
   );
 
-  @override
-  PostFetcher get fetcher => widget.fetcher;
+  BooruError? errors;
+
+  Future<List<T>> fetchPosts(int page) {
+    if (errors != null) {
+      setState(() {
+        errors = null;
+      });
+    }
+
+    return widget.fetcher(page).run().then((value) => value.fold(
+          (l) {
+            setState(() => errors = l);
+            return <T>[];
+          },
+          (r) => r,
+        ));
+  }
 
   @override
   void dispose() {

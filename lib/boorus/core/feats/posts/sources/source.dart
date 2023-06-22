@@ -12,6 +12,7 @@ sealed class PostSource {
   static final IMap<String, String> customFaviconUrlSite = <String, String>{
     'lofter': 'https://www.lofter.com/favicon.ico',
     'lolibooru': 'https://lolibooru.moe/favicon.ico',
+    'e926': 'https://www.e926.net/favicon.ico',
   }.lock;
 
   factory PostSource.from(

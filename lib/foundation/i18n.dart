@@ -36,6 +36,9 @@ const supportedLocales = [
   Locale('pt', 'BR'), // Portuguese (Brazil)
   Locale('zh', 'CN'), // Simplified Chinese
   Locale('zh', 'TW'), // Traditional Chinese
+  Locale('uk', 'UA'), // Ukrainian (Ukraine)
+  Locale('tr', 'TR'), // Turkish (Turkey)
+  Locale('fr', 'FR'), // French (France)
 ];
 
 LookupMessages getMessagesForLocale(Locale locale) =>
@@ -51,6 +54,9 @@ LookupMessages getMessagesForLocale(Locale locale) =>
       'es-ES' => EsMessages(),
       'zh-CN' => ZhCnMessages(),
       'zh-TW' => ZhMessages(),
+      'uk-UA' => UkMessages(),
+      'tr-TR' => TrMessages(),
+      'fr-FR' => FrMessages(),
       _ => throw Exception('Unsupported locale $locale')
     };
 

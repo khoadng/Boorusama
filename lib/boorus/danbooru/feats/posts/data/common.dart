@@ -8,13 +8,13 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/models/utils.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/post_variant.dart';
 import 'post_dto.dart';
-import 'utils.dart';
 
 class ParsePostArguments {
   final HttpResponse<dynamic> value;
@@ -53,7 +53,7 @@ List<String> getTags(BooruConfig booruConfig, String tags) {
     booruConfig.deletedItemBehavior,
   );
   return [
-    ...splitTag(tags),
+    ...tags.splitByWhitespace(),
     if (ratingTag != null) ratingTag,
     if (deletedStatusTag != null) deletedStatusTag,
   ];
@@ -68,12 +68,12 @@ DanbooruPost postDtoToPost(
       thumbnailImageUrl: dto.previewFileUrl ?? '',
       sampleImageUrl: dto.largeFileUrl ?? '',
       originalImageUrl: dto.fileUrl ?? '',
-      copyrightTags: splitTag(dto.tagStringCopyright),
-      characterTags: splitTag(dto.tagStringCharacter),
-      artistTags: splitTag(dto.tagStringArtist),
-      generalTags: splitTag(dto.tagStringGeneral),
-      metaTags: splitTag(dto.tagStringMeta),
-      tags: splitTag(dto.tagString),
+      copyrightTags: dto.tagStringCopyright.splitByWhitespace(),
+      characterTags: dto.tagStringCharacter.splitByWhitespace(),
+      artistTags: dto.tagStringArtist.splitByWhitespace(),
+      generalTags: dto.tagStringGeneral.splitByWhitespace(),
+      metaTags: dto.tagStringMeta.splitByWhitespace(),
+      tags: dto.tagStringGeneral.splitByWhitespace(),
       width: dto.imageWidth?.toDouble() ?? 0.0,
       height: dto.imageHeight?.toDouble() ?? 0.0,
       format: dto.fileExt ?? 'jpg',

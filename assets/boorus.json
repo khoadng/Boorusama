@@ -64,5 +64,17 @@
         "url" : "https://lolibooru.moe/",
         "cheatsheet" : "https://lolibooru.moe/help/cheatsheet",
         "login_type" : "login_password_hashed"
+    },    
+    {
+        "name" : "e621",
+        "url" : "https://e621.net/",
+        "cheatsheet" : "https://e621.net/help/cheatsheet",
+        "login_type" : "login_api_key"
+    },
+    {
+        "name" : "e926",
+        "url" : "https://e926.net/",
+        "cheatsheet" : "https://e926.net/help/cheatsheet",
+        "login_type" : "login_api_key"
     }
 ]

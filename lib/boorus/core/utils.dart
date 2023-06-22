@@ -93,6 +93,43 @@ Widget createRandomPlaceholderContainer(
   );
 }
 
+String generateCopyrightOnlyReadableName(List<String> copyrightTags) {
+  final copyrights = copyrightTags;
+  final copyright = copyrights.isEmpty ? 'original' : copyrights.first;
+
+  final remainedCopyrightString = copyrights.skip(1).isEmpty
+      ? ''
+      : ' and ${copyrights.skip(1).length} more';
+
+  return '$copyright$remainedCopyrightString';
+}
+
+String generateCharacterOnlyReadableName(List<String> characterTags) {
+  final charaters = characterTags;
+  final cleanedCharacterList = [];
+
+  // Remove copyright string in character name
+  for (final character in charaters) {
+    final index = character.indexOf('(');
+    var cleanedName = character;
+
+    if (index > 0) {
+      cleanedName = character.substring(0, index - 1);
+    }
+
+    if (!cleanedCharacterList.contains(cleanedName)) {
+      cleanedCharacterList.add(cleanedName);
+    }
+  }
+
+  final characterString = cleanedCharacterList.take(3).join(', ');
+  final remainedCharacterString = cleanedCharacterList.skip(3).isEmpty
+      ? ''
+      : ' and ${cleanedCharacterList.skip(3).length} more';
+
+  return '${characterString.isEmpty ? 'original' : characterString}$remainedCharacterString';
+}
+
 Future<bool> launchExternalUrl(
   Uri url, {
   void Function()? onError,

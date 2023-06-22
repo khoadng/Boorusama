@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
+import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/flutter.dart';
@@ -231,6 +232,33 @@ void goToQuickSearchPage(
         switch (booru.booruType) {
           case BooruType.unknown:
             throw UnimplementedError();
+          case BooruType.e621:
+          case BooruType.e926:
+            return E621Provider(
+              builder: (_) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, theme),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: onSubmitted,
+                      backButton: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => context.navigator.pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: onSelected,
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, theme),
+                    ),
+            );
           case BooruType.danbooru:
           case BooruType.safebooru:
           case BooruType.testbooru:
@@ -378,6 +406,11 @@ Future<void> goToBulkDownloadPage(
     type: PageTransitionType.rightToLeft,
     child: Builder(builder: (_) {
       switch (booru.booruType) {
+        case BooruType.e621:
+        case BooruType.e926:
+          return E621Provider(
+            builder: (context) => const BulkDownloadPage(),
+          );
         case BooruType.unknown:
           throw UnimplementedError();
         case BooruType.konachan:

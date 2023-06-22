@@ -1,0 +1,79 @@
+{
+    "generic": {
+        "done": "Завершено",
+        "errors": {
+            "no_data": "Нема доступних даних",
+            "unknown": "Щось пішло не так"
+        },
+        "action": {
+            "add": "Додати",
+            "delete": "Видалити",
+            "edit": "Редактувати",
+            "ok": "ОК",
+            "cancel": "Відмінити"
+        }
+    },
+    "profile": {
+        "favorites": "Улюблене"
+    },
+    "network": {
+        "unavailable": "Мережа недоступна"
+    },
+    "tag": {
+        "related": {
+            "more": "Ще",
+            "related": "Повʼязане",
+            "add_to_current_search": "Додати до поточного пошуку",
+            "open_wiki": "Відкрити Вікі"
+        },
+        "explore": {
+            "new": "Нове",
+            "popular": "Популярне"
+        }
+    },
+    "post": {
+        "detail": {
+            "view": "Дивитись",
+            "slide_show": {
+                "interval": "Проміжок (секунди)",
+                "skip_anim": "Ґавити анімацію",
+                "ok": "ОК",
+                "cancel": "Відмінити"
+            },
+            "view_in_browser": "Дивитись у браузері",
+            "file_details": "Деталі файлу",
+            "size": "Вага",
+            "resolution": "Роздільна здатність",
+            "rating": "Оцінка",
+            "file_format": "Формат файлу",
+            "share": {
+                "source": "Ділитись посиланням на джерело",
+                "booru": "Ділитись посиланням на Booru",
+                "image": "Ділитись зображенням"
+            },
+            "copied": "Скопійоване",
+            "show_original": "Показати оригінал",
+            "show_translated": "Показати переклад",
+            "login_required_notice": "Ви повинні увійти, щоб виконати цю дію",
+            "open_wiki": "Відкрити Вікі",
+            "add_to_blacklist": "Додати до чорного списку",
+            "add_to_favorites": "Додати до улюбленого",
+            "copy_and_open_saved_search": "Копіювати та відкрити збереженний пошук",
+            "score": {
+                "one": "Одне очко",
+                "few": "Декілька очок",
+                "many": "Багато очок",
+                "other": "Інщі очки"
+            }
+        },
+        "parent_child": {
+            "children_of": "Діти"
+        }
+    },
+    "settings": {
+        "language": {
+            "language": "Мова",
+            "language_name": "український"
+        }
+    }
+}

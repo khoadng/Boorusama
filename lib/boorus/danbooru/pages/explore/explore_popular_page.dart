@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/types.dart';
+import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
+import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/explores/explore_provider.dart';
@@ -16,8 +19,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/utils/duration_utils.dart';
-import 'datetime_selector.dart';
-import 'time_scale_toggle_switch.dart';
 
 class ExplorePopularPage extends ConsumerWidget {
   const ExplorePopularPage({

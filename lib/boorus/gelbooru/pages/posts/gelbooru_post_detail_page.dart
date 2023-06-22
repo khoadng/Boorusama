@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
@@ -142,7 +143,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       },
       pageCount: widget.posts.length,
       topRightButtonsBuilder: (page, expanded) => [
-        GelbooruMoreActionButton(post: widget.posts[page]),
+        GeneralMoreActionButton(post: widget.posts[page]),
       ],
       onExpanded: widget.hasDetailsTagList
           ? (currentPage) => ref.read(tagsProvider.notifier).load(

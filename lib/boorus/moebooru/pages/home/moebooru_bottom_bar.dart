@@ -1,7 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-class MoebooruBottomBar extends StatefulWidget {
+// Project imports:
+import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
+
+class MoebooruBottomBar extends StatelessWidget {
   const MoebooruBottomBar({
     super.key,
     required this.onTabChanged,
@@ -12,34 +15,10 @@ class MoebooruBottomBar extends StatefulWidget {
   final int initialValue;
 
   @override
-  State<MoebooruBottomBar> createState() => _BottomBarState();
-}
-
-class _BottomBarState extends State<MoebooruBottomBar> {
-  late int currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    currentIndex = widget.initialValue;
-  }
-
-  void changePage(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-    widget.onTabChanged(index);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      showUnselectedLabels: false,
-      showSelectedLabels: false,
-      landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-      items: [
-        //TODO: stop using index as a selected indicator
+    return BooruBottomBar(
+      onTabChanged: onTabChanged,
+      items: (currentIndex) => [
         BottomNavigationBarItem(
           label: 'Home',
           icon: currentIndex == 0
@@ -53,8 +32,6 @@ class _BottomBarState extends State<MoebooruBottomBar> {
               : const Icon(Icons.explore_outlined),
         ),
       ],
-      currentIndex: currentIndex,
-      onTap: changePage,
     );
   }
 }

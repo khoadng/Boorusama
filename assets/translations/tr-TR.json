@@ -1,0 +1,52 @@
+{
+    "generic": {
+        "done": "Tamam",
+        "errors": {
+            "unknown": "Birşeyler ters gitti"
+        },
+        "action": {
+            "add": "Ekle",
+            "delete": "Sil",
+            "edit": "Düzenle",
+            "ok": "Tamam",
+            "cancel": "İptal"
+        }
+    },
+    "profile": {
+        "favorites": "Favoriler"
+    },
+    "network": {
+        "unavailable": "Bağlantı mevcut değil"
+    },
+    "tag": {
+        "related": {
+            "more": "Daha fazla"
+        },
+        "explore": {
+            "new": "Yeni",
+            "popular": "Popüler"
+        }
+    },
+    "post": {
+        "detail": {
+            "view": "Gör(incele)",
+            "slide_show": {
+                "ok": "Tamam",
+                "cancel": "İptal"
+            },
+            "file_details": "Dosya detayları",
+            "size": "Ölçek",
+            "rating": "Puanlama",
+            "file_format": "Dosya formatı",
+            "share": {
+                "source": "Paylaşım kaynak bağlantısı\n"
+            }
+        }
+    },
+    "settings": {
+        "language": {
+            "language": "Dil",
+            "language_name": "Türkçe"
+        }
+    }
+}

@@ -1,10 +1,8 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';
 
-typedef DanbooruPostsOrError = TaskEither<BooruError, List<DanbooruPost>>;
+typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
 abstract class DanbooruPostRepository implements PostRepository {
   DanbooruPostsOrError getPosts(
