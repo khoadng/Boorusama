@@ -1,14 +1,15 @@
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/functional.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final danbooruForumTopicRepoProvider =
     Provider<DanbooruForumTopicRepository>((ref) {
   return DanbooruForumTopicRepositoryApi(
     api: ref.watch(danbooruApiProvider),
-    booruConfig: ref.watch(currentBooruConfigProvider),
   );
 });
 

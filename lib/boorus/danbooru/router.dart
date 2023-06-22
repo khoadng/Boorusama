@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -37,6 +36,7 @@ import 'package:boorusama/boorus/danbooru/pages/favorites/create_favorite_group_
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';

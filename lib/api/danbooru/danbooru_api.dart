@@ -302,9 +302,7 @@ abstract class DanbooruApi {
   );
 
   @GET('/forum_topics.json')
-  Future<HttpResponse> getForumTopics(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey, {
+  Future<HttpResponse> getForumTopics({
     @Query('page') int? page,
     @Query('order]') String? order,
     @Query('limit') int? limit,

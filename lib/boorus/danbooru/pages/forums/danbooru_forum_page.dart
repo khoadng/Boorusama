@@ -1,6 +1,11 @@
-import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 
 class DanbooruForumPage extends ConsumerWidget {
   const DanbooruForumPage({super.key});

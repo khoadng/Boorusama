@@ -1,9 +1,8 @@
+// Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
-
 import 'danbooru_forum_topic.dart';
 import 'danbooru_forum_topic_dto.dart';
 
@@ -24,19 +23,15 @@ extension DanbooruForumTopicRepositoryX on DanbooruForumTopicRepository {
 class DanbooruForumTopicRepositoryApi implements DanbooruForumTopicRepository {
   DanbooruForumTopicRepositoryApi({
     required this.api,
-    required this.booruConfig,
   });
 
   final DanbooruApi api;
-  final BooruConfig booruConfig;
 
   @override
   DanbooruForumTopicsOrError getForumTopics(int page) =>
       TaskEither.Do(($) async {
         var response = await $(tryParseResponse(
           fetcher: () => api.getForumTopics(
-            booruConfig.login,
-            booruConfig.apiKey,
             order: 'sticky',
             page: page,
             limit: 50,
