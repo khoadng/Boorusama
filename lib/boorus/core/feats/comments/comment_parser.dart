@@ -1,5 +1,5 @@
 // Project imports:
-import 'parse_utils.dart';
+import '../../../danbooru/feats/comments/app/parse_utils.dart';
 
 const urlPattern =
     r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)';

@@ -3,14 +3,14 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'danbooru_artist_commentary.dart';
 import 'danbooru_artist_commentary_dto.dart';
 import 'danbooru_artist_commentary_repository.dart';
 
 class DanbooruArtistCommentaryRepositoryApi
-    with CacheMixin<DanbooruArtistCommentary>
+    with CacheMixin<ArtistCommentary>
     implements DanbooruArtistCommentaryRepository {
   DanbooruArtistCommentaryRepositoryApi(this._api, this.booruConfig);
   final DanbooruApi _api;
@@ -22,7 +22,7 @@ class DanbooruArtistCommentaryRepositoryApi
   Duration get staleDuration => const Duration(minutes: 15);
 
   @override
-  Future<DanbooruArtistCommentary> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {
@@ -78,9 +78,9 @@ class DanbooruArtistCommentaryRepositoryApi
   }
 }
 
-DanbooruArtistCommentary artistCommentaryDtoToArtistCommentary(
+ArtistCommentary artistCommentaryDtoToArtistCommentary(
         DanbooruArtistCommentaryDto d) =>
-    DanbooruArtistCommentary(
+    ArtistCommentary(
       originalTitle: d.originalTitle ?? '',
       originalDescription: d.originalDescription ?? '',
       translatedTitle: d.translatedTitle ?? '',
@@ -88,8 +88,8 @@ DanbooruArtistCommentary artistCommentaryDtoToArtistCommentary(
     );
 
 extension ArtistCommentaryDtoX on DanbooruArtistCommentaryDto {
-  DanbooruArtistCommentary toEntity() {
-    return DanbooruArtistCommentary(
+  ArtistCommentary toEntity() {
+    return ArtistCommentary(
       originalTitle: originalTitle ?? '',
       originalDescription: originalDescription ?? '',
       translatedTitle: translatedTitle ?? '',

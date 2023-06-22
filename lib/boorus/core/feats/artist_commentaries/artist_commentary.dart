@@ -1,15 +1,15 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-class DanbooruArtistCommentary extends Equatable {
-  const DanbooruArtistCommentary({
+class ArtistCommentary extends Equatable {
+  const ArtistCommentary({
     required this.originalTitle,
     required this.originalDescription,
     required this.translatedTitle,
     required this.translatedDescription,
   });
 
-  factory DanbooruArtistCommentary.empty() => const DanbooruArtistCommentary(
+  factory ArtistCommentary.empty() => const ArtistCommentary(
         originalTitle: '',
         originalDescription: '',
         translatedTitle: '',
@@ -34,6 +34,6 @@ class DanbooruArtistCommentary extends Equatable {
       ];
 }
 
-extension DanbooruArtistCommentaryX on DanbooruArtistCommentary {
-  bool get isEmpty => this == DanbooruArtistCommentary.empty();
+extension DanbooruArtistCommentaryX on ArtistCommentary {
+  bool get isEmpty => this == ArtistCommentary.empty();
 }

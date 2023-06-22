@@ -2,18 +2,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'danbooru_artist_commentaries_provider.dart';
-import 'danbooru_artist_commentary.dart';
 
 class DanbooruArtistCommentariesNotifier
-    extends Notifier<Map<int, DanbooruArtistCommentary>> {
+    extends Notifier<Map<int, ArtistCommentary>> {
   @override
-  Map<int, DanbooruArtistCommentary> build() {
+  Map<int, ArtistCommentary> build() {
     return {};
   }
 
-  final _cache = Cache<DanbooruArtistCommentary>(
+  final _cache = Cache<ArtistCommentary>(
     maxCapacity: 100,
     staleDuration: const Duration(minutes: 5),
   );

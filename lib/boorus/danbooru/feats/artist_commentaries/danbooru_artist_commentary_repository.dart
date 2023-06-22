@@ -2,10 +2,10 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'danbooru_artist_commentary.dart';
+import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 
 abstract class DanbooruArtistCommentaryRepository {
-  Future<DanbooruArtistCommentary> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   });

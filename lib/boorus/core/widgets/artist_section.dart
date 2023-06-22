@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/boorus/core/feats/comments/comments.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 enum ArtistCommentaryTranlationState {
@@ -25,7 +25,7 @@ class ArtistSection extends StatefulWidget {
     required this.source,
   });
 
-  final DanbooruArtistCommentary artistCommentary;
+  final ArtistCommentary artistCommentary;
   final List<String> artistTags;
   final PostSource source;
 
@@ -85,7 +85,7 @@ class _ArtistSectionState extends State<ArtistSection> {
   }
 
   Widget _buildLink(
-    DanbooruArtistCommentary artistCommentary,
+    ArtistCommentary artistCommentary,
     ArtistCommentaryTranlationState display, {
     String? url,
   }) {
@@ -120,7 +120,7 @@ class _ArtistSectionState extends State<ArtistSection> {
 
 String getDescriptionText(
   ArtistCommentaryTranlationState currentState,
-  DanbooruArtistCommentary artistCommentary,
+  ArtistCommentary artistCommentary,
 ) {
   final titleTranslated = artistCommentary.translatedTitle != ''
       ? '<h2>${artistCommentary.translatedTitle}</h2>'
