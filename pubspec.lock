@@ -448,10 +448,10 @@ packages:
     dependency: "direct main"
     description:
       name: exprollable_page_view
-      sha256: "125847529f2060e6ce79509b82d33de1bfe11cd08ccfa8fa271e460e4e2c4f3c"
+      sha256: a5c889e88d26ec77cf3c97d505b08d61122a4d895f5cd846456b8fa4e1b46d80
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-rc.1"
+    version: "1.0.0-rc.2"
   fake_async:
     dependency: transitive
     description:
@@ -798,10 +798,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: d687b6129476c92bd75244b8dfc1bb56f9a287ab3d51cdf0baf570afeb923c51
+      sha256: cf6a8762c2861edd4be7f773e6a3c1b43eca7dfee75fe041524b8843497cc2a4
       url: "https://pub.dev"
     source: hosted
-    version: "8.0.3"
+    version: "8.1.0"
   graphs:
     dependency: transitive
     description:
@@ -1352,10 +1352,10 @@ packages:
     dependency: "direct dev"
     description:
       name: retrofit_generator
-      sha256: "7c0cca6106a8bc14ade20120700a3f607a932413f37d180e095b4658d415c6c8"
+      sha256: "372203b22538ff0e40939cb97277e86095eb6b23e86c485ca8a427e79ca330ba"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.0.1+1"
   rich_text_controller:
     dependency: "direct main"
     description:
@@ -1750,10 +1750,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_platform_interface
-      sha256: "6c9ca697a5ae218ce56cece69d46128169a58aa8653c1b01d26fcd4aad8c4370"
+      sha256: bfdfa402f1f3298637d71ca8ecfe840b4696698213d5346e9d12d4ab647ee2ea
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   url_launcher_web:
     dependency: transitive
     description:
@@ -1934,10 +1934,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_android
-      sha256: "57a22c86065375c1598b57224f92d6008141be0c877c64100de8bfb6f71083d8"
+      sha256: "532135f6f6b8030cd039f30eab23f340d650350e29f38e9b37d2eaad028f1018"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.1"
+    version: "3.8.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
@@ -1950,10 +1950,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
-      sha256: "6bbc6ade302b842999b27cbaa7171241c273deea8a9c73f92ceb3d811c767de2"
+      sha256: ecc9e9ea15216afc5ba3b1f14aa19414ceba526e57b19cebd970bfa91a0f4058
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.4"
+    version: "3.5.0"
   win32:
     dependency: transitive
     description:
