@@ -10,22 +10,20 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {
-  final api = ref.read(danbooruApiProvider);
-  final booruConfig = ref.read(currentBooruConfigProvider);
-
   return PoolCacher(
-    PoolRepositoryApi(api, booruConfig),
+    PoolRepositoryApi(
+      ref.watch(danbooruApiProvider),
+    ),
   );
 });
 
 final poolDescriptionRepoProvider = Provider<PoolDescriptionRepository>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return PoolDescriptionCacher(
       cache: LruCacher(),
       repo: PoolDescriptionRepositoryApi(
-        dio: dio,
+        dio: ref.watch(dioProvider(booruConfig.url)),
         endpoint: booruConfig.url,
       ));
 });
@@ -33,16 +31,13 @@ final poolDescriptionRepoProvider = Provider<PoolDescriptionRepository>((ref) {
 final danbooruPoolsProvider =
     StateNotifierProvider.autoDispose<PoolsNotifier, PagedState<PoolKey, Pool>>(
         (ref) {
-  final repo = ref.watch(danbooruPoolRepoProvider);
-  final category = ref.watch(danbooruSelectedPoolCategoryProvider);
-  final order = ref.watch(danbooruSelectedPoolOrderProvider);
   ref.watch(currentBooruConfigProvider);
 
   return PoolsNotifier(
     ref: ref,
-    repo: repo,
-    category: category,
-    order: order,
+    repo: ref.watch(danbooruPoolRepoProvider),
+    category: ref.watch(danbooruSelectedPoolCategoryProvider),
+    order: ref.watch(danbooruSelectedPoolOrderProvider),
   );
 });
 

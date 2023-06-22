@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -13,32 +12,21 @@ part 'related_tags_provider.dart';
 
 final popularSearchProvider = Provider<PopularSearchRepository>(
   (ref) {
-    final api = ref.watch(danbooruApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
     return PopularSearchRepositoryApi(
-      booruConfig: booruConfig,
-      api: api,
+      api: ref.watch(danbooruApiProvider),
     );
   },
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruTagRepoProvider = Provider<TagRepository>(
   (ref) {
-    final api = ref.watch(danbooruApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
     return TagCacher(
       cache: LruCacher(capacity: 1000),
-      repo: TagRepositoryApi(api, booruConfig),
+      repo: TagRepositoryApi(
+        ref.watch(danbooruApiProvider),
+      ),
     );
   },
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruUserMetatagRepoProvider = Provider<UserMetatagRepository>((ref) {

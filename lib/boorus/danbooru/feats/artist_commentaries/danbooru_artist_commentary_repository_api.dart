@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'danbooru_artist_commentary_dto.dart';
 import 'danbooru_artist_commentary_repository.dart';
@@ -12,9 +11,8 @@ import 'danbooru_artist_commentary_repository.dart';
 class DanbooruArtistCommentaryRepositoryApi
     with CacheMixin<ArtistCommentary>
     implements DanbooruArtistCommentaryRepository {
-  DanbooruArtistCommentaryRepositoryApi(this._api, this.booruConfig);
+  DanbooruArtistCommentaryRepositoryApi(this._api);
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
 
   @override
   int get maxCapacity => 100;
@@ -31,8 +29,6 @@ class DanbooruArtistCommentaryRepositoryApi
 
     try {
       final value = await _api.getArtistCommentary(
-        booruConfig.login,
-        booruConfig.apiKey,
         postId,
         cancelToken: cancelToken,
       );

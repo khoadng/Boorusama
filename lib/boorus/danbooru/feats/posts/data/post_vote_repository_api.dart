@@ -35,8 +35,6 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
 
     return _api
         .getPostVotes(
-          booruConfig.login,
-          booruConfig.apiKey,
           1,
           postIds.join(','),
           id.toString(),
@@ -49,8 +47,6 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   @override
   Future<List<PostVote>> getAllVotes(int postId, int page) => _api
       .getPostVotes(
-        booruConfig.login,
-        booruConfig.apiKey,
         page,
         postId.toString(),
         null,
@@ -61,8 +57,6 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
 
   Future<PostVote?> _vote(int postId, int score) => _api
       .votePost(
-        booruConfig.login,
-        booruConfig.apiKey,
         postId,
         score,
       )

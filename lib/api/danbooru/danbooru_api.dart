@@ -15,22 +15,16 @@ abstract class DanbooruApi {
 
   @POST('/favorites.json')
   Future<HttpResponse> addToFavorites(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('post_id') int postId,
   );
 
   @DELETE('/favorites/{postId}.json')
   Future<HttpResponse> removeFromFavorites(
     @Path() int postId,
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
   );
 
   @GET('/favorites.json')
   Future<HttpResponse> filterFavoritesFromUserId(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[post_id]') String postIdsString,
     @Query('search[user_id]') int userId,
     @Query('limit') int limit,
@@ -60,8 +54,6 @@ abstract class DanbooruApi {
   @POST('/comments.json')
   @FormUrlEncoded()
   Future<HttpResponse> postComment(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Field('comment[post_id]') int postId,
     @Field('comment[body]') String content,
     @Field('comment[do_not_bump_post]') bool doNotBumpPost,
@@ -70,8 +62,6 @@ abstract class DanbooruApi {
   @PUT('/comments/{commentId}.json')
   @FormUrlEncoded()
   Future<HttpResponse> updateComment(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int commentId,
     @Field('comment[body]') String content,
   );
@@ -79,31 +69,23 @@ abstract class DanbooruApi {
   @DELETE('/comments/{commentId}.json')
   @FormUrlEncoded()
   Future<HttpResponse> deleteComment(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int commentId,
   );
 
   @GET('/comment_votes.json')
   Future<HttpResponse> getCommentVotes(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[comment_id]') String commentIdsComma,
     @Query('search[is_deleted]') bool isDeleted,
   );
 
   @POST('/comments/{commentId}/votes.json')
   Future<HttpResponse> voteComment(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int commentId,
     @Query('score') int score,
   );
 
   @DELETE('/comment_votes/{commentId}.json')
   Future<HttpResponse> removeVoteComment(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int commentId,
   );
 
@@ -115,16 +97,12 @@ abstract class DanbooruApi {
   });
 
   @GET('/profile.json')
-  Future<HttpResponse> getProfile(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey, {
+  Future<HttpResponse> getProfile({
     @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET('/posts.json')
   Future<HttpResponse> getPosts(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('tags') String tags,
     @Query('limit') int limit, {
@@ -133,23 +111,17 @@ abstract class DanbooruApi {
 
   @GET('/counts/posts.json')
   Future<HttpResponse> countPosts(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('tags') String tags,
   );
 
   @GET('/artist_commentaries.json')
   Future<HttpResponse> getArtistCommentary(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[post_id]') int postId, {
     @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET('/explore/posts/popular.json')
   Future<HttpResponse> getPopularPosts(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('date') String date,
     @Query('scale') String scale,
     @Query('page') int page,
@@ -158,22 +130,16 @@ abstract class DanbooruApi {
 
   @GET('/explore/posts/viewed.json')
   Future<HttpResponse> getMostViewedPosts(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('date') String date,
   );
 
   @GET('/explore/posts/searches.json')
   Future<HttpResponse> getPopularSearchByDate(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('date') String date,
   );
 
   @GET('/tags.json')
   Future<HttpResponse> getTagsByNamePattern(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('search[hide_empty]') String hideEmpty,
     @Query('search[name_or_alias_matches]') String stringPattern,
@@ -183,8 +149,6 @@ abstract class DanbooruApi {
 
   @GET('/tags.json')
   Future<HttpResponse> getTagsByNameComma(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('search[hide_empty]') String hideEmpty,
     @Query('search[name_comma]') String stringComma,
@@ -202,16 +166,12 @@ abstract class DanbooruApi {
 
   @GET('/users/{id}.json')
   Future<HttpResponse> getUserById(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int id,
   );
 
   @PATCH('/users/{id}.json')
   @FormUrlEncoded()
   Future<HttpResponse> setBlacklistedTags(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int id,
     @Field('user[blacklisted_tags]') String blacklistedTags, {
     @CancelRequest() CancelToken? cancelToken,
@@ -225,8 +185,6 @@ abstract class DanbooruApi {
 
   @GET('/pools.json')
   Future<HttpResponse> getPools(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('limit') int limit, {
     @Query('search[category]') String? category,
@@ -238,8 +196,6 @@ abstract class DanbooruApi {
 
   @GET('/pools.json')
   Future<HttpResponse> getPoolsFromPostId(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[post_ids_include_all]') int postId,
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
@@ -247,8 +203,6 @@ abstract class DanbooruApi {
 
   @GET('/pools.json')
   Future<HttpResponse> getPoolsFromPostIds(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[post_ids_include_any]') String postIds,
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
@@ -256,8 +210,6 @@ abstract class DanbooruApi {
 
   @GET('/autocomplete.json')
   Future<HttpResponse> autocomplete(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('search[query]') String query,
     @Query('search[type]') String type,
     @Query('limit') int limit, {
@@ -272,22 +224,16 @@ abstract class DanbooruApi {
 
   @POST('/posts/{postId}/votes.json')
   Future<HttpResponse> votePost(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int postId,
     @Query('score') int score,
   );
   @DELETE('/posts/{postId}/votes.json')
   Future<HttpResponse> removeVotePost(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int postId,
   );
 
   @GET('/post_votes.json')
   Future<HttpResponse> getPostVotes(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('search[post_id]') String postIdsComma,
     @Query('search[user_id]') String? userId,
@@ -298,16 +244,12 @@ abstract class DanbooruApi {
   @PUT('/posts/{postId}.json')
   @FormUrlEncoded()
   Future<HttpResponse> putTag(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int postId,
     @Body() Map<String, dynamic> map,
   );
 
   @GET('/saved_searches.json')
   Future<HttpResponse> getSavedSearches(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('limit') int limit,
   );
@@ -315,31 +257,23 @@ abstract class DanbooruApi {
   @POST('/saved_searches.json')
   @FormUrlEncoded()
   Future<HttpResponse> postSavedSearch(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Body() Map<String, dynamic> map,
   );
 
   @PATCH('/saved_searches/{id}.json')
   @FormUrlEncoded()
   Future<HttpResponse> patchSavedSearch(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int id,
     @Body() Map<String, dynamic> map,
   );
 
   @DELETE('/saved_searches/{id}.json')
   Future<HttpResponse> deleteSavedSearch(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int id,
   );
 
   @GET('/favorite_groups.json')
-  Future<HttpResponse> getFavoriteGroups(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey, {
+  Future<HttpResponse> getFavoriteGroups({
     @Query('page') int? page,
     @Query('search[name_contains]') String? namePattern,
     @Query('search[creator_name]') String? creatorName,
@@ -348,9 +282,7 @@ abstract class DanbooruApi {
   });
 
   @POST('/favorite_groups.json')
-  Future<HttpResponse> postFavoriteGroups(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey, {
+  Future<HttpResponse> postFavoriteGroups({
     @Query('favorite_group[name]') String? name,
     @Query('favorite_group[post_ids_string]') String? postIdsString,
     @Query('favorite_group[is_private]') bool? isPrivate,
@@ -358,8 +290,6 @@ abstract class DanbooruApi {
 
   @PATCH('/favorite_groups/{groupId}.json')
   Future<HttpResponse> patchFavoriteGroups(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int groupId, {
     @Query('favorite_group[name]') String? name,
     @Query('favorite_group[post_ids_string]') String? postIdsString,
@@ -368,8 +298,6 @@ abstract class DanbooruApi {
 
   @DELETE('/favorite_groups/{groupId}.json')
   Future<HttpResponse> deleteFavoriteGroup(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
     @Path() int groupId,
   );
 

@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
@@ -18,11 +17,9 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parseResponse(
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required this.booruConfig,
     required DanbooruApi api,
   }) : _api = api;
 
-  final BooruConfig booruConfig;
   final DanbooruApi _api;
   final _cache = <String, List<Search>>{};
 
@@ -38,8 +35,6 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
     try {
       final result = await _api
           .getPopularSearchByDate(
-            booruConfig.login,
-            booruConfig.apiKey,
             '${date.year}-${date.month}-${date.day}',
           )
           .then(parseSearch);

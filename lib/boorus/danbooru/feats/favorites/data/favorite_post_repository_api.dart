@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
@@ -16,19 +15,13 @@ List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parseResponse(
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(
     this._api,
-    this.booruConfig,
   );
 
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
 
   @override
   Future<bool> addToFavorites(int postId) => _api
-          .addToFavorites(
-            booruConfig.login,
-            booruConfig.apiKey,
-            postId,
-          )
+          .addToFavorites(postId)
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
@@ -43,11 +36,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
 
   @override
   Future<bool> removeFromFavorites(int postId) => _api
-          .removeFromFavorites(
-            postId,
-            booruConfig.login,
-            booruConfig.apiKey,
-          )
+          .removeFromFavorites(postId)
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
@@ -68,8 +57,6 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   ) =>
       _api
           .filterFavoritesFromUserId(
-            booruConfig.login,
-            booruConfig.apiKey,
             postIds.join(','),
             userId,
             limit,
@@ -84,8 +71,6 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   ) =>
       _api
           .filterFavoritesFromUserId(
-            booruConfig.login,
-            booruConfig.apiKey,
             postId.toString(),
             userId,
             20,

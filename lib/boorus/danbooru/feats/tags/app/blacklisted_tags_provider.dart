@@ -11,16 +11,13 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 final danbooruBlacklistedTagRepoProvider = Provider<BlacklistedTagsRepository>(
   (ref) {
-    final userRepository = ref.watch(danbooruUserRepoProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
-    final api = ref.watch(danbooruApiProvider);
-
-    return BlacklistedTagsRepositoryImpl(userRepository, booruConfig, api);
+    return BlacklistedTagsRepositoryImpl(
+      ref.watch(danbooruUserRepoProvider),
+      ref.watch(danbooruApiProvider),
+    );
   },
   dependencies: [
     danbooruUserRepoProvider,
-    currentBooruConfigProvider,
     danbooruApiProvider,
   ],
 );

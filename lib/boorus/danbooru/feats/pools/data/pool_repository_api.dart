@@ -3,7 +3,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
@@ -18,11 +17,9 @@ class PoolRepositoryApi
     implements PoolRepository {
   PoolRepositoryApi(
     this._api,
-    this.booruConfig,
   );
 
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
   final _cache = Cache<List<Pool>>(
     maxCapacity: 10,
     staleDuration: const Duration(seconds: 10),
@@ -57,8 +54,6 @@ class PoolRepositoryApi
       key,
       () => _api
           .getPools(
-            booruConfig.login,
-            booruConfig.apiKey,
             page,
             _limit,
             category: category?.toString(),
@@ -77,8 +72,6 @@ class PoolRepositoryApi
   @override
   Future<List<Pool>> getPoolsByPostId(int postId) => _api
       .getPoolsFromPostId(
-        booruConfig.login,
-        booruConfig.apiKey,
         postId,
         _limit,
       )
@@ -90,8 +83,6 @@ class PoolRepositoryApi
 
     return _api
         .getPoolsFromPostIds(
-          booruConfig.login,
-          booruConfig.apiKey,
           postIds.join(' '),
           _limit,
         )

@@ -60,8 +60,6 @@ class PostRepositoryApi
         final response = await $(
           tryParseResponse(
             fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-                  booruConfig.login,
-                  booruConfig.apiKey,
                   page,
                   getTags(booruConfig, tags).join(' '),
                   limit ?? lim,
