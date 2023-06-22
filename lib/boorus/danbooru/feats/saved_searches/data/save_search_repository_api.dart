@@ -3,7 +3,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
@@ -16,11 +15,9 @@ List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) =>
 class SavedSearchRepositoryApi implements SavedSearchRepository {
   const SavedSearchRepositoryApi(
     this.api,
-    this.booruConfig,
   );
 
   final DanbooruApi api;
-  final BooruConfig booruConfig;
 
   @override
   Future<List<SavedSearch>> getSavedSearches({
@@ -28,8 +25,6 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
   }) =>
       api
           .getSavedSearches(
-            booruConfig.login,
-            booruConfig.apiKey,
             page,
             //TODO: shouldn't hardcode it
             1000,
@@ -42,8 +37,6 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
     String? label,
   }) =>
       api.postSavedSearch(
-        booruConfig.login,
-        booruConfig.apiKey,
         {
           'saved_search[query]': query,
           'saved_search[label_string]': label ?? '',
@@ -71,8 +64,6 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
 
     return api
         .patchSavedSearch(
-          booruConfig.login,
-          booruConfig.apiKey,
           id,
           map,
         )
@@ -82,8 +73,6 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
   @override
   Future<bool> deleteSavedSearch(int id) => api
       .deleteSavedSearch(
-        booruConfig.login,
-        booruConfig.apiKey,
         id,
       )
       .then((value) => value.response.statusCode == 204);

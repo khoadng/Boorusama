@@ -25,12 +25,8 @@ final danbooruFavoriteGroupPreviewsProvider =
 //#region Favorite Groups
 final danbooruFavoriteGroupRepoProvider =
     Provider<FavoriteGroupRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
   return FavoriteGroupRepositoryApi(
-    api: api,
-    booruConfig: booruConfig,
+    api: ref.watch(danbooruApiProvider),
   );
 });
 

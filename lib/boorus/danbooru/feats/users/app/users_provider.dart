@@ -10,15 +10,9 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 final danbooruUserRepoProvider = Provider<UserRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final defaultBlacklistedTags =
-      ref.watch(tagInfoProvider).defaultBlacklistedTags;
-
   return UserRepositoryApi(
-    api,
-    booruConfig,
-    defaultBlacklistedTags,
+    ref.watch(danbooruApiProvider),
+    ref.watch(tagInfoProvider).defaultBlacklistedTags,
   );
 });
 

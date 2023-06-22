@@ -3,7 +3,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import '../comments.dart';
 
@@ -16,17 +15,13 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) =>
 class CommentVoteApiRepository implements CommentVoteRepository {
   const CommentVoteApiRepository(
     DanbooruApi api,
-    this.booruConfig,
   ) : _api = api;
 
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
 
   @override
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds) => _api
           .getCommentVotes(
-            booruConfig.login,
-            booruConfig.apiKey,
             commentIds.join(','),
             false,
           )
@@ -40,8 +35,6 @@ class CommentVoteApiRepository implements CommentVoteRepository {
   @override
   Future<CommentVote> downvote(int commentId) => _api
       .voteComment(
-        booruConfig.login,
-        booruConfig.apiKey,
         commentId,
         -1,
       )
@@ -55,8 +48,6 @@ class CommentVoteApiRepository implements CommentVoteRepository {
   @override
   Future<CommentVote> upvote(int commentId) => _api
           .voteComment(
-            booruConfig.login,
-            booruConfig.apiKey,
             commentId,
             1,
           )
@@ -70,8 +61,6 @@ class CommentVoteApiRepository implements CommentVoteRepository {
   @override
   Future<bool> removeVote(int commentId) => _api
       .removeVoteComment(
-        booruConfig.login,
-        booruConfig.apiKey,
         commentId,
       )
       .then((_) => true)

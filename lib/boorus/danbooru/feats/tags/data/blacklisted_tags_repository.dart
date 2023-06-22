@@ -1,6 +1,5 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
@@ -8,12 +7,10 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   BlacklistedTagsRepositoryImpl(
     this.userRepository,
-    this.booruConfig,
     this.api,
   );
 
   final UserRepository userRepository;
-  final BooruConfig booruConfig;
   final DanbooruApi api;
   final Map<int, List<String>> _blacklistedTagsCache = {};
 
@@ -38,8 +35,6 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   ) async {
     try {
       await api.setBlacklistedTags(
-        booruConfig.login,
-        booruConfig.apiKey,
         userId,
         tagsToTagString(tags),
       );

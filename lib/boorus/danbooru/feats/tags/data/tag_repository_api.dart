@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'tag_dto.dart';
@@ -17,11 +16,9 @@ List<Tag> parseTag(HttpResponse<dynamic> value) => parseResponse(
 class TagRepositoryApi implements TagRepository {
   TagRepositoryApi(
     this._api,
-    this.booruConfig,
   );
 
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
 
   @override
   Future<List<Tag>> getTagsByNameComma(
@@ -32,8 +29,6 @@ class TagRepositoryApi implements TagRepository {
     try {
       return _api
           .getTagsByNameComma(
-            booruConfig.login,
-            booruConfig.apiKey,
             page,
             'yes',
             stringComma,

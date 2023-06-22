@@ -8,10 +8,9 @@ import '../comments.dart';
 
 final danbooruCommentVoteRepoProvider =
     Provider<CommentVoteApiRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
-  return CommentVoteApiRepository(api, booruConfig);
+  return CommentVoteApiRepository(
+    ref.watch(danbooruApiProvider),
+  );
 });
 
 final danbooruCommentVotesProvider =

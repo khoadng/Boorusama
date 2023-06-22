@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
@@ -28,11 +27,9 @@ List<UserSelf> parseUserSelf(
 class UserRepositoryApi implements UserRepository {
   UserRepositoryApi(
     this._api,
-    this.booruConfig,
     this.defaultBlacklistedTags,
   );
 
-  final BooruConfig booruConfig;
   final DanbooruApi _api;
   final List<String> defaultBlacklistedTags;
 
@@ -64,22 +61,14 @@ class UserRepositoryApi implements UserRepository {
 
   @override
   Future<User> getUserById(int id) => _api
-      .getUserById(
-        booruConfig.login,
-        booruConfig.apiKey,
-        id,
-      )
+      .getUserById(id)
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserDto.fromJson(e))
       .then((d) => userDtoToUser(d));
 
   @override
   Future<UserSelf?> getUserSelfById(int id) => _api
-      .getUserById(
-        booruConfig.login,
-        booruConfig.apiKey,
-        id,
-      )
+      .getUserById(id)
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserSelfDto.fromJson(e))
       .then((d) => userDtoToUserSelf(d, defaultBlacklistedTags));

@@ -8,10 +8,9 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 
 final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
-  return CommentRepositoryApi(api, booruConfig);
+  return CommentRepositoryApi(
+    ref.watch(danbooruApiProvider),
+  );
 });
 
 final danbooruCommentsProvider =

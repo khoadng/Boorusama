@@ -32,21 +32,14 @@ final timeAndDateProvider = Provider<ScaleAndTime>((ref) {
 
 final danbooruExploreRepoProvider = Provider<ExploreRepository>(
   (ref) {
-    final api = ref.watch(danbooruApiProvider);
-    final postRepository = ref.watch(danbooruPostRepoProvider);
-    final settingsRepository = ref.watch(settingsRepoProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
-    final config = ref.watch(currentBooruConfigProvider);
-
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
-        api: api,
-        booruConfig: config,
-        postRepository: postRepository,
-        settingsRepository: settingsRepository,
-        blacklistedTagRepository: blacklistedTagRepository,
-        shouldFilter: switch (config.ratingFilter) {
+        api: ref.watch(danbooruApiProvider),
+        postRepository: ref.watch(danbooruPostRepoProvider),
+        settingsRepository: ref.watch(settingsRepoProvider),
+        blacklistedTagRepository: ref.watch(globalBlacklistedTagRepoProvider),
+        shouldFilter: switch (
+            ref.watch(currentBooruConfigProvider).ratingFilter) {
           BooruConfigRatingFilter.hideNSFW => (post) =>
               post.rating != Rating.general || !post.viewable,
           BooruConfigRatingFilter.hideExplicit => (post) =>

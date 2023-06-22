@@ -8,10 +8,9 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 
 final danbooruFavoriteRepoProvider = Provider<FavoritePostRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
-  return FavoritePostRepositoryApi(api, booruConfig);
+  return FavoritePostRepositoryApi(
+    ref.watch(danbooruApiProvider),
+  );
 });
 
 // Provider to check if a post is favorited

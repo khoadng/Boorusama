@@ -3,15 +3,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 
 final danbooruSavedSearchRepoProvider = Provider<SavedSearchRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
-  return SavedSearchRepositoryApi(api, booruConfig);
+  return SavedSearchRepositoryApi(
+    ref.watch(danbooruApiProvider),
+  );
 });
 
 final danbooruSavedSearchesProvider =
@@ -20,11 +18,9 @@ final danbooruSavedSearchesProvider =
 );
 
 final danbooruSavedSearchAvailableProvider = Provider<List<SavedSearch>>((ref) {
-  final savedSearches = ref.watch(danbooruSavedSearchesProvider);
-
   return [
     SavedSearch.all(),
-    ...savedSearches ?? [],
+    ...ref.watch(danbooruSavedSearchesProvider) ?? [],
   ];
 });
 

@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import '../comments.dart';
@@ -20,11 +19,9 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parseResponse(
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
     DanbooruApi api,
-    this.booruConfig,
   ) : _api = api;
 
   final DanbooruApi _api;
-  final BooruConfig booruConfig;
 
   @override
   Future<List<Comment>> getCommentsFromPostId(
@@ -46,8 +43,6 @@ class CommentRepositoryApi implements CommentRepository {
   @override
   Future<bool> postComment(int postId, String content) => _api
       .postComment(
-        booruConfig.login,
-        booruConfig.apiKey,
         postId,
         content,
         true,
@@ -58,8 +53,6 @@ class CommentRepositoryApi implements CommentRepository {
   @override
   Future<bool> updateComment(int commentId, String content) => _api
       .updateComment(
-        booruConfig.login,
-        booruConfig.apiKey,
         commentId,
         content,
       )
@@ -69,8 +62,6 @@ class CommentRepositoryApi implements CommentRepository {
   @override
   Future<bool> deleteComment(int commentId) => _api
       .deleteComment(
-        booruConfig.login,
-        booruConfig.apiKey,
         commentId,
       )
       .then((_) => true)

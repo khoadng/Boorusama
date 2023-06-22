@@ -12,11 +12,10 @@ import 'package:boorusama/foundation/caching/lru_cacher.dart';
 part 'pools_search_provider.dart';
 
 final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {
-  final api = ref.read(danbooruApiProvider);
-  final booruConfig = ref.read(currentBooruConfigProvider);
-
   return PoolCacher(
-    PoolRepositoryApi(api, booruConfig),
+    PoolRepositoryApi(
+      ref.watch(danbooruApiProvider),
+    ),
   );
 });
 
