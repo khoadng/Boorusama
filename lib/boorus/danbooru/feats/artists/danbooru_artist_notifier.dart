@@ -7,13 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 
-class ArtistNotifier extends FamilyAsyncNotifier<Artist, String> {
+class DanbooruArtistNotifier
+    extends FamilyAsyncNotifier<DanbooruArtist, String> {
   @override
-  FutureOr<Artist> build(String arg) {
+  FutureOr<DanbooruArtist> build(String arg) {
     return load();
   }
 
-  Future<Artist> load() {
+  Future<DanbooruArtist> load() {
     return ref.read(danbooruArtistRepoProvider).getArtist(arg);
   }
 }

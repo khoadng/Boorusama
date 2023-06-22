@@ -1,5 +1,5 @@
-class ArtistDto {
-  ArtistDto({
+class DanbooruArtistDto {
+  DanbooruArtistDto({
     required this.id,
     required this.createdAt,
     required this.name,
@@ -10,7 +10,8 @@ class ArtistDto {
     required this.otherNames,
   });
 
-  factory ArtistDto.fromJson(Map<String, dynamic> json) => ArtistDto(
+  factory DanbooruArtistDto.fromJson(Map<String, dynamic> json) =>
+      DanbooruArtistDto(
         id: json['id'],
         createdAt: DateTime.parse(json['created_at']),
         name: json['name'],

@@ -1,8 +1,8 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-class Artist extends Equatable {
-  const Artist({
+class DanbooruArtist extends Equatable {
+  const DanbooruArtist({
     required this.id,
     required this.createdAt,
     required this.updatedAt,
@@ -13,7 +13,7 @@ class Artist extends Equatable {
     required this.name,
   });
 
-  factory Artist.empty() => Artist(
+  factory DanbooruArtist.empty() => DanbooruArtist(
         createdAt: DateTime(1),
         id: 0,
         name: '',
@@ -46,15 +46,15 @@ class Artist extends Equatable {
       ];
 }
 
-extension ArtistX on Artist {
-  bool get isEmpty => this == Artist.empty();
+extension DanbooruArtistX on DanbooruArtist {
+  bool get isEmpty => this == DanbooruArtist.empty();
 
-  Artist copyWith({
+  DanbooruArtist copyWith({
     int? id,
     String? name,
     List<String>? otherNames,
   }) =>
-      Artist(
+      DanbooruArtist(
         id: id ?? this.id,
         createdAt: createdAt,
         updatedAt: updatedAt,

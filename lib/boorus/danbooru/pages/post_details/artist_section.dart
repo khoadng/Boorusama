@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
@@ -25,7 +25,7 @@ class ArtistSection extends StatefulWidget {
     required this.source,
   });
 
-  final ArtistCommentary artistCommentary;
+  final DanbooruArtistCommentary artistCommentary;
   final List<String> artistTags;
   final PostSource source;
 
@@ -85,7 +85,7 @@ class _ArtistSectionState extends State<ArtistSection> {
   }
 
   Widget _buildLink(
-    ArtistCommentary artistCommentary,
+    DanbooruArtistCommentary artistCommentary,
     ArtistCommentaryTranlationState display, {
     String? url,
   }) {
@@ -120,7 +120,7 @@ class _ArtistSectionState extends State<ArtistSection> {
 
 String getDescriptionText(
   ArtistCommentaryTranlationState currentState,
-  ArtistCommentary artistCommentary,
+  DanbooruArtistCommentary artistCommentary,
 ) {
   final titleTranslated = artistCommentary.translatedTitle != ''
       ? '<h2>${artistCommentary.translatedTitle}</h2>'

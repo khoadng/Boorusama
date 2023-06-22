@@ -2,12 +2,12 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 
 void main() {
   group('[artist commentary test]', () {
     test('empty commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: '',
         originalDescription: '',
         translatedTitle: '',
@@ -20,7 +20,7 @@ void main() {
     });
 
     test('partially empty commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: '',
         originalDescription: 'bar',
         translatedTitle: '',
@@ -33,7 +33,7 @@ void main() {
     });
 
     test('commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: 'foo',
         originalDescription: 'bar',
         translatedTitle: '',
@@ -46,7 +46,7 @@ void main() {
     });
 
     test('untranslated commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: 'foo',
         originalDescription: 'bar',
         translatedTitle: '',
@@ -59,7 +59,7 @@ void main() {
     });
 
     test('translated commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: 'foo',
         originalDescription: 'bar',
         translatedTitle: 'some title',
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('partially translated commentary', () {
-      const commentary = ArtistCommentary(
+      const commentary = DanbooruArtistCommentary(
         originalTitle: 'foo',
         originalDescription: 'bar',
         translatedTitle: '',
@@ -88,8 +88,8 @@ void main() {
   group('[artist commentary comparison tests]', () {
     test('equal', () {
       expect(
-        ArtistCommentary.empty(),
-        const ArtistCommentary(
+        DanbooruArtistCommentary.empty(),
+        const DanbooruArtistCommentary(
           originalTitle: '',
           originalDescription: '',
           translatedTitle: '',
@@ -100,8 +100,8 @@ void main() {
 
     test('not equal', () {
       expect(
-        ArtistCommentary.empty(),
-        isNot(const ArtistCommentary(
+        DanbooruArtistCommentary.empty(),
+        isNot(const DanbooruArtistCommentary(
           originalTitle: 'a',
           originalDescription: '',
           translatedTitle: '',

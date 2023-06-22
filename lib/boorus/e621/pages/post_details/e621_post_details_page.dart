@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/artist_section.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
@@ -387,7 +387,7 @@ class E621ArtistSection extends ConsumerWidget {
 
     return ArtistSection(
       //FIXME: shouldn't use danbooru's artist section, should separate it
-      artistCommentary: ArtistCommentary(
+      artistCommentary: DanbooruArtistCommentary(
         originalTitle: '',
         originalDescription: commentary,
         translatedTitle: '',

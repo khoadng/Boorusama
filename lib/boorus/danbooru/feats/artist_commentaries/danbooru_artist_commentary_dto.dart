@@ -1,5 +1,5 @@
-class ArtistCommentaryDto {
-  ArtistCommentaryDto({
+class DanbooruArtistCommentaryDto {
+  DanbooruArtistCommentaryDto({
     required this.id,
     required this.postId,
     this.originalTitle,
@@ -10,8 +10,8 @@ class ArtistCommentaryDto {
     required this.updatedAt,
   });
 
-  factory ArtistCommentaryDto.fromJson(Map<String, dynamic> json) =>
-      ArtistCommentaryDto(
+  factory DanbooruArtistCommentaryDto.fromJson(Map<String, dynamic> json) =>
+      DanbooruArtistCommentaryDto(
         id: json['id'],
         postId: json['post_id'],
         originalTitle: json['original_title'],
