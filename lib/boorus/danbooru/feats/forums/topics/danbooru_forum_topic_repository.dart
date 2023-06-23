@@ -1,11 +1,10 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
-import 'danbooru_forum_topic.dart';
-import 'danbooru_forum_topic_dto.dart';
 
 typedef DanbooruForumTopicsOrError
     = TaskEither<BooruError, IList<DanbooruForumTopic>>;
@@ -22,7 +21,7 @@ extension DanbooruForumTopicRepositoryX on DanbooruForumTopicRepository {
 }
 
 const _forumParams =
-    'id,creator,updater,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level';
+    'id,creator,updater,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level,original_post';
 
 class DanbooruForumTopicRepositoryApi implements DanbooruForumTopicRepository {
   DanbooruForumTopicRepositoryApi({
@@ -73,4 +72,7 @@ DanbooruForumTopic danbooruForumTopicDtoToDanbooruForumTopic(
       category: dto.categoryId != null
           ? intToDanbooruTopicCategory(dto.categoryId!)
           : DanbooruTopicCategory.general,
+      originalPost: dto.originalPost != null
+          ? danbooruForumPostDtoToDanbooruForumPost(dto.originalPost!)
+          : DanbooruForumPost.empty(),
     );

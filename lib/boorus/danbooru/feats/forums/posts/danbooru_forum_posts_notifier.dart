@@ -11,6 +11,10 @@ class DanbooruForumPostsNotifier extends PagedNotifier<int, DanbooruForumPost> {
     required DanbooruForumPostRepository repo,
   }) : super(
           load: (key, limit) => repo.getForumPostsOrEmpty(topicId, key),
-          nextPageKeyBuilder: NextPageKeyBuilderDefault.mysqlPagination,
+          nextPageKeyBuilder: (lastItems, page, limit) => (lastItems == null ||
+                  lastItems.isEmpty ||
+                  lastItems.length < limit)
+              ? null
+              : lastItems.last.id,
         );
 }

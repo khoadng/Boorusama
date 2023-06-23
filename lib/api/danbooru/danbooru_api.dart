@@ -311,7 +311,7 @@ abstract class DanbooruApi {
 
   @GET('/forum_posts.json')
   Future<HttpResponse> getForumPosts({
-    @Query('page') int? page,
+    @Query('page') String? page,
     @Query('search[topic_id]') int? topicId,
     @Query('limit') int? limit,
     @Query('only') String? only,

@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/creator.dart';
 
 enum DanbooruTopicCategory {
@@ -23,6 +24,7 @@ class DanbooruForumTopic extends Equatable {
     required this.updatedAt,
     required this.isDeleted,
     required this.category,
+    required this.originalPost,
   });
 
   final int id;
@@ -37,6 +39,8 @@ class DanbooruForumTopic extends Equatable {
   final bool isDeleted;
   final DanbooruTopicCategory category;
 
+  final DanbooruForumPost originalPost;
+
   @override
   List<Object?> get props => [
         id,
@@ -50,6 +54,7 @@ class DanbooruForumTopic extends Equatable {
         updatedAt,
         isDeleted,
         category,
+        originalPost,
       ];
 }
 

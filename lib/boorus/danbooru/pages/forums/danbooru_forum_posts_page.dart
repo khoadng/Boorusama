@@ -16,9 +16,11 @@ class DanbooruForumPostsPage extends ConsumerWidget {
   const DanbooruForumPostsPage({
     super.key,
     required this.topicId,
+    required this.originalPostId,
   });
 
   final int topicId;
+  final int originalPostId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +36,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
           child: CircularProgressIndicator.adaptive(),
         ),
         pullToRefresh: false,
-        firstPageKey: 1,
+        firstPageKey: originalPostId,
         provider: danbooruForumPostsProvider(topicId),
         itemBuilder: (context, post, index) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),

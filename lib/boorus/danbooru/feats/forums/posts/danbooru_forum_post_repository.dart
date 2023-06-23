@@ -9,15 +9,15 @@ typedef DanbooruForumPostsOrError
     = TaskEither<BooruError, List<DanbooruForumPost>>;
 
 abstract interface class DanbooruForumPostRepository {
-  DanbooruForumPostsOrError getForumPosts(int topicId, int page);
+  DanbooruForumPostsOrError getForumPosts(int topicId, int lastForumPostId);
 }
 
 extension DanbooruForumPostRepositoryX on DanbooruForumPostRepository {
   Future<List<DanbooruForumPost>> getForumPostsOrEmpty(
     int topicId,
-    int page,
+    int lastForumPostId,
   ) =>
-      getForumPosts(topicId, page)
+      getForumPosts(topicId, lastForumPostId)
           .run()
           .then((value) => value.getOrElse((e) => <DanbooruForumPost>[]));
 }
@@ -31,15 +31,18 @@ class DanbooruForumPostRepositoryApi implements DanbooruForumPostRepository {
   });
 
   final DanbooruApi api;
+  final limit = 20;
 
   @override
-  DanbooruForumPostsOrError getForumPosts(int topicId, int page) =>
+  DanbooruForumPostsOrError getForumPosts(int topicId, int lastForumPostId) =>
       TaskEither.Do(($) async {
         var response = await $(tryParseResponse(
           fetcher: () => api.getForumPosts(
             topicId: topicId,
-            page: page,
+            page:
+                'a${lastForumPostId - 1}', // offset by one to account for the last post
             only: _forumPostParams,
+            limit: limit,
           ),
         ));
 
@@ -47,6 +50,8 @@ class DanbooruForumPostRepositoryApi implements DanbooruForumPostRepository {
           value: response,
           converter: (item) => DanbooruForumPostDto.fromJson(item),
         ).map(danbooruForumPostDtoToDanbooruForumPost).toList();
+
+        data.sort((a, b) => a.id.compareTo(b.id));
 
         return data;
       });

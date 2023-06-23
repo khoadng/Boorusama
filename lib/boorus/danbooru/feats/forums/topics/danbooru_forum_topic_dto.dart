@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class DanbooruForumTopicDto {
@@ -15,6 +16,8 @@ class DanbooruForumTopicDto {
   final int? categoryId;
   final int? minLevel;
 
+  final DanbooruForumPostDto? originalPost;
+
   DanbooruForumTopicDto({
     this.id,
     this.creator,
@@ -28,6 +31,7 @@ class DanbooruForumTopicDto {
     this.isDeleted,
     this.categoryId,
     this.minLevel,
+    this.originalPost,
   });
 
   factory DanbooruForumTopicDto.fromJson(Map<String, dynamic> json) {
@@ -46,6 +50,9 @@ class DanbooruForumTopicDto {
       isDeleted: json['is_deleted'],
       categoryId: json['category_id'],
       minLevel: json['min_level'],
+      originalPost: json['original_post'] != null
+          ? DanbooruForumPostDto.fromJson(json['original_post'])
+          : null,
     );
   }
 }

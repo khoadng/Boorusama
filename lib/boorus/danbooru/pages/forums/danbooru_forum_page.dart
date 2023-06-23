@@ -42,7 +42,10 @@ class DanbooruForumPage extends ConsumerWidget {
           onCreatorTap: () =>
               goToUserDetailsPage(ref, context, uid: topic.creator.id),
           onTap: () => context.navigator.push(MaterialPageRoute(
-              builder: (_) => DanbooruForumPostsPage(topicId: topic.id))),
+              builder: (_) => DanbooruForumPostsPage(
+                    topicId: topic.id,
+                    originalPostId: topic.originalPost.id,
+                  ))),
         ),
         pagedBuilder: (controller, builder) => PagedListView(
           pagingController: controller,

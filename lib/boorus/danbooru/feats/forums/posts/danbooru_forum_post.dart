@@ -17,6 +17,17 @@ class DanbooruForumPost extends Equatable {
     required this.updater,
   });
 
+  factory DanbooruForumPost.empty() => DanbooruForumPost(
+        id: -1,
+        createdAt: DateTime(1),
+        updatedAt: DateTime(1),
+        body: '',
+        isDeleted: false,
+        topicId: -1,
+        creator: Creator.empty(),
+        updater: Creator.empty(),
+      );
+
   final int id;
   final DateTime createdAt;
   final DateTime updatedAt;
