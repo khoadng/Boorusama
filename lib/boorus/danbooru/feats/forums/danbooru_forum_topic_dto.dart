@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class DanbooruForumTopicDto {
   final int? id;

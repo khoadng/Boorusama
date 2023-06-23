@@ -4,7 +4,6 @@ export 'app/favorite_groups_provider.dart';
 export 'app/favorites_notifier.dart';
 export 'app/favorites_provider.dart';
 export 'app/favorite_utils.dart';
-export 'data/creator_dto.dart';
 export 'data/favorite_dto.dart';
 export 'data/favorite_group_dto.dart';
 export 'data/favorite_group_repository.dart';

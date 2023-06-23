@@ -1,6 +1,8 @@
 export 'app/current_user_notifier.dart';
 export 'app/users_notifier.dart';
 export 'app/users_provider.dart';
+export 'creator.dart';
+export 'creator_dto.dart';
 export 'data/user_dto.dart';
 export 'data/user_repository.dart';
 export 'data/user_self_dto.dart';
