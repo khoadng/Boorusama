@@ -42,4 +42,15 @@ abstract class GelbooruApi {
     @Query('term') String term, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET('/index.php')
+  Future<HttpResponse> getComments(
+    @Query('api_key') String? apiKey,
+    @Query('user_id') String? userId,
+    @Query('page') String page,
+    @Query('s') String s,
+    @Query('q') String q,
+    @Query('post_id') int postId, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

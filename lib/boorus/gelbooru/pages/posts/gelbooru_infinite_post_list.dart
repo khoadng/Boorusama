@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/gelbooru/widgets/gelbooru_post_context_menu.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -104,7 +105,7 @@ class _DanbooruInfinitePostListState
 
         return ContextMenuRegion(
           isEnabled: !multiSelect,
-          contextMenu: GeneralPostContextMenu(
+          contextMenu: GelbooruPostContextMenu(
             hasAccount: false,
             onMultiSelect: () {
               _multiSelectController.enableMultiSelect();

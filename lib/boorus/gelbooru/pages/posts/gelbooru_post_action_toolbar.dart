@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/widgets/comment_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 
 class GelbooruPostActionToolbar extends StatelessWidget {
@@ -24,6 +26,10 @@ class GelbooruPostActionToolbar extends StatelessWidget {
         children: [
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),
+          CommentPostButton(
+            post: post,
+            onPressed: () => goToGelbooruCommentsPage(context, post.id),
+          ),
           SharePostButton(post: post),
         ],
       ),
