@@ -7,13 +7,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment/widgets/danbooru_comment_header.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'comment_header.dart';
 
 class CommentItem extends ConsumerWidget {
   const CommentItem({
@@ -37,16 +36,7 @@ class CommentItem extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommentHeader(
-          authorName: comment.authorName,
-          authorLevel: comment.authorLevel,
-          createdAt: comment.createdAt,
-          onTap: () => goToUserDetailsPage(
-            ref,
-            context,
-            uid: comment.authorId,
-          ),
-        ),
+        DanbooruCommentHeader(comment: comment),
         const SizedBox(height: 4),
         Dtext.parse(
           parseDtext(comment.body),

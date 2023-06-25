@@ -4,23 +4,19 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:intl/intl.dart';
 
-// Project imports:
-import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
     super.key,
     required this.authorName,
-    this.authorLevel,
+    required this.authorTitleColor,
     required this.createdAt,
     this.onTap,
   });
 
   final String authorName;
-  final UserLevel? authorLevel;
   final DateTime createdAt;
   final VoidCallback? onTap;
+  final Color? authorTitleColor;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +29,7 @@ class CommentHeader extends StatelessWidget {
           child: Text(
             authorName.replaceAll('_', ' '),
             style: TextStyle(
-              color: authorLevel != null
-                  ? Color(getUserHexColor(authorLevel!))
-                  : null,
+              color: authorTitleColor,
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
