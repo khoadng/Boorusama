@@ -26,7 +26,7 @@ class OtherFeaturesPage extends ConsumerWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_album_outlined),
-                title: const Text('pool.pool').tr(),
+                title: const Text('Pools'),
                 onTap: () {
                   goToPoolPage(context, ref);
                 },
