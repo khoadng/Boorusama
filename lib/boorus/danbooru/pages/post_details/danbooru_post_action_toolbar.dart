@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/widgets/comment_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/posts/favorite_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -65,21 +65,13 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
               },
             ),
           BookmarkPostButton(post: post),
-          _buildCommentButton(context),
+          CommentPostButton(
+            post: post,
+            onPressed: () => goToCommentPage(context, post.id),
+          ),
           DownloadPostButton(post: post),
           SharePostButton(post: post),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCommentButton(BuildContext context) {
-    return IconButton(
-      splashRadius: 16,
-      onPressed: () => goToCommentPage(context, post.id),
-      icon: const FaIcon(
-        FontAwesomeIcons.comment,
-        size: 20,
       ),
     );
   }
