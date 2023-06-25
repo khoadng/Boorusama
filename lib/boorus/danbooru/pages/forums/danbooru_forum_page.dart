@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'danbooru_forum_posts_page.dart';
 import 'forum_card.dart';
 
@@ -21,7 +22,7 @@ class DanbooruForumPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forum'),
+        title: const Text('forum.forum').tr(),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

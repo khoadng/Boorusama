@@ -26,14 +26,14 @@ class OtherFeaturesPage extends ConsumerWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_album_outlined),
-                title: const Text('Pools'),
+                title: const Text('pool.pool').tr(),
                 onTap: () {
                   goToPoolPage(context, ref);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.forum_outlined),
-                title: const Text('Forum'),
+                title: const Text('forum.forum').tr(),
                 onTap: () {
                   goToForumPage(context);
                 },
@@ -48,14 +48,14 @@ class OtherFeaturesPage extends ConsumerWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.collections),
-                  title: const Text('Favorite groups'),
+                  title: const Text('favorite_groups.favorite_groups').tr(),
                   onTap: () {
                     goToFavoriteGroupPage(context);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.search),
-                  title: const Text('Saved search'),
+                  title: const Text('saved_search.saved_search').tr(),
                   onTap: () {
                     goToSavedSearchPage(context, booruConfig.login);
                   },
