@@ -300,4 +300,20 @@ abstract class DanbooruApi {
   Future<HttpResponse> deleteFavoriteGroup(
     @Path() int groupId,
   );
+
+  @GET('/forum_topics.json')
+  Future<HttpResponse> getForumTopics({
+    @Query('page') int? page,
+    @Query('search[order]') String? order,
+    @Query('limit') int? limit,
+    @Query('only') String? only,
+  });
+
+  @GET('/forum_posts.json')
+  Future<HttpResponse> getForumPosts({
+    @Query('page') String? page,
+    @Query('search[topic_id]') int? topicId,
+    @Query('limit') int? limit,
+    @Query('only') String? only,
+  });
 }

@@ -1,5 +1,4 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class CreatorDto {
@@ -49,10 +48,10 @@ class CreatorDto {
   final String? levelString;
 }
 
-Creator creatorDtoToCreator(CreatorDto d) {
-  return Creator(
-    id: d.id!,
-    name: d.name ?? '',
-    level: d.level == null ? UserLevel.member : intToUserLevel(d.level!),
-  );
-}
+Creator creatorDtoToCreator(CreatorDto? d) => d != null
+    ? Creator(
+        id: d.id!,
+        name: d.name ?? '',
+        level: d.level == null ? UserLevel.member : intToUserLevel(d.level!),
+      )
+    : Creator.empty();

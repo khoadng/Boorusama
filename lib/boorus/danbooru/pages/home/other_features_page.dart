@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +19,8 @@ class OtherFeaturesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
     final authState = ref.watch(authenticationProvider);
+    // Only used to force rebuild when language changes
+    ref.watch(settingsProvider.select((value) => value.language));
 
     return Scaffold(
       body: SafeArea(
@@ -31,6 +34,13 @@ class OtherFeaturesPage extends ConsumerWidget {
                   goToPoolPage(context, ref);
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.forum_outlined),
+                title: const Text('forum.forum').tr(),
+                onTap: () {
+                  goToForumPage(context);
+                },
+              ),
               if (authState.isAuthenticated) ...[
                 ListTile(
                   leading: const Icon(Icons.favorite_outline),
@@ -41,14 +51,14 @@ class OtherFeaturesPage extends ConsumerWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.collections),
-                  title: const Text('Favorite groups'),
+                  title: const Text('favorite_groups.favorite_groups').tr(),
                   onTap: () {
                     goToFavoriteGroupPage(context);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.search),
-                  title: const Text('Saved search'),
+                  title: const Text('saved_search.saved_search').tr(),
                   onTap: () {
                     goToSavedSearchPage(context, booruConfig.login);
                   },
