@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +19,8 @@ class OtherFeaturesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
     final authState = ref.watch(authenticationProvider);
+    // Only used to force rebuild when language changes
+    ref.watch(settingsProvider.select((value) => value.language));
 
     return Scaffold(
       body: SafeArea(
