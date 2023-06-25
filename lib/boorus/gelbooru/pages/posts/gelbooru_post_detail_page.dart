@@ -175,7 +175,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
                     theme == ThemeMode.light ? Colors.white : Colors.black,
               )
             : BooruVideo(
-                url: post.sampleImageUrl,
+                url: post.originalImageUrl,
                 aspectRatio: post.aspectRatio,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
@@ -184,7 +184,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
             useHero: page == currentPage,
             heroTag: "${post.id}_hero",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleImageUrl,
+            imageUrl: post.thumbnailFromSettings(ref.watch(settingsProvider)),
             placeholderImageUrl: post.thumbnailImageUrl,
             onTap: onImageTap,
             onCached: (path) => ref
