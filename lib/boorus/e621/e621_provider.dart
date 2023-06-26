@@ -45,8 +45,8 @@ class E621Provider extends StatelessWidget {
 }
 
 final e621ApiProvider = Provider<E621Api>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
   return E621Api(dio);
 });
 

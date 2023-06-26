@@ -9,7 +9,7 @@ import 'package:boorusama/foundation/networking/networking.dart';
 const _serviceName = 'Connectivity';
 
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
-  final logger = ref.read(loggerProvider);
+  final logger = ref.watch(loggerProvider);
   ref.listenSelf(
     (previous, next) {
       final fn = next.when(

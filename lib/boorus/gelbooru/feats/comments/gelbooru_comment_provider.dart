@@ -8,11 +8,11 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 
 final gelbooruCommentRepoProvider = Provider<GelbooruCommentRepository>(
   (ref) => GelbooruCommentRepositoryApi(
-    api: ref.read(gelbooruApiProvider),
-    booruConfig: ref.read(currentBooruConfigProvider),
+    api: ref.watch(gelbooruApiProvider),
+    booruConfig: ref.watch(currentBooruConfigProvider),
   ),
 );
 
 final gelbooruCommentsProvider =
     FutureProvider.family<List<GelbooruComment>, int>((ref, postId) =>
-        ref.read(gelbooruCommentRepoProvider).getComments(postId));
+        ref.watch(gelbooruCommentRepoProvider).getComments(postId));

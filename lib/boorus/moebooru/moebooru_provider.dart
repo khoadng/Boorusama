@@ -43,8 +43,8 @@ class MoebooruProvider extends StatelessWidget {
 }
 
 final moebooruApiProvider = Provider<MoebooruApi>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return MoebooruApi(dio);
 });

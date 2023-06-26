@@ -74,15 +74,15 @@ class GelbooruProvider extends ConsumerWidget {
 }
 
 final gelbooruApiProvider = Provider<GelbooruApi>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return GelbooruApi(dio);
 });
 
 final rule34xxxApiProvider = Provider<Rule34xxxApi>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return Rule34xxxApi(dio);
 });
