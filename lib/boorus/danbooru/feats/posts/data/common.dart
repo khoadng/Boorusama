@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:retrofit/dio.dart';
 
@@ -9,26 +6,10 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/models/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
-import 'package:boorusama/functional.dart';
 import '../models/danbooru_post.dart';
 import '../models/post_variant.dart';
 import 'post_dto.dart';
-
-class ParsePostArguments {
-  final HttpResponse<dynamic> value;
-
-  ParsePostArguments(this.value);
-}
-
-List<DanbooruPost> _parsePostInIsolate(ParsePostArguments arguments) =>
-    parsePost(arguments.value);
-
-Future<List<DanbooruPost>> parsePostAsync(
-  HttpResponse<dynamic> value,
-) =>
-    compute(_parsePostInIsolate, ParsePostArguments(value));
 
 List<DanbooruPost> parsePost(
   HttpResponse<dynamic> value,
@@ -37,14 +18,6 @@ List<DanbooruPost> parsePost(
       value: value,
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();
-
-TaskEither<BooruError, List<DanbooruPost>> tryParseData(
-  HttpResponse<dynamic> response,
-) =>
-    TaskEither.tryCatch(
-      () => parsePostAsync(response),
-      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
-    );
 
 // convert a BooruConfig and an orignal tag list to List<String>
 List<String> getTags(BooruConfig booruConfig, String tags) {

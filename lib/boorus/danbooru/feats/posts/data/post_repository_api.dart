@@ -68,7 +68,7 @@ class PostRepositoryApi
         );
 
         final data = await benchmark(
-          () => $(tryParseData(response)),
+          () => $(tryParseJsonFromResponse(response, parsePost)),
           onResult: (elapsed) => logI(
             'Performance',
             'Parse data for ($tags, $page, limit: $limit) took ${elapsed.inMilliseconds}ms',

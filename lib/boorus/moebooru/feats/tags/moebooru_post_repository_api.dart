@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
@@ -12,22 +9,8 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/utils.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
-
-class ParseMoebooruPostArguments {
-  final HttpResponse<dynamic> value;
-
-  ParseMoebooruPostArguments(this.value);
-}
-
-List<MoebooruPost> _parseMoebooruPostInIsolate(
-        ParseMoebooruPostArguments arguments) =>
-    parsePost(arguments.value);
-
-Future<List<MoebooruPost>> parsePostAsync(HttpResponse<dynamic> value) =>
-    compute(_parseMoebooruPostInIsolate, ParseMoebooruPostArguments(value));
 
 List<MoebooruPost> parsePost(
   HttpResponse<dynamic> value,
@@ -36,13 +19,6 @@ List<MoebooruPost> parsePost(
       value: value,
       converter: (item) => PostDto.fromJson(item),
     ).map((e) => postDtoToPost(e)).toList();
-
-TaskEither<BooruError, List<MoebooruPost>> tryParsePosts(
-        HttpResponse<dynamic> response) =>
-    TaskEither.tryCatch(
-      () => parsePostAsync(response),
-      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
-    );
 
 class MoebooruPostRepositoryApi
     with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
@@ -76,15 +52,22 @@ class MoebooruPostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      tryParseResponse(
-        fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-              booruConfig.login,
-              booruConfig.apiKey,
-              page,
-              getTags(booruConfig, tags).join(' '),
-              limit ?? lim,
-            )),
-      ).flatMap(tryParsePosts).flatMap(tryFilterBlacklistedTags);
+      TaskEither.Do(($) async {
+        final response = await $(tryParseResponse(
+          fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
+                booruConfig.login,
+                booruConfig.apiKey,
+                page,
+                getTags(booruConfig, tags).join(' '),
+                limit ?? lim,
+              )),
+        ));
+
+        final data = await $(tryParseJsonFromResponse(response, parsePost));
+        final filtered = await $(tryFilterBlacklistedTags(data));
+
+        return filtered;
+      });
 }
 
 MoebooruPost postDtoToPost(PostDto postDto) {
