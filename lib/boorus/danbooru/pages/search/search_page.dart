@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/generic_search_page.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
@@ -19,7 +20,6 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.d
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';

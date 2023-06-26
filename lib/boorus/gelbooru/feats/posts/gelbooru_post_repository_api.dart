@@ -7,7 +7,6 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/utils.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
-
 import 'gelbooru_post_parser.dart';
 
 class GelbooruPostRepositoryApi

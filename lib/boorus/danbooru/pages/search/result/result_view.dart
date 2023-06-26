@@ -8,12 +8,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
+import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
-import 'package:boorusama/functional.dart';
 import 'related_tag_section.dart';
-import 'result_header.dart';
 
 class ResultView extends ConsumerStatefulWidget {
   const ResultView({
@@ -47,7 +46,6 @@ class _ResultViewState extends ConsumerState<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    final postCountState = ref.watch(postCountProvider);
     final selectedTags = ref.watch(selectedRawTagStringProvider);
 
     return DanbooruPostScope(
@@ -65,18 +63,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
             SliverToBoxAdapter(
               child: Row(
                 children: [
-                  if (postCountState.isLoading(selectedTags))
-                    const ResultHeader(count: 0, loading: true)
-                  else if (postCountState.isEmpty(selectedTags))
-                    const SizedBox.shrink()
-                  else
-                    postCountState.getPostCount(selectedTags).toOption().fold(
-                          () => const SizedBox.shrink(),
-                          (count) => ResultHeader(
-                            count: count,
-                            loading: false,
-                          ),
-                        ),
+                  ResultHeaderWithProvider(selectedTags: selectedTags),
                   const Spacer(),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),

@@ -5,8 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'post_count_provider.dart';
 import 'post_count_state.dart';
-import 'posts_provider.dart';
 
 String generatePostCountKey(List<String> tags) => tags.join('+');
 
@@ -22,6 +23,7 @@ class PostCountNotifier extends Notifier<PostCountState> {
 
   @override
   PostCountState build() {
+    ref.watch(currentBooruConfigProvider);
     return PostCountState.initial();
   }
 

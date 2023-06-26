@@ -1,6 +1,6 @@
 part of 'posts_provider.dart';
 
-final postCountRepoProvider = Provider<PostCountRepository>((ref) {
+final danbooruPostCountRepoProvider = Provider<PostCountRepository>((ref) {
   return PostCountRepositoryApi(
     api: ref.watch(danbooruApiProvider),
     //TODO: this is a hack to get around the fact that count endpoint includes all ratings
@@ -9,17 +9,3 @@ final postCountRepoProvider = Provider<PostCountRepository>((ref) {
         : [],
   );
 });
-
-final postCountStateProvider =
-    NotifierProvider<PostCountNotifier, PostCountState>(
-  PostCountNotifier.new,
-  dependencies: [
-    postCountRepoProvider,
-  ],
-);
-
-final postCountProvider = Provider<PostCountState>((ref) {
-  return ref.watch(postCountStateProvider);
-}, dependencies: [
-  postCountStateProvider,
-]);
