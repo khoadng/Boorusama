@@ -12,9 +12,13 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -201,6 +205,41 @@ class _MoebooruPostDetailsPageState
           (source) => SourceSection(source: source),
           () => const SizedBox.shrink(),
         ),
+        ref.watch(moebooruCommentsProvider(post.id)).when(
+              data: (comments) => comments.isEmpty
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(
+                            thickness: 1.5,
+                          ),
+                          Text(
+                            'comment.comments'.tr(),
+                            style: context.textTheme.titleLarge!.copyWith(
+                              color: context.theme.hintColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                          ...comments
+                              .map((comment) => Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child:
+                                        MoebooruCommentItem(comment: comment),
+                                  ))
+                              .toList()
+                        ],
+                      ),
+                    ),
+              loading: () => const SizedBox.shrink(),
+              error: (e, __) => const SizedBox.shrink(),
+            ),
       ],
     ];
   }

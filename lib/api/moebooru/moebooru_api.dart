@@ -61,4 +61,12 @@ abstract class MoebooruApi {
     @Query('year') int year, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET('/comment.json')
+  Future<HttpResponse> getComments(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('post_id') int postId, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }
