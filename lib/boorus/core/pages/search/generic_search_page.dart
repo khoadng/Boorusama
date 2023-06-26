@@ -88,26 +88,9 @@ class _SearchPageState extends ConsumerState<GenericSearchPage> {
       child: Builder(
         builder: (context) => switch (displayState) {
           DisplayState.options => widget.optionsPageBuilder?.call() ??
-              Scaffold(
-                floatingActionButton: const SearchButton(),
-                appBar: PreferredSize(
-                  preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-                  child: SearchAppBar(
-                    focusNode: focus,
-                    queryEditingController: queryEditingController,
-                  ),
-                ),
-                body: const SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SelectedTagListWithData(),
-                        SearchDivider(),
-                        SearchLandingView(),
-                      ],
-                    ),
-                  ),
-                ),
+              DefaultSearchOptionsView(
+                focus: focus,
+                queryEditingController: queryEditingController,
               ),
           DisplayState.suggestion => Scaffold(
               appBar: PreferredSize(
@@ -136,6 +119,46 @@ class _SearchPageState extends ConsumerState<GenericSearchPage> {
               ref.watch(selectedRawTagStringProvider),
             )
         },
+      ),
+    );
+  }
+}
+
+class DefaultSearchOptionsView extends StatelessWidget {
+  const DefaultSearchOptionsView({
+    super.key,
+    required this.focus,
+    required this.queryEditingController,
+    this.onSearch,
+  });
+
+  final FocusNode focus;
+  final RichTextController queryEditingController;
+  final VoidCallback? onSearch;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: SearchButton(
+        onSearch: onSearch,
+      ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+        child: SearchAppBar(
+          focusNode: focus,
+          queryEditingController: queryEditingController,
+        ),
+      ),
+      body: const SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SelectedTagListWithData(),
+              SearchDivider(),
+              SearchLandingView(),
+            ],
+          ),
+        ),
       ),
     );
   }
