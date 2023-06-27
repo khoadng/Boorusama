@@ -1,4 +1,5 @@
 export 'blacklisted_tags_repository.dart';
+export 'empty_tag_repository.dart';
 export 'favorite_tag.dart';
 export 'favorite_tag_hive_object.dart';
 export 'favorite_tag_repository.dart';
@@ -11,6 +12,7 @@ export 'tag_cacher.dart';
 export 'tag_category.dart';
 export 'tag_colors.dart';
 export 'tag_filter_category.dart';
+export 'tag_group_item.dart';
 export 'tag_info_service.dart';
 export 'tag_repository.dart';
 export 'tags_notifier.dart';

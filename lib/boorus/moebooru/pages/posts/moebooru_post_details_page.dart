@@ -23,6 +23,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'moebooru_information_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPage({
@@ -81,23 +82,49 @@ class _MoebooruPostDetailsPageState
   int get initialPage => widget.initialPage;
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(tagsProvider.notifier).load(posts[widget.initialPage].tags);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DetailsPage(
+      controller: controller,
       intitialIndex: widget.initialPage,
       onExit: widget.onExit,
-      onPageChanged: onSwiped,
-      bottomSheet: (page) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (posts[page].isVideo)
-            ValueListenableBuilder<VideoProgress>(
-              valueListenable: videoProgress,
-              builder: (_, progress, __) =>
-                  BooruVideoProgressBar(progress: progress),
+      onPageChanged: (page) {
+        ref.read(tagsProvider.notifier).load(posts[page].tags);
+        onSwiped(page);
+      },
+      bottomSheet: (page) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+            border: Border(
+              top: BorderSide(
+                color: context.theme.dividerColor,
+                width: 1,
+              ),
             ),
-          MoebooruPostActionToolbar(post: posts[page]),
-        ],
-      ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (posts[page].isVideo)
+                ValueListenableBuilder<VideoProgress>(
+                  valueListenable: videoProgress,
+                  builder: (_, progress, __) =>
+                      BooruVideoProgressBar(progress: progress),
+                ),
+              MoebooruInformationSection(
+                post: posts[page],
+              ),
+              MoebooruPostActionToolbar(post: posts[page]),
+            ],
+          ),
+        );
+      },
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
         imageUrl: posts[page].thumbnailImageUrl,
         aspectRatio: posts[page].aspectRatio,
@@ -128,8 +155,6 @@ class _MoebooruPostDetailsPageState
           post: widget.posts[currentPage],
         ),
       ],
-      onExpanded: (currentPage) =>
-          ref.read(tagsProvider.notifier).load(posts[currentPage].tags),
     );
   }
 
@@ -191,6 +216,17 @@ class _MoebooruPostDetailsPageState
       if (!expandedOnCurrentPage)
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
+        MoebooruInformationSection(post: post),
+        const Divider(
+          thickness: 1.5,
+          height: 4,
+        ),
+        FileDetailsSection(
+          post: post,
+        ),
+        const Divider(
+          thickness: 1.5,
+        ),
         Padding(
           padding: const EdgeInsets.all(8),
           child: PostTagList(
@@ -201,13 +237,6 @@ class _MoebooruPostDetailsPageState
               tag: tag.rawName,
             ),
           ),
-        ),
-        const Divider(
-          thickness: 1.5,
-          height: 4,
-        ),
-        FileDetailsSection(
-          post: post,
         ),
         post.source.whenWeb(
           (source) => SourceSection(source: source),
