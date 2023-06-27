@@ -6,6 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/foundation/http/request_deduplicator_mixin.dart';
+import 'converter.dart';
 import 'tag_summary_repository_file.dart';
 
 class MoebooruTagSummaryRepository
@@ -50,44 +51,4 @@ class MoebooruTagSummaryRepository
       }
     }
   }
-}
-
-List<TagSummary> convertTagSummaryDtoToTagSummaryList(
-    TagSummaryDto tagSummaryDto) {
-  if (tagSummaryDto.data == null) {
-    throw Exception('Tag summary data is null');
-  }
-
-  List<String> tagDataList = tagSummaryDto.data!.split(' ');
-  List<TagSummary> tagSummaryList = [];
-
-  for (String tagData in tagDataList) {
-    if (tagData.isEmpty) {
-      continue;
-    }
-
-    List<String> tagFields = tagData.split('`');
-
-    if (tagFields.length < 2) {
-      throw Exception('Invalid tag summary data format: $tagData');
-    }
-
-    int? category = int.tryParse(tagFields[0]);
-    String? name = tagFields[1];
-    Set<String> otherNames = {};
-
-    for (String otherName in tagFields.skip(2)) {
-      if (otherName.isNotEmpty) {
-        otherNames.add(otherName);
-      }
-    }
-
-    tagSummaryList.add(TagSummary(
-      category: category ?? 0,
-      name: name,
-      otherNames: otherNames.isEmpty ? [] : List<String>.from(otherNames),
-    ));
-  }
-
-  return tagSummaryList;
 }
