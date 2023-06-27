@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/moebooru/feats/autocomplete/tag_summary_repository_file.dart';
 import 'package:boorusama/boorus/moebooru/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 
@@ -59,6 +60,11 @@ final moebooruAutocompleteRepoProvider =
 
 final moebooruTagSummaryProvider = Provider<TagSummaryRepository>((ref) {
   final api = ref.watch(moebooruApiProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final path = '${Uri.encodeComponent(booruConfig.url)}_tag_summary';
 
-  return MoebooruTagSummaryRepository(api);
+  return MoebooruTagSummaryRepository(
+    api,
+    TagSummaryRepositoryFile(path),
+  );
 });

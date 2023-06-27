@@ -10,4 +10,11 @@ class TagSummaryDto {
       data: json['data'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'version': version,
+      'data': data,
+    };
+  }
 }
