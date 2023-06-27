@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru/moebooru_api.dart';
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/tag_summary_repository_file.dart';
+import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 
 class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
@@ -34,7 +34,9 @@ class MoebooruProvider extends StatelessWidget {
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
         autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(moebooruAutocompleteRepoProvider))
+            .overrideWith((ref) => ref.watch(moebooruAutocompleteRepoProvider)),
+        tagRepoProvider
+            .overrideWith((ref) => ref.watch(moebooruTagRepoProvider)),
       ],
       child: Builder(
         builder: builder,
@@ -48,23 +50,4 @@ final moebooruApiProvider = Provider<MoebooruApi>((ref) {
   final dio = ref.watch(dioProvider(booruConfig.url));
 
   return MoebooruApi(dio);
-});
-
-final moebooruAutocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) {
-  final tagSummaryRepository = ref.watch(moebooruTagSummaryProvider);
-
-  return MoebooruAutocompleteRepository(
-      tagSummaryRepository: tagSummaryRepository);
-});
-
-final moebooruTagSummaryProvider = Provider<TagSummaryRepository>((ref) {
-  final api = ref.watch(moebooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final path = '${Uri.encodeComponent(booruConfig.url)}_tag_summary';
-
-  return MoebooruTagSummaryRepository(
-    api,
-    TagSummaryRepositoryFile(path),
-  );
 });

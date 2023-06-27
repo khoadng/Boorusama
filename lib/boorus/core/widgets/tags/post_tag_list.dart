@@ -13,20 +13,20 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 
-class PostTagList extends ConsumerWidget {
+class PostTagList extends StatelessWidget {
   const PostTagList({
     super.key,
     this.maxTagWidth,
     this.onTap,
+    required this.tags,
   });
 
   final double? maxTagWidth;
   final void Function(Tag tag)? onTap;
+  final List<TagGroupItem>? tags;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(tagsProvider);
-
+  Widget build(BuildContext context) {
     if (tags == null) {
       return SpinKitPulse(
         size: 42,
@@ -35,11 +35,11 @@ class PostTagList extends ConsumerWidget {
     }
 
     final widgets = <Widget>[];
-    for (final g in tags) {
+    for (final g in tags!) {
       widgets
         ..add(_TagBlockTitle(
           title: g.groupName,
-          isFirstBlock: g.groupName == tags.first.groupName,
+          isFirstBlock: g.groupName == tags!.first.groupName,
         ))
         ..add(_buildTags(
           context,
@@ -96,11 +96,13 @@ class _Chip extends ConsumerWidget {
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           backgroundColor: getTagColor(tag.category, theme),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
-            ),
+          shape: RoundedRectangleBorder(
+            borderRadius: tag.hasPost
+                ? const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                  )
+                : const BorderRadius.all(Radius.circular(8)),
           ),
           label: ConstrainedBox(
             constraints: BoxConstraints(
@@ -116,20 +118,21 @@ class _Chip extends ConsumerWidget {
             ),
           ),
         ),
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Colors.grey[800],
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(8),
-              bottomRight: Radius.circular(8),
+        if (tag.hasPost)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Colors.grey[800],
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+            ),
+            label: Text(
+              NumberFormat.compact().format(tag.postCount),
+              style: const TextStyle(color: Colors.white60, fontSize: 12),
             ),
           ),
-          label: Text(
-            NumberFormat.compact().format(tag.postCount),
-            style: const TextStyle(color: Colors.white60, fontSize: 12),
-          ),
-        ),
       ],
     );
   }

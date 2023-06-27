@@ -9,8 +9,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
@@ -126,6 +128,8 @@ class _MoebooruPostDetailsPageState
           post: widget.posts[currentPage],
         ),
       ],
+      onExpanded: (currentPage) =>
+          ref.read(tagsProvider.notifier).load(posts[currentPage].tags),
     );
   }
 
@@ -189,9 +193,13 @@ class _MoebooruPostDetailsPageState
       if (expandedOnCurrentPage) ...[
         Padding(
           padding: const EdgeInsets.all(8),
-          child: BasicTagList(
-            tags: post.tags,
-            onTap: (tag) => goToMoebooruSearchPage(ref, context, tag: tag),
+          child: PostTagList(
+            tags: ref.watch(tagsProvider),
+            onTap: (tag) => goToMoebooruSearchPage(
+              ref,
+              context,
+              tag: tag.rawName,
+            ),
           ),
         ),
         const Divider(

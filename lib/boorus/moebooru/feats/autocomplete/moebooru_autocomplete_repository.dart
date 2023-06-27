@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'converter.dart';
 
 class MoebooruAutocompleteRepository implements AutocompleteRepository {
