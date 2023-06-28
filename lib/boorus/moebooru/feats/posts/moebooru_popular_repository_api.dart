@@ -73,24 +73,16 @@ class MoebooruPopularRepositoryApi
       .flatMap(tryFilterBlacklistedTags);
 
   @override
-  PostsOrError getPopularPostsRecent(MoebooruTimePeriod period) {
-    return TaskEither.of([]);
-    // final config = await _currentBooruConfigRepository.get();
-    // final blacklist = await _blacklistedTagRepository.getBlacklist();
-    // final blacklistedTags = blacklist.map((tag) => tag.name).toSet();
-
-    // return _api
-    //     .getPopularPostsRecent(
-    //       config?.login,
-    //       config?.apiKey,
-    //       moebooruTimePeriodToString(period),
-    //     )
-    //     .then(parsePost)
-    //     .then((posts) => posts
-    //         .where((post) =>
-    //             !blacklistedTags.intersection(post.tags.toSet()).isNotEmpty)
-    //         .toList());
-  }
+  PostsOrError getPopularPostsRecent(MoebooruTimePeriod period) =>
+      tryParseResponse(
+              fetcher: () => _api.getPopularPostsRecent(
+                    booruConfig.login,
+                    booruConfig.apiKey,
+                    moebooruTimePeriodToString(period),
+                  ))
+          .flatMap((response) =>
+              TaskEither.fromEither(Either.of(parsePost(response))))
+          .flatMap(tryFilterBlacklistedTags);
 }
 
 String moebooruTimePeriodToString(MoebooruTimePeriod period) =>

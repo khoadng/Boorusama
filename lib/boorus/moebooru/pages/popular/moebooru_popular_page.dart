@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/functional.dart';
 
 class MoebooruPopularPage extends ConsumerStatefulWidget {
   const MoebooruPopularPage({
@@ -47,7 +48,9 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
     return Scaffold(
       body: SafeArea(
         child: PostScope(
-          fetcher: (page) => _typeToData(selectedPopular.value, page),
+          fetcher: (page) => page > 1
+              ? TaskEither.of(<Post>[])
+              : _typeToData(selectedPopular.value, page),
           builder: (context, controller, errors) => Column(
             children: [
               Container(
