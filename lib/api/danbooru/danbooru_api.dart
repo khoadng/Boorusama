@@ -316,4 +316,10 @@ abstract class DanbooruApi {
     @Query('limit') int? limit,
     @Query('only') String? only,
   });
+
+  @GET('/forum_post_votes.json')
+  Future<HttpResponse> getForumPostVotes({
+    @Query('search[forum_post_id]') int? forumPostId,
+    @Query('only') String? only,
+  });
 }

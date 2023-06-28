@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'danbooru_forum_post_dto.dart';
+import 'danbooru_forum_post_vote.dart';
 
 class DanbooruForumPost extends Equatable {
   const DanbooruForumPost({
@@ -15,6 +15,7 @@ class DanbooruForumPost extends Equatable {
     required this.topicId,
     required this.creator,
     required this.updater,
+    required this.votes,
   });
 
   factory DanbooruForumPost.empty() => DanbooruForumPost(
@@ -26,6 +27,7 @@ class DanbooruForumPost extends Equatable {
         topicId: -1,
         creator: Creator.empty(),
         updater: Creator.empty(),
+        votes: const [],
       );
 
   final int id;
@@ -36,6 +38,7 @@ class DanbooruForumPost extends Equatable {
   final int topicId;
   final Creator creator;
   final Creator updater;
+  final List<DanbooruForumPostVote> votes;
 
   @override
   List<Object?> get props => [
@@ -47,21 +50,6 @@ class DanbooruForumPost extends Equatable {
         topicId,
         creator,
         updater,
+        votes
       ];
-}
-
-DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(
-    DanbooruForumPostDto dto) {
-  return DanbooruForumPost(
-    id: dto.id ?? -1,
-    createdAt:
-        dto.createdAt != null ? DateTime.parse(dto.createdAt!) : DateTime.now(),
-    updatedAt:
-        dto.updatedAt != null ? DateTime.parse(dto.updatedAt!) : DateTime.now(),
-    body: dto.body ?? 'No Body',
-    isDeleted: dto.isDeleted ?? false,
-    topicId: dto.topicId ?? -1,
-    creator: creatorDtoToCreator(dto.creator),
-    updater: creatorDtoToCreator(dto.updater),
-  );
 }

@@ -1,6 +1,11 @@
 export 'danbooru_forum_provider.dart';
+export 'posts/converter.dart';
 export 'posts/danbooru_forum_post.dart';
 export 'posts/danbooru_forum_post_dto.dart';
+export 'posts/danbooru_forum_post_repository.dart';
+export 'posts/danbooru_forum_post_vote.dart';
+export 'posts/danbooru_forum_post_vote_dto.dart';
+export 'posts/danbooru_forum_posts_notifier.dart';
 export 'topics/danbooru_forum_topic.dart';
 export 'topics/danbooru_forum_topic_dto.dart';
 export 'topics/danbooru_forum_topic_repository.dart';

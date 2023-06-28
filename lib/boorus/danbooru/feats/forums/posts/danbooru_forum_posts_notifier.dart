@@ -3,7 +3,6 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
-import 'package:boorusama/boorus/danbooru/feats/forums/posts/danbooru_forum_post_repository.dart';
 
 class DanbooruForumPostsNotifier extends PagedNotifier<int, DanbooruForumPost> {
   DanbooruForumPostsNotifier({

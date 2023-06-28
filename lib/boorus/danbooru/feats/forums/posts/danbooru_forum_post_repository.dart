@@ -23,7 +23,7 @@ extension DanbooruForumPostRepositoryX on DanbooruForumPostRepository {
 }
 
 const _forumPostParams =
-    'id,creator,updater,topic_id,body,created_at,updated_at,is_deleted';
+    'id,creator,updater,topic_id,body,created_at,updated_at,is_deleted,votes';
 
 class DanbooruForumPostRepositoryApi implements DanbooruForumPostRepository {
   DanbooruForumPostRepositoryApi({

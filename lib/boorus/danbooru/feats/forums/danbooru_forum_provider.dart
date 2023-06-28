@@ -5,8 +5,6 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
-import 'package:boorusama/boorus/danbooru/feats/forums/posts/danbooru_forum_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/feats/forums/posts/danbooru_forum_posts_notifier.dart';
 
 final danbooruForumTopicRepoProvider =
     Provider<DanbooruForumTopicRepository>((ref) {
@@ -30,11 +28,8 @@ final danbooruForumPostRepoProvider =
 });
 
 final danbooruForumPostsProvider = StateNotifierProvider.autoDispose.family<
-    DanbooruForumPostsNotifier,
-    PagedState<int, DanbooruForumPost>,
-    int>((ref, topicId) {
-  return DanbooruForumPostsNotifier(
-    topicId: topicId,
-    repo: ref.watch(danbooruForumPostRepoProvider),
-  );
-});
+        DanbooruForumPostsNotifier, PagedState<int, DanbooruForumPost>, int>(
+    (ref, topicId) => DanbooruForumPostsNotifier(
+          topicId: topicId,
+          repo: ref.watch(danbooruForumPostRepoProvider),
+        ));

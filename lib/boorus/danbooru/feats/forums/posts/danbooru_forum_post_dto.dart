@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 class DanbooruForumPostDto {
@@ -11,6 +12,7 @@ class DanbooruForumPostDto {
     this.topicId,
     this.creator,
     this.updater,
+    this.votes,
   });
 
   factory DanbooruForumPostDto.fromJson(Map<String, dynamic> json) =>
@@ -27,6 +29,10 @@ class DanbooruForumPostDto {
         updater: json['updater'] != null
             ? CreatorDto.fromJson(json['updater'])
             : null,
+        votes: json['votes'] != null
+            ? List<DanbooruForumPostVoteDto>.from(
+                json['votes'].map((x) => DanbooruForumPostVoteDto.fromJson(x)))
+            : null,
       );
 
   final int? id;
@@ -37,4 +43,5 @@ class DanbooruForumPostDto {
   final int? topicId;
   final CreatorDto? creator;
   final CreatorDto? updater;
+  final List<DanbooruForumPostVoteDto>? votes;
 }
