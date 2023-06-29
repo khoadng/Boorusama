@@ -31,9 +31,7 @@ class ForumPostHeader extends StatelessWidget {
           child: Text(
             authorName.replaceAll('_', ' '),
             style: TextStyle(
-              color: authorLevel != null
-                  ? Color(getUserHexColor(authorLevel!))
-                  : null,
+              color: authorLevel != null ? authorLevel!.toOnDarkColor() : null,
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),

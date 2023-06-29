@@ -28,9 +28,12 @@ const _forumPostParams =
 class DanbooruForumPostRepositoryApi implements DanbooruForumPostRepository {
   DanbooruForumPostRepositoryApi({
     required this.api,
+    this.onFetched,
   });
 
   final DanbooruApi api;
+  final void Function(List<DanbooruForumPost> posts)? onFetched;
+
   final limit = 20;
 
   @override
@@ -52,6 +55,8 @@ class DanbooruForumPostRepositoryApi implements DanbooruForumPostRepository {
         ).map(danbooruForumPostDtoToDanbooruForumPost).toList();
 
         data.sort((a, b) => a.id.compareTo(b.id));
+
+        onFetched?.call(data);
 
         return data;
       });

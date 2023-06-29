@@ -11,8 +11,10 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/dtext/html_converter.dart';
+import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/forums/forum_post_header.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'danbooru_forum_vote_chip.dart';
@@ -62,8 +64,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
                     url != null ? launchExternalUrlString(url) : null,
                 style: {
                   'body': Style(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
                   ),
                   'blockquote': Style(
                     padding: const EdgeInsets.only(left: 8),
@@ -76,34 +77,8 @@ class DanbooruForumPostsPage extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               if (post.votes.isNotEmpty)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: post.votes
-                      .map((e) => ForumVoteChip(
-                            icon: switch (e.type) {
-                              DanbooruForumPostVoteType.upvote => Icon(
-                                  Icons.arrow_upward,
-                                  color: _iconColor(e.type),
-                                ),
-                              DanbooruForumPostVoteType.downvote => Icon(
-                                  Icons.arrow_downward,
-                                  color: _iconColor(e.type),
-                                ),
-                              DanbooruForumPostVoteType.unsure => Container(
-                                  margin: const EdgeInsets.all(4),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.faceMeh,
-                                    size: 16,
-                                    color: _iconColor(e.type),
-                                  ),
-                                ),
-                            },
-                            color: _color(e.type),
-                            borderColor: _borderColor(e.type),
-                            label: Text(e.creatorId.toString()),
-                          ))
-                      .toList(),
+                _VoteChips(
+                  votes: post.votes,
                 )
             ],
           ),
@@ -113,6 +88,55 @@ class DanbooruForumPostsPage extends ConsumerWidget {
           builderDelegate: builder,
         ),
       ),
+    );
+  }
+}
+
+class _VoteChips extends ConsumerWidget {
+  const _VoteChips({
+    required this.votes,
+  });
+
+  final List<DanbooruForumPostVote> votes;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: votes.map((e) {
+        final creator = ref.watch(danbooruCreatorProvider(e.creatorId));
+
+        return ForumVoteChip(
+          icon: switch (e.type) {
+            DanbooruForumPostVoteType.upvote => Icon(
+                Icons.arrow_upward,
+                color: _iconColor(e.type),
+              ),
+            DanbooruForumPostVoteType.downvote => Icon(
+                Icons.arrow_downward,
+                color: _iconColor(e.type),
+              ),
+            DanbooruForumPostVoteType.unsure => Container(
+                margin: const EdgeInsets.all(4),
+                child: FaIcon(
+                  FontAwesomeIcons.faceMeh,
+                  size: 16,
+                  color: _iconColor(e.type),
+                ),
+              ),
+          },
+          color: _color(e.type),
+          borderColor: _borderColor(e.type),
+          label: Text(
+            creator?.name.replaceAll('_', ' ') ?? 'User',
+            style: TextStyle(
+              color: creator?.level.toOnDarkColor(),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

@@ -20,7 +20,7 @@ class ForumVoteChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
@@ -36,6 +36,7 @@ class ForumVoteChip extends StatelessWidget {
           icon,
           const SizedBox(width: 4),
           Flexible(child: label),
+          const SizedBox(width: 4),
         ],
       ),
     );

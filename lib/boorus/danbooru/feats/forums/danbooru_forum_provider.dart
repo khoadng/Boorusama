@@ -5,6 +5,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 
 final danbooruForumTopicRepoProvider =
     Provider<DanbooruForumTopicRepository>((ref) {
@@ -24,6 +25,9 @@ final danbooruForumPostRepoProvider =
     Provider<DanbooruForumPostRepository>((ref) {
   return DanbooruForumPostRepositoryApi(
     api: ref.watch(danbooruApiProvider),
+    onFetched: (posts) => ref
+        .read(danbooruCreatorsProvider.notifier)
+        .load(posts.expand((e) => e.votes).map((e) => e.creatorId).toList()),
   );
 });
 

@@ -26,6 +26,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -141,6 +142,8 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
+  final danbooruCreatorBox = await Hive.openBox('danbooru_creators_v1');
+
   final packageInfo = await PackageInfo.fromPlatform();
   final appInfo = await getAppInfo();
   final tagInfo =
@@ -198,6 +201,8 @@ void main() async {
             appInfoProvider.overrideWithValue(appInfo),
             uiLoggerProvider.overrideWithValue(uiLogger),
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+            danbooruCreatorHiveBoxProvider
+                .overrideWithValue(danbooruCreatorBox),
           ],
           child: App(settings: settings),
         ),
