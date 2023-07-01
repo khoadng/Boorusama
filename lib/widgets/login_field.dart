@@ -5,15 +5,16 @@ class LoginField extends StatelessWidget {
   const LoginField({
     super.key,
     required this.validator,
-    required this.controller,
+    this.controller,
     required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
     this.readOnly = false,
+    this.autofocus = false,
   });
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? Function(String?) validator;
   final Widget? suffixIcon;
   final String labelText;
@@ -21,9 +22,11 @@ class LoginField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final bool readOnly;
 
+  final bool autofocus;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofocus: autofocus,
       readOnly: readOnly,
       onChanged: onChanged,
       obscureText: obscureText,

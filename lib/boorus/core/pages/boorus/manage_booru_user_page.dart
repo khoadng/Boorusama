@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/booru_config_info_tile.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 
 class ManageBooruPage extends ConsumerWidget {
@@ -49,66 +48,6 @@ class ManageBooruPage extends ConsumerWidget {
             onTap: () => context.go('/boorus/${config.id}/update'),
           );
         },
-      ),
-    );
-  }
-}
-
-class _AddAccountSheet extends StatefulWidget {
-  const _AddAccountSheet({
-    required this.onSubmit,
-  });
-
-  final void Function(String login, String apiKey, BooruType booru) onSubmit;
-
-  @override
-  State<_AddAccountSheet> createState() => _AddAccountSheetState();
-}
-
-class _AddAccountSheetState extends State<_AddAccountSheet> {
-  final loginController = TextEditingController();
-  final apiKeyController = TextEditingController();
-  var selectedBooru = BooruType.unknown;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          TextField(
-            controller: loginController,
-          ),
-          TextField(
-            controller: apiKeyController,
-          ),
-          DropdownButton<BooruType>(
-            value: selectedBooru,
-            onChanged: (value) {
-              setState(() {
-                if (value != null) {
-                  selectedBooru = value;
-                }
-              });
-            },
-            items: BooruType.values
-                .map((e) => DropdownMenuItem<BooruType>(
-                      value: e,
-                      child: Text(e.name),
-                    ))
-                .toList(),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.navigator.pop();
-              widget.onSubmit.call(
-                loginController.text,
-                apiKeyController.text,
-                selectedBooru,
-              );
-            },
-            child: const Text('Submit'),
-          ),
-        ],
       ),
     );
   }

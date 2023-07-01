@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
+import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/functional.dart';
@@ -77,6 +77,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 ),
                 child: LoginField(
                   validator: (p0) => null,
+                  autofocus: true,
                   onChanged: (value) {
                     inputText.value = value;
                     booruUrlError.value = mapBooruUrlToUri(value);
@@ -94,9 +95,10 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                     (uri) => ElevatedButton(
                         onPressed: () {
                           context.navigator.pop();
-                          if (getBooruType(uri.toString(),
-                                  ref.watch(booruFactoryProvider).booruData) ==
-                              BooruType.unknown) {
+                          final booruFactory = ref.watch(booruFactoryProvider);
+                          final booru = getBooruType(
+                              uri.toString(), booruFactory.booruData);
+                          if (booru == BooruType.unknown) {
                             context.navigator.push(MaterialPageRoute(
                                 builder: (_) => AddUnknownBooruPage(
                                       url: uri.toString(),
@@ -105,11 +107,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                                     )));
                           } else {
                             context.navigator.push(MaterialPageRoute(
-                                builder: (_) => ConfigBooruPage(
-                                      setCurrentBooruOnSubmit:
-                                          widget.setCurrentBooruOnSubmit,
-                                      arg: AddNewConfig(uri),
-                                    )));
+                                builder: (_) => CreateBooruPage(
+                                    booru: booruFactory.from(type: booru))));
                           }
                         },
                         child: const Text('Next')),
