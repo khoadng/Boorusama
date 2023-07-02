@@ -154,7 +154,9 @@
             "appearance": "Apariencia"
         },
         "general": "General",
-        "search": "Buscar",
+        "search": {
+            "search": "Buscar"
+        },
         "information": "Informacion",
         "changelog": "Lista de Cambios",
         "result_layout": {
