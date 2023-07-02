@@ -166,7 +166,9 @@
             "show_scores": "Scores anzeigen"
         },
         "general": "Allgemein",
-        "search": "Suche",
+        "search": {
+            "search": "Suche"
+        },
         "information": "Information",
         "changelog": "Änderungsprotokoll",
         "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst",
