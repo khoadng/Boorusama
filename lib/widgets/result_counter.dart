@@ -40,7 +40,7 @@ class ResultCounter extends StatelessWidget {
       );
     } else {
       return Text(
-        'search.no_result'.tr(),
+        'search.no_result_notice'.tr(),
         style: Theme.of(context).textTheme.titleLarge,
       );
     }
