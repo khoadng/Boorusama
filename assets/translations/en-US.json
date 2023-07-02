@@ -140,7 +140,7 @@
             "one": "{} Result",
             "other": "{} Results"
         },
-        "\"no_result\"": "No result",
+        "no_result_notice": "No result",
         "search_in_progress_notice": "Searching..."
     },
     "pool": {
