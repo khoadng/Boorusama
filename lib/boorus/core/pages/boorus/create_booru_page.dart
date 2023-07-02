@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/crypto.dart';
 import 'create_gelbooru_config_page.dart';
 import 'create_moebooru_config_page.dart';
 
@@ -42,7 +41,6 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.testbooru ||
       BooruType.e621 =>
         CreateDanbooruConfigPage(
-          initialSiteUrl: widget.booru.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -53,7 +51,6 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booru: widget.booru,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
-          initialSiteUrl: widget.booru.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -66,22 +63,16 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.lolibooru ||
       BooruType.sakugabooru =>
         CreateMoebooruConfigPage(
-          initialSiteUrl: widget.booru.url,
           onLoginChanged: (value) => setState(() => login = value),
-          onApiKeyChanged: (value) =>
-              setState(() => apiKey = hashBooruPasswordSHA1(
-                    booru: widget.booru,
-                    booruFactory: booruFactory,
-                    password: apiKey,
-                  )),
+          onHashedPasswordChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
           booru: widget.booru,
+          booruFactory: booruFactory,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
-          initialSiteUrl: widget.booru.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),

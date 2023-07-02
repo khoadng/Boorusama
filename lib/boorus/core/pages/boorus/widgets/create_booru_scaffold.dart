@@ -2,15 +2,19 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/booru.dart';
 import 'package:boorusama/flutter.dart';
+import 'selected_booru_chip.dart';
 
 class CreateBooruScaffold extends StatelessWidget {
   const CreateBooruScaffold({
     super.key,
+    required this.booru,
     required this.children,
   });
 
   final List<Widget> children;
+  final Booru booru;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +26,15 @@ class CreateBooruScaffold extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
+          title: SelectedBooruChip(
+            booru: booru,
           ),
+          actions: [
+            IconButton(
+              onPressed: context.navigator.pop,
+              icon: const Icon(Icons.close),
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(

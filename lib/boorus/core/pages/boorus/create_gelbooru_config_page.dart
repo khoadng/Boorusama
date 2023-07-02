@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_api_key_field.dart';
-import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_header.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'widgets/create_booru_config_name_field.dart';
-import 'widgets/create_booru_site_url_field.dart';
-import 'widgets/selected_booru_chip.dart';
 
 class CreateGelbooruConfigPage extends StatelessWidget {
   const CreateGelbooruConfigPage({
@@ -22,20 +19,16 @@ class CreateGelbooruConfigPage extends StatelessWidget {
     required this.onRatingFilterChanged,
     required this.onSubmit,
     required this.booru,
-    this.initialSiteUrl,
     this.initialLogin,
     this.initialApiKey,
     this.initialConfigName,
     this.initialRatingFilter,
-    this.hasHeader = true,
   });
 
-  final String? initialSiteUrl;
   final String? initialLogin;
   final String? initialApiKey;
   final String? initialConfigName;
   final BooruConfigRatingFilter? initialRatingFilter;
-  final bool hasHeader;
 
   final void Function(String value) onLoginChanged;
   final void Function(String value) onApiKeyChanged;
@@ -48,17 +41,8 @@ class CreateGelbooruConfigPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
+      booru: booru,
       children: [
-        if (hasHeader) const CreateBooruTitleHeader(),
-        SelectedBooruChip(
-          booruType: booru.booruType,
-        ),
-        const SizedBox(height: 8),
-        const Divider(
-          thickness: 2,
-          endIndent: 16,
-          indent: 16,
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -70,10 +54,6 @@ class CreateGelbooruConfigPage extends StatelessWidget {
               CreateBooruConfigNameField(
                 text: initialConfigName,
                 onChanged: onConfigNameChanged,
-              ),
-              const SizedBox(height: 16),
-              CreateBooruSiteUrlField(
-                text: initialSiteUrl,
               ),
               const SizedBox(height: 16),
               CreateBooruLoginField(

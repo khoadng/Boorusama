@@ -51,14 +51,12 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
       BooruType.testbooru ||
       BooruType.e621 =>
         CreateDanbooruConfigPage(
-          hasHeader: false,
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
           initialRatingFilter: widget.booruConfig.ratingFilter,
           initialHideDeleted: widget.booruConfig.deletedItemBehavior ==
               BooruConfigDeletedItemBehavior.hide,
-          initialSiteUrl: widget.booruConfig.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -69,14 +67,12 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           booru: booru,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
-          hasHeader: false,
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
           initialRatingFilter: widget.booruConfig.ratingFilter,
           initialHideDeleted: widget.booruConfig.deletedItemBehavior ==
               BooruConfigDeletedItemBehavior.hide,
-          initialSiteUrl: widget.booruConfig.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -89,14 +85,12 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
       BooruType.lolibooru ||
       BooruType.sakugabooru =>
         CreateMoebooruConfigPage(
-          hasHeader: false,
-          initialApiKey: widget.booruConfig.apiKey,
+          initialHashedPassword: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
           initialRatingFilter: widget.booruConfig.ratingFilter,
-          initialSiteUrl: widget.booruConfig.url,
           onLoginChanged: (value) => setState(() => login = value),
-          onApiKeyChanged: (value) =>
+          onHashedPasswordChanged: (value) =>
               setState(() => apiKey = hashBooruPasswordSHA1(
                     booru: booru,
                     booruFactory: booruFactory,
@@ -107,14 +101,13 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
           booru: booru,
+          booruFactory: booruFactory,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
-          hasHeader: false,
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
           initialRatingFilter: widget.booruConfig.ratingFilter,
-          initialSiteUrl: widget.booruConfig.url,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
