@@ -33,7 +33,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.search').tr(),
+          title: const Text('settings.search.search').tr(),
         ),
         body: child,
       ),
