@@ -168,7 +168,9 @@
             "show_scores": "Voir les notes"
         },
         "general": "Général",
-        "search": "Recherche",
+        "search": {
+            "search": "Recherche"
+        },
         "information": "Informations",
         "changelog": "Journal de modifications",
         "infinite_scroll_warning": "L'application peut s'arrêter si vous faites défiler trop longtemps",
