@@ -173,6 +173,7 @@
         },
         "general": "General",
         "search": {
+            "search": "Search",
             "auto_focus_search_bar": "Auto focus search bar when first open search view"
         },
         "information": "Information",
