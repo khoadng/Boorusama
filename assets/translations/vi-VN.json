@@ -137,7 +137,7 @@
         "result_counter": {
             "other": "{} Kết quả"
         },
-        "\"no_result\"": "Không có kết quả",
+        "no_result_notice": "Không có kết quả",
         "search_in_progress_notice": "Đang tìm..."
     },
     "pool": {
