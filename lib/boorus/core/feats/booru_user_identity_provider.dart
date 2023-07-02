@@ -52,7 +52,7 @@ class BooruUserIdentityProviderImpl implements BooruUserIdentityProvider {
       case BooruType.testbooru:
       case BooruType.aibooru:
         accountId = await DanbooruApi(dio, baseUrl: booru.url)
-            .getProfile()
+            .getProfile(login, apiKey)
             .then((value) => value.data)
             .then((value) => value['id'])
             .catchError((_) => null);

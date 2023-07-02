@@ -97,7 +97,9 @@ abstract class DanbooruApi {
   });
 
   @GET('/profile.json')
-  Future<HttpResponse> getProfile({
+  Future<HttpResponse> getProfile(
+    @Query('login') String login,
+    @Query('api_key') String apiKey, {
     @CancelRequest() CancelToken? cancelToken,
   });
 
