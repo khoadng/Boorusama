@@ -60,9 +60,12 @@ class CreateGelbooruConfigPage extends StatelessWidget {
                 text: initialLogin,
                 onChanged: onLoginChanged,
                 labelText: 'User ID',
+                hintText: '1234567',
               ),
               const SizedBox(height: 16),
               CreateBooruApiKeyField(
+                hintText:
+                    '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
                 text: initialApiKey,
                 onChanged: onApiKeyChanged,
               ),

@@ -9,11 +9,13 @@ class CreateBooruLoginField extends StatefulWidget {
     super.key,
     required this.onChanged,
     required this.labelText,
+    this.hintText,
     this.text,
   });
 
   final void Function(String value) onChanged;
   final String labelText;
+  final String? hintText;
   final String? text;
 
   @override
@@ -36,6 +38,7 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
       validator: (p0) => null,
       labelText: widget.labelText,
       onChanged: widget.onChanged,
+      hintText: widget.hintText,
     );
   }
 }

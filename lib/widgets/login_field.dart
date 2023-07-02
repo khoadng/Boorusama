@@ -12,6 +12,7 @@ class LoginField extends StatelessWidget {
     this.onChanged,
     this.readOnly = false,
     this.autofocus = false,
+    this.hintText,
   });
 
   final TextEditingController? controller;
@@ -21,6 +22,7 @@ class LoginField extends StatelessWidget {
   final bool obscureText;
   final ValueChanged<String>? onChanged;
   final bool readOnly;
+  final String? hintText;
 
   final bool autofocus;
   @override
@@ -33,6 +35,8 @@ class LoginField extends StatelessWidget {
       validator: validator,
       controller: controller,
       decoration: InputDecoration(
+        hintText: hintText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: Theme.of(context).colorScheme.background,

@@ -65,11 +65,13 @@ class CreateDanbooruConfigPage extends StatelessWidget {
               CreateBooruLoginField(
                 text: initialLogin,
                 labelText: 'booru.login_name_label'.tr(),
+                hintText: 'my_login',
                 onChanged: onLoginChanged,
               ),
               const SizedBox(height: 16),
               CreateBooruApiKeyField(
                 text: initialApiKey,
+                hintText: 'o6H5u8QrxC7dN3KvF9D2bM4p',
                 onChanged: onApiKeyChanged,
               ),
               if (onRatingFilterChanged != null) const SizedBox(height: 16),

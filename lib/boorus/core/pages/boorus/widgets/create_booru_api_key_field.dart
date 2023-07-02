@@ -12,11 +12,13 @@ class CreateBooruApiKeyField extends StatefulWidget {
   const CreateBooruApiKeyField({
     super.key,
     required this.onChanged,
+    this.hintText,
     this.text,
   });
 
   final void Function(String value) onChanged;
   final String? text;
+  final String? hintText;
 
   @override
   State<CreateBooruApiKeyField> createState() => _CreateBooruApiKeyFieldState();
@@ -40,6 +42,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
       obscureText: !revealKey,
       labelText: 'booru.password_api_key_label'.tr(),
       onChanged: widget.onChanged,
+      hintText: widget.hintText,
       suffixIcon: IconButton(
         splashColor: Colors.transparent,
         icon: revealKey

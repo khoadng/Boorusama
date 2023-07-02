@@ -74,6 +74,7 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
               ),
               const SizedBox(height: 16),
               CreateBooruLoginField(
+                hintText: 'my_login',
                 text: widget.initialLogin,
                 onChanged: widget.onLoginChanged,
                 labelText: 'booru.login_name_label'.tr(),
