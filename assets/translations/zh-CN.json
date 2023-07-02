@@ -59,6 +59,10 @@
             "open_wiki": "打开wiki",
             "add_to_blacklist": "添加到黑名单",
             "add_to_favorites": "添加到喜爱中",
+            "copy_and_open_saved_search": "复制并打开预设搜索",
+            "score": {
+                "other": "分"
+            },
             "source_label": "来源",
             "related_posts": "相关帖子",
             "add_to_bookmark": "添加到书签",
@@ -74,7 +78,8 @@
             "select": "选择"
         },
         "image_fullview": {
-            "view_original": "显示原图"
+            "view_original": "显示原图",
+            "view_resized": "调整视窗大小"
         }
     },
     "comment": {
@@ -119,6 +124,7 @@
         },
         "hint": "搜索...",
         "no_result": "我们搜遍了，但是没找到任何结果。",
+        "empty": "啥都木有",
         "search_options": "搜索选项",
         "metatags_notice": "免费的元标签不计入搜索标签限制",
         "history": {
@@ -130,6 +136,8 @@
         "remove_all_selected": "移除所有已选标签"
     },
     "pool": {
+        "pool": "图集",
+        "pool_gallery": "图集",
         "mature_banned_content": "成人/禁止内容",
         "order": {
             "recent": "最近",
@@ -140,6 +148,9 @@
         "category": {
             "series": "系列",
             "collection": "收集"
+        },
+        "search": {
+            "hint": "搜索图集"
         },
         "detail": {
             "last_updated": "最近更新"
@@ -254,16 +265,21 @@
         "bulk_download_duplicate": "复制",
         "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符：␣",
         "bulk_download_only_download_new_images": "仅下载新图片",
-        "bulk_download_stay_on_screen_request": "在下载完成之前，请不要离开该页面",
         "bulk_download_folder_select_warning": "在Android 11+上，此应用只能将文件保存在 内部公共目录 <b>({0})</b> 中. <div>不支持SD卡。</div> <div>请选择其他路径。</div> <div>此设备的版本是 {1}.</div>",
         "bulk_download_select_a_folder": "选择文件夹",
         "bulk_download_found_duplicate": "找到 {} 个同名的图片，这些同名图片将会跳过。",
+        "bulk_download_downloaded_counter": {
+            "other": "{} 张图片已下载"
+        },
+        "bulk_download_skipped_counter": {
+            "other": "{} 张图片已跳过"
+        },
         "bulk_download_download_more": "下载更多",
         "open_app_settings": "打开设置",
         "storage_permission_explanation": "需要存储权限来保存文件。",
         "app_restart_request": "该修改需要重启应用生效",
         "image_counter": {
-            "other": "下载{}图像"
+            "other": "下载 {} 张图片"
         },
         "bulk": {
             "all_done_notification_message": "所有下载已完成"
@@ -271,11 +287,15 @@
     },
     "saved_search": {
         "saved_search": "保存搜索",
+        "saved_search_counter": {
+            "other": "{} 个搜索"
+        },
         "add_saved_search": "添加已保存的搜索",
         "saved_search_added": "已保存搜索已添加",
         "empty_saved_search": "你还没有添加任何搜索",
         "update_saved_search": "更新已保存搜索",
         "saved_search_updated": "已保存的搜索已更新",
+        "saved_search_feed": "列表",
         "saved_search_help": "这是什么鬼？",
         "saved_search_examples": "样例",
         "saved_search_try": "尝试",
@@ -284,6 +304,9 @@
         "saved_search_labels_description": "*标签列表有助于分类这些搜索。使用空格分隔"
     },
     "favorites": {
+        "counter": {
+            "other": "喜爱"
+        },
         "favorited": "已加进喜爱中",
         "favorite": "喜爱",
         "unfavorited": "已从喜爱中移除",
@@ -311,7 +334,10 @@
         "create_group_confirm": "确认",
         "max_limit_warning": "成员只能创建10个喜爱组",
         "duplicate_items_warning_notification": "输入的帖子已存在组中",
-        "detete_confirmation": "是否删除该喜爱组"
+        "detete_confirmation": "是否删除该喜爱组",
+        "group_item_counter": {
+            "other": "{} 个提交"
+        }
     },
     "favorite_tags": {
         "favorites": "喜爱",
@@ -378,5 +404,8 @@
         "later": "稍后再说",
         "whats_new": "更新了什么？",
         "update_available": "有更新"
+    },
+    "forum": {
+        "forum": "论坛"
     }
 }
