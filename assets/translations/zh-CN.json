@@ -164,7 +164,9 @@
             "show_scores": "显示评分"
         },
         "general": "通用",
-        "search": "搜索",
+        "search": {
+            "search": "搜索"
+        },
         "information": "消息",
         "changelog": "更新日志",
         "infinite_scroll_warning": "如果你长时间滚动，应用可能会崩溃",
