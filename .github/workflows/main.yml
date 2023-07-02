@@ -29,9 +29,6 @@ jobs:
       - name: Check flutter version
         run: flutter --version
 
-      - name: Generate boilerplates
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-
       - name: Run unit tests
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random test
 
