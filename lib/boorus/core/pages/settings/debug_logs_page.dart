@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/loggers/logger.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -101,8 +102,12 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                         text: log.message,
                         style: TextStyle(
                           fontSize: 13,
-                          color:
+                          color: switch (log.level) {
+                            LogLevel.info =>
                               context.colorScheme.onBackground.withAlpha(222),
+                            LogLevel.warning => Colors.yellow.withAlpha(222),
+                            LogLevel.error => context.colorScheme.error,
+                          },
                         ),
                       ),
                     ],

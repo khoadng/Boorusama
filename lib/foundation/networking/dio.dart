@@ -7,6 +7,7 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
@@ -15,6 +16,7 @@ Dio dio(
   Directory dir,
   String? baseUrl,
   UserAgentGenerator generator,
+  BooruConfig booruConfig,
   LoggerService logger,
 ) {
   final dio = Dio(BaseOptions(
@@ -37,6 +39,7 @@ Dio dio(
   dio.interceptors.add(
     LoggingInterceptor(
       logger: logger,
+      booruConfig: booruConfig,
     ),
   );
 
