@@ -73,14 +73,14 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 child: const Text('download.download').tr(),
               ),
               if (authenticationState.isAuthenticated)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'add_to_favgroup',
-                  child: Text('Add to favorite group'),
+                  child: const Text('post.action.add_to_favorite_group').tr(),
                 ),
               if (authenticationState.isAuthenticated)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'add_to_blacklist',
-                  child: Text('Add to blacklist'),
+                  child: const Text('post.detail.add_to_blacklist').tr(),
                 ),
               const PopupMenuItem(
                 value: 'add_to_global_blacklist',

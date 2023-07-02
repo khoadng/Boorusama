@@ -44,9 +44,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           children: [
             if (isMobilePlatform())
               ListTile(
-                title: const Text(
-                  'Auto focus search bar when first open search view',
-                ),
+                title: const Text('settings.search.auto_focus_search_bar').tr(),
                 trailing: Switch(
                   activeColor: context.colorScheme.primary,
                   value: settings.autoFocusSearchBar,

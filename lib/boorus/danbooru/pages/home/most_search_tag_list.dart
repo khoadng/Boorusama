@@ -70,7 +70,9 @@ class MostSearchTagList extends ConsumerWidget {
                         child: Text(
                           searches[index].keyword.removeUnderscoreWithSpace(),
                           style: TextStyle(
-                            color: colors?.foregroundColor,
+                            color: isSelected
+                                ? Colors.black
+                                : colors?.foregroundColor,
                           ),
                           overflow: TextOverflow.fade,
                         ),
