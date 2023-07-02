@@ -152,7 +152,9 @@
             "appearance": "Пастава"
         },
         "general": "Генеральныя",
-        "search": "Пошук",
+        "search": {
+            "search": "Пошук"
+        },
         "information": "Інфармацыя",
         "changelog": "Гісторыя змен",
         "infinite_scroll_warning": "Можа прывесці к збою прылажэння пры доўгай пракрутке",
