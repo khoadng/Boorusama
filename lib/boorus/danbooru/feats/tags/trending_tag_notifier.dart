@@ -5,21 +5,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-
-final trendingTagsProvider =
-    AsyncNotifierProvider<TrendingTagNotifier, List<Search>>(
-  TrendingTagNotifier.new,
-);
-
-final shouldFetchTrendingProvider = Provider<bool>((ref) {
-  final config = ref.watch(currentBooruConfigProvider);
-  final booruType = intToBooruType(config.booruId);
-
-  return booruType == BooruType.danbooru || booruType == BooruType.safebooru;
-});
 
 class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
   @override
@@ -51,6 +38,10 @@ class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
 
     final filtered =
         searches.where((s) => !excludedTags.contains(s.keyword)).toList();
+
+    ref
+        .read(danbooruTagCategoriesProviderProvider.notifier)
+        .save(filtered.map((e) => e.keyword).toList());
 
     return filtered;
   }
