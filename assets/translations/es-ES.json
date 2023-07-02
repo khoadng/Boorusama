@@ -1,23 +1,151 @@
 {
+    "generic": {
+        "done": "Hecho",
+        "errors": {
+            "no_data": "Datos no encontrados",
+            "unknown": "Algo fue mal"
+        },
+        "action": {
+            "add": "Añadir",
+            "delete": "Borrar",
+            "edit": "Editar",
+            "ok": "Ok",
+            "cancel": "Cancelar"
+        },
+        "view": "Ver"
+    },
+    "profile": {
+        "favorites": "Favoritos"
+    },
+    "network": {
+        "unavailable": "Servidor No disponible"
+    },
     "tag": {
+        "related": {
+            "more": "Mas",
+            "related": "Relacionado",
+            "add_to_current_search": "Añadir a la busqueda",
+            "open_wiki": "Abrir Wiki"
+        },
         "explore": {
+            "new": "Nuevo",
             "popular": "Popular"
         }
     },
     "post": {
+        "detail": {
+            "view": "Ver",
+            "slide_show": {
+                "interval": "Intervalo (segundos)",
+                "skip_anim": "Saltar Animacion",
+                "ok": "Ok",
+                "cancel": "Cancelar"
+            },
+            "view_in_browser": "Ver en el Navegador",
+            "file_details": "Detalles del Archivo",
+            "size": "Tamaño",
+            "resolution": "Resolucíon",
+            "rating": "Rating",
+            "file_format": "Formato del Archivo",
+            "share": {
+                "source": "Compartir Link de orige",
+                "booru": "Compartir Link de Booru",
+                "image": "Compartir Imagen"
+            },
+            "copied": "Copiado",
+            "show_original": "Mostrar original",
+            "show_translated": "Mostrar Traduccido",
+            "login_required_notice": "Necesitas estar Logeado para hacer esta accion",
+            "open_wiki": "Abrir Wiki",
+            "add_to_blacklist": "Añadir a la Lista de Bloqueados",
+            "add_to_favorites": "Añadir a La Lista de Favoritos",
+            "copy_and_open_saved_search": "Copiar y Abrir en la web",
+            "score": {
+                "one": "Punto",
+                "other": "Puntos"
+            },
+            "source_label": "Fuente",
+            "related_posts": "Artículos Relacionados"
+        },
+        "parent_child": {
+            "children_of": "Niño de"
+        },
         "action": {
-            "view_comments": "Ver comentarios"
+            "preview": "Vista previa",
+            "view_comments": "Ver comentarios",
+            "add_to_favorite_group": "Añadir al grupo de Favoritos",
+            "select": "Seleccionar"
+        },
+        "image_fullview": {
+            "view_original": "Ver Original",
+            "view_resized": "Ver redimensionado"
         }
     },
     "comment": {
-        "comments": "Comentarios"
+        "comments": "Comentarios",
+        "create": {
+            "hint": "Comentar",
+            "loading": "Porfavor Espera...",
+            "error": "Error"
+        },
+        "list": {
+            "edit": "Editar",
+            "reply": "Responder",
+            "reply_to": "Respondiendo a",
+            "delete": "Borrar",
+            "noComments": "Aqui no hay comentarios",
+            "last_updated": "Ultima Acutualizacion",
+            "send": "Enviar"
+        },
+        "counter": {
+            "one": "Comentario",
+            "other": "Comentar"
+        }
     },
     "explore": {
+        "latest": "Ultimo",
         "popular": "Popular",
-        "most_viewed": "Los más vistos"
+        "hot": "Caliente",
+        "most_viewed": "Los más vistos",
+        "see_more": "Mostrar mas"
     },
     "search": {
-        "hint": "Buscar..."
+        "errors": {
+            "generic": "Algo debe estar Fallando",
+            "tag_limit": "Limite de Etiquetas Alcanzado. Actualiza tu cuenta para buscar con mas Etiquetas",
+            "unknown": "Servidor No Encontrado, Porfavor Reportar a un Desarrollador"
+        },
+        "hint": "Buscar...",
+        "empty": "Tan Vacio",
+        "search_options": "Buscar Opciones",
+        "metatags_notice": "Las MetaEtiquetas Gratis no cuentan como etiquetas en la busqueda",
+        "history": {
+            "history": "Historial",
+            "clear": "Limpiar",
+            "recent": "Reciente"
+        },
+        "trending": "Tendencia",
+        "remove_all_selected": "Remover todas las Etiquetas"
+    },
+    "pool": {
+        "pool": "Piscina",
+        "pool_gallery": "Galeria de Piscina",
+        "mature_banned_content": "Contenido Maduro/Baneado ",
+        "order": {
+            "recent": "Reciente",
+            "new": "Nuevo",
+            "name": "Nombre"
+        },
+        "category": {
+            "series": "Series",
+            "collection": "Coleccion"
+        },
+        "search": {
+            "hint": "Buscar una Piscina"
+        },
+        "detail": {
+            "last_updated": "Ultima Actualizacion"
+        }
     },
     "settings": {
         "settings": "Ajustes",
@@ -25,16 +153,92 @@
         "appearance": {
             "appearance": "Apariencia"
         },
+        "general": "General",
+        "search": {
+            "search": "Buscar"
+        },
+        "information": "Informacion",
+        "changelog": "Lista de Cambios",
+        "result_layout": {
+            "result_layout": "Modo Pagina",
+            "infinite_scroll": "Scroll Infinito"
+        },
+        "image_grid": {
+            "grid_size": {
+                "small": "Pequeño",
+                "medium": "Mediano",
+                "large": "Grande"
+            },
+            "image_quality": {
+                "image_quality": "Calidad De la imagen",
+                "high_quality_notice": "Alta calidad de la imagen, Tardara mas en cargar",
+                "high": "Alto",
+                "low": "Bajo",
+                "original": "Original",
+                "automatic": "Automatizado"
+            }
+        },
+        "image_viewer": {
+            "image_viewer": "Visor de Imagenes",
+            "full_res_as_default": "Mostrar La mas alta resolucion por defecto"
+        },
         "language": {
             "language": "Idioma",
             "language_name": "Español"
         },
+        "theme": {
+            "dark": "Oscuro"
+        },
         "privacy": {
             "privacy": "Privacidad"
         },
-        "help_us_translate": "Ayúdenos a traducir"
+        "performance": {
+            "performance": "Gestion"
+        },
+        "download": {
+            "select_a_folder": "Seleccionar un archivo",
+            "quality": "Descargar Calidad de la imagen",
+            "qualities": {
+                "original": "Original",
+                "preview": "Vista Previa"
+            }
+        },
+        "help_us_translate": "Ayúdenos a traducir",
+        "other_settings": "Otros Ajustes"
+    },
+    "blacklisted_tags": {
+        "remove": "Remover",
+        "edit": "Editar"
     },
     "download": {
-        "download": "Descargar"
+        "download": "Descargar",
+        "bulk_download": "Descargar Masiva",
+        "bulk_download_total_count": "Total",
+        "bulk_download_done_count": "Terminado",
+        "bulk_download_done_confirm": "Terminado",
+        "bulk_download_cancel": "Cancelar",
+        "bulk_download_duplicate": "Duplicar",
+        "open_app_settings": "Abrir Ajustes",
+        "bulk": {
+            "all_done_notification_message": "Todas las descargas estan listas"
+        }
+    },
+    "favorites": {
+        "counter": {
+            "one": "Favorito",
+            "other": "Favoritos"
+        },
+        "favorited": "Favoritos",
+        "favorite": "Favorito",
+        "unfavorited": "No Favoritos",
+        "unfavorite": "No Favorito"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "Lista de Bloqueados"
+        }
+    },
+    "forum": {
+        "forum": "Foro"
     }
 }
