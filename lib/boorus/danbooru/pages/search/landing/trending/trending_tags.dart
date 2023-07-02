@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class TrendingTags extends ConsumerWidget {
@@ -26,19 +27,28 @@ class TrendingTags extends ConsumerWidget {
 
     return tags != null && tags!.isNotEmpty
         ? Wrap(
-            spacing: 4,
-            runSpacing: isMobilePlatform() ? -4 : 8,
+            spacing: 6,
+            runSpacing: isMobilePlatform() ? -2 : 8,
             children: tags!.take(20).map((e) {
               final category =
                   ref.watch(danbooruTagCategoryProvider(e.keyword));
+              final colors = category == null
+                  ? null
+                  : generateChipColors(getTagColor(category, theme), theme);
 
               return RawChip(
                 visualDensity: VisualDensity.compact,
+                side: BorderSide(
+                  width: 1.5,
+                  color: colors?.borderColor ?? Colors.transparent,
+                ),
                 onPressed: () => onTagTap?.call(e.keyword),
-                backgroundColor:
-                    category == null ? null : getTagColor(category, theme),
+                backgroundColor: colors?.backgroundColor,
                 label: Text(
                   e.keyword.replaceAll('_', ' '),
+                  style: TextStyle(
+                    color: colors?.foregroundColor,
+                  ),
                 ),
               );
             }).toList(),

@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 
 class MostSearchTagList extends ConsumerWidget {
@@ -42,15 +43,22 @@ class MostSearchTagList extends ConsumerWidget {
                   final category =
                       ref.watch(danbooruTagCategoryProvider(search.keyword));
 
+                  final colors = category == null
+                      ? null
+                      : generateChipColors(getTagColor(category, theme), theme);
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChoiceChip(
                       disabledColor: context.theme.chipTheme.disabledColor,
-                      backgroundColor: category == null
-                          ? context.theme.chipTheme.backgroundColor
-                          : getTagColor(category, theme),
+                      backgroundColor: colors?.backgroundColor ??
+                          context.theme.chipTheme.backgroundColor,
                       selectedColor: context.theme.chipTheme.selectedColor,
                       selected: isSelected,
+                      side: BorderSide(
+                        width: 1.5,
+                        color: colors?.borderColor ?? Colors.transparent,
+                      ),
                       onSelected: (selected) => onSelected(searches[index]),
                       padding: const EdgeInsets.all(4),
                       labelPadding: const EdgeInsets.all(1),
@@ -61,6 +69,9 @@ class MostSearchTagList extends ConsumerWidget {
                         ),
                         child: Text(
                           searches[index].keyword.removeUnderscoreWithSpace(),
+                          style: TextStyle(
+                            color: colors?.foregroundColor,
+                          ),
                           overflow: TextOverflow.fade,
                         ),
                       ),

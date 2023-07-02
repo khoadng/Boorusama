@@ -1,12 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/compact_chip.dart';
 
-class ForumCard extends StatelessWidget {
+class ForumCard extends ConsumerWidget {
   const ForumCard({
     super.key,
     required this.title,
@@ -31,7 +35,9 @@ class ForumCard extends StatelessWidget {
   final VoidCallback? onCreatorTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = generateChipColors(creatorColor, ref.watch(themeProvider));
+
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -71,7 +77,8 @@ class ForumCard extends StatelessWidget {
                 children: [
                   CompactChip(
                     label: creatorName.replaceAll('_', ' '),
-                    backgroundColor: creatorColor,
+                    backgroundColor: colors.backgroundColor,
+                    textColor: colors.foregroundColor,
                     onTap: onCreatorTap,
                   ),
                   const SizedBox(width: 8),

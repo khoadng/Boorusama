@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -89,13 +90,19 @@ class _Chip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
+    final colors = generateChipColors(getTagColor(tag.category, theme), theme);
+    final numberColors = generateChipColors(Colors.grey[800]!, theme);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: getTagColor(tag.category, theme),
+          backgroundColor: colors.backgroundColor,
+          side: BorderSide(
+            width: 1,
+            color: colors.borderColor,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: tag.hasPost
                 ? const BorderRadius.only(
@@ -111,9 +118,9 @@ class _Chip extends ConsumerWidget {
             child: Text(
               _getTagStringDisplayName(tag),
               overflow: TextOverflow.fade,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colors.foregroundColor,
               ),
             ),
           ),
@@ -121,7 +128,11 @@ class _Chip extends ConsumerWidget {
         if (tag.hasPost)
           Chip(
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            backgroundColor: Colors.grey[800],
+            backgroundColor: numberColors.backgroundColor,
+            side: BorderSide(
+              width: 1,
+              color: numberColors.borderColor,
+            ),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(8),
@@ -130,7 +141,10 @@ class _Chip extends ConsumerWidget {
             ),
             label: Text(
               NumberFormat.compact().format(tag.postCount),
-              style: const TextStyle(color: Colors.white60, fontSize: 12),
+              style: TextStyle(
+                color: numberColors.foregroundColor,
+                fontSize: 12,
+              ),
             ),
           ),
       ],

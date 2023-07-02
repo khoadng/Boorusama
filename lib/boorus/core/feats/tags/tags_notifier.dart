@@ -25,6 +25,9 @@ class TagsNotifier extends Notifier<List<TagGroupItem>?> {
   }) async {
     // filter tagList to remove invalid tags
     final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
+
+    if (filtered.isEmpty) return;
+
     final tags = await repo.getTagsByNameComma(filtered.join(','), 1);
 
     tags.sort((a, b) => a.rawName.compareTo(b.rawName));

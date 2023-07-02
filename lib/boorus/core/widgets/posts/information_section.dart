@@ -86,7 +86,7 @@ class InformationSection extends StatelessWidget {
                                   onArtistTagTap?.call(context, artist),
                               backgroundColor: getTagColor(
                                 TagCategory.artist,
-                                ThemeMode.amoledDark,
+                                ThemeMode.light,
                               ),
                             ),
                           ),

@@ -7,12 +7,14 @@ class CompactChip extends StatelessWidget {
     required this.label,
     this.onTap,
     this.backgroundColor,
+    this.textColor,
     this.borderRadius,
   });
 
   final void Function()? onTap;
   final String label;
   final Color? backgroundColor;
+  final Color? textColor;
   final BorderRadius? borderRadius;
 
   @override
@@ -30,8 +32,9 @@ class CompactChip extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w600,
+              color: textColor,
             ),
           ),
         ),
