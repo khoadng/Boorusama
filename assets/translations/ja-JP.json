@@ -133,7 +133,9 @@
             "show_scores": "スコアを表示"
         },
         "general": "一般",
-        "search": "検索",
+        "search": {
+            "search": "検索"
+        },
         "information": "情報",
         "changelog": "チェンジログ",
         "infinite_scroll_warning": "長時間スクロールするとアプリがクラッシュすることがあります",
