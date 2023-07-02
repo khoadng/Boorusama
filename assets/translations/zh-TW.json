@@ -164,7 +164,9 @@
             "show_scores": "顯示評分"
         },
         "general": "一般設定",
-        "search": "搜尋",
+        "search": {
+            "search": "搜尋"
+        },
         "information": "資訊",
         "changelog": "更新日誌",
         "infinite_scroll_warning": "長時間滾動頁面，可能導致應用程式崩潰",
