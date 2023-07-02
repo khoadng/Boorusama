@@ -61,8 +61,7 @@
             "add_to_favorites": "新增至最愛",
             "copy_and_open_saved_search": "複製並開啟已保存的搜尋",
             "score": {
-                "one": "Point",
-                "other": "Points"
+                "other": "Point"
             },
             "source_label": "來源",
             "related_posts": "相關貼圖",
@@ -100,14 +99,12 @@
             "send": "傳送"
         },
         "counter": {
-            "one": "評論",
             "other": "評論"
         }
     },
     "explore": {
         "latest": "最新",
         "popular": "最受歡迎",
-        "curated": "精選",
         "hot": "熱門",
         "most_viewed": "最多觀看",
         "see_more": "查看更多"
@@ -268,16 +265,13 @@
         "bulk_download_duplicate": "複製",
         "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
         "bulk_download_only_download_new_images": "僅下載新圖片",
-        "bulk_download_stay_on_screen_request": "下載完成前，請勿離開該頁面",
         "bulk_download_folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
         "bulk_download_select_a_folder": "選擇一個資料夾",
         "bulk_download_found_duplicate": "找到 {} 個同名圖片， 這些圖片將被跳過。",
         "bulk_download_downloaded_counter": {
-            "one": "{} 張圖片已下載",
             "other": "{} 張圖片已下載"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} 張圖片已略過",
             "other": "{} 張圖片已略過"
         },
         "bulk_download_download_more": "下載更多",
@@ -285,7 +279,6 @@
         "storage_permission_explanation": "需要儲存權限以儲存下載文件",
         "app_restart_request": "請重新啟動應用程式以使此更改生效",
         "image_counter": {
-            "one": "下載 {} 圖片",
             "other": "下載 {} 圖片"
         },
         "bulk": {
@@ -295,7 +288,6 @@
     "saved_search": {
         "saved_search": "儲存搜尋",
         "saved_search_counter": {
-            "one": "{} 搜尋",
             "other": "{} 搜尋"
         },
         "add_saved_search": "新增已儲存搜尋",
@@ -313,7 +305,6 @@
     },
     "favorites": {
         "counter": {
-            "one": "最愛",
             "other": "最愛"
         },
         "favorited": "已新增至最愛",
@@ -345,7 +336,6 @@
         "duplicate_items_warning_notification": "該貼圖已在於該群組中",
         "detete_confirmation": "確定要刪除此最愛群組嗎",
         "group_item_counter": {
-            "one": "{} 貼圖",
             "other": "{} 貼圖"
         }
     },
