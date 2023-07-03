@@ -339,5 +339,8 @@
         "password_hashed_label": "Хеш пароля (только чтение)",
         "password_label": "Пароль",
         "config_booru_confirm": "ОК"
+    },
+    "forum": {
+        "forum": "форум"
     }
 }
