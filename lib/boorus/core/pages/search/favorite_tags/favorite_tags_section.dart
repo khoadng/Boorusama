@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
@@ -83,8 +84,9 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors =
-            generateChipColors(Colors.white, ref.watch(themeProvider));
+        final theme = ref.watch(themeProvider);
+        final colors = generateChipColors(
+            theme.isDark ? Colors.white : Colors.black, theme);
 
         return RawChip(
           visualDensity: VisualDensity.compact,

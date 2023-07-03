@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/compact_chip.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -77,24 +76,20 @@ class InformationSection extends StatelessWidget {
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    Flexible(
-                      child: artistTags.firstOrNull.toOption().fold(
-                            () => const SizedBox.shrink(),
-                            (artist) => CompactChip(
-                              label: artist.removeUnderscoreWithSpace(),
-                              onTap: () =>
-                                  onArtistTagTap?.call(context, artist),
-                              backgroundColor: getTagColor(
-                                TagCategory.artist,
-                                ThemeMode.light,
-                              ),
-                            ),
+                    if (artistTags.isNotEmpty)
+                      Flexible(
+                        child: CompactChip(
+                          textColor: Colors.white,
+                          label: artistTags.first.removeUnderscoreWithSpace(),
+                          onTap: () =>
+                              onArtistTagTap?.call(context, artistTags.first),
+                          backgroundColor: getTagColor(
+                            TagCategory.artist,
+                            ThemeMode.light,
                           ),
-                    ),
-                    artistTags.firstOrNull.toOption().fold(
-                          () => const SizedBox.shrink(),
-                          (_) => const SizedBox(width: 5),
                         ),
+                      ),
+                    if (artistTags.isNotEmpty) const SizedBox(width: 5),
                     Text(
                       createdAt.fuzzify(
                           locale: Localizations.localeOf(context)),

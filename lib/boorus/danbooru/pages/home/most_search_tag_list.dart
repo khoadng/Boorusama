@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -57,7 +58,11 @@ class MostSearchTagList extends ConsumerWidget {
                       selected: isSelected,
                       side: BorderSide(
                         width: 1.5,
-                        color: colors?.borderColor ?? Colors.transparent,
+                        color: isSelected
+                            ? theme.isDark
+                                ? Colors.white
+                                : Colors.black
+                            : colors?.borderColor ?? Colors.transparent,
                       ),
                       onSelected: (selected) => onSelected(searches[index]),
                       padding: const EdgeInsets.all(4),
@@ -71,7 +76,9 @@ class MostSearchTagList extends ConsumerWidget {
                           searches[index].keyword.removeUnderscoreWithSpace(),
                           style: TextStyle(
                             color: isSelected
-                                ? Colors.black
+                                ? theme.isDark
+                                    ? Colors.black
+                                    : Colors.white
                                 : colors?.foregroundColor,
                           ),
                           overflow: TextOverflow.fade,

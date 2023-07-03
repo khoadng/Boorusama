@@ -105,7 +105,7 @@ class _DanbooruPostDetailsPageState
       bottomSheet: (page) {
         return Container(
           decoration: BoxDecoration(
-            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+            color: context.theme.scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
                 color: context.theme.dividerColor,
