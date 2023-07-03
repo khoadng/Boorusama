@@ -46,7 +46,6 @@ DanbooruPost postDtoToPost(
       artistTags: dto.tagStringArtist.splitByWhitespace(),
       generalTags: dto.tagStringGeneral.splitByWhitespace(),
       metaTags: dto.tagStringMeta.splitByWhitespace(),
-      tags: dto.tagStringGeneral.splitByWhitespace(),
       width: dto.imageWidth?.toDouble() ?? 0.0,
       height: dto.imageHeight?.toDouble() ?? 0.0,
       format: dto.fileExt ?? 'jpg',

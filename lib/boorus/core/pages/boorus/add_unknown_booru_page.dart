@@ -60,8 +60,12 @@ class AddUnknownBooruPage extends ConsumerWidget {
                 ).tr(),
               ),
               WarningContainer(
-                  contentBuilder: (context) =>
-                      const Text('booru.add_random_booru_warning').tr()),
+                  contentBuilder: (context) => const Text(
+                        'booru.add_random_booru_warning',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ).tr()),
               const SizedBox(height: 8),
               const Divider(
                 thickness: 2,

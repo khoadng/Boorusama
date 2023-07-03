@@ -13,7 +13,7 @@ import 'post_variant.dart';
 class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
-  const DanbooruPost({
+  DanbooruPost({
     required this.id,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
@@ -23,7 +23,6 @@ class DanbooruPost extends Equatable
     required this.artistTags,
     required this.generalTags,
     required this.metaTags,
-    required this.tags,
     required this.width,
     required this.height,
     required this.format,
@@ -44,7 +43,13 @@ class DanbooruPost extends Equatable
     required this.hasLarge,
     required this.duration,
     required this.variants,
-  });
+  }) : tags = [
+          ...characterTags,
+          ...artistTags,
+          ...copyrightTags,
+          ...generalTags,
+          ...metaTags,
+        ];
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
@@ -56,7 +61,6 @@ class DanbooruPost extends Equatable
         artistTags: const [],
         generalTags: const [],
         metaTags: const [],
-        tags: const [],
         width: 1,
         height: 1,
         format: 'png',
@@ -237,7 +241,6 @@ extension PostX on DanbooruPost {
         artistTags: artistTags ?? this.artistTags,
         generalTags: generalTags ?? this.generalTags,
         metaTags: metaTags ?? this.metaTags,
-        tags: tags ?? this.tags,
         width: width,
         height: height,
         format: format ?? this.format,

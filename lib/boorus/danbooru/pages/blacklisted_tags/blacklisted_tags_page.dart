@@ -65,9 +65,10 @@ class BlacklistedTagsList extends ConsumerWidget {
           (tags) => CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-                child: WarningContainer(contentBuilder: (context) {
-                  return Html(data: 'blacklisted_tags.limitation_notice'.tr());
-                }),
+                child: WarningContainer(
+                    contentBuilder: (context) => Html(
+                          data: 'blacklisted_tags.limitation_notice'.tr(),
+                        )),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(

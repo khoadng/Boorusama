@@ -145,8 +145,12 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                               ref.watch(booruFactoryProvider).booruData) ==
                           BooruType.unknown
                       ? WarningContainer(
-                          contentBuilder: (context) =>
-                              const Text('booru.unsupported_warning').tr(),
+                          contentBuilder: (context) => const Text(
+                            'booru.unsupported_warning',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ).tr(),
                         )
                       : const SizedBox.shrink(),
                 ),

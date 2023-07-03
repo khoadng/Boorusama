@@ -69,13 +69,13 @@ mixin DanbooruPostTransformMixin<T, E> {
 }
 
 bool _hasBlacklistedTag(DanbooruPost post, List<FilterGroup> fgs) {
-  final tagMap = Map<String, String>.fromIterable(post.tags);
+  final set = Set<String>.from(post.tags);
   for (final fg in fgs) {
     if (fg.groupType == FilterGroupType.single) {
-      final hasTag = fg.filterItems.map((it) => it.tag).any(tagMap.containsKey);
+      final hasTag = fg.filterItems.map((it) => it.tag).any(set.contains);
       if (hasTag) return true;
     } else {
-      if (__hasBlacklistedTags(tagMap, fg.filterItems)) return true;
+      if (__hasBlacklistedTags(set, fg.filterItems)) return true;
     }
   }
 
@@ -83,7 +83,7 @@ bool _hasBlacklistedTag(DanbooruPost post, List<FilterGroup> fgs) {
 }
 
 bool __hasBlacklistedTags(
-  Map<String, String> tagMap,
+  Set<String> tagSet,
   List<FilterItem> filterItems,
 ) {
   final operatorGroups =
@@ -92,14 +92,14 @@ bool __hasBlacklistedTags(
   var isBlacklisted = false;
 
   if (operatorGroups[FilterOperator.none] != null) {
-    if (_hasAll(tagMap, operatorGroups[FilterOperator.none]!)) {
+    if (_hasAll(tagSet, operatorGroups[FilterOperator.none]!)) {
       isBlacklisted = true;
     }
   }
 
   if (operatorGroups[FilterOperator.or] != null) {
     for (final orTag in operatorGroups[FilterOperator.or]!) {
-      if (tagMap.containsKey(orTag.tag)) {
+      if (tagSet.contains(orTag.tag)) {
         isBlacklisted = true;
         break;
       }
@@ -108,7 +108,7 @@ bool __hasBlacklistedTags(
 
   if (operatorGroups[FilterOperator.not] != null) {
     for (final notTag in operatorGroups[FilterOperator.not]!) {
-      if (tagMap.containsKey(notTag.tag)) {
+      if (tagSet.contains(notTag.tag)) {
         isBlacklisted = false;
         break;
       }
@@ -118,10 +118,10 @@ bool __hasBlacklistedTags(
   return isBlacklisted;
 }
 
-bool _hasAll(Map<String, String> tagMap, List<FilterItem> fg) {
+bool _hasAll(Set<String> tagSet, List<FilterItem> fg) {
   var hasAll = true;
   for (final fi in fg) {
-    if (!tagMap.containsKey(fi.tag)) {
+    if (!tagSet.contains(fi.tag)) {
       hasAll = false;
       break;
     }
