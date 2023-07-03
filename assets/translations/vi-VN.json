@@ -259,7 +259,9 @@
         "blacklisted_tags": "Lọc tag",
         "load_error": "Có lỗi xảy ra khi tải dữ liệu",
         "updated": "Tag đã được cập nhật",
-        "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại."
+        "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại.",
+        "failed_to_add": "Thêm tag thất bại",
+        "failed_to_remove": "Xoá tag thất bại"
     },
     "download": {
         "download": "Tải ảnh",
