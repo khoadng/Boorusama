@@ -68,15 +68,17 @@ final settingsRepoProvider =
 final dioProvider = Provider.family<Dio, String>(
   (ref, baseUrl) {
     final dir = ref.watch(httpCacheDirProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
     final generator = ref.watch(userAgentGeneratorProvider);
     final loggerService = ref.watch(loggerProvider);
 
-    return dio(dir, baseUrl, generator, loggerService);
+    return dio(dir, baseUrl, generator, booruConfig, loggerService);
   },
   dependencies: [
     httpCacheDirProvider,
     userAgentGeneratorProvider,
     loggerProvider,
+    currentBooruConfigProvider,
   ],
 );
 

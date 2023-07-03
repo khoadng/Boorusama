@@ -13,17 +13,17 @@ import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'artist_section.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
@@ -105,7 +105,7 @@ class _DanbooruPostDetailsPageState
       bottomSheet: (page) {
         return Container(
           decoration: BoxDecoration(
-            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
+            color: context.theme.scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
                 color: context.theme.dividerColor,

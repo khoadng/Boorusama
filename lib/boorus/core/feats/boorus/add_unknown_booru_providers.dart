@@ -20,10 +20,6 @@ final booruEngineProvider = StateProvider.autoDispose<BooruEngine?>((ref) {
   return null;
 });
 
-final booruRevealKeyProvider = StateProvider.autoDispose<bool>((ref) {
-  return false;
-});
-
 final booruRatingFilterProvider =
     StateProvider.autoDispose<BooruConfigRatingFilter>((ref) {
   return BooruConfigRatingFilter.none;

@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -23,6 +27,7 @@ class MostSearchTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncData = ref.watch(trendingTagsProvider);
+    final theme = ref.watch(themeProvider);
 
     return asyncData.when(
       data: (searches) => searches.isNotEmpty
@@ -35,28 +40,47 @@ class MostSearchTagList extends ConsumerWidget {
                 itemCount: searches.length,
                 itemBuilder: (context, index) {
                   final isSelected = selected == searches[index].keyword;
+                  final search = searches[index];
+                  final category =
+                      ref.watch(danbooruTagCategoryProvider(search.keyword));
+
+                  final colors = category == null
+                      ? null
+                      : generateChipColors(getTagColor(category, theme), theme);
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChoiceChip(
                       disabledColor: context.theme.chipTheme.disabledColor,
-                      backgroundColor: context.theme.chipTheme.backgroundColor,
+                      backgroundColor: colors?.backgroundColor ??
+                          context.theme.chipTheme.backgroundColor,
                       selectedColor: context.theme.chipTheme.selectedColor,
                       selected: isSelected,
+                      side: BorderSide(
+                        width: 1.5,
+                        color: isSelected
+                            ? theme.isDark
+                                ? Colors.white
+                                : Colors.black
+                            : colors?.borderColor ?? Colors.transparent,
+                      ),
                       onSelected: (selected) => onSelected(searches[index]),
                       padding: const EdgeInsets.all(4),
                       labelPadding: const EdgeInsets.all(1),
                       visualDensity: VisualDensity.compact,
-                      side: BorderSide(
-                        width: 0.5,
-                        color: context.theme.hintColor,
-                      ),
                       label: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85,
                         ),
                         child: Text(
                           searches[index].keyword.removeUnderscoreWithSpace(),
+                          style: TextStyle(
+                            color: isSelected
+                                ? theme.isDark
+                                    ? Colors.black
+                                    : Colors.white
+                                : colors?.foregroundColor,
+                          ),
                           overflow: TextOverflow.fade,
                         ),
                       ),

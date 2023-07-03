@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -54,19 +55,9 @@ class PostTagList extends ConsumerWidget {
           booru,
           authState,
           g.tags,
-          onAddToBlacklisted: (tag) =>
-              ref.read(danbooruBlacklistedTagsProvider.notifier).add(
-                    tag: tag.rawName,
-                    onFailure: (message) => showSimpleSnackBar(
-                      context: context,
-                      content: Text(message),
-                    ),
-                    onSuccess: (_) => showSimpleSnackBar(
-                      context: context,
-                      duration: const Duration(seconds: 2),
-                      content: const Text('Blacklisted tags updated'),
-                    ),
-                  ),
+          onAddToBlacklisted: (tag) => ref
+              .read(danbooruBlacklistedTagsProvider.notifier)
+              .addWithToast(tag: tag.rawName),
         ));
     }
 
@@ -151,13 +142,19 @@ class _Chip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
+    final colors = generateChipColors(getTagColor(tag.category, theme), theme);
+    final numberColors = generateChipColors(Colors.grey[600]!, theme);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: getTagColor(tag.category, theme),
+          backgroundColor: colors.backgroundColor,
+          side: BorderSide(
+            color: colors.borderColor,
+            width: 1,
+          ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8),
@@ -171,16 +168,20 @@ class _Chip extends ConsumerWidget {
             child: Text(
               _getTagStringDisplayName(tag),
               overflow: TextOverflow.fade,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colors.foregroundColor,
               ),
             ),
           ),
         ),
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Colors.grey[800],
+          backgroundColor: numberColors.backgroundColor,
+          side: BorderSide(
+            color: numberColors.borderColor,
+            width: 1,
+          ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(8),
@@ -189,7 +190,10 @@ class _Chip extends ConsumerWidget {
           ),
           label: Text(
             NumberFormat.compact().format(tag.postCount),
-            style: const TextStyle(color: Colors.white60, fontSize: 12),
+            style: TextStyle(
+              color: numberColors.foregroundColor,
+              fontSize: 12,
+            ),
           ),
         ),
       ],

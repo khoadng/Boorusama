@@ -109,7 +109,6 @@
     "explore": {
         "latest": "Récent",
         "popular": "Populaire",
-        "curated": "Organiser",
         "hot": "Hot",
         "most_viewed": "Les plus vus",
         "see_more": "Voir plus"
@@ -169,7 +168,9 @@
             "show_scores": "Voir les notes"
         },
         "general": "Général",
-        "search": "Recherche",
+        "search": {
+            "search": "Recherche"
+        },
         "information": "Informations",
         "changelog": "Journal de modifications",
         "infinite_scroll_warning": "L'application peut s'arrêter si vous faites défiler trop longtemps",
@@ -270,7 +271,6 @@
         "bulk_download_duplicate": "Dupliquer",
         "bulk_download_invalid_folder_name_error": "Un fichier ne peut pas contenir les caractères suivants:␣",
         "bulk_download_only_download_new_images": "Télécharger uniquement les nouvelles images",
-        "bulk_download_stay_on_screen_request": "Veuillez rester sur cet écran tant que tout les fichiers ne sont pas téléchargés",
         "bulk_download_folder_select_warning": "L'application peut enregistrer des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <div>La carte SD n'est pas compatible.</div> <div>Veuillez choisir un nouvel emplacement.</div> <div>Cet appareil a la version {1}.</div>",
         "bulk_download_select_a_folder": "Sélectionnez un fichier",
         "bulk_download_found_duplicate": "{} images avec le même nom ont été trouvées. Elles seront passées.",
@@ -422,5 +422,8 @@
         "later": "Plus tard",
         "whats_new": "Quoi de neuf ?",
         "update_available": "Mise à jour disponible"
+    },
+    "forum": {
+        "forum": "Forum"
     }
 }

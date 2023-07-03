@@ -1,13 +1,9 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,13 +22,12 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
@@ -141,6 +136,8 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
+  final danbooruCreatorBox = await Hive.openBox('danbooru_creators_v1');
+
   final packageInfo = await PackageInfo.fromPlatform();
   final appInfo = await getAppInfo();
   final tagInfo =
@@ -198,6 +195,8 @@ void main() async {
             appInfoProvider.overrideWithValue(appInfo),
             uiLoggerProvider.overrideWithValue(uiLogger),
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+            danbooruCreatorHiveBoxProvider
+                .overrideWithValue(danbooruCreatorBox),
           ],
           child: App(settings: settings),
         ),
@@ -206,18 +205,4 @@ void main() async {
   }
 
   run();
-}
-
-class DioProvider {
-  DioProvider(
-    this.dir,
-    this.generator,
-    this.loggerService,
-  );
-
-  final Directory dir;
-  final UserAgentGenerator generator;
-  final LoggerService loggerService;
-
-  Dio getDio(String? baseUrl) => dio(dir, baseUrl, generator, loggerService);
 }

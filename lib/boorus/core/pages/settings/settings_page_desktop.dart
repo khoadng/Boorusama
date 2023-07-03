@@ -113,7 +113,7 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   ListTile(
                     textColor: index == 5 ? Colors.white : null,
                     tileColor: index == 5 ? Colors.grey[800] : null,
-                    title: const Text('settings.search').tr(),
+                    title: const Text('settings.search.search').tr(),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(

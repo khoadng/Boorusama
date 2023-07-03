@@ -37,16 +37,4 @@ extension E621TagCategoryX on E621TagCategory {
         E621TagCategory.meta => const Color(0xfffefffe),
         E621TagCategory.lore => const Color(0xff218923),
       };
-
-  Color toOnBackgroundColor() => switch (this) {
-        E621TagCategory.general => Colors.black,
-        E621TagCategory.artist => Colors.white,
-        E621TagCategory.invalid_ => Colors.grey,
-        E621TagCategory.copyright => Colors.white,
-        E621TagCategory.charater => Colors.white,
-        E621TagCategory.species => Colors.white,
-        E621TagCategory.invalid => Colors.white,
-        E621TagCategory.meta => const Color(0xff000000),
-        E621TagCategory.lore => const Color(0xffffffff),
-      };
 }

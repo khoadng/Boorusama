@@ -74,7 +74,8 @@ class E621PostRepositoryApi
           ),
         );
 
-        final data = await $(tryParseData(response));
+        final dtos = await $(tryParseJsonFromResponse(response, parseDtos));
+        final data = dtos.map(postDtoToPost).toList();
 
         final filtered = await $(tryFilterBlacklistedTags(data));
 

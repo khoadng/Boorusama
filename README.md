@@ -86,6 +86,7 @@ Help us translate Boorusama to make it more accessible. Here are the steps:
 |Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru-RU.json`](./assets/translations/ru-RU.json)|
 |Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be-BY.json`](./assets/translations/be-BY.json)|
 |German| [@Forsaken5687](https://github.com/Forsaken5687) |[`de-DE.json`](./assets/translations/de-DE.json)|
+|Chinese (Traditional)| [@xperiazu21](https://github.com/xperiazu21) |[`zh-TW.json`](./assets/translations/zh-TW.json)|
 
 Alternatively, you can assist with translations on [POEditor](https://poeditor.com/join/project/uNPcakFEut).
 

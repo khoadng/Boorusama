@@ -88,15 +88,6 @@ class AddOrUpdateBooruState extends Equatable {
 }
 
 extension AddOrUpdateBooruStateExtensions on AddOrUpdateBooruState {
-  bool allowSubmit() {
-    if (selectedBooru.booruType == BooruType.unknown) return false;
-    if (configName.isEmpty) return false;
-    if (url.isEmpty) return false;
-
-    return (login.isNotEmpty && apiKey.isNotEmpty) ||
-        (login.isEmpty && apiKey.isEmpty);
-  }
-
   bool supportRatingFilter() => selectedBooru.booruType != BooruType.safebooru;
   bool supportHideDeleted() => selectedBooru.booruType != BooruType.gelbooru;
 

@@ -94,7 +94,6 @@
     "explore": {
         "latest": "Последнее",
         "popular": "Популярное",
-        "curated": "Лучшее",
         "hot": "Горячее",
         "most_viewed": "Самое просматриваемое",
         "see_more": "Просмотреть больше"
@@ -153,7 +152,9 @@
             "appearance": "Внешний вид"
         },
         "general": "Генеральные",
-        "search": "Поиск",
+        "search": {
+            "search": "Поиск"
+        },
         "information": "Информация",
         "changelog": "История изменений",
         "infinite_scroll_warning": "Может произойти ошибка, если вы слишком долго скроллите ленту",
@@ -247,7 +248,6 @@
         "bulk_download_duplicate": "Дубликат",
         "bulk_download_invalid_folder_name_error": "Название папки не может содержать следующие символы: ",
         "bulk_download_only_download_new_images": "Скачать только новые изображения",
-        "bulk_download_stay_on_screen_request": "Пожалуйста, не сворачивайте приложение, пока все изображения не будут скачаны",
         "bulk_download_folder_select_warning": "Приложение может сохранять файлы только в публичные папки <b>({0})</b> в Android 11+. <div>SD карты также не поддерживаются.</div> <div>Пожалуйста, выберите другое расположение.</div> <div>Версия этого устройства - {1}.</div>",
         "bulk_download_select_a_folder": "Выберите папку",
         "bulk_download_found_duplicate": "Найдено {} с одинаковым именем. Они будут пропущенны.",
@@ -339,5 +339,8 @@
         "password_hashed_label": "Хеш пароля (только чтение)",
         "password_label": "Пароль",
         "config_booru_confirm": "ОК"
+    },
+    "forum": {
+        "forum": "форум"
     }
 }

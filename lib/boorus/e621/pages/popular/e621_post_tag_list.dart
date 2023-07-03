@@ -9,10 +9,12 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/e621/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -162,7 +164,6 @@ class E621PostTagList extends ConsumerWidget {
             child: _Chip(
               tag: tag,
               tagColor: group.category.toColor(),
-              textColor: group.category.toOnBackgroundColor(),
               maxTagWidth: maxTagWidth,
             ),
           ),
@@ -177,22 +178,26 @@ class _Chip extends ConsumerWidget {
     required this.tag,
     required this.maxTagWidth,
     required this.tagColor,
-    required this.textColor,
   });
 
   final String tag;
   final Color tagColor;
-  final Color textColor;
   final double? maxTagWidth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = generateChipColors(tagColor, ref.watch(themeProvider));
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: tagColor,
+          backgroundColor: colors.backgroundColor,
+          side: BorderSide(
+            color: colors.borderColor,
+            width: 1,
+          ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -205,7 +210,7 @@ class _Chip extends ConsumerWidget {
               overflow: TextOverflow.fade,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: textColor,
+                color: colors.foregroundColor,
               ),
             ),
           ),

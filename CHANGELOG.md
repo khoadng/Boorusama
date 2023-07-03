@@ -1,3 +1,15 @@
+# 3.2.0
+- Initial forum support for Danbooru
+- Add comment support for Gelbooru
+- Revamp the details page for Moebooru to match the other sites
+- Add a recently popular tab for Moebooru
+- Streamline the booru site selection process
+- Revamp the UI for tag list
+- Fix an issue where changing the booru site won't register until the app is restarted
+- Fix an bug where blacklisted tags are not properly applied
+- Add Chinese (Traditional) translation and update Spanish translation
+- Minor UI adjustments and bug fixes
+
 # 3.1.0
 - Add support for e621/e926
 - Add some translations for Turkish and Ukrainian

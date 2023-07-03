@@ -7,7 +7,7 @@ import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 Color getTagColor(TagCategory category, ThemeMode themeMode) {
   final colors =
-      themeMode == ThemeMode.light ? TagColors.light() : TagColors.dark();
+      themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
   return switch (category) {
     TagCategory.artist => colors.artist,
     TagCategory.copyright => colors.copyright,
@@ -48,7 +48,7 @@ class TagColors {
   static const _purple3 = Color.fromARGB(255, 199, 151, 255);
   static const _green3 = Color.fromARGB(255, 53, 198, 74);
   static const _azure4 = Color.fromARGB(255, 0, 155, 230);
-  static const _yellow2 = Color.fromARGB(255, 234, 208, 132);
+  static const _yellow2 = Color.fromARGB(255, 217, 187, 98);
 
   // dark theme
   static const _red6 = Color.fromARGB(255, 192, 0, 4);

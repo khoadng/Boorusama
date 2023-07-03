@@ -8,15 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/pages/post_details/artist_section.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';

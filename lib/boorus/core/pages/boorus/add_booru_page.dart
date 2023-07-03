@@ -7,9 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
+import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -60,7 +61,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                   vertical: 16,
                 ),
                 child: Text(
-                  'Add a booru',
+                  'booru.add_a_booru_site'.tr(),
                   style: context.textTheme.headlineSmall!
                       .copyWith(fontWeight: FontWeight.w900),
                 ),
@@ -77,12 +78,13 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 ),
                 child: LoginField(
                   validator: (p0) => null,
+                  autofocus: true,
                   onChanged: (value) {
                     inputText.value = value;
                     booruUrlError.value = mapBooruUrlToUri(value);
                   },
                   controller: urlController,
-                  labelText: 'Site URL',
+                  labelText: 'booru.site_url'.tr(),
                 ),
               ),
               ValueListenableBuilder<BooruUriOrError>(
@@ -92,27 +94,26 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                   child: error.fold(
                     (e) => const SizedBox.shrink(),
                     (uri) => ElevatedButton(
-                        onPressed: () {
-                          context.navigator.pop();
-                          if (getBooruType(uri.toString(),
-                                  ref.watch(booruFactoryProvider).booruData) ==
-                              BooruType.unknown) {
-                            context.navigator.push(MaterialPageRoute(
-                                builder: (_) => AddUnknownBooruPage(
-                                      url: uri.toString(),
-                                      setCurrentBooruOnSubmit:
-                                          widget.setCurrentBooruOnSubmit,
-                                    )));
-                          } else {
-                            context.navigator.push(MaterialPageRoute(
-                                builder: (_) => ConfigBooruPage(
-                                      setCurrentBooruOnSubmit:
-                                          widget.setCurrentBooruOnSubmit,
-                                      arg: AddNewConfig(uri),
-                                    )));
-                          }
-                        },
-                        child: const Text('Next')),
+                      onPressed: () {
+                        context.navigator.pop();
+                        final booruFactory = ref.watch(booruFactoryProvider);
+                        final booru = getBooruType(
+                            uri.toString(), booruFactory.booruData);
+                        if (booru == BooruType.unknown) {
+                          context.navigator.push(MaterialPageRoute(
+                              builder: (_) => AddUnknownBooruPage(
+                                    url: uri.toString(),
+                                    setCurrentBooruOnSubmit:
+                                        widget.setCurrentBooruOnSubmit,
+                                  )));
+                        } else {
+                          context.navigator.push(MaterialPageRoute(
+                              builder: (_) => CreateBooruPage(
+                                  booru: booruFactory.from(type: booru))));
+                        }
+                      },
+                      child: const Text('booru.next_step').tr(),
+                    ),
                   ),
                 ),
               ),
@@ -144,8 +145,13 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                               ref.watch(booruFactoryProvider).booruData) ==
                           BooruType.unknown
                       ? WarningContainer(
-                          contentBuilder: (context) =>
-                              const Text('This booru is not supported yet.'))
+                          contentBuilder: (context) => const Text(
+                            'booru.unsupported_warning',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ).tr(),
+                        )
                       : const SizedBox.shrink(),
                 ),
               ),
@@ -157,19 +163,21 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
   }
 }
 
-// map BooruUrlError to string message
 extension BooruUrlErrorX on BooruUrlError {
   String message(String url) => switch (this) {
         BooruUrlError.nullUrl => 'URL is null',
-        BooruUrlError.emptyUrl => 'URL is empty',
-        BooruUrlError.invalidUrlFormat => '"$url" is not a valid URL',
+        BooruUrlError.emptyUrl => 'booru.validation_empty_url'.tr(),
+        BooruUrlError.invalidUrlFormat =>
+          'booru.validation_invalid_url'.tr().replaceAll('{0}', url),
         BooruUrlError.notAnHttpOrHttpsUrl =>
-          '"$url" is not an HTTP or HTTPS URL',
-        BooruUrlError.missingLastSlash => '"$url" is missing a trailing slash',
-        BooruUrlError.redundantWww => '"$url" contains redundant "www"',
+          'booru.validation_invalid_http_url'.tr().replaceAll('{0}', url),
+        BooruUrlError.missingLastSlash =>
+          'booru.validation_missing_trailing_slash'.tr().replaceAll('{0}', url),
+        BooruUrlError.redundantWww =>
+          'booru.validation_redundant_www'.tr().replaceAll('{0}', url),
         BooruUrlError.stringHasInbetweenSpaces =>
-          '"$url" contains in-between spaces',
+          'booru.validation_contains_spaces'.tr().replaceAll('{0}', url),
         BooruUrlError.missingScheme =>
-          '"$url" is missing a scheme (e.g. https://)'
+          'booru.validation_missing_scheme'.tr().replaceAll('{0}', url),
       };
 }

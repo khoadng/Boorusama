@@ -27,7 +27,10 @@ class WarningContainer extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(right: 12),
-              child: FaIcon(FontAwesomeIcons.triangleExclamation),
+              child: FaIcon(
+                FontAwesomeIcons.triangleExclamation,
+                color: Colors.white,
+              ),
             ),
             Expanded(child: contentBuilder(context)),
           ],

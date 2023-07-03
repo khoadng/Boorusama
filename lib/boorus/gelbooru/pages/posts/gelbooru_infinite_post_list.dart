@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/gelbooru/widgets/gelbooru_post_context_menu.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -82,7 +82,6 @@ class _DanbooruInfinitePostListState
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authenticationProvider);
     final settings = ref.watch(settingsProvider);
 
     return PostGrid(
@@ -104,7 +103,7 @@ class _DanbooruInfinitePostListState
 
         return ContextMenuRegion(
           isEnabled: !multiSelect,
-          contextMenu: GeneralPostContextMenu(
+          contextMenu: GelbooruPostContextMenu(
             hasAccount: false,
             onMultiSelect: () {
               _multiSelectController.enableMultiSelect();
@@ -126,7 +125,7 @@ class _DanbooruInfinitePostListState
                     }
                   : null,
               isFaved: false,
-              enableFav: authState.isAuthenticated,
+              enableFav: false,
               onFavToggle: (isFaved) async {},
               autoScrollOptions: AutoScrollOptions(
                 controller: _autoScrollController,

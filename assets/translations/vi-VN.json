@@ -105,7 +105,6 @@
     "explore": {
         "latest": "Mới",
         "popular": "Phổ biến",
-        "curated": "Tuyển chọn",
         "hot": "Hot",
         "most_viewed": "Xem nhiều",
         "see_more": "Xem thêm"
@@ -134,7 +133,12 @@
             "recent": "Gần đây"
         },
         "trending": "Xu hướng",
-        "remove_all_selected": "Xoá tất cả các tag đang chọn"
+        "remove_all_selected": "Xoá tất cả các tag đang chọn",
+        "result_counter": {
+            "other": "{} Kết quả"
+        },
+        "no_result_notice": "Không có kết quả",
+        "search_in_progress_notice": "Đang tìm..."
     },
     "pool": {
         "pool": "Ảnh bộ",
@@ -165,7 +169,10 @@
             "show_scores": "Hiện điểm"
         },
         "general": "Chung",
-        "search": "Tìm kiếm",
+        "search": {
+            "search": "Tìm kiếm",
+            "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu"
+        },
         "information": "Thông tin",
         "changelog": "Changelog",
         "infinite_scroll_warning": "Có khả năng crash app nếu lướt quá lâu",
@@ -252,7 +259,9 @@
         "blacklisted_tags": "Lọc tag",
         "load_error": "Có lỗi xảy ra khi tải dữ liệu",
         "updated": "Tag đã được cập nhật",
-        "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại."
+        "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại.",
+        "failed_to_add": "Thêm tag thất bại",
+        "failed_to_remove": "Xoá tag thất bại"
     },
     "download": {
         "download": "Tải ảnh",
@@ -266,7 +275,6 @@
         "bulk_download_duplicate": "Trùng",
         "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
         "bulk_download_only_download_new_images": "Chỉ tải ảnh mới",
-        "bulk_download_stay_on_screen_request": "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
         "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
         "bulk_download_select_a_folder": "Chọn một thư mục",
         "bulk_download_found_duplicate": "Tìm thấy {} ảnh trùng tên, sẽ không tải những ảnh này",
@@ -382,7 +390,18 @@
         "password_label": "Mật khẩu",
         "content_filtering_label": "Lọc nội dung",
         "hide_deleted_label": "Ẩn ảnh bị xoá",
-        "config_booru_confirm": "Chốt"
+        "config_booru_confirm": "Chốt",
+        "add_a_booru_site": "Thêm booru",
+        "next_step": "Tiếp",
+        "site_url": "Địa chỉ trang web",
+        "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
+        "validation_empty_url": "URL rỗng",
+        "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
+        "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
+        "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
+        "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
+        "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
+        "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)"
     },
     "blacklist": {
         "manage": {
@@ -406,5 +425,8 @@
         "later": "Để sau",
         "whats_new": "Có gì mới?",
         "update_available": "Có cập nhật mới"
+    },
+    "forum": {
+        "forum": "Diễn đàn"
     }
 }

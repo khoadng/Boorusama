@@ -17,7 +17,6 @@ DanbooruPost _createPost(int id, List<String> tags) => DanbooruPost(
       artistTags: const [],
       generalTags: const [],
       metaTags: const [],
-      tags: tags,
       width: 1,
       height: 1,
       format: '',

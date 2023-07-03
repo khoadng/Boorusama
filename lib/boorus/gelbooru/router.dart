@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -12,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
+import 'package:boorusama/boorus/gelbooru/pages/comments/gelbooru_comment_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/flutter.dart';
@@ -55,6 +57,19 @@ void goToGelbooruArtistPage(
       ),
     ),
   ));
+}
+
+void goToGelbooruCommentsPage(
+  BuildContext context,
+  int postId,
+) {
+  showMaterialModalBottomSheet(
+    context: context,
+    duration: const Duration(milliseconds: 250),
+    builder: (context) => GelbooruProvider(
+      builder: (context) => GelbooruCommentPage(postId: postId),
+    ),
+  );
 }
 
 Widget provideArtistPageDependencies(

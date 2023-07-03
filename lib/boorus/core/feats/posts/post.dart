@@ -34,9 +34,9 @@ extension PostImageX on Post {
       switch (settings.imageQuality) {
         ImageQuality.automatic => thumbnailImageUrl,
         ImageQuality.low => thumbnailImageUrl,
-        ImageQuality.high => sampleImageUrl,
-        ImageQuality.highest => sampleImageUrl,
-        ImageQuality.original => originalImageUrl
+        ImageQuality.high => isVideo ? thumbnailImageUrl : sampleImageUrl,
+        ImageQuality.highest => isVideo ? thumbnailImageUrl : sampleImageUrl,
+        ImageQuality.original => isVideo ? thumbnailImageUrl : originalImageUrl
       };
 
   bool get hasNoImage =>

@@ -8,10 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
@@ -80,17 +83,34 @@ class FavoriteTagsSection extends ConsumerWidget {
     bool editMode,
   ) {
     return [
-      ...tags.mapIndexed((index, tag) => RawChip(
-            onPressed: editMode ? null : () => onTagTap?.call(tag.name),
-            label: Text(tag.name.replaceAll('_', ' ')),
-            deleteIcon: const Icon(
-              Icons.close,
-              size: 18,
+      ...tags.mapIndexed((index, tag) {
+        final theme = ref.watch(themeProvider);
+        final colors = generateChipColors(
+            theme.isDark ? Colors.white : Colors.black, theme);
+
+        return RawChip(
+          visualDensity: VisualDensity.compact,
+          onPressed: editMode ? null : () => onTagTap?.call(tag.name),
+          label: Text(
+            tag.name.replaceAll('_', ' '),
+            style: TextStyle(
+              color: colors.foregroundColor,
             ),
-            onDeleted: editMode
-                ? () => ref.read(favoriteTagsProvider.notifier).remove(index)
-                : null,
-          )),
+          ),
+          backgroundColor: colors.backgroundColor,
+          side: BorderSide(
+            color: colors.borderColor,
+            width: 1,
+          ),
+          deleteIcon: const Icon(
+            Icons.close,
+            size: 18,
+          ),
+          onDeleted: editMode
+              ? () => ref.read(favoriteTagsProvider.notifier).remove(index)
+              : null,
+        );
+      }),
       if (tags.isEmpty) ...[
         AddTagButton(onPressed: onAddTagRequest),
         Padding(

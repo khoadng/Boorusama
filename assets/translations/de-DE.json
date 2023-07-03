@@ -107,7 +107,6 @@
     "explore": {
         "latest": "Neueste",
         "popular": "Beliebt",
-        "curated": "Kuratiert",
         "hot": "Aktuell",
         "most_viewed": "Meist gesehen",
         "see_more": "Mehr anzeigen"
@@ -167,7 +166,9 @@
             "show_scores": "Scores anzeigen"
         },
         "general": "Allgemein",
-        "search": "Suche",
+        "search": {
+            "search": "Suche"
+        },
         "information": "Information",
         "changelog": "Änderungsprotokoll",
         "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst",
@@ -245,7 +246,7 @@
                 "preview": "Vorschau"
             }
         },
-        "help_us_translate": "Helfen Sie uns zu übersetzen",
+        "help_us_translate": "Hilf uns beim Übersetzen",
         "other_settings": "Andere Einstellungen"
     },
     "blacklisted_tags": {
@@ -258,7 +259,7 @@
     },
     "download": {
         "download": "Download",
-        "bulk_download": "Massen-Download",
+        "bulk_download": "Bulk-Download",
         "bulk_download_tag_confirmation": "Die folgenden Tags werden heruntergeladen",
         "bulk_download_save_to_folder": "In Ordner speichern",
         "bulk_download_total_count": "Gesamt",
@@ -268,7 +269,6 @@
         "bulk_download_duplicate": "Duplikat",
         "bulk_download_invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
         "bulk_download_only_download_new_images": "Nur neue Bilder herunterladen",
-        "bulk_download_stay_on_screen_request": "Bitte bleibe auf diesem Bildschirm, bis alle Dateien heruntergeladen sind",
         "bulk_download_folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
         "bulk_download_select_a_folder": "Ordner auswählen",
         "bulk_download_found_duplicate": "{} Bilder mit dem selben Namen gefunden. Diese werden übersprungen.",
@@ -309,7 +309,7 @@
         "saved_search_try": "Versuch es",
         "saved_search_query": "Anfrage",
         "saved_search_labels": "Labels*",
-        "saved_search_labels_description": "*Eine Liste von Tags zur Kategorisierung dieser Suche. Leerzeichen getrennt."
+        "saved_search_labels_description": "*Eine Liste von Tags zur Kategorisierung dieser Suche. Durch Leerzeichen getrennt."
     },
     "favorites": {
         "counter": {
@@ -369,7 +369,7 @@
         "settings": "Einstellungen",
         "manage_boorus": "Boorus verwalten",
         "your_bookmarks": "Deine Lesezeichen",
-        "your_blacklist": "Deine schwarze Liste",
+        "your_blacklist": "Schwarze Liste",
         "bulk_download": "Massen-Download"
     },
     "dateRange": {
@@ -414,5 +414,8 @@
         "later": "Später",
         "whats_new": "Was ist neu?",
         "update_available": "Update verfügbar"
+    },
+    "forum": {
+        "forum": "Forum"
     }
 }

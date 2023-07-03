@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
+import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/flutter.dart';
@@ -78,7 +79,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                         ],
                       ),
                     ),
-                    const MoebooruPopularPage()
+                    const MoebooruPopularPage(),
+                    const MoebooruPopularRecentPage(),
                   ],
                 ),
               ),

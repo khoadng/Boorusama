@@ -5,6 +5,7 @@ typedef LogData = ({
   DateTime dateTime,
   String serviceName,
   String message,
+  LogLevel level,
 });
 
 class UILogger implements LoggerService {
@@ -13,21 +14,36 @@ class UILogger implements LoggerService {
   @override
   void logE(String serviceName, String message) {
     _logs.add(
-      (dateTime: DateTime.now(), serviceName: serviceName, message: message),
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.error
+      ),
     );
   }
 
   @override
   void logI(String serviceName, String message) {
     _logs.add(
-      (dateTime: DateTime.now(), serviceName: serviceName, message: message),
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.info
+      ),
     );
   }
 
   @override
   void logW(String serviceName, String message) {
     _logs.add(
-      (dateTime: DateTime.now(), serviceName: serviceName, message: message),
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.warning
+      ),
     );
   }
 
@@ -38,7 +54,12 @@ class UILogger implements LoggerService {
     LogLevel? level,
   }) {
     _logs.add(
-      (dateTime: DateTime.now(), serviceName: serviceName, message: message),
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: level ?? LogLevel.info
+      ),
     );
   }
 

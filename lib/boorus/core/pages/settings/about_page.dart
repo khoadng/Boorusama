@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/package_info.dart';
 
 class AboutPage extends ConsumerWidget {
@@ -25,8 +26,11 @@ class AboutPage extends ConsumerWidget {
         height: 64,
       ),
       applicationVersion: packageInfo.version,
-      applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
+      applicationLegalese: _legaleseFromAppInfo(appInfo),
       applicationName: appInfo.appName,
     );
   }
 }
+
+String _legaleseFromAppInfo(AppInfo appInfo) =>
+    '\u{a9} ${appInfo.copyrightYearRange.start}-${appInfo.copyrightYearRange.end} ${appInfo.author}';

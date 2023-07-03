@@ -107,7 +107,6 @@
     "explore": {
         "latest": "Latest",
         "popular": "Popular",
-        "curated": "Curated",
         "hot": "Hot",
         "most_viewed": "Most viewed",
         "see_more": "See more"
@@ -136,7 +135,13 @@
             "recent": "Recent"
         },
         "trending": "Trending",
-        "remove_all_selected": "Remove all selected tags"
+        "remove_all_selected": "Remove all selected tags",
+        "result_counter": {
+            "one": "{} Result",
+            "other": "{} Results"
+        },
+        "no_result_notice": "No result",
+        "search_in_progress_notice": "Searching..."
     },
     "pool": {
         "pool": "Pool",
@@ -167,7 +172,10 @@
             "show_scores": "Show scores"
         },
         "general": "General",
-        "search": "Search",
+        "search": {
+            "search": "Search",
+            "auto_focus_search_bar": "Auto focus search bar when first open search view"
+        },
         "information": "Information",
         "changelog": "Changelog",
         "infinite_scroll_warning": "Might crash the app if you scroll for a long time",
@@ -254,7 +262,9 @@
         "blacklisted_tags": "Blacklisted tags",
         "load_error": "Failed to load blacklisted tags",
         "updated": "Blacklisted tags updated",
-        "limitation_notice": "Only support <b>NOT</b> operator and <b>OR</b> operator.\n\nBlacklisting using metatags won't work for current version."
+        "limitation_notice": "Only support <b>NOT</b> operator and <b>OR</b> operator.\n\nBlacklisting using metatags won't work for current version.",
+        "failed_to_add": "Failed to add tag",
+        "failed_to_remove": "Failed to remove tag"
     },
     "download": {
         "download": "Download",
@@ -268,7 +278,6 @@
         "bulk_download_duplicate": "Duplicate",
         "bulk_download_invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
         "bulk_download_only_download_new_images": "Only download new images",
-        "bulk_download_stay_on_screen_request": "Please stay on this screen until all files are downloaded",
         "bulk_download_folder_select_warning": "The app can only store files inside public directories <b>({0})</b> in Android 11+. <div>SD cards are also not supported.</div> <div>Please choose another location.</div> <div>This device's version is {1}.</div>",
         "bulk_download_select_a_folder": "Select a folder",
         "bulk_download_found_duplicate": "Found {} images with the same name. They will be skipped.",
@@ -390,7 +399,18 @@
         "password_label": "Password",
         "content_filtering_label": "Content filtering",
         "hide_deleted_label": "Hide deleted posts",
-        "config_booru_confirm": "OK"
+        "config_booru_confirm": "OK",
+        "add_a_booru_site": "Add a booru site",
+        "next_step": "Next",
+        "site_url": "Site URL",
+        "unsupported_warning": "This booru is not supported yet.",
+        "validation_empty_url": "URL is empty",
+        "validation_invalid_url": "\"{0}\" is not a valid URL",
+        "validation_invalid_http_url": "\"{0}\" is not an HTTP or HTTPS URL",
+        "validation_missing_trailing_slash": "\"{0}\" is missing a trailing slash",
+        "validation_redundant_www": "\"{0}\" contains redundant \"www\"",
+        "validation_contains_spaces": "\"{0}\" contains in-between spaces",
+        "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)"
     },
     "blacklist": {
         "manage": {
@@ -414,5 +434,8 @@
         "later": "Later",
         "whats_new": "What's new?",
         "update_available": "Update available"
+    },
+    "forum": {
+        "forum": "Forum"
     }
 }

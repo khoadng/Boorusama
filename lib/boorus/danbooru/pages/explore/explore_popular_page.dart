@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/explores/explore_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';

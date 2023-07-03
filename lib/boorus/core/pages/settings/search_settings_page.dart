@@ -33,7 +33,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.search').tr(),
+          title: const Text('settings.search.search').tr(),
         ),
         body: child,
       ),
@@ -44,9 +44,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           children: [
             if (isMobilePlatform())
               ListTile(
-                title: const Text(
-                  'Auto focus search bar when first open search view',
-                ),
+                title: const Text('settings.search.auto_focus_search_bar').tr(),
                 trailing: Switch(
                   activeColor: context.colorScheme.primary,
                   value: settings.autoFocusSearchBar,

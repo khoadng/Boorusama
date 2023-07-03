@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -26,6 +25,9 @@ class TagsNotifier extends Notifier<List<TagGroupItem>?> {
   }) async {
     // filter tagList to remove invalid tags
     final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
+
+    if (filtered.isEmpty) return;
+
     final tags = await repo.getTagsByNameComma(filtered.join(','), 1);
 
     tags.sort((a, b) => a.rawName.compareTo(b.rawName));
@@ -33,6 +35,7 @@ class TagsNotifier extends Notifier<List<TagGroupItem>?> {
         .groupBy((e) => e.category)
         .entries
         .map((e) => TagGroupItem(
+              category: e.key.index,
               groupName: tagCategoryToString(e.key),
               tags: e.value,
               order: tagCategoryToOrder(e.key),
@@ -44,21 +47,6 @@ class TagsNotifier extends Notifier<List<TagGroupItem>?> {
 
     state = group;
   }
-}
-
-class TagGroupItem extends Equatable {
-  const TagGroupItem({
-    required this.groupName,
-    required this.tags,
-    required this.order,
-  });
-
-  final String groupName;
-  final List<Tag> tags;
-  final TagCategoryOrder order;
-
-  @override
-  List<Object?> get props => [groupName, tags, order];
 }
 
 String tagCategoryToString(TagCategory category) => switch (category) {

@@ -31,6 +31,12 @@ class MoebooruBottomBar extends StatelessWidget {
               ? const Icon(Icons.explore)
               : const Icon(Icons.explore_outlined),
         ),
+        BottomNavigationBarItem(
+          label: 'Hot',
+          icon: currentIndex == 2
+              ? const Icon(Icons.local_fire_department)
+              : const Icon(Icons.local_fire_department_outlined),
+        ),
       ],
     );
   }

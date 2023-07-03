@@ -1,20 +1,413 @@
 {
+    "generic": {
+        "done": "完成",
+        "errors": {
+            "no_data": "沒有資訊",
+            "unknown": "發生錯誤"
+        },
+        "action": {
+            "add": "新增",
+            "delete": "刪除",
+            "edit": "編輯",
+            "ok": "確定",
+            "cancel": "取消"
+        },
+        "view": "檢視"
+    },
+    "profile": {
+        "favorites": "最愛"
+    },
+    "network": {
+        "unavailable": "網路無法連接"
+    },
     "tag": {
+        "related": {
+            "more": "更多",
+            "related": "相關的",
+            "add_to_current_search": "新增至當前搜尋",
+            "open_wiki": "開啟 Wiki"
+        },
         "explore": {
-            "popular": "流行"
+            "new": "最新",
+            "popular": "最受歡迎"
+        }
+    },
+    "post": {
+        "detail": {
+            "view": "檢視",
+            "slide_show": {
+                "interval": "間隔 (秒)",
+                "skip_anim": "略過動畫",
+                "ok": "確定",
+                "cancel": "取消"
+            },
+            "view_in_browser": "在瀏覽器中查看",
+            "file_details": "檔案詳細資訊",
+            "size": "檔案大小",
+            "resolution": "解析度",
+            "rating": "評分",
+            "file_format": "檔案格式",
+            "share": {
+                "source": "分享來源連結",
+                "booru": "分享booru連結",
+                "image": "分享圖片"
+            },
+            "copied": "已複製",
+            "show_original": "顯示原圖",
+            "show_translated": "顯示翻譯",
+            "login_required_notice": "您必須登入才能執行此操作",
+            "open_wiki": "開啟 Wiki",
+            "add_to_blacklist": "新增至黑名單",
+            "add_to_favorites": "新增至最愛",
+            "copy_and_open_saved_search": "複製並開啟已保存的搜尋",
+            "score": {
+                "other": "Point"
+            },
+            "source_label": "來源",
+            "related_posts": "相關貼圖",
+            "add_to_bookmark": "新增至書籤",
+            "remove_from_bookmark": "從書籤中移除"
+        },
+        "parent_child": {
+            "children_of": "Children of"
+        },
+        "action": {
+            "preview": "預覽",
+            "view_comments": "查看評論",
+            "add_to_favorite_group": "新增至最愛群組",
+            "select": "選擇"
+        },
+        "image_fullview": {
+            "view_original": "檢視原圖",
+            "view_resized": "檢視縮圖"
+        }
+    },
+    "comment": {
+        "comments": "評論",
+        "create": {
+            "hint": "評論",
+            "loading": "請稍後...",
+            "error": "錯誤"
+        },
+        "list": {
+            "edit": "編輯",
+            "reply": "回覆",
+            "reply_to": "回覆至",
+            "delete": "刪除",
+            "noComments": "沒有評論",
+            "last_updated": "最近更新",
+            "send": "傳送"
+        },
+        "counter": {
+            "other": "評論"
         }
     },
     "explore": {
-        "popular": "流行"
+        "latest": "最新",
+        "popular": "最受歡迎",
+        "hot": "熱門",
+        "most_viewed": "最多觀看",
+        "see_more": "查看更多"
     },
     "search": {
-        "hint": "搜尋..."
+        "errors": {
+            "generic": "發生錯誤",
+            "tag_limit": "已達到最大標籤限制。升級您的帳戶以同時使用更多標籤進行搜尋",
+            "database_timeout": "搜尋處理時間過長，已取消執行",
+            "rate_limited": "您的搜尋速度過快，請稍後再試",
+            "pagination_limit": "您已達到分頁限制",
+            "max_capacity": "伺服器負荷過重，無法處理此請求，請稍後再試",
+            "down": "伺服器當前離線，請稍後再試",
+            "access_denied": "拒絕存取",
+            "forbidden": "驗證失敗",
+            "unknown": "未知伺服器錯誤，請向開發者報告此問題"
+        },
+        "hint": "搜尋...",
+        "no_result": "我們搜尋了很久，但沒有找到任何結果",
+        "empty": "如此空虛",
+        "search_options": "搜尋選項",
+        "metatags_notice": "免費的 metatags 不計入標籤搜索限制",
+        "history": {
+            "history": "歷史紀錄",
+            "clear": "清除",
+            "recent": "最近"
+        },
+        "trending": "趨勢",
+        "remove_all_selected": "移除所有選取標籤"
+    },
+    "pool": {
+        "pool": "貼圖",
+        "pool_gallery": "貼圖畫廊",
+        "mature_banned_content": "成人/禁止內容",
+        "order": {
+            "recent": "最近",
+            "new": "新的",
+            "post_count": "發布次數",
+            "name": "名稱"
+        },
+        "category": {
+            "series": "系列",
+            "collection": "集合"
+        },
+        "search": {
+            "hint": "搜尋一個貼圖"
+        },
+        "detail": {
+            "last_updated": "最近更新"
+        }
     },
     "settings": {
         "settings": "設定",
+        "app_settings": "應用程式設定",
+        "appearance": {
+            "appearance": "外觀",
+            "show_scores": "顯示評分"
+        },
+        "general": "一般設定",
+        "search": {
+            "search": "搜尋"
+        },
+        "information": "資訊",
+        "changelog": "更新日誌",
+        "infinite_scroll_warning": "長時間滾動頁面，可能導致應用程式崩潰",
+        "result_layout": {
+            "result_layout": "頁面模式",
+            "infinite_scroll": "無限滾動",
+            "pagination": "分頁"
+        },
+        "image_list": {
+            "image_list": "圖片列表",
+            "standard": "標準",
+            "masonry": "緊湊"
+        },
+        "image_grid": {
+            "image_grid": "圖片網格",
+            "grid_size": {
+                "grid_size": "網格大小",
+                "small": "小",
+                "medium": "中",
+                "large": "大"
+            },
+            "image_quality": {
+                "image_quality": "圖片品質",
+                "high_quality_notice": "高品質圖片需要花較長時間載入",
+                "high": "高",
+                "low": "低",
+                "original": "原圖",
+                "automatic": "自動",
+                "highest": "最高"
+            },
+            "spacing": "間距",
+            "corner_radius": "圓角半徑"
+        },
+        "image_viewer": {
+            "image_viewer": "圖片檢視器",
+            "full_res_as_default": "預設顯示完整解析度",
+            "full_res_notice": "根據圖片的大小，載入可能需要一些時間"
+        },
+        "image_detail": {
+            "image_detail": "圖片詳情"
+        },
         "language": {
             "language": "語言",
             "language_name": "繁體中文"
+        },
+        "theme": {
+            "theme": "主題",
+            "dark": "深色",
+            "light": "淺色",
+            "amoled_dark": "AMOLED 黑色"
+        },
+        "privacy": {
+            "privacy": "隱私",
+            "send_error_data_notice": "傳送匿名錯誤日誌"
+        },
+        "performance": {
+            "performance": "效能",
+            "posts_per_page": "每頁數量",
+            "posts_per_page_explain": "每頁顯示的縮略圖數量",
+            "cache_size": "快取大小",
+            "clear_cache": "清除",
+            "cache_size_info": "共 {1} 個檔案，占用 {0}"
+        },
+        "debug_logs": {
+            "debug_logs": "除錯日誌",
+            "logs_copied": "日誌已複製到剪貼簿"
+        },
+        "download": {
+            "path": "下載路徑",
+            "select_a_folder": "選擇一個資料夾",
+            "quality": "下載圖片品質",
+            "qualities": {
+                "original": "原圖",
+                "sample": "樣本",
+                "preview": "預覽"
+            }
+        },
+        "help_us_translate": "協助我們翻譯",
+        "other_settings": "其他設定"
+    },
+    "blacklisted_tags": {
+        "remove": "移除",
+        "edit": "編輯",
+        "blacklisted_tags": "標籤黑名單",
+        "load_error": "載入標籤黑名單失敗",
+        "updated": "標籤黑名單已更新",
+        "limitation_notice": "僅支援 <b>NOT</b> 操作和 <b>OR</b> 操作。\n\n使用 metatags 的黑名單在當前版本無法使用。"
+    },
+    "download": {
+        "download": "下載",
+        "bulk_download": "批次下載",
+        "bulk_download_tag_confirmation": "將下載以下標籤的影像",
+        "bulk_download_save_to_folder": "儲存至資料夾",
+        "bulk_download_total_count": "總計",
+        "bulk_download_done_count": "完成",
+        "bulk_download_done_confirm": "完成",
+        "bulk_download_cancel": "取消",
+        "bulk_download_duplicate": "複製",
+        "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
+        "bulk_download_only_download_new_images": "僅下載新圖片",
+        "bulk_download_folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
+        "bulk_download_select_a_folder": "選擇一個資料夾",
+        "bulk_download_found_duplicate": "找到 {} 個同名圖片， 這些圖片將被跳過。",
+        "bulk_download_downloaded_counter": {
+            "other": "{} 張圖片已下載"
+        },
+        "bulk_download_skipped_counter": {
+            "other": "{} 張圖片已略過"
+        },
+        "bulk_download_download_more": "下載更多",
+        "open_app_settings": "開啟設定",
+        "storage_permission_explanation": "需要儲存權限以儲存下載文件",
+        "app_restart_request": "請重新啟動應用程式以使此更改生效",
+        "image_counter": {
+            "other": "下載 {} 圖片"
+        },
+        "bulk": {
+            "all_done_notification_message": "所有下載已完成"
         }
+    },
+    "saved_search": {
+        "saved_search": "儲存搜尋",
+        "saved_search_counter": {
+            "other": "{} 搜尋"
+        },
+        "add_saved_search": "新增已儲存搜尋",
+        "saved_search_added": "已新增儲存搜尋",
+        "empty_saved_search": "您還沒有添加任何搜尋",
+        "update_saved_search": "更新已儲存搜尋",
+        "saved_search_updated": "已更新儲存搜尋",
+        "saved_search_feed": "Feed",
+        "saved_search_help": "這是什麼?",
+        "saved_search_examples": "範例",
+        "saved_search_try": "試試",
+        "saved_search_query": "Query",
+        "saved_search_labels": "標籤*",
+        "saved_search_labels_description": "*用於分類此搜索的標籤列表。以空格分隔"
+    },
+    "favorites": {
+        "counter": {
+            "other": "最愛"
+        },
+        "favorited": "已新增至最愛",
+        "favorite": "新增至最愛",
+        "unfavorited": "已從最愛中移除",
+        "unfavorite": "從最愛中移除",
+        "failed_to_unfavorite": "從最愛中移除失敗",
+        "failed_to_favorite": "從最愛中新增失敗"
+    },
+    "favorite_groups": {
+        "favorite_groups": "最愛群組",
+        "empty_group_notice": "沒有最愛群組",
+        "create_group": "建立群組",
+        "edit_group": "編輯群組",
+        "add_to_group_dialog_title": "新增至最愛群組",
+        "add_to": "新增至",
+        "create": "建立",
+        "private": "私人",
+        "view_more_popup": "View",
+        "items_added_notification_popup": "{0} 個結果已新增至 {1}",
+        "group_name": "群組名稱",
+        "group_name_hint": "新增群組",
+        "all_posts": "貼圖",
+        "initial_posts_hint": "請輸入ID號碼，以空格分隔（可選）",
+        "is_private_group_option": "私人群組",
+        "create_group_cancel": "取消",
+        "create_group_confirm": "確定",
+        "max_limit_warning": "會員只能建立10個最愛群組。",
+        "duplicate_items_warning_notification": "該貼圖已在於該群組中",
+        "detete_confirmation": "確定要刪除此最愛群組嗎",
+        "group_item_counter": {
+            "other": "{} 貼圖"
+        }
+    },
+    "favorite_tags": {
+        "favorites": "最愛",
+        "or": "或",
+        "import": "匯入",
+        "import_hint": "在此輸入標籤，以空格分隔",
+        "cancel": "取消",
+        "export": "匯出",
+        "export_notification": "標籤已複製到剪貼簿"
+    },
+    "rating": {
+        "rate_request": "評價此應用",
+        "rate": "評價",
+        "cancel": "不用了，謝謝",
+        "later": "下次一定",
+        "rationale": "如果您喜歡此應用程式，請花點時間給予評論。這對應用程式很有幫助。"
+    },
+    "sideMenu": {
+        "settings": "設定",
+        "manage_boorus": "管理 Boorus",
+        "your_bookmarks": "書籤",
+        "your_blacklist": "黑名單",
+        "bulk_download": "批次下載"
+    },
+    "dateRange": {
+        "day": "日",
+        "week": "周",
+        "month": "月"
+    },
+    "booru": {
+        "addNew": "新增 booru",
+        "add_booru_source_title": "新增來源，登入資訊留空將使用匿名登入",
+        "add_random_booru_warning": "這個booru尚未支援，可能無法正常運作。",
+        "booru_engine_input_label": "Booru Engine (*)",
+        "config_name_label": "設定檔名稱 (*)",
+        "site_url_label": "網址",
+        "login_name_label": "登入",
+        "password_api_key_label": "API key",
+        "password_hashed_label": "密碼 Hashed (唯讀)",
+        "password_label": "密碼",
+        "content_filtering_label": "內容過濾",
+        "hide_deleted_label": "隱藏已刪除的貼圖",
+        "config_booru_confirm": "確定"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "黑名單",
+            "empty_blacklist": "沒有黑名單"
+        }
+    },
+    "bookmark": {
+        "added": "已新增至書籤",
+        "failed_to_add": "新增書籤失敗",
+        "many_added": "已新增 {0} 個書籤",
+        "failed_to_add_many": "新增書籤失敗",
+        "removed": "已從書籤中移除",
+        "updated": "書籤已更新",
+        "failed_to_remove": "書籤移除失敗",
+        "failed_to_update": "書籤更新失敗",
+        "failed_to_load": "載入書籤失敗: {0}"
+    },
+    "app_update": {
+        "update": "更新",
+        "later": "之後再說",
+        "whats_new": "更新了?",
+        "update_available": "有新更新"
+    },
+    "forum": {
+        "forum": "論壇"
     }
 }

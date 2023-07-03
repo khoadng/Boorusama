@@ -73,7 +73,7 @@ extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
         BooruType.unknown => '<UNKNOWN>',
         BooruType.danbooru => 'Danbooru',
-        BooruType.safebooru => 'Danbooru (G)',
+        BooruType.safebooru => 'Danbooru (Safebooru)',
         BooruType.testbooru => 'Testbooru',
         BooruType.gelbooru => 'Gelbooru',
         BooruType.rule34xxx => 'Rule34',

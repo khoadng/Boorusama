@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/boorus/config_booru_page.dart';
+import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -54,9 +54,7 @@ class BoorusRoutes {
           return MaterialPage(
             key: state.pageKey,
             name: '/boorus/$idParam/update',
-            child: ConfigBooruPage(
-              arg: UpdateConfig(config),
-            ),
+            child: UpdateBooruPage(booruConfig: config),
           );
         },
       );

@@ -1,6 +1,6 @@
-export 'app/saved_searches_notifier.dart';
-export 'app/saved_searches_provider.dart';
-export 'data/save_search_repository_api.dart';
-export 'data/saved_search_dto.dart';
-export 'models/saved_search.dart';
-export 'models/saved_search_repository.dart';
+export 'save_search_repository_api.dart';
+export 'saved_search.dart';
+export 'saved_search_dto.dart';
+export 'saved_search_repository.dart';
+export 'saved_searches_notifier.dart';
+export 'saved_searches_provider.dart';

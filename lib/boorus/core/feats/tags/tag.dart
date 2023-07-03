@@ -43,3 +43,7 @@ class Tag extends Equatable {
   @override
   List<Object?> get props => [name, category, postCount];
 }
+
+extension TagX on Tag {
+  bool get hasPost => postCount > 0;
+}

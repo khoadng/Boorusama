@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/i18n.dart';
+
 class ResultCounter extends StatelessWidget {
   const ResultCounter({
     super.key,
@@ -17,7 +20,7 @@ class ResultCounter extends StatelessWidget {
       return Row(
         children: [
           Text(
-            'Searching...',
+            'search.search_in_progress_notice'.tr(),
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(width: 10),
@@ -32,12 +35,12 @@ class ResultCounter extends StatelessWidget {
 
     if (count > 0) {
       return Text(
-        '$count Results',
+        'search.result_counter'.plural(count),
         style: Theme.of(context).textTheme.titleLarge,
       );
     } else {
       return Text(
-        'No Results',
+        'search.no_result_notice'.tr(),
         style: Theme.of(context).textTheme.titleLarge,
       );
     }

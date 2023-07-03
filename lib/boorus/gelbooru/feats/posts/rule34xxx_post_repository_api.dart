@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:path/path.dart' as path;
 import 'package:retrofit/retrofit.dart';
@@ -13,7 +10,6 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/gelbooru_post.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/utils.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 import 'rule34xxx_post_dto.dart';
@@ -27,16 +23,6 @@ List<GelbooruPost> _parsePostInIsolate(HttpResponse<dynamic> value) {
 
   return dtos.map((e) => _postDtoToPost(e)).toList();
 }
-
-Future<List<GelbooruPost>> _parsePostAsync(HttpResponse<dynamic> value) =>
-    compute(_parsePostInIsolate, value);
-
-TaskEither<BooruError, List<GelbooruPost>> _tryParsePosts(
-        HttpResponse<dynamic> response) =>
-    TaskEither.tryCatch(
-      () => _parsePostAsync(response),
-      (error, stackTrace) => AppError(type: AppErrorType.failedToParseJSON),
-    );
 
 class Rule34xxxPostRepositoryApi
     with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
@@ -70,18 +56,27 @@ class Rule34xxxPostRepositoryApi
     int page, {
     int? limit,
   }) =>
-      tryParseResponse(
-        fetcher: () => api.getPosts(
-          booruConfig.apiKey,
-          booruConfig.login,
-          'dapi',
-          'post',
-          'index',
-          getTags(booruConfig, tags).join(' '),
-          '1',
-          (page - 1).toString(),
-        ),
-      ).flatMap(_tryParsePosts).flatMap(tryFilterBlacklistedTags);
+      TaskEither.Do(($) async {
+        final response = await $(tryParseResponse(
+          fetcher: () => api.getPosts(
+            booruConfig.apiKey,
+            booruConfig.login,
+            'dapi',
+            'post',
+            'index',
+            getTags(booruConfig, tags).join(' '),
+            '1',
+            (page - 1).toString(),
+          ),
+        ));
+
+        final data =
+            await $(tryParseJsonFromResponse(response, _parsePostInIsolate));
+
+        final filtered = await $(tryFilterBlacklistedTags(data));
+
+        return filtered;
+      });
 }
 
 GelbooruPost _postDtoToPost(Rule34xxxPostDto dto) {

@@ -9,7 +9,7 @@ import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/api/rule34xxx/rule34xxx_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/feats/tags/empty_tag_repository.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete_providers.dart';
@@ -56,6 +56,12 @@ class GelbooruProvider extends ConsumerWidget {
         else
           tagRepoProvider
               .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
+        if (booru.booruType == BooruType.gelbooru)
+          postCountRepoProvider
+              .overrideWith((ref) => ref.watch(gelbooruPostCountRepoProvider))
+        else
+          postCountRepoProvider
+              .overrideWithValue(const EmptyPostCountRepository()),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
       ],
@@ -67,15 +73,15 @@ class GelbooruProvider extends ConsumerWidget {
 }
 
 final gelbooruApiProvider = Provider<GelbooruApi>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return GelbooruApi(dio);
 });
 
 final rule34xxxApiProvider = Provider<Rule34xxxApi>((ref) {
-  final booruConfig = ref.read(currentBooruConfigProvider);
-  final dio = ref.read(dioProvider(booruConfig.url));
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
 
   return Rule34xxxApi(dio);
 });

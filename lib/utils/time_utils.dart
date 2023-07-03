@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 String formatDurationForMedia(Duration duration) {
@@ -72,5 +73,15 @@ extension DateTimeX on DateTime {
       ago,
       locale: locale.toLanguageTag(),
     );
+  }
+}
+
+extension DateFormatX on DateFormat {
+  DateTime? tryParse(String input) {
+    try {
+      return parse(input);
+    } catch (e) {
+      return null;
+    }
   }
 }

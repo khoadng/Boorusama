@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -7,10 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
+import 'package:boorusama/boorus/core/feats/posts/count/post_count_provider.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
@@ -43,15 +47,27 @@ class DanbooruProvider extends ConsumerWidget {
             .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider)),
         noteRepoProvider
             .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
+        postCountRepoProvider
+            .overrideWith((ref) => ref.watch(danbooruPostCountRepoProvider)),
       ],
       child: Builder(builder: builder),
     );
   }
 }
 
+String encodeDanbooruAuthHeader(String login, String apiKey) =>
+    base64Encode('$login:$apiKey'.codeUnits);
+
 final danbooruApiProvider = Provider<DanbooruApi>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final dio = ref.watch(dioProvider(booruConfig.url));
+
+  if (booruConfig.hasLoginDetails()) {
+    dio.options.headers['Authorization'] =
+        'Basic ${encodeDanbooruAuthHeader(booruConfig.login!, booruConfig.apiKey!)}';
+  } else {
+    dio.options.headers.remove('Authorization');
+  }
 
   return DanbooruApi(dio);
 });
@@ -59,10 +75,6 @@ final danbooruApiProvider = Provider<DanbooruApi>((ref) {
 final danbooruAutocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
 
-  return AutocompleteRepositoryApi(
-    api: api,
-    booruConfig: booruConfig,
-  );
+  return AutocompleteRepositoryApi(api: api);
 });

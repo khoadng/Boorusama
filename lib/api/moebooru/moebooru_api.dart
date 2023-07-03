@@ -25,13 +25,13 @@ abstract class MoebooruApi {
     @CancelRequest() CancelToken? cancelToken,
   });
 
-  // @GET('/post/popular_recent.json')
-  // Future<HttpResponse> getPopularPostsRecent(
-  //   @Query('login') String? login,
-  //   @Query('password_hash') String? passwordHash,
-  //   @Query('period') String period, {
-  //   @CancelRequest() CancelToken? cancelToken,
-  // });
+  @GET('/post/popular_recent.json')
+  Future<HttpResponse> getPopularPostsRecent(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('period') String period, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 
   @GET('/post/popular_by_day.json')
   Future<HttpResponse> getPopularPostsByDay(
@@ -59,6 +59,14 @@ abstract class MoebooruApi {
     @Query('password_hash') String? passwordHash,
     @Query('month') int month,
     @Query('year') int year, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
+  @GET('/comment.json')
+  Future<HttpResponse> getComments(
+    @Query('login') String? login,
+    @Query('password_hash') String? passwordHash,
+    @Query('post_id') int postId, {
     @CancelRequest() CancelToken? cancelToken,
   });
 }
