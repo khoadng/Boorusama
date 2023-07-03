@@ -75,5 +75,8 @@
             "language": "Мова",
             "language_name": "український"
         }
+    },
+    "forum": {
+        "forum": "форум"
     }
 }
