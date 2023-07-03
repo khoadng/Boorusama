@@ -262,7 +262,9 @@
         "blacklisted_tags": "Blacklisted tags",
         "load_error": "Failed to load blacklisted tags",
         "updated": "Blacklisted tags updated",
-        "limitation_notice": "Only support <b>NOT</b> operator and <b>OR</b> operator.\n\nBlacklisting using metatags won't work for current version."
+        "limitation_notice": "Only support <b>NOT</b> operator and <b>OR</b> operator.\n\nBlacklisting using metatags won't work for current version.",
+        "failed_to_add": "Failed to add tag",
+        "failed_to_remove": "Failed to remove tag"
     },
     "download": {
         "download": "Download",
