@@ -406,5 +406,8 @@
         "later": "之後再說",
         "whats_new": "更新了?",
         "update_available": "有新更新"
+    },
+    "forum": {
+        "forum": "論壇"
     }
 }
