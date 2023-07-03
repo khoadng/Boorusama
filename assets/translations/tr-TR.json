@@ -48,5 +48,8 @@
             "language": "Dil",
             "language_name": "Türkçe"
         }
+    },
+    "forum": {
+        "forum": "Forum"
     }
 }
