@@ -9,7 +9,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/pages/search/generic_search_page.dart';
+import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -78,6 +79,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         ref
+            .read(searchProvider.notifier)
+            .skipToResultWithTag(widget.initialQuery!);
+
+        ref
             .read(postCountStateProvider.notifier)
             .getPostCount([widget.initialQuery!]);
       }
@@ -85,64 +90,110 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final metatags = ref.watch(metatagsProvider);
+  void dispose() {
+    queryEditingController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
 
-    return GenericSearchPage(
-      initialQuery: widget.initialQuery,
-      patterns: {
-        ref.read(searchMetatagStringRegexProvider): TextStyle(
-          fontWeight: FontWeight.w800,
-          color: widget.metatagHighlightColor,
-        ),
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(
+      sanitizedQueryProvider,
+      (prev, curr) {
+        if (prev != curr) {
+          final displayState = ref.read(searchProvider);
+          if (curr.isEmpty && displayState != DisplayState.result) {
+            queryEditingController.clear();
+          }
+        }
       },
-      optionsPageBuilder: () => Scaffold(
-        floatingActionButton: SearchButton(
-          onSearch: () {
-            final tags = ref.read(selectedTagsProvider);
-            final rawTags = tags.map((e) => e.toString()).toList();
-            ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
-          },
-        ),
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-          child: SearchAppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
-          ),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SelectedTagListWithData(),
-                const SearchDivider(),
-                SearchLandingView(
-                  trendingBuilder: (context) => TrendingSection(
-                    onTagTap: (value) {
-                      ref.read(searchProvider.notifier).tapTag(value);
-                    },
-                  ),
-                  metatagsBuilder: (context) => DanbooruMetatagsSection(
-                    metatags: metatags,
-                    onOptionTap: (value) {
-                      ref.read(searchProvider.notifier).tapRawMetaTag(value);
-                      focus.requestFocus();
-                      _onTextChanged(queryEditingController, '$value:');
-                    },
+    );
+
+    return GestureDetector(
+      onTap: () => context.focusScope.unfocus(),
+      child: Builder(
+        builder: (context) {
+          final displayState = ref.watch(searchProvider);
+          final theme = ref.watch(themeProvider);
+
+          return switch (displayState) {
+            DisplayState.options => Scaffold(
+                floatingActionButton: SearchButton(
+                  onSearch: () {
+                    final tags = ref.read(selectedTagsProvider);
+                    final rawTags = tags.map((e) => e.toString()).toList();
+                    ref
+                        .read(postCountStateProvider.notifier)
+                        .getPostCount(rawTags);
+                  },
+                ),
+                appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                  child: SearchAppBar(
+                    focusNode: focus,
+                    queryEditingController: queryEditingController,
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      resultPageBuilder: (selectedTags) => ResultView(
-        headerBuilder: () => [
-          const SearchAppBarResultView(),
-          const SliverToBoxAdapter(child: SelectedTagListWithData()),
-          const SliverToBoxAdapter(child: SearchDivider(height: 7)),
-        ],
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SelectedTagListWithData(),
+                        const SearchDivider(),
+                        SearchLandingView(
+                          trendingBuilder: (context) => TrendingSection(
+                            onTagTap: (value) {
+                              ref.read(searchProvider.notifier).tapTag(value);
+                            },
+                          ),
+                          metatagsBuilder: (context) => DanbooruMetatagsSection(
+                            onOptionTap: (value) {
+                              ref
+                                  .read(searchProvider.notifier)
+                                  .tapRawMetaTag(value);
+                              focus.requestFocus();
+                              _onTextChanged(queryEditingController, '$value:');
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            DisplayState.suggestion => Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                  child: SearchAppBar(
+                    focusNode: focus,
+                    queryEditingController: queryEditingController,
+                  ),
+                ),
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      const SelectedTagListWithData(),
+                      const SearchDivider(),
+                      Expanded(
+                        child: TagSuggestionItemsWithData(
+                          textColorBuilder: (tag) =>
+                              generateAutocompleteTagColor(tag, theme),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            DisplayState.result => ResultView(
+                headerBuilder: () => [
+                  const SearchAppBarResultView(),
+                  const SliverToBoxAdapter(child: SelectedTagListWithData()),
+                  const SliverToBoxAdapter(child: SearchDivider(height: 7)),
+                ],
+              )
+          };
+        },
       ),
     );
   }
