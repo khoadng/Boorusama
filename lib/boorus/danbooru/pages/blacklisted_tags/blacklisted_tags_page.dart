@@ -40,7 +40,7 @@ class BlacklistedTagsPage extends ConsumerWidget {
           onSelectDone: (tagItems) {
             ref
                 .read(danbooruBlacklistedTagsProvider.notifier)
-                .add(tag: tagItems.map((e) => e.toString()).join(' '));
+                .addWithToast(tag: tagItems.map((e) => e.toString()).join(' '));
             context.navigator.pop();
           },
         );
@@ -77,10 +77,8 @@ class BlacklistedTagsList extends ConsumerWidget {
                     return BlacklistedTagTile(
                       tag: tag,
                       onRemoveTag: (tag) => ref
-                          .read(
-                            danbooruBlacklistedTagsProvider.notifier,
-                          )
-                          .remove(tag: tag),
+                          .read(danbooruBlacklistedTagsProvider.notifier)
+                          .removeWithToast(tag: tag),
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
                           context,

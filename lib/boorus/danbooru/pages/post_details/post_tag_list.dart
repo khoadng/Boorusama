@@ -55,19 +55,9 @@ class PostTagList extends ConsumerWidget {
           booru,
           authState,
           g.tags,
-          onAddToBlacklisted: (tag) =>
-              ref.read(danbooruBlacklistedTagsProvider.notifier).add(
-                    tag: tag.rawName,
-                    onFailure: (message) => showSimpleSnackBar(
-                      context: context,
-                      content: Text(message),
-                    ),
-                    onSuccess: (_) => showSimpleSnackBar(
-                      context: context,
-                      duration: const Duration(seconds: 2),
-                      content: const Text('Blacklisted tags updated'),
-                    ),
-                  ),
+          onAddToBlacklisted: (tag) => ref
+              .read(danbooruBlacklistedTagsProvider.notifier)
+              .addWithToast(tag: tag.rawName),
         ));
     }
 

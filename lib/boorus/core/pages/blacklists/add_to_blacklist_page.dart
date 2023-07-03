@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 
@@ -46,17 +45,8 @@ class AddToBlacklistPage extends ConsumerWidget {
             onTap: () {
               final tag = tags[index];
               context.navigator.pop();
-              ref.read(danbooruBlacklistedTagsProvider.notifier).add(
+              ref.read(danbooruBlacklistedTagsProvider.notifier).addWithToast(
                     tag: tag.rawName,
-                    onFailure: (message) => showSimpleSnackBar(
-                      context: context,
-                      content: Text(message),
-                    ),
-                    onSuccess: (_) => showSimpleSnackBar(
-                      context: context,
-                      duration: const Duration(seconds: 2),
-                      content: const Text('Blacklisted tags updated'),
-                    ),
                   );
             }),
         itemCount: tags.length,

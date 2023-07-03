@@ -6,6 +6,8 @@ import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/widgets/toast.dart';
 import 'blacklisted_tags_provider.dart';
 
 class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
@@ -38,13 +40,13 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
   Future<void> add({
     required String tag,
     void Function(List<String> tags)? onSuccess,
-    void Function(String message)? onFailure,
+    void Function()? onFailure,
   }) async {
     final config = ref.read(currentBooruConfigProvider);
     final id = await identityProvider.getAccountIdFromConfig(config);
 
     if (state == null || id == null) {
-      onFailure?.call('Fail to add tag');
+      onFailure?.call();
 
       return;
     }
@@ -55,7 +57,7 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
       await repo.setBlacklistedTags(id, tags);
       state = tags;
     } catch (e) {
-      onFailure?.call('Fail to add tag');
+      onFailure?.call();
     }
   }
 
@@ -63,13 +65,13 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
   Future<void> remove({
     required String tag,
     void Function(List<String> tags)? onSuccess,
-    void Function(String message)? onFailure,
+    void Function()? onFailure,
   }) async {
     final config = ref.read(currentBooruConfigProvider);
     final id = await identityProvider.getAccountIdFromConfig(config);
 
     if (state == null || id == null) {
-      onFailure?.call('Fail to remove tag');
+      onFailure?.call();
 
       return;
     }
@@ -80,7 +82,7 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
       await repo.setBlacklistedTags(id, tags);
       state = tags;
     } catch (e) {
-      onFailure?.call('Fail to remove tag');
+      onFailure?.call();
     }
   }
 
@@ -115,3 +117,24 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
 }
 
 String tagsToTagString(List<String> tags) => tags.join('\n');
+
+extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
+  Future<void> addWithToast({
+    required String tag,
+  }) =>
+      add(
+        tag: tag,
+        onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
+        onFailure: () => showErrorToast('blacklisted_tags.failed_to_add'.tr()),
+      );
+
+  Future<void> removeWithToast({
+    required String tag,
+  }) =>
+      remove(
+        tag: tag,
+        onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
+        onFailure: () =>
+            showErrorToast('blacklisted_tags.failed_to_remove'.tr()),
+      );
+}
