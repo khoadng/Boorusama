@@ -24,8 +24,8 @@ import 'package:boorusama/flutter.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
-class SearchPage extends ConsumerStatefulWidget {
-  const SearchPage({
+class DanbooruSearchPage extends ConsumerStatefulWidget {
+  const DanbooruSearchPage({
     super.key,
     required this.metatagHighlightColor,
     this.initialQuery,
@@ -44,7 +44,7 @@ class SearchPage extends ConsumerStatefulWidget {
                 overrides: [
                   selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
                 ],
-                child: SearchPage(
+                child: DanbooruSearchPage(
                   metatagHighlightColor: context.colorScheme.primary,
                   initialQuery: tag,
                 ),
@@ -55,10 +55,10 @@ class SearchPage extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<SearchPage> createState() => _SearchPageState();
+  ConsumerState<DanbooruSearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends ConsumerState<SearchPage> {
+class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   @override
   void initState() {
     super.initState();
