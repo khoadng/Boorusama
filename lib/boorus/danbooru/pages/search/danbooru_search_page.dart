@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_se
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
-import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
@@ -102,7 +101,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 child: Column(
                   children: [
                     const SelectedTagListWithData(),
-                    const SearchDivider(),
                     SearchLandingView(
                       trendingBuilder: (context) => TrendingSection(
                         onTagTap: (value) {
@@ -138,7 +136,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             headerBuilder: () => [
               const SearchAppBarResultView(),
               const SliverToBoxAdapter(child: SelectedTagListWithData()),
-              const SliverToBoxAdapter(child: SearchDivider(height: 7)),
             ],
           )
       },

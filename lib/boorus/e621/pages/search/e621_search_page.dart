@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
-import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
@@ -78,7 +77,6 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 child: Column(
                   children: [
                     SelectedTagListWithData(),
-                    SearchDivider(),
                     SearchLandingView(),
                   ],
                 ),
@@ -106,7 +104,6 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               sliverHeaderBuilder: (context) => [
                 const SearchAppBarResultView(),
                 const SliverToBoxAdapter(child: SelectedTagListWithData()),
-                const SliverToBoxAdapter(child: SearchDivider(height: 7)),
                 const SliverToBoxAdapter(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

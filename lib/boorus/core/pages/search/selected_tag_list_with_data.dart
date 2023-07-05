@@ -10,22 +10,29 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list.dart';
 import 'package:boorusama/boorus/core/router.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {
-  const SelectedTagListWithData({super.key});
+  const SelectedTagListWithData({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(selectedTagsProvider);
 
-    return SelectedTagList(
-      tags: tags,
-      onClear: () => ref.read(selectedTagsProvider.notifier).clear(),
-      onDelete: (tag) =>
-          ref.read(searchProvider.notifier).removeSelectedTag(tag),
-      onBulkDownload: (tags) => goToBulkDownloadPage(
-        context,
-        tags.map((e) => e.toString()).toList(),
-        ref: ref,
-      ),
+    return Column(
+      children: [
+        SelectedTagList(
+          tags: tags,
+          onClear: () => ref.read(selectedTagsProvider.notifier).clear(),
+          onDelete: (tag) =>
+              ref.read(searchProvider.notifier).removeSelectedTag(tag),
+          onBulkDownload: (tags) => goToBulkDownloadPage(
+            context,
+            tags.map((e) => e.toString()).toList(),
+            ref: ref,
+          ),
+        ),
+        if (tags.isNotEmpty) const Divider(height: 15, thickness: 1),
+      ],
     );
   }
 }

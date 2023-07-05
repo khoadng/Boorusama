@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/utils.dart';
-import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -24,7 +23,6 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
       child: Column(
         children: [
           const SelectedTagListWithData(),
-          const SearchDivider(),
           Expanded(
             child: TagSuggestionItemsWithData(
               textColorBuilder: (tag) =>
