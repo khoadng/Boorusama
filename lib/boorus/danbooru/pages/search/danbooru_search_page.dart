@@ -7,8 +7,8 @@ import 'package:page_transition/page_transition.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_divider.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
-import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -133,20 +132,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 queryEditingController: controller,
               ),
             ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  const SelectedTagListWithData(),
-                  const SearchDivider(),
-                  Expanded(
-                    child: TagSuggestionItemsWithData(
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            body: const DefaultSearchSuggestionView(),
           ),
         DisplayState.result => ResultView(
             headerBuilder: () => [
