@@ -80,7 +80,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: widget.metatagHighlightColor,
         ),
       },
-      builder: (state, theme, focus, controller) => switch (state) {
+      builder: (state, theme, focus, controller, tags) => switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               onSearch: () {
@@ -100,7 +100,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SelectedTagListWithData(),
+                    SelectedTagListWithData(tags: tags),
                     SearchLandingView(
                       trendingBuilder: (context) => TrendingSection(
                         onTagTap: (value) {
@@ -130,12 +130,14 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 queryEditingController: controller,
               ),
             ),
-            body: const DefaultSearchSuggestionView(),
+            body: DefaultSearchSuggestionView(
+              tags: tags,
+            ),
           ),
         DisplayState.result => ResultView(
             headerBuilder: () => [
               const SearchAppBarResultView(),
-              const SliverToBoxAdapter(child: SelectedTagListWithData()),
+              SliverToBoxAdapter(child: SelectedTagListWithData(tags: tags)),
             ],
           )
       },

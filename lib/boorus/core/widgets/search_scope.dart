@@ -26,6 +26,7 @@ class SearchScope extends ConsumerStatefulWidget {
     ThemeMode theme,
     FocusNode focus,
     RichTextController controller,
+    List<TagSearchItem> selectedTags,
   ) builder;
 
   @override
@@ -82,12 +83,14 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
         builder: (context) {
           final displayState = ref.watch(searchProvider);
           final theme = ref.watch(themeProvider);
+          final selectedTags = ref.watch(selectedTagsProvider);
 
           return widget.builder(
             displayState,
             theme,
             focus,
             queryEditingController,
+            selectedTags,
           );
         },
       ),

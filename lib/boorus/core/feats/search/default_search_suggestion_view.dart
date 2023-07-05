@@ -9,11 +9,15 @@ import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/pages/search/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'tag_search_item.dart';
 
 class DefaultSearchSuggestionView extends ConsumerWidget {
   const DefaultSearchSuggestionView({
     super.key,
+    required this.tags,
   });
+
+  final List<TagSearchItem> tags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +26,9 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
     return SafeArea(
       child: Column(
         children: [
-          const SelectedTagListWithData(),
+          SelectedTagListWithData(
+            tags: tags,
+          ),
           Expanded(
             child: TagSuggestionItemsWithData(
               textColorBuilder: (tag) =>

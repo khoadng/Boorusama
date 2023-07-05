@@ -12,12 +12,13 @@ import 'package:boorusama/boorus/core/router.dart';
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
     super.key,
+    required this.tags,
   });
+
+  final List<TagSearchItem> tags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(selectedTagsProvider);
-
     return Column(
       children: [
         SelectedTagList(

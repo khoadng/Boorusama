@@ -62,7 +62,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller) => switch (state) {
+      builder: (state, theme, focus, controller, tags) => switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: const SearchButton(),
             appBar: PreferredSize(
@@ -72,12 +72,14 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 queryEditingController: controller,
               ),
             ),
-            body: const SafeArea(
+            body: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SelectedTagListWithData(),
-                    SearchLandingView(),
+                    SelectedTagListWithData(
+                      tags: tags,
+                    ),
+                    const SearchLandingView(),
                   ],
                 ),
               ),
@@ -91,7 +93,9 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 queryEditingController: controller,
               ),
             ),
-            body: const DefaultSearchSuggestionView(),
+            body: DefaultSearchSuggestionView(
+              tags: tags,
+            ),
           ),
         DisplayState.result => PostScope(
             fetcher: (page) => ref.watch(e621PostRepoProvider).getPosts(
@@ -103,7 +107,10 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               controller: controller,
               sliverHeaderBuilder: (context) => [
                 const SearchAppBarResultView(),
-                const SliverToBoxAdapter(child: SelectedTagListWithData()),
+                SliverToBoxAdapter(
+                    child: SelectedTagListWithData(
+                  tags: tags,
+                )),
                 const SliverToBoxAdapter(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
