@@ -6,25 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/flutter.dart';
+import 'landing/trending/trending_section.dart';
+import 'result/result_view.dart';
 
-class GelbooruSearchPage extends ConsumerStatefulWidget {
-  const GelbooruSearchPage({
+class DanbooruSearchPage extends ConsumerStatefulWidget {
+  const DanbooruSearchPage({
     super.key,
     required this.metatagHighlightColor,
     this.initialQuery,
@@ -33,36 +32,31 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
   final Color metatagHighlightColor;
   final String? initialQuery;
 
-  static Route<T> routeOf<T>(
-    WidgetRef ref,
-    BuildContext context, {
-    String? tag,
-  }) {
+  static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
-      type: PageTransitionType.fade,
-      child: GelbooruProvider(
-        builder: (gcontext) {
-          return CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
-              ],
-              child: GelbooruSearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
-                initialQuery: tag,
+        type: PageTransitionType.fade,
+        child: DanbooruProvider(
+          builder: (_) {
+            return CustomContextMenuOverlay(
+              child: ProviderScope(
+                overrides: [
+                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
+                ],
+                child: DanbooruSearchPage(
+                  metatagHighlightColor: context.colorScheme.primary,
+                  initialQuery: tag,
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ));
   }
 
   @override
-  ConsumerState<GelbooruSearchPage> createState() => _SearchPageState();
+  ConsumerState<DanbooruSearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
+class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   @override
   void initState() {
     super.initState();
@@ -80,6 +74,12 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
+      pattern: {
+        ref.read(searchMetatagStringRegexProvider): TextStyle(
+          fontWeight: FontWeight.w800,
+          color: widget.metatagHighlightColor,
+        ),
+      },
       builder: (state, theme, focus, controller, tags) => switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
@@ -100,10 +100,23 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SelectedTagListWithData(
-                      tags: tags,
+                    SelectedTagListWithData(tags: tags),
+                    SearchLandingView(
+                      trendingBuilder: (context) => TrendingSection(
+                        onTagTap: (value) {
+                          ref.read(searchProvider.notifier).tapTag(value);
+                        },
+                      ),
+                      metatagsBuilder: (context) => DanbooruMetatagsSection(
+                        onOptionTap: (value) {
+                          ref
+                              .read(searchProvider.notifier)
+                              .tapRawMetaTag(value);
+                          focus.requestFocus();
+                          _onTextChanged(controller, '$value:');
+                        },
+                      ),
                     ),
-                    const SearchLandingView(),
                   ],
                 ),
               ),
@@ -121,41 +134,22 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               tags: tags,
             ),
           ),
-        DisplayState.result => PostScope(
-            fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  ref.read(selectedRawTagStringProvider).join(' '),
-                  page,
-                ),
-            builder: (context, controller, errors) => GelbooruInfinitePostList(
-              errors: errors,
-              controller: controller,
-              sliverHeaderBuilder: (context) => [
-                const SearchAppBarResultView(),
-                SliverToBoxAdapter(
-                    child: SelectedTagListWithData(
-                  tags: tags,
-                )),
-                SliverToBoxAdapter(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (ref.watch(currentBooruProvider).booruType ==
-                          BooruType.gelbooru)
-                        ResultHeaderWithProvider(
-                          selectedTags: ref.watch(selectedRawTagStringProvider),
-                        ),
-                      const Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+        DisplayState.result => ResultView(
+            headerBuilder: () => [
+              const SearchAppBarResultView(),
+              SliverToBoxAdapter(child: SelectedTagListWithData(tags: tags)),
+            ],
+          )
       },
     );
   }
+}
+
+void _onTextChanged(
+  TextEditingController controller,
+  String text,
+) {
+  controller
+    ..text = text
+    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }

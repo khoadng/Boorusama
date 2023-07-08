@@ -1,4 +1,5 @@
-const String _basePath = '/storage/emulated/0';
+const String _basePath = '/storage/emulated';
+
 const List<String> _allowedDownloadFolders = [
   'Download',
   'Downloads',
@@ -8,15 +9,31 @@ const List<String> _allowedDownloadFolders = [
 
 bool isInternalStorage(String? path) => path?.startsWith(_basePath) ?? false;
 
-bool isNonPublicDirectories(String? path) {
+bool isUserspaceInternalStorage(String? path) {
+  if (path == null) return false;
+  if (!isInternalStorage(path)) return false;
+
+  final folders = path.split('/');
+
+  if (folders.length < 4) return false;
+
+  // check if this is on the user space
+  return int.tryParse(folders[3]) != null;
+}
+
+bool isPublicDirectories(String? path) {
   try {
     if (path == null) return false;
-    if (!isInternalStorage(path)) return false;
+    if (!isUserspaceInternalStorage(path)) return false;
 
     final nonBasePath = path.replaceAll('$_basePath/', '');
     final paths = nonBasePath.split('/');
 
-    return paths.isEmpty || !_allowedDownloadFolders.contains(paths.first);
+    if (paths.length < 2) return false;
+
+    final selectedFolder = paths[1];
+
+    return _allowedDownloadFolders.contains(selectedFolder);
   } catch (e) {
     return false;
   }
@@ -55,6 +72,6 @@ mixin DownloadMixin {
   }) =>
       storagePath != null &&
       storagePath!.isNotEmpty &&
-      isInternalStorage(storagePath) &&
-      (hasScopeStorage ? !isNonPublicDirectories(storagePath) : true);
+      isUserspaceInternalStorage(storagePath) &&
+      (hasScopeStorage ? isPublicDirectories(storagePath) : true);
 }

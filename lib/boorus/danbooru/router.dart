@@ -44,8 +44,8 @@ import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_detai
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_search_sheet.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_action_sheet.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -126,7 +126,7 @@ void goToSearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    context.navigator.push(SearchPage.routeOf(context, tag: tag));
+    context.navigator.push(DanbooruSearchPage.routeOf(context, tag: tag));
 
 void goToExplorePopularPage(BuildContext context) =>
     context.navigator.push(ExplorePopularPage.routeOf(context));

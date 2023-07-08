@@ -1,3 +1,7 @@
+# 3.2.1
+- Fix an issue that causes users to be unable to select a download folder if the app is installed in a different user space
+- Minor updates to Chinese (Simplified) translation
+
 # 3.2.0
 - Initial forum support for Danbooru
 - Add comment support for Gelbooru
