@@ -164,10 +164,7 @@ class _PreviewList extends ConsumerWidget {
             title,
             style: const TextStyle(fontWeight: FontWeight.w900),
           ),
-          visualDensity: const VisualDensity(
-            horizontal: -4,
-            vertical: -4,
-          ),
+          visualDensity: const ShrinkVisualDensity(),
           trailing: TextButton(
             onPressed: onViewMore,
             child: const Text('View all'),

@@ -97,7 +97,7 @@ class _Chip extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: colors.backgroundColor,
           side: BorderSide(
             width: 1,
@@ -127,7 +127,7 @@ class _Chip extends ConsumerWidget {
         ),
         if (tag.hasPost)
           Chip(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            visualDensity: const ShrinkVisualDensity(),
             backgroundColor: numberColors.backgroundColor,
             side: BorderSide(
               width: 1,

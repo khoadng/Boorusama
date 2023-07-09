@@ -29,7 +29,7 @@ class PoolTiles extends StatelessWidget {
             (index, e) => ListTile(
               dense: true,
               onTap: () => goToPoolDetailPage(context, e),
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              visualDensity: const ShrinkVisualDensity(),
               title: Text(
                 e.name.removeUnderscoreWithSpace(),
                 overflow: TextOverflow.fade,

@@ -65,7 +65,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: leftColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: RoundedRectangleBorder(
@@ -78,7 +78,7 @@ class _InfoChip extends StatelessWidget {
           label: leftLabel,
         ),
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: rightColor,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: context.theme.hintColor),

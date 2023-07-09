@@ -147,7 +147,7 @@ class _BlacklistedTagsSearchPageState
   Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
     if (tagSearchItem.operator == FilterOperator.none) {
       return Chip(
-        visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+        visualDensity: const ShrinkVisualDensity(),
         backgroundColor: Colors.grey[800],
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -177,7 +177,7 @@ class _BlacklistedTagsSearchPageState
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: context.colorScheme.secondary,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: const RoundedRectangleBorder(
@@ -191,7 +191,7 @@ class _BlacklistedTagsSearchPageState
           ),
         ),
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: Colors.grey[800],
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

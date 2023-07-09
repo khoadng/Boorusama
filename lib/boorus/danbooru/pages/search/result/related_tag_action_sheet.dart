@@ -42,7 +42,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           title: Text(
             relatedTag.tags[index].tag.removeUnderscoreWithSpace(),
             style: TextStyle(
@@ -58,8 +58,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
               PopupMenuItem(
                 padding: EdgeInsets.zero,
                 child: ListTile(
-                  visualDensity:
-                      const VisualDensity(horizontal: -4, vertical: -4),
+                  visualDensity: const ShrinkVisualDensity(),
                   onTap: () {
                     context.navigator.pop();
                     context.navigator.pop();
@@ -75,8 +74,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
               PopupMenuItem(
                 padding: EdgeInsets.zero,
                 child: ListTile(
-                  visualDensity:
-                      const VisualDensity(horizontal: -4, vertical: -4),
+                  visualDensity: const ShrinkVisualDensity(),
                   onTap: () {
                     context.navigator.pop();
                     launchWikiPage(

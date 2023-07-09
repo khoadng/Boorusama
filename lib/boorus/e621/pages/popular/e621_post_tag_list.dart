@@ -192,7 +192,7 @@ class _Chip extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: colors.backgroundColor,
           side: BorderSide(
             color: colors.borderColor,

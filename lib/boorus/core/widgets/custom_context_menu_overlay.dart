@@ -31,7 +31,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
           child: Ink(
             child: ListTile(
               dense: true,
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              visualDensity: const ShrinkVisualDensity(),
               hoverColor: context.colorScheme.primary,
               onTap: config.onPressed,
               title: Text(config.label),

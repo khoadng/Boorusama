@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'comment_item.dart';
 
@@ -75,10 +76,7 @@ class CommentList extends StatelessWidget {
                                 value: 'edit',
                                 padding: EdgeInsets.zero,
                                 child: ListTile(
-                                  visualDensity: const VisualDensity(
-                                    horizontal: -4,
-                                    vertical: -4,
-                                  ),
+                                  visualDensity: const ShrinkVisualDensity(),
                                   dense: true,
                                   leading: const Icon(Icons.edit),
                                   title: const Text('comment.list.edit').tr(),
@@ -88,10 +86,7 @@ class CommentList extends StatelessWidget {
                               value: 'reply',
                               padding: EdgeInsets.zero,
                               child: ListTile(
-                                visualDensity: const VisualDensity(
-                                  horizontal: -4,
-                                  vertical: -4,
-                                ),
+                                visualDensity: const ShrinkVisualDensity(),
                                 dense: true,
                                 leading: const Icon(Icons.reply),
                                 title: const Text('comment.list.reply').tr(),
@@ -102,10 +97,7 @@ class CommentList extends StatelessWidget {
                                 value: 'delete',
                                 padding: EdgeInsets.zero,
                                 child: ListTile(
-                                  visualDensity: const VisualDensity(
-                                    horizontal: -4,
-                                    vertical: -4,
-                                  ),
+                                  visualDensity: const ShrinkVisualDensity(),
                                   dense: true,
                                   leading: const Icon(Icons.close),
                                   title: const Text('comment.list.delete').tr(),

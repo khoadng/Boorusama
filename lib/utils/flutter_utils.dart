@@ -37,3 +37,7 @@ extension MaterialStateHelpers on Iterable<MaterialState> {
   bool get isDisabled => contains(MaterialState.disabled);
   bool get isError => contains(MaterialState.error);
 }
+
+class ShrinkVisualDensity extends VisualDensity {
+  const ShrinkVisualDensity() : super(horizontal: -4, vertical: -4);
+}
