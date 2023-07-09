@@ -387,7 +387,7 @@ class E621ArtistSection extends ConsumerWidget {
 
     return ArtistSection(
       //FIXME: shouldn't use danbooru's artist section, should separate it
-      artistCommentary: ArtistCommentary(
+      commentary: ArtistCommentary(
         originalTitle: '',
         originalDescription: commentary,
         translatedTitle: '',

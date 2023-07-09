@@ -397,7 +397,7 @@ class DanbooruArtistSection extends ConsumerWidget {
     final commentary = ref.watch(danbooruArtistCommentaryProvider(post.id));
 
     return ArtistSection(
-      artistCommentary: commentary,
+      commentary: commentary,
       artistTags: post.artistTags,
       source: post.source,
     );
