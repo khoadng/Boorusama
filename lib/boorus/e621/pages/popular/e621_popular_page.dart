@@ -9,10 +9,10 @@ import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/e621/feats/posts/e621_popular_repository.dart';
-import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
+import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/functional.dart';
 
 class E621PopularPage extends ConsumerStatefulWidget {
   const E621PopularPage({
@@ -37,7 +37,9 @@ class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
     return Scaffold(
       body: SafeArea(
         child: PostScope(
-          fetcher: (page) => repo.getPopularPosts(selectedDate, scale),
+          fetcher: (page) => page > 1
+              ? TaskEither.of(<E621Post>[])
+              : repo.getPopularPosts(selectedDate, scale),
           builder: (context, controller, errors) => Column(
             children: [
               Container(

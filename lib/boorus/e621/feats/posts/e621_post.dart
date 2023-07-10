@@ -52,6 +52,7 @@ class E621Post extends Equatable
         ...characterTags,
         ...artistTags,
         ...generalTags,
+        ...copyrightTags,
         ...metaTags,
         ...speciesTags,
         ...invalidTags,
