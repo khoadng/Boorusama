@@ -1,6 +1,5 @@
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -14,17 +13,12 @@ import 'danbooru_post.dart';
 import 'danbooru_post_repository.dart';
 
 class PostRepositoryApi
-    with
-        SettingsRepositoryMixin,
-        GlobalBlacklistedTagFilterMixin,
-        LoggerMixin,
-        BenchmarkMixin
+    with SettingsRepositoryMixin, LoggerMixin, BenchmarkMixin
     implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
     this.booruConfig,
     this.settingsRepository,
-    this.blacklistedTagRepository,
     this.logger,
   ) : _api = api;
 
@@ -32,8 +26,6 @@ class PostRepositoryApi
   final DanbooruApi _api;
   @override
   final SettingsRepository settingsRepository;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   final Cache<List<DanbooruPost>> _cache = Cache(
     maxCapacity: 5,
     staleDuration: const Duration(seconds: 10),
@@ -75,11 +67,9 @@ class PostRepositoryApi
           ),
         );
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
+        _cache.set(key, data);
 
-        _cache.set(key, filtered);
-
-        return filtered;
+        return data;
       });
 
   @override

@@ -20,6 +20,30 @@ mixin GlobalBlacklistedTagFilterMixin {
       tryFilterBlacklisted(posts, blacklistedTagRepository);
 }
 
-List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) => posts
-    .where((post) => !tags.intersection(post.tags.toSet()).isNotEmpty)
-    .toList();
+List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
+    filter(posts, tags).data;
+
+({List<T> data, List<T> filtered}) filter<T extends Post>(
+  List<T> posts,
+  Iterable<String> blacklistedTags,
+) {
+  final filtered = <T>[];
+  final nonFiltered = <T>[];
+
+  for (final post in posts) {
+    var found = false;
+    for (final tag in blacklistedTags) {
+      if (post.containsTagPattern(tag)) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      filtered.add(post);
+    } else {
+      nonFiltered.add(post);
+    }
+  }
+
+  return (data: nonFiltered, filtered: filtered);
+}

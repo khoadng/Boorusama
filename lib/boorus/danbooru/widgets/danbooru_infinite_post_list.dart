@@ -8,11 +8,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -89,6 +91,9 @@ class _DanbooruInfinitePostListState
 
     final settings = ref.watch(settingsProvider);
 
+    final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
+    final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
+
     return PostGrid(
       refreshAtStart: widget.refreshAtStart,
       controller: widget.controller,
@@ -103,6 +108,10 @@ class _DanbooruInfinitePostListState
       multiSelectController: _multiSelectController,
       onLoadMore: widget.onLoadMore,
       onRefresh: widget.onRefresh,
+      blacklistedTags: {
+        ...globalBlacklist.map((e) => e.name),
+        if (danbooruBlacklist != null) ...danbooruBlacklist,
+      },
       itemBuilder: (context, items, index) {
         final post = items[index];
 
