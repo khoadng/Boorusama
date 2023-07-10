@@ -310,24 +310,6 @@ class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
                           if (!multiSelect &&
                               widget.sliverHeaderBuilder != null)
                             ...widget.sliverHeaderBuilder!(context),
-                          if (pageMode == PageMode.paginated)
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
-                                child: PageSelector(
-                                  currentPage: page,
-                                  onPrevious: controller.hasPreviousPage()
-                                      ? () => controller.goToPreviousPage()
-                                      : null,
-                                  onNext: controller.hasNextPage()
-                                      ? () => controller.goToNextPage()
-                                      : null,
-                                  onPageSelect: (page) =>
-                                      controller.jumpToPage(page),
-                                ),
-                              ),
-                            ),
                           if (_showHiddenHeader)
                             SliverPinnedHeader(
                               child: Padding(
@@ -351,6 +333,27 @@ class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
                                 ),
                               ),
                             ),
+                          if (pageMode == PageMode.paginated)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                child: PageSelector(
+                                  currentPage: page,
+                                  onPrevious: controller.hasPreviousPage()
+                                      ? () => controller.goToPreviousPage()
+                                      : null,
+                                  onNext: controller.hasNextPage()
+                                      ? () => controller.goToNextPage()
+                                      : null,
+                                  onPageSelect: (page) =>
+                                      controller.jumpToPage(page),
+                                ),
+                              ),
+                            ),
+                          SliverSizedBox(
+                            height: _showHiddenHeader ? 4 : 0,
+                          ),
                           widget.bodyBuilder(
                             context,
                             itemBuilder,

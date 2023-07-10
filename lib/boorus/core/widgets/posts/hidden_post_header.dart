@@ -32,39 +32,50 @@ class HiddenPostHeader extends StatelessWidget {
           ),
         ),
         child: ExpansionTile(
-          title: Row(
-            children: [
-              const Text('Hidden'),
-              const SizedBox(width: 8),
-              Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: context.colorScheme.error),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Text(
-                      hiddenCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ))
-            ],
-          ),
+          title: Row(children: [
+            const Text('Hidden'),
+            const SizedBox(width: 4),
+            Chip(
+                padding: EdgeInsets.zero,
+                visualDensity: const ShrinkVisualDensity(),
+                backgroundColor: context.colorScheme.primary,
+                label: Text(
+                  hiddenCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ]),
           expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Wrap(
-              spacing: 8,
-              children: tags
-                  .map((e) => ChoiceChip(
-                        selected: e.active,
-                        label:
-                            Text('${e.name.replaceAll('_', ' ')} (${e.count})'),
-                        onSelected: (value) {
-                          onChanged(e.name, value);
-                        },
-                      ))
-                  .toList(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Wrap(
+                spacing: 8,
+                children: tags
+                    .map((e) => Badge(
+                          backgroundColor: context.colorScheme.primary,
+                          label: Text(
+                            e.count.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          child: ChoiceChip(
+                            visualDensity: const ShrinkVisualDensity(),
+                            selected: e.active,
+                            backgroundColor:
+                                context.theme.scaffoldBackgroundColor,
+                            label: Text(e.name.replaceAll('_', ' ')),
+                            onSelected: (value) {
+                              onChanged(e.name, value);
+                            },
+                          ),
+                        ))
+                    .toList(),
+              ),
             )
           ],
         ),
