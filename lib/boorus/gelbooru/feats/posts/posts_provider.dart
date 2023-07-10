@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -15,14 +14,12 @@ final gelbooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
     final api = ref.watch(gelbooruApiProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
+
     final settingsRepository = ref.watch(settingsRepoProvider);
 
     return GelbooruPostRepositoryApi(
       api: api,
       booruConfig: booruConfig,
-      blacklistedTagRepository: blacklistedTagRepository,
       settingsRepository: settingsRepository,
     );
   },
@@ -32,14 +29,12 @@ final rule34xxxPostRepoProvider = Provider<PostRepository>(
   (ref) {
     final api = ref.watch(rule34xxxApiProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
+
     final settingsRepository = ref.watch(settingsRepoProvider);
 
     return Rule34xxxPostRepositoryApi(
       api: api,
       booruConfig: booruConfig,
-      blacklistedTagRepository: blacklistedTagRepository,
       settingsRepository: settingsRepository,
     );
   },
@@ -49,15 +44,12 @@ final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
   (ref) {
     final api = ref.watch(gelbooruApiProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
     final settingsRepository = ref.watch(settingsRepoProvider);
 
     return PostRepositoryCacher(
       repository: GelbooruPostRepositoryApi(
         api: api,
         booruConfig: booruConfig,
-        blacklistedTagRepository: blacklistedTagRepository,
         settingsRepository: settingsRepository,
       ),
       cache: LruCacher<String, List<Post>>(capacity: 100),

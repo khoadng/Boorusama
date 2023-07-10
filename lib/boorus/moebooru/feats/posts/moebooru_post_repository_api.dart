@@ -3,7 +3,6 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/moebooru/moebooru_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -21,18 +20,15 @@ List<MoebooruPost> parsePost(
     ).map((e) => postDtoToPost(e)).toList();
 
 class MoebooruPostRepositoryApi
-    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
+    with SettingsRepositoryMixin
     implements PostRepository {
   MoebooruPostRepositoryApi(
     this._api,
-    this.blacklistedTagRepository,
     this.booruConfig,
     this.settingsRepository,
   );
 
   final MoebooruApi _api;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   final BooruConfig booruConfig;
   @override
   final SettingsRepository settingsRepository;
@@ -64,9 +60,8 @@ class MoebooruPostRepositoryApi
         ));
 
         final data = await $(tryParseJsonFromResponse(response, parsePost));
-        final filtered = await $(tryFilterBlacklistedTags(data));
 
-        return filtered;
+        return data;
       });
 }
 
