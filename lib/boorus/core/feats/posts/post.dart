@@ -55,4 +55,70 @@ extension PostX on Post {
 
     return tags;
   }
+
+  bool containsTagPattern(String pattern) =>
+      checkIfTagsContainsTagExpression(tags, pattern);
+}
+
+extension PostsX on List<Post> {
+  Map<String, int> extractTagsWithoutCount() {
+    final tagCounts = <String, int>{};
+
+    for (final item in this) {
+      for (final tag in item.tags) {
+        if (tagCounts.containsKey(tag)) {
+          tagCounts[tag] = tagCounts[tag]! + 1;
+        } else {
+          tagCounts[tag] = 1;
+        }
+      }
+    }
+
+    return tagCounts;
+  }
+
+  Map<String, int> countTagPattern(Iterable<String> patterns) {
+    final tagCounts = <String, int>{
+      for (final pattern in patterns) pattern: 0,
+    };
+
+    for (final item in this) {
+      for (final pattern in patterns) {
+        if (item.containsTagPattern(pattern)) {
+          tagCounts[pattern] = tagCounts[pattern]! + 1;
+        }
+      }
+    }
+
+    return tagCounts;
+  }
+}
+
+bool checkIfTagsContainsTagExpression(List<String> tags, String tagExpression) {
+  var expressions = tagExpression.split(' ');
+
+  var andTags = expressions
+      .where((s) => !s.startsWith('-') && !s.startsWith('~'))
+      .toList();
+  var notTags = expressions
+      .where((s) => s.startsWith('-'))
+      .map((s) => s.substring(1))
+      .toList();
+  var orTags = expressions
+      .where((s) => s.startsWith('~'))
+      .map((s) => s.substring(1))
+      .toList();
+
+  // AND logic
+  if (andTags.any((tag) => !tags.contains(tag))) return false;
+
+  // NOT logic
+  if (notTags.any((tag) => tags.contains(tag))) return false;
+
+  // OR logic
+  if (orTags.isNotEmpty && !orTags.any((tag) => tags.contains(tag))) {
+    return false;
+  }
+
+  return true;
 }

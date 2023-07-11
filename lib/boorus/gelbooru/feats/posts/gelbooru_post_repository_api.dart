@@ -1,6 +1,5 @@
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -10,19 +9,16 @@ import 'package:boorusama/functional.dart';
 import 'gelbooru_post_parser.dart';
 
 class GelbooruPostRepositoryApi
-    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
+    with SettingsRepositoryMixin
     implements PostRepository {
   const GelbooruPostRepositoryApi({
     required this.api,
     required this.booruConfig,
-    required this.blacklistedTagRepository,
     required this.settingsRepository,
   });
 
   final GelbooruApi api;
   final BooruConfig booruConfig;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
   final SettingsRepository settingsRepository;
 
@@ -60,8 +56,6 @@ class GelbooruPostRepositoryApi
           parseGelbooruResponse,
         ));
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
-
-        return filtered;
+        return data;
       });
 }

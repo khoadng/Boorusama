@@ -13,15 +13,12 @@ import 'moebooru_post_repository_api.dart';
 final moebooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
     final api = ref.watch(moebooruApiProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     final settingsRepository = ref.watch(settingsRepoProvider);
 
     return MoebooruPostRepositoryApi(
       api,
-      blacklistedTagRepository,
       booruConfig,
       settingsRepository,
     );
@@ -37,13 +34,10 @@ final moebooruPostRepoProvider = Provider<PostRepository>(
 final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
   (ref) {
     final api = ref.watch(moebooruApiProvider);
-    final blacklistedTagRepository =
-        ref.watch(globalBlacklistedTagRepoProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return MoebooruPopularRepositoryApi(
       api,
-      blacklistedTagRepository,
       booruConfig,
     );
   },

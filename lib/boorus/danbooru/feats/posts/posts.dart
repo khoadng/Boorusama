@@ -14,7 +14,6 @@ export 'explores/explore_repository.dart';
 export 'explores/explore_repository_api.dart';
 export 'explores/explore_repository_cacher.dart';
 export 'explores/explore_utils.dart';
-export 'filter.dart';
 export 'post_count_repository_api.dart';
 export 'post_dto.dart';
 export 'post_repository_api.dart';

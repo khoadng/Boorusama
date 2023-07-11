@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -82,6 +83,7 @@ class _MoebooruInfinitePostListState
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
     return PostGrid(
       controller: widget.controller,
@@ -96,6 +98,9 @@ class _MoebooruInfinitePostListState
       multiSelectController: _multiSelectController,
       onLoadMore: widget.onLoadMore,
       onRefresh: widget.onRefresh,
+      blacklistedTags: {
+        ...globalBlacklist.map((e) => e.name),
+      },
       itemBuilder: (context, items, index) {
         final post = items[index];
 

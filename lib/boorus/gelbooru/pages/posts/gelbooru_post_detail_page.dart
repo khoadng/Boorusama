@@ -26,14 +26,12 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     super.key,
     required this.posts,
     required this.initialIndex,
-    required this.fullscreen,
     required this.onExit,
     this.hasDetailsTagList = true,
   });
 
   final int initialIndex;
   final List<Post> posts;
-  final bool fullscreen;
   final void Function(int page) onExit;
   final bool hasDetailsTagList;
 
@@ -51,7 +49,6 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
             posts: posts,
             initialIndex: initialIndex,
             onExit: (page) => scrollController?.scrollToIndex(page),
-            fullscreen: settings.detailsDisplay == DetailsDisplay.imageFocus,
             hasDetailsTagList: booru.booruType.supportTagDetails,
           );
         },

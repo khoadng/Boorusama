@@ -1507,7 +1507,7 @@ packages:
     source: sdk
     version: "0.0.99"
   sliver_tools:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sliver_tools
       sha256: ccdc502098a8bfa07b3ec582c282620031481300035584e1bb3aca296a505e8c

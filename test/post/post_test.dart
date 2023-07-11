@@ -80,13 +80,13 @@ void main() {
 
   group('[translated test]', () {
     test('translated', () {
-      final post = DanbooruPost.empty().copyWith(tags: ['translated']);
+      final post = DanbooruPost.empty().copyWith(metaTags: ['translated']);
 
       expect(post.isTranslated, isTrue);
     });
 
     test('not translated', () {
-      final post = DanbooruPost.empty().copyWith(tags: []);
+      final post = DanbooruPost.empty();
 
       expect(post.isTranslated, isFalse);
     });

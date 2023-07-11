@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -88,6 +89,7 @@ class _MoebooruInfinitePostListState
     final favorites = ref.watch(e621FavoritesProvider);
 
     final settings = ref.watch(settingsProvider);
+    final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
     return PostGrid(
       controller: widget.controller,
@@ -102,6 +104,9 @@ class _MoebooruInfinitePostListState
       multiSelectController: _multiSelectController,
       onLoadMore: widget.onLoadMore,
       onRefresh: widget.onRefresh,
+      blacklistedTags: {
+        ...globalBlacklist.map((e) => e.name),
+      },
       itemBuilder: (context, items, index) {
         final post = items[index];
 

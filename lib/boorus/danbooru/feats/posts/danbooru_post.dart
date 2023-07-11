@@ -217,7 +217,6 @@ extension PostX on DanbooruPost {
     List<String>? artistTags,
     List<String>? generalTags,
     List<String>? metaTags,
-    List<String>? tags,
     String? format,
     String? md5,
     DateTime? lastCommentAt,

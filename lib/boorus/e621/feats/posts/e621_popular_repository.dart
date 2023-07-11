@@ -1,8 +1,6 @@
 // Project imports:
 import 'package:boorusama/api/e621/e621_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
@@ -15,13 +13,12 @@ abstract interface class E621PopularRepository {
 }
 
 class E621PopularRepositoryApi
-    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
+    with SettingsRepositoryMixin
     implements E621PopularRepository {
   E621PopularRepositoryApi(
     this.api,
     this.booruConfig,
     this.settingsRepository,
-    this.blacklistedTagRepository,
   );
 
   final E621Api api;
@@ -29,8 +26,6 @@ class E621PopularRepositoryApi
 
   @override
   final SettingsRepository settingsRepository;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   final Cache<List<E621Post>> _cache = Cache(
     maxCapacity: 5,
     staleDuration: const Duration(seconds: 10),
@@ -62,8 +57,7 @@ class E621PopularRepositoryApi
         final dtos = await $(tryParseJsonFromResponse(response, parseDtos));
         final data = dtos.map(postDtoToPost).toList();
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
-        final filteredNoImage = filterPostWithNoImage(filtered);
+        final filteredNoImage = filterPostWithNoImage(data);
 
         _cache.set(key, filteredNoImage);
 

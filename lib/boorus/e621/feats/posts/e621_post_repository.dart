@@ -4,7 +4,6 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/api/e621/e621_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -23,13 +22,12 @@ abstract class E621PostRepository implements PostRepository {
 }
 
 class E621PostRepositoryApi
-    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
+    with SettingsRepositoryMixin
     implements E621PostRepository {
   E621PostRepositoryApi(
     this.api,
     this.booruConfig,
-    this.settingsRepository,
-    this.blacklistedTagRepository, {
+    this.settingsRepository, {
     required this.onFetch,
   });
 
@@ -39,8 +37,6 @@ class E621PostRepositoryApi
 
   @override
   final SettingsRepository settingsRepository;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   final Cache<List<E621Post>> _cache = Cache(
     maxCapacity: 5,
     staleDuration: const Duration(seconds: 10),
@@ -77,13 +73,9 @@ class E621PostRepositoryApi
         final dtos = await $(tryParseJsonFromResponse(response, parseDtos));
         final data = dtos.map(postDtoToPost).toList();
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
+        _cache.set(key, data);
 
-        onFetch.call(filtered);
-
-        _cache.set(key, filtered);
-
-        return filtered;
+        return data;
       });
 }
 

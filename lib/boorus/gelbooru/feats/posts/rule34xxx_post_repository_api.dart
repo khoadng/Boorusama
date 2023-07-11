@@ -4,7 +4,6 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/rule34xxx/rule34xxx_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -25,19 +24,16 @@ List<GelbooruPost> _parsePostInIsolate(HttpResponse<dynamic> value) {
 }
 
 class Rule34xxxPostRepositoryApi
-    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
+    with SettingsRepositoryMixin
     implements PostRepository {
   const Rule34xxxPostRepositoryApi({
     required this.api,
     required this.booruConfig,
-    required this.blacklistedTagRepository,
     required this.settingsRepository,
   });
 
   final Rule34xxxApi api;
   final BooruConfig booruConfig;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
   final SettingsRepository settingsRepository;
 
@@ -73,9 +69,7 @@ class Rule34xxxPostRepositoryApi
         final data =
             await $(tryParseJsonFromResponse(response, _parsePostInIsolate));
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
-
-        return filtered;
+        return data;
       });
 }
 

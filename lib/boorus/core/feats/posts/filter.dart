@@ -1,25 +1,30 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/functional.dart';
 
-TaskEither<BooruError, List<T>> tryFilterBlacklisted<T extends Post>(
+List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
+    filter(posts, tags).data;
+
+({List<T> data, List<T> filtered}) filter<T extends Post>(
   List<T> posts,
-  GlobalBlacklistedTagRepository repository,
-) =>
-    TaskEither(() => getBlacklistedTags(repository)
-        .then((blacklisted) => Either.of(filterTags(posts, blacklisted))));
+  Iterable<String> blacklistedTags,
+) {
+  final filtered = <T>[];
+  final nonFiltered = <T>[];
 
-mixin GlobalBlacklistedTagFilterMixin {
-  GlobalBlacklistedTagRepository get blacklistedTagRepository;
+  for (final post in posts) {
+    var found = false;
+    for (final tag in blacklistedTags) {
+      if (post.containsTagPattern(tag)) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      filtered.add(post);
+    } else {
+      nonFiltered.add(post);
+    }
+  }
 
-  TaskEither<BooruError, List<T>> tryFilterBlacklistedTags<T extends Post>(
-    List<T> posts,
-  ) =>
-      tryFilterBlacklisted(posts, blacklistedTagRepository);
+  return (data: nonFiltered, filtered: filtered);
 }
-
-List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) => posts
-    .where((post) => !tags.intersection(post.tags.toSet()).isNotEmpty)
-    .toList();

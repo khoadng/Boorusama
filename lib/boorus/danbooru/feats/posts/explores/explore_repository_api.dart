@@ -3,8 +3,6 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -12,13 +10,12 @@ import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 
 class ExploreRepositoryApi
-    with SettingsRepositoryMixin, GlobalBlacklistedTagFilterMixin
+    with SettingsRepositoryMixin
     implements ExploreRepository {
   const ExploreRepositoryApi({
     required this.api,
     required this.postRepository,
     required this.settingsRepository,
-    required this.blacklistedTagRepository,
     this.shouldFilter,
   });
 
@@ -26,8 +23,6 @@ class ExploreRepositoryApi
   final DanbooruApi api;
   @override
   final SettingsRepository settingsRepository;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   final bool Function(DanbooruPost post)? shouldFilter;
 
   @override
@@ -53,11 +48,10 @@ class ExploreRepositoryApi
         ));
 
         final data = await $(tryParseJsonFromResponse(response, parsePost));
-        final filtered = await $(tryFilterBlacklistedTags(data));
 
         return shouldFilter != null
-            ? filtered.whereNot(shouldFilter!).toList()
-            : filtered.toList();
+            ? data.whereNot(shouldFilter!).toList()
+            : data;
       });
 
   @override
@@ -78,10 +72,9 @@ class ExploreRepositoryApi
         ));
 
         final data = await $(tryParseJsonFromResponse(response, parsePost));
-        final filtered = await $(tryFilterBlacklistedTags(data));
 
         return shouldFilter != null
-            ? filtered.whereNot(shouldFilter!).toList()
-            : filtered.toList();
+            ? data.whereNot(shouldFilter!).toList()
+            : data;
       });
 }
