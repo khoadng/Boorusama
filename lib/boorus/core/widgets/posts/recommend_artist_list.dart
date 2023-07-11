@@ -25,6 +25,9 @@ class RecommendArtistList<T extends Post> extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final r = recommends[index];
+
+          if (r.posts.isEmpty) return const SizedBox();
+
           return RecommendPostSection(
             header: ListTile(
               onTap: () => onHeaderTap(index),
