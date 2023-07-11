@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
@@ -97,11 +98,13 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               ),
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SelectedTagListWithData(tags: tags),
-                    SearchLandingView(
+              child: CustomScrollView(
+                slivers: [
+                  SliverPinnedHeader(
+                    child: SelectedTagListWithData(tags: tags),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SearchLandingView(
                       trendingBuilder: (context) => TrendingSection(
                         onTagTap: (value) {
                           ref.read(searchProvider.notifier).tapTag(value);
@@ -117,8 +120,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                         },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

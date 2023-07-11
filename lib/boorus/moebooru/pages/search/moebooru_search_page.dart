@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
@@ -75,16 +76,14 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               ),
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SelectedTagListWithData(
-                      tags: tags,
-                    ),
-                    const SearchLandingView(),
-                  ],
+              child: CustomScrollView(slivers: [
+                SliverPinnedHeader(
+                  child: SelectedTagListWithData(tags: tags),
                 ),
-              ),
+                const SliverToBoxAdapter(
+                  child: SearchLandingView(),
+                ),
+              ]),
             ),
           ),
         DisplayState.suggestion => Scaffold(
