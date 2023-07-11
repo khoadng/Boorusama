@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/widgets/scroll_to_top.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'hidden_post_header.dart';
@@ -87,9 +87,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     with TickerProviderStateMixin {
   late final AutoScrollController _autoScrollController;
   late final MultiSelectController<T> _multiSelectController;
-  late AnimationController _animationController;
 
-  final ValueNotifier<bool> _isOnTop = ValueNotifier(false);
   var multiSelect = false;
 
   PostGridController<T> get controller => widget.controller;
@@ -130,14 +128,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     _multiSelectController =
         widget.multiSelectController ?? MultiSelectController<T>();
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: kThemeAnimationDuration,
-      reverseDuration: kThemeAnimationDuration,
-    );
-
-    _autoScrollController.addListener(_onScroll);
-    _isOnTop.addListener(_onTopReached);
     controller.addListener(_onControllerChange);
     if (widget.refreshAtStart) {
       controller.refresh();
@@ -156,10 +146,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       _multiSelectController.dispose();
     }
 
-    _autoScrollController.removeListener(_onScroll);
-    _isOnTop.removeListener(_onTopReached);
-
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -193,45 +179,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
       pageMode = controller.pageMode;
       page = controller.page;
     });
-  }
-
-  void _onTopReached() {
-    if (_isOnTop.value) {
-      _animationController.reverse();
-    }
-  }
-
-  void _onScroll() {
-    switch (_autoScrollController.position.userScrollDirection) {
-      case ScrollDirection.forward:
-        _animationController.forward();
-        break;
-      case ScrollDirection.reverse:
-        _animationController.reverse();
-        break;
-      case ScrollDirection.idle:
-        break;
-    }
-    _isOnTop.value = _isTop;
-    if (controller.pageMode == PageMode.infinite && _isBottom && hasMore) {
-      widget.onLoadMore?.call();
-      controller.fetchMore();
-    }
-  }
-
-  bool get _isBottom {
-    if (!_autoScrollController.hasClients) return false;
-    final maxScroll = _autoScrollController.position.maxScrollExtent;
-    final currentScroll = _autoScrollController.offset;
-
-    return currentScroll >= (maxScroll * 0.95);
-  }
-
-  bool get _isTop {
-    if (!_autoScrollController.hasClients) return false;
-    final currentScroll = _autoScrollController.offset;
-
-    return currentScroll == 0;
   }
 
   @override
@@ -273,29 +220,31 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                   widget.itemBuilder(context, items, index),
               scrollableWidgetBuilder: (context, items, itemBuilder) {
                 return Scaffold(
-                  floatingActionButton: FadeTransition(
-                    opacity: _animationController,
-                    child: ScaleTransition(
-                      scale: _animationController,
-                      child: widget.extendBody
-                          ? Padding(
-                              padding: EdgeInsets.only(
-                                bottom: widget.extendBodyHeight ??
-                                    kBottomNavigationBarHeight,
-                              ),
-                              child: FloatingActionButton(
-                                heroTag: null,
-                                child: const FaIcon(FontAwesomeIcons.angleUp),
-                                onPressed: () =>
-                                    _autoScrollController.jumpTo(0),
-                              ),
-                            )
-                          : FloatingActionButton(
+                  floatingActionButton: ScrollToTop(
+                    scrollController: _autoScrollController,
+                    onBottomReached: () {
+                      if (controller.pageMode == PageMode.infinite && hasMore) {
+                        widget.onLoadMore?.call();
+                        controller.fetchMore();
+                      }
+                    },
+                    child: widget.extendBody
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              bottom: widget.extendBodyHeight ??
+                                  kBottomNavigationBarHeight,
+                            ),
+                            child: FloatingActionButton(
                               heroTag: null,
                               child: const FaIcon(FontAwesomeIcons.angleUp),
                               onPressed: () => _autoScrollController.jumpTo(0),
                             ),
-                    ),
+                          )
+                        : FloatingActionButton(
+                            heroTag: null,
+                            child: const FaIcon(FontAwesomeIcons.angleUp),
+                            onPressed: () => _autoScrollController.jumpTo(0),
+                          ),
                   ),
                   body: RefreshIndicator(
                     notificationPredicate:
