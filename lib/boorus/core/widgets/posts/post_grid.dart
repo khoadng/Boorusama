@@ -339,11 +339,16 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       context: context,
                                       content: const Text(
                                           'You can always show this header again in Settings.'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () =>
+                                            ref.setHiddenPostsHeaderStatus(
+                                                active: true),
+                                      ),
                                     );
                                   },
                                   onChanged: (tag, hide) => setState(() {
                                     filters[tag] = hide;
-                                    //FIXME: cleanup
                                     _updateData();
                                   }),
                                   hiddenCount: filteredItems.length,
