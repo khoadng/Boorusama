@@ -47,14 +47,12 @@ class _HiddenPostHeaderState extends State<HiddenPostHeader> {
           controlAffinity: ListTileControlAffinity.leading,
           trailing: ValueListenableBuilder<bool>(
             valueListenable: expand,
-            builder: (context, expanded, child) {
-              return expanded
-                  ? IconButton(
-                      onPressed: widget.onClosed,
-                      icon: const Icon(Icons.close),
-                    )
-                  : const SizedBox.shrink();
-            },
+            builder: (context, expanded, child) => expanded
+                ? IconButton(
+                    onPressed: widget.onClosed,
+                    icon: const Icon(Icons.close),
+                  )
+                : const SizedBox.shrink(),
           ),
           onExpansionChanged: (value) => expand.value = value,
           title: Row(children: [
@@ -78,33 +76,54 @@ class _HiddenPostHeaderState extends State<HiddenPostHeader> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Wrap(
                 spacing: 8,
-                children: widget.tags
-                    .map((e) => Badge(
-                          backgroundColor: context.colorScheme.primary,
-                          label: Text(
-                            e.count.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          child: ChoiceChip(
-                            visualDensity: const ShrinkVisualDensity(),
-                            selected: e.active,
-                            backgroundColor:
-                                context.theme.scaffoldBackgroundColor,
-                            label: Text(e.name.replaceAll('_', ' ')),
-                            onSelected: (value) {
-                              widget.onChanged(e.name, value);
-                            },
-                          ),
-                        ))
-                    .toList(),
+                children: [
+                  for (var tag in widget.tags)
+                    _BadgedChip(
+                      label: tag.name.replaceAll('_', ' '),
+                      count: tag.count,
+                      active: tag.active,
+                      onChanged: (value) => widget.onChanged(tag.name, value),
+                    ),
+                ],
               ),
             )
           ],
         ),
       ),
     );
+  }
+}
+
+class _BadgedChip extends StatelessWidget {
+  const _BadgedChip({
+    required this.label,
+    required this.count,
+    required this.active,
+    required this.onChanged,
+  });
+
+  final int count;
+  final bool active;
+  final String label;
+  final void Function(bool value) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Badge(
+        backgroundColor: context.colorScheme.primary,
+        label: Text(
+          count.toString(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        child: ChoiceChip(
+          visualDensity: const ShrinkVisualDensity(),
+          selected: active,
+          backgroundColor: context.theme.scaffoldBackgroundColor,
+          label: Text(label),
+          onSelected: (value) => onChanged(value),
+        ));
   }
 }
