@@ -335,7 +335,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       active: false,
                                     );
                                     showSimpleSnackBar(
-                                      duration: const Duration(seconds: 2),
+                                      duration: const Duration(seconds: 5),
                                       context: context,
                                       content: const Text(
                                           'You can always show this header again in Settings.'),
@@ -347,10 +347,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       ),
                                     );
                                   },
-                                  onChanged: (tag, hide) => setState(() {
-                                    filters[tag] = hide;
-                                    _updateData();
-                                  }),
+                                  onDisableAll: _disableAll,
+                                  onEnableAll: _enableAll,
+                                  onChanged: _update,
                                   hiddenCount: filteredItems.length,
                                 ),
                               ),
@@ -405,6 +404,31 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
             ),
           ),
         ));
+  }
+
+  void _update(tag, hide) {
+    setState(() {
+      filters[tag] = hide;
+      _updateData();
+    });
+  }
+
+  void _enableAll() {
+    setState(() {
+      filters = filters.map(
+        (key, value) => MapEntry(key, true),
+      );
+      _updateData();
+    });
+  }
+
+  void _disableAll() {
+    setState(() {
+      filters = filters.map(
+        (key, value) => MapEntry(key, false),
+      );
+      _updateData();
+    });
   }
 
   Future<bool> _onWillPop() async {
