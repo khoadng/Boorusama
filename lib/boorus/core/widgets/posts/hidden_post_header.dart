@@ -10,28 +10,53 @@ typedef HiddenData = ({
   bool active,
 });
 
-class HiddenPostHeader extends StatelessWidget {
+class HiddenPostHeader extends StatefulWidget {
   const HiddenPostHeader({
     super.key,
     required this.tags,
     required this.onChanged,
     required this.hiddenCount,
+    required this.onClosed,
   });
 
   final List<HiddenData> tags;
   final void Function(String tag, bool value) onChanged;
+  final VoidCallback onClosed;
   final int hiddenCount;
+
+  @override
+  State<HiddenPostHeader> createState() => _HiddenPostHeaderState();
+}
+
+class _HiddenPostHeaderState extends State<HiddenPostHeader> {
+  final expand = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Theme(
         data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
           listTileTheme: ListTileTheme.of(context).copyWith(
+            contentPadding: const EdgeInsets.only(left: 8),
+            horizontalTitleGap: 0,
             visualDensity: const ShrinkVisualDensity(),
           ),
         ),
         child: ExpansionTile(
+          controlAffinity: ListTileControlAffinity.leading,
+          trailing: ValueListenableBuilder<bool>(
+            valueListenable: expand,
+            builder: (context, expanded, child) {
+              return expanded
+                  ? IconButton(
+                      onPressed: widget.onClosed,
+                      icon: const Icon(Icons.close),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
+          onExpansionChanged: (value) => expand.value = value,
           title: Row(children: [
             const Text('Hidden'),
             const SizedBox(width: 4),
@@ -40,7 +65,7 @@ class HiddenPostHeader extends StatelessWidget {
                 visualDensity: const ShrinkVisualDensity(),
                 backgroundColor: context.colorScheme.primary,
                 label: Text(
-                  hiddenCount.toString(),
+                  widget.hiddenCount.toString(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -53,7 +78,7 @@ class HiddenPostHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Wrap(
                 spacing: 8,
-                children: tags
+                children: widget.tags
                     .map((e) => Badge(
                           backgroundColor: context.colorScheme.primary,
                           label: Text(
@@ -70,7 +95,7 @@ class HiddenPostHeader extends StatelessWidget {
                                 context.theme.scaffoldBackgroundColor,
                             label: Text(e.name.replaceAll('_', ' ')),
                             onSelected: (value) {
-                              onChanged(e.name, value);
+                              widget.onChanged(e.name, value);
                             },
                           ),
                         ))

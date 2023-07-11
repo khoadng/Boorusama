@@ -63,4 +63,13 @@ extension SettingsNotifierX on WidgetRef {
           pageMode: mode,
         ),
       );
+
+  Future<void> setHiddenPostsHeaderStatus({
+    required bool active,
+  }) =>
+      updateSettings(
+        read(settingsProvider).copyWith(
+          showHiddenPostsHeader: active,
+        ),
+      );
 }

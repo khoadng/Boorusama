@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -12,6 +13,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -21,7 +24,7 @@ import 'post_grid_controller.dart';
 typedef ItemWidgetBuilder<T> = Widget Function(
     BuildContext context, List<T> items, int index);
 
-class PostGrid<T extends Post> extends StatefulWidget {
+class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({
     super.key,
     this.onLoadMore,
@@ -77,10 +80,10 @@ class PostGrid<T extends Post> extends StatefulWidget {
   )? multiSelectActions;
 
   @override
-  State<PostGrid<T>> createState() => _InfinitePostListState();
+  ConsumerState<PostGrid<T>> createState() => _InfinitePostListState();
 }
 
-class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
+class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     with TickerProviderStateMixin {
   late final AutoScrollController _autoScrollController;
   late final MultiSelectController<T> _multiSelectController;
@@ -233,6 +236,8 @@ class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return WillPopScope(
         onWillPop: _onWillPop,
         child: ColoredBox(
@@ -310,7 +315,8 @@ class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
                           if (!multiSelect &&
                               widget.sliverHeaderBuilder != null)
                             ...widget.sliverHeaderBuilder!(context),
-                          if (_showHiddenHeader)
+                          if (settings.showHiddenPostsHeader &&
+                              _showHiddenHeader)
                             SliverPinnedHeader(
                               child: Padding(
                                 padding:
@@ -324,6 +330,17 @@ class _InfinitePostListState<T extends Post> extends State<PostGrid<T>>
                                           ))
                                       .where((element) => element.count > 0)
                                       .toList(),
+                                  onClosed: () {
+                                    ref.setHiddenPostsHeaderStatus(
+                                      active: false,
+                                    );
+                                    showSimpleSnackBar(
+                                      duration: const Duration(seconds: 2),
+                                      context: context,
+                                      content: const Text(
+                                          'You can always show this header again in Settings.'),
+                                    );
+                                  },
                                   onChanged: (tag, hide) => setState(() {
                                     filters[tag] = hide;
                                     //FIXME: cleanup

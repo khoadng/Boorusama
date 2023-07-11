@@ -143,6 +143,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
             ),
+            SwitchListTile.adaptive(
+              title: const Text('Show hidden posts configuration header').tr(),
+              value: settings.showHiddenPostsHeader,
+              onChanged: (value) =>
+                  ref.setHiddenPostsHeaderStatus(active: value),
+            ),
             const SizedBox(
               height: 10,
             ),
