@@ -36,6 +36,18 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   Future<List<BlacklistedTag>> getBlacklist() async {
     return _box.values.map(convertFromHiveObject).toList();
   }
+
+  @override
+  Future<BlacklistedTag> updateTag(int tagId, String newTag) async {
+    final obj = _box.get(tagId)!;
+    final updatedDate = DateTime.now();
+
+    obj.name = newTag;
+    obj.updatedDate = updatedDate;
+
+    await _box.put(tagId, obj);
+    return convertFromHiveObject(obj);
+  }
 }
 
 BlacklistedTagHiveObject convertToHiveObject(BlacklistedTag blacklistedTag) {

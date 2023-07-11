@@ -53,6 +53,23 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
       onError?.call();
     }
   }
+
+  Future<void> updateTag({
+    required BlacklistedTag oldTag,
+    required String newTag,
+    void Function()? onSuccess,
+    void Function()? onError,
+  }) async {
+    try {
+      final updatedTag = await repo.updateTag(oldTag.id, newTag);
+
+      state = state.remove(oldTag).add(updatedTag);
+
+      onSuccess?.call();
+    } catch (e) {
+      onError?.call();
+    }
+  }
 }
 
 extension GlobalBlacklistedTagsNotifierX on GlobalBlacklistedTagsNotifier {

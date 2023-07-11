@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -22,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_create_page.dart';
@@ -195,24 +193,6 @@ Widget provideBlacklistedTagPageDependencies(
   required Widget page,
 }) =>
     DanbooruProvider(builder: (_) => page);
-
-void goToBlacklistedTagsSearchPage(
-  BuildContext context, {
-  required void Function(List<TagSearchItem> tags) onSelectDone,
-  List<String>? initialTags,
-}) {
-  context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => BlacklistedTagsSearchPage(
-        initialTags: initialTags,
-        onSelectedDone: onSelectDone,
-      ),
-    ),
-    settings: const RouteSettings(
-      name: RouterPageConstant.blacklistedSearch,
-    ),
-  ));
-}
 
 void goToCommentPage(BuildContext context, int postId) {
   showCommentPage(

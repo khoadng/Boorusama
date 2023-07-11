@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/add_to_global_blacklist_page.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -62,6 +63,64 @@ void goToGlobalBlacklistedTagsPage(BuildContext context) {
       name: RouterPageConstant.globalBlacklistedTags,
     ),
     child: const BlacklistedTagPage(),
+  ));
+}
+
+void goToBlacklistedTagsSearchPage(
+  BuildContext context, {
+  required void Function(List<TagSearchItem> tags, String currentQuery)
+      onSelectDone,
+  List<String>? initialTags,
+  required WidgetRef ref,
+}) {
+  final booru = ref.read(currentBooruProvider);
+
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) {
+      switch (booru.booruType) {
+        case BooruType.e621:
+        case BooruType.e926:
+          return E621Provider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+        case BooruType.unknown:
+          throw UnimplementedError();
+        case BooruType.konachan:
+        case BooruType.yandere:
+        case BooruType.sakugabooru:
+        case BooruType.lolibooru:
+          return MoebooruProvider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+        case BooruType.danbooru:
+        case BooruType.safebooru:
+        case BooruType.testbooru:
+        case BooruType.aibooru:
+          return DanbooruProvider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+        case BooruType.gelbooru:
+        case BooruType.rule34xxx:
+          return GelbooruProvider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+      }
+    },
+    settings: const RouteSettings(
+      name: RouterPageConstant.blacklistedSearch,
+    ),
   ));
 }
 

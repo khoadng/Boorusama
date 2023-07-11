@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/functional.dart';
 
+//FIXME: This entire file is a mess, refactor it. Start by refactoring the logic from search_provider.dart and search_notifier.dart
 final _selectedTagsProvider =
     NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
         SelectedTagsNotifier.new,
@@ -43,7 +44,8 @@ class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
     this.initialTags,
   });
 
-  final void Function(List<TagSearchItem> tags) onSelectedDone;
+  final void Function(List<TagSearchItem> tags, String currentQuery)
+      onSelectedDone;
   final List<String>? initialTags;
 
   @override
@@ -82,7 +84,8 @@ class _BlacklistedTagsSearchPageState
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => widget.onSelectedDone(ref.read(_selectedTagsProvider)),
+        onPressed: () =>
+            widget.onSelectedDone(ref.read(_selectedTagsProvider), query),
         heroTag: null,
         child: const FaIcon(FontAwesomeIcons.check),
       ),
