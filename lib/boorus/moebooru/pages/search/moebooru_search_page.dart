@@ -77,6 +77,9 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onBack: () => state != DisplayState.options
+                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: SafeArea(
@@ -96,6 +99,9 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onBack: () => state != DisplayState.options
+                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
