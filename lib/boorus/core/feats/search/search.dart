@@ -6,7 +6,7 @@ export 'search_history.dart';
 export 'search_history_notifier.dart';
 export 'search_history_repository.dart';
 export 'search_mixin.dart';
-export 'search_provider.dart';
+export 'search_utils.dart';
 export 'selected_tag_controller.dart';
 export 'suggestions_notifier.dart';
 export 'tag_search_item.dart';

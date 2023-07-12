@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.da
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -25,11 +26,9 @@ import 'result/result_view.dart';
 class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
     super.key,
-    required this.metatagHighlightColor,
     this.initialQuery,
   });
 
-  final Color metatagHighlightColor;
   final String? initialQuery;
 
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
@@ -39,7 +38,6 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
           builder: (_) {
             return CustomContextMenuOverlay(
               child: DanbooruSearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
                 initialQuery: tag,
               ),
             );
@@ -52,6 +50,9 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
+  late final metaTagRegex =
+      RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:');
+
   @override
   void initState() {
     super.initState();
@@ -70,9 +71,9 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     return SearchScope(
       initialQuery: widget.initialQuery,
       pattern: {
-        ref.read(searchMetatagStringRegexProvider): TextStyle(
+        metaTagRegex: TextStyle(
           fontWeight: FontWeight.w800,
-          color: widget.metatagHighlightColor,
+          color: context.colorScheme.primary,
         ),
       },
       builder: (state, theme, focus, controller, selectedTagController,
