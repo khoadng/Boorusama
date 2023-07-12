@@ -27,6 +27,7 @@ class SearchScope extends ConsumerStatefulWidget {
     FocusNode focus,
     RichTextController controller,
     List<TagSearchItem> selectedTags,
+    SearchNotifier notifier,
   ) builder;
 
   @override
@@ -110,6 +111,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
           final displayState = ref.watch(displayStateProvider);
           final theme = ref.watch(themeProvider);
           final selectedTags = ref.watch(selectedTagsProvider);
+          final notifier = ref.watch(searchProvider.notifier);
 
           return widget.builder(
             displayState,
@@ -117,6 +119,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
             focus,
             queryEditingController,
             selectedTags,
+            notifier,
           );
         },
       ),

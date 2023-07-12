@@ -65,9 +65,12 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags) => switch (state) {
+      builder: (state, theme, focus, controller, tags, notifier) =>
+          switch (state) {
         DisplayState.options => Scaffold(
-            floatingActionButton: const SearchButton(),
+            floatingActionButton: SearchButton(
+              onSearch: notifier.search,
+            ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
               child: SearchAppBar(

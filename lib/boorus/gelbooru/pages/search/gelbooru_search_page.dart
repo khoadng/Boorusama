@@ -81,13 +81,15 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags) => switch (state) {
+      builder: (state, theme, focus, controller, tags, notifier) =>
+          switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               onSearch: () {
                 final tags = ref.read(selectedTagsProvider);
                 final rawTags = tags.map((e) => e.toString()).toList();
                 ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
+                notifier.search();
               },
             ),
             appBar: PreferredSize(
