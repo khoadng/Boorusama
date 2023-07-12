@@ -132,7 +132,10 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
-                const SearchAppBarResultView(),
+                SearchAppBarResultView(
+                  onTap: () => notifier.goToSuggestions(),
+                  onBack: () => notifier.resetToOptions(),
+                ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
                   tags: tags,

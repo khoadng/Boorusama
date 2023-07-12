@@ -142,7 +142,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           ),
         DisplayState.result => ResultView(
             headerBuilder: () => [
-              const SearchAppBarResultView(),
+              SearchAppBarResultView(
+                onTap: () => notifier.goToSuggestions(),
+                onBack: () => notifier.resetToOptions(),
+              ),
               SliverToBoxAdapter(child: SelectedTagListWithData(tags: tags)),
             ],
           )
