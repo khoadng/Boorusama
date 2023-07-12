@@ -19,37 +19,17 @@ final suggestionsProvider = NotifierProvider<SuggestionsNotifier,
 );
 
 final fallbackSuggestionsProvider =
-    StateProvider<IList<AutocompleteData>>((ref) {
+    StateProvider.autoDispose<IList<AutocompleteData>>((ref) {
   return <AutocompleteData>[].lock;
 });
 
-final suggestionProvider = Provider.family<IList<AutocompleteData>, String>(
+final suggestionProvider =
+    Provider.autoDispose.family<IList<AutocompleteData>, String>(
   (ref, tag) {
     final suggestions = ref.watch(suggestionsProvider);
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);
   },
-  dependencies: [
-    suggestionsProvider,
-  ],
-);
-
-final suggestionsQuickSearchProvider = NotifierProvider<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>>(
-  SuggestionsNotifier.new,
-  dependencies: [
-    autocompleteRepoProvider,
-    currentBooruConfigProvider,
-  ],
-);
-
-final suggestionQuickSearchProvider =
-    Provider.family<IList<AutocompleteData>, String>(
-  (ref, tag) {
-    final suggestions = ref.watch(suggestionsQuickSearchProvider);
-    return suggestions[tag] ?? <AutocompleteData>[].lock;
-  },
-  dependencies: [suggestionsQuickSearchProvider],
 );
 
 class SuggestionsNotifier
