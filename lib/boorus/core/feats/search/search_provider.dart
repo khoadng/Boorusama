@@ -21,21 +21,6 @@ final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
   return stringToFilterOperator(query.trim().getFirstCharacter());
 });
 
-final allowSearchProvider = Provider.autoDispose<bool>((ref) {
-  final displayState = ref.watch(displayStateProvider);
-  final selectedTags = ref.watch(selectedTagsProvider);
-
-  if (displayState == DisplayState.options) {
-    return selectedTags.isNotEmpty;
-  }
-  if (displayState == DisplayState.suggestion) return false;
-
-  return false;
-}, dependencies: [
-  searchProvider,
-  selectedTagsProvider,
-]);
-
 final searchMetatagStringRegexProvider = Provider<RegExp>((ref) {
   final metatags = ref.watch(metatagsProvider);
   final metatagString = metatags.map((e) => e.name).join('|');

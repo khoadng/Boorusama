@@ -28,6 +28,7 @@ class SearchScope extends ConsumerStatefulWidget {
     RichTextController controller,
     List<TagSearchItem> selectedTags,
     SearchNotifier notifier,
+    bool allowSearch,
   ) builder;
 
   @override
@@ -120,9 +121,22 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
             queryEditingController,
             selectedTags,
             notifier,
+            allowSearch(ref),
           );
         },
       ),
     );
+  }
+
+  bool allowSearch(WidgetRef ref) {
+    final displayState = ref.watch(displayStateProvider);
+    final selectedTags = ref.watch(selectedTagsProvider);
+
+    if (displayState == DisplayState.options) {
+      return selectedTags.isNotEmpty;
+    }
+    if (displayState == DisplayState.suggestion) return false;
+
+    return false;
   }
 }

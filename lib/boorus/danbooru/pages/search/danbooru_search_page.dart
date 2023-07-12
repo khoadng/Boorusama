@@ -81,10 +81,11 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: widget.metatagHighlightColor,
         ),
       },
-      builder: (state, theme, focus, controller, tags, notifier) =>
+      builder: (state, theme, focus, controller, tags, notifier, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
+              allowSearch: allowSearch,
               onSearch: () {
                 final tags = ref.read(selectedTagsProvider);
                 final rawTags = tags.map((e) => e.toString()).toList();
