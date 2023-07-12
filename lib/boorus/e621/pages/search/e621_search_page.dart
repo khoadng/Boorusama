@@ -75,6 +75,14 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) =>
+                    ref.read(searchProvider.notifier).submit(value),
+                onChanged: (value) =>
+                    ref.read(searchQueryProvider.notifier).state = value,
+                onClear: () {
+                  controller.clear();
+                  ref.read(searchQueryProvider.notifier).state = '';
+                },
                 onBack: () => state != DisplayState.options
                     ? ref.read(searchProvider.notifier).resetToOptions()
                     : context.navigator.pop(),
@@ -97,6 +105,14 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) =>
+                    ref.read(searchProvider.notifier).submit(value),
+                onChanged: (value) =>
+                    ref.read(searchQueryProvider.notifier).state = value,
+                onClear: () {
+                  controller.clear();
+                  ref.read(searchQueryProvider.notifier).state = '';
+                },
                 onBack: () => state != DisplayState.options
                     ? ref.read(searchProvider.notifier).resetToOptions()
                     : context.navigator.pop(),
