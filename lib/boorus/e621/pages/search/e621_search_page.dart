@@ -120,6 +120,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
             ),
             body: DefaultSearchSuggestionView(
               tags: tags,
+              textEditingController: controller,
             ),
           ),
         DisplayState.result => PostScope(

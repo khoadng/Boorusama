@@ -143,6 +143,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
             ),
             body: DefaultSearchSuggestionView(
               tags: tags,
+              textEditingController: controller,
             ),
           ),
         DisplayState.result => PostScope(

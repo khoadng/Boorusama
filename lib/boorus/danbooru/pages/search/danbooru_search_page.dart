@@ -160,6 +160,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
             ),
             body: DefaultSearchSuggestionView(
               tags: tags,
+              textEditingController: controller,
             ),
           ),
         DisplayState.result => ResultView(

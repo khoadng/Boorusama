@@ -122,6 +122,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
             ),
             body: DefaultSearchSuggestionView(
               tags: tags,
+              textEditingController: controller,
             ),
           ),
         DisplayState.result => PostScope(

@@ -2,18 +2,19 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/booru_search_bar.dart';
 import 'package:boorusama/flutter.dart';
 
-class SearchAppBar extends StatelessWidget {
+class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     super.key,
     required this.queryEditingController,
     this.focusNode,
-    this.autofocus = false,
     required this.onBack,
     required this.onClear,
     required this.onChanged,
@@ -22,14 +23,15 @@ class SearchAppBar extends StatelessWidget {
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
-  final bool autofocus;
   final VoidCallback onBack;
   final VoidCallback onClear;
   final void Function(String value) onChanged;
   final void Function(String value) onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
     return AppBar(
       elevation: 0,
       backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -37,7 +39,7 @@ class SearchAppBar extends StatelessWidget {
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
       title: BooruSearchBar(
-        autofocus: autofocus,
+        autofocus: settings.autoFocusSearchBar,
         focus: focusNode,
         queryEditingController: queryEditingController,
         leading: IconButton(
