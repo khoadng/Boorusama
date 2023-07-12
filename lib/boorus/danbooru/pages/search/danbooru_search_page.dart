@@ -93,13 +93,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                // onChanged: (value) =>
-                //     ref.read(searchQueryProvider.notifier).state = value,
-                onClear: () {
-                  controller.clear();
-                  // ref.read(searchQueryProvider.notifier).state = '';
-                },
+                searchController: searchController,
                 onBack: () => state != DisplayState.options
                     ? searchController.resetToOptions()
                     : context.navigator.pop(),
@@ -141,13 +135,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                // onChanged: (value) =>
-                //     ref.read(searchQueryProvider.notifier).state = value,
-                onClear: () {
-                  controller.clear();
-                  // ref.read(searchQueryProvider.notifier).state = '';
-                },
+                searchController: searchController,
                 onBack: () => state != DisplayState.options
                     ? searchController.resetToOptions()
                     : context.navigator.pop(),

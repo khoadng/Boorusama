@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/booru_search_bar.dart';
 import 'package:boorusama/flutter.dart';
@@ -14,19 +15,19 @@ class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     super.key,
     required this.queryEditingController,
+    required this.searchController,
     this.focusNode,
     required this.onBack,
     this.onClear,
     this.onChanged,
-    required this.onSubmitted,
   });
 
   final RichTextController queryEditingController;
+  final SearchPageController searchController;
   final FocusNode? focusNode;
   final VoidCallback onBack;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
-  final void Function(String value) onSubmitted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,13 +55,16 @@ class SearchAppBar extends ConsumerWidget {
                 ? IconButton(
                     splashRadius: 16,
                     icon: const Icon(Icons.close),
-                    onPressed: onClear,
+                    onPressed: () {
+                      queryEditingController.clear();
+                      onClear?.call();
+                    },
                   )
                 : const SizedBox.shrink();
           },
         ),
         onChanged: onChanged,
-        onSubmitted: onSubmitted,
+        onSubmitted: (value) => searchController.submit(value),
       ),
     );
   }
