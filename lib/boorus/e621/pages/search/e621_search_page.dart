@@ -70,7 +70,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                searchController: searchController,
+                onSubmitted: (value) => searchController.submit(value),
                 onBack: () => state != DisplayState.options
                     ? searchController.resetToOptions()
                     : context.navigator.pop(),
@@ -98,7 +98,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                searchController: searchController,
+                onSubmitted: (value) => searchController.submit(value),
                 onBack: () => state != DisplayState.options
                     ? searchController.resetToOptions()
                     : context.navigator.pop(),

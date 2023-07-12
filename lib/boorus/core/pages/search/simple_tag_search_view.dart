@@ -56,6 +56,7 @@ void showSimpleTagSearchView(
 
 final _queryProvider = StateProvider.autoDispose<String>((ref) => "");
 
+//FIXME: Clean this mess
 class SimpleTagSearchView extends ConsumerWidget {
   const SimpleTagSearchView({
     super.key,
@@ -100,7 +101,7 @@ class SimpleTagSearchView extends ConsumerWidget {
                 ref.read(_queryProvider.notifier).state = value;
                 ref
                     .read(suggestionsQuickSearchProvider.notifier)
-                    .getSuggestions(value, FilterOperator.none);
+                    .getSuggestions(value);
               },
             ),
           ),

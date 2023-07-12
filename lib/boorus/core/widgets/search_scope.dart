@@ -86,7 +86,6 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
 
   void _onTextChanged() {
     final query = queryEditingController.text;
-    final op = getFilterOperator(query);
 
     if (query.isEmpty) {
       if (displayState.value != DisplayState.result) {
@@ -96,11 +95,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
       searchController.goToSuggestions();
     }
 
-    if ((sanitizeQuery(query)).length == 1 && op != FilterOperator.none) {
-      return;
-    }
-
-    ref.read(suggestionsProvider.notifier).getSuggestions(sanitizeQuery(query));
+    ref.read(suggestionsProvider.notifier).getSuggestions(query);
   }
 
   @override

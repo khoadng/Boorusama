@@ -63,16 +63,22 @@ class SuggestionsNotifier
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
-  void getSuggestions(String query, [FilterOperator? operator]) {
-    if (state.containsKey(query)) return;
+  void getSuggestions(String query) {
     if (query.isEmpty) return;
+
+    final op = getFilterOperator(query);
+    final sanitized = sanitizeQuery(query);
+
+    if (sanitized.length == 1 && op != FilterOperator.none) return;
+
+    if (state.containsKey(sanitized)) return;
 
     debounce(
       'suggestions',
       () async {
         final data =
-            await ref.read(autocompleteRepoProvider).getAutocomplete(query);
-        state = state.add(query, data.lock);
+            await ref.read(autocompleteRepoProvider).getAutocomplete(sanitized);
+        state = state.add(sanitized, data.lock);
         ref.read(fallbackSuggestionsProvider.notifier).state = data.lock;
       },
       duration: const Duration(milliseconds: 200),
