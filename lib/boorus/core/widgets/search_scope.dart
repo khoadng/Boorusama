@@ -47,6 +47,8 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   void initState() {
     super.initState();
 
+    ref.read(searchHistoryProvider.notifier).fetchHistories();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         ref
@@ -69,9 +71,33 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
       sanitizedQueryProvider,
       (prev, curr) {
         if (prev != curr) {
-          final displayState = ref.read(searchProvider);
+          final displayState = ref.read(displayStateProvider);
           if (curr.isEmpty && displayState != DisplayState.result) {
             queryEditingController.clear();
+          }
+        }
+      },
+    );
+
+    ref.listen(
+      sanitizedQueryProvider,
+      (previous, next) {
+        if (previous != next) {
+          ref.read(suggestionsProvider.notifier).getSuggestions(next);
+        }
+      },
+    );
+
+    ref.listen(
+      sanitizedQueryProvider,
+      (prev, curr) {
+        if (prev != curr) {
+          if (curr.isEmpty) {
+            if (ref.read(displayStateProvider) != DisplayState.result) {
+              ref.read(searchProvider.notifier).resetToOptions();
+            }
+          } else {
+            ref.read(searchProvider.notifier).goToSuggestions();
           }
         }
       },
@@ -81,7 +107,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
       onTap: () => context.focusScope.unfocus(),
       child: Builder(
         builder: (context) {
-          final displayState = ref.watch(searchProvider);
+          final displayState = ref.watch(displayStateProvider);
           final theme = ref.watch(themeProvider);
           final selectedTags = ref.watch(selectedTagsProvider);
 

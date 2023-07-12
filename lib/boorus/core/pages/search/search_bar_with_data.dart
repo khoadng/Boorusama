@@ -24,7 +24,7 @@ class SearchBarWithData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final displayState = ref.watch(searchProvider);
+    final displayState = ref.watch(displayStateProvider);
     final currentQuery = ref.watch(searchQueryProvider);
 
     return BooruSearchBar(

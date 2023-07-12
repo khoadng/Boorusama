@@ -132,8 +132,8 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   }
 
   void _onHistoryCleared(WidgetRef ref) =>
-      ref.read(searchProvider.notifier).clearHistories();
+      ref.read(searchHistoryProvider.notifier).clearHistories();
 
   void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
-      ref.read(searchProvider.notifier).removeHistory(value);
+      ref.read(searchHistoryProvider.notifier).removeHistory(value.query);
 }

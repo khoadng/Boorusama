@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/feats/search/search_mixin.dart';
 
 enum DisplayState {
   options,
@@ -10,8 +11,7 @@ enum DisplayState {
   result,
 }
 
-final searchProvider =
-    NotifierProvider.autoDispose<SearchNotifier, DisplayState>(
+final searchProvider = NotifierProvider.autoDispose<SearchNotifier, void>(
   SearchNotifier.new,
   dependencies: [
     selectedTagsProvider,
@@ -21,103 +21,35 @@ final searchProvider =
   ],
 );
 
-class SearchNotifier extends AutoDisposeNotifier<DisplayState>
-    with SearchHistoryNotifierMixin {
+final displayStateProvider = StateProvider<DisplayState>((ref) {
+  return DisplayState.options;
+});
+
+class SearchNotifier extends AutoDisposeNotifier<void> with SearchMixin {
   SearchNotifier() : super();
 
   @override
-  DisplayState build() {
-    ref.listen(
-      sanitizedQueryProvider,
-      (previous, next) {
-        if (previous != next) {
-          ref.read(suggestionsProvider.notifier).getSuggestions(next);
-        }
-      },
-    );
+  void build() {}
 
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          if (curr.isEmpty) {
-            if (state != DisplayState.result) {
-              resetToOptions();
-            }
-          } else {
-            goToSuggestions();
-          }
-        }
-      },
-    );
+  @override
+  FilterOperator get filterOperator => ref.read(filterOperatorProvider);
 
-    _sh.fetchHistories();
+  @override
+  StateController<String> get queryController =>
+      ref.read(searchQueryProvider.notifier);
 
-    return DisplayState.options;
-  }
+  @override
+  SearchHistoryNotifier get searchHistory =>
+      ref.read(searchHistoryProvider.notifier);
 
-  void submit(String value) {
-    _selectedTags.addTag(value);
-    resetToOptions();
-  }
+  @override
+  List<TagSearchItem> get selectedTagItems => ref.read(selectedTagsProvider);
 
-  void skipToResultWithTag(String tag) {
-    _selectedTags.clear();
-    _selectedTags.addTag(tag);
-    _sh.addHistory(_rawSelectedTagString);
-    goToResult();
-  }
-
-  void search() {
-    _sh.addHistory(_rawSelectedTagString);
-    goToResult();
-  }
-
-  void tapTag(String tag) {
-    _selectedTags.addTag(
-      tag,
-      operator: ref.read(filterOperatorProvider),
-    );
-    _query.state = '';
-
-    if (state == DisplayState.suggestion) {
-      resetToOptions();
-    }
-  }
-
-  void tapHistoryTag(String tag) {
-    _selectedTags.addTags(tag.split(' '));
-  }
-
-  void removeSelectedTag(TagSearchItem tag) {
-    _selectedTags.removeTag(tag);
-    resetToOptions();
-  }
-
-  void tapRawMetaTag(String tag) => _query.state = '$tag:';
-
-  void goToSuggestions() => state = DisplayState.suggestion;
-
-  void resetToOptions() {
-    _query.state = '';
-    state = DisplayState.options;
-  }
-
-  void goToResult() {
-    state = DisplayState.result;
-  }
-
-  SearchHistoryNotifier get _sh => ref.read(searchHistoryProvider.notifier);
-  StateController<String> get _query => ref.read(searchQueryProvider.notifier);
-  SelectedTagsNotifier get _selectedTags =>
+  @override
+  SelectedTagsNotifier get selectedTags =>
       ref.read(selectedTagsProvider.notifier);
-  String get _rawSelectedTagString =>
-      ref.read(selectedTagsProvider).map((e) => e.toString()).join(' ');
-}
 
-mixin SearchHistoryNotifierMixin<T> on AutoDisposeNotifier<T> {
-  void clearHistories() =>
-      ref.read(searchHistoryProvider.notifier).clearHistories();
-  void removeHistory(SearchHistory history) =>
-      ref.read(searchHistoryProvider.notifier).removeHistory(history.query);
+  @override
+  StateController<DisplayState> get stateController =>
+      ref.read(displayStateProvider.notifier);
 }

@@ -22,7 +22,7 @@ final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
 });
 
 final allowSearchProvider = Provider.autoDispose<bool>((ref) {
-  final displayState = ref.watch(searchProvider);
+  final displayState = ref.watch(displayStateProvider);
   final selectedTags = ref.watch(selectedTagsProvider);
 
   if (displayState == DisplayState.options) {
