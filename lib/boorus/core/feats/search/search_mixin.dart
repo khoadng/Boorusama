@@ -13,14 +13,12 @@ mixin SearchMixin {
   void skipToResultWithTag(String tag) {
     selectedTagController.clear();
     selectedTagController.addTag(tag);
-    searchHistory
-        .addHistory(selectedTagItems.map((e) => e.toString()).join(' '));
+    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
     goToResult();
   }
 
   void search() {
-    searchHistory
-        .addHistory(selectedTagItems.map((e) => e.toString()).join(' '));
+    searchHistory.addHistory(selectedTagController.rawTags.join(' '));
     goToResult();
   }
 
@@ -29,9 +27,9 @@ mixin SearchMixin {
       tag,
       operator: filterOperator,
     );
-    queryController.clear();
+    textEditingController.clear();
 
-    if (stateController.value == DisplayState.suggestion) {
+    if (searchStateController.value == DisplayState.suggestion) {
       resetToOptions();
     }
   }
@@ -40,24 +38,24 @@ mixin SearchMixin {
     selectedTagController.addTags(tag.split(' '));
   }
 
-  void tapRawMetaTag(String tag) => queryController.text = '$tag:';
+  void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
 
-  void goToSuggestions() => stateController.value = DisplayState.suggestion;
+  void goToSuggestions() =>
+      searchStateController.value = DisplayState.suggestion;
 
   void resetToOptions() {
-    queryController.clear();
-    stateController.value = DisplayState.options;
+    textEditingController.clear();
+    searchStateController.value = DisplayState.options;
   }
 
   void goToResult() {
-    stateController.value = DisplayState.result;
+    searchStateController.value = DisplayState.result;
   }
 
   SearchHistoryNotifier get searchHistory;
-  TextEditingController get queryController;
-  ValueNotifier<DisplayState> get stateController;
+  TextEditingController get textEditingController;
+  ValueNotifier<DisplayState> get searchStateController;
   SelectedTagController get selectedTagController;
-
-  FilterOperator get filterOperator;
-  List<TagSearchItem> get selectedTagItems;
+  FilterOperator get filterOperator =>
+      getFilterOperator(textEditingController.text);
 }

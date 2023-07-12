@@ -12,30 +12,47 @@ enum DisplayState {
 
 class SearchPageController extends ChangeNotifier with SearchMixin {
   SearchPageController({
-    required this.filterOperatorBuilder,
-    required this.queryController,
+    required this.textEditingController,
     required this.searchHistory,
     required this.selectedTagController,
-    required this.stateController,
-  }) : super();
+    required this.searchStateController,
+    required this.suggestions,
+  }) : super() {
+    textEditingController.addListener(_onTextChanged);
+    searchHistory.fetchHistories();
+  }
 
-  final FilterOperator Function() filterOperatorBuilder;
+  final SuggestionsNotifier suggestions;
 
   @override
-  FilterOperator get filterOperator => filterOperatorBuilder();
-
-  @override
-  final TextEditingController queryController;
+  final TextEditingController textEditingController;
 
   @override
   final SearchHistoryNotifier searchHistory;
 
   @override
-  List<TagSearchItem> get selectedTagItems => selectedTagController.tags;
-
-  @override
   final SelectedTagController selectedTagController;
 
   @override
-  final ValueNotifier<DisplayState> stateController;
+  final ValueNotifier<DisplayState> searchStateController;
+
+  void _onTextChanged() {
+    final query = textEditingController.text;
+
+    if (query.isEmpty) {
+      if (searchStateController.value != DisplayState.result) {
+        resetToOptions();
+      }
+    } else {
+      goToSuggestions();
+    }
+
+    suggestions.getSuggestions(query);
+  }
+
+  @override
+  void dispose() {
+    textEditingController.removeListener(_onTextChanged);
+    super.dispose();
+  }
 }

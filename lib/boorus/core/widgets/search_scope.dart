@@ -48,11 +48,11 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
   late final searchController = SearchPageController(
-    filterOperatorBuilder: () => getFilterOperator(queryEditingController.text),
-    queryController: queryEditingController,
+    textEditingController: queryEditingController,
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
-    stateController: displayState,
+    searchStateController: displayState,
+    suggestions: ref.read(suggestionsProvider.notifier),
   );
 
   final displayState = ValueNotifier(DisplayState.options);
@@ -61,41 +61,21 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   void initState() {
     super.initState();
 
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         searchController.skipToResultWithTag(widget.initialQuery!);
       }
     });
-
-    queryEditingController.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
-    queryEditingController.removeListener(_onTextChanged);
-
     queryEditingController.dispose();
     selectedTagController.dispose();
     searchController.dispose();
 
     focus.dispose();
     super.dispose();
-  }
-
-  void _onTextChanged() {
-    final query = queryEditingController.text;
-
-    if (query.isEmpty) {
-      if (displayState.value != DisplayState.result) {
-        searchController.resetToOptions();
-      }
-    } else {
-      searchController.goToSuggestions();
-    }
-
-    ref.read(suggestionsProvider.notifier).getSuggestions(query);
   }
 
   @override
