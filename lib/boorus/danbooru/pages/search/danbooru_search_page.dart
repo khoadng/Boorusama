@@ -8,7 +8,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
@@ -81,15 +80,16 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: widget.metatagHighlightColor,
         ),
       },
-      builder: (state, theme, focus, controller, tags, notifier, allowSearch) =>
+      builder: (state, theme, focus, controller, selectedTagController,
+              notifier, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               allowSearch: allowSearch,
               onSearch: () {
-                final tags = ref.read(selectedTagsProvider);
-                final rawTags = tags.map((e) => e.toString()).toList();
-                ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
+                ref
+                    .read(postCountStateProvider.notifier)
+                    .getPostCount(selectedTagController.rawTags);
                 notifier.search();
               },
             ),
@@ -115,7 +115,9 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: CustomScrollView(
                 slivers: [
                   SliverPinnedHeader(
-                    child: SelectedTagListWithData(tags: tags),
+                    child: SelectedTagListWithData(
+                      controller: selectedTagController,
+                    ),
                   ),
                   SliverToBoxAdapter(
                     child: SearchLandingView(
@@ -159,8 +161,9 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               ),
             ),
             body: DefaultSearchSuggestionView(
-              tags: tags,
               textEditingController: controller,
+              notifier: notifier,
+              selectedTagController: selectedTagController,
             ),
           ),
         DisplayState.result => ResultView(
@@ -169,7 +172,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 onTap: () => notifier.goToSuggestions(),
                 onBack: () => notifier.resetToOptions(),
               ),
-              SliverToBoxAdapter(child: SelectedTagListWithData(tags: tags)),
+              SliverToBoxAdapter(
+                  child: SelectedTagListWithData(
+                controller: selectedTagController,
+              )),
             ],
           )
       },

@@ -44,11 +44,6 @@ mixin SearchMixin {
     selectedTags.addTags(tag.split(' '));
   }
 
-  void removeSelectedTag(TagSearchItem tag) {
-    selectedTags.removeTag(tag);
-    resetToOptions();
-  }
-
   void tapRawMetaTag(String tag) => queryController.state = '$tag:';
 
   void goToSuggestions() => stateController.state = DisplayState.suggestion;

@@ -9,7 +9,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -81,15 +80,16 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags, notifier, allowSearch) =>
+      builder: (state, theme, focus, controller, selectedTagController,
+              notifier, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               allowSearch: allowSearch,
               onSearch: () {
-                final tags = ref.read(selectedTagsProvider);
-                final rawTags = tags.map((e) => e.toString()).toList();
-                ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
+                ref
+                    .read(postCountStateProvider.notifier)
+                    .getPostCount(selectedTagController.rawTags);
                 notifier.search();
               },
             ),
@@ -114,7 +114,9 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
             body: SafeArea(
               child: CustomScrollView(slivers: [
                 SliverPinnedHeader(
-                  child: SelectedTagListWithData(tags: tags),
+                  child: SelectedTagListWithData(
+                    controller: selectedTagController,
+                  ),
                 ),
                 const SliverToBoxAdapter(
                   child: SearchLandingView(),
@@ -142,8 +144,9 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               ),
             ),
             body: DefaultSearchSuggestionView(
-              tags: tags,
+              selectedTagController: selectedTagController,
               textEditingController: controller,
+              notifier: notifier,
             ),
           ),
         DisplayState.result => PostScope(
@@ -161,7 +164,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                 ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
-                  tags: tags,
+                  controller: selectedTagController,
                 )),
                 SliverToBoxAdapter(
                   child: Row(

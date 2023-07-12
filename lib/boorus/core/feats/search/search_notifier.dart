@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/feats/search/search_mixin.dart';
 
 enum DisplayState {
   options,

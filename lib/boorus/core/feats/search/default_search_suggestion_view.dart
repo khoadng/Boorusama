@@ -5,23 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/search/selected_tags_controller.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/tags/tag_suggestion_items.dart';
 import 'search_notifier.dart';
 import 'suggestions_notifier.dart';
-import 'tag_search_item.dart';
 
 class DefaultSearchSuggestionView extends ConsumerWidget {
   const DefaultSearchSuggestionView({
     super.key,
-    required this.tags,
     required this.textEditingController,
+    required this.selectedTagController,
+    required this.notifier,
   });
 
-  final List<TagSearchItem> tags;
   final TextEditingController textEditingController;
+  final SelectedTagController selectedTagController;
+  final SearchNotifier notifier;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +33,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
       child: Column(
         children: [
           SelectedTagListWithData(
-            tags: tags,
+            controller: selectedTagController,
           ),
           Expanded(
             child: ValueListenableBuilder(
@@ -45,7 +47,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                   currentQuery: query.text,
                   onItemTap: (tag) {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    ref.read(searchProvider.notifier).tapTag(tag.value);
+                    notifier.tapTag(tag.value);
                   },
                   textColorBuilder: (tag) =>
                       generateAutocompleteTagColor(tag, theme),
