@@ -1,22 +1,18 @@
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
 
 // Project imports:
-import 'filter_operator.dart';
-import 'search_history_notifier.dart';
-import 'search_notifier.dart';
-import 'selected_tags_notifier.dart';
-import 'tag_search_item.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 
 mixin SearchMixin {
   void submit(String value) {
-    selectedTags.addTag(value);
+    selectedTagController.addTag(value);
     resetToOptions();
   }
 
   void skipToResultWithTag(String tag) {
-    selectedTags.clear();
-    selectedTags.addTag(tag);
+    selectedTagController.clear();
+    selectedTagController.addTag(tag);
     searchHistory
         .addHistory(selectedTagItems.map((e) => e.toString()).join(' '));
     goToResult();
@@ -29,38 +25,38 @@ mixin SearchMixin {
   }
 
   void tapTag(String tag) {
-    selectedTags.addTag(
+    selectedTagController.addTag(
       tag,
       operator: filterOperator,
     );
-    queryController.state = '';
+    queryController.clear();
 
-    if (stateController.state == DisplayState.suggestion) {
+    if (stateController.value == DisplayState.suggestion) {
       resetToOptions();
     }
   }
 
   void tapHistoryTag(String tag) {
-    selectedTags.addTags(tag.split(' '));
+    selectedTagController.addTags(tag.split(' '));
   }
 
-  void tapRawMetaTag(String tag) => queryController.state = '$tag:';
+  void tapRawMetaTag(String tag) => queryController.text = '$tag:';
 
-  void goToSuggestions() => stateController.state = DisplayState.suggestion;
+  void goToSuggestions() => stateController.value = DisplayState.suggestion;
 
   void resetToOptions() {
-    queryController.state = '';
-    stateController.state = DisplayState.options;
+    queryController.clear();
+    stateController.value = DisplayState.options;
   }
 
   void goToResult() {
-    stateController.state = DisplayState.result;
+    stateController.value = DisplayState.result;
   }
 
   SearchHistoryNotifier get searchHistory;
-  StateController<String> get queryController;
-  StateController<DisplayState> get stateController;
-  SelectedTagsNotifier get selectedTags;
+  TextEditingController get queryController;
+  ValueNotifier<DisplayState> get stateController;
+  SelectedTagController get selectedTagController;
 
   FilterOperator get filterOperator;
   List<TagSearchItem> get selectedTagItems;

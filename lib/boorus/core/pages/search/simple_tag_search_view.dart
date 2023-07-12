@@ -11,7 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -100,7 +100,7 @@ class SimpleTagSearchView extends ConsumerWidget {
                 ref.read(_queryProvider.notifier).state = value;
                 ref
                     .read(suggestionsQuickSearchProvider.notifier)
-                    .getSuggestions(value);
+                    .getSuggestions(value, FilterOperator.none);
               },
             ),
           ),

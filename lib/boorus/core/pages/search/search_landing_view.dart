@@ -18,11 +18,13 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.onHistoryTap,
     this.metatagsBuilder,
     this.trendingBuilder,
+    required this.searchController,
   });
 
   final ValueChanged<String>? onHistoryTap;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
+  final SearchPageController searchController;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -123,12 +125,12 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   void _onTagTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    ref.read(searchProvider.notifier).tapTag(value);
+    widget.searchController.tapTag(value);
   }
 
   void _onHistoryTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    ref.read(searchProvider.notifier).tapHistoryTag(value);
+    widget.searchController.tapHistoryTag(value);
   }
 
   void _onHistoryCleared(WidgetRef ref) =>

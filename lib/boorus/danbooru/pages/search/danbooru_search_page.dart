@@ -38,14 +38,9 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
         child: DanbooruProvider(
           builder: (_) {
             return CustomContextMenuOverlay(
-              child: ProviderScope(
-                overrides: [
-                  selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-                ],
-                child: DanbooruSearchPage(
-                  metatagHighlightColor: context.colorScheme.primary,
-                  initialQuery: tag,
-                ),
+              child: DanbooruSearchPage(
+                metatagHighlightColor: context.colorScheme.primary,
+                initialQuery: tag,
               ),
             );
           },
@@ -81,7 +76,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         ),
       },
       builder: (state, theme, focus, controller, selectedTagController,
-              notifier, allowSearch) =>
+              searchController, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
@@ -90,7 +85,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 ref
                     .read(postCountStateProvider.notifier)
                     .getPostCount(selectedTagController.rawTags);
-                notifier.search();
+                searchController.search();
               },
             ),
             appBar: PreferredSize(
@@ -98,16 +93,15 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) =>
-                    ref.read(searchProvider.notifier).submit(value),
-                onChanged: (value) =>
-                    ref.read(searchQueryProvider.notifier).state = value,
+                onSubmitted: (value) => searchController.submit(value),
+                // onChanged: (value) =>
+                //     ref.read(searchQueryProvider.notifier).state = value,
                 onClear: () {
                   controller.clear();
-                  ref.read(searchQueryProvider.notifier).state = '';
+                  // ref.read(searchQueryProvider.notifier).state = '';
                 },
                 onBack: () => state != DisplayState.options
-                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    ? searchController.resetToOptions()
                     : context.navigator.pop(),
               ),
             ),
@@ -117,20 +111,20 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                   SliverPinnedHeader(
                     child: SelectedTagListWithData(
                       controller: selectedTagController,
+                      searchController: searchController,
                     ),
                   ),
                   SliverToBoxAdapter(
                     child: SearchLandingView(
+                      searchController: searchController,
                       trendingBuilder: (context) => TrendingSection(
                         onTagTap: (value) {
-                          ref.read(searchProvider.notifier).tapTag(value);
+                          searchController.tapTag(value);
                         },
                       ),
                       metatagsBuilder: (context) => DanbooruMetatagsSection(
                         onOptionTap: (value) {
-                          ref
-                              .read(searchProvider.notifier)
-                              .tapRawMetaTag(value);
+                          searchController.tapRawMetaTag(value);
                           focus.requestFocus();
                           _onTextChanged(controller, '$value:');
                         },
@@ -147,34 +141,35 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) =>
-                    ref.read(searchProvider.notifier).submit(value),
-                onChanged: (value) =>
-                    ref.read(searchQueryProvider.notifier).state = value,
+                onSubmitted: (value) => searchController.submit(value),
+                // onChanged: (value) =>
+                //     ref.read(searchQueryProvider.notifier).state = value,
                 onClear: () {
                   controller.clear();
-                  ref.read(searchQueryProvider.notifier).state = '';
+                  // ref.read(searchQueryProvider.notifier).state = '';
                 },
                 onBack: () => state != DisplayState.options
-                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    ? searchController.resetToOptions()
                     : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
               textEditingController: controller,
-              notifier: notifier,
+              searchController: searchController,
               selectedTagController: selectedTagController,
             ),
           ),
         DisplayState.result => ResultView(
+            selectedTagController: selectedTagController,
             headerBuilder: () => [
               SearchAppBarResultView(
-                onTap: () => notifier.goToSuggestions(),
-                onBack: () => notifier.resetToOptions(),
+                onTap: () => searchController.goToSuggestions(),
+                onBack: () => searchController.resetToOptions(),
               ),
               SliverToBoxAdapter(
                   child: SelectedTagListWithData(
                 controller: selectedTagController,
+                searchController: searchController,
               )),
             ],
           )

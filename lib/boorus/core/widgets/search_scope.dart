@@ -27,7 +27,7 @@ class SearchScope extends ConsumerStatefulWidget {
     FocusNode focus,
     RichTextController controller,
     SelectedTagController selectedTagController,
-    SearchNotifier notifier,
+    SearchPageController notifier,
     bool allowSearch,
   ) builder;
 
@@ -47,6 +47,16 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   late final selectedTagController =
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
+  late final searchController = SearchPageController(
+    filterOperatorBuilder: () => getFilterOperator(queryEditingController.text),
+    queryController: queryEditingController,
+    searchHistory: ref.read(searchHistoryProvider.notifier),
+    selectedTagController: selectedTagController,
+    stateController: displayState,
+  );
+
+  final displayState = ValueNotifier(DisplayState.options);
+
   @override
   void initState() {
     super.initState();
@@ -55,90 +65,79 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
-        ref
-            .read(searchProvider.notifier)
-            .skipToResultWithTag(widget.initialQuery!);
+        searchController.skipToResultWithTag(widget.initialQuery!);
       }
     });
+
+    queryEditingController.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
+    queryEditingController.removeListener(_onTextChanged);
+
     queryEditingController.dispose();
     selectedTagController.dispose();
+    searchController.dispose();
+
     focus.dispose();
     super.dispose();
   }
 
+  void _onTextChanged() {
+    final query = queryEditingController.text;
+    final op = getFilterOperator(query);
+
+    if (query.isEmpty) {
+      if (displayState.value != DisplayState.result) {
+        searchController.resetToOptions();
+      }
+    } else {
+      searchController.goToSuggestions();
+    }
+
+    if ((sanitizeQuery(query)).length == 1 && op != FilterOperator.none) {
+      return;
+    }
+
+    ref.read(suggestionsProvider.notifier).getSuggestions(sanitizeQuery(query));
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          final displayState = ref.read(displayStateProvider);
-          if (curr.isEmpty && displayState != DisplayState.result) {
-            queryEditingController.clear();
-          }
-        }
-      },
-    );
-
-    ref.listen(
-      sanitizedQueryProvider,
-      (previous, next) {
-        if (previous != next) {
-          ref.read(suggestionsProvider.notifier).getSuggestions(next);
-        }
-      },
-    );
-
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          if (curr.isEmpty) {
-            if (ref.read(displayStateProvider) != DisplayState.result) {
-              ref.read(searchProvider.notifier).resetToOptions();
-            }
-          } else {
-            ref.read(searchProvider.notifier).goToSuggestions();
-          }
-        }
-      },
-    );
-
     return GestureDetector(
       onTap: () => context.focusScope.unfocus(),
       child: Builder(
         builder: (context) {
-          final displayState = ref.watch(displayStateProvider);
           final theme = ref.watch(themeProvider);
-          final notifier = ref.watch(searchProvider.notifier);
 
-          return widget.builder(
-            displayState,
-            theme,
-            focus,
-            queryEditingController,
-            selectedTagController,
-            notifier,
-            allowSearch(ref),
+          return ValueListenableBuilder(
+            valueListenable: selectedTagController,
+            builder: (context, tags, child) {
+              return ValueListenableBuilder(
+                valueListenable: displayState,
+                builder: (context, state, child) {
+                  return widget.builder(
+                    state,
+                    theme,
+                    focus,
+                    queryEditingController,
+                    selectedTagController,
+                    searchController,
+                    allowSearch(state, tags),
+                  );
+                },
+              );
+            },
           );
         },
       ),
     );
   }
 
-  bool allowSearch(WidgetRef ref) {
-    final displayState = ref.watch(displayStateProvider);
-    final selectedTags = ref.watch(selectedTagsProvider);
-
-    if (displayState == DisplayState.options) {
-      return selectedTags.isNotEmpty;
-    }
-    if (displayState == DisplayState.suggestion) return false;
-
-    return false;
-  }
+  bool allowSearch(DisplayState state, List<TagSearchItem> tags) =>
+      switch (state) {
+        DisplayState.options => tags.isNotEmpty,
+        _ => false,
+      };
 }

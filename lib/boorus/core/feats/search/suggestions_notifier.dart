@@ -26,7 +26,8 @@ final fallbackSuggestionsProvider =
 final suggestionProvider = Provider.family<IList<AutocompleteData>, String>(
   (ref, tag) {
     final suggestions = ref.watch(suggestionsProvider);
-    return suggestions[tag] ?? ref.watch(fallbackSuggestionsProvider);
+    return suggestions[sanitizeQuery(tag)] ??
+        ref.watch(fallbackSuggestionsProvider);
   },
   dependencies: [
     suggestionsProvider,
@@ -51,12 +52,6 @@ final suggestionQuickSearchProvider =
   dependencies: [suggestionsQuickSearchProvider],
 );
 
-final shouldNotFetchSuggestionsProvider = Provider.autoDispose<bool>((ref) {
-  final query = ref.watch(sanitizedQueryProvider);
-  final operator = ref.watch(filterOperatorProvider);
-  return query.length == 1 && operator != FilterOperator.none;
-});
-
 class SuggestionsNotifier
     extends Notifier<IMap<String, IList<AutocompleteData>>> with DebounceMixin {
   SuggestionsNotifier() : super();
@@ -68,9 +63,8 @@ class SuggestionsNotifier
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
-  void getSuggestions(String query) {
+  void getSuggestions(String query, [FilterOperator? operator]) {
     if (state.containsKey(query)) return;
-    if (ref.read(shouldNotFetchSuggestionsProvider)) return;
     if (query.isEmpty) return;
 
     debounce(

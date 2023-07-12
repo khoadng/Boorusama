@@ -14,9 +14,11 @@ class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
     super.key,
     required this.controller,
+    required this.searchController,
   });
 
   final SelectedTagController controller;
+  final SearchPageController searchController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,7 +34,7 @@ class SelectedTagListWithData extends ConsumerWidget {
                   onClear: () => controller.clear(),
                   onDelete: (tag) {
                     controller.removeTag(tag);
-                    ref.read(searchProvider.notifier).resetToOptions();
+                    searchController.resetToOptions();
                   },
                   onBulkDownload: (tags) => goToBulkDownloadPage(
                     context,

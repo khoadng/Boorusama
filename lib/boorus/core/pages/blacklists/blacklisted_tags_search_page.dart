@@ -77,7 +77,9 @@ class _BlacklistedTagsSearchPageState
       _queryProvider,
       (previous, next) {
         if (previous != next) {
-          ref.read(_suggestionsProvider.notifier).getSuggestions(next);
+          ref
+              .read(_suggestionsProvider.notifier)
+              .getSuggestions(next, FilterOperator.none);
         }
       },
     );

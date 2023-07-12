@@ -40,14 +40,9 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
       child: MoebooruProvider(
         builder: (gcontext) {
           return CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-              ],
-              child: MoebooruSearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
-                initialQuery: tag,
-              ),
+            child: MoebooruSearchPage(
+              metatagHighlightColor: context.colorScheme.primary,
+              initialQuery: tag,
             ),
           );
         },
@@ -65,28 +60,27 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
     return SearchScope(
       initialQuery: widget.initialQuery,
       builder: (state, theme, focus, controller, selectedTagController,
-              notifier, allowSearch) =>
+              searchController, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               allowSearch: allowSearch,
-              onSearch: notifier.search,
+              onSearch: searchController.search,
             ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) =>
-                    ref.read(searchProvider.notifier).submit(value),
-                onChanged: (value) =>
-                    ref.read(searchQueryProvider.notifier).state = value,
+                onSubmitted: (value) => searchController.submit(value),
+                // onChanged: (value) =>
+                //     ref.read(searchQueryProvider.notifier).state = value,
                 onClear: () {
                   controller.clear();
-                  ref.read(searchQueryProvider.notifier).state = '';
+                  // ref.read(searchQueryProvider.notifier).state = '';
                 },
                 onBack: () => state != DisplayState.options
-                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    ? searchController.resetToOptions()
                     : context.navigator.pop(),
               ),
             ),
@@ -95,10 +89,13 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                 SliverPinnedHeader(
                   child: SelectedTagListWithData(
                     controller: selectedTagController,
+                    searchController: searchController,
                   ),
                 ),
-                const SliverToBoxAdapter(
-                  child: SearchLandingView(),
+                SliverToBoxAdapter(
+                  child: SearchLandingView(
+                    searchController: searchController,
+                  ),
                 ),
               ]),
             ),
@@ -109,28 +106,27 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
-                onSubmitted: (value) =>
-                    ref.read(searchProvider.notifier).submit(value),
-                onChanged: (value) =>
-                    ref.read(searchQueryProvider.notifier).state = value,
+                onSubmitted: (value) => searchController.submit(value),
+                // onChanged: (value) =>
+                //     ref.read(searchQueryProvider.notifier).state = value,
                 onClear: () {
                   controller.clear();
-                  ref.read(searchQueryProvider.notifier).state = '';
+                  // ref.read(searchQueryProvider.notifier).state = '';
                 },
                 onBack: () => state != DisplayState.options
-                    ? ref.read(searchProvider.notifier).resetToOptions()
+                    ? searchController.resetToOptions()
                     : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
               selectedTagController: selectedTagController,
               textEditingController: controller,
-              notifier: notifier,
+              searchController: searchController,
             ),
           ),
         DisplayState.result => PostScope(
             fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  ref.read(selectedRawTagStringProvider).join(' '),
+                  selectedTagController.rawTags.join(' '),
                   page,
                 ),
             builder: (context, controller, errors) => MoebooruInfinitePostList(
@@ -138,12 +134,13 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               controller: controller,
               sliverHeaderBuilder: (context) => [
                 SearchAppBarResultView(
-                  onTap: () => notifier.goToSuggestions(),
-                  onBack: () => notifier.resetToOptions(),
+                  onTap: () => searchController.goToSuggestions(),
+                  onBack: () => searchController.resetToOptions(),
                 ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
                   controller: selectedTagController,
+                  searchController: searchController,
                 )),
                 const SliverToBoxAdapter(
                   child: Row(

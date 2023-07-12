@@ -16,16 +16,16 @@ class SearchAppBar extends ConsumerWidget {
     required this.queryEditingController,
     this.focusNode,
     required this.onBack,
-    required this.onClear,
-    required this.onChanged,
+    this.onClear,
+    this.onChanged,
     required this.onSubmitted,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
   final VoidCallback onBack;
-  final VoidCallback onClear;
-  final void Function(String value) onChanged;
+  final VoidCallback? onClear;
+  final void Function(String value)? onChanged;
   final void Function(String value) onSubmitted;
 
   @override

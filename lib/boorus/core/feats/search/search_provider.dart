@@ -6,20 +6,16 @@ import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
 
-final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
-
-final sanitizedQueryProvider = Provider.autoDispose<String>((ref) {
-  final query = ref.watch(searchQueryProvider);
+String sanitizeQuery(String query) {
   final trimmed = query.trim().replaceAll(' ', '_');
   final operator = stringToFilterOperator(trimmed.getFirstCharacter());
 
   return stripFilterOperator(trimmed, operator);
-});
+}
 
-final filterOperatorProvider = Provider.autoDispose<FilterOperator>((ref) {
-  final query = ref.watch(searchQueryProvider);
+FilterOperator getFilterOperator(String query) {
   return stringToFilterOperator(query.trim().getFirstCharacter());
-});
+}
 
 final searchMetatagStringRegexProvider = Provider<RegExp>((ref) {
   final metatags = ref.watch(metatagsProvider);

@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/tags/tag_suggestion_items.dart';
-import 'search_notifier.dart';
+import 'search_controller.dart';
 import 'suggestions_notifier.dart';
 
 class DefaultSearchSuggestionView extends ConsumerWidget {
@@ -18,12 +18,12 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
     super.key,
     required this.textEditingController,
     required this.selectedTagController,
-    required this.notifier,
+    required this.searchController,
   });
 
   final TextEditingController textEditingController;
   final SelectedTagController selectedTagController;
-  final SearchNotifier notifier;
+  final SearchPageController searchController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,6 +34,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
         children: [
           SelectedTagListWithData(
             controller: selectedTagController,
+            searchController: searchController,
           ),
           Expanded(
             child: ValueListenableBuilder(
@@ -47,7 +48,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                   currentQuery: query.text,
                   onItemTap: (tag) {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    notifier.tapTag(tag.value);
+                    searchController.tapTag(tag.value);
                   },
                   textColorBuilder: (tag) =>
                       generateAutocompleteTagColor(tag, theme),

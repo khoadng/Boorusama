@@ -6,20 +6,6 @@ import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/tags/tag_info_service.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 
-final selectedTagsProvider =
-    NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
-        () => throw UnimplementedError(),
-        dependencies: [
-      tagInfoProvider,
-    ]);
-
-final selectedRawTagStringProvider = Provider.autoDispose<List<String>>((ref) {
-  final selectedTags = ref.watch(selectedTagsProvider);
-  return selectedTags.map((tag) => tag.toString()).toList();
-}, dependencies: [
-  selectedTagsProvider,
-]);
-
 class SelectedTagsNotifier extends AutoDisposeNotifier<List<TagSearchItem>> {
   SelectedTagsNotifier() : super();
 
