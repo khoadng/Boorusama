@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/booru_chip.dart';
 
 class RelatedTagButton extends StatelessWidget {
   const RelatedTagButton({
@@ -21,29 +21,18 @@ class RelatedTagButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = generateChipColors(backgroundColor, theme);
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: colors.foregroundColor,
-          padding: const EdgeInsets.only(left: 6, right: 2),
-          backgroundColor: colors.backgroundColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          side: BorderSide(
-            color: colors.borderColor,
-          ),
-        ),
+      child: BooruChip(
+        color: backgroundColor,
         onPressed: onPressed,
-        icon: ConstrainedBox(
+        label: const Icon(Icons.add),
+        theme: theme,
+        trailing: ConstrainedBox(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.5),
           child: label,
         ),
-        label: const Icon(Icons.add),
       ),
     );
   }
