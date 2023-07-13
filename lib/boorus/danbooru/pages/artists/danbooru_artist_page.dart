@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'related_tag_cloud_chip.dart';
 
 Widget provideArtistPageDependencies(
@@ -87,52 +88,8 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
               loading: () => const TagOtherNames(otherNames: null),
             ),
             backgroundImageUrl: widget.backgroundImageUrl,
-            extraBuilder: (context) => [
-              if (related == null)
-                SliverToBoxAdapter(
-                  child: FittedBox(
-                    child: Scatter(
-                      fillGaps: true,
-                      delegate: FermatSpiralScatterDelegate(
-                        ratio: context.screenAspectRatio,
-                      ),
-                      children: [
-                        for (var i = 0; i < _kTagCloudTotal; i++)
-                          RelatedTagCloudChip(
-                            index: i,
-                            tag: _dummyTags[i],
-                            theme: theme,
-                            isDummy: true,
-                            onPressed: () {},
-                          ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                SliverToBoxAdapter(
-                  child: FittedBox(
-                    child: Scatter(
-                      fillGaps: true,
-                      delegate: FermatSpiralScatterDelegate(
-                        ratio: context.screenAspectRatio,
-                      ),
-                      children: [
-                        for (var i = 0; i < tags.length; i++)
-                          RelatedTagCloudChip(
-                            index: i,
-                            tag: tags[i],
-                            theme: theme,
-                            onPressed: () => goToSearchPage(
-                              context,
-                              tag: tags[i].tag,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                )
-            ],
+            extraBuilder: (context) =>
+                _buildExtra(related, context, theme, tags),
           )
         : TagDetailPageDesktop(
             tagName: widget.artistName,
@@ -142,7 +99,62 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
                   const SizedBox(height: 40, width: 40),
               loading: () => const TagOtherNames(otherNames: null),
             ),
+            sliverExtraBuilder: _buildExtra(related, context, theme, tags),
           );
+  }
+
+  List<Widget> _buildExtra(
+    RelatedTag? related,
+    BuildContext context,
+    ThemeMode theme,
+    List<RelatedTagItem> tags,
+  ) {
+    return [
+      if (related == null)
+        SliverToBoxAdapter(
+          child: FittedBox(
+            child: Scatter(
+              fillGaps: true,
+              delegate: FermatSpiralScatterDelegate(
+                ratio: context.screenAspectRatio,
+              ),
+              children: [
+                for (var i = 0; i < _kTagCloudTotal; i++)
+                  RelatedTagCloudChip(
+                    index: i,
+                    tag: _dummyTags[i],
+                    theme: theme,
+                    isDummy: true,
+                    onPressed: () {},
+                  ),
+              ],
+            ),
+          ),
+        )
+      else
+        SliverToBoxAdapter(
+          child: FittedBox(
+            child: Scatter(
+              fillGaps: true,
+              delegate: FermatSpiralScatterDelegate(
+                ratio: context.screenAspectRatio,
+              ),
+              children: [
+                for (var i = 0; i < tags.length; i++)
+                  RelatedTagCloudChip(
+                    index: i,
+                    tag: tags[i],
+                    theme: theme,
+                    onPressed: () => goToSearchPage(
+                      context,
+                      tag: tags[i].tag,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        )
+    ];
   }
 }
 

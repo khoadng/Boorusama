@@ -32,10 +32,6 @@ import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
 import 'related_posts_section.dart';
 
-final danbooruPostProvider = Provider<DanbooruPost>((ref) {
-  throw UnimplementedError();
-});
-
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
@@ -143,49 +139,43 @@ class _DanbooruPostDetailsPageState
         final characters =
             ref.watch(danbooruPostDetailsCharacterProvider(posts[page].id));
 
-        return ProviderScope(
-          overrides: [
-            danbooruPostProvider.overrideWithValue(posts[page]),
-          ],
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: CustomScrollView(
-              physics:
-                  enableSwipe ? null : const NeverScrollableScrollPhysics(),
-              controller: PageContentScrollController.of(context),
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => widgets[index],
-                    childCount: widgets.length,
-                  ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: CustomScrollView(
+            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
+            controller: PageContentScrollController.of(context),
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => widgets[index],
+                  childCount: widgets.length,
                 ),
-                const RelatedPostsSection(),
-                RecommendArtistList(
-                  onTap: (recommendIndex, postIndex) => goToDetailPage(
-                    context: context,
-                    posts: artists[recommendIndex].posts,
-                    initialIndex: postIndex,
-                  ),
-                  onHeaderTap: (index) =>
-                      goToArtistPage(context, artists[index].tag),
-                  recommends: artists,
-                  imageUrl: (item) => item.url360x360,
+              ),
+              RelatedPostsSection(post: posts[page]),
+              RecommendArtistList(
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
+                  context: context,
+                  posts: artists[recommendIndex].posts,
+                  initialIndex: postIndex,
                 ),
-                RecommendCharacterList(
-                  onHeaderTap: (index) =>
-                      goToCharacterPage(context, characters[index].tag),
-                  onTap: (recommendIndex, postIndex) => goToDetailPage(
-                    context: context,
-                    posts: characters[recommendIndex].posts,
-                    initialIndex: postIndex,
-                    hero: false,
-                  ),
-                  recommends: characters,
-                  imageUrl: (item) => item.url360x360,
+                onHeaderTap: (index) =>
+                    goToArtistPage(context, artists[index].tag),
+                recommends: artists,
+                imageUrl: (item) => item.url360x360,
+              ),
+              RecommendCharacterList(
+                onHeaderTap: (index) =>
+                    goToCharacterPage(context, characters[index].tag),
+                onTap: (recommendIndex, postIndex) => goToDetailPage(
+                  context: context,
+                  posts: characters[recommendIndex].posts,
+                  initialIndex: postIndex,
+                  hero: false,
                 ),
-              ],
-            ),
+                recommends: characters,
+                imageUrl: (item) => item.url360x360,
+              ),
+            ],
           ),
         );
       },
@@ -268,7 +258,7 @@ class _DanbooruPostDetailsPageState
     final post = posts[page];
     final noteState = ref.watch(notesControllerProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
-    final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
+    final tags = post.extractTagDetails();
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
         ? extension(post.sampleImageUrl) == '.webm'

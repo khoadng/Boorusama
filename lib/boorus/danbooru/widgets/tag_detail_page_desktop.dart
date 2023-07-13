@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'tag_detail_page.dart';
 
 class TagDetailPageDesktop extends StatelessWidget {
@@ -11,10 +12,12 @@ class TagDetailPageDesktop extends StatelessWidget {
     super.key,
     required this.tagName,
     required this.otherNamesBuilder,
+    this.sliverExtraBuilder,
   });
 
   final String tagName;
   final Widget Function(BuildContext context) otherNamesBuilder;
+  final List<Widget>? sliverExtraBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +31,21 @@ class TagDetailPageDesktop extends StatelessWidget {
                 Positioned.fill(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 60),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 10),
-                        TagTitleName(tagName: tagName),
-                        const SizedBox(height: 8),
-                        Expanded(child: otherNamesBuilder(context)),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              const SizedBox(height: 10),
+                              TagTitleName(tagName: tagName),
+                              const SizedBox(height: 8),
+                              otherNamesBuilder(context),
+                            ],
+                          ),
+                        ),
+                        if (sliverExtraBuilder != null)
+                          const SliverSizedBox(height: 12),
+                        if (sliverExtraBuilder != null) ...sliverExtraBuilder!,
                       ],
                     ),
                   ),

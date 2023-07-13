@@ -43,8 +43,8 @@ class SliverPostGrid extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
       ),
-      sliver: Builder(
-        builder: (context) {
+      sliver: SliverLayoutBuilder(
+        builder: (context, constraints) {
           if (error != null) {
             final message = translateBooruError(error!);
 
@@ -91,7 +91,7 @@ class SliverPostGrid extends ConsumerWidget {
           final payload = gridSizeToGridData(
             size: gridSize,
             spacing: imageGridSpacing,
-            screenWidth: MediaQuery.of(context).size.width,
+            screenWidth: constraints.crossAxisExtent,
           );
           final crossAxisCount = payload.$1;
           final mainAxisSpacing = payload.$2;
@@ -102,7 +102,7 @@ class SliverPostGrid extends ConsumerWidget {
                 gridDelegate: gridSizeToGridDelegate(
                   size: gridSize,
                   spacing: imageGridSpacing,
-                  screenWidth: MediaQuery.of(context).size.width,
+                  screenWidth: constraints.crossAxisExtent,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   itemBuilder,
@@ -150,49 +150,53 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
     final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
 
-    final data = gridSizeToGridData(
-      size: gridSize,
-      spacing: imageGridSpacing,
-      screenWidth: MediaQuery.of(context).size.width,
-    );
-    final crossAxisCount = data.$1;
-    final mainAxisSpacing = data.$2;
-    final crossAxisSpacing = data.$3;
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final data = gridSizeToGridData(
+          size: gridSize,
+          spacing: imageGridSpacing,
+          screenWidth: constraints.crossAxisExtent,
+        );
+        final crossAxisCount = data.$1;
+        final mainAxisSpacing = data.$2;
+        final crossAxisSpacing = data.$3;
 
-    return switch (imageListType) {
-      ImageListType.standard => SliverGrid(
-          gridDelegate: gridSizeToGridDelegate(
-            size: gridSize,
-            spacing: imageGridSpacing,
-            screenWidth: MediaQuery.of(context).size.width,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (context, _) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: context.theme.cardColor,
-                  borderRadius: BorderRadius.circular(
-                    imageBorderRadius,
-                  ),
-                ),
-              );
-            },
-            childCount: 100,
-          ),
-        ),
-      ImageListType.masonry => SliverMasonryGrid.count(
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          childCount: 100,
-          itemBuilder: (context, index) {
-            return createRandomPlaceholderContainer(
-              context,
-              borderRadius: BorderRadius.circular(imageBorderRadius),
-            );
-          },
-        )
-    };
+        return switch (imageListType) {
+          ImageListType.standard => SliverGrid(
+              gridDelegate: gridSizeToGridDelegate(
+                size: gridSize,
+                spacing: imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, _) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: context.theme.cardColor,
+                      borderRadius: BorderRadius.circular(
+                        imageBorderRadius,
+                      ),
+                    ),
+                  );
+                },
+                childCount: 100,
+              ),
+            ),
+          ImageListType.masonry => SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
+              childCount: 100,
+              itemBuilder: (context, index) {
+                return createRandomPlaceholderContainer(
+                  context,
+                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                );
+              },
+            )
+        };
+      },
+    );
   }
 }
 
