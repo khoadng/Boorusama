@@ -1,4 +1,11 @@
-part of 'tags_provider.dart';
+// Package imports:
+import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/functional.dart';
 
 final danbooruRelatedTagRepProvider = Provider<RelatedTagRepository>((ref) {
   final api = ref.watch(danbooruApiProvider);

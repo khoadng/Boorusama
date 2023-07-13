@@ -6,8 +6,10 @@ import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+
+import 'blacklisted_tags_notifier.dart';
+import 'blacklisted_tags_repository.dart';
 
 final danbooruBlacklistedTagRepoProvider = Provider<BlacklistedTagsRepository>(
   (ref) {
