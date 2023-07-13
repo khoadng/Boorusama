@@ -244,7 +244,8 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
 int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
       ScreenSize.small => 1,
       ScreenSize.medium => 2,
-      ScreenSize.large || ScreenSize.veryLarge => 3,
+      ScreenSize.large => 3,
+      ScreenSize.veryLarge => 4,
     };
 
 (

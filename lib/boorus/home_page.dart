@@ -24,6 +24,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/conditional_parent_widget.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -87,82 +88,109 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       key: scaffoldKey,
-      drawer: const SideBarMenu(
-        width: 300,
-        popOnSelect: true,
-        padding: EdgeInsets.zero,
-      ),
-      body: Builder(
-        builder: (context) {
-          final config = ref.watch(currentBooruConfigProvider);
-          final booru = ref.watch(currentBooruProvider);
-
-          switch (booru.booruType) {
-            case BooruType.unknown:
-              return const Center(
-                child: Text('Unknown booru'),
-              );
-            case BooruType.e621:
-            case BooruType.e926:
-              return E621Provider(
-                builder: (context) {
-                  return CustomContextMenuOverlay(
-                    child: E621HomePage(
-                      onMenuTap: _onMenuTap,
-                      key: ValueKey(config.id),
-                    ),
-                  );
-                },
-              );
-            case BooruType.aibooru:
-            case BooruType.danbooru:
-            case BooruType.safebooru:
-            case BooruType.testbooru:
-              return DanbooruProvider(
-                builder: (context) {
-                  return CustomContextMenuOverlay(
-                    child: DanbooruHomePage(
-                      onMenuTap: _onMenuTap,
-                      key: ValueKey(config.id),
-                    ),
-                  );
-                },
-              );
-            case BooruType.gelbooru:
-            case BooruType.rule34xxx:
-              final gkey = ValueKey(config.id);
-
-              return GelbooruProvider(
-                key: gkey,
-                builder: (gcontext) => CustomContextMenuOverlay(
-                  child: GelbooruHomePage(
-                    key: gkey,
-                    onMenuTap: _onMenuTap,
-                  ),
-                ),
-              );
-            case BooruType.konachan:
-            case BooruType.yandere:
-            case BooruType.sakugabooru:
-            case BooruType.lolibooru:
-              final gkey = ValueKey(config.id);
-
-              return MoebooruProvider(
-                key: gkey,
-                builder: (gcontext) => CustomContextMenuOverlay(
-                  child: MoebooruHomePage(
-                    key: gkey,
-                    onMenuTap: _onMenuTap,
-                  ),
-                ),
-              );
-          }
-        },
+      drawer: isMobilePlatform()
+          ? const SideBarMenu(
+              width: 300,
+              popOnSelect: true,
+              padding: EdgeInsets.zero,
+            )
+          : null,
+      body: ConditionalParentWidget(
+        condition: !isMobilePlatform(),
+        conditionalBuilder: (child) => Row(
+          children: [
+            const SideBarMenu(
+              width: 300,
+              popOnSelect: false,
+              padding: EdgeInsets.zero,
+            ),
+            Expanded(child: child),
+          ],
+        ),
+        child: HomePageBody(
+          onMenuTap: _onMenuTap,
+        ),
       ),
     );
   }
 
   void _onMenuTap() {
     scaffoldKey.currentState!.openDrawer();
+  }
+}
+
+class HomePageBody extends ConsumerWidget {
+  const HomePageBody({
+    super.key,
+    required this.onMenuTap,
+  });
+
+  final VoidCallback onMenuTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(currentBooruConfigProvider);
+    final booru = ref.watch(currentBooruProvider);
+
+    switch (booru.booruType) {
+      case BooruType.unknown:
+        return const Center(
+          child: Text('Unknown booru'),
+        );
+      case BooruType.e621:
+      case BooruType.e926:
+        return E621Provider(
+          builder: (context) {
+            return CustomContextMenuOverlay(
+              child: E621HomePage(
+                onMenuTap: onMenuTap,
+                key: ValueKey(config.id),
+              ),
+            );
+          },
+        );
+      case BooruType.aibooru:
+      case BooruType.danbooru:
+      case BooruType.safebooru:
+      case BooruType.testbooru:
+        return DanbooruProvider(
+          builder: (context) {
+            return CustomContextMenuOverlay(
+              child: DanbooruHomePage(
+                onMenuTap: onMenuTap,
+                key: ValueKey(config.id),
+              ),
+            );
+          },
+        );
+      case BooruType.gelbooru:
+      case BooruType.rule34xxx:
+        final gkey = ValueKey(config.id);
+
+        return GelbooruProvider(
+          key: gkey,
+          builder: (gcontext) => CustomContextMenuOverlay(
+            child: GelbooruHomePage(
+              key: gkey,
+              onMenuTap: onMenuTap,
+            ),
+          ),
+        );
+      case BooruType.konachan:
+      case BooruType.yandere:
+      case BooruType.sakugabooru:
+      case BooruType.lolibooru:
+        final gkey = ValueKey(config.id);
+
+        return MoebooruProvider(
+          key: gkey,
+          builder: (gcontext) => CustomContextMenuOverlay(
+            child: MoebooruHomePage(
+              key: gkey,
+              onMenuTap: onMenuTap,
+            ),
+          ),
+        );
+    }
   }
 }
