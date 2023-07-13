@@ -6,36 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/search/filter_operator.dart';
-import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
-import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
-import 'package:boorusama/boorus/core/feats/search/tag_search_item.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
+import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/functional.dart';
-
-//FIXME: This entire file is a mess, refactor it. Start by refactoring the logic from search_provider.dart and search_notifier.dart
-final _selectedTagsProvider =
-    NotifierProvider.autoDispose<SelectedTagsNotifier, List<TagSearchItem>>(
-        SelectedTagsNotifier.new,
-        dependencies: [
-      tagInfoProvider,
-    ]);
-
-final _queryProvider = StateProvider<String>((ref) => '');
-
-final _suggestionsProvider = NotifierProvider<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>>(
-  SuggestionsNotifier.new,
-  dependencies: [
-    autocompleteRepoProvider,
-    currentBooruConfigProvider,
-  ],
-);
 
 class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
   const BlacklistedTagsSearchPage({
@@ -55,93 +31,120 @@ class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
 
 class _BlacklistedTagsSearchPageState
     extends ConsumerState<BlacklistedTagsSearchPage> {
+  late final SelectedTagController selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+  final queryEditingController = TextEditingController();
+
+  var _isSearching = false;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialTags != null) {
-        ref.read(_selectedTagsProvider.notifier).addTags(widget.initialTags!);
+        selectedTagController.addTags(widget.initialTags!);
       }
     });
+
+    queryEditingController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    ref
+        .read(suggestionsProvider.notifier)
+        .getSuggestions(queryEditingController.text);
+
+    setState(() {
+      _isSearching = queryEditingController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    queryEditingController.removeListener(_onTextChanged);
+    queryEditingController.dispose();
+    selectedTagController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
-    final query = ref.watch(_queryProvider);
-    final selectedTags = ref.watch(_selectedTagsProvider);
-    final suggestions = ref.watch(_suggestionsProvider);
-
-    ref.listen(
-      _queryProvider,
-      (previous, next) {
-        if (previous != next) {
-          ref.read(_suggestionsProvider.notifier).getSuggestions(next);
-        }
-      },
-    );
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            widget.onSelectedDone(ref.read(_selectedTagsProvider), query),
+        onPressed: () => widget.onSelectedDone(
+          selectedTagController.tags,
+          queryEditingController.text,
+        ),
         heroTag: null,
         child: const FaIcon(FontAwesomeIcons.check),
       ),
-      appBar: AppBar(
-        toolbarHeight: kToolbarHeight * 1.2,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        title: const _SearchBar(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+        child: SearchAppBar(
+          queryEditingController: queryEditingController,
+          onSubmitted: (value) => selectedTagController.addTag(value),
+          onBack: () => context.navigator.pop(),
+        ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            if (selectedTags.isNotEmpty) ...[
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                height: 35,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: selectedTags.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: _buildSelectedTagChip(
-                        selectedTags[index],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const Divider(
-                height: 15,
-                thickness: 3,
-                indent: 10,
-                endIndent: 10,
-              ),
-            ],
-            Expanded(
-              child: TagSuggestionItems(
-                textColorBuilder: (tag) =>
-                    generateAutocompleteTagColor(tag, theme),
-                tags: suggestions[query] ?? <AutocompleteData>[].lock,
-                currentQuery: query,
-                onItemTap: (tag) {
-                  ref.read(_selectedTagsProvider.notifier).addTag(
-                        tag.value,
-                        operator: FilterOperator.none,
+        child: ValueListenableBuilder(
+          valueListenable: selectedTagController,
+          builder: (context, selectedTags, __) {
+            return Column(
+              children: [
+                if (selectedTags.isNotEmpty) ...[
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    height: 35,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: selectedTags.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: _buildSelectedTagChip(
+                            selectedTags[index],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const Divider(
+                    height: 15,
+                    thickness: 3,
+                    indent: 10,
+                    endIndent: 10,
+                  ),
+                ],
+                if (_isSearching)
+                  Expanded(
+                      child: ValueListenableBuilder(
+                    valueListenable: queryEditingController,
+                    builder: (context, query, __) {
+                      final tags = ref.watch(suggestionProvider(query.text));
+
+                      return TagSuggestionItems(
+                        textColorBuilder: (tag) =>
+                            generateAutocompleteTagColor(tag, theme),
+                        tags: tags,
+                        currentQuery: sanitizeQuery(query.text),
+                        onItemTap: (tag) {
+                          selectedTagController.addTag(
+                            tag.value,
+                            operator: getFilterOperator(query.text),
+                          );
+                          queryEditingController.clear();
+                        },
                       );
-                  // clear query
-                  ref.read(_queryProvider.notifier).state = '';
-                },
-              ),
-            ),
-          ],
+                    },
+                  )),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -161,9 +164,7 @@ class _BlacklistedTagsSearchPageState
           size: 15,
         ),
         labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-        onDeleted: () => ref.read(_selectedTagsProvider.notifier).removeTag(
-              tagSearchItem,
-            ),
+        onDeleted: () => selectedTagController.removeTag(tagSearchItem),
         label: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.85,
@@ -207,9 +208,7 @@ class _BlacklistedTagsSearchPageState
             color: Colors.red,
             size: 15,
           ),
-          onDeleted: () => ref.read(_selectedTagsProvider.notifier).removeTag(
-                tagSearchItem,
-              ),
+          onDeleted: () => selectedTagController.removeTag(tagSearchItem),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: ConstrainedBox(
             constraints: BoxConstraints(
@@ -222,54 +221,6 @@ class _BlacklistedTagsSearchPageState
           ),
         ),
       ],
-    );
-  }
-}
-
-class _SearchBar extends ConsumerStatefulWidget {
-  const _SearchBar();
-
-  @override
-  ConsumerState<_SearchBar> createState() => _SearchBarState();
-}
-
-class _SearchBarState extends ConsumerState<_SearchBar> {
-  final TextEditingController queryEditingController = TextEditingController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    queryEditingController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final query = ref.watch(_queryProvider);
-
-    ref.listen(
-      _queryProvider,
-      (previous, next) {
-        if (next.isEmpty) {
-          queryEditingController.clear();
-        }
-      },
-    );
-
-    return BooruSearchBar(
-      autofocus: true,
-      queryEditingController: queryEditingController,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => context.navigator.pop(),
-      ),
-      trailing: query.isNotEmpty
-          ? IconButton(
-              splashRadius: 16,
-              icon: const Icon(Icons.close),
-              onPressed: () => ref.read(_queryProvider.notifier).state = '',
-            )
-          : null,
-      onChanged: (value) => ref.read(_queryProvider.notifier).state = value,
     );
   }
 }

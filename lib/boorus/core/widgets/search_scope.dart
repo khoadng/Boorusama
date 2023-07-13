@@ -26,7 +26,9 @@ class SearchScope extends ConsumerStatefulWidget {
     ThemeMode theme,
     FocusNode focus,
     RichTextController controller,
-    List<TagSearchItem> selectedTags,
+    SelectedTagController selectedTagController,
+    SearchPageController notifier,
+    bool allowSearch,
   ) builder;
 
   @override
@@ -42,6 +44,18 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     onMatch: (match) {},
   );
   final focus = FocusNode();
+  late final selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  late final searchController = SearchPageController(
+    textEditingController: queryEditingController,
+    searchHistory: ref.read(searchHistoryProvider.notifier),
+    selectedTagController: selectedTagController,
+    searchStateController: displayState,
+    suggestions: ref.read(suggestionsProvider.notifier),
+  );
+
+  final displayState = ValueNotifier(DisplayState.options);
 
   @override
   void initState() {
@@ -49,9 +63,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
-        ref
-            .read(searchProvider.notifier)
-            .skipToResultWithTag(widget.initialQuery!);
+        searchController.skipToResultWithTag(widget.initialQuery!);
       }
     });
   }
@@ -59,41 +71,48 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   @override
   void dispose() {
     queryEditingController.dispose();
+    selectedTagController.dispose();
+    searchController.dispose();
+
     focus.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          final displayState = ref.read(searchProvider);
-          if (curr.isEmpty && displayState != DisplayState.result) {
-            queryEditingController.clear();
-          }
-        }
-      },
-    );
-
     return GestureDetector(
       onTap: () => context.focusScope.unfocus(),
       child: Builder(
         builder: (context) {
-          final displayState = ref.watch(searchProvider);
           final theme = ref.watch(themeProvider);
-          final selectedTags = ref.watch(selectedTagsProvider);
 
-          return widget.builder(
-            displayState,
-            theme,
-            focus,
-            queryEditingController,
-            selectedTags,
+          return ValueListenableBuilder(
+            valueListenable: selectedTagController,
+            builder: (context, tags, child) {
+              return ValueListenableBuilder(
+                valueListenable: displayState,
+                builder: (context, state, child) {
+                  return widget.builder(
+                    state,
+                    theme,
+                    focus,
+                    queryEditingController,
+                    selectedTagController,
+                    searchController,
+                    allowSearch(state, tags),
+                  );
+                },
+              );
+            },
           );
         },
       ),
     );
   }
+
+  bool allowSearch(DisplayState state, List<TagSearchItem> tags) =>
+      switch (state) {
+        DisplayState.options => tags.isNotEmpty,
+        _ => false,
+      };
 }

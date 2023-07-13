@@ -9,7 +9,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -44,14 +43,9 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
       child: GelbooruProvider(
         builder: (gcontext) {
           return CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new)
-              ],
-              child: GelbooruSearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
-                initialQuery: tag,
-              ),
+            child: GelbooruSearchPage(
+              metatagHighlightColor: context.colorScheme.primary,
+              initialQuery: tag,
             ),
           );
         },
@@ -81,13 +75,17 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags) => switch (state) {
+      builder: (state, theme, focus, controller, selectedTagController,
+              searchController, allowSearch) =>
+          switch (state) {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
+              allowSearch: allowSearch,
               onSearch: () {
-                final tags = ref.read(selectedTagsProvider);
-                final rawTags = tags.map((e) => e.toString()).toList();
-                ref.read(postCountStateProvider.notifier).getPostCount(rawTags);
+                ref
+                    .read(postCountStateProvider.notifier)
+                    .getPostCount(selectedTagController.rawTags);
+                searchController.search();
               },
             ),
             appBar: PreferredSize(
@@ -95,15 +93,24 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: SafeArea(
               child: CustomScrollView(slivers: [
                 SliverPinnedHeader(
-                  child: SelectedTagListWithData(tags: tags),
+                  child: SelectedTagListWithData(
+                    controller: selectedTagController,
+                    searchController: searchController,
+                  ),
                 ),
-                const SliverToBoxAdapter(
-                  child: SearchLandingView(),
+                SliverToBoxAdapter(
+                  child: SearchLandingView(
+                    searchController: searchController,
+                  ),
                 ),
               ]),
             ),
@@ -114,25 +121,35 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
-              tags: tags,
+              selectedTagController: selectedTagController,
+              textEditingController: controller,
+              searchController: searchController,
             ),
           ),
         DisplayState.result => PostScope(
             fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  ref.read(selectedRawTagStringProvider).join(' '),
+                  selectedTagController.rawTags.join(' '),
                   page,
                 ),
             builder: (context, controller, errors) => GelbooruInfinitePostList(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
-                const SearchAppBarResultView(),
+                SearchAppBarResultView(
+                  onTap: () => searchController.goToSuggestions(),
+                  onBack: () => searchController.resetToOptions(),
+                ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
-                  tags: tags,
+                  controller: selectedTagController,
+                  searchController: searchController,
                 )),
                 SliverToBoxAdapter(
                   child: Row(
@@ -141,7 +158,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                       if (ref.watch(currentBooruProvider).booruType ==
                           BooruType.gelbooru)
                         ResultHeaderWithProvider(
-                          selectedTags: ref.watch(selectedRawTagStringProvider),
+                          selectedTags: selectedTagController.rawTags,
                         ),
                       const Spacer(),
                       const Padding(

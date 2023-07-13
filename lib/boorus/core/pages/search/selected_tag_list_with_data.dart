@@ -13,31 +13,39 @@ import 'package:boorusama/flutter.dart';
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
     super.key,
-    required this.tags,
+    required this.controller,
+    required this.searchController,
   });
 
-  final List<TagSearchItem> tags;
+  final SelectedTagController controller;
+  final SearchPageController searchController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      color: context.theme.scaffoldBackgroundColor,
-      child: Column(
-        children: [
-          SelectedTagList(
-            tags: tags,
-            onClear: () => ref.read(selectedTagsProvider.notifier).clear(),
-            onDelete: (tag) =>
-                ref.read(searchProvider.notifier).removeSelectedTag(tag),
-            onBulkDownload: (tags) => goToBulkDownloadPage(
-              context,
-              tags.map((e) => e.toString()).toList(),
-              ref: ref,
-            ),
-          ),
-          if (tags.isNotEmpty) const Divider(height: 15, thickness: 1),
-        ],
-      ),
-    );
+        color: context.theme.scaffoldBackgroundColor,
+        child: ValueListenableBuilder(
+          valueListenable: controller,
+          builder: (context, tags, child) {
+            return Column(
+              children: [
+                SelectedTagList(
+                  tags: tags,
+                  onClear: () => controller.clear(),
+                  onDelete: (tag) {
+                    controller.removeTag(tag);
+                    searchController.resetToOptions();
+                  },
+                  onBulkDownload: (tags) => goToBulkDownloadPage(
+                    context,
+                    tags.map((e) => e.toString()).toList(),
+                    ref: ref,
+                  ),
+                ),
+                if (tags.isNotEmpty) const Divider(height: 15, thickness: 1),
+              ],
+            );
+          },
+        ));
   }
 }

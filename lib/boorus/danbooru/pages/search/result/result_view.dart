@@ -7,7 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/search/selected_tags_notifier.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -20,10 +20,12 @@ class ResultView extends ConsumerStatefulWidget {
     this.headerBuilder,
     this.scrollController,
     this.backgroundColor,
+    required this.selectedTagController,
   });
 
   final List<Widget> Function()? headerBuilder;
   final AutoScrollController? scrollController;
+  final SelectedTagController selectedTagController;
   final Color? backgroundColor;
 
   @override
@@ -46,11 +48,9 @@ class _ResultViewState extends ConsumerState<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTags = ref.watch(selectedRawTagStringProvider);
-
     return DanbooruPostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
-            selectedTags.join(' '),
+            widget.selectedTagController.rawTags.join(' '),
             page,
           ),
       builder: (context, controller, errors) {
@@ -63,7 +63,15 @@ class _ResultViewState extends ConsumerState<ResultView> {
             SliverToBoxAdapter(
               child: Row(
                 children: [
-                  ResultHeaderWithProvider(selectedTags: selectedTags),
+                  ValueListenableBuilder(
+                    valueListenable: widget.selectedTagController,
+                    builder: (context, selectedTags, child) {
+                      return ResultHeaderWithProvider(
+                        selectedTags:
+                            selectedTags.map((e) => e.toString()).toList(),
+                      );
+                    },
+                  ),
                   const Spacer(),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),

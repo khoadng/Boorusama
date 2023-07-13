@@ -7,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -39,14 +38,9 @@ class E621SearchPage extends ConsumerStatefulWidget {
       child: E621Provider(
         builder: (context) {
           return CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-              ],
-              child: E621SearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
-                initialQuery: tag,
-              ),
+            child: E621SearchPage(
+              metatagHighlightColor: context.colorScheme.primary,
+              initialQuery: tag,
             ),
           );
         },
@@ -63,23 +57,37 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags) => switch (state) {
+      builder: (state, theme, focus, controller, selectedTagController,
+              searchController, allowSearch) =>
+          switch (state) {
         DisplayState.options => Scaffold(
-            floatingActionButton: const SearchButton(),
+            floatingActionButton: SearchButton(
+              allowSearch: allowSearch,
+              onSearch: searchController.search,
+            ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: SafeArea(
               child: CustomScrollView(slivers: [
                 SliverPinnedHeader(
-                  child: SelectedTagListWithData(tags: tags),
+                  child: SelectedTagListWithData(
+                    controller: selectedTagController,
+                    searchController: searchController,
+                  ),
                 ),
-                const SliverToBoxAdapter(
-                  child: SearchLandingView(),
+                SliverToBoxAdapter(
+                  child: SearchLandingView(
+                    searchController: searchController,
+                  ),
                 ),
               ]),
             ),
@@ -90,25 +98,35 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
-              tags: tags,
+              selectedTagController: selectedTagController,
+              textEditingController: controller,
+              searchController: searchController,
             ),
           ),
         DisplayState.result => PostScope(
             fetcher: (page) => ref.watch(e621PostRepoProvider).getPosts(
-                  ref.read(selectedRawTagStringProvider).join(' '),
+                  selectedTagController.rawTags.join(' '),
                   page,
                 ),
             builder: (context, controller, errors) => E621InfinitePostList(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
-                const SearchAppBarResultView(),
+                SearchAppBarResultView(
+                  onTap: () => searchController.goToSuggestions(),
+                  onBack: () => searchController.resetToOptions(),
+                ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
-                  tags: tags,
+                  searchController: searchController,
+                  controller: selectedTagController,
                 )),
                 const SliverToBoxAdapter(
                   child: Row(
