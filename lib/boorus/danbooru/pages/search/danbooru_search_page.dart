@@ -63,6 +63,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         ref
             .read(postCountStateProvider.notifier)
             .getPostCount([widget.initialQuery!]);
+
+        ref
+            .read(danbooruRelatedTagsProvider.notifier)
+            .fetch(widget.initialQuery!);
       }
     });
   }

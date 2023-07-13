@@ -18,6 +18,8 @@ extension FlutterX on BuildContext {
 
   double get screenWidth => mediaQuery.size.width;
 
+  double get screenAspectRatio => mediaQuery.size.aspectRatio;
+
   NavigatorState get navigator => Navigator.of(this);
 
   FocusScopeNode get focusScope => FocusScope.of(this);

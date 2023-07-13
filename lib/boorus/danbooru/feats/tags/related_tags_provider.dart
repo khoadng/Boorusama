@@ -14,3 +14,17 @@ final danbooruRelatedTagsProvider =
 final danbooruRelatedTagProvider = Provider.family<RelatedTag?, String>(
   (ref, tag) => ref.watch(danbooruRelatedTagsProvider)[tag],
 );
+
+final danbooruRelatedTagCosineSimilarityProvider =
+    Provider.family<RelatedTag?, String>(
+  (ref, tag) {
+    final relatedTag = ref.watch(danbooruRelatedTagProvider(tag));
+
+    if (relatedTag == null) return null;
+
+    return relatedTag.copyWith(
+      tags: relatedTag.tags
+          .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity)),
+    );
+  },
+);

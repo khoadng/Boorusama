@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -28,9 +27,6 @@ class RelatedTagHeader extends StatefulWidget {
 }
 
 class _RelatedTagHeaderState extends State<RelatedTagHeader> {
-  late final tags = widget.relatedTag.tags
-      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,7 +36,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...tags.take(10).map((item) => _RelatedTagChip(
+          ...widget.relatedTag.tags.take(10).map((item) => _RelatedTagChip(
                 relatedTag: item,
                 onPressed: () => widget.onSelected(item),
               )),

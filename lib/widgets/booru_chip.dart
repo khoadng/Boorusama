@@ -9,25 +9,27 @@ class BooruChip extends StatelessWidget {
   const BooruChip({
     super.key,
     this.color,
-    required this.onPressed,
+    this.onPressed,
     required this.label,
-    required this.theme,
+    this.theme,
     this.trailing,
-    this.padding,
+    this.contentPadding,
     this.visualDensity,
   });
 
   final Color? color;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget label;
-  final ThemeMode theme;
+  final ThemeMode? theme;
   final Widget? trailing;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? contentPadding;
   final VisualDensity? visualDensity;
 
   @override
   Widget build(BuildContext context) {
-    final colors = color != null ? generateChipColors(color!, theme) : null;
+    final colors = color != null
+        ? generateChipColors(color!, theme ?? ThemeMode.amoledDark)
+        : null;
 
     return trailing != null
         ? ElevatedButton.icon(
@@ -51,7 +53,8 @@ class BooruChip extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               visualDensity: visualDensity,
               foregroundColor: colors?.foregroundColor,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding:
+                  contentPadding ?? const EdgeInsets.symmetric(horizontal: 8),
               backgroundColor: colors?.backgroundColor,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16)),

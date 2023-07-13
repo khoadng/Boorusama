@@ -4,6 +4,8 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
+const _kTagLimit = 300;
+
 class RelatedTagRepositoryApi implements RelatedTagRepository {
   const RelatedTagRepositoryApi(
     this.api,
@@ -13,7 +15,7 @@ class RelatedTagRepositoryApi implements RelatedTagRepository {
 
   @override
   Future<RelatedTag> getRelatedTag(String query) => api
-      .getRelatedTag(query)
+      .getRelatedTag(query, _kTagLimit)
       .then(extractData)
       .then(RelatedTagDto.fromJson)
       .then(relatedTagDtoToRelatedTag)

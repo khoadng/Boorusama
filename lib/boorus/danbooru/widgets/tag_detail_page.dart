@@ -19,12 +19,14 @@ class TagDetailPage extends ConsumerStatefulWidget {
     required this.tagName,
     required this.otherNamesBuilder,
     required this.backgroundImageUrl,
+    this.extraBuilder,
     this.includeHeaders = true,
   });
 
   final String tagName;
   final String backgroundImageUrl;
   final Widget Function(BuildContext context) otherNamesBuilder;
+  final List<Widget> Function(BuildContext context)? extraBuilder;
   final bool includeHeaders;
 
   @override
@@ -80,8 +82,12 @@ class _TagDetailPageState extends ConsumerState<TagDetailPage> {
                 ],
               ),
             ),
+          if (widget.includeHeaders && widget.extraBuilder != null)
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
+          if (widget.includeHeaders && widget.extraBuilder != null)
+            ...widget.extraBuilder!.call(context),
           if (widget.includeHeaders)
-            const SliverToBoxAdapter(child: SizedBox(height: 50)),
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
           SliverPadding(
             padding: const EdgeInsets.only(bottom: 10),
             sliver: SliverToBoxAdapter(
