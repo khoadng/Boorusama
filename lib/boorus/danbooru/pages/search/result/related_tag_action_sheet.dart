@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -14,18 +15,28 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
-class RelatedTagActionSheet extends ConsumerWidget {
+class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
     super.key,
     required this.relatedTag,
+    required this.onSelected,
   });
 
   final RelatedTag relatedTag;
+  final void Function(RelatedTagItem tag) onSelected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+  ConsumerState<RelatedTagActionSheet> createState() =>
+      _RelatedTagActionSheetState();
+}
 
+class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
+  late final tags = widget.relatedTag.tags
+      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ref.watch(themeProvider);
     final booru = ref.watch(currentBooruProvider);
 
     return Scaffold(
@@ -44,9 +55,9 @@ class RelatedTagActionSheet extends ConsumerWidget {
         itemBuilder: (context, index) => ListTile(
           visualDensity: const ShrinkVisualDensity(),
           title: Text(
-            relatedTag.tags[index].tag.removeUnderscoreWithSpace(),
+            tags[index].tag.removeUnderscoreWithSpace(),
             style: TextStyle(
-              color: getTagColor(relatedTag.tags[index].category, theme),
+              color: getTagColor(tags[index].category, theme),
             ),
           ),
           trailing: PopupMenuButton(
@@ -62,7 +73,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
                   onTap: () {
                     context.navigator.pop();
                     context.navigator.pop();
-                    //FIXME: implement this
+                    widget.onSelected(tags[index]);
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
                   trailing: const FaIcon(
@@ -79,7 +90,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
                     context.navigator.pop();
                     launchWikiPage(
                       booru.url,
-                      relatedTag.tags[index].tag,
+                      tags[index].tag,
                     );
                   },
                   title: const Text('tag.related.open_wiki').tr(),
@@ -92,7 +103,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
             ],
           ),
         ),
-        itemCount: relatedTag.tags.length,
+        itemCount: tags.length,
       ),
     );
   }

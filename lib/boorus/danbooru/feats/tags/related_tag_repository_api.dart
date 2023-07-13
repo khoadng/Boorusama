@@ -5,27 +5,33 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
 class RelatedTagRepositoryApi implements RelatedTagRepository {
-  const RelatedTagRepositoryApi(DanbooruApi api) : _api = api;
+  const RelatedTagRepositoryApi(
+    this.api,
+  );
 
-  final DanbooruApi _api;
+  final DanbooruApi api;
 
   @override
-  Future<RelatedTag> getRelatedTag(String query) => _api
-          .getRelatedTag(query)
-          .then(extractData)
-          .then(RelatedTagDto.fromJson)
-          .then(relatedTagDtoToRelatedTag)
-          .catchError((obj) {
-        throw Exception('Failed to get related tags for $query\n\n$obj');
-      });
+  Future<RelatedTag> getRelatedTag(String query) => api
+      .getRelatedTag(query)
+      .then(extractData)
+      .then(RelatedTagDto.fromJson)
+      .then(relatedTagDtoToRelatedTag)
+      .catchError((obj) => const RelatedTag.empty());
 }
 
 RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
-      query: dto.query,
-      tags: dto.tags
-          .map((e) => RelatedTagItem(
-                tag: e.first as String,
-                category: intToTagCategory(e[1] as int),
-              ))
-          .toList(),
+      query: dto.query ?? '',
+      tags: dto.relatedTags != null
+          ? dto.relatedTags!
+              .map((e) => RelatedTagItem(
+                    tag: e.tag?.name ?? '',
+                    category: intToTagCategory(e.tag?.category ?? 0),
+                    jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
+                    cosineSimilarity: e.cosineSimilarity ?? 0.0,
+                    overlapCoefficient: e.overlapCoefficient ?? 0.0,
+                    postCount: e.tag?.postCount ?? 0,
+                  ))
+              .toList()
+          : [],
     );

@@ -284,9 +284,11 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
+  required void Function(RelatedTagItem tag) onSelected,
 }) {
   final page = RelatedTagActionSheet(
     relatedTag: relatedTag,
+    onSelected: onSelected,
   );
   if (Screen.of(context).size == ScreenSize.small) {
     showBarModalBottomSheet(

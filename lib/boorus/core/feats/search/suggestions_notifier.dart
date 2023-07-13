@@ -30,6 +30,10 @@ final suggestionProvider =
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);
   },
+  dependencies: [
+    suggestionsProvider,
+    fallbackSuggestionsProvider,
+  ],
 );
 
 class SuggestionsNotifier

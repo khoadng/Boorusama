@@ -10,6 +10,10 @@ class RelatedTag extends Equatable {
     required this.tags,
   });
 
+  const RelatedTag.empty()
+      : query = '',
+        tags = const [];
+
   final String query;
   final List<RelatedTagItem> tags;
 
@@ -30,11 +34,25 @@ class RelatedTagItem extends Equatable {
   const RelatedTagItem({
     required this.tag,
     required this.category,
+    required this.jaccardSimilarity,
+    required this.cosineSimilarity,
+    required this.overlapCoefficient,
+    required this.postCount,
   });
 
   final TagCategory category;
   final String tag;
+  final double jaccardSimilarity;
+  final double cosineSimilarity;
+  final double overlapCoefficient;
+  final int postCount;
 
   @override
-  List<Object?> get props => [tag, category];
+  List<Object?> get props => [
+        tag,
+        category,
+        jaccardSimilarity,
+        cosineSimilarity,
+        overlapCoefficient,
+      ];
 }

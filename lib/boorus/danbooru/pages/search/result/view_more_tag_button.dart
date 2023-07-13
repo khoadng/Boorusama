@@ -11,9 +11,11 @@ class ViewMoreTagButton extends StatelessWidget {
   const ViewMoreTagButton({
     super.key,
     required this.relatedTag,
+    required this.onSelected,
   });
 
   final RelatedTag relatedTag;
+  final void Function(RelatedTagItem tag) onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,11 @@ class ViewMoreTagButton extends StatelessWidget {
           color: context.theme.hintColor,
         ),
       ),
-      onPressed: () => goToRelatedTagsPage(context, relatedTag: relatedTag),
+      onPressed: () => goToRelatedTagsPage(
+        context,
+        relatedTag: relatedTag,
+        onSelected: onSelected,
+      ),
       child: const Text('tag.related.more').tr(),
     );
   }

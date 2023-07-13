@@ -7,6 +7,10 @@ final danbooruRelatedTagRepProvider = Provider<RelatedTagRepository>((ref) {
 });
 
 final danbooruRelatedTagsProvider =
-    NotifierProvider<RelatedTagsNotifier, Map<String, RelatedTag>>(
+    NotifierProvider<RelatedTagsNotifier, IMap<String, RelatedTag>>(
   RelatedTagsNotifier.new,
+);
+
+final danbooruRelatedTagProvider = Provider.family<RelatedTag?, String>(
+  (ref, tag) => ref.watch(danbooruRelatedTagsProvider)[tag],
 );

@@ -15,7 +15,8 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   final Set<TagSearchItem> _tags = {};
 
   List<TagSearchItem> get tags => _tags.toList();
-  List<String> get rawTags => _tags.map((e) => e.toString()).toList();
+  List<String> get rawTags => _tags.toRawStringList();
+  String get rawTagsString => _tags.toRawString();
 
   TagSearchItem _toItem(String tag) => TagSearchItem.fromString(tag, tagInfo);
   String _applyOperator(String tag, FilterOperator operator) =>
@@ -46,4 +47,9 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     _tags.clear();
     value = _tags.toList();
   }
+}
+
+extension TagSearchItemX on Iterable<TagSearchItem> {
+  String toRawString() => map((e) => e.toString()).join(' ');
+  List<String> toRawStringList() => map((e) => e.toString()).toList();
 }

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -27,7 +28,8 @@ class RelatedTagHeader extends StatefulWidget {
 }
 
 class _RelatedTagHeaderState extends State<RelatedTagHeader> {
-  late final tags = [...widget.relatedTag.tags]..shuffle();
+  late final tags = widget.relatedTag.tags
+      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,10 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
               horizontal: 8,
               vertical: 10,
             ),
-            child: ViewMoreTagButton(relatedTag: widget.relatedTag),
+            child: ViewMoreTagButton(
+              relatedTag: widget.relatedTag,
+              onSelected: widget.onSelected,
+            ),
           ),
         ],
       ),
@@ -74,6 +79,7 @@ class _RelatedTagChip extends ConsumerWidget {
     final theme = ref.watch(themeProvider);
 
     return RelatedTagButton(
+      theme: theme,
       backgroundColor: getTagColor(relatedTag.category, theme),
       onPressed: onPressed,
       label: Text(

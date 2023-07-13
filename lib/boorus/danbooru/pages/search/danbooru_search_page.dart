@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
@@ -82,12 +83,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         DisplayState.options => Scaffold(
             floatingActionButton: SearchButton(
               allowSearch: allowSearch,
-              onSearch: () {
-                ref
-                    .read(postCountStateProvider.notifier)
-                    .getPostCount(selectedTagController.rawTags);
-                searchController.search();
-              },
+              onSearch: () =>
+                  _onSearch(searchController, selectedTagController),
             ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -150,6 +147,11 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           ),
         DisplayState.result => ResultView(
             selectedTagController: selectedTagController,
+            onRelatedTagSelected: (tag, postController) {
+              selectedTagController.addTag(tag.tag);
+              postController.refresh();
+              _onSearch(searchController, selectedTagController);
+            },
             headerBuilder: () => [
               SearchAppBarResultView(
                 onTap: () => searchController.goToSuggestions(),
@@ -164,6 +166,19 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           )
       },
     );
+  }
+
+  void _onSearch(
+    SearchPageController searchController,
+    SelectedTagController selectedTagController,
+  ) {
+    ref
+        .read(danbooruRelatedTagsProvider.notifier)
+        .fetch(selectedTagController.rawTagsString);
+    ref
+        .read(postCountStateProvider.notifier)
+        .getPostCount(selectedTagController.rawTags);
+    searchController.search();
   }
 }
 

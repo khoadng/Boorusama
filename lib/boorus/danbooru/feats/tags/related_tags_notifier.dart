@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/functional.dart';
 
-class RelatedTagsNotifier extends Notifier<Map<String, RelatedTag>> {
+class RelatedTagsNotifier extends Notifier<IMap<String, RelatedTag>> {
   @override
-  Map<String, RelatedTag> build() {
-    return {};
+  IMap<String, RelatedTag> build() {
+    return <String, RelatedTag>{}.lock;
   }
 
   RelatedTagRepository get repo => ref.read(danbooruRelatedTagRepProvider);
@@ -17,9 +18,6 @@ class RelatedTagsNotifier extends Notifier<Map<String, RelatedTag>> {
 
     final result = await repo.getRelatedTag(tag);
 
-    state = {
-      ...state,
-      tag: result,
-    };
+    state = state.add(tag, result);
   }
 }

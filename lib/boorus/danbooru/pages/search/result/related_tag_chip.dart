@@ -1,8 +1,9 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class RelatedTagButton extends StatelessWidget {
   const RelatedTagButton({
@@ -10,26 +11,30 @@ class RelatedTagButton extends StatelessWidget {
     required this.backgroundColor,
     required this.onPressed,
     required this.label,
+    required this.theme,
   });
 
   final Color backgroundColor;
   final VoidCallback onPressed;
   final Widget label;
+  final ThemeMode theme;
 
   @override
   Widget build(BuildContext context) {
+    final colors = generateChipColors(backgroundColor, theme);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          foregroundColor: backgroundColor,
+          foregroundColor: colors.foregroundColor,
           padding: const EdgeInsets.only(left: 6, right: 2),
-          backgroundColor: context.theme.cardColor,
+          backgroundColor: colors.backgroundColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           side: BorderSide(
-            color: context.theme.hintColor,
+            color: colors.borderColor,
           ),
         ),
         onPressed: onPressed,
