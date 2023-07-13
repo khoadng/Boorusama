@@ -2,7 +2,6 @@
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-
 import 'blacklisted_tags_notifier.dart';
 
 class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {

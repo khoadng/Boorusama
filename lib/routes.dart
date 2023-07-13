@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/core/pages/bookmarks/bookmark_details.dart';
@@ -165,6 +166,7 @@ class Routes {
         routes: [
           boorus(ref),
           settings(),
+          settingsDesktop(),
           bookmarks(),
         ],
       );
@@ -212,12 +214,12 @@ class Routes {
   static GoRoute settings() => GoRoute(
         path: 'settings',
         name: '/settings',
+        redirect: (context, state) =>
+            !isMobilePlatform() ? '/desktop/settings' : null,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           name: state.name,
-          child: isMobilePlatform()
-              ? const SettingsPage()
-              : const SettingsPageDesktop(),
+          child: const SettingsPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
@@ -229,5 +231,40 @@ class Routes {
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
         ],
+      );
+
+  static GoRoute settingsDesktop() => GoRoute(
+        path: 'desktop/settings',
+        name: '/desktop/settings',
+        pageBuilder: (context, state) => DialogPage(
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: context.screenWidth * 0.05,
+                    horizontal: context.screenHeight * 0.1,
+                  ),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  child: Dialog(
+                    backgroundColor: Theme.of(context).cardColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: SettingsPageDesktop(),
+                      ),
+                    ),
+                  ),
+                )),
       );
 }
