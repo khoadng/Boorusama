@@ -28,10 +28,12 @@ class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
     super.key,
     required this.initialIndex,
     required this.posts,
+    required this.onExit,
   });
 
   final int initialIndex;
   final List<DanbooruPost> posts;
+  final void Function(int index) onExit;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -57,6 +59,7 @@ class _DanbooruPostDetailsDesktopPageState
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
 
     return DetailsPageDesktop(
+      onExit: widget.onExit,
       initialPage: widget.initialIndex,
       totalPages: widget.posts.length,
       onPageChanged: (page) {

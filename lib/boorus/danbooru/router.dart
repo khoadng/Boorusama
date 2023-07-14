@@ -98,6 +98,9 @@ Future<void> goToDetailPage({
         builder: (context) => DanbooruPostDetailsDesktopPage(
           initialIndex: initialIndex,
           posts: posts,
+          onExit: (index) {
+            scrollController?.scrollToIndex(index);
+          },
         ),
       ),
     );

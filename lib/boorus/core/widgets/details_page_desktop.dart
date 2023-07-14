@@ -13,6 +13,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
     this.initialPage = 0,
     required this.totalPages,
     required this.onPageChanged,
+    required this.onExit,
   });
 
   final int initialPage;
@@ -20,6 +21,7 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context) mediaBuilder;
   final Widget Function(BuildContext context) infoBuilder;
   final void Function(int page) onPageChanged;
+  final void Function(int page) onExit;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -38,6 +40,11 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
     });
   }
 
+  void _onExit() {
+    widget.onExit.call(currentPage);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CallbackShortcuts(
@@ -45,59 +52,68 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
         const SingleActivator(LogicalKeyboardKey.arrowRight): () => _nextPost(),
         const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
             _previousPost(),
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.of(context).pop(),
+        const SingleActivator(LogicalKeyboardKey.escape): () => _onExit(),
       },
-      child: Scaffold(
-        body: Row(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  widget.mediaBuilder(context),
-                  if (currentPage < widget.totalPages - 1)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: MaterialButton(
-                        color: Theme.of(context).cardColor,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                        onPressed: () => _nextPost(),
-                        child: const Icon(Icons.arrow_forward),
+      child: WillPopScope(
+        onWillPop: () {
+          _onExit();
+
+          return Future.value(false);
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            body: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      widget.mediaBuilder(context),
+                      if (currentPage < widget.totalPages - 1)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: MaterialButton(
+                            color: Theme.of(context).cardColor,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(20),
+                            onPressed: () => _nextPost(),
+                            child: const Icon(Icons.arrow_forward),
+                          ),
+                        ),
+                      if (currentPage > 0)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: MaterialButton(
+                            color: Theme.of(context).cardColor,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(20),
+                            onPressed: () => _previousPost(),
+                            child: const Icon(Icons.arrow_back),
+                          ),
+                        ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: MaterialButton(
+                            color: Theme.of(context).cardColor,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(20),
+                            onPressed: () => _onExit(),
+                            child: const Icon(Icons.close),
+                          ),
+                        ),
                       ),
-                    ),
-                  if (currentPage > 0)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: MaterialButton(
-                        color: Theme.of(context).cardColor,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                        onPressed: () => _previousPost(),
-                        child: const Icon(Icons.arrow_back),
-                      ),
-                    ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: MaterialButton(
-                        color: Theme.of(context).cardColor,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Icon(Icons.close),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 400,
+                  child: widget.infoBuilder(context),
+                ),
+              ],
             ),
-            SizedBox(
-              width: 400,
-              child: widget.infoBuilder(context),
-            ),
-          ],
+          ),
         ),
       ),
     );
