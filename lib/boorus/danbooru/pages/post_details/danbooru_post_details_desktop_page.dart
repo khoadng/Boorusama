@@ -12,9 +12,9 @@ import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
-import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/utils.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_post_action_toolbar.dart';
@@ -83,19 +83,8 @@ class _DanbooruPostDetailsDesktopPageState
           // onCached: (path) =>
           //     ref.read(postShareProvider(post).notifier).setImagePath(path ?? ''),
           previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-          imageOverlayBuilder: (constraints) => [
-            if (noteState.enableNotes)
-              ...noteState.notes
-                  .map((e) => e.adjustNoteCoordFor(
-                        post,
-                        widthConstraint: constraints.maxWidth,
-                        heightConstraint: constraints.maxHeight,
-                      ))
-                  .map((e) => PostNote(
-                        coordinate: e.coordinate,
-                        content: e.content,
-                      )),
-          ],
+          imageOverlayBuilder: (constraints) =>
+              noteOverlayBuilderDelegate(constraints, post, noteState),
           width: post.width,
           height: post.height,
         );

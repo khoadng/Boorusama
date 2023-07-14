@@ -13,12 +13,12 @@ import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
-import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -233,19 +233,8 @@ class _DanbooruPostDetailsPageState
                 .read(postShareProvider(post).notifier)
                 .setImagePath(path ?? ''),
             previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            imageOverlayBuilder: (constraints) => [
-              if (noteState.enableNotes)
-                ...noteState.notes
-                    .map((e) => e.adjustNoteCoordFor(
-                          posts[page],
-                          widthConstraint: constraints.maxWidth,
-                          heightConstraint: constraints.maxHeight,
-                        ))
-                    .map((e) => PostNote(
-                          coordinate: e.coordinate,
-                          content: e.content,
-                        )),
-            ],
+            imageOverlayBuilder: (constraints) =>
+                noteOverlayBuilderDelegate(constraints, post, noteState),
             width: post.width,
             height: post.height,
             onZoomUpdated: onZoomUpdated,
