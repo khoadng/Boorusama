@@ -3,7 +3,6 @@ import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/foundation/benchmark.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
@@ -13,7 +12,7 @@ import 'danbooru_post.dart';
 import 'danbooru_post_repository.dart';
 
 class PostRepositoryApi
-    with SettingsRepositoryMixin, LoggerMixin, BenchmarkMixin
+    with SettingsRepositoryMixin, LoggerMixin
     implements DanbooruPostRepository {
   PostRepositoryApi(
     DanbooruApi api,
@@ -59,13 +58,7 @@ class PostRepositoryApi
           ),
         );
 
-        final data = await benchmark(
-          () => $(tryParseJsonFromResponse(response, parsePost)),
-          onResult: (elapsed) => logI(
-            'Performance',
-            'Parse data for ($tags, $page, limit: $limit) took ${elapsed.inMilliseconds}ms',
-          ),
-        );
+        final data = await $(tryParseJsonFromResponse(response, parsePost));
 
         _cache.set(key, data);
 
