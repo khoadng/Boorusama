@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/foundation/crypto.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/create_booru_config_name_field.dart';
 
 class CreateMoebooruConfigPage extends StatefulWidget {

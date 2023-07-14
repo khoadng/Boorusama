@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_site_url
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AddUnknownBooruPage extends ConsumerWidget {

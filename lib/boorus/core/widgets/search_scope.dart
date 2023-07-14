@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +9,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 
 class SearchScope extends ConsumerStatefulWidget {
   const SearchScope({
@@ -23,7 +22,6 @@ class SearchScope extends ConsumerStatefulWidget {
   final String? initialQuery;
   final Widget Function(
     DisplayState state,
-    ThemeMode theme,
     FocusNode focus,
     RichTextController controller,
     SelectedTagController selectedTagController,
@@ -84,8 +82,6 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
       onTap: () => context.focusScope.unfocus(),
       child: Builder(
         builder: (context) {
-          final theme = ref.watch(themeProvider);
-
           return ValueListenableBuilder(
             valueListenable: selectedTagController,
             builder: (context, tags, child) {
@@ -94,7 +90,6 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
                 builder: (context, state, child) {
                   return widget.builder(
                     state,
-                    theme,
                     focus,
                     queryEditingController,
                     selectedTagController,

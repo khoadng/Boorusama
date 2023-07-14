@@ -9,8 +9,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/generic_no_data_box.dart';
 import 'widgets/modal_saved_search_action.dart';
 

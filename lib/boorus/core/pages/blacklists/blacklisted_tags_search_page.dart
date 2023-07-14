@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class BlacklistedTagsSearchPage extends ConsumerStatefulWidget {
   const BlacklistedTagsSearchPage({
@@ -70,8 +71,6 @@ class _BlacklistedTagsSearchPageState
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => widget.onSelectedDone(
@@ -131,8 +130,8 @@ class _BlacklistedTagsSearchPageState
                       final tags = ref.watch(suggestionProvider(query.text));
 
                       return TagSuggestionItems(
-                        textColorBuilder: (tag) =>
-                            generateAutocompleteTagColor(tag, theme),
+                        textColorBuilder: (tag) => generateAutocompleteTagColor(
+                            tag, context.themeMode),
                         tags: tags,
                         currentQuery: sanitizeQuery(query.text),
                         onItemTap: (tag) {

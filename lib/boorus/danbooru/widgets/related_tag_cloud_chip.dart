@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
@@ -14,7 +15,6 @@ class RelatedTagCloudChip extends StatelessWidget {
   const RelatedTagCloudChip({
     required this.index,
     required this.tag,
-    required this.theme,
     this.isDummy = false,
     required this.onPressed,
     super.key,
@@ -22,7 +22,6 @@ class RelatedTagCloudChip extends StatelessWidget {
 
   final int index;
   final RelatedTagItem tag;
-  final ThemeMode theme;
   final bool isDummy;
   final VoidCallback? onPressed;
 
@@ -36,7 +35,7 @@ class RelatedTagCloudChip extends StatelessWidget {
       },
       child: BooruChip(
         label: Text(
-          tag.tag.replaceAll('_', ' '),
+          tag.tag.replaceUnderscoreWithSpace(),
           style: TextStyle(
             fontSize: max((60 - (index * 2)).toDouble(), 24),
             color: isDummy ? Colors.transparent : null,
@@ -46,9 +45,8 @@ class RelatedTagCloudChip extends StatelessWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        color: getTagColor(tag.category, theme),
+        color: getTagColor(tag.category, context.themeMode),
         onPressed: onPressed,
-        theme: theme,
       ),
     );
   }

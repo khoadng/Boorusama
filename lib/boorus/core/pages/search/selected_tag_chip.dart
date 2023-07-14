@@ -6,7 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 // Project imports:
 
@@ -79,7 +81,7 @@ class SelectedTagChip extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.85,
             ),
             child: Text(
-              tagSearchItem.tag.replaceAll('_', ' '),
+              tagSearchItem.tag.replaceUnderscoreWithSpace(),
               overflow: TextOverflow.fade,
               style: const TextStyle(color: Colors.white70),
             ),

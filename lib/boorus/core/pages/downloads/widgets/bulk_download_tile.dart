@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class BulkDownloadTile extends ConsumerWidget {
   const BulkDownloadTile({

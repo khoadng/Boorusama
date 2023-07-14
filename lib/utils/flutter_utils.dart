@@ -2,14 +2,6 @@
 import 'package:flutter/material.dart';
 
 extension FlutterX on BuildContext {
-  ThemeData get theme => Theme.of(this);
-
-  TextTheme get textTheme => theme.textTheme;
-
-  IconThemeData get iconTheme => theme.iconTheme;
-
-  ColorScheme get colorScheme => theme.colorScheme;
-
   DefaultTextStyle get defaultTextStyle => DefaultTextStyle.of(this);
 
   MediaQueryData get mediaQuery => MediaQuery.of(this);

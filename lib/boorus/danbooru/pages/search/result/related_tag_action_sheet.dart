@@ -9,11 +9,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
@@ -36,7 +37,6 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
     final booru = ref.watch(currentBooruProvider);
 
     return Scaffold(
@@ -55,9 +55,9 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         itemBuilder: (context, index) => ListTile(
           visualDensity: const ShrinkVisualDensity(),
           title: Text(
-            tags[index].tag.removeUnderscoreWithSpace(),
+            tags[index].tag.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: getTagColor(tags[index].category, theme),
+              color: getTagColor(tags[index].category, context.themeMode),
             ),
           ),
           trailing: PopupMenuButton(

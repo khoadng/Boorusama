@@ -8,7 +8,6 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
@@ -41,7 +40,7 @@ class DanbooruForumPage extends ConsumerWidget {
           responseCount: topic.responseCount,
           createdAt: topic.createdAt,
           creatorName: topic.creator.name,
-          creatorColor: ref.watch(themeProvider) == ThemeMode.light
+          creatorColor: !context.themeMode.isDark
               ? topic.creator.level.toColor()
               : topic.creator.level.toOnDarkColor(),
           onCreatorTap: () =>

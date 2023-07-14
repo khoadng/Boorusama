@@ -19,7 +19,9 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+
+// Project imports:
 
 class MaterialDesktopControls extends StatefulWidget {
   const MaterialDesktopControls({

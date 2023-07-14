@@ -9,6 +9,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({super.key});

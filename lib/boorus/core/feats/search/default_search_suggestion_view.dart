@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/search/selected_tag_controller.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/tags/tag_suggestion_items.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'search_controller.dart';
 import 'suggestions_notifier.dart';
 
@@ -27,8 +27,6 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
-
     return SafeArea(
       child: Column(
         children: [
@@ -51,7 +49,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                     searchController.tapTag(tag.value);
                   },
                   textColorBuilder: (tag) =>
-                      generateAutocompleteTagColor(tag, theme),
+                      generateAutocompleteTagColor(tag, context.themeMode),
                 );
               },
             ),

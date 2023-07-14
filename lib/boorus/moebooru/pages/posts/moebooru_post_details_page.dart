@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
@@ -19,9 +19,8 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'moebooru_information_section.dart';
 
@@ -165,7 +164,6 @@ class _MoebooruPostDetailsPageState
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
@@ -174,8 +172,7 @@ class _MoebooruPostDetailsPageState
                 url: post.sampleImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
+                backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
                 url: post.sampleImageUrl,

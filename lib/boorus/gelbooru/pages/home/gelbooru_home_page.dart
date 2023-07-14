@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
@@ -11,8 +11,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
@@ -31,13 +30,11 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            theme == ThemeMode.light ? Brightness.dark : Brightness.light,
+            context.themeMode.isLight ? Brightness.dark : Brightness.light,
       ),
       child: Scaffold(
         extendBody: true,

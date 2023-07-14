@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class E621SearchPage extends ConsumerStatefulWidget {
   const E621SearchPage({
@@ -57,7 +58,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, selectedTagController,
+      builder: (state, focus, controller, selectedTagController,
               searchController, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(

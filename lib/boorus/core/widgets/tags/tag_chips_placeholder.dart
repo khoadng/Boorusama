@@ -5,7 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+
+// Project imports:
 
 class TagChipsPlaceholder extends StatelessWidget {
   const TagChipsPlaceholder({

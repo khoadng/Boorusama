@@ -164,10 +164,6 @@ Future<bool> launchExternalUrlString(
   return true;
 }
 
-extension StringX on String {
-  String removeUnderscoreWithSpace() => replaceAll('_', ' ');
-}
-
 void showSimpleSnackBar({
   required BuildContext context,
   required Widget content,

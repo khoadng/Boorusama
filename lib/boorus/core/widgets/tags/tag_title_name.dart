@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class TagTitleName extends StatelessWidget {
   const TagTitleName({
@@ -18,7 +18,7 @@ class TagTitleName extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
-        tagName.removeUnderscoreWithSpace(),
+        tagName.replaceUnderscoreWithSpace(),
         textAlign: TextAlign.center,
         style: context.textTheme.titleLarge!.copyWith(
           fontWeight: FontWeight.w900,

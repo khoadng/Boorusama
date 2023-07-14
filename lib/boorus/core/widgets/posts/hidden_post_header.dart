@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 typedef HiddenData = ({
   String name,
@@ -87,7 +88,7 @@ class _HiddenPostHeaderState extends State<HiddenPostHeader> {
                 children: [
                   for (var tag in widget.tags)
                     _BadgedChip(
-                      label: tag.name.replaceAll('_', ' '),
+                      label: tag.name.replaceUnderscoreWithSpace(),
                       count: tag.count,
                       active: tag.active,
                       onChanged: (value) => widget.onChanged(tag.name, value),

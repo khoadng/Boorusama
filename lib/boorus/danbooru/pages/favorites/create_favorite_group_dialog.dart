@@ -8,8 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
@@ -42,7 +44,8 @@ class _EditFavoriteGroupDialogState
 
     if (widget.initialData != null) {
       textController.text = widget.initialData!.postIds.join(' ');
-      nameController.text = widget.initialData!.name.replaceAll('_', ' ');
+      nameController.text =
+          widget.initialData!.name.replaceUnderscoreWithSpace();
       isPrivate = !widget.initialData!.isPublic;
     }
   }

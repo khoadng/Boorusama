@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class MoebooruSearchPage extends ConsumerStatefulWidget {
   const MoebooruSearchPage({
@@ -59,7 +60,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, selectedTagController,
+      builder: (state, focus, controller, selectedTagController,
               searchController, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(

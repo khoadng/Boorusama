@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.da
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -34,13 +33,11 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            theme == ThemeMode.light ? Brightness.dark : Brightness.light,
+            context.themeMode.isLight ? Brightness.dark : Brightness.light,
       ),
       child: Scaffold(
         extendBody: true,

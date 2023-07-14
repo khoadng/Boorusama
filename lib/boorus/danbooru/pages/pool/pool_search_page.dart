@@ -8,9 +8,9 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'pool_grid_item.dart';
@@ -115,7 +115,7 @@ class _SuggestionView extends ConsumerWidget {
       itemBuilder: (context, pool, index) => ListTile(
         visualDensity: VisualDensity.compact,
         title: Text(
-          pool.name.removeUnderscoreWithSpace(),
+          pool.name.replaceUnderscoreWithSpace(),
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: _poolCategoryToColor(pool.category),
@@ -127,7 +127,7 @@ class _SuggestionView extends ConsumerWidget {
         ),
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
-          textEditingController.text = pool.name.replaceAll('_', ' ');
+          textEditingController.text = pool.name.replaceUnderscoreWithSpace();
           ref.read(danbooruPoolQueryProvider.notifier).state = pool.name;
           ref.read(danbooruPoolSearchModeProvider.notifier).state =
               PoolSearchMode.result;

@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
@@ -19,8 +19,7 @@ import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_comme
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/utils.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
@@ -167,7 +166,6 @@ class _DanbooruPostDetailsPageState
         return [
           DanbooruNoteActionButton(
             post: post,
-            theme: ref.watch(themeProvider),
             showDownload: !expanded && noteState.notes.isEmpty,
             enableNotes: noteState.enableNotes,
             onDownload: () =>
@@ -197,7 +195,6 @@ class _DanbooruPostDetailsPageState
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final noteState = ref.watch(notesControllerProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
@@ -209,8 +206,7 @@ class _DanbooruPostDetailsPageState
                 url: post.sampleImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
+                backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
                 url: post.videoUrl,

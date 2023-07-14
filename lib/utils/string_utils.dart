@@ -32,6 +32,8 @@ extension StringX on String {
 
   int? toInt() => int.tryParse(this);
   bool? toBool() => bool.tryParse(this);
+
+  String replaceUnderscoreWithSpace() => replaceAll('_', ' ');
 }
 
 extension StringNullX on String? {

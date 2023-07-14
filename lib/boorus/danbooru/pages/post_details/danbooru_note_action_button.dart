@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/danbooru_post.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
 
@@ -14,7 +13,6 @@ class DanbooruNoteActionButton extends StatelessWidget {
   const DanbooruNoteActionButton({
     super.key,
     required this.post,
-    required this.theme,
     required this.showDownload,
     required this.enableNotes,
     required this.onDownload,
@@ -24,7 +22,6 @@ class DanbooruNoteActionButton extends StatelessWidget {
   final DanbooruPost post;
   final bool showDownload;
   final bool enableNotes;
-  final ThemeMode theme;
   final VoidCallback onDownload;
   final VoidCallback onToggleNotes;
 
@@ -51,7 +48,7 @@ class DanbooruNoteActionButton extends StatelessWidget {
               child: FaIcon(
                 FontAwesomeIcons.eyeSlash,
                 size: 18,
-                color: theme == ThemeMode.light
+                color: context.themeMode.isLight
                     ? context.colorScheme.onPrimary
                     : null,
               ),
@@ -61,7 +58,7 @@ class DanbooruNoteActionButton extends StatelessWidget {
               child: FaIcon(
                 FontAwesomeIcons.eye,
                 size: 18,
-                color: theme == ThemeMode.light
+                color: context.themeMode.isLight
                     ? context.colorScheme.onPrimary
                     : null,
               ),

@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class E621PopularPage extends ConsumerStatefulWidget {

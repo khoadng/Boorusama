@@ -6,7 +6,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class PeriodToggleSwitch extends StatefulWidget {
   const PeriodToggleSwitch({

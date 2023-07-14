@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 
 class TagOtherNames extends StatelessWidget {
@@ -39,7 +39,7 @@ class TagOtherNames extends StatelessWidget {
                             maxWidth: MediaQuery.of(context).size.width * 0.85,
                           ),
                           child: Text(
-                            otherNames![index].removeUnderscoreWithSpace(),
+                            otherNames![index].replaceUnderscoreWithSpace(),
                             overflow: TextOverflow.fade,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -74,7 +74,7 @@ class TagOtherNames extends StatelessWidget {
                                             0.85,
                                   ),
                                   child: Text(
-                                    e.removeUnderscoreWithSpace(),
+                                    e.replaceUnderscoreWithSpace(),
                                     overflow: TextOverflow.fade,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,

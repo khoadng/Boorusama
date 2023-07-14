@@ -6,14 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
 import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'e621_other_features_page.dart';
@@ -35,13 +33,11 @@ class E621HomePage extends ConsumerStatefulWidget {
 class _E621HomePageState extends ConsumerState<E621HomePage> {
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            theme == ThemeMode.light ? Brightness.dark : Brightness.light,
+            context.themeMode.isLight ? Brightness.dark : Brightness.light,
       ),
       child: Scaffold(
         extendBody: true,

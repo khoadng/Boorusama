@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list.dart';
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({

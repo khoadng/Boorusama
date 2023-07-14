@@ -2,7 +2,7 @@
 import 'dart:math' as math;
 
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,7 +14,7 @@ import 'package:path/path.dart' as p;
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/embedded_webview_webm.dart';
 
 class BookmarkMediaItem extends ConsumerStatefulWidget {
@@ -60,14 +60,11 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return widget.bookmark.isVideo
         ? p.extension(widget.bookmark.sampleUrl) == '.webm'
             ? EmbeddedWebViewWebm(
                 url: widget.bookmark.sampleUrl,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
+                backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
                 url: widget.bookmark.sampleUrl,

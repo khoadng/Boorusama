@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
@@ -18,7 +18,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class GelbooruPostDetailPage extends ConsumerStatefulWidget {
@@ -159,7 +159,6 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = post.isVideo
@@ -168,8 +167,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
                 url: post.sampleImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
+                backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
                 url: post.originalImageUrl,

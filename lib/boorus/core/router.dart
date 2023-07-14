@@ -30,6 +30,7 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import '../../widgets/image_grid_item.dart';
 import '../../widgets/info_container.dart';
 import 'pages/search/favorite_tags/import_favorite_tag_dialog.dart';
@@ -286,7 +287,6 @@ void goToQuickSearchPage(
     builder: (_, isMobile) => Builder(
       builder: (_) {
         final booru = ref.watch(currentBooruProvider);
-        final theme = ref.watch(themeProvider);
 
         switch (booru.booruType) {
           case BooruType.unknown:
@@ -303,7 +303,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: onSubmitted,
@@ -315,7 +315,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
           case BooruType.danbooru:
@@ -332,7 +332,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: onSubmitted,
@@ -344,7 +344,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: onSelected,
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
           case BooruType.gelbooru:
@@ -360,7 +360,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -373,7 +373,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
           case BooruType.konachan:
@@ -391,7 +391,7 @@ void goToQuickSearchPage(
                           : null,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     )
                   : SimpleTagSearchView(
                       onSubmitted: (_, text) =>
@@ -404,7 +404,7 @@ void goToQuickSearchPage(
                       ensureValidTag: ensureValidTag,
                       onSelected: (tag) => onSelected(tag),
                       textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, theme),
+                          generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
         }

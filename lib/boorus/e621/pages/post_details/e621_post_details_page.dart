@@ -22,8 +22,8 @@ import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
 import 'package:boorusama/boorus/e621/router.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'e621_information_section.dart';
@@ -153,7 +153,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                     final artist = posts[page].artistTags.firstOrNull;
                     return ref.watch(e621ArtistPostsProvider(artist)).maybeWhen(
                           data: (posts) => RecommendPosts(
-                            title: artist?.replaceAll('_', ' ') ?? '',
+                            title: artist?.replaceUnderscoreWithSpace() ?? '',
                             items: posts.take(30).toList(),
                             onTap: (index) => goToE621DetailsPage(
                               context: context,
@@ -193,8 +193,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
         return [
           Builder(
             builder: (_) {
-              final theme = ref.watch(themeProvider);
-
               if (!posts[page].isTranslated) {
                 return const SizedBox.shrink();
               }
@@ -214,6 +212,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                 );
               }
 
+              //FIXME: should use a variant of DanbooruNoteActionButton
               return CircularIconButton(
                 icon: noteState.enableNotes
                     ? Padding(
@@ -221,7 +220,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                         child: FaIcon(
                           FontAwesomeIcons.eyeSlash,
                           size: 18,
-                          color: theme == ThemeMode.light
+                          color: context.themeMode.isLight
                               ? context.colorScheme.onPrimary
                               : null,
                         ),
@@ -231,7 +230,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                         child: FaIcon(
                           FontAwesomeIcons.eye,
                           size: 18,
-                          color: theme == ThemeMode.light
+                          color: context.themeMode.isLight
                               ? context.colorScheme.onPrimary
                               : null,
                         ),
@@ -257,7 +256,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final noteState = ref.watch(notesControllerProvider(post));
     // final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
@@ -269,8 +267,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
                 url: post.originalImageUrl,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
+                backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
                 url: post.videoUrl,

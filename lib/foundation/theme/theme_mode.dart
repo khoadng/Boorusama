@@ -22,4 +22,6 @@ extension ThemeModeX on ThemeMode {
         ThemeMode.light => false,
         _ => true,
       };
+
+  bool get isLight => !isDark;
 }

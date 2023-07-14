@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
@@ -81,7 +82,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: context.colorScheme.primary,
         ),
       },
-      builder: (state, theme, focus, controller, selectedTagController,
+      builder: (state, focus, controller, selectedTagController,
               searchController, allowSearch) =>
           switch (state) {
         DisplayState.options => Scaffold(

@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/core/widgets/posts/favorite_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class E621PostActionToolbar extends ConsumerWidget {
   const E621PostActionToolbar({

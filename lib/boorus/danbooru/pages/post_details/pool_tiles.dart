@@ -6,10 +6,11 @@ import 'package:collection/collection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class PoolTiles extends StatelessWidget {
   const PoolTiles({
@@ -31,7 +32,7 @@ class PoolTiles extends StatelessWidget {
               onTap: () => goToPoolDetailPage(context, e),
               visualDensity: const ShrinkVisualDensity(),
               title: Text(
-                e.name.removeUnderscoreWithSpace(),
+                e.name.replaceUnderscoreWithSpace(),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,

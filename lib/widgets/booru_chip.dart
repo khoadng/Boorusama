@@ -11,7 +11,6 @@ class BooruChip extends StatelessWidget {
     this.color,
     this.onPressed,
     required this.label,
-    this.theme,
     this.trailing,
     this.contentPadding,
     this.visualDensity,
@@ -20,16 +19,14 @@ class BooruChip extends StatelessWidget {
   final Color? color;
   final VoidCallback? onPressed;
   final Widget label;
-  final ThemeMode? theme;
   final Widget? trailing;
   final EdgeInsetsGeometry? contentPadding;
   final VisualDensity? visualDensity;
 
   @override
   Widget build(BuildContext context) {
-    final colors = color != null
-        ? generateChipColors(color!, theme ?? ThemeMode.amoledDark)
-        : null;
+    final colors =
+        color != null ? generateChipColors(color!, context.themeMode) : null;
 
     return trailing != null
         ? ElevatedButton.icon(

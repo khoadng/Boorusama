@@ -9,7 +9,7 @@ import 'package:html/parser.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({

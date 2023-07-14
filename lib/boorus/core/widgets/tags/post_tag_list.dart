@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -89,7 +89,7 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final theme = context.themeMode;
     final colors = generateChipColors(getTagColor(tag.category, theme), theme);
     final numberColors = generateChipColors(Colors.grey[800]!, theme);
 

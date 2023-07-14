@@ -9,8 +9,9 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/bulk_download_tile.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -101,7 +102,7 @@ class DownloadInProgressView extends ConsumerWidget {
             spacing: 4,
             children: selectedTags
                 .map((e) => Chip(
-                      label: Text(e.toString().replaceAll('_', ' ')),
+                      label: Text(e.replaceUnderscoreWithSpace()),
                       shape: const StadiumBorder(side: BorderSide()),
                     ))
                 .toList(),

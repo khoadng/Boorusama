@@ -27,7 +27,7 @@ class TagSearchItem extends Equatable {
 
     if (!_hasMetatag(query)) {
       return TagSearchItem(
-        tag: stripFilterOperator(query, operator).replaceAll('_', ' '),
+        tag: stripFilterOperator(query, operator).replaceUnderscoreWithSpace(),
         operator: operator,
       );
     }
@@ -35,7 +35,7 @@ class TagSearchItem extends Equatable {
     final metatag = _getMetatagFromString(query, operator);
     final tag = stripFilterOperator(query, operator)
         .replaceAll('$metatag:', '')
-        .replaceAll('_', ' ');
+        .replaceUnderscoreWithSpace();
 
     final isValidMetatag =
         tagInfo.metatags.map((e) => e.name).contains(metatag);

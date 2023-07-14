@@ -6,12 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_scatter/flutter_scatter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'related_tag_cloud_chip.dart';
 
 const _kTagCloudTotal = 30;
@@ -52,13 +50,12 @@ class _DanbooruTagDetailsPageState
     final related =
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
     final tags = related?.tags.take(_kTagCloudTotal).toList() ?? [];
-    final theme = ref.watch(themeProvider);
 
     return TagDetailPage(
       tagName: widget.tagName,
       otherNamesBuilder: widget.otherNamesBuilder,
       backgroundImageUrl: widget.backgroundImageUrl,
-      extraBuilder: (context) => _buildExtra(related, context, theme, tags),
+      extraBuilder: (context) => _buildExtra(related, context, tags),
       includeHeaders: widget.includeHeaders,
     );
   }
@@ -66,7 +63,6 @@ class _DanbooruTagDetailsPageState
   List<Widget> _buildExtra(
     RelatedTag? related,
     BuildContext context,
-    ThemeMode theme,
     List<RelatedTagItem> tags,
   ) {
     return [
@@ -83,7 +79,6 @@ class _DanbooruTagDetailsPageState
                   RelatedTagCloudChip(
                     index: i,
                     tag: _dummyTags[i],
-                    theme: theme,
                     isDummy: true,
                     onPressed: () {},
                   ),
@@ -104,7 +99,6 @@ class _DanbooruTagDetailsPageState
                   RelatedTagCloudChip(
                     index: i,
                     tag: tags[i],
-                    theme: theme,
                     onPressed: () => goToSearchPage(
                       context,
                       tag: tags[i].tag,

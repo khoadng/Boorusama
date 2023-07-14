@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
 class TrendingTags extends ConsumerWidget {
@@ -24,7 +24,7 @@ class TrendingTags extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final theme = context.themeMode;
 
     return tags != null && tags!.isNotEmpty
         ? Wrap(
@@ -41,12 +41,11 @@ class TrendingTags extends ConsumerWidget {
                 color: category != null ? getTagColor(category, theme) : null,
                 onPressed: () => onTagTap?.call(e.keyword),
                 label: Text(
-                  e.keyword.replaceAll('_', ' '),
+                  e.keyword.replaceUnderscoreWithSpace(),
                   style: TextStyle(
                     color: theme.isDark ? color : Colors.white,
                   ),
                 ),
-                theme: theme,
               );
             }).toList(),
           )
