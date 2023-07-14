@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 
 class RelatedTag extends Equatable {
   const RelatedTag({
@@ -56,3 +57,21 @@ class RelatedTagItem extends Equatable {
         overlapCoefficient,
       ];
 }
+
+List<RelatedTagItem> generateDummyTags(int count) => [
+      for (var i = 0; i < count; i++)
+        RelatedTagItem(
+          tag: generateRandomWord(3, 12),
+          cosineSimilarity: 1,
+          jaccardSimilarity: 1,
+          overlapCoefficient: 1,
+          postCount: 1,
+          category: switch (i % 10) {
+            0 => TagCategory.artist,
+            1 => TagCategory.charater,
+            2 => TagCategory.copyright,
+            3 => TagCategory.meta,
+            _ => TagCategory.general,
+          },
+        ),
+    ];

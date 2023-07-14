@@ -6,31 +6,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
-import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
-import 'character_page.dart';
+import 'package:boorusama/boorus/danbooru/widgets/danbooru_tag_details_page.dart';
 
-class CharacterPageDesktop extends ConsumerWidget {
-  const CharacterPageDesktop({
+class DanbooruCharacterPage extends ConsumerWidget {
+  const DanbooruCharacterPage({
     super.key,
     required this.characterName,
+    required this.backgroundImageUrl,
   });
 
   final String characterName;
+  final String backgroundImageUrl;
 
   static Widget of(BuildContext context, String tag) {
-    return provideCharacterPageDependencies(
-      context,
-      character: tag,
-      page: CharacterPageDesktop(
-        characterName: tag,
+    return DanbooruProvider(
+      builder: (_) => CustomContextMenuOverlay(
+        child: DanbooruCharacterPage(
+          characterName: tag,
+          backgroundImageUrl: '',
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TagDetailPageDesktop(
+    return DanbooruTagDetailsPage(
       tagName: characterName,
       otherNamesBuilder: (context) =>
           switch (ref.watch(danbooruWikiProvider(characterName))) {
@@ -39,6 +42,7 @@ class CharacterPageDesktop extends ConsumerWidget {
         WikiStateError _ => const SizedBox.shrink(),
         WikiStateNotFound _ => const SizedBox.shrink(),
       },
+      backgroundImageUrl: backgroundImageUrl,
     );
   }
 }

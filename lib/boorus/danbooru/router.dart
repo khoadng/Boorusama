@@ -21,8 +21,7 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/characters/character_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/characters/character_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/pages/characters/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_update_page.dart';
@@ -54,29 +53,15 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => DanbooruArtistPage.of(context, artist),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => DanbooruArtistPage.of(context, artist),
-    );
-  }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruArtistPage.of(context, artist),
+  ));
 }
 
 void goToCharacterPage(BuildContext context, String tag) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => CharacterPage.of(context, tag),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => CharacterPageDesktop.of(context, tag),
-    );
-  }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruCharacterPage.of(context, tag),
+  ));
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
