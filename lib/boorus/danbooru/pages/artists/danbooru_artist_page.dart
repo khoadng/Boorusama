@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -162,7 +163,7 @@ List<RelatedTagItem> generateDummyTags(int count) {
   return List.generate(
     count,
     (index) => RelatedTagItem(
-      tag: 'tag_$index',
+      tag: generateRandomWord(3, 12),
       cosineSimilarity: 1,
       jaccardSimilarity: 1,
       overlapCoefficient: 1,
