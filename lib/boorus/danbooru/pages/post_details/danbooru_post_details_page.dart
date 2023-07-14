@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -25,6 +24,7 @@ import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
+import 'danbooru_note_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_recommend_artist_list.dart';
 import 'danbooru_recommend_character_list.dart';
@@ -162,60 +162,23 @@ class _DanbooruPostDetailsPageState
       pageCount: posts.length,
       topRightButtonsBuilder: (page, expanded) {
         final noteState = ref.watch(notesControllerProvider(posts[page]));
+        final post = posts[page];
 
         return [
-          Builder(builder: (_) {
-            final theme = ref.watch(themeProvider);
-
-            if (!posts[page].isTranslated) {
-              return const SizedBox.shrink();
-            }
-
-            if (!expanded && noteState.notes.isEmpty) {
-              return ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      context.colorScheme.background.withOpacity(0.8),
-                  padding: const EdgeInsets.all(4),
-                ),
-                icon: const Icon(Icons.download_rounded),
-                label: const Text('Notes'),
-                onPressed: () => ref
-                    .read(notesControllerProvider(posts[page]).notifier)
-                    .load(),
-              );
-            }
-
-            return CircularIconButton(
-              icon: noteState.enableNotes
-                  ? Padding(
-                      padding: const EdgeInsets.all(3),
-                      child: FaIcon(
-                        FontAwesomeIcons.eyeSlash,
-                        size: 18,
-                        color: theme == ThemeMode.light
-                            ? context.colorScheme.onPrimary
-                            : null,
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: FaIcon(
-                        FontAwesomeIcons.eye,
-                        size: 18,
-                        color: theme == ThemeMode.light
-                            ? context.colorScheme.onPrimary
-                            : null,
-                      ),
-                    ),
-              onPressed: () => ref
-                  .read(notesControllerProvider(posts[page]).notifier)
-                  .toggleNoteVisibility(),
-            );
-          }),
+          DanbooruNoteActionButton(
+            post: post,
+            theme: ref.watch(themeProvider),
+            showDownload: !expanded && noteState.notes.isEmpty,
+            enableNotes: noteState.enableNotes,
+            onDownload: () =>
+                ref.read(notesControllerProvider(post).notifier).load(),
+            onToggleNotes: () => ref
+                .read(notesControllerProvider(post).notifier)
+                .toggleNoteVisibility(),
+          ),
           DanbooruMoreActionButton(
             onToggleSlideShow: controller.toggleSlideShow,
-            post: posts[page],
+            post: post,
           ),
         ];
       },
