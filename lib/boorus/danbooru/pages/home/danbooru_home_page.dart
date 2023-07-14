@@ -10,30 +10,25 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
+import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'danbooru_bottom_bar.dart';
 import 'other_features_page.dart';
 
-class DanbooruHomePage extends ConsumerStatefulWidget {
+class DanbooruHomePage extends ConsumerWidget {
   const DanbooruHomePage({
     super.key,
-    required this.onMenuTap,
+    required this.controller,
+    required this.bottomBar,
   });
 
-  final VoidCallback? onMenuTap;
+  final HomePageController controller;
+  final Widget bottomBar;
 
   @override
-  ConsumerState<DanbooruHomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<DanbooruHomePage> {
-  final viewIndex = ValueNotifier(0);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -48,26 +43,22 @@ class _HomePageState extends ConsumerState<DanbooruHomePage> {
           children: [
             const NetworkUnavailableIndicatorWithState(),
             Expanded(
-              child: ValueListenableBuilder<int>(
-                valueListenable: viewIndex,
-                builder: (context, index, _) => AnimatedIndexedStack(
-                  index: index,
-                  children: [
-                    _LatestView(
-                      onMenuTap: widget.onMenuTap,
-                    ),
-                    const _ExplorePage(),
-                    const OtherFeaturesPage(),
-                  ],
-                ),
+                child: ValueListenableBuilder(
+              valueListenable: controller,
+              builder: (context, value, child) => AnimatedIndexedStack(
+                index: value,
+                children: [
+                  _LatestView(
+                    onMenuTap: controller.openMenu,
+                  ),
+                  const _ExplorePage(),
+                  const OtherFeaturesPage(),
+                ],
               ),
-            ),
+            )),
           ],
         ),
-        bottomNavigationBar: DanbooruBottomBar(
-          initialValue: viewIndex.value,
-          onTabChanged: (value) => viewIndex.value = value,
-        ),
+        bottomNavigationBar: bottomBar,
       ),
     );
   }

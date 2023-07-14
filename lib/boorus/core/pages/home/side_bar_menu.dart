@@ -15,6 +15,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'side_menu_tile.dart';
 
 class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
@@ -107,10 +108,9 @@ class SideBarMenu extends ConsumerWidget {
             ),
             if (initialContentBuilder != null) ...[
               ...initialContentBuilder!(context)!,
-              const Divider(),
             ],
             const Divider(),
-            _SideMenuTile(
+            SideMenuTile(
               icon: const Icon(Icons.manage_accounts),
               title: const Text('sideMenu.manage_boorus').tr(),
               onTap: () {
@@ -118,7 +118,7 @@ class SideBarMenu extends ConsumerWidget {
                 context.go('/boorus');
               },
             ),
-            _SideMenuTile(
+            SideMenuTile(
               icon: const Icon(Icons.favorite),
               title: const Text('sideMenu.your_bookmarks').tr(),
               onTap: () {
@@ -126,7 +126,7 @@ class SideBarMenu extends ConsumerWidget {
                 context.go('/bookmarks');
               },
             ),
-            _SideMenuTile(
+            SideMenuTile(
               icon: const Icon(Icons.list_alt),
               title: const Text('sideMenu.your_blacklist').tr(),
               onTap: () {
@@ -134,7 +134,7 @@ class SideBarMenu extends ConsumerWidget {
                 goToGlobalBlacklistedTagsPage(context);
               },
             ),
-            _SideMenuTile(
+            SideMenuTile(
               icon: const Icon(Icons.download),
               title: const Text('sideMenu.bulk_download').tr(),
               onTap: () {
@@ -146,7 +146,7 @@ class SideBarMenu extends ConsumerWidget {
                 );
               },
             ),
-            _SideMenuTile(
+            SideMenuTile(
               icon: const Icon(Icons.settings_outlined),
               title: Text('sideMenu.settings'.tr()),
               onTap: () {
@@ -155,32 +155,6 @@ class SideBarMenu extends ConsumerWidget {
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SideMenuTile extends StatelessWidget {
-  const _SideMenuTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  final Widget icon;
-  final Widget title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        child: ListTile(
-          leading: icon,
-          title: title,
-          onTap: onTap,
         ),
       ),
     );

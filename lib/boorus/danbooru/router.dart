@@ -166,25 +166,12 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => provideBlacklistedTagPageDependencies(
-        context,
-        page: const BlacklistedTagsPage(),
-      ),
-    ));
-  }
-  // else {
-  // showDesktopDialogWindow(
-  //   context,
-  //   width: min(MediaQuery.of(context).size.width * 0.8, 700),
-  //   height: min(MediaQuery.of(context).size.height * 0.8, 600),
-  //   builder: (_) => provideBlacklistedTagPageDependencies(
-  //     context,
-  //     page: const BlacklistedTagsPageDesktop(),
-  //   ),
-  // );
-  // }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => provideBlacklistedTagPageDependencies(
+      context,
+      page: const BlacklistedTagsPage(),
+    ),
+  ));
 }
 
 Widget provideBlacklistedTagPageDependencies(

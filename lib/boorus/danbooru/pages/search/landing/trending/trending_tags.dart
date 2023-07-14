@@ -42,6 +42,7 @@ class TrendingTags extends ConsumerWidget {
                 label: Text(
                   e.keyword.replaceAll('_', ' '),
                   style: TextStyle(
+                    //FIXME: should use color builder, currently it's broken in light mode
                     color: color,
                   ),
                 ),
