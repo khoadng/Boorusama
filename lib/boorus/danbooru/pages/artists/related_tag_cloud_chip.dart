@@ -48,6 +48,7 @@ class RelatedTagCloudChip extends StatelessWidget {
         ),
         color: getTagColor(tag.category, theme),
         onPressed: onPressed,
+        theme: theme,
       ),
     );
   }

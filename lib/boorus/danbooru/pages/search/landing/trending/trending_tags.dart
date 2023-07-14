@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
 class TrendingTags extends ConsumerWidget {
@@ -42,8 +43,7 @@ class TrendingTags extends ConsumerWidget {
                 label: Text(
                   e.keyword.replaceAll('_', ' '),
                   style: TextStyle(
-                    //FIXME: should use color builder, currently it's broken in light mode
-                    color: color,
+                    color: theme.isDark ? color : Colors.white,
                   ),
                 ),
                 theme: theme,
