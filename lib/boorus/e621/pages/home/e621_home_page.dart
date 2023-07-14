@@ -6,14 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
 import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
+import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -22,23 +21,21 @@ import 'e621_other_features_page.dart';
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
     super.key,
-    required this.onMenuTap,
+    required this.controller,
+    required this.bottomBar,
   });
 
-  final VoidCallback? onMenuTap;
+  final HomePageController controller;
+  final Widget bottomBar;
 
   @override
   ConsumerState<E621HomePage> createState() => _E621HomePageState();
 }
 
 class _E621HomePageState extends ConsumerState<E621HomePage> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final viewIndex = ValueNotifier(0);
-
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
-    final auth = ref.watch(authenticationProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -48,14 +45,13 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       ),
       child: Scaffold(
         extendBody: true,
-        key: scaffoldKey,
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             const NetworkUnavailableIndicatorWithState(),
             Expanded(
-              child: ValueListenableBuilder<int>(
-                valueListenable: viewIndex,
+              child: ValueListenableBuilder(
+                valueListenable: widget.controller,
                 builder: (context, index, _) => AnimatedIndexedStack(
                   index: index,
                   children: [
@@ -72,7 +68,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
                                 context.theme.scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
                             title: HomeSearchBar(
-                              onMenuTap: widget.onMenuTap,
+                              onMenuTap: widget.controller.openMenu,
                               onTap: () => goToE621SearchPage(context),
                             ),
                             floating: true,
@@ -90,11 +86,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             ),
           ],
         ),
-        bottomNavigationBar: E621BottomBar(
-          initialValue: viewIndex.value,
-          onTabChanged: (value) => viewIndex.value = value,
-          isAuthenticated: auth.isAuthenticated,
-        ),
+        bottomNavigationBar: widget.bottomBar,
       ),
     );
   }

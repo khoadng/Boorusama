@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/permissions/permission.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 class DeviceStoragePermissionState extends Equatable {
   const DeviceStoragePermissionState({
@@ -34,12 +35,19 @@ class DeviceStoragePermissionNotifier
     extends Notifier<DeviceStoragePermissionState> {
   @override
   DeviceStoragePermissionState build() {
-    _fetch();
+    if (isMobilePlatform()) {
+      _fetch();
 
-    return const DeviceStoragePermissionState(
-      storagePermission: PermissionStatus.denied,
-      isNotificationRead: false,
-    );
+      return const DeviceStoragePermissionState(
+        storagePermission: PermissionStatus.denied,
+        isNotificationRead: false,
+      );
+    } else {
+      return const DeviceStoragePermissionState(
+        storagePermission: PermissionStatus.granted,
+        isNotificationRead: true,
+      );
+    }
   }
 
   Future<void> _fetch() async {

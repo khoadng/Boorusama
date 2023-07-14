@@ -15,14 +15,17 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/website_logo.dart';
-import 'danbooru_post_details_page.dart';
 
 class RelatedPostsSection extends ConsumerWidget {
-  const RelatedPostsSection({super.key});
+  const RelatedPostsSection({
+    super.key,
+    required this.post,
+  });
+
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final post = ref.watch(danbooruPostProvider);
     final posts = ref.watch(danbooruPostDetailsChildrenProvider(post.id));
 
     if (posts.isEmpty) {

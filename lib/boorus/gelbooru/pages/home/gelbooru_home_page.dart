@@ -10,16 +10,17 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
+import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
     super.key,
-    required this.onMenuTap,
+    required this.controller,
   });
 
-  final VoidCallback? onMenuTap;
+  final HomePageController controller;
 
   @override
   ConsumerState<GelbooruHomePage> createState() => _GelbooruHomePageState();
@@ -63,7 +64,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
                                 context.theme.scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
                             title: HomeSearchBar(
-                              onMenuTap: widget.onMenuTap,
+                              onMenuTap: widget.controller.openMenu,
                               onTap: () => goToGelbooruSearchPage(ref, context),
                             ),
                             floating: true,

@@ -36,7 +36,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...widget.relatedTag.tags.take(10).map((item) => _RelatedTagChip(
+          ...widget.relatedTag.tags.take(15).map((item) => _RelatedTagChip(
                 relatedTag: item,
                 onPressed: () => widget.onSelected(item),
               )),

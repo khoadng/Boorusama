@@ -184,6 +184,37 @@ extension PostX on DanbooruPost {
     return censoredTags.any(tagSet.contains);
   }
 
+  List<PostDetailTag> extractTagDetails() {
+    final p = this;
+    return [
+      ...p.artistTags.map((e) => PostDetailTag(
+            name: e,
+            category: TagCategory.artist.stringify(),
+            postId: p.id,
+          )),
+      ...p.characterTags.map((e) => PostDetailTag(
+            name: e,
+            category: TagCategory.charater.stringify(),
+            postId: p.id,
+          )),
+      ...p.copyrightTags.map((e) => PostDetailTag(
+            name: e,
+            category: TagCategory.copyright.stringify(),
+            postId: p.id,
+          )),
+      ...p.generalTags.map((e) => PostDetailTag(
+            name: e,
+            category: TagCategory.general.stringify(),
+            postId: p.id,
+          )),
+      ...p.metaTags.map((e) => PostDetailTag(
+            name: e,
+            category: TagCategory.meta.stringify(),
+            postId: p.id,
+          )),
+    ];
+  }
+
   List<Tag> extractTags() {
     final tags = <Tag>[];
 

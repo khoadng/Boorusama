@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
+import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
@@ -20,19 +20,18 @@ import 'package:boorusama/widgets/widgets.dart';
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
     super.key,
-    required this.onMenuTap,
+    required this.controller,
+    required this.bottomBar,
   });
 
-  final VoidCallback? onMenuTap;
+  final HomePageController controller;
+  final Widget bottomBar;
 
   @override
   ConsumerState<MoebooruHomePage> createState() => _MoebooruHomePageState();
 }
 
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final viewIndex = ValueNotifier(0);
-
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
@@ -45,14 +44,13 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       ),
       child: Scaffold(
         extendBody: true,
-        key: scaffoldKey,
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             const NetworkUnavailableIndicatorWithState(),
             Expanded(
-              child: ValueListenableBuilder<int>(
-                valueListenable: viewIndex,
+              child: ValueListenableBuilder(
+                valueListenable: widget.controller,
                 builder: (context, index, _) => AnimatedIndexedStack(
                   index: index,
                   children: [
@@ -69,7 +67,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                                 context.theme.scaffoldBackgroundColor,
                             toolbarHeight: kToolbarHeight * 1.2,
                             title: HomeSearchBar(
-                              onMenuTap: widget.onMenuTap,
+                              onMenuTap: widget.controller.openMenu,
                               onTap: () => goToMoebooruSearchPage(ref, context),
                             ),
                             floating: true,
@@ -87,10 +85,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             ),
           ],
         ),
-        bottomNavigationBar: MoebooruBottomBar(
-          initialValue: viewIndex.value,
-          onTabChanged: (value) => viewIndex.value = value,
-        ),
+        bottomNavigationBar: widget.bottomBar,
       ),
     );
   }

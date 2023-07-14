@@ -7,7 +7,6 @@ export 'details/post_details_artist_notifier.dart';
 export 'details/post_details_character_notifier.dart';
 export 'details/post_details_children_notifier.dart';
 export 'details/post_details_pools_notifier.dart';
-export 'details/post_details_tags_notifier.dart';
 export 'details/posts_details_provider.dart';
 export 'explores/explore_provider.dart';
 export 'explores/explore_repository.dart';

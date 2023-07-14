@@ -38,6 +38,7 @@ import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart'
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
@@ -97,27 +98,25 @@ Future<void> goToDetailPage({
   AutoScrollController? scrollController,
   bool hero = false,
 }) {
-  return context.navigator.push(DanbooruPostDetailsPage.routeOf(
-    context,
-    posts: posts,
-    scrollController: scrollController,
-    initialIndex: initialIndex,
-    hero: hero,
-  ));
-  // showDesktopFullScreenWindow(
-  //   context,
-  //   builder: (_) => providePostDetailPageDependencies(
-  //     context,
-  //     posts,
-  //     initialIndex,
-  //     tags,
-  //     scrollController,
-  //     PostDetailPageDesktop(
-  //       intitialIndex: initialIndex,
-  //       posts: posts,
-  //     ),
-  //   ),
-  // );
+  if (isMobilePlatform()) {
+    return context.navigator.push(DanbooruPostDetailsPage.routeOf(
+      context,
+      posts: posts,
+      scrollController: scrollController,
+      initialIndex: initialIndex,
+      hero: hero,
+    ));
+  } else {
+    return showDesktopFullScreenWindow(
+      context,
+      builder: (_) => DanbooruProvider(
+        builder: (context) => DanbooruPostDetailsDesktopPage(
+          initialIndex: initialIndex,
+          posts: posts,
+        ),
+      ),
+    );
+  }
 }
 
 void goToSearchPage(
@@ -167,25 +166,12 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => provideBlacklistedTagPageDependencies(
-        context,
-        page: const BlacklistedTagsPage(),
-      ),
-    ));
-  }
-  // else {
-  // showDesktopDialogWindow(
-  //   context,
-  //   width: min(MediaQuery.of(context).size.width * 0.8, 700),
-  //   height: min(MediaQuery.of(context).size.height * 0.8, 600),
-  //   builder: (_) => provideBlacklistedTagPageDependencies(
-  //     context,
-  //     page: const BlacklistedTagsPageDesktop(),
-  //   ),
-  // );
-  // }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => provideBlacklistedTagPageDependencies(
+      context,
+      page: const BlacklistedTagsPage(),
+    ),
+  ));
 }
 
 Widget provideBlacklistedTagPageDependencies(

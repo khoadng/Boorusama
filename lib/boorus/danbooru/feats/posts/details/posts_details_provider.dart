@@ -40,8 +40,3 @@ final danbooruPostDetailsPoolsProvider = NotifierProvider.autoDispose
     danbooruPoolRepoProvider,
   ],
 );
-
-final danbooruPostDetailsTagsProvider = NotifierProvider.autoDispose
-    .family<PostDetailsTagsNotifier, List<PostDetailTag>, int>(
-  PostDetailsTagsNotifier.new,
-);
