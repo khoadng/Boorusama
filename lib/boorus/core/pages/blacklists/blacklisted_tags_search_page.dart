@@ -85,7 +85,10 @@ class _BlacklistedTagsSearchPageState
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
         child: SearchAppBar(
           queryEditingController: queryEditingController,
-          onSubmitted: (value) => selectedTagController.addTag(value),
+          onSubmitted: (value) {
+            selectedTagController.addTag(value);
+            queryEditingController.clear();
+          },
           onBack: () => context.navigator.pop(),
         ),
       ),

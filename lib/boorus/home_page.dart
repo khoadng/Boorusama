@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_bottom_bar.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
@@ -27,7 +26,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/navigation_tile.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -87,179 +85,92 @@ class _HomePageState extends ConsumerState<HomePage> {
       },
     );
 
-    return Builder(
-      builder: (context) {
-        final config = ref.watch(currentBooruConfigProvider);
-        final booru = ref.watch(currentBooruProvider);
+    final config = ref.watch(currentBooruConfigProvider);
+    final booru = ref.watch(currentBooruProvider);
 
-        switch (booru.booruType) {
-          case BooruType.unknown:
-            return const Center(
-              child: Text('Unknown booru'),
-            );
-          case BooruType.e621:
-          case BooruType.e926:
-            return E621Provider(
-              builder: (context) => HomePageScope(
-                bottomBar: (context, controller) => isMobilePlatform()
-                    ? ValueListenableBuilder(
-                        valueListenable: controller,
-                        builder: (context, value, child) => E621BottomBar(
-                          initialValue: value,
-                          onTabChanged: (value) => controller.goToTab(value),
-                          isAuthenticated:
-                              ref.watch(authenticationProvider).isAuthenticated,
-                        ),
-                      )
-                    : ValueListenableBuilder(
-                        valueListenable: controller,
-                        builder: (context, index, child) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            NavigationTile(
-                              value: 0,
-                              index: index,
-                              selectedIcon: const Icon(Icons.dashboard),
-                              icon: const Icon(
-                                Icons.dashboard_outlined,
-                              ),
-                              title: const Text('Home'),
-                              onTap: (value) => controller.goToTab(value),
-                            ),
-                            NavigationTile(
-                              value: 1,
-                              index: index,
-                              selectedIcon: const Icon(Icons.explore),
-                              icon: const Icon(Icons.explore_outlined),
-                              title: const Text('Popular'),
-                              onTap: (value) => controller.goToTab(value),
-                            ),
-                            if (ref
-                                .watch(authenticationProvider)
-                                .isAuthenticated)
-                              NavigationTile(
-                                value: 2,
-                                index: index,
-                                selectedIcon: const Icon(Icons.favorite),
-                                icon: const Icon(Icons.favorite_border),
-                                title: const Text('Favorites'),
-                                onTap: (value) => controller.goToTab(value),
-                              ),
-                          ],
-                        ),
-                      ),
-                builder: (context, tab, controller) => CustomContextMenuOverlay(
-                  child: E621HomePage(
-                    key: ValueKey(config.id),
-                    controller: controller,
-                    bottomBar: tab,
-                  ),
-                ),
+    switch (booru.booruType) {
+      case BooruType.unknown:
+        return const Center(
+          child: Text('Unknown booru'),
+        );
+      case BooruType.e621:
+      case BooruType.e926:
+        return E621Provider(
+          builder: (context) => HomePageScope(
+            bottomBar: (context, controller) => ValueListenableBuilder(
+              valueListenable: controller,
+              builder: (context, value, child) => E621BottomBar(
+                initialValue: value,
+                onTabChanged: (value) => controller.goToTab(value),
+                isAuthenticated:
+                    ref.watch(authenticationProvider).isAuthenticated,
               ),
-            );
-          case BooruType.aibooru:
-          case BooruType.danbooru:
-          case BooruType.safebooru:
-          case BooruType.testbooru:
-            return HomePageScope(
-              bottomBar: (context, controller) => ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (context, value, child) => DanbooruBottomBar(
-                  initialValue: value,
-                  onTabChanged: (value) => controller.goToTab(value),
-                ),
-              ),
-              builder: (context, tab, controller) => DanbooruProvider(
-                builder: (context) {
-                  return CustomContextMenuOverlay(
-                    child: DanbooruHomePage(
-                      key: ValueKey(config.id),
-                      controller: controller,
-                      bottomBar: tab,
-                    ),
-                  );
-                },
-              ),
-            );
-          case BooruType.gelbooru:
-          case BooruType.rule34xxx:
-            final gkey = ValueKey(config.id);
+            ),
+            builder: (context, tab, controller) => E621HomePage(
+              key: ValueKey(config.id),
+              controller: controller,
+              bottomBar: tab,
+            ),
+          ),
+        );
+      case BooruType.aibooru:
+      case BooruType.danbooru:
+      case BooruType.safebooru:
+      case BooruType.testbooru:
+        return HomePageScope(
+          bottomBar: (context, controller) => ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (context, value, child) => DanbooruBottomBar(
+              initialValue: value,
+              onTabChanged: (value) => controller.goToTab(value),
+            ),
+          ),
+          builder: (context, tab, controller) => DanbooruProvider(
+            builder: (context) {
+              return DanbooruHomePage(
+                key: ValueKey(config.id),
+                controller: controller,
+                bottomBar: tab,
+              );
+            },
+          ),
+        );
+      case BooruType.gelbooru:
+      case BooruType.rule34xxx:
+        final gkey = ValueKey(config.id);
 
-            return HomePageScope(
-              builder: (context, tab, controller) => GelbooruProvider(
-                key: gkey,
-                builder: (gcontext) => CustomContextMenuOverlay(
-                  child: GelbooruHomePage(
-                    key: gkey,
-                    controller: controller,
-                  ),
-                ),
-              ),
-            );
-          case BooruType.konachan:
-          case BooruType.yandere:
-          case BooruType.sakugabooru:
-          case BooruType.lolibooru:
-            final gkey = ValueKey(config.id);
+        return HomePageScope(
+          builder: (context, tab, controller) => GelbooruProvider(
+            key: gkey,
+            builder: (gcontext) => GelbooruHomePage(
+              key: gkey,
+              controller: controller,
+            ),
+          ),
+        );
+      case BooruType.konachan:
+      case BooruType.yandere:
+      case BooruType.sakugabooru:
+      case BooruType.lolibooru:
+        final gkey = ValueKey(config.id);
 
-            return HomePageScope(
-              bottomBar: (context, controller) => isMobilePlatform()
-                  ? ValueListenableBuilder(
-                      valueListenable: controller,
-                      builder: (context, value, child) => MoebooruBottomBar(
-                        initialValue: value,
-                        onTabChanged: (value) => controller.goToTab(value),
-                      ),
-                    )
-                  : ValueListenableBuilder(
-                      valueListenable: controller,
-                      builder: (context, index, child) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          NavigationTile(
-                            value: 0,
-                            index: index,
-                            selectedIcon: const Icon(Icons.dashboard),
-                            icon: const Icon(
-                              Icons.dashboard_outlined,
-                            ),
-                            title: const Text('Home'),
-                            onTap: (value) => controller.goToTab(value),
-                          ),
-                          NavigationTile(
-                            value: 1,
-                            index: index,
-                            selectedIcon: const Icon(Icons.explore),
-                            icon: const Icon(Icons.explore_outlined),
-                            title: const Text('Popular'),
-                            onTap: (value) => controller.goToTab(value),
-                          ),
-                          NavigationTile(
-                            value: 2,
-                            index: index,
-                            selectedIcon:
-                                const Icon(Icons.local_fire_department),
-                            icon: const Icon(
-                                Icons.local_fire_department_outlined),
-                            title: const Text('Hot'),
-                            onTap: (value) => controller.goToTab(value),
-                          ),
-                        ],
-                      ),
-                    ),
-              builder: (context, tab, controller) => MoebooruProvider(
-                key: gkey,
-                builder: (gcontext) => CustomContextMenuOverlay(
-                  child: MoebooruHomePage(
-                    key: gkey,
-                    controller: controller,
-                    bottomBar: tab,
-                  ),
-                ),
-              ),
-            );
-        }
-      },
-    );
+        return HomePageScope(
+          bottomBar: (context, controller) => ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (context, value, child) => MoebooruBottomBar(
+              initialValue: value,
+              onTabChanged: (value) => controller.goToTab(value),
+            ),
+          ),
+          builder: (context, tab, controller) => MoebooruProvider(
+            key: gkey,
+            builder: (gcontext) => MoebooruHomePage(
+              key: gkey,
+              controller: controller,
+              bottomBar: tab,
+            ),
+          ),
+        );
+    }
   }
 }
