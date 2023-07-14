@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_bottom_bar.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/other_features_page.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
@@ -163,42 +162,13 @@ class _HomePageState extends ConsumerState<HomePage> {
           case BooruType.safebooru:
           case BooruType.testbooru:
             return HomePageScope(
-              bottomBar: (context, controller) => isMobilePlatform()
-                  ? ValueListenableBuilder(
-                      valueListenable: controller,
-                      builder: (context, value, child) => DanbooruBottomBar(
-                        initialValue: value,
-                        onTabChanged: (value) => controller.goToTab(value),
-                      ),
-                    )
-                  : ValueListenableBuilder(
-                      valueListenable: controller,
-                      builder: (context, index, child) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          NavigationTile(
-                            value: 0,
-                            index: index,
-                            selectedIcon: const Icon(Icons.dashboard),
-                            icon: const Icon(
-                              Icons.dashboard_outlined,
-                            ),
-                            title: const Text('Home'),
-                            onTap: (value) => controller.goToTab(value),
-                          ),
-                          NavigationTile(
-                            value: 1,
-                            index: index,
-                            selectedIcon: const Icon(Icons.explore),
-                            icon: const Icon(Icons.explore_outlined),
-                            title: const Text('Explore'),
-                            onTap: (value) => controller.goToTab(value),
-                          ),
-                          const Divider(),
-                          const DanbooruOtherFeaturesWidget(),
-                        ],
-                      ),
-                    ),
+              bottomBar: (context, controller) => ValueListenableBuilder(
+                valueListenable: controller,
+                builder: (context, value, child) => DanbooruBottomBar(
+                  initialValue: value,
+                  onTabChanged: (value) => controller.goToTab(value),
+                ),
+              ),
               builder: (context, tab, controller) => DanbooruProvider(
                 builder: (context) {
                   return CustomContextMenuOverlay(
