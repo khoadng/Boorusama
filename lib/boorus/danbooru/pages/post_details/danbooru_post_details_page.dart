@@ -20,13 +20,14 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
+import 'danbooru_recommend_artist_list.dart';
+import 'danbooru_recommend_character_list.dart';
 import 'pool_tiles.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
@@ -152,29 +153,8 @@ class _DanbooruPostDetailsPageState
                 ),
               ),
               RelatedPostsSection(post: posts[page]),
-              RecommendArtistList(
-                onTap: (recommendIndex, postIndex) => goToDetailPage(
-                  context: context,
-                  posts: artists[recommendIndex].posts,
-                  initialIndex: postIndex,
-                ),
-                onHeaderTap: (index) =>
-                    goToArtistPage(context, artists[index].tag),
-                recommends: artists,
-                imageUrl: (item) => item.url360x360,
-              ),
-              RecommendCharacterList(
-                onHeaderTap: (index) =>
-                    goToCharacterPage(context, characters[index].tag),
-                onTap: (recommendIndex, postIndex) => goToDetailPage(
-                  context: context,
-                  posts: characters[recommendIndex].posts,
-                  initialIndex: postIndex,
-                  hero: false,
-                ),
-                recommends: characters,
-                imageUrl: (item) => item.url360x360,
-              ),
+              DanbooruRecommendArtistList(artists: artists),
+              DanbooruRecommendCharacterList(characters: characters),
             ],
           ),
         );

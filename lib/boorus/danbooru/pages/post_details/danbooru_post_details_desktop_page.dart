@@ -14,14 +14,13 @@ import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
 import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/boorus/core/widgets/posts/recommend_artist_list.dart';
-import 'package:boorusama/boorus/core/widgets/posts/recommend_character_list.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_post_details_page.dart';
+import 'danbooru_recommend_artist_list.dart';
+import 'danbooru_recommend_character_list.dart';
 import 'related_posts_section.dart';
 
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
@@ -132,29 +131,8 @@ class _DanbooruPostDetailsDesktopPageState
               ),
             ),
             RelatedPostsSection(post: post),
-            RecommendArtistList(
-              onTap: (recommendIndex, postIndex) => goToDetailPage(
-                context: context,
-                posts: artists[recommendIndex].posts,
-                initialIndex: postIndex,
-              ),
-              onHeaderTap: (index) =>
-                  goToArtistPage(context, artists[index].tag),
-              recommends: artists,
-              imageUrl: (item) => item.url360x360,
-            ),
-            RecommendCharacterList(
-              onHeaderTap: (index) =>
-                  goToCharacterPage(context, characters[index].tag),
-              onTap: (recommendIndex, postIndex) => goToDetailPage(
-                context: context,
-                posts: characters[recommendIndex].posts,
-                initialIndex: postIndex,
-                hero: false,
-              ),
-              recommends: characters,
-              imageUrl: (item) => item.url360x360,
-            ),
+            DanbooruRecommendArtistList(artists: artists),
+            DanbooruRecommendCharacterList(characters: characters),
           ],
         );
       },
