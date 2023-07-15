@@ -38,7 +38,7 @@ extension RouterX on BuildContext {
         extra: extra,
       );
 
-  bool canPop() => canPop();
+  bool canPop() => GoRouter.of(this).canPop();
 }
 
 class AppNavigatorObserver extends NavigatorObserver {
