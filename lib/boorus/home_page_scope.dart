@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/widgets/split.dart';
 
 class HomePageScope extends StatefulWidget {
   const HomePageScope({
@@ -48,27 +49,26 @@ class _HomePageScopeState extends State<HomePageScope> {
       key: scaffoldKey,
       drawer: isMobilePlatform()
           ? const SideBarMenu(
-              width: 300,
               popOnSelect: true,
               padding: EdgeInsets.zero,
             )
           : null,
       body: ConditionalParentWidget(
         condition: !isMobilePlatform(),
-        conditionalBuilder: (child) => Row(
+        conditionalBuilder: (child) => Split(
+          initialFractions: const [0.25, 0.75],
+          axis: Axis.horizontal,
           children: [
-            SideBarMenu(
-              width: 300,
-              popOnSelect: false,
-              padding: EdgeInsets.zero,
-              contentBuilder: widget.menuBuilder,
-              initialContentBuilder: (context) => [
-                if (widget.bottomBar != null)
-                  widget.bottomBar!(context, homePageController),
-              ],
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const CurrentBooruTile(),
+                  if (widget.bottomBar != null)
+                    widget.bottomBar!(context, homePageController),
+                ],
+              ),
             ),
-            const SizedBox(width: 8),
-            Expanded(child: child),
+            child,
           ],
         ),
         child: CustomContextMenuOverlay(
