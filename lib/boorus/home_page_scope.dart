@@ -49,6 +49,7 @@ class _HomePageScopeState extends State<HomePageScope> {
       key: scaffoldKey,
       drawer: isMobilePlatform()
           ? const SideBarMenu(
+              width: 300,
               popOnSelect: true,
               padding: EdgeInsets.zero,
             )
