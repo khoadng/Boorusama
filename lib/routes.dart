@@ -35,11 +35,49 @@ class BoorusRoutes {
   BoorusRoutes._();
 
   static GoRoute add() => GoRoute(
-        path: 'add',
+        path: 'boorus/add',
         name: '/boorus/add',
+        redirect: (context, state) =>
+            isMobilePlatform() ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
           setCurrentBooruOnSubmit:
               state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+        ),
+      );
+
+  //FIXME: create custom page builder
+  static GoRoute addDesktop() => GoRoute(
+        path: 'desktop/boorus/add',
+        name: '/desktop/boorus/add',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          opaque: false,
+          barrierColor: null,
+          barrierLabel: null,
+          transitionsBuilder: (context, animation1, animation2, child) {
+            return SlideTransition(
+              position: Tween(
+                begin: const Offset(-1, 0),
+                end: Offset.zero,
+              ).animate(animation1),
+              child: child,
+            );
+          },
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Material(
+              shadowColor: Colors.transparent,
+              color: Colors.transparent,
+              child: Container(
+                color: Colors.transparent,
+                height: double.infinity,
+                width: 300,
+                child: AddBooruPage(
+                  setCurrentBooruOnSubmit:
+                      state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+                ),
+              ),
+            ),
+          ),
         ),
       );
 
@@ -165,6 +203,8 @@ class Routes {
         ),
         routes: [
           boorus(ref),
+          BoorusRoutes.add(),
+          BoorusRoutes.addDesktop(),
           settings(),
           settingsDesktop(),
           bookmarks(),
@@ -181,7 +221,6 @@ class Routes {
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
-          BoorusRoutes.add(),
           BoorusRoutes.update(ref),
         ],
       );

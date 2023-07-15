@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -100,17 +101,40 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                         final booruFactory = ref.watch(booruFactoryProvider);
                         final booru = getBooruType(
                             uri.toString(), booruFactory.booruData);
+                        //FIXME: move this to router
                         if (booru == BooruType.unknown) {
-                          context.navigator.push(MaterialPageRoute(
-                              builder: (_) => AddUnknownBooruPage(
-                                    url: uri.toString(),
-                                    setCurrentBooruOnSubmit:
-                                        widget.setCurrentBooruOnSubmit,
-                                  )));
+                          if (isMobilePlatform()) {
+                            context.navigator.push(MaterialPageRoute(
+                                builder: (_) => AddUnknownBooruPage(
+                                      url: uri.toString(),
+                                      setCurrentBooruOnSubmit:
+                                          widget.setCurrentBooruOnSubmit,
+                                    )));
+                          } else {
+                            showSideSheetFromLeft(
+                              width: 300,
+                              context: context,
+                              body: AddUnknownBooruPage(
+                                url: uri.toString(),
+                                setCurrentBooruOnSubmit:
+                                    widget.setCurrentBooruOnSubmit,
+                              ),
+                            );
+                          }
                         } else {
-                          context.navigator.push(MaterialPageRoute(
-                              builder: (_) => CreateBooruPage(
-                                  booru: booruFactory.from(type: booru))));
+                          if (isMobilePlatform()) {
+                            context.navigator.push(MaterialPageRoute(
+                                builder: (_) => CreateBooruPage(
+                                    booru: booruFactory.from(type: booru))));
+                          } else {
+                            showSideSheetFromLeft(
+                              width: 300,
+                              context: context,
+                              body: CreateBooruPage(
+                                booru: booruFactory.from(type: booru),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text('booru.next_step').tr(),

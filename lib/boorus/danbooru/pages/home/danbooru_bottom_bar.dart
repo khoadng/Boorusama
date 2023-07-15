@@ -126,21 +126,13 @@ class DanbooruBottomBar extends StatelessWidget {
               NavigationTile(
                 value: 9,
                 index: initialValue,
-                selectedIcon: const Icon(Icons.manage_accounts),
-                icon: const Icon(Icons.manage_accounts_outlined),
-                title: const Text('sideMenu.manage_boorus').tr(),
-                onTap: onTabChanged,
-              ),
-              NavigationTile(
-                value: 10,
-                index: initialValue,
                 selectedIcon: const Icon(Icons.bookmark),
                 icon: const Icon(Icons.bookmark_border_outlined),
                 title: const Text('sideMenu.your_bookmarks').tr(),
                 onTap: onTabChanged,
               ),
               NavigationTile(
-                value: 11,
+                value: 10,
                 index: initialValue,
                 selectedIcon: const Icon(Icons.list_alt),
                 icon: const Icon(Icons.list_alt_outlined),
@@ -148,7 +140,7 @@ class DanbooruBottomBar extends StatelessWidget {
                 onTap: onTabChanged,
               ),
               NavigationTile(
-                value: 12,
+                value: 11,
                 index: initialValue,
                 selectedIcon: const Icon(Icons.download),
                 icon: const Icon(Icons.download_outlined),

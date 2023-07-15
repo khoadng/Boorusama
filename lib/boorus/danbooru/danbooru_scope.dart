@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/manage_booru_user_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
@@ -92,7 +91,6 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           const FavoriteGroupsPage(),
           const SavedSearchFeedPage(),
           const BlacklistedTagsPage(),
-          const ManageBooruPage(),
           const BookmarkPage(),
           const BlacklistedTagPage(),
           const BulkDownloadPage(),

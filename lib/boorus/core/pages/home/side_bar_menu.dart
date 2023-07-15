@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'side_menu_tile.dart';
@@ -96,12 +97,36 @@ class SideBarMenu extends ConsumerWidget {
                       : null,
                   trailing: IconButton(
                     onPressed: () {
-                      showMaterialModalBottomSheet(
-                        context: context,
-                        duration: const Duration(milliseconds: 250),
-                        animationCurve: Curves.easeOut,
-                        builder: (context) => const SwitchBooruModal(),
-                      );
+                      if (isMobilePlatform()) {
+                        showMaterialModalBottomSheet(
+                          context: context,
+                          duration: const Duration(milliseconds: 250),
+                          animationCurve: Curves.easeOut,
+                          builder: (context) => const SwitchBooruModal(),
+                        );
+                      } else {
+                        showSideSheetFromLeft(
+                          context: context,
+                          width: 300,
+                          body: Material(
+                            child: Stack(
+                              children: [
+                                const Positioned.fill(
+                                  child: SwitchBooruModal(),
+                                ),
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: IconButton(
+                                    onPressed: () => context.navigator.pop(),
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
                     },
                     icon: const Icon(Icons.more_vert),
                   ),
