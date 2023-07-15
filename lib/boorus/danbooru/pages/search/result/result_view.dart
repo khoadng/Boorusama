@@ -60,12 +60,6 @@ class _ResultViewState extends ConsumerState<ResultView> {
         return DanbooruInfinitePostList(
           controller: controller,
           errors: errors,
-          toolbarLeadingBuilder: (context) => ValueListenableBuilder(
-            valueListenable: widget.selectedTagController,
-            builder: (context, selectedTags, _) => ResultHeaderWithProvider(
-              selectedTags: selectedTags.toRawStringList(),
-            ),
-          ),
           sliverHeaderBuilder: (context) => [
             ...widget.headerBuilder?.call() ?? [],
             SliverToBoxAdapter(
@@ -76,6 +70,20 @@ class _ResultViewState extends ConsumerState<ResultView> {
                   onSelected: (tag) =>
                       widget.onRelatedTagSelected(tag, controller),
                 ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: widget.selectedTagController,
+                    builder: (context, selectedTags, _) =>
+                        ResultHeaderWithProvider(
+                      selectedTags: selectedTags.toRawStringList(),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
               ),
             ),
           ],

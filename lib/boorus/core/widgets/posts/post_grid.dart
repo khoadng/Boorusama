@@ -18,9 +18,9 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/scroll_to_top.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'hidden_post_header.dart';
 import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
+import 'post_list_configuration_header.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
     BuildContext context, List<T> items, int index);
@@ -45,7 +45,6 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
-    this.toolBarLeadingBuilder,
   });
 
   final VoidCallback? onLoadMore;
@@ -60,7 +59,6 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final bool refreshAtStart;
   final bool enablePullToRefresh;
 
-  final Widget Function(BuildContext contex)? toolBarLeadingBuilder;
   final ItemWidgetBuilder<T> itemBuilder;
   final FooterBuilder<T>? footerBuilder;
   final HeaderBuilder<T>? headerBuilder;
@@ -106,7 +104,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   var filters = <String, bool>{};
   var tagCounts = <String, int>{};
   var _hasBlacklistedTags = false;
-  var _showHiddenHeader = false;
 
   @override
   void didUpdateWidget(PostGrid<T> oldWidget) {
@@ -173,8 +170,6 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     setState(() {
       _updateData();
       _countTags();
-
-      _showHiddenHeader = _hasBlacklistedTags && !controller.refreshing;
 
       hasMore = controller.hasMore;
       loading = controller.loading;
@@ -267,30 +262,13 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           if (!multiSelect &&
                               widget.sliverHeaderBuilder != null)
                             ...widget.sliverHeaderBuilder!(context),
-                          SliverToBoxAdapter(
-                            child: Row(
-                              children: [
-                                if (widget.toolBarLeadingBuilder != null)
-                                  widget.toolBarLeadingBuilder!(context),
-                                const Spacer(),
-                                IconButton(
-                                  onPressed: () => controller.refresh(),
-                                  icon: const Icon(Icons.refresh),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  child: PostGridConfigIconButton(),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (settings.showHiddenPostsHeader &&
-                              _showHiddenHeader)
+                          if (settings.showPostListConfigHeader && !refreshing)
                             SliverPinnedHeader(
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
-                                child: HiddenPostHeader(
+                                child: PostListConfigurationHeader(
+                                  hasBlacklist: _hasBlacklistedTags,
                                   tags: widget.blacklistedTags
                                       .map((e) => (
                                             name: e,
@@ -299,8 +277,17 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                           ))
                                       .where((element) => element.count > 0)
                                       .toList(),
+                                  trailing: ButtonBar(
+                                    children: [
+                                      InkWell(
+                                        onTap: () => controller.refresh(),
+                                        child: const Icon(Icons.refresh),
+                                      ),
+                                      const PostGridConfigIconButton(),
+                                    ],
+                                  ),
                                   onClosed: () {
-                                    ref.setHiddenPostsHeaderStatus(
+                                    ref.setPostListConfigHeaderStatus(
                                       active: false,
                                     );
                                     showSimpleSnackBar(
@@ -311,7 +298,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                       action: SnackBarAction(
                                         label: 'Undo',
                                         onPressed: () =>
-                                            ref.setHiddenPostsHeaderStatus(
+                                            ref.setPostListConfigHeaderStatus(
                                                 active: true),
                                       ),
                                     );
@@ -323,26 +310,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                                 ),
                               ),
                             ),
-                          if (pageMode == PageMode.paginated)
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
-                                child: PageSelector(
-                                  currentPage: page,
-                                  onPrevious: controller.hasPreviousPage()
-                                      ? () => controller.goToPreviousPage()
-                                      : null,
-                                  onNext: controller.hasNextPage()
-                                      ? () => controller.goToNextPage()
-                                      : null,
-                                  onPageSelect: (page) =>
-                                      controller.jumpToPage(page),
-                                ),
-                              ),
-                            ),
-                          SliverSizedBox(
-                            height: _showHiddenHeader ? 4 : 0,
+                          const SliverSizedBox(
+                            height: 4,
                           ),
                           widget.bodyBuilder(
                             context,
@@ -363,7 +332,24 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                               ),
                             )
                           else
-                            const SliverSizedBox.shrink()
+                            const SliverSizedBox.shrink(),
+                          if (pageMode == PageMode.paginated)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 40),
+                                child: PageSelector(
+                                  currentPage: page,
+                                  onPrevious: controller.hasPreviousPage()
+                                      ? () => controller.goToPreviousPage()
+                                      : null,
+                                  onNext: controller.hasNextPage()
+                                      ? () => controller.goToNextPage()
+                                      : null,
+                                  onPageSelect: (page) =>
+                                      controller.jumpToPage(page),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),

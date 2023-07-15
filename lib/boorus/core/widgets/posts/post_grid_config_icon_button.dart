@@ -20,8 +20,8 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     final imageListType = ref.watch(imageListTypeSettingsProvider);
     final pageMode = ref.watch(pageModeSettingsProvider);
 
-    return IconButton(
-      onPressed: () => showMaterialModalBottomSheet(
+    return InkWell(
+      onTap: () => showMaterialModalBottomSheet(
         context: context,
         builder: (_) => PostGridActionSheet(
           gridSize: gridSize,
@@ -33,7 +33,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
               ref.setImageListType(imageListType),
         ),
       ),
-      icon: const Icon(Icons.settings),
+      child: const Icon(Icons.settings),
     );
   }
 }

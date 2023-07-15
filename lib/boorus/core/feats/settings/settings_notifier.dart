@@ -64,12 +64,12 @@ extension SettingsNotifierX on WidgetRef {
         ),
       );
 
-  Future<void> setHiddenPostsHeaderStatus({
+  Future<void> setPostListConfigHeaderStatus({
     required bool active,
   }) =>
       updateSettings(
         read(settingsProvider).copyWith(
-          showHiddenPostsHeader: active,
+          showPostListConfigHeader: active,
         ),
       );
 }
