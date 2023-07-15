@@ -22,7 +22,7 @@ class SearchAppBar extends ConsumerWidget {
 
   final TextEditingController queryEditingController;
   final FocusNode? focusNode;
-  final VoidCallback onBack;
+  final VoidCallback? onBack;
   final void Function(String value) onSubmitted;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
@@ -41,11 +41,17 @@ class SearchAppBar extends ConsumerWidget {
         autofocus: settings.autoFocusSearchBar,
         focus: focusNode,
         queryEditingController: queryEditingController,
-        leading: IconButton(
-          splashRadius: 16,
-          icon: const Icon(Icons.arrow_back),
-          onPressed: onBack,
-        ),
+        leading: onBack != null
+            ? IconButton(
+                splashRadius: 16,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: onBack,
+              )
+            : IconButton(
+                splashRadius: 16,
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
         trailing: ValueListenableBuilder(
           valueListenable: queryEditingController,
           builder: (context, value, child) {

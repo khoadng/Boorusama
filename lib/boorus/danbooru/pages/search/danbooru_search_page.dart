@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
@@ -97,9 +98,11 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 focusNode: focus,
                 queryEditingController: controller,
                 onSubmitted: (value) => searchController.submit(value),
-                onBack: () => state != DisplayState.options
-                    ? searchController.resetToOptions()
-                    : context.navigator.pop(),
+                onBack: !context.canPop()
+                    ? null
+                    : () => state != DisplayState.options
+                        ? searchController.resetToOptions()
+                        : context.navigator.pop(),
               ),
             ),
             body: SafeArea(

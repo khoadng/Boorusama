@@ -37,6 +37,8 @@ extension RouterX on BuildContext {
         location,
         extra: extra,
       );
+
+  bool canPop() => canPop();
 }
 
 class AppNavigatorObserver extends NavigatorObserver {

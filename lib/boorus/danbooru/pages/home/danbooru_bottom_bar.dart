@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
-import 'other_features_page.dart';
 
 class DanbooruBottomBar extends StatelessWidget {
   const DanbooruBottomBar({
@@ -66,8 +66,62 @@ class DanbooruBottomBar extends StatelessWidget {
                 title: const Text('Explore'),
                 onTap: onTabChanged,
               ),
-              const Divider(),
-              const DanbooruOtherFeaturesWidget(),
+              NavigationTile(
+                value: 2,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.search),
+                icon: const Icon(Icons.search_outlined),
+                title: const Text('Search'),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 3,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.photo_album),
+                icon: const Icon(Icons.photo_album_outlined),
+                title: const Text('Pools'),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 4,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.forum),
+                icon: const Icon(Icons.forum_outlined),
+                title: const Text('forum.forum').tr(),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 5,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.favorite),
+                icon: const Icon(Icons.favorite_border_outlined),
+                title: const Text('Favorites'),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 6,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.collections),
+                icon: const Icon(Icons.collections_outlined),
+                title: const Text('favorite_groups.favorite_groups').tr(),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 7,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.saved_search),
+                icon: const Icon(Icons.save_alt_outlined),
+                title: const Text('saved_search.saved_search').tr(),
+                onTap: onTabChanged,
+              ),
+              NavigationTile(
+                value: 8,
+                index: initialValue,
+                selectedIcon: const Icon(Icons.tag),
+                icon: const Icon(Icons.tag_outlined),
+                title: const Text('blacklisted_tags.blacklisted_tags').tr(),
+                onTap: onTabChanged,
+              ),
             ],
           );
   }

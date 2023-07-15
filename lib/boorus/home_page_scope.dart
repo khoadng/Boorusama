@@ -63,6 +63,7 @@ class _HomePageScopeState extends State<HomePageScope> {
                   widget.bottomBar!(context, homePageController),
               ],
             ),
+            const SizedBox(width: 8),
             Expanded(child: child),
           ],
         ),
