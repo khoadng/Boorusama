@@ -34,11 +34,10 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: LayoutBuilder(
-          builder: (context, constraints) => GridView.builder(
+        child: Builder(
+          builder: (context) => GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: switch (
-                  Screen.of(context).fromConstraints(constraints)) {
+              crossAxisCount: switch (Screen.of(context).size) {
                 ScreenSize.small => 3,
                 ScreenSize.medium => 4,
                 ScreenSize.large => 6,

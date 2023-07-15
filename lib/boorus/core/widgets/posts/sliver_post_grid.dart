@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/errors.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -43,8 +44,8 @@ class SliverPostGrid extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
       ),
-      sliver: SliverLayoutBuilder(
-        builder: (context, constraints) {
+      sliver: Builder(
+        builder: (context) {
           if (error != null) {
             final message = translateBooruError(error!);
 
@@ -91,7 +92,7 @@ class SliverPostGrid extends ConsumerWidget {
           final payload = gridSizeToGridData(
             size: gridSize,
             spacing: imageGridSpacing,
-            screenWidth: constraints.crossAxisExtent,
+            screenWidth: context.screenWidth,
           );
           final crossAxisCount = payload.$1;
           final mainAxisSpacing = payload.$2;
@@ -102,7 +103,7 @@ class SliverPostGrid extends ConsumerWidget {
                 gridDelegate: gridSizeToGridDelegate(
                   size: gridSize,
                   spacing: imageGridSpacing,
-                  screenWidth: constraints.crossAxisExtent,
+                  screenWidth: context.screenWidth,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   itemBuilder,
@@ -150,12 +151,12 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
     final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
 
-    return SliverLayoutBuilder(
-      builder: (context, constraints) {
+    return Builder(
+      builder: (context) {
         final data = gridSizeToGridData(
           size: gridSize,
           spacing: imageGridSpacing,
-          screenWidth: constraints.crossAxisExtent,
+          screenWidth: context.screenWidth,
         );
         final crossAxisCount = data.$1;
         final mainAxisSpacing = data.$2;

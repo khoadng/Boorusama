@@ -31,9 +31,6 @@ class Screen {
 
   ScreenSize get size => screenWidthToDisplaySize(_size.width);
 
-  ScreenSize fromConstraints(BoxConstraints constraints) =>
-      screenWidthToDisplaySize(constraints.maxWidth);
-
   ScreenSize nextBreakpoint() {
     switch (size) {
       case ScreenSize.small:
