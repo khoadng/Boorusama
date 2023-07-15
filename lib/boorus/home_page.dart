@@ -11,9 +11,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/danbooru_bottom_bar.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
@@ -117,24 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       case BooruType.danbooru:
       case BooruType.safebooru:
       case BooruType.testbooru:
-        return HomePageScope(
-          bottomBar: (context, controller) => ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (context, value, child) => DanbooruBottomBar(
-              initialValue: value,
-              onTabChanged: (value) => controller.goToTab(value),
-            ),
-          ),
-          builder: (context, tab, controller) => DanbooruProvider(
-            builder: (context) {
-              return DanbooruHomePage(
-                key: ValueKey(config.id),
-                controller: controller,
-                bottomBar: tab,
-              );
-            },
-          ),
-        );
+        return DanbooruScope(config: config);
       case BooruType.gelbooru:
       case BooruType.rule34xxx:
         final gkey = ValueKey(config.id);

@@ -21,10 +21,12 @@ class DanbooruHomePage extends ConsumerWidget {
     super.key,
     required this.controller,
     required this.bottomBar,
+    required this.toolbarBuilder,
   });
 
   final HomePageController controller;
   final Widget bottomBar;
+  final Widget Function(BuildContext context) toolbarBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,8 +47,8 @@ class DanbooruHomePage extends ConsumerWidget {
               builder: (context, value, child) => AnimatedIndexedStack(
                 index: value,
                 children: [
-                  _LatestView(
-                    onMenuTap: controller.openMenu,
+                  LatestView(
+                    toolbarBuilder: toolbarBuilder,
                   ),
                   const _ExplorePage(),
                   const OtherFeaturesPage(),
@@ -69,24 +71,6 @@ class _ExplorePage extends ConsumerWidget {
     final state = ref.watch(networkStateProvider);
 
     return ExplorePage(
-      useAppBarPadding: state is NetworkConnectedState,
-    );
-  }
-}
-
-class _LatestView extends ConsumerWidget {
-  const _LatestView({
-    required this.onMenuTap,
-  });
-
-  final void Function()? onMenuTap;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(networkStateProvider);
-
-    return LatestView(
-      onMenuTap: onMenuTap,
       useAppBarPadding: state is NetworkConnectedState,
     );
   }

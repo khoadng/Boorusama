@@ -19,6 +19,7 @@ import 'package:boorusama/widgets/scroll_to_top.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'hidden_post_header.dart';
+import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(
@@ -44,6 +45,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
+    this.toolBarLeadingBuilder,
   });
 
   final VoidCallback? onLoadMore;
@@ -58,6 +60,7 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final bool refreshAtStart;
   final bool enablePullToRefresh;
 
+  final Widget Function(BuildContext contex)? toolBarLeadingBuilder;
   final ItemWidgetBuilder<T> itemBuilder;
   final FooterBuilder<T>? footerBuilder;
   final HeaderBuilder<T>? headerBuilder;
@@ -264,6 +267,23 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                           if (!multiSelect &&
                               widget.sliverHeaderBuilder != null)
                             ...widget.sliverHeaderBuilder!(context),
+                          SliverToBoxAdapter(
+                            child: Row(
+                              children: [
+                                if (widget.toolBarLeadingBuilder != null)
+                                  widget.toolBarLeadingBuilder!(context),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: () => controller.refresh(),
+                                  icon: const Icon(Icons.refresh),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: PostGridConfigIconButton(),
+                                ),
+                              ],
+                            ),
+                          ),
                           if (settings.showHiddenPostsHeader &&
                               _showHiddenHeader)
                             SliverPinnedHeader(

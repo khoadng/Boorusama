@@ -35,6 +35,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.errors,
+    this.toolbarLeadingBuilder,
   });
 
   final VoidCallback? onLoadMore;
@@ -42,6 +43,7 @@ class DanbooruInfinitePostList extends ConsumerStatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final Widget Function(Post post, void Function() next)? contextMenuBuilder;
+  final Widget Function(BuildContext context)? toolbarLeadingBuilder;
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -99,6 +101,7 @@ class _DanbooruInfinitePostListState
       controller: widget.controller,
       scrollController: _autoScrollController,
       sliverHeaderBuilder: widget.sliverHeaderBuilder,
+      toolBarLeadingBuilder: widget.toolbarLeadingBuilder,
       footerBuilder: (context, selectedItems) => DanbooruMultiSelectionActions(
         selectedPosts: selectedItems,
         endMultiSelect: () {
