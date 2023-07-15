@@ -11,6 +11,7 @@ class HomePageScope extends StatefulWidget {
   const HomePageScope({
     super.key,
     required this.builder,
+    this.menuBuilder,
     this.bottomBar,
   });
 
@@ -18,6 +19,8 @@ class HomePageScope extends StatefulWidget {
     BuildContext context,
     HomePageController controller,
   )? bottomBar;
+
+  final List<Widget> Function(BuildContext context)? menuBuilder;
 
   final Widget Function(
     BuildContext context,
@@ -58,6 +61,7 @@ class _HomePageScopeState extends State<HomePageScope> {
               width: 300,
               popOnSelect: false,
               padding: EdgeInsets.zero,
+              contentBuilder: widget.menuBuilder,
               initialContentBuilder: (context) => [
                 if (widget.bottomBar != null)
                   widget.bottomBar!(context, homePageController),

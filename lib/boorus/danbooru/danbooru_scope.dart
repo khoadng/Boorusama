@@ -2,8 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/boorus/core/pages/boorus/manage_booru_user_page.dart';
+import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/network_indicator_with_state.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -20,12 +28,14 @@ import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_p
 import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
+import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
-class DanbooruScope extends StatefulWidget {
+class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
     super.key,
     required this.config,
@@ -34,13 +44,22 @@ class DanbooruScope extends StatefulWidget {
   final BooruConfig config;
 
   @override
-  State<DanbooruScope> createState() => _DanbooruScopeState();
+  ConsumerState<DanbooruScope> createState() => _DanbooruScopeState();
 }
 
-class _DanbooruScopeState extends State<DanbooruScope> {
+class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   @override
   Widget build(BuildContext context) {
     return HomePageScope(
+      menuBuilder: (context) => [
+        SideMenuTile(
+          icon: const Icon(Icons.settings_outlined),
+          title: Text('sideMenu.settings'.tr()),
+          onTap: () {
+            context.go('/settings');
+          },
+        ),
+      ],
       bottomBar: (context, controller) => ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, value, child) => DanbooruBottomBar(
@@ -49,74 +68,80 @@ class _DanbooruScopeState extends State<DanbooruScope> {
         ),
       ),
       builder: (context, tab, controller) => DanbooruProvider(
-        builder: (context) {
-          return isMobilePlatform()
-              ? AnnotatedRegion(
-                  key: ValueKey(widget.config.id),
-                  value: SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: context.themeMode.isLight
-                        ? Brightness.dark
-                        : Brightness.light,
-                  ),
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Column(
-                      children: [
-                        const NetworkUnavailableIndicatorWithState(),
-                        Expanded(
-                            child: ValueListenableBuilder(
-                          valueListenable: controller,
-                          builder: (context, value, child) =>
-                              AnimatedIndexedStack(
-                            index: value,
-                            children: [
-                              LatestView(
-                                toolbarBuilder: (context) => SliverAppBar(
-                                  backgroundColor:
-                                      context.theme.scaffoldBackgroundColor,
-                                  toolbarHeight: kToolbarHeight * 1.2,
-                                  primary: true,
-                                  title: HomeSearchBar(
-                                    onMenuTap: controller.openMenu,
-                                    onTap: () => goToSearchPage(context),
-                                  ),
-                                  floating: true,
-                                  snap: true,
-                                  automaticallyImplyLeading: false,
-                                ),
-                              ),
-                              const ExplorePage(),
-                              const OtherFeaturesPage(),
-                            ],
-                          ),
-                        )),
-                      ],
-                    ),
-                    bottomNavigationBar: tab,
-                  ),
-                )
-              : ValueListenableBuilder(
-                  valueListenable: controller,
-                  builder: (context, value, child) => AnimatedIndexedStack(
-                    index: value,
-                    children: [
-                      LatestView(
-                        toolbarBuilder: (context) =>
-                            const SliverSizedBox.shrink(),
+        builder: (context) => isMobilePlatform()
+            ? _buildMobile(controller, tab)
+            : _buildDesktop(controller),
+      ),
+    );
+  }
+
+  Widget _buildDesktop(HomePageController controller) {
+    return ValueListenableBuilder(
+      valueListenable: controller,
+      builder: (context, value, child) => IndexedStack(
+        index: value,
+        children: [
+          LatestView(
+            toolbarBuilder: (context) => const SliverSizedBox.shrink(),
+          ),
+          const ExplorePage(),
+          const DanbooruSearchPage(),
+          const PoolPage(),
+          const DanbooruForumPage(),
+          FavoritesPage(username: widget.config.login!),
+          const FavoriteGroupsPage(),
+          const SavedSearchFeedPage(),
+          const BlacklistedTagsPage(),
+          const ManageBooruPage(),
+          const BookmarkPage(),
+          const BlacklistedTagPage(),
+          const BulkDownloadPage(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobile(HomePageController controller, Widget tab) {
+    return AnnotatedRegion(
+      key: ValueKey(widget.config.id),
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:
+            context.themeMode.isLight ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          children: [
+            const NetworkUnavailableIndicatorWithState(),
+            Expanded(
+                child: ValueListenableBuilder(
+              valueListenable: controller,
+              builder: (context, value, child) => AnimatedIndexedStack(
+                index: value,
+                children: [
+                  LatestView(
+                    toolbarBuilder: (context) => SliverAppBar(
+                      backgroundColor: context.theme.scaffoldBackgroundColor,
+                      toolbarHeight: kToolbarHeight * 1.2,
+                      primary: true,
+                      title: HomeSearchBar(
+                        onMenuTap: controller.openMenu,
+                        onTap: () => goToSearchPage(context),
                       ),
-                      const ExplorePage(),
-                      const DanbooruSearchPage(),
-                      const PoolPage(),
-                      const DanbooruForumPage(),
-                      FavoritesPage(username: widget.config.login!),
-                      const FavoriteGroupsPage(),
-                      const SavedSearchFeedPage(),
-                      const BlacklistedTagsPage(),
-                    ],
+                      floating: true,
+                      snap: true,
+                      automaticallyImplyLeading: false,
+                    ),
                   ),
-                );
-        },
+                  const ExplorePage(),
+                  const OtherFeaturesPage(),
+                ],
+              ),
+            )),
+          ],
+        ),
+        bottomNavigationBar: tab,
       ),
     );
   }

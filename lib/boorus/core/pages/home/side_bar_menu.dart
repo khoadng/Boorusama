@@ -23,6 +23,7 @@ class SideBarMenu extends ConsumerWidget {
     this.width,
     this.popOnSelect = false,
     this.initialContentBuilder,
+    this.contentBuilder,
     this.padding,
   });
 
@@ -30,6 +31,7 @@ class SideBarMenu extends ConsumerWidget {
   final EdgeInsets? padding;
   final bool popOnSelect;
   final List<Widget>? Function(BuildContext context)? initialContentBuilder;
+  final List<Widget> Function(BuildContext context)? contentBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,50 +112,54 @@ class SideBarMenu extends ConsumerWidget {
               ...initialContentBuilder!(context)!,
             ],
             const Divider(),
-            SideMenuTile(
-              icon: const Icon(Icons.manage_accounts),
-              title: const Text('sideMenu.manage_boorus').tr(),
-              onTap: () {
-                if (popOnSelect) context.navigator.pop();
-                context.go('/boorus');
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.favorite),
-              title: const Text('sideMenu.your_bookmarks').tr(),
-              onTap: () {
-                if (popOnSelect) context.navigator.pop();
-                context.go('/bookmarks');
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.list_alt),
-              title: const Text('sideMenu.your_blacklist').tr(),
-              onTap: () {
-                if (popOnSelect) context.navigator.pop();
-                goToGlobalBlacklistedTagsPage(context);
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.download),
-              title: const Text('sideMenu.bulk_download').tr(),
-              onTap: () {
-                if (popOnSelect) context.navigator.pop();
-                goToBulkDownloadPage(
-                  context,
-                  null,
-                  ref: ref,
-                );
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.settings_outlined),
-              title: Text('sideMenu.settings'.tr()),
-              onTap: () {
-                if (popOnSelect) context.navigator.pop();
-                context.go('/settings');
-              },
-            ),
+            if (contentBuilder != null) ...[
+              ...contentBuilder!(context),
+            ] else ...[
+              SideMenuTile(
+                icon: const Icon(Icons.manage_accounts),
+                title: const Text('sideMenu.manage_boorus').tr(),
+                onTap: () {
+                  if (popOnSelect) context.navigator.pop();
+                  context.go('/boorus');
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.favorite),
+                title: const Text('sideMenu.your_bookmarks').tr(),
+                onTap: () {
+                  if (popOnSelect) context.navigator.pop();
+                  context.go('/bookmarks');
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.list_alt),
+                title: const Text('sideMenu.your_blacklist').tr(),
+                onTap: () {
+                  if (popOnSelect) context.navigator.pop();
+                  goToGlobalBlacklistedTagsPage(context);
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.download),
+                title: const Text('sideMenu.bulk_download').tr(),
+                onTap: () {
+                  if (popOnSelect) context.navigator.pop();
+                  goToBulkDownloadPage(
+                    context,
+                    null,
+                    ref: ref,
+                  );
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.settings_outlined),
+                title: Text('sideMenu.settings'.tr()),
+                onTap: () {
+                  if (popOnSelect) context.navigator.pop();
+                  context.go('/settings');
+                },
+              ),
+            ]
           ],
         ),
       ),
