@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/network_indicator_with_state.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -27,10 +26,8 @@ import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_p
 import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
@@ -50,15 +47,6 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   @override
   Widget build(BuildContext context) {
     return HomePageScope(
-      menuBuilder: (context) => [
-        SideMenuTile(
-          icon: const Icon(Icons.settings_outlined),
-          title: Text('sideMenu.settings'.tr()),
-          onTap: () {
-            context.go('/settings');
-          },
-        ),
-      ],
       bottomBar: (context, controller) => ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, value, child) => DanbooruBottomBar(

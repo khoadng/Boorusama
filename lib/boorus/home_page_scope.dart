@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/widgets/split.dart';
 
@@ -46,6 +47,7 @@ class _HomePageScopeState extends State<HomePageScope> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.cardColor,
       key: scaffoldKey,
       drawer: isMobilePlatform()
           ? const SideBarMenu(
@@ -57,15 +59,20 @@ class _HomePageScopeState extends State<HomePageScope> {
       body: ConditionalParentWidget(
         condition: !isMobilePlatform(),
         conditionalBuilder: (child) => Split(
-          initialFractions: const [0.25, 0.75],
+          initialFractions: const [0.2, 0.8],
           axis: Axis.horizontal,
           children: [
             SingleChildScrollView(
               child: Column(
                 children: [
                   const CurrentBooruTile(),
+                  const SizedBox(height: 8),
                   if (widget.bottomBar != null)
                     widget.bottomBar!(context, homePageController),
+                  const Divider(),
+                  if (widget.menuBuilder != null) ...[
+                    ...widget.menuBuilder!(context),
+                  ],
                 ],
               ),
             ),
