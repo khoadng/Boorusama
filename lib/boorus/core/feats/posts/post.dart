@@ -56,8 +56,13 @@ extension PostX on Post {
     return tags;
   }
 
-  bool containsTagPattern(String pattern) =>
-      checkIfTagsContainsTagExpression(tags, pattern);
+  bool containsTagPattern(String pattern) => checkIfTagsContainsTagExpression(
+      TagFilterData(
+        tags: tags,
+        rating: rating,
+        score: score,
+      ),
+      pattern);
 }
 
 extension PostsX on List<Post> {
@@ -94,31 +99,77 @@ extension PostsX on List<Post> {
   }
 }
 
-bool checkIfTagsContainsTagExpression(List<String> tags, String tagExpression) {
-  var expressions = tagExpression.split(' ');
+extension TagFilterDataX on List<String> {
+  TagFilterData toTagFilterData() => TagFilterData.tags(tags: this);
+}
 
-  var andTags = expressions
-      .where((s) => !s.startsWith('-') && !s.startsWith('~'))
-      .toList();
-  var notTags = expressions
-      .where((s) => s.startsWith('-'))
-      .map((s) => s.substring(1))
-      .toList();
-  var orTags = expressions
-      .where((s) => s.startsWith('~'))
-      .map((s) => s.substring(1))
-      .toList();
+class TagFilterData {
+  TagFilterData({
+    required this.tags,
+    required this.rating,
+    required this.score,
+  });
 
-  // AND logic
-  if (andTags.any((tag) => !tags.contains(tag))) return false;
+  TagFilterData.tags({
+    required this.tags,
+  })  : rating = Rating.general,
+        score = 0;
 
-  // NOT logic
-  if (notTags.any((tag) => tags.contains(tag))) return false;
+  final List<String> tags;
+  final Rating rating;
+  final int score;
+}
 
-  // OR logic
-  if (orTags.isNotEmpty && !orTags.any((tag) => tags.contains(tag))) {
+bool checkIfTagsContainsTagExpression(
+    final TagFilterData filterData, final String tagExpression) {
+  // Split the tagExpression by spaces to handle multiple tags
+  final expressions = tagExpression.split(' ');
+
+  // Process each tag in the expression
+  for (final expression in expressions) {
+    // Handle metatag "rating"
+    if (expression.startsWith('rating:')) {
+      final targetRating =
+          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
+      if (filterData.rating != targetRating) {
+        return false;
+      }
+    }
+    // Handle NOT operator with metatag "rating"
+    else if (expression.startsWith('-rating:')) {
+      final targetRating =
+          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
+      if (filterData.rating == targetRating) {
+        return false;
+      }
+    }
+    // Handle metatag "score"
+    else if (expression.startsWith('score:')) {
+      final targetScore = int.tryParse(expression.split('<')[1]) ?? 0;
+      if (!(filterData.score < targetScore)) {
+        return false;
+      }
+    }
+    // Handle NOT operator
+    else if (expression.startsWith('-')) {
+      if (filterData.tags.contains(expression.substring(1))) {
+        return false;
+      }
+    }
+    // Default AND operation
+    else if (!filterData.tags.contains(expression) &&
+        !expression.startsWith('~')) {
+      return false;
+    }
+  }
+
+  // OR operation check
+  if (expressions.any((exp) => exp.startsWith('~')) &&
+      !expressions
+          .where((exp) => exp.startsWith('~'))
+          .any((orExp) => filterData.tags.contains(orExp.substring(1)))) {
     return false;
   }
 
-  return true;
+  return true; // If all checks pass, return true
 }
