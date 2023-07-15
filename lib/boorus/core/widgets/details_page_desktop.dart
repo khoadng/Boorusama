@@ -14,12 +14,14 @@ class DetailsPageDesktop extends ConsumerStatefulWidget {
     required this.totalPages,
     required this.onPageChanged,
     required this.onExit,
+    this.topRightBuilder,
   });
 
   final int initialPage;
   final int totalPages;
   final Widget Function(BuildContext context) mediaBuilder;
   final Widget Function(BuildContext context) infoBuilder;
+  final Widget Function(BuildContext context)? topRightBuilder;
   final void Function(int page) onPageChanged;
   final void Function(int page) onExit;
 
@@ -104,6 +106,14 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                           ),
                         ),
                       ),
+                      if (widget.topRightBuilder != null)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: widget.topRightBuilder!.call(context),
+                          ),
+                        ),
                     ],
                   ),
                 ),

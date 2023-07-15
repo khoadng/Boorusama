@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/utils.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_information_section.dart';
+import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_post_details_page.dart';
 import 'danbooru_recommend_artist_list.dart';
@@ -70,6 +71,9 @@ class _DanbooruPostDetailsDesktopPageState
           ref.read(notesControllerProvider(post).notifier).load();
         });
       },
+      topRightBuilder: (context) => DanbooruMoreActionButton(
+        post: post,
+      ),
       mediaBuilder: (context) {
         final noteState = ref.watch(notesControllerProvider(post));
 

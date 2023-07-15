@@ -34,10 +34,11 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: Builder(
-          builder: (context) => GridView.builder(
+        child: LayoutBuilder(
+          builder: (context, constraints) => GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: switch (Screen.of(context).size) {
+              crossAxisCount: switch (
+                  screenWidthToDisplaySize(constraints.maxWidth)) {
                 ScreenSize.small => 3,
                 ScreenSize.medium => 4,
                 ScreenSize.large => 6,
@@ -52,16 +53,14 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
             itemBuilder: (context, index) {
               final post = posts[index];
 
-              return LayoutBuilder(
-                builder: (context, constraints) => ImageGridItem(
-                  onTap: () => onTap(index),
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  image: BooruImage(
-                    imageUrl: imageUrl(post),
-                    placeholderUrl: post.thumbnailImageUrl,
-                    fit: BoxFit.cover,
-                  ),
+              return ImageGridItem(
+                onTap: () => onTap(index),
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                image: BooruImage(
+                  imageUrl: imageUrl(post),
+                  placeholderUrl: post.thumbnailImageUrl,
+                  fit: BoxFit.cover,
                 ),
               );
             },
