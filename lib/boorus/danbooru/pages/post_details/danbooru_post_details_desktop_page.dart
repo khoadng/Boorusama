@@ -3,16 +3,20 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/utils.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
@@ -58,80 +62,94 @@ class _DanbooruPostDetailsDesktopPageState
     final tags = post.extractTagDetails();
     final artists = ref.watch(danbooruPostDetailsArtistProvider(post.id));
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
+    final auth = ref.watch(authenticationProvider);
+    final isFav = ref.watch(danbooruFavoriteProvider(post.id));
 
-    return DetailsPageDesktop(
-      onExit: widget.onExit,
-      initialPage: widget.initialIndex,
-      totalPages: widget.posts.length,
-      onPageChanged: (page) {
-        setState(() => this.page = page);
-        _debounceTimer?.cancel();
-        _debounceTimer = Timer(const Duration(milliseconds: 700), () {
-          widget.posts[page].loadDetailsFrom(ref);
-          ref.read(notesControllerProvider(post).notifier).load();
-        });
+    return CallbackShortcuts(
+      bindings: {
+        if (auth.isAuthenticated)
+          const SingleActivator(LogicalKeyboardKey.keyF): () => !isFav
+              ? ref.danbooruFavorites.add(post.id)
+              : ref.danbooruFavorites.remove(post.id),
+        const SingleActivator(
+          LogicalKeyboardKey.keyF,
+          control: true,
+        ): () => goToOriginalImagePage(context, post),
       },
-      topRightBuilder: (context) => DanbooruMoreActionButton(
-        post: post,
-      ),
-      mediaBuilder: (context) {
-        final noteState = ref.watch(notesControllerProvider(post));
+      child: DetailsPageDesktop(
+        onExit: widget.onExit,
+        initialPage: widget.initialIndex,
+        totalPages: widget.posts.length,
+        onPageChanged: (page) {
+          setState(() => this.page = page);
+          _debounceTimer?.cancel();
+          _debounceTimer = Timer(const Duration(seconds: 1), () {
+            widget.posts[page].loadDetailsFrom(ref);
+            ref.read(notesControllerProvider(post).notifier).load();
+          });
+        },
+        topRightBuilder: (context) => DanbooruMoreActionButton(
+          post: post,
+        ),
+        mediaBuilder: (context) {
+          final noteState = ref.watch(notesControllerProvider(post));
 
-        return InteractiveBooruImage(
-          useHero: false,
-          heroTag: "",
-          aspectRatio: post.aspectRatio,
-          imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
-          // Prevent placeholder image from showing when first loaded a post with translated image
-          placeholderImageUrl: post.thumbnailImageUrl,
-          // currentPage == widget.intitialIndex && post.isTranslated
-          //     ? null
-          //     : post.thumbnailImageUrl,
-          // onCached: (path) =>
-          //     ref.read(postShareProvider(post).notifier).setImagePath(path ?? ''),
-          previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-          imageOverlayBuilder: (constraints) =>
-              noteOverlayBuilderDelegate(constraints, post, noteState),
-          width: post.width,
-          height: post.height,
-        );
-      },
-      infoBuilder: (context) {
-        return CustomScrollView(
-          slivers: [
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  DanbooruInformationSection(
-                    post: post,
-                    showSource: true,
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  RepaintBoundary(
-                    child: DanbooruPostActionToolbar(post: post),
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  DanbooruArtistSection(post: post),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: DanbooruPostStatsTile(post: post),
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  TagsTile(
-                      tags: tags
-                          .where((e) => e.postId == post.id)
-                          .map((e) => e.name)
-                          .toList()),
-                  FileDetailsSection(post: post),
-                ],
+          return InteractiveBooruImage(
+            useHero: false,
+            heroTag: "",
+            aspectRatio: post.aspectRatio,
+            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+            // Prevent placeholder image from showing when first loaded a post with translated image
+            placeholderImageUrl: post.thumbnailImageUrl,
+            // currentPage == widget.intitialIndex && post.isTranslated
+            //     ? null
+            //     : post.thumbnailImageUrl,
+            // onCached: (path) =>
+            //     ref.read(postShareProvider(post).notifier).setImagePath(path ?? ''),
+            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
+            imageOverlayBuilder: (constraints) =>
+                noteOverlayBuilderDelegate(constraints, post, noteState),
+            width: post.width,
+            height: post.height,
+          );
+        },
+        infoBuilder: (context) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    DanbooruInformationSection(
+                      post: post,
+                      showSource: true,
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    RepaintBoundary(
+                      child: DanbooruPostActionToolbar(post: post),
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    DanbooruArtistSection(post: post),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: DanbooruPostStatsTile(post: post),
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    TagsTile(
+                        tags: tags
+                            .where((e) => e.postId == post.id)
+                            .map((e) => e.name)
+                            .toList()),
+                    FileDetailsSection(post: post),
+                  ],
+                ),
               ),
-            ),
-            RelatedPostsSection(post: post),
-            DanbooruRecommendArtistList(artists: artists),
-            DanbooruRecommendCharacterList(characters: characters),
-          ],
-        );
-      },
+              RelatedPostsSection(post: post),
+              DanbooruRecommendArtistList(artists: artists),
+              DanbooruRecommendCharacterList(characters: characters),
+            ],
+          );
+        },
+      ),
     );
   }
 }
