@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'side_menu_tile.dart';
@@ -45,7 +44,16 @@ class SideBarMenu extends ConsumerWidget {
             SizedBox(
               height: MediaQuery.of(context).viewPadding.top,
             ),
-            const CurrentBooruTile(),
+            CurrentBooruTile(
+              onTap: () {
+                showMaterialModalBottomSheet(
+                  context: context,
+                  duration: const Duration(milliseconds: 250),
+                  animationCurve: Curves.easeOut,
+                  builder: (context) => const SwitchBooruModal(),
+                );
+              },
+            ),
             if (initialContentBuilder != null) ...[
               ...initialContentBuilder!(context)!,
             ],
@@ -108,7 +116,10 @@ class SideBarMenu extends ConsumerWidget {
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
     super.key,
+    required this.onTap,
   });
+
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -173,41 +184,11 @@ class CurrentBooruTile extends ConsumerWidget {
                     )
                   : null,
               trailing: IconButton(
-                onPressed: () {
-                  if (isMobilePlatform()) {
-                    showMaterialModalBottomSheet(
-                      context: context,
-                      duration: const Duration(milliseconds: 250),
-                      animationCurve: Curves.easeOut,
-                      builder: (context) => const SwitchBooruModal(),
-                    );
-                  } else {
-                    showSideSheetFromLeft(
-                      context: context,
-                      width: 300,
-                      body: Material(
-                        child: Stack(
-                          children: [
-                            const Positioned.fill(
-                              child: SwitchBooruModal(),
-                            ),
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: IconButton(
-                                onPressed: () => context.navigator.pop(),
-                                icon: const Icon(Icons.close),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                },
-                splashRadius: 18,
+                onPressed: onTap,
+                splashRadius: 12,
                 icon: const Icon(
-                  Icons.add,
+                  Icons.settings,
+                  size: 18,
                 ),
               ),
             )

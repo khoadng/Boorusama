@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
@@ -78,7 +79,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   }
 }
 
-class _DesktopScope extends StatelessWidget {
+class _DesktopScope extends StatefulWidget {
   const _DesktopScope({
     required this.controller,
     required this.config,
@@ -88,6 +89,13 @@ class _DesktopScope extends StatelessWidget {
   final BooruConfig config;
 
   @override
+  State<_DesktopScope> createState() => _DesktopScopeState();
+}
+
+class _DesktopScopeState extends State<_DesktopScope> {
+  var booruMode = false;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.cardColor,
@@ -95,135 +103,150 @@ class _DesktopScope extends StatelessWidget {
         initialFractions: const [0.2, 0.8],
         axis: Axis.horizontal,
         children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                const CurrentBooruTile(),
-                const SizedBox(height: 8),
-                Theme(
-                  data: context.theme.copyWith(
-                    iconTheme: context.theme.iconTheme.copyWith(size: 20),
+          if (!booruMode)
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  CurrentBooruTile(
+                    onTap: () {
+                      setState(() {
+                        booruMode = true;
+                      });
+                    },
                   ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        HomeNavigationTile(
-                          value: 0,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.dashboard),
-                          icon: const Icon(Icons.dashboard_outlined),
-                          title: 'Home',
-                        ),
-                        HomeNavigationTile(
-                          value: 1,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.explore),
-                          icon: const Icon(Icons.explore_outlined),
-                          title: 'Explore',
-                        ),
-                        HomeNavigationTile(
-                          value: 2,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.search),
-                          icon: const Icon(Icons.search_outlined),
-                          title: 'Search',
-                        ),
-                        HomeNavigationTile(
-                          value: 3,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.photo_album),
-                          icon: const Icon(Icons.photo_album_outlined),
-                          title: 'Pools',
-                        ),
-                        HomeNavigationTile(
-                          value: 4,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.forum),
-                          icon: const Icon(Icons.forum_outlined),
-                          title: 'forum.forum'.tr(),
-                        ),
-                        HomeNavigationTile(
-                          value: 5,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.favorite),
-                          icon: const Icon(Icons.favorite_border_outlined),
-                          title: 'Favorites',
-                        ),
-                        HomeNavigationTile(
-                          value: 6,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.collections),
-                          icon: const Icon(Icons.collections_outlined),
-                          title: 'favorite_groups.favorite_groups'.tr(),
-                        ),
-                        HomeNavigationTile(
-                          value: 7,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.saved_search),
-                          icon: const Icon(Icons.saved_search_outlined),
-                          title: 'saved_search.saved_search'.tr(),
-                        ),
-                        HomeNavigationTile(
-                          value: 8,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.tag),
-                          icon: const Icon(Icons.tag_outlined),
-                          title: 'blacklisted_tags.blacklisted_tags'.tr(),
-                        ),
-                        const Divider(),
-                        HomeNavigationTile(
-                          value: 9,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.bookmark),
-                          icon: const Icon(Icons.bookmark_border_outlined),
-                          title: 'sideMenu.your_bookmarks'.tr(),
-                        ),
-                        HomeNavigationTile(
-                          value: 10,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.list_alt),
-                          icon: const Icon(Icons.list_alt_outlined),
-                          title: 'sideMenu.your_blacklist'.tr(),
-                        ),
-                        HomeNavigationTile(
-                          value: 11,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.download),
-                          icon: const Icon(Icons.download_outlined),
-                          title: 'sideMenu.bulk_download'.tr(),
-                        ),
-                        const Divider(),
-                        HomeNavigationTile(
-                          value: 999,
-                          controller: controller,
-                          constraints: constraints,
-                          selectedIcon: const Icon(Icons.settings),
-                          icon: const Icon(Icons.settings),
-                          title: 'sideMenu.settings'.tr(),
-                          onTap: () => context.go('/settings'),
-                        ),
-                      ],
+                  const SizedBox(height: 8),
+                  Theme(
+                    data: context.theme.copyWith(
+                      iconTheme: context.theme.iconTheme.copyWith(size: 20),
                     ),
-                  ),
-                )
-              ],
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          HomeNavigationTile(
+                            value: 0,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.dashboard),
+                            icon: const Icon(Icons.dashboard_outlined),
+                            title: 'Home',
+                          ),
+                          HomeNavigationTile(
+                            value: 1,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.explore),
+                            icon: const Icon(Icons.explore_outlined),
+                            title: 'Explore',
+                          ),
+                          HomeNavigationTile(
+                            value: 2,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.search),
+                            icon: const Icon(Icons.search_outlined),
+                            title: 'Search',
+                          ),
+                          HomeNavigationTile(
+                            value: 3,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.photo_album),
+                            icon: const Icon(Icons.photo_album_outlined),
+                            title: 'Pools',
+                          ),
+                          HomeNavigationTile(
+                            value: 4,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.forum),
+                            icon: const Icon(Icons.forum_outlined),
+                            title: 'forum.forum'.tr(),
+                          ),
+                          HomeNavigationTile(
+                            value: 5,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.favorite),
+                            icon: const Icon(Icons.favorite_border_outlined),
+                            title: 'Favorites',
+                          ),
+                          HomeNavigationTile(
+                            value: 6,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.collections),
+                            icon: const Icon(Icons.collections_outlined),
+                            title: 'favorite_groups.favorite_groups'.tr(),
+                          ),
+                          HomeNavigationTile(
+                            value: 7,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.saved_search),
+                            icon: const Icon(Icons.saved_search_outlined),
+                            title: 'saved_search.saved_search'.tr(),
+                          ),
+                          HomeNavigationTile(
+                            value: 8,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.tag),
+                            icon: const Icon(Icons.tag_outlined),
+                            title: 'blacklisted_tags.blacklisted_tags'.tr(),
+                          ),
+                          const Divider(),
+                          HomeNavigationTile(
+                            value: 9,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.bookmark),
+                            icon: const Icon(Icons.bookmark_border_outlined),
+                            title: 'sideMenu.your_bookmarks'.tr(),
+                          ),
+                          HomeNavigationTile(
+                            value: 10,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.list_alt),
+                            icon: const Icon(Icons.list_alt_outlined),
+                            title: 'sideMenu.your_blacklist'.tr(),
+                          ),
+                          HomeNavigationTile(
+                            value: 11,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.download),
+                            icon: const Icon(Icons.download_outlined),
+                            title: 'sideMenu.bulk_download'.tr(),
+                          ),
+                          const Divider(),
+                          HomeNavigationTile(
+                            value: 999,
+                            controller: widget.controller,
+                            constraints: constraints,
+                            selectedIcon: const Icon(Icons.settings),
+                            icon: const Icon(Icons.settings),
+                            title: 'sideMenu.settings'.tr(),
+                            onTap: () => context.go('/settings'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          else
+            SwitchBooruView(
+              onClosed: () {
+                setState(() {
+                  booruMode = false;
+                });
+              },
             ),
-          ),
           ValueListenableBuilder(
-            valueListenable: controller,
+            valueListenable: widget.controller,
             builder: (context, value, child) => LazyIndexedStack(
               index: value,
               children: [
@@ -234,7 +257,7 @@ class _DesktopScope extends StatelessWidget {
                 const DanbooruSearchPage(),
                 const PoolPage(),
                 const DanbooruForumPage(),
-                FavoritesPage(username: config.login!),
+                FavoritesPage(username: widget.config.login!),
                 const FavoriteGroupsPage(),
                 const SavedSearchFeedPage(),
                 const BlacklistedTagsPage(),

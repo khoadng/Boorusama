@@ -1,8 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -66,7 +70,16 @@ class _HomePageScopeState extends State<HomePageScope> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  const CurrentBooruTile(),
+                  CurrentBooruTile(
+                    onTap: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        duration: const Duration(milliseconds: 250),
+                        animationCurve: Curves.easeOut,
+                        builder: (context) => const SwitchBooruModal(),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 8),
                   if (widget.bottomBar != null)
                     widget.bottomBar!(context, homePageController),
