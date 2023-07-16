@@ -329,30 +329,22 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
               return PortalTarget(
                 visible: query.text.isNotEmpty,
                 anchor: const Aligned(
-                  offset: Offset(0, 8),
                   follower: Alignment.topCenter,
                   target: Alignment.bottomCenter,
                 ),
                 portalFollower: SizedBox(
                   width: min(600, MediaQuery.of(context).size.width),
                   height: MediaQuery.of(context).size.height * 0.75,
-                  child: Material(
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    color: Theme.of(context).colorScheme.background,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: TagSuggestionItems(
-                          backgroundColor: Colors.transparent,
-                          tags: suggestionTags,
-                          currentQuery: query.text,
-                          onItemTap: (tag) {
-                            selectedTagController.addTag(tag.value);
-                            textEditingController.clear();
-                          },
-                          textColorBuilder: (tag) =>
-                              generateAutocompleteTagColor(
-                                  tag, context.themeMode),
-                        )),
+                  child: TagSuggestionItems(
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    tags: suggestionTags,
+                    currentQuery: query.text,
+                    onItemTap: (tag) {
+                      selectedTagController.addTag(tag.value);
+                      textEditingController.clear();
+                    },
+                    textColorBuilder: (tag) =>
+                        generateAutocompleteTagColor(tag, context.themeMode),
                   ),
                 ),
                 child: SearchAppBar(
