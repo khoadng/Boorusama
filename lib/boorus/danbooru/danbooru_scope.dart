@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
@@ -79,7 +80,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   }
 }
 
-class _DesktopScope extends StatefulWidget {
+class _DesktopScope extends ConsumerStatefulWidget {
   const _DesktopScope({
     required this.controller,
     required this.config,
@@ -89,14 +90,16 @@ class _DesktopScope extends StatefulWidget {
   final BooruConfig config;
 
   @override
-  State<_DesktopScope> createState() => _DesktopScopeState();
+  ConsumerState<_DesktopScope> createState() => _DesktopScopeState();
 }
 
-class _DesktopScopeState extends State<_DesktopScope> {
+class _DesktopScopeState extends ConsumerState<_DesktopScope> {
   var booruMode = false;
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.read(authenticationProvider);
+
     return Scaffold(
       backgroundColor: context.theme.cardColor,
       body: Split(
@@ -163,38 +166,40 @@ class _DesktopScopeState extends State<_DesktopScope> {
                             icon: const Icon(Icons.forum_outlined),
                             title: 'forum.forum'.tr(),
                           ),
-                          HomeNavigationTile(
-                            value: 5,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.favorite),
-                            icon: const Icon(Icons.favorite_border_outlined),
-                            title: 'Favorites',
-                          ),
-                          HomeNavigationTile(
-                            value: 6,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.collections),
-                            icon: const Icon(Icons.collections_outlined),
-                            title: 'favorite_groups.favorite_groups'.tr(),
-                          ),
-                          HomeNavigationTile(
-                            value: 7,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.saved_search),
-                            icon: const Icon(Icons.saved_search_outlined),
-                            title: 'saved_search.saved_search'.tr(),
-                          ),
-                          HomeNavigationTile(
-                            value: 8,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.tag),
-                            icon: const Icon(Icons.tag_outlined),
-                            title: 'blacklisted_tags.blacklisted_tags'.tr(),
-                          ),
+                          if (auth.isAuthenticated) ...[
+                            HomeNavigationTile(
+                              value: 5,
+                              controller: widget.controller,
+                              constraints: constraints,
+                              selectedIcon: const Icon(Icons.favorite),
+                              icon: const Icon(Icons.favorite_border_outlined),
+                              title: 'Favorites',
+                            ),
+                            HomeNavigationTile(
+                              value: 6,
+                              controller: widget.controller,
+                              constraints: constraints,
+                              selectedIcon: const Icon(Icons.collections),
+                              icon: const Icon(Icons.collections_outlined),
+                              title: 'favorite_groups.favorite_groups'.tr(),
+                            ),
+                            HomeNavigationTile(
+                              value: 7,
+                              controller: widget.controller,
+                              constraints: constraints,
+                              selectedIcon: const Icon(Icons.saved_search),
+                              icon: const Icon(Icons.saved_search_outlined),
+                              title: 'saved_search.saved_search'.tr(),
+                            ),
+                            HomeNavigationTile(
+                              value: 8,
+                              controller: widget.controller,
+                              constraints: constraints,
+                              selectedIcon: const Icon(Icons.tag),
+                              icon: const Icon(Icons.tag_outlined),
+                              title: 'blacklisted_tags.blacklisted_tags'.tr(),
+                            ),
+                          ],
                           const Divider(),
                           HomeNavigationTile(
                             value: 9,
@@ -257,10 +262,12 @@ class _DesktopScopeState extends State<_DesktopScope> {
                 const DanbooruSearchPage(),
                 const PoolPage(),
                 const DanbooruForumPage(),
-                FavoritesPage(username: widget.config.login!),
-                const FavoriteGroupsPage(),
-                const SavedSearchFeedPage(),
-                const BlacklistedTagsPage(),
+                if (auth.isAuthenticated) ...[
+                  FavoritesPage(username: widget.config.login!),
+                  const FavoriteGroupsPage(),
+                  const SavedSearchFeedPage(),
+                  const BlacklistedTagsPage(),
+                ],
                 const BookmarkPage(),
                 const BlacklistedTagPage(),
                 const BulkDownloadPage(),
