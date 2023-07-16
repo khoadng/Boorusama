@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,6 +33,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/split.dart';
