@@ -16,15 +16,18 @@ class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
     this.onHistoryTap,
+    this.onTagTap,
     this.metatagsBuilder,
     this.trendingBuilder,
-    required this.searchController,
+    //FIXME: update so that it won't depend on search controller
+    this.searchController,
   });
 
   final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<String>? onTagTap;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
-  final SearchPageController searchController;
+  final SearchPageController? searchController;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -125,12 +128,14 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   void _onTagTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    widget.searchController.tapTag(value);
+    widget.searchController?.tapTag(value);
+    widget.onTagTap?.call(value);
   }
 
   void _onHistoryTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    widget.searchController.tapHistoryTag(value);
+    widget.searchController?.tapHistoryTag(value);
+    widget.onHistoryTap?.call(value);
   }
 
   void _onHistoryCleared(WidgetRef ref) =>

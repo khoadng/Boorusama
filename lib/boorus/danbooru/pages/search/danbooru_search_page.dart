@@ -30,9 +30,11 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
     super.key,
     this.initialQuery,
+    this.selectedTagController,
   });
 
   final String? initialQuery;
+  final SelectedTagController? selectedTagController;
 
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
@@ -76,6 +78,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   @override
   Widget build(BuildContext context) {
     return SearchScope(
+      selectedTagController: widget.selectedTagController,
       initialQuery: widget.initialQuery,
       pattern: {
         metaTagRegex: TextStyle(

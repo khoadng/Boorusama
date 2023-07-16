@@ -1,4 +1,19 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
+import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
+import 'package:boorusama/boorus/core/pages/search/search_button.dart';
+import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
+import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/result_header.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/landing/trending/trending_section.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
+import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,8 +52,8 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/split.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
@@ -101,7 +116,6 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
     final auth = ref.read(authenticationProvider);
 
     return Scaffold(
-      backgroundColor: context.theme.cardColor,
       body: Split(
         initialFractions: const [0.2, 0.8],
         axis: Axis.horizontal,
@@ -255,9 +269,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
             builder: (context, value, child) => LazyIndexedStack(
               index: value,
               children: [
-                LatestView(
-                  toolbarBuilder: (context) => const SliverSizedBox.shrink(),
-                ),
+                const DanbooruHome2(),
                 const ExplorePage(),
                 const DanbooruSearchPage(),
                 const PoolPage(),
@@ -278,6 +290,142 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
       ),
     );
   }
+}
+
+class DanbooruHome2 extends ConsumerStatefulWidget {
+  const DanbooruHome2({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _DanbooruHome2State();
+}
+
+class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
+  late final selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  final textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    selectedTagController.dispose();
+    textEditingController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DanbooruPostScope(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+            selectedTagController.rawTagsString,
+            page,
+          ),
+      builder: (context, controller, errors) => Split(
+        axis: Axis.horizontal,
+        initialFractions: const [0.35, 0.65],
+        children: [
+          Scaffold(
+            floatingActionButton: SearchButton(
+              allowSearch: true,
+              onSearch: () => _onSearch(controller),
+            ),
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+              child: SearchAppBar(
+                queryEditingController: textEditingController,
+                onSubmitted: (value) {
+                  selectedTagController.addTag(value);
+                  _onSearch(controller);
+                },
+                onBack: null,
+              ),
+            ),
+            body: SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  SliverPinnedHeader(
+                    child: SelectedTagListWithData(
+                      controller: selectedTagController,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SearchLandingView(
+                      onTagTap: (value) => selectedTagController.addTag(
+                        value,
+                        operator: getFilterOperator(textEditingController.text),
+                      ),
+                      onHistoryTap: (value) =>
+                          selectedTagController.addTag(value),
+                      trendingBuilder: (context) => TrendingSection(
+                        onTagTap: (value) {
+                          selectedTagController.addTag(value);
+                        },
+                      ),
+                      metatagsBuilder: (context) => DanbooruMetatagsSection(
+                        onOptionTap: (value) {
+                          textEditingController.text = '$value:';
+                          _onTextChanged(textEditingController, '$value:');
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          DanbooruInfinitePostList(
+            controller: controller,
+            errors: errors,
+            sliverHeaderBuilder: (context) => [
+              SliverToBoxAdapter(
+                child: ValueListenableBuilder(
+                  valueListenable: selectedTagController,
+                  builder: (context, selectedTags, _) => RelatedTagSection(
+                    query: selectedTags.toRawString(),
+                    onSelected: (tag) => selectedTagController.addTag(tag.tag),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: selectedTagController,
+                      builder: (context, selectedTags, _) =>
+                          ResultHeaderWithProvider(
+                        selectedTags: selectedTags.toRawStringList(),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  void _onSearch(
+    PostGridController postController,
+  ) {
+    ref
+        .read(danbooruRelatedTagsProvider.notifier)
+        .fetch(selectedTagController.rawTagsString);
+    ref
+        .read(postCountStateProvider.notifier)
+        .getPostCount(selectedTagController.rawTags);
+    postController.refresh();
+  }
+}
+
+void _onTextChanged(
+  TextEditingController controller,
+  String text,
+) {
+  controller
+    ..text = text
+    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }
 
 class _MobileScope extends StatelessWidget {
