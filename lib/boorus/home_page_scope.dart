@@ -9,6 +9,7 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/widgets/split.dart';
 
+@Deprecated('each booru should have its own home page scope')
 class HomePageScope extends StatefulWidget {
   const HomePageScope({
     super.key,
