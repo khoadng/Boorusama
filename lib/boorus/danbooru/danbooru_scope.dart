@@ -169,7 +169,7 @@ class _DesktopScope extends StatelessWidget {
                           controller: controller,
                           constraints: constraints,
                           selectedIcon: const Icon(Icons.saved_search),
-                          icon: const Icon(Icons.save_alt_outlined),
+                          icon: const Icon(Icons.saved_search_outlined),
                           title: 'saved_search.saved_search'.tr(),
                         ),
                         HomeNavigationTile(
