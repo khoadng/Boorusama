@@ -55,7 +55,7 @@ void main() async {
 
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
-      const initialSize = Size(1024, 600);
+      const initialSize = Size(1200, 600);
       const minSize = Size(300, 300);
       appWindow.minSize = minSize;
       appWindow.size = initialSize;

@@ -1,38 +1,38 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:flutter_portal/flutter_portal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/feats/utils.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/landing/trending/trending_section.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
-import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
-import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
-import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
-import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
-import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/network_indicator_with_state.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
@@ -42,8 +42,10 @@ import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/other_features_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/landing/trending/trending_section.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -53,7 +55,6 @@ import 'package:boorusama/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
 import 'package:boorusama/widgets/split.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
@@ -118,6 +119,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
     return Scaffold(
       body: Split(
         initialFractions: const [0.2, 0.8],
+        minSizes: const [60, 800],
         axis: Axis.horizontal,
         children: [
           if (!booruMode)
@@ -160,20 +162,12 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                             value: 2,
                             controller: widget.controller,
                             constraints: constraints,
-                            selectedIcon: const Icon(Icons.search),
-                            icon: const Icon(Icons.search_outlined),
-                            title: 'Search',
-                          ),
-                          HomeNavigationTile(
-                            value: 3,
-                            controller: widget.controller,
-                            constraints: constraints,
                             selectedIcon: const Icon(Icons.photo_album),
                             icon: const Icon(Icons.photo_album_outlined),
                             title: 'Pools',
                           ),
                           HomeNavigationTile(
-                            value: 4,
+                            value: 3,
                             controller: widget.controller,
                             constraints: constraints,
                             selectedIcon: const Icon(Icons.forum),
@@ -182,7 +176,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                           ),
                           if (auth.isAuthenticated) ...[
                             HomeNavigationTile(
-                              value: 5,
+                              value: 4,
                               controller: widget.controller,
                               constraints: constraints,
                               selectedIcon: const Icon(Icons.favorite),
@@ -190,7 +184,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                               title: 'Favorites',
                             ),
                             HomeNavigationTile(
-                              value: 6,
+                              value: 5,
                               controller: widget.controller,
                               constraints: constraints,
                               selectedIcon: const Icon(Icons.collections),
@@ -198,7 +192,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                               title: 'favorite_groups.favorite_groups'.tr(),
                             ),
                             HomeNavigationTile(
-                              value: 7,
+                              value: 6,
                               controller: widget.controller,
                               constraints: constraints,
                               selectedIcon: const Icon(Icons.saved_search),
@@ -206,7 +200,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                               title: 'saved_search.saved_search'.tr(),
                             ),
                             HomeNavigationTile(
-                              value: 8,
+                              value: 7,
                               controller: widget.controller,
                               constraints: constraints,
                               selectedIcon: const Icon(Icons.tag),
@@ -216,7 +210,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                           ],
                           const Divider(),
                           HomeNavigationTile(
-                            value: 9,
+                            value: 8,
                             controller: widget.controller,
                             constraints: constraints,
                             selectedIcon: const Icon(Icons.bookmark),
@@ -224,7 +218,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                             title: 'sideMenu.your_bookmarks'.tr(),
                           ),
                           HomeNavigationTile(
-                            value: 10,
+                            value: 9,
                             controller: widget.controller,
                             constraints: constraints,
                             selectedIcon: const Icon(Icons.list_alt),
@@ -232,7 +226,7 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                             title: 'sideMenu.your_blacklist'.tr(),
                           ),
                           HomeNavigationTile(
-                            value: 11,
+                            value: 10,
                             controller: widget.controller,
                             constraints: constraints,
                             selectedIcon: const Icon(Icons.download),
@@ -271,7 +265,6 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
               children: [
                 const DanbooruHome2(),
                 const ExplorePage(),
-                const DanbooruSearchPage(),
                 const PoolPage(),
                 const DanbooruForumPage(),
                 if (auth.isAuthenticated) ...[
@@ -306,6 +299,14 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
   final textEditingController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(searchHistoryProvider.notifier).fetchHistories();
+    ref.read(postCountStateProvider.notifier).getPostCount([]);
+    ref.read(danbooruRelatedTagsProvider.notifier).fetch('');
+  }
+
+  @override
   void dispose() {
     super.dispose();
     selectedTagController.dispose();
@@ -319,92 +320,142 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
             selectedTagController.rawTagsString,
             page,
           ),
-      builder: (context, controller, errors) => Split(
-        axis: Axis.horizontal,
-        initialFractions: const [0.35, 0.65],
+      builder: (context, controller, errors) => Column(
         children: [
-          Scaffold(
-            floatingActionButton: SearchButton(
-              allowSearch: true,
-              onSearch: () => _onSearch(controller),
-            ),
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-              child: SearchAppBar(
-                queryEditingController: textEditingController,
-                onSubmitted: (value) {
-                  selectedTagController.addTag(value);
-                  _onSearch(controller);
-                },
-                onBack: null,
-              ),
-            ),
-            body: SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  SliverPinnedHeader(
-                    child: SelectedTagListWithData(
-                      controller: selectedTagController,
+          ValueListenableBuilder(
+            valueListenable: textEditingController,
+            builder: (context, query, child) {
+              final suggestionTags = ref.watch(suggestionProvider(query.text));
+              return PortalTarget(
+                visible: query.text.isNotEmpty,
+                anchor: const Aligned(
+                  offset: Offset(0, 8),
+                  follower: Alignment.topCenter,
+                  target: Alignment.bottomCenter,
+                ),
+                portalFollower: SizedBox(
+                  width: min(600, MediaQuery.of(context).size.width),
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: Material(
+                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                    color: Theme.of(context).colorScheme.background,
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: TagSuggestionItems(
+                          backgroundColor: Colors.transparent,
+                          tags: suggestionTags,
+                          currentQuery: query.text,
+                          onItemTap: (tag) {
+                            selectedTagController.addTag(tag.value);
+                            textEditingController.clear();
+                          },
+                          textColorBuilder: (tag) =>
+                              generateAutocompleteTagColor(
+                                  tag, context.themeMode),
+                        )),
+                  ),
+                ),
+                child: SearchAppBar(
+                  queryEditingController: textEditingController,
+                  onChanged: (value) => ref
+                      .read(suggestionsProvider.notifier)
+                      .getSuggestions(value),
+                  onSubmitted: (value) {
+                    selectedTagController.addTag(value);
+                    textEditingController.clear();
+                    _onSearch(controller);
+                  },
+                  onBack: null,
+                ),
+              );
+            },
+          ),
+          Expanded(
+            child: Split(
+              axis: Axis.horizontal,
+              initialFractions: const [0.35, 0.65],
+              minSizes: const [300, 600],
+              children: [
+                Scaffold(
+                  floatingActionButton: SearchButton(
+                    allowSearch: true,
+                    onSearch: () => _onSearch(controller),
+                  ),
+                  body: SafeArea(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPinnedHeader(
+                          child: SelectedTagListWithData(
+                            controller: selectedTagController,
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: SearchLandingView(
+                            onTagTap: (value) => selectedTagController.addTag(
+                              value,
+                              operator:
+                                  getFilterOperator(textEditingController.text),
+                            ),
+                            onHistoryTap: (value) =>
+                                selectedTagController.addTag(value),
+                            trendingBuilder: (context) => TrendingSection(
+                              onTagTap: (value) {
+                                selectedTagController.addTag(value);
+                              },
+                            ),
+                            metatagsBuilder: (context) =>
+                                DanbooruMetatagsSection(
+                              onOptionTap: (value) {
+                                textEditingController.text = '$value:';
+                                _onTextChanged(
+                                    textEditingController, '$value:');
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: SearchLandingView(
-                      onTagTap: (value) => selectedTagController.addTag(
-                        value,
-                        operator: getFilterOperator(textEditingController.text),
-                      ),
-                      onHistoryTap: (value) =>
-                          selectedTagController.addTag(value),
-                      trendingBuilder: (context) => TrendingSection(
-                        onTagTap: (value) {
-                          selectedTagController.addTag(value);
-                        },
-                      ),
-                      metatagsBuilder: (context) => DanbooruMetatagsSection(
-                        onOptionTap: (value) {
-                          textEditingController.text = '$value:';
-                          _onTextChanged(textEditingController, '$value:');
-                        },
+                ),
+                DanbooruInfinitePostList(
+                  controller: controller,
+                  errors: errors,
+                  sliverHeaderBuilder: (context) => [
+                    SliverToBoxAdapter(
+                      child: ValueListenableBuilder(
+                        valueListenable: selectedTagString,
+                        builder: (context, value, _) => RelatedTagSection(
+                          query: value,
+                          onSelected: (tag) =>
+                              selectedTagController.addTag(tag.tag),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    SliverToBoxAdapter(
+                      child: Row(
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: selectedTagString,
+                            builder: (context, value, _) =>
+                                ResultHeaderWithProvider(
+                              selectedTags: value.split(' '),
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
-          DanbooruInfinitePostList(
-            controller: controller,
-            errors: errors,
-            sliverHeaderBuilder: (context) => [
-              SliverToBoxAdapter(
-                child: ValueListenableBuilder(
-                  valueListenable: selectedTagController,
-                  builder: (context, selectedTags, _) => RelatedTagSection(
-                    query: selectedTags.toRawString(),
-                    onSelected: (tag) => selectedTagController.addTag(tag.tag),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: selectedTagController,
-                      builder: (context, selectedTags, _) =>
-                          ResultHeaderWithProvider(
-                        selectedTags: selectedTags.toRawStringList(),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );
   }
+
+  var selectedTagString = ValueNotifier('');
 
   void _onSearch(
     PostGridController postController,
@@ -415,6 +466,7 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
     ref
         .read(postCountStateProvider.notifier)
         .getPostCount(selectedTagController.rawTags);
+    selectedTagString.value = selectedTagController.rawTagsString;
     postController.refresh();
   }
 }

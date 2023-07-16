@@ -9,7 +9,8 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'post_count_provider.dart';
 import 'post_count_state.dart';
 
-String generatePostCountKey(List<String> tags) => tags.join('+');
+String generatePostCountKey(List<String> tags) =>
+    tags.isEmpty ? '' : tags.join('+');
 
 class PostCountNotifier extends Notifier<PostCountState> {
   PostCountNotifier({
