@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -11,6 +14,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/home_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
@@ -36,78 +40,87 @@ class SideBarMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SideBar(
-      width: width,
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).viewPadding.top,
+      width: min(context.screenWidth * 0.8, 500),
+      content: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SafeArea(child: BooruSelector()),
+          const VerticalDivider(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).viewPadding.top,
+                  ),
+                  CurrentBooruTile(
+                    onTap: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        duration: const Duration(milliseconds: 250),
+                        animationCurve: Curves.easeOut,
+                        builder: (context) => const SwitchBooruModal(),
+                      );
+                    },
+                  ),
+                  if (initialContentBuilder != null) ...[
+                    ...initialContentBuilder!(context)!,
+                  ],
+                  const Divider(),
+                  if (contentBuilder != null) ...[
+                    ...contentBuilder!(context),
+                  ] else ...[
+                    SideMenuTile(
+                      icon: const Icon(Icons.manage_accounts),
+                      title: const Text('sideMenu.manage_boorus').tr(),
+                      onTap: () {
+                        if (popOnSelect) context.navigator.pop();
+                        context.go('/boorus');
+                      },
+                    ),
+                    SideMenuTile(
+                      icon: const Icon(Icons.favorite),
+                      title: const Text('sideMenu.your_bookmarks').tr(),
+                      onTap: () {
+                        if (popOnSelect) context.navigator.pop();
+                        context.go('/bookmarks');
+                      },
+                    ),
+                    SideMenuTile(
+                      icon: const Icon(Icons.list_alt),
+                      title: const Text('sideMenu.your_blacklist').tr(),
+                      onTap: () {
+                        if (popOnSelect) context.navigator.pop();
+                        goToGlobalBlacklistedTagsPage(context);
+                      },
+                    ),
+                    SideMenuTile(
+                      icon: const Icon(Icons.download),
+                      title: const Text('sideMenu.bulk_download').tr(),
+                      onTap: () {
+                        if (popOnSelect) context.navigator.pop();
+                        goToBulkDownloadPage(
+                          context,
+                          null,
+                          ref: ref,
+                        );
+                      },
+                    ),
+                    SideMenuTile(
+                      icon: const Icon(Icons.settings_outlined),
+                      title: Text('sideMenu.settings'.tr()),
+                      onTap: () {
+                        if (popOnSelect) context.navigator.pop();
+                        context.go('/settings');
+                      },
+                    ),
+                  ]
+                ],
+              ),
             ),
-            CurrentBooruTile(
-              onTap: () {
-                showMaterialModalBottomSheet(
-                  context: context,
-                  duration: const Duration(milliseconds: 250),
-                  animationCurve: Curves.easeOut,
-                  builder: (context) => const SwitchBooruModal(),
-                );
-              },
-            ),
-            if (initialContentBuilder != null) ...[
-              ...initialContentBuilder!(context)!,
-            ],
-            const Divider(),
-            if (contentBuilder != null) ...[
-              ...contentBuilder!(context),
-            ] else ...[
-              SideMenuTile(
-                icon: const Icon(Icons.manage_accounts),
-                title: const Text('sideMenu.manage_boorus').tr(),
-                onTap: () {
-                  if (popOnSelect) context.navigator.pop();
-                  context.go('/boorus');
-                },
-              ),
-              SideMenuTile(
-                icon: const Icon(Icons.favorite),
-                title: const Text('sideMenu.your_bookmarks').tr(),
-                onTap: () {
-                  if (popOnSelect) context.navigator.pop();
-                  context.go('/bookmarks');
-                },
-              ),
-              SideMenuTile(
-                icon: const Icon(Icons.list_alt),
-                title: const Text('sideMenu.your_blacklist').tr(),
-                onTap: () {
-                  if (popOnSelect) context.navigator.pop();
-                  goToGlobalBlacklistedTagsPage(context);
-                },
-              ),
-              SideMenuTile(
-                icon: const Icon(Icons.download),
-                title: const Text('sideMenu.bulk_download').tr(),
-                onTap: () {
-                  if (popOnSelect) context.navigator.pop();
-                  goToBulkDownloadPage(
-                    context,
-                    null,
-                    ref: ref,
-                  );
-                },
-              ),
-              SideMenuTile(
-                icon: const Icon(Icons.settings_outlined),
-                title: Text('sideMenu.settings'.tr()),
-                onTap: () {
-                  if (popOnSelect) context.navigator.pop();
-                  context.go('/settings');
-                },
-              ),
-            ]
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -116,10 +129,10 @@ class SideBarMenu extends ConsumerWidget {
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
     super.key,
-    required this.onTap,
+    this.onTap,
   });
 
-  final void Function() onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -183,14 +196,16 @@ class CurrentBooruTile extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     )
                   : null,
-              trailing: IconButton(
-                onPressed: onTap,
-                splashRadius: 12,
-                icon: const Icon(
-                  Icons.settings,
-                  size: 18,
-                ),
-              ),
+              trailing: onTap != null
+                  ? IconButton(
+                      onPressed: onTap,
+                      splashRadius: 12,
+                      icon: const Icon(
+                        Icons.settings,
+                        size: 18,
+                      ),
+                    )
+                  : null,
             )
           : logo,
     );

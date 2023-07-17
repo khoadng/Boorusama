@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -9,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
@@ -23,7 +25,9 @@ import 'package:boorusama/boorus/moebooru/pages/home.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -86,72 +90,192 @@ class _HomePageState extends ConsumerState<HomePage> {
     final config = ref.watch(currentBooruConfigProvider);
     final booru = ref.watch(currentBooruProvider);
 
-    switch (booru.booruType) {
-      case BooruType.unknown:
-        return const Center(
-          child: Text('Unknown booru'),
-        );
-      case BooruType.e621:
-      case BooruType.e926:
-        return E621Provider(
-          builder: (context) => HomePageScope(
-            bottomBar: (context, controller) => ValueListenableBuilder(
-              valueListenable: controller,
-              builder: (context, value, child) => E621BottomBar(
-                initialValue: value,
-                onTabChanged: (value) => controller.goToTab(value),
-                isAuthenticated:
-                    ref.watch(authenticationProvider).isAuthenticated,
+    return ConditionalParentWidget(
+      condition: isDesktopPlatform(),
+      conditionalBuilder: (child) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const BooruSelector(),
+          const VerticalDivider(
+            thickness: 1.5,
+          ),
+          Expanded(
+            key: ValueKey(config.id),
+            child: child,
+          )
+        ],
+      ),
+      child: _Boorus(
+        booru: booru,
+        ref: ref,
+        config: config,
+      ),
+    );
+  }
+}
+
+class _Boorus extends StatelessWidget {
+  const _Boorus({
+    super.key,
+    required this.booru,
+    required this.ref,
+    required this.config,
+  });
+
+  final Booru booru;
+  final WidgetRef ref;
+  final BooruConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        switch (booru.booruType) {
+          case BooruType.unknown:
+            return const Center(
+              child: Text('Unknown booru'),
+            );
+          case BooruType.e621:
+          case BooruType.e926:
+            return E621Provider(
+              builder: (context) => HomePageScope(
+                bottomBar: (context, controller) => ValueListenableBuilder(
+                  valueListenable: controller,
+                  builder: (context, value, child) => E621BottomBar(
+                    initialValue: value,
+                    onTabChanged: (value) => controller.goToTab(value),
+                    isAuthenticated:
+                        ref.watch(authenticationProvider).isAuthenticated,
+                  ),
+                ),
+                builder: (context, tab, controller) => E621HomePage(
+                  key: ValueKey(config.id),
+                  controller: controller,
+                  bottomBar: tab,
+                ),
               ),
-            ),
-            builder: (context, tab, controller) => E621HomePage(
-              key: ValueKey(config.id),
-              controller: controller,
-              bottomBar: tab,
-            ),
-          ),
-        );
-      case BooruType.aibooru:
-      case BooruType.danbooru:
-      case BooruType.safebooru:
-      case BooruType.testbooru:
-        return DanbooruScope(config: config);
-      case BooruType.gelbooru:
-      case BooruType.rule34xxx:
-        final gkey = ValueKey(config.id);
+            );
+          case BooruType.aibooru:
+          case BooruType.danbooru:
+          case BooruType.safebooru:
+          case BooruType.testbooru:
+            return DanbooruScope(config: config);
+          case BooruType.gelbooru:
+          case BooruType.rule34xxx:
+            final gkey = ValueKey(config.id);
 
-        return HomePageScope(
-          builder: (context, tab, controller) => GelbooruProvider(
-            key: gkey,
-            builder: (gcontext) => GelbooruHomePage(
-              key: gkey,
-              controller: controller,
-            ),
-          ),
-        );
-      case BooruType.konachan:
-      case BooruType.yandere:
-      case BooruType.sakugabooru:
-      case BooruType.lolibooru:
-        final gkey = ValueKey(config.id);
+            return HomePageScope(
+              builder: (context, tab, controller) => GelbooruProvider(
+                key: gkey,
+                builder: (gcontext) => GelbooruHomePage(
+                  key: gkey,
+                  controller: controller,
+                ),
+              ),
+            );
+          case BooruType.konachan:
+          case BooruType.yandere:
+          case BooruType.sakugabooru:
+          case BooruType.lolibooru:
+            final gkey = ValueKey(config.id);
 
-        return HomePageScope(
-          bottomBar: (context, controller) => ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (context, value, child) => MoebooruBottomBar(
-              initialValue: value,
-              onTabChanged: (value) => controller.goToTab(value),
-            ),
-          ),
-          builder: (context, tab, controller) => MoebooruProvider(
-            key: gkey,
-            builder: (gcontext) => MoebooruHomePage(
-              key: gkey,
-              controller: controller,
-              bottomBar: tab,
-            ),
-          ),
-        );
-    }
+            return HomePageScope(
+              bottomBar: (context, controller) => ValueListenableBuilder(
+                valueListenable: controller,
+                builder: (context, value, child) => MoebooruBottomBar(
+                  initialValue: value,
+                  onTabChanged: (value) => controller.goToTab(value),
+                ),
+              ),
+              builder: (context, tab, controller) => MoebooruProvider(
+                key: gkey,
+                builder: (gcontext) => MoebooruHomePage(
+                  key: gkey,
+                  controller: controller,
+                  bottomBar: tab,
+                ),
+              ),
+            );
+        }
+      },
+    );
+  }
+}
+
+class BooruSelector extends ConsumerWidget {
+  const BooruSelector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configs = ref.watch(booruConfigProvider);
+    final currentConfig = ref.watch(currentBooruConfigProvider);
+
+    return Container(
+      width: 80,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            for (final config in configs)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                child: Material(
+                  color: currentConfig == config
+                      ? context.colorScheme.primary
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    onTap: () => ref
+                        .read(currentBooruConfigProvider.notifier)
+                        .update(config),
+                    child: Container(
+                      width: 60,
+                      margin: const EdgeInsets.all(4),
+                      child: Column(
+                        children: [
+                          switch (PostSource.from(config.url)) {
+                            WebSource source => FittedBox(
+                                child: CachedNetworkImage(
+                                  width: 24,
+                                  height: 24,
+                                  fit: BoxFit.cover,
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 100),
+                                  fadeOutDuration:
+                                      const Duration(milliseconds: 200),
+                                  imageUrl: source.faviconUrl,
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox.shrink(),
+                                  errorListener: (e) {
+                                    // Ignore error
+                                  },
+                                ),
+                              ),
+                            _ => const Card(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              ),
+                          },
+                          const SizedBox(height: 4),
+                          Text(
+                            config.name,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

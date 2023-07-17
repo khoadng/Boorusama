@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
-import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
@@ -117,22 +116,15 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
     final auth = ref.read(authenticationProvider);
 
     return Scaffold(
-      body: Split(
-        initialFractions: const [0.2, 0.8],
-        minSizes: const [60, 800],
-        axis: Axis.horizontal,
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!booruMode)
-            SingleChildScrollView(
+          SizedBox(
+            width: 220,
+            child: SingleChildScrollView(
               child: Column(
                 children: [
-                  CurrentBooruTile(
-                    onTap: () {
-                      setState(() {
-                        booruMode = true;
-                      });
-                    },
-                  ),
+                  const CurrentBooruTile(),
                   const SizedBox(height: 8),
                   Theme(
                     data: context.theme.copyWith(
@@ -249,34 +241,29 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                   )
                 ],
               ),
-            )
-          else
-            SwitchBooruView(
-              onClosed: () {
-                setState(() {
-                  booruMode = false;
-                });
-              },
             ),
-          ValueListenableBuilder(
-            valueListenable: widget.controller,
-            builder: (context, value, child) => LazyIndexedStack(
-              index: value,
-              children: [
-                const DanbooruHome2(),
-                const ExplorePage(),
-                const PoolPage(),
-                const DanbooruForumPage(),
-                if (auth.isAuthenticated) ...[
-                  FavoritesPage(username: widget.config.login!),
-                  const FavoriteGroupsPage(),
-                  const SavedSearchFeedPage(),
-                  const BlacklistedTagsPage(),
+          ),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: widget.controller,
+              builder: (context, value, child) => LazyIndexedStack(
+                index: value,
+                children: [
+                  const DanbooruHome2(),
+                  const ExplorePage(),
+                  const PoolPage(),
+                  const DanbooruForumPage(),
+                  if (auth.isAuthenticated) ...[
+                    FavoritesPage(username: widget.config.login!),
+                    const FavoriteGroupsPage(),
+                    const SavedSearchFeedPage(),
+                    const BlacklistedTagsPage(),
+                  ],
+                  const BookmarkPage(),
+                  const BlacklistedTagPage(),
+                  const BulkDownloadPage(),
                 ],
-                const BookmarkPage(),
-                const BlacklistedTagPage(),
-                const BulkDownloadPage(),
-              ],
+              ),
             ),
           )
         ],
