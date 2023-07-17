@@ -88,6 +88,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     final config = ref.watch(currentBooruConfigProvider);
     final booru = ref.watch(currentBooruProvider);
 
+    print(config.id);
+
     return ConditionalParentWidget(
       condition: isDesktopPlatform(),
       conditionalBuilder: (child) => Row(
@@ -98,12 +100,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             thickness: 1.5,
           ),
           Expanded(
-            key: ValueKey(config.id),
             child: child,
           )
         ],
       ),
       child: _Boorus(
+        key: ValueKey(config.id),
         booru: booru,
         ref: ref,
         config: config,

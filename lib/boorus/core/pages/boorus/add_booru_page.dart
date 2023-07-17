@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -44,152 +43,138 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.focusScope.unfocus(),
-      child: Scaffold(
-        backgroundColor: widget.backgroundColor,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: context.navigator.pop,
-            icon: const Icon(Icons.close),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
+    return IntrinsicHeight(
+      child: SafeArea(
+        child: Material(
+          color: widget.backgroundColor,
+          child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 16,
+              _buildBody(),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: context.navigator.pop,
+                  icon: const Icon(Icons.close),
                 ),
-                child: Text(
-                  'booru.add_a_booru_site'.tr(),
-                  style: context.textTheme.headlineSmall!
-                      .copyWith(fontWeight: FontWeight.w900),
-                ),
-              ),
-              const Divider(
-                thickness: 2,
-                endIndent: 16,
-                indent: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: LoginField(
-                  validator: (p0) => null,
-                  autofocus: true,
-                  onChanged: (value) {
-                    inputText.value = value;
-                    booruUrlError.value = mapBooruUrlToUri(value);
-                  },
-                  controller: urlController,
-                  labelText: 'booru.site_url'.tr(),
-                ),
-              ),
-              ValueListenableBuilder<BooruUriOrError>(
-                valueListenable: booruUrlError,
-                builder: (_, error, __) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: error.fold(
-                    (e) => const SizedBox.shrink(),
-                    (uri) => ElevatedButton(
-                      onPressed: () {
-                        context.navigator.pop();
-                        final booruFactory = ref.watch(booruFactoryProvider);
-                        final booru = getBooruType(
-                            uri.toString(), booruFactory.booruData);
-                        //FIXME: move this to router
-                        if (booru == BooruType.unknown) {
-                          if (isMobilePlatform()) {
-                            context.navigator.push(MaterialPageRoute(
-                                builder: (_) => AddUnknownBooruPage(
-                                      url: uri.toString(),
-                                      setCurrentBooruOnSubmit:
-                                          widget.setCurrentBooruOnSubmit,
-                                    )));
-                          } else {
-                            showSideSheetFromLeft(
-                              width: 300,
-                              context: context,
-                              body: AddUnknownBooruPage(
-                                url: uri.toString(),
-                                setCurrentBooruOnSubmit:
-                                    widget.setCurrentBooruOnSubmit,
-                              ),
-                            );
-                          }
-                        } else {
-                          if (isMobilePlatform()) {
-                            context.navigator.push(MaterialPageRoute(
-                                builder: (_) => CreateBooruPage(
-                                    booru: booruFactory.from(type: booru))));
-                          } else {
-                            showSideSheetFromLeft(
-                              width: 300,
-                              context: context,
-                              body: CreateBooruPage(
-                                booru: booruFactory.from(type: booru),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text('booru.next_step').tr(),
-                    ),
-                  ),
-                ),
-              ),
-              ValueListenableBuilder<BooruUriOrError>(
-                valueListenable: booruUrlError,
-                builder: (_, error, __) => error.fold(
-                  (e) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: ValueListenableBuilder<String>(
-                        valueListenable: inputText,
-                        builder: (_, input, __) => Text(
-                          e.message(input),
-                          style: context.theme.textTheme.bodyLarge!
-                              .copyWith(color: Colors.red),
-                        ),
-                      )),
-                  (uri) => const SizedBox.shrink(),
-                ),
-              ),
-              // warning container for when the URL is not a supported booru
-              ValueListenableBuilder<BooruUriOrError>(
-                valueListenable: booruUrlError,
-                builder: (_, error, __) => error.fold(
-                  (e) => const SizedBox.shrink(),
-                  (uri) => getBooruType(uri.toString(),
-                              ref.watch(booruFactoryProvider).booruData) ==
-                          BooruType.unknown
-                      ? WarningContainer(
-                          contentBuilder: (context) => const Text(
-                            'booru.unsupported_warning',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ).tr(),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ),
+              )
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 16,
+          ),
+          child: Text(
+            'booru.add_a_booru_site'.tr(),
+            style: context.textTheme.headlineSmall!
+                .copyWith(fontWeight: FontWeight.w900),
+          ),
+        ),
+        const Divider(
+          thickness: 2,
+          endIndent: 16,
+          indent: 16,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
+          child: LoginField(
+            validator: (p0) => null,
+            autofocus: true,
+            onChanged: (value) {
+              inputText.value = value;
+              booruUrlError.value = mapBooruUrlToUri(value);
+            },
+            controller: urlController,
+            labelText: 'booru.site_url'.tr(),
+          ),
+        ),
+        ValueListenableBuilder<BooruUriOrError>(
+          valueListenable: booruUrlError,
+          builder: (_, error, __) => error.fold(
+            (e) => Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: ValueListenableBuilder<String>(
+                  valueListenable: inputText,
+                  builder: (_, input, __) => Text(
+                    e.message(input),
+                    style: context.theme.textTheme.bodyLarge!
+                        .copyWith(color: Colors.red),
+                  ),
+                )),
+            (uri) => const SizedBox.shrink(),
+          ),
+        ),
+        // warning container for when the URL is not a supported booru
+        ValueListenableBuilder<BooruUriOrError>(
+          valueListenable: booruUrlError,
+          builder: (_, error, __) => error.fold(
+            (e) => const SizedBox.shrink(),
+            (uri) => getBooruType(uri.toString(),
+                        ref.watch(booruFactoryProvider).booruData) ==
+                    BooruType.unknown
+                ? WarningContainer(
+                    contentBuilder: (context) => const Text(
+                      'booru.unsupported_warning',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ).tr(),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ),
+        ValueListenableBuilder<BooruUriOrError>(
+          valueListenable: booruUrlError,
+          builder: (_, error, __) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: error.fold(
+              (e) => ElevatedButton(
+                onPressed: null,
+                child: const Text('booru.next_step').tr(),
+              ),
+              (uri) => ElevatedButton(
+                onPressed: () {
+                  context.navigator.pop();
+                  final booruFactory = ref.watch(booruFactoryProvider);
+                  final booru =
+                      getBooruType(uri.toString(), booruFactory.booruData);
+                  //FIXME: move this to router
+                  if (booru == BooruType.unknown) {
+                    context.navigator.push(MaterialPageRoute(
+                        builder: (_) => AddUnknownBooruPage(
+                              url: uri.toString(),
+                              setCurrentBooruOnSubmit:
+                                  widget.setCurrentBooruOnSubmit,
+                            )));
+                  } else {
+                    context.navigator.push(MaterialPageRoute(
+                        builder: (_) => CreateBooruPage(
+                            booru: booruFactory.from(type: booru))));
+                  }
+                },
+                child: const Text('booru.next_step').tr(),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

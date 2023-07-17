@@ -41,6 +41,7 @@ class BoorusRoutes {
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
+          backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
               state.queryParameters["setAsCurrent"]?.toBool() ?? false,
         ),
@@ -51,19 +52,37 @@ class BoorusRoutes {
       path: 'desktop/boorus/add',
       name: '/desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
-            builder: (context) => Material(
-              color: Colors.transparent,
-              child: Center(
-                child: Container(
-                  color: context.theme.cardColor,
-                  width: 400,
-                  height: 600,
-                  child: AddBooruPage(
-                    backgroundColor: context.theme.cardColor,
-                    setCurrentBooruOnSubmit: false,
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => Stack(
+              alignment: Alignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    color: Colors.transparent,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                   ),
                 ),
-              ),
+                Material(
+                  color: Colors.transparent,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      color: context.theme.cardColor,
+                      width: 400,
+                      child: IntrinsicHeight(
+                        child: AddBooruPage(
+                          backgroundColor: context.theme.cardColor,
+                          setCurrentBooruOnSubmit: false,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ));
 
