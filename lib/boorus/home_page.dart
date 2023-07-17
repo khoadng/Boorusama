@@ -1,9 +1,7 @@
 // Flutter imports:
-import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,9 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/boorus/core/widgets/booru_selector.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
@@ -26,7 +24,6 @@ import 'package:boorusama/boorus/moebooru/pages/home.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -199,88 +196,6 @@ class _Boorus extends StatelessWidget {
             );
         }
       },
-    );
-  }
-}
-
-class BooruSelector extends ConsumerWidget {
-  const BooruSelector({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final configs = ref.watch(booruConfigProvider);
-    final currentConfig = ref.watch(currentBooruConfigProvider);
-
-    return Container(
-      width: 80,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            for (final config in configs)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: Material(
-                  color: currentConfig == config
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () => ref
-                        .read(currentBooruConfigProvider.notifier)
-                        .update(config),
-                    child: Container(
-                      width: 60,
-                      margin: const EdgeInsets.all(4),
-                      child: Column(
-                        children: [
-                          switch (PostSource.from(config.url)) {
-                            WebSource source => FittedBox(
-                                child: CachedNetworkImage(
-                                  width: 24,
-                                  height: 24,
-                                  fit: BoxFit.cover,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 100),
-                                  fadeOutDuration:
-                                      const Duration(milliseconds: 200),
-                                  imageUrl: source.faviconUrl,
-                                  errorWidget: (context, url, error) =>
-                                      const SizedBox.shrink(),
-                                  errorListener: (e) {
-                                    // Ignore error
-                                  },
-                                ),
-                              ),
-                            _ => const Card(
-                                child: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                ),
-                              ),
-                          },
-                          const SizedBox(height: 4),
-                          Text(
-                            config.name,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            IconButton(
-              onPressed: () => context.go('/boorus/add'),
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

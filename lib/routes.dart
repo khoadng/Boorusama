@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/core/pages/bookmarks/bookmark_details.dart';
 import 'boorus/core/pages/bookmarks/bookmark_page.dart';
