@@ -14,3 +14,7 @@ final postShareProvider =
     booruFactoryProvider,
   ],
 );
+
+final emptyPostRepoProvider = Provider<PostRepository>(
+  (ref) => EmptyPostRepository(),
+);
