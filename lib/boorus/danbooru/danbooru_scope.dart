@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
@@ -22,7 +21,6 @@ import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
-import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -41,7 +39,6 @@ import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/other_features_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/landing/trending/trending_section.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
@@ -53,7 +50,6 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
-import 'package:boorusama/widgets/split.dart';
 
 class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
@@ -284,6 +280,8 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
   final textEditingController = TextEditingController();
+  final showSuggestions = ValueNotifier(false);
+  final focusNode = FocusNode();
 
   @override
   void initState() {
@@ -291,13 +289,19 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
     ref.read(searchHistoryProvider.notifier).fetchHistories();
     ref.read(postCountStateProvider.notifier).getPostCount([]);
     ref.read(danbooruRelatedTagsProvider.notifier).fetch('');
+    focusNode.addListener(_onFocusChanged);
   }
 
   @override
   void dispose() {
-    super.dispose();
     selectedTagController.dispose();
     textEditingController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChanged() {
+    showSuggestions.value = focusNode.hasFocus;
   }
 
   @override
@@ -307,129 +311,143 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
             selectedTagController.rawTagsString,
             page,
           ),
-      builder: (context, controller, errors) => Column(
-        children: [
-          ValueListenableBuilder(
-            valueListenable: textEditingController,
-            builder: (context, query, child) {
-              final suggestionTags = ref.watch(suggestionProvider(query.text));
-              return PortalTarget(
-                visible: query.text.isNotEmpty,
-                anchor: const Aligned(
-                  follower: Alignment.topCenter,
-                  target: Alignment.bottomCenter,
-                ),
-                portalFollower: SizedBox(
-                  width: min(600, MediaQuery.of(context).size.width),
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  child: TagSuggestionItems(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    tags: suggestionTags,
-                    currentQuery: query.text,
-                    onItemTap: (tag) {
-                      selectedTagController.addTag(tag.value);
-                      textEditingController.clear();
-                    },
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  ),
-                ),
-                child: SearchAppBar(
-                  queryEditingController: textEditingController,
-                  onChanged: (value) => ref
-                      .read(suggestionsProvider.notifier)
-                      .getSuggestions(value),
-                  onSubmitted: (value) {
-                    selectedTagController.addTag(value);
-                    textEditingController.clear();
-                    _onSearch(controller);
-                  },
-                  onBack: null,
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: Split(
-              axis: Axis.horizontal,
-              initialFractions: const [0.35, 0.65],
-              minSizes: const [300, 600],
-              children: [
-                Scaffold(
-                  floatingActionButton: SearchButton(
-                    allowSearch: true,
-                    onSearch: () => _onSearch(controller),
-                  ),
-                  body: SafeArea(
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverPinnedHeader(
-                          child: SelectedTagListWithData(
-                            controller: selectedTagController,
+      builder: (context, controller, errors) => GestureDetector(
+        onTap: () => focusNode.unfocus(),
+        child: Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: showSuggestions,
+              builder: (context, show, child) {
+                return Column(
+                  children: [
+                    PortalTarget(
+                      visible: show,
+                      anchor: const Aligned(
+                        follower: Alignment.topCenter,
+                        target: Alignment.bottomCenter,
+                        offset: Offset(-32, 0),
+                      ),
+                      portalFollower: SizedBox(
+                        width: min(600, MediaQuery.of(context).size.width),
+                        height: MediaQuery.of(context).size.height * 0.75,
+                        child: ValueListenableBuilder(
+                          valueListenable: textEditingController,
+                          builder: (context, query, child) {
+                            final suggestionTags =
+                                ref.watch(suggestionProvider(query.text));
+
+                            return query.text.isNotEmpty
+                                ? TagSuggestionItems(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    tags: suggestionTags,
+                                    currentQuery: query.text,
+                                    onItemTap: (tag) {
+                                      selectedTagController.addTag(tag.value);
+                                      textEditingController.clear();
+                                      showSuggestions.value = false;
+                                    },
+                                    textColorBuilder: (tag) =>
+                                        generateAutocompleteTagColor(
+                                            tag, context.themeMode),
+                                  )
+                                : Material(
+                                    color: context.colorScheme.background,
+                                    elevation: 4,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    child: SearchLandingView(
+                                      onTagTap: (value) =>
+                                          selectedTagController.addTag(
+                                        value,
+                                        operator: getFilterOperator(
+                                            textEditingController.text),
+                                      ),
+                                      onHistoryTap: (value) =>
+                                          selectedTagController.addTag(value),
+                                      metatagsBuilder: (context) =>
+                                          DanbooruMetatagsSection(
+                                        onOptionTap: (value) {
+                                          textEditingController.text =
+                                              '$value:';
+                                          _onTextChanged(
+                                              textEditingController, '$value:');
+                                        },
+                                      ),
+                                    ),
+                                  );
+                          },
+                        ),
+                      ),
+                      child: SearchAppBar(
+                        autofocus: false,
+                        focusNode: focusNode,
+                        queryEditingController: textEditingController,
+                        onChanged: (value) => ref
+                            .read(suggestionsProvider.notifier)
+                            .getSuggestions(value),
+                        onSubmitted: (value) {
+                          selectedTagController.addTag(value);
+                          textEditingController.clear();
+                          showSuggestions.value = false;
+
+                          _onSearch(controller);
+                        },
+                        onBack: null,
+                        trailingSearchButton: MaterialButton(
+                          minWidth: 0,
+                          color: Theme.of(context).cardColor,
+                          shape: const CircleBorder(),
+                          onPressed: () => _onSearch(controller),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Icon(Icons.search),
                           ),
                         ),
-                        SliverToBoxAdapter(
-                          child: SearchLandingView(
-                            onTagTap: (value) => selectedTagController.addTag(
-                              value,
-                              operator:
-                                  getFilterOperator(textEditingController.text),
-                            ),
-                            onHistoryTap: (value) =>
-                                selectedTagController.addTag(value),
-                            trendingBuilder: (context) => TrendingSection(
-                              onTagTap: (value) {
-                                selectedTagController.addTag(value);
-                              },
-                            ),
-                            metatagsBuilder: (context) =>
-                                DanbooruMetatagsSection(
-                              onOptionTap: (value) {
-                                textEditingController.text = '$value:';
-                                _onTextChanged(
-                                    textEditingController, '$value:');
-                              },
-                            ),
+                      ),
+                    ),
+                    SelectedTagListWithData(
+                      controller: selectedTagController,
+                    ),
+                  ],
+                );
+              },
+            ),
+            Expanded(
+              child: DanbooruInfinitePostList(
+                controller: controller,
+                errors: errors,
+                sliverHeaderBuilder: (context) => [
+                  SliverToBoxAdapter(
+                    child: ValueListenableBuilder(
+                      valueListenable: selectedTagString,
+                      builder: (context, value, _) => RelatedTagSection(
+                        query: value,
+                        onSelected: (tag) =>
+                            selectedTagController.addTag(tag.tag),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Row(
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: selectedTagString,
+                          builder: (context, value, _) =>
+                              ResultHeaderWithProvider(
+                            selectedTags: value.split(' '),
                           ),
                         ),
+                        const Spacer(),
                       ],
                     ),
                   ),
-                ),
-                DanbooruInfinitePostList(
-                  controller: controller,
-                  errors: errors,
-                  sliverHeaderBuilder: (context) => [
-                    SliverToBoxAdapter(
-                      child: ValueListenableBuilder(
-                        valueListenable: selectedTagString,
-                        builder: (context, value, _) => RelatedTagSection(
-                          query: value,
-                          onSelected: (tag) =>
-                              selectedTagController.addTag(tag.tag),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Row(
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: selectedTagString,
-                            builder: (context, value, _) =>
-                                ResultHeaderWithProvider(
-                              selectedTags: value.split(' '),
-                            ),
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

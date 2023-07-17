@@ -18,6 +18,8 @@ class SearchAppBar extends ConsumerWidget {
     required this.onBack,
     this.onClear,
     this.onChanged,
+    this.trailingSearchButton,
+    this.autofocus,
   });
 
   final TextEditingController queryEditingController;
@@ -26,10 +28,42 @@ class SearchAppBar extends ConsumerWidget {
   final void Function(String value) onSubmitted;
   final VoidCallback? onClear;
   final void Function(String value)? onChanged;
+  final Widget? trailingSearchButton;
+  final bool? autofocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+
+    final searchAppBar = BooruSearchBar(
+      autofocus: autofocus ?? settings.autoFocusSearchBar,
+      focus: focusNode,
+      queryEditingController: queryEditingController,
+      leading: onBack != null
+          ? IconButton(
+              splashRadius: 16,
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBack,
+            )
+          : null,
+      trailing: ValueListenableBuilder(
+        valueListenable: queryEditingController,
+        builder: (context, value, child) {
+          return value.text.isNotEmpty
+              ? IconButton(
+                  splashRadius: 16,
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    queryEditingController.clear();
+                    onClear?.call();
+                  },
+                )
+              : const SizedBox.shrink();
+        },
+      ),
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+    );
 
     return AppBar(
       elevation: 0,
@@ -37,39 +71,16 @@ class SearchAppBar extends ConsumerWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: BooruSearchBar(
-        autofocus: settings.autoFocusSearchBar,
-        focus: focusNode,
-        queryEditingController: queryEditingController,
-        leading: onBack != null
-            ? IconButton(
-                splashRadius: 16,
-                icon: const Icon(Icons.arrow_back),
-                onPressed: onBack,
-              )
-            : IconButton(
-                splashRadius: 16,
-                icon: const Icon(Icons.search),
-                onPressed: () {},
-              ),
-        trailing: ValueListenableBuilder(
-          valueListenable: queryEditingController,
-          builder: (context, value, child) {
-            return value.text.isNotEmpty
-                ? IconButton(
-                    splashRadius: 16,
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      queryEditingController.clear();
-                      onClear?.call();
-                    },
-                  )
-                : const SizedBox.shrink();
-          },
-        ),
-        onChanged: onChanged,
-        onSubmitted: onSubmitted,
-      ),
+      title: trailingSearchButton != null
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                searchAppBar,
+                trailingSearchButton!,
+              ],
+            )
+          : searchAppBar,
     );
   }
 }

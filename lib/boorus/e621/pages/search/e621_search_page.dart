@@ -82,7 +82,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 SliverPinnedHeader(
                   child: SelectedTagListWithData(
                     controller: selectedTagController,
-                    searchController: searchController,
+                    onDeleted: (value) => searchController.resetToOptions(),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -126,7 +126,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
-                  searchController: searchController,
+                  onDeleted: (value) => searchController.resetToOptions(),
                   controller: selectedTagController,
                 )),
                 const SliverToBoxAdapter(

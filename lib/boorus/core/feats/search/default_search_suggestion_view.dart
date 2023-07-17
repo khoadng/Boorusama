@@ -32,7 +32,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
         children: [
           SelectedTagListWithData(
             controller: selectedTagController,
-            searchController: searchController,
+            onDeleted: (value) => searchController.resetToOptions(),
           ),
           Expanded(
             child: ValueListenableBuilder(

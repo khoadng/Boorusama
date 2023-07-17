@@ -84,7 +84,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                 SliverPinnedHeader(
                   child: SelectedTagListWithData(
                     controller: selectedTagController,
-                    searchController: searchController,
+                    onDeleted: (value) => searchController.resetToOptions(),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -129,7 +129,7 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
                   controller: selectedTagController,
-                  searchController: searchController,
+                  onDeleted: (value) => searchController.resetToOptions(),
                 )),
                 const SliverToBoxAdapter(
                   child: Row(
