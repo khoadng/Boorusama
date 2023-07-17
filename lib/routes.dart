@@ -48,40 +48,24 @@ class BoorusRoutes {
 
   //FIXME: create custom page builder
   static GoRoute addDesktop() => GoRoute(
-        path: 'desktop/boorus/add',
-        name: '/desktop/boorus/add',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          opaque: false,
-          barrierColor: null,
-          barrierLabel: null,
-          transitionsBuilder: (context, animation1, animation2, child) {
-            return SlideTransition(
-              position: Tween(
-                begin: const Offset(-1, 0),
-                end: Offset.zero,
-              ).animate(animation1),
-              child: child,
-            );
-          },
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Material(
-              shadowColor: Colors.transparent,
+      path: 'desktop/boorus/add',
+      name: '/desktop/boorus/add',
+      pageBuilder: (context, state) => DialogPage(
+            builder: (context) => Material(
               color: Colors.transparent,
-              child: Container(
-                color: Colors.transparent,
-                height: double.infinity,
-                width: 300,
-                child: AddBooruPage(
-                  backgroundColor: context.colorScheme.background,
-                  setCurrentBooruOnSubmit:
-                      state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+              child: Center(
+                child: Container(
+                  color: context.colorScheme.background,
+                  width: 400,
+                  height: 600,
+                  child: AddBooruPage(
+                    backgroundColor: context.colorScheme.background,
+                    setCurrentBooruOnSubmit: false,
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      );
+          ));
 
   static GoRoute update(Ref ref) => GoRoute(
         path: ':id/update',
