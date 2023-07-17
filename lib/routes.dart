@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -72,6 +73,7 @@ class BoorusRoutes {
                 height: double.infinity,
                 width: 300,
                 child: AddBooruPage(
+                  backgroundColor: context.colorScheme.background,
                   setCurrentBooruOnSubmit:
                       state.queryParameters["setAsCurrent"]?.toBool() ?? false,
                 ),

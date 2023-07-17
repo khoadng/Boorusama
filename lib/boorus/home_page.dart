@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -273,6 +274,10 @@ class BooruSelector extends ConsumerWidget {
                   ),
                 ),
               ),
+            IconButton(
+              onPressed: () => context.go('/boorus/add'),
+              icon: const Icon(Icons.add),
+            ),
           ],
         ),
       ),

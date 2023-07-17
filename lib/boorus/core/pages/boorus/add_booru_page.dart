@@ -17,9 +17,14 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AddBooruPage extends ConsumerStatefulWidget {
-  const AddBooruPage({super.key, required this.setCurrentBooruOnSubmit});
+  const AddBooruPage({
+    super.key,
+    required this.setCurrentBooruOnSubmit,
+    this.backgroundColor,
+  });
 
   final bool setCurrentBooruOnSubmit;
+  final Color? backgroundColor;
 
   @override
   ConsumerState<AddBooruPage> createState() => _AddBooruPageState();
@@ -42,6 +47,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
     return GestureDetector(
       onTap: () => context.focusScope.unfocus(),
       child: Scaffold(
+        backgroundColor: widget.backgroundColor,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
