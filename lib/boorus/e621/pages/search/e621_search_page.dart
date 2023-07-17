@@ -87,6 +87,12 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                 ),
                 SliverToBoxAdapter(
                   child: SearchLandingView(
+                    onHistoryCleared: () => ref
+                        .read(searchHistoryProvider.notifier)
+                        .clearHistories(),
+                    onHistoryRemoved: (value) => ref
+                        .read(searchHistoryProvider.notifier)
+                        .removeHistory(value.query),
                     searchController: searchController,
                   ),
                 ),
