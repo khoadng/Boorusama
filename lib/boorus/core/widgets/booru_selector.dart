@@ -22,71 +22,75 @@ class BooruSelector extends ConsumerWidget {
     final currentConfig = ref.watch(currentBooruConfigProvider);
 
     return SizedBox(
-      width: 80,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            for (final config in configs)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: Material(
-                  color: currentConfig == config
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () => ref
-                        .read(currentBooruConfigProvider.notifier)
-                        .update(config),
-                    child: Container(
-                      width: 60,
-                      margin: const EdgeInsets.all(4),
-                      child: Column(
-                        children: [
-                          switch (PostSource.from(config.url)) {
-                            WebSource source => FittedBox(
-                                child: CachedNetworkImage(
-                                  width: 24,
-                                  height: 24,
-                                  fit: BoxFit.cover,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 100),
-                                  fadeOutDuration:
-                                      const Duration(milliseconds: 200),
-                                  imageUrl: source.faviconUrl,
-                                  errorWidget: (context, url, error) =>
-                                      const SizedBox.shrink(),
-                                  errorListener: (e) {
-                                    // Ignore error
-                                  },
+      width: 68,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              for (final config in configs)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: Material(
+                    color: currentConfig == config
+                        ? context.colorScheme.primary
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      onTap: () => ref
+                          .read(currentBooruConfigProvider.notifier)
+                          .update(config),
+                      child: Container(
+                        width: 60,
+                        margin: const EdgeInsets.all(4),
+                        child: Column(
+                          children: [
+                            switch (PostSource.from(config.url)) {
+                              WebSource source => FittedBox(
+                                  child: CachedNetworkImage(
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.cover,
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 100),
+                                    fadeOutDuration:
+                                        const Duration(milliseconds: 200),
+                                    imageUrl: source.faviconUrl,
+                                    errorWidget: (context, url, error) =>
+                                        const SizedBox.shrink(),
+                                    errorListener: (e) {
+                                      // Ignore error
+                                    },
+                                  ),
                                 ),
-                              ),
-                            _ => const Card(
-                                child: SizedBox(
-                                  width: 24,
-                                  height: 24,
+                              _ => const Card(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
+                            },
+                            const SizedBox(height: 4),
+                            Text(
+                              config.name,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 10,
                               ),
-                          },
-                          const SizedBox(height: 4),
-                          Text(
-                            config.name,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 10,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+              IconButton(
+                onPressed: () => context.go('/boorus/add'),
+                icon: const Icon(Icons.add),
               ),
-            IconButton(
-              onPressed: () => context.go('/boorus/add'),
-              icon: const Icon(Icons.add),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
