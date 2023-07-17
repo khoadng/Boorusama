@@ -46,7 +46,7 @@ class BoorusRoutes {
         ),
       );
 
-  //FIXME: create custom page builder
+  //FIXME: create custom page builder, also can't tap outside to dismiss
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
       name: '/desktop/boorus/add',
