@@ -55,11 +55,11 @@ class BoorusRoutes {
               color: Colors.transparent,
               child: Center(
                 child: Container(
-                  color: context.colorScheme.background,
+                  color: context.theme.cardColor,
                   width: 400,
                   height: 600,
                   child: AddBooruPage(
-                    backgroundColor: context.colorScheme.background,
+                    backgroundColor: context.theme.cardColor,
                     setCurrentBooruOnSubmit: false,
                   ),
                 ),
