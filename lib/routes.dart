@@ -13,6 +13,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/booru_dialog.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/core/pages/bookmarks/bookmark_details.dart';
 import 'boorus/core/pages/bookmarks/bookmark_page.dart';
@@ -54,35 +55,16 @@ class BoorusRoutes {
       pageBuilder: (context, state) => DialogPage(
             key: state.pageKey,
             name: state.name,
-            builder: (context) => Stack(
-              alignment: Alignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    color: Colors.transparent,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                  ),
+            builder: (context) => BooruDialog(
+              padding: const EdgeInsets.all(16),
+              color: context.theme.cardColor,
+              width: 400,
+              child: IntrinsicHeight(
+                child: AddBooruPage(
+                  backgroundColor: context.theme.cardColor,
+                  setCurrentBooruOnSubmit: false,
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      color: context.theme.cardColor,
-                      width: 400,
-                      child: IntrinsicHeight(
-                        child: AddBooruPage(
-                          backgroundColor: context.theme.cardColor,
-                          setCurrentBooruOnSubmit: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ));
 
