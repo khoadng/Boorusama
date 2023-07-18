@@ -59,7 +59,7 @@ class Settings extends Equatable {
     required this.currentBooruConfigId,
     required this.downloadQuality,
     required this.showScoresInGrid,
-    required this.showHiddenPostsHeader,
+    required this.showPostListConfigHeader,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -95,7 +95,7 @@ class Settings extends Equatable {
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
-        showHiddenPostsHeader = json['showHiddenPostsHeader'] ?? true,
+        showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -118,7 +118,7 @@ class Settings extends Equatable {
     currentBooruConfigId: -1,
     downloadQuality: DownloadQuality.original,
     showScoresInGrid: false,
-    showHiddenPostsHeader: true,
+    showPostListConfigHeader: true,
   );
 
   final String blacklistedTags;
@@ -151,7 +151,7 @@ class Settings extends Equatable {
 
   final bool showScoresInGrid;
 
-  final bool showHiddenPostsHeader;
+  final bool showPostListConfigHeader;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -172,7 +172,7 @@ class Settings extends Equatable {
     int? currentBooruConfigId,
     DownloadQuality? downloadQuality,
     bool? showScoresInGrid,
-    bool? showHiddenPostsHeader,
+    bool? showPostListConfigHeader,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -194,8 +194,8 @@ class Settings extends Equatable {
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
         downloadQuality: downloadQuality ?? this.downloadQuality,
         showScoresInGrid: showScoresInGrid ?? this.showScoresInGrid,
-        showHiddenPostsHeader:
-            showHiddenPostsHeader ?? this.showHiddenPostsHeader,
+        showPostListConfigHeader:
+            showPostListConfigHeader ?? this.showPostListConfigHeader,
       );
 
   Map<String, dynamic> toJson() => {
@@ -217,7 +217,7 @@ class Settings extends Equatable {
         'currentBooruConfigId': currentBooruConfigId,
         'downloadQuality': downloadQuality.index,
         'showScoresInGrid': showScoresInGrid,
-        'showHiddenPostsHeader': showHiddenPostsHeader,
+        'showPostListConfigHeader': showPostListConfigHeader,
       };
 
   @override
@@ -240,7 +240,7 @@ class Settings extends Equatable {
         currentBooruConfigId,
         downloadQuality,
         showScoresInGrid,
-        showHiddenPostsHeader,
+        showPostListConfigHeader,
       ];
 }
 

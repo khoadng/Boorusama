@@ -16,9 +16,11 @@ class SearchScope extends ConsumerStatefulWidget {
     this.pattern,
     this.initialQuery,
     required this.builder,
+    this.selectedTagController,
   });
 
   final Map<RegExp, TextStyle>? pattern;
+  final SelectedTagController? selectedTagController;
   final String? initialQuery;
   final Widget Function(
     DisplayState state,
@@ -42,7 +44,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     onMatch: (match) {},
   );
   final focus = FocusNode();
-  late final selectedTagController =
+  late final selectedTagController = widget.selectedTagController ??
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
   late final searchController = SearchPageController(
@@ -69,7 +71,10 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   @override
   void dispose() {
     queryEditingController.dispose();
-    selectedTagController.dispose();
+    if (widget.selectedTagController == null) {
+      selectedTagController.dispose();
+    }
+
     searchController.dispose();
 
     focus.dispose();

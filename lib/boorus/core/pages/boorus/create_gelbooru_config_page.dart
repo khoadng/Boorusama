@@ -23,6 +23,7 @@ class CreateGelbooruConfigPage extends StatelessWidget {
     this.initialApiKey,
     this.initialConfigName,
     this.initialRatingFilter,
+    this.backgroundColor,
   });
 
   final String? initialLogin;
@@ -36,11 +37,14 @@ class CreateGelbooruConfigPage extends StatelessWidget {
   final void Function(BooruConfigRatingFilter? value) onRatingFilterChanged;
   final void Function()? onSubmit;
 
+  final Color? backgroundColor;
+
   final Booru booru;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
+      backgroundColor: backgroundColor,
       booru: booru,
       children: [
         Padding(

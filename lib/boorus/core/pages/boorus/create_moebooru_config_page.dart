@@ -30,6 +30,7 @@ class CreateMoebooruConfigPage extends StatefulWidget {
     this.initialHashedPassword,
     this.initialConfigName,
     this.initialRatingFilter,
+    this.backgroundColor,
   });
 
   final String? initialLogin;
@@ -43,6 +44,7 @@ class CreateMoebooruConfigPage extends StatefulWidget {
   final void Function(String value) onConfigNameChanged;
   final void Function(BooruConfigRatingFilter? value) onRatingFilterChanged;
   final void Function()? onSubmit;
+  final Color? backgroundColor;
 
   final Booru booru;
 
@@ -58,6 +60,7 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
+      backgroundColor: widget.backgroundColor,
       booru: widget.booru,
       children: [
         Padding(

@@ -16,15 +16,22 @@ class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
     this.onHistoryTap,
+    this.onTagTap,
     this.metatagsBuilder,
     this.trendingBuilder,
-    required this.searchController,
+    required this.onHistoryRemoved,
+    required this.onHistoryCleared,
+    //FIXME: update so that it won't depend on search controller
+    this.searchController,
   });
 
   final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<String>? onTagTap;
+  final ValueChanged<SearchHistory> onHistoryRemoved;
+  final VoidCallback onHistoryCleared;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
-  final SearchPageController searchController;
+  final SearchPageController? searchController;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -102,13 +109,13 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                   _onHistoryTap(history, ref);
                   widget.onHistoryTap?.call(history);
                 },
-                onHistoryRemoved: (value) => _onHistoryRemoved(ref, value),
-                onHistoryCleared: () => _onHistoryCleared(ref),
+                onHistoryRemoved: (value) => _onHistoryRemoved(value),
+                onHistoryCleared: () => _onHistoryCleared(),
                 onFullHistoryRequested: () {
                   goToSearchHistoryPage(
                     context,
-                    onClear: () => _onHistoryCleared(ref),
-                    onRemove: (value) => _onHistoryRemoved(ref, value),
+                    onClear: () => _onHistoryCleared(),
+                    onRemove: (value) => _onHistoryRemoved(value),
                     onTap: (value) {
                       context.navigator.pop();
                       _onHistoryTap(value, ref);
@@ -125,17 +132,17 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   void _onTagTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    widget.searchController.tapTag(value);
+    widget.searchController?.tapTag(value);
+    widget.onTagTap?.call(value);
   }
 
   void _onHistoryTap(String value, WidgetRef ref) {
     FocusManager.instance.primaryFocus?.unfocus();
-    widget.searchController.tapHistoryTag(value);
+    widget.searchController?.tapHistoryTag(value);
+    widget.onHistoryTap?.call(value);
   }
 
-  void _onHistoryCleared(WidgetRef ref) =>
-      ref.read(searchHistoryProvider.notifier).clearHistories();
+  void _onHistoryCleared() => widget.onHistoryCleared();
 
-  void _onHistoryRemoved(WidgetRef ref, SearchHistory value) =>
-      ref.read(searchHistoryProvider.notifier).removeHistory(value.query);
+  void _onHistoryRemoved(SearchHistory value) => widget.onHistoryRemoved(value);
 }

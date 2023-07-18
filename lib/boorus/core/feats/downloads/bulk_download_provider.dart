@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 final bulkDownloadThumbnailsProvider =
     StateProvider<Map<String, String>>((ref) {
@@ -25,12 +26,17 @@ final isValidToStartDownloadProvider = Provider.autoDispose<bool>(
   (ref) {
     final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
     final downloadOptions = ref.watch(bulkDownloadOptionsProvider);
-    final hasScopeStorage = hasScopedStorage(
-            ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt) ??
-        false;
 
-    return selectedTags.isNotEmpty &&
-        downloadOptions.isValidDownload(hasScopeStorage: hasScopeStorage);
+    if (isAndroid()) {
+      final hasScopeStorage = hasScopedStorage(
+              ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt) ??
+          false;
+
+      return selectedTags.isNotEmpty &&
+          downloadOptions.isValidDownload(hasScopeStorage: hasScopeStorage);
+    } else {
+      return selectedTags.isNotEmpty && downloadOptions.storagePath.isNotEmpty;
+    }
   },
 );
 

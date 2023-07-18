@@ -185,12 +185,14 @@ class BulkDownloadIndicator extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          Text(
-            subtitle.toUpperCase(),
-            style: context.theme.textTheme.titleMedium?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              subtitle.toUpperCase(),
+              style: context.theme.textTheme.titleMedium?.copyWith(
+                color: context.theme.hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

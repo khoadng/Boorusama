@@ -57,3 +57,15 @@ mixin PostRepositoryMixin {
         limit: limit,
       );
 }
+
+class EmptyPostRepository extends PostRepository {
+  EmptyPostRepository();
+
+  @override
+  PostsOrError getPostsFromTags(
+    String tags,
+    int page, {
+    int? limit,
+  }) =>
+      TaskEither.right([]);
+}

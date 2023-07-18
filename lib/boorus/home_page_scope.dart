@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/widgets/split.dart';
 
+@Deprecated('each booru should have its own home page scope')
 class HomePageScope extends StatefulWidget {
   const HomePageScope({
     super.key,
     required this.builder,
+    this.menuBuilder,
     this.bottomBar,
   });
 
@@ -18,6 +22,8 @@ class HomePageScope extends StatefulWidget {
     BuildContext context,
     HomePageController controller,
   )? bottomBar;
+
+  final List<Widget> Function(BuildContext context)? menuBuilder;
 
   final Widget Function(
     BuildContext context,
@@ -42,6 +48,7 @@ class _HomePageScopeState extends State<HomePageScope> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.cardColor,
       key: scaffoldKey,
       drawer: isMobilePlatform()
           ? const SideBarMenu(
@@ -52,18 +59,25 @@ class _HomePageScopeState extends State<HomePageScope> {
           : null,
       body: ConditionalParentWidget(
         condition: !isMobilePlatform(),
-        conditionalBuilder: (child) => Row(
+        conditionalBuilder: (child) => Split(
+          initialFractions: const [0.2, 0.8],
+          axis: Axis.horizontal,
           children: [
-            SideBarMenu(
-              width: 300,
-              popOnSelect: false,
-              padding: EdgeInsets.zero,
-              initialContentBuilder: (context) => [
-                if (widget.bottomBar != null)
-                  widget.bottomBar!(context, homePageController),
-              ],
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const CurrentBooruTile(),
+                  const SizedBox(height: 8),
+                  if (widget.bottomBar != null)
+                    widget.bottomBar!(context, homePageController),
+                  const Divider(),
+                  if (widget.menuBuilder != null) ...[
+                    ...widget.menuBuilder!(context),
+                  ],
+                ],
+              ),
             ),
-            Expanded(child: child),
+            child,
           ],
         ),
         child: CustomContextMenuOverlay(

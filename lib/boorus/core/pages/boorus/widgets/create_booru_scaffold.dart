@@ -9,39 +9,46 @@ import 'selected_booru_chip.dart';
 class CreateBooruScaffold extends StatelessWidget {
   const CreateBooruScaffold({
     super.key,
+    this.backgroundColor,
     required this.booru,
     required this.children,
   });
 
   final List<Widget> children;
   final Booru booru;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.focusScope.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-          title: SelectedBooruChip(
-            booru: booru,
-          ),
-          actions: [
-            IconButton(
-              onPressed: context.navigator.pop,
-              icon: const Icon(Icons.close),
+    return Material(
+      color: backgroundColor,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                SelectedBooruChip(
+                  booru: booru,
+                ),
+                const Spacer(),
+                IconButton(
+                  splashRadius: 20,
+                  onPressed: context.navigator.pop,
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: children,
+                ),
+              ),
             ),
           ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: children,
-          ),
         ),
       ),
     );

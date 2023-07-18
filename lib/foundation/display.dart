@@ -8,17 +8,12 @@ enum ScreenSize {
   veryLarge,
 }
 
-ScreenSize screenWidthToDisplaySize(double width) {
-  if (width <= 600) {
-    return ScreenSize.small;
-  } else if (width <= 1100) {
-    return ScreenSize.medium;
-  } else if (width <= 1400) {
-    return ScreenSize.large;
-  } else {
-    return ScreenSize.veryLarge;
-  }
-}
+ScreenSize screenWidthToDisplaySize(double width) => switch (width) {
+      <= 600 => ScreenSize.small,
+      <= 1100 => ScreenSize.medium,
+      <= 1500 => ScreenSize.large,
+      _ => ScreenSize.veryLarge,
+    };
 
 class Screen {
   const Screen._(this.context);

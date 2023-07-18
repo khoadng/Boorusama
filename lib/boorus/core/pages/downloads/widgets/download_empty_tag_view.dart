@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 
 class DownloadEmptyTagView extends ConsumerWidget {
   const DownloadEmptyTagView({
@@ -22,11 +23,13 @@ class DownloadEmptyTagView extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(4),
         child: SimpleTagSearchView(
-          backButton: IconButton(
-            splashRadius: 16,
-            onPressed: context.navigator.pop,
-            icon: const Icon(Icons.arrow_back),
-          ),
+          backButton: context.canPop()
+              ? IconButton(
+                  splashRadius: 16,
+                  onPressed: context.navigator.pop,
+                  icon: const Icon(Icons.arrow_back),
+                )
+              : null,
           textColorBuilder: (tag) =>
               generateAutocompleteTagColor(tag, context.themeMode),
           closeOnSelected: false,

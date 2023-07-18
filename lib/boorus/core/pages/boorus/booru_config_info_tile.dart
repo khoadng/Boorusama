@@ -47,7 +47,7 @@ class BooruConfigInfoTile extends ConsumerWidget {
       ),
       selected: selected ?? false,
       selectedTileColor: selectedTileColor,
-      title: Row(
+      title: Wrap(
         children: [
           Text(
             config.name,

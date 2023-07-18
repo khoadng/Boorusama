@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import 'landing/trending/trending_section.dart';
 import 'result/result_view.dart';
 
@@ -29,9 +30,11 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
     super.key,
     this.initialQuery,
+    this.selectedTagController,
   });
 
   final String? initialQuery;
+  final SelectedTagController? selectedTagController;
 
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
@@ -75,6 +78,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
   @override
   Widget build(BuildContext context) {
     return SearchScope(
+      selectedTagController: widget.selectedTagController,
       initialQuery: widget.initialQuery,
       pattern: {
         metaTagRegex: TextStyle(
@@ -97,9 +101,11 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 focusNode: focus,
                 queryEditingController: controller,
                 onSubmitted: (value) => searchController.submit(value),
-                onBack: () => state != DisplayState.options
-                    ? searchController.resetToOptions()
-                    : context.navigator.pop(),
+                onBack: !context.canPop()
+                    ? null
+                    : () => state != DisplayState.options
+                        ? searchController.resetToOptions()
+                        : context.navigator.pop(),
               ),
             ),
             body: SafeArea(
@@ -108,11 +114,17 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                   SliverPinnedHeader(
                     child: SelectedTagListWithData(
                       controller: selectedTagController,
-                      searchController: searchController,
+                      onDeleted: (value) => searchController.resetToOptions(),
                     ),
                   ),
                   SliverToBoxAdapter(
                     child: SearchLandingView(
+                      onHistoryCleared: () => ref
+                          .read(searchHistoryProvider.notifier)
+                          .clearHistories(),
+                      onHistoryRemoved: (value) => ref
+                          .read(searchHistoryProvider.notifier)
+                          .removeHistory(value.query),
                       searchController: searchController,
                       trendingBuilder: (context) => TrendingSection(
                         onTagTap: (value) {
@@ -165,7 +177,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
               SliverToBoxAdapter(
                   child: SelectedTagListWithData(
                 controller: selectedTagController,
-                searchController: searchController,
+                onDeleted: (value) => searchController.resetToOptions(),
               )),
             ],
           )
