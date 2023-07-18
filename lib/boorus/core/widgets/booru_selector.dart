@@ -40,6 +40,7 @@ class BooruSelector extends ConsumerWidget {
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     child: InkWell(
+                      hoverColor: context.theme.hoverColor.withOpacity(0.1),
                       onSecondaryTap: () => context.contextMenuOverlay.show(
                         GenericContextMenu(
                           buttonConfigs: [
