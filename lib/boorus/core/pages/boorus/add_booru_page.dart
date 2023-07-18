@@ -43,22 +43,20 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: SafeArea(
-        child: Material(
-          color: widget.backgroundColor,
-          child: Stack(
-            children: [
-              _buildBody(),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: context.navigator.pop,
-                  icon: const Icon(Icons.close),
-                ),
-              )
-            ],
-          ),
+    return SafeArea(
+      child: Material(
+        color: widget.backgroundColor,
+        child: Stack(
+          children: [
+            _buildBody(),
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: context.navigator.pop,
+                icon: const Icon(Icons.close),
+              ),
+            )
+          ],
         ),
       ),
     );
