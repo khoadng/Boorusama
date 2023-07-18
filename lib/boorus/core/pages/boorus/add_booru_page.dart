@@ -15,6 +15,12 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
+enum AddBooruPhase {
+  url,
+  newUnknownBooru,
+  newKnownBooru,
+}
+
 class AddBooruPage extends ConsumerStatefulWidget {
   const AddBooruPage({
     super.key,
@@ -30,9 +36,57 @@ class AddBooruPage extends ConsumerStatefulWidget {
 }
 
 class _AddBooruPageState extends ConsumerState<AddBooruPage> {
+  var phase = AddBooruPhase.url;
+  var url = '';
+  Booru? booru;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (phase) {
+      AddBooruPhase.url => AddBooruPageInternal(
+          backgroundColor: widget.backgroundColor,
+          setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+          onUnknownBooruSubmit: (url) => setState(() {
+            phase = AddBooruPhase.newUnknownBooru;
+            this.url = url;
+          }),
+          onKnownBooruSubmit: (booru) => setState(() {
+            phase = AddBooruPhase.newKnownBooru;
+            this.booru = booru;
+          }),
+        ),
+      AddBooruPhase.newUnknownBooru => AddUnknownBooruPage(
+          url: url,
+          setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+          backgroundColor: widget.backgroundColor,
+        ),
+      AddBooruPhase.newKnownBooru => CreateBooruPage(booru: booru!),
+    };
+  }
+}
+
+class AddBooruPageInternal extends ConsumerStatefulWidget {
+  const AddBooruPageInternal({
+    super.key,
+    required this.setCurrentBooruOnSubmit,
+    this.backgroundColor,
+    this.onUnknownBooruSubmit,
+    this.onKnownBooruSubmit,
+  });
+
+  final bool setCurrentBooruOnSubmit;
+  final Color? backgroundColor;
+  final void Function(String url)? onUnknownBooruSubmit;
+  final void Function(Booru booru)? onKnownBooruSubmit;
+
+  @override
+  ConsumerState<AddBooruPageInternal> createState() =>
+      _AddBooruPageInternalState();
+}
+
+class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
   final urlController = TextEditingController();
-  final booruUrlError =
-      ValueNotifier<BooruUriOrError>(left(BooruUrlError.emptyUrl));
+  final booruUrlError = ValueNotifier(left(BooruUrlError.emptyUrl));
   final inputText = ValueNotifier('');
 
   @override
@@ -89,18 +143,25 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
             horizontal: 16,
             vertical: 8,
           ),
-          child: LoginField(
-            validator: (p0) => null,
-            autofocus: true,
-            onChanged: (value) {
-              inputText.value = value;
-              booruUrlError.value = mapBooruUrlToUri(value);
-            },
-            controller: urlController,
-            labelText: 'booru.site_url'.tr(),
+          child: ValueListenableBuilder(
+            valueListenable: booruUrlError,
+            builder: (_, error, __) => LoginField(
+              validator: (p0) => null,
+              autofocus: true,
+              onChanged: (value) {
+                inputText.value = value;
+                booruUrlError.value = mapBooruUrlToUri(value);
+              },
+              onSubmitted: error.fold(
+                (l) => null,
+                (r) => (_) => _onNext(r.toString()),
+              ),
+              controller: urlController,
+              labelText: 'booru.site_url'.tr(),
+            ),
           ),
         ),
-        ValueListenableBuilder<BooruUriOrError>(
+        ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => error.fold(
             (e) => Padding(
@@ -120,7 +181,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           ),
         ),
         // warning container for when the URL is not a supported booru
-        ValueListenableBuilder<BooruUriOrError>(
+        ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => error.fold(
             (e) => const SizedBox.shrink(),
@@ -138,7 +199,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 : const SizedBox.shrink(),
           ),
         ),
-        ValueListenableBuilder<BooruUriOrError>(
+        ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -148,25 +209,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
                 child: const Text('booru.next_step').tr(),
               ),
               (uri) => ElevatedButton(
-                onPressed: () {
-                  context.navigator.pop();
-                  final booruFactory = ref.watch(booruFactoryProvider);
-                  final booru =
-                      getBooruType(uri.toString(), booruFactory.booruData);
-                  //FIXME: move this to router
-                  if (booru == BooruType.unknown) {
-                    context.navigator.push(MaterialPageRoute(
-                        builder: (_) => AddUnknownBooruPage(
-                              url: uri.toString(),
-                              setCurrentBooruOnSubmit:
-                                  widget.setCurrentBooruOnSubmit,
-                            )));
-                  } else {
-                    context.navigator.push(MaterialPageRoute(
-                        builder: (_) => CreateBooruPage(
-                            booru: booruFactory.from(type: booru))));
-                  }
-                },
+                onPressed: () => _onNext(uri.toString()),
                 child: const Text('booru.next_step').tr(),
               ),
             ),
@@ -174,6 +217,16 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
         ),
       ],
     );
+  }
+
+  void _onNext(String url) {
+    final booruFactory = ref.watch(booruFactoryProvider);
+    final booru = getBooruType(url, booruFactory.booruData);
+    if (booru == BooruType.unknown) {
+      widget.onUnknownBooruSubmit?.call(url);
+    } else {
+      widget.onKnownBooruSubmit?.call(booruFactory.from(type: booru));
+    }
   }
 }
 

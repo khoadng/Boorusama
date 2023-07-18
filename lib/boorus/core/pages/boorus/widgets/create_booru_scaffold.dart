@@ -18,31 +18,33 @@ class CreateBooruScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.focusScope.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-          title: SelectedBooruChip(
-            booru: booru,
+    return Material(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SelectedBooruChip(
+                booru: booru,
+              ),
+              const Spacer(),
+              IconButton(
+                splashRadius: 20,
+                onPressed: context.navigator.pop,
+                icon: const Icon(Icons.close),
+              ),
+            ],
           ),
-          actions: [
-            IconButton(
-              onPressed: context.navigator.pop,
-              icon: const Icon(Icons.close),
+          const SizedBox(height: 8),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: children,
+              ),
             ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: children,
           ),
-        ),
+        ],
       ),
     );
   }

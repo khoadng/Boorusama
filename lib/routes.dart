@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +17,6 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/core/pages/bookmarks/bookmark_details.dart';
 import 'boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'boorus/core/pages/boorus/add_booru_page.dart';
-import 'boorus/core/pages/boorus/manage_booru_user_page.dart';
 import 'boorus/core/pages/settings/appearance_page.dart';
 import 'boorus/core/pages/settings/changelog_page.dart';
 import 'boorus/core/pages/settings/download_page.dart';
@@ -28,7 +26,6 @@ import 'boorus/core/pages/settings/privacy_page.dart';
 import 'boorus/core/pages/settings/search_settings_page.dart';
 import 'boorus/core/pages/settings/settings_page.dart';
 import 'boorus/core/pages/settings/settings_page_desktop.dart';
-import 'boorus/danbooru/router.dart';
 import 'boorus/home_page.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
@@ -38,10 +35,9 @@ class BoorusRoutes {
 
   static GoRoute add() => GoRoute(
         path: 'boorus/add',
-        name: '/boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
-        builder: (context, state) => AddBooruPage(
+        builder: (context, state) => AddBooruPageInternal(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
               state.queryParameters["setAsCurrent"]?.toBool() ?? false,
@@ -51,17 +47,16 @@ class BoorusRoutes {
   //FIXME: create custom page builder, also can't tap outside to dismiss
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
-      name: '/desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
             key: state.pageKey,
             name: state.name,
             builder: (context) => BooruDialog(
               padding: const EdgeInsets.all(16),
-              color: context.theme.cardColor,
+              color: context.theme.canvasColor,
               width: 400,
               child: IntrinsicHeight(
                 child: AddBooruPage(
-                  backgroundColor: context.theme.cardColor,
+                  backgroundColor: context.theme.canvasColor,
                   setCurrentBooruOnSubmit: false,
                 ),
               ),
@@ -69,7 +64,10 @@ class BoorusRoutes {
           ));
 
   static GoRoute update(Ref ref) => GoRoute(
-        path: ':id/update',
+        path: 'boorus/:id/update',
+        redirect: (context, state) => isMobilePlatform()
+            ? null
+            : '/desktop/boorus/${state.pathParameters['id']}/update',
         pageBuilder: (context, state) {
           final idParam = state.pathParameters['id'];
           final id = idParam?.toInt();
@@ -79,8 +77,33 @@ class BoorusRoutes {
 
           return MaterialPage(
             key: state.pageKey,
-            name: '/boorus/$idParam/update',
             child: UpdateBooruPage(booruConfig: config),
+          );
+        },
+      );
+
+  static GoRoute updateDesktop(Ref ref) => GoRoute(
+        path: 'desktop/boorus/:id/update',
+        pageBuilder: (context, state) {
+          final idParam = state.pathParameters['id'];
+          final id = idParam?.toInt();
+          final config = ref
+              .read(booruConfigProvider)
+              .firstWhere((element) => element.id == id);
+
+          return DialogPage(
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => BooruDialog(
+              padding: const EdgeInsets.all(16),
+              color: context.theme.canvasColor,
+              width: 400,
+              child: IntrinsicHeight(
+                child: UpdateBooruPage(
+                  booruConfig: config,
+                ),
+              ),
+            ),
           );
         },
       );
@@ -173,42 +196,21 @@ class Routes {
         builder: (context, state) => ConditionalParentWidget(
           condition: canRate(),
           conditionalBuilder: (child) => createAppRatingWidget(child: child),
-          child: CallbackShortcuts(
-            bindings: {
-              const SingleActivator(
-                LogicalKeyboardKey.keyF,
-                control: true,
-              ): () => goToSearchPage(context),
-            },
-            child: const CustomContextMenuOverlay(
-              child: Focus(
-                autofocus: true,
-                child: HomePage(),
-              ),
+          child: const CustomContextMenuOverlay(
+            child: Focus(
+              autofocus: true,
+              child: HomePage(),
             ),
           ),
         ),
         routes: [
-          boorus(ref),
+          BoorusRoutes.update(ref),
+          BoorusRoutes.updateDesktop(ref),
           BoorusRoutes.add(),
           BoorusRoutes.addDesktop(),
           settings(),
           settingsDesktop(),
           bookmarks(),
-        ],
-      );
-
-  static GoRoute boorus(Ref ref) => GoRoute(
-        path: 'boorus',
-        name: '/boorus',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const ManageBooruPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
-        ),
-        routes: [
-          BoorusRoutes.update(ref),
         ],
       );
 
