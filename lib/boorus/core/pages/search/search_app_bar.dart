@@ -72,23 +72,27 @@ class SearchAppBar extends ConsumerWidget {
       automaticallyImplyLeading: false,
       toolbarHeight: kToolbarHeight * 1.2,
       title: trailingSearchButton != null
-          ? Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Spacer(
-                  flex: 2,
-                ),
-                Flexible(
-                  flex: 4,
-                  child: searchAppBar,
-                ),
-                trailingSearchButton!,
-                const Spacer(
-                  flex: 2,
-                ),
-              ],
+          ? LayoutBuilder(
+              builder: (context, constraints) => Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (constraints.maxWidth > 700)
+                    Spacer(
+                      flex: constraints.maxWidth > 1000 ? 3 : 1,
+                    ),
+                  Flexible(
+                    flex: 4,
+                    child: searchAppBar,
+                  ),
+                  trailingSearchButton!,
+                  if (constraints.maxWidth > 700)
+                    Spacer(
+                      flex: constraints.maxWidth > 1000 ? 3 : 1,
+                    ),
+                ],
+              ),
             )
           : searchAppBar,
     );
