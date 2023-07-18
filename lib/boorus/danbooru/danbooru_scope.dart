@@ -112,131 +112,146 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
     final auth = ref.read(authenticationProvider);
 
     return Scaffold(
+      backgroundColor: context.colorScheme.background,
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: 220,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const CurrentBooruTile(),
-                  const SizedBox(height: 8),
-                  Theme(
-                    data: context.theme.copyWith(
-                      iconTheme: context.theme.iconTheme.copyWith(size: 20),
+            child: Column(
+              children: [
+                const CurrentBooruTile(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        Theme(
+                          data: context.theme.copyWith(
+                            iconTheme:
+                                context.theme.iconTheme.copyWith(size: 20),
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                HomeNavigationTile(
+                                  value: 0,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.dashboard),
+                                  icon: const Icon(Icons.dashboard_outlined),
+                                  title: 'Home',
+                                ),
+                                HomeNavigationTile(
+                                  value: 1,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.explore),
+                                  icon: const Icon(Icons.explore_outlined),
+                                  title: 'Explore',
+                                ),
+                                HomeNavigationTile(
+                                  value: 2,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.photo_album),
+                                  icon: const Icon(Icons.photo_album_outlined),
+                                  title: 'Pools',
+                                ),
+                                HomeNavigationTile(
+                                  value: 3,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.forum),
+                                  icon: const Icon(Icons.forum_outlined),
+                                  title: 'forum.forum'.tr(),
+                                ),
+                                if (auth.isAuthenticated) ...[
+                                  HomeNavigationTile(
+                                    value: 4,
+                                    controller: widget.controller,
+                                    constraints: constraints,
+                                    selectedIcon: const Icon(Icons.favorite),
+                                    icon: const Icon(
+                                        Icons.favorite_border_outlined),
+                                    title: 'Favorites',
+                                  ),
+                                  HomeNavigationTile(
+                                    value: 5,
+                                    controller: widget.controller,
+                                    constraints: constraints,
+                                    selectedIcon: const Icon(Icons.collections),
+                                    icon:
+                                        const Icon(Icons.collections_outlined),
+                                    title:
+                                        'favorite_groups.favorite_groups'.tr(),
+                                  ),
+                                  HomeNavigationTile(
+                                    value: 6,
+                                    controller: widget.controller,
+                                    constraints: constraints,
+                                    selectedIcon:
+                                        const Icon(Icons.saved_search),
+                                    icon:
+                                        const Icon(Icons.saved_search_outlined),
+                                    title: 'saved_search.saved_search'.tr(),
+                                  ),
+                                  HomeNavigationTile(
+                                    value: 7,
+                                    controller: widget.controller,
+                                    constraints: constraints,
+                                    selectedIcon: const Icon(Icons.tag),
+                                    icon: const Icon(Icons.tag_outlined),
+                                    title: 'blacklisted_tags.blacklisted_tags'
+                                        .tr(),
+                                  ),
+                                ],
+                                const Divider(),
+                                HomeNavigationTile(
+                                  value: 8,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.bookmark),
+                                  icon: const Icon(
+                                      Icons.bookmark_border_outlined),
+                                  title: 'sideMenu.your_bookmarks'.tr(),
+                                ),
+                                HomeNavigationTile(
+                                  value: 9,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.list_alt),
+                                  icon: const Icon(Icons.list_alt_outlined),
+                                  title: 'sideMenu.your_blacklist'.tr(),
+                                ),
+                                HomeNavigationTile(
+                                  value: 10,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.download),
+                                  icon: const Icon(Icons.download_outlined),
+                                  title: 'sideMenu.bulk_download'.tr(),
+                                ),
+                                const Divider(),
+                                HomeNavigationTile(
+                                  value: 999,
+                                  controller: widget.controller,
+                                  constraints: constraints,
+                                  selectedIcon: const Icon(Icons.settings),
+                                  icon: const Icon(Icons.settings),
+                                  title: 'sideMenu.settings'.tr(),
+                                  onTap: () => context.go('/settings'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          HomeNavigationTile(
-                            value: 0,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.dashboard),
-                            icon: const Icon(Icons.dashboard_outlined),
-                            title: 'Home',
-                          ),
-                          HomeNavigationTile(
-                            value: 1,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.explore),
-                            icon: const Icon(Icons.explore_outlined),
-                            title: 'Explore',
-                          ),
-                          HomeNavigationTile(
-                            value: 2,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.photo_album),
-                            icon: const Icon(Icons.photo_album_outlined),
-                            title: 'Pools',
-                          ),
-                          HomeNavigationTile(
-                            value: 3,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.forum),
-                            icon: const Icon(Icons.forum_outlined),
-                            title: 'forum.forum'.tr(),
-                          ),
-                          if (auth.isAuthenticated) ...[
-                            HomeNavigationTile(
-                              value: 4,
-                              controller: widget.controller,
-                              constraints: constraints,
-                              selectedIcon: const Icon(Icons.favorite),
-                              icon: const Icon(Icons.favorite_border_outlined),
-                              title: 'Favorites',
-                            ),
-                            HomeNavigationTile(
-                              value: 5,
-                              controller: widget.controller,
-                              constraints: constraints,
-                              selectedIcon: const Icon(Icons.collections),
-                              icon: const Icon(Icons.collections_outlined),
-                              title: 'favorite_groups.favorite_groups'.tr(),
-                            ),
-                            HomeNavigationTile(
-                              value: 6,
-                              controller: widget.controller,
-                              constraints: constraints,
-                              selectedIcon: const Icon(Icons.saved_search),
-                              icon: const Icon(Icons.saved_search_outlined),
-                              title: 'saved_search.saved_search'.tr(),
-                            ),
-                            HomeNavigationTile(
-                              value: 7,
-                              controller: widget.controller,
-                              constraints: constraints,
-                              selectedIcon: const Icon(Icons.tag),
-                              icon: const Icon(Icons.tag_outlined),
-                              title: 'blacklisted_tags.blacklisted_tags'.tr(),
-                            ),
-                          ],
-                          const Divider(),
-                          HomeNavigationTile(
-                            value: 8,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.bookmark),
-                            icon: const Icon(Icons.bookmark_border_outlined),
-                            title: 'sideMenu.your_bookmarks'.tr(),
-                          ),
-                          HomeNavigationTile(
-                            value: 9,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.list_alt),
-                            icon: const Icon(Icons.list_alt_outlined),
-                            title: 'sideMenu.your_blacklist'.tr(),
-                          ),
-                          HomeNavigationTile(
-                            value: 10,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.download),
-                            icon: const Icon(Icons.download_outlined),
-                            title: 'sideMenu.bulk_download'.tr(),
-                          ),
-                          const Divider(),
-                          HomeNavigationTile(
-                            value: 999,
-                            controller: widget.controller,
-                            constraints: constraints,
-                            selectedIcon: const Icon(Icons.settings),
-                            icon: const Icon(Icons.settings),
-                            title: 'sideMenu.settings'.tr(),
-                            onTap: () => context.go('/settings'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -254,6 +269,12 @@ class _DesktopScopeState extends ConsumerState<_DesktopScope> {
                     const FavoriteGroupsPage(),
                     const SavedSearchFeedPage(),
                     const BlacklistedTagsPage(),
+                  ] else ...[
+                    //TODO: hacky way to prevent accessing wrong index... Will need better solution
+                    const SizedBox(),
+                    const SizedBox(),
+                    const SizedBox(),
+                    const SizedBox(),
                   ],
                   const BookmarkPage(),
                   const BlacklistedTagPage(),

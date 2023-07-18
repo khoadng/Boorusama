@@ -95,7 +95,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         children: [
           const BooruSelector(),
           const VerticalDivider(
-            thickness: 1.5,
+            thickness: 1,
+            width: 1,
           ),
           Expanded(
             child: child,
