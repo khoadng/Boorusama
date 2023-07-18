@@ -16,9 +16,11 @@ class CreateBooruPage extends ConsumerStatefulWidget {
   const CreateBooruPage({
     super.key,
     required this.booru,
+    this.backgroundColor,
   });
 
   final Booru booru;
+  final Color? backgroundColor;
 
   @override
   ConsumerState<CreateBooruPage> createState() => _AddBooruPageState();
@@ -41,6 +43,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.testbooru ||
       BooruType.e621 =>
         CreateDanbooruConfigPage(
+          backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -51,6 +54,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booru: widget.booru,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
+          backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -63,6 +67,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.lolibooru ||
       BooruType.sakugabooru =>
         CreateMoebooruConfigPage(
+          backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onHashedPasswordChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -73,6 +78,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booruFactory: booruFactory,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
+          backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),

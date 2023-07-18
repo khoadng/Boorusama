@@ -37,7 +37,7 @@ class BoorusRoutes {
         path: 'boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
-        builder: (context, state) => AddBooruPageInternal(
+        builder: (context, state) => AddBooruPage(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
               state.queryParameters["setAsCurrent"]?.toBool() ?? false,

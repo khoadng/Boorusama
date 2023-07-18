@@ -60,7 +60,10 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
-      AddBooruPhase.newKnownBooru => CreateBooruPage(booru: booru!),
+      AddBooruPhase.newKnownBooru => CreateBooruPage(
+          booru: booru!,
+          backgroundColor: widget.backgroundColor,
+        ),
     };
   }
 }

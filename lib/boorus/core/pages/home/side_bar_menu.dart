@@ -6,12 +6,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/home/switch_booru_modal.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/booru_selector.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -54,16 +52,7 @@ class SideBarMenu extends ConsumerWidget {
                   SizedBox(
                     height: MediaQuery.of(context).viewPadding.top,
                   ),
-                  CurrentBooruTile(
-                    onTap: () {
-                      showMaterialModalBottomSheet(
-                        context: context,
-                        duration: const Duration(milliseconds: 250),
-                        animationCurve: Curves.easeOut,
-                        builder: (context) => const SwitchBooruModal(),
-                      );
-                    },
-                  ),
+                  const CurrentBooruTile(),
                   if (initialContentBuilder != null) ...[
                     ...initialContentBuilder!(context)!,
                   ],
@@ -71,14 +60,6 @@ class SideBarMenu extends ConsumerWidget {
                   if (contentBuilder != null) ...[
                     ...contentBuilder!(context),
                   ] else ...[
-                    SideMenuTile(
-                      icon: const Icon(Icons.manage_accounts),
-                      title: const Text('sideMenu.manage_boorus').tr(),
-                      onTap: () {
-                        if (popOnSelect) context.navigator.pop();
-                        context.go('/boorus');
-                      },
-                    ),
                     SideMenuTile(
                       icon: const Icon(Icons.favorite),
                       title: const Text('sideMenu.your_bookmarks').tr(),
@@ -129,10 +110,7 @@ class SideBarMenu extends ConsumerWidget {
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
     super.key,
-    this.onTap,
   });
-
-  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -194,16 +172,6 @@ class CurrentBooruTile extends ConsumerWidget {
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
-                    )
-                  : null,
-              trailing: onTap != null
-                  ? IconButton(
-                      onPressed: onTap,
-                      splashRadius: 12,
-                      icon: const Icon(
-                        Icons.settings,
-                        size: 18,
-                      ),
                     )
                   : null,
             )

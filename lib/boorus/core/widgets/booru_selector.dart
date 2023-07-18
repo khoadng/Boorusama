@@ -23,6 +23,23 @@ class BooruSelector extends ConsumerWidget {
     final configs = ref.watch(booruConfigProvider);
     final currentConfig = ref.watch(currentBooruConfigProvider);
 
+    void show(BooruConfig config) {
+      context.contextMenuOverlay.show(
+        GenericContextMenu(
+          buttonConfigs: [
+            ContextMenuButtonConfig(
+              'generic.action.edit'.tr(),
+              onPressed: () => context.go('/boorus/${config.id}/update'),
+            ),
+            if (currentConfig != config)
+              ContextMenuButtonConfig('generic.action.delete'.tr(),
+                  onPressed: () =>
+                      ref.read(booruConfigProvider.notifier).delete(config)),
+          ],
+        ),
+      );
+    }
+
     return SizedBox(
       width: 68,
       child: ScrollConfiguration(
@@ -41,23 +58,8 @@ class BooruSelector extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: InkWell(
                       hoverColor: context.theme.hoverColor.withOpacity(0.1),
-                      onSecondaryTap: () => context.contextMenuOverlay.show(
-                        GenericContextMenu(
-                          buttonConfigs: [
-                            ContextMenuButtonConfig(
-                              'generic.action.edit'.tr(),
-                              onPressed: () =>
-                                  context.go('/boorus/${config.id}/update'),
-                            ),
-                            if (currentConfig != config)
-                              ContextMenuButtonConfig(
-                                  'generic.action.delete'.tr(),
-                                  onPressed: () => ref
-                                      .read(booruConfigProvider.notifier)
-                                      .delete(config)),
-                          ],
-                        ),
-                      ),
+                      onSecondaryTap: () => show(config),
+                      onLongPress: () => show(config),
                       onTap: () => ref
                           .read(currentBooruConfigProvider.notifier)
                           .update(config),

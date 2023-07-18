@@ -27,6 +27,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
     this.initialConfigName,
     this.initialRatingFilter,
     this.initialHideDeleted,
+    this.backgroundColor,
   });
 
   final String? initialLogin;
@@ -41,12 +42,14 @@ class CreateDanbooruConfigPage extends StatelessWidget {
   final void Function(BooruConfigRatingFilter? value)? onRatingFilterChanged;
   final void Function(bool value) onHideDeletedChanged;
   final void Function()? onSubmit;
+  final Color? backgroundColor;
 
   final Booru booru;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
+      backgroundColor: backgroundColor,
       booru: booru,
       children: [
         Padding(
