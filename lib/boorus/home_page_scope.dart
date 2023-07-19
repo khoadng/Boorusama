@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/widgets/current_booru_tile.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

@@ -93,7 +93,9 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                     onHistoryRemoved: (value) => ref
                         .read(searchHistoryProvider.notifier)
                         .removeHistory(value.query),
-                    searchController: searchController,
+                    onHistoryTap: (value) =>
+                        searchController.tapHistoryTag(value),
+                    onTagTap: (value) => searchController.tapTag(value),
                   ),
                 ),
               ]),

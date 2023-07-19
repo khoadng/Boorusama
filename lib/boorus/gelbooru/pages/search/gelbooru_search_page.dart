@@ -116,7 +116,9 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                     onHistoryRemoved: (value) => ref
                         .read(searchHistoryProvider.notifier)
                         .removeHistory(value.query),
-                    searchController: searchController,
+                    onHistoryTap: (value) =>
+                        searchController.tapHistoryTag(value),
+                    onTagTap: (value) => searchController.tapTag(value),
                   ),
                 ),
               ]),

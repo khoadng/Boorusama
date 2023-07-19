@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
+import 'package:boorusama/boorus/core/widgets/current_booru_tile.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
