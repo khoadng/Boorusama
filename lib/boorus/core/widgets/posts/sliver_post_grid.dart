@@ -89,21 +89,15 @@ class SliverPostGrid extends ConsumerWidget {
             return const SliverToBoxAdapter(child: NoDataBox());
           }
 
-          final payload = gridSizeToGridData(
-            size: gridSize,
-            spacing: imageGridSpacing,
-            screenWidth: context.screenWidth,
-          );
-          final crossAxisCount = payload.$1;
-          final mainAxisSpacing = payload.$2;
-          final crossAxisSpacing = payload.$3;
+          final crossAxisCount = calculateGridCount(context, gridSize);
 
           return switch (imageListType) {
             ImageListType.standard => SliverGrid(
-                gridDelegate: gridSizeToGridDelegate(
-                  size: gridSize,
-                  spacing: imageGridSpacing,
-                  screenWidth: context.screenWidth,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 0.65,
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: imageGridSpacing,
+                  crossAxisSpacing: imageGridSpacing,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   itemBuilder,
@@ -112,8 +106,8 @@ class SliverPostGrid extends ConsumerWidget {
               ),
             ImageListType.masonry => SliverMasonryGrid.count(
                 crossAxisCount: crossAxisCount,
-                mainAxisSpacing: mainAxisSpacing,
-                crossAxisSpacing: crossAxisSpacing,
+                mainAxisSpacing: imageGridSpacing,
+                crossAxisSpacing: imageGridSpacing,
                 childCount: data.length,
                 itemBuilder: itemBuilder,
               ),
@@ -139,6 +133,20 @@ class _Placeholder extends StatelessWidget {
   }
 }
 
+int calculateGridCount(BuildContext context, GridSize size) {
+  final screenWidth = context.screenWidth;
+  final displaySize = screenWidthToDisplaySize(screenWidth);
+  final weight = displaySizeToGridCountWeight(displaySize);
+
+  final count = switch (size) {
+    GridSize.small => 2.5 * weight,
+    GridSize.normal => 1.5 * weight,
+    GridSize.large => 1 * weight,
+  };
+
+  return count.toInt();
+}
+
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
@@ -153,21 +161,15 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
     return Builder(
       builder: (context) {
-        final data = gridSizeToGridData(
-          size: gridSize,
-          spacing: imageGridSpacing,
-          screenWidth: context.screenWidth,
-        );
-        final crossAxisCount = data.$1;
-        final mainAxisSpacing = data.$2;
-        final crossAxisSpacing = data.$3;
+        final crossAxisCount = calculateGridCount(context, gridSize);
 
         return switch (imageListType) {
           ImageListType.standard => SliverGrid(
-              gridDelegate: gridSizeToGridDelegate(
-                size: gridSize,
-                spacing: imageGridSpacing,
-                screenWidth: MediaQuery.of(context).size.width,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 0.65,
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: imageGridSpacing,
+                crossAxisSpacing: imageGridSpacing,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, _) {
@@ -185,8 +187,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             ),
           ImageListType.masonry => SliverMasonryGrid.count(
               crossAxisCount: crossAxisCount,
-              mainAxisSpacing: mainAxisSpacing,
-              crossAxisSpacing: crossAxisSpacing,
+              mainAxisSpacing: imageGridSpacing,
+              crossAxisSpacing: imageGridSpacing,
               childCount: 100,
               itemBuilder: (context, index) {
                 return createRandomPlaceholderContainer(
@@ -201,83 +203,9 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
   }
 }
 
-SliverGridDelegate gridSizeToGridDelegate({
-  required GridSize size,
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  return switch (size) {
-    GridSize.large => SliverPostGridDelegate.large(spacing, displaySize),
-    GridSize.small => SliverPostGridDelegate.small(spacing, displaySize),
-    GridSize.normal => SliverPostGridDelegate.normal(spacing, displaySize)
-  };
-}
-
-class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
-  SliverPostGridDelegate({
-    required super.crossAxisCount,
-    required super.mainAxisSpacing,
-    required super.crossAxisSpacing,
-    required super.childAspectRatio,
-    super.mainAxisExtent,
-  });
-  factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
-        crossAxisCount: displaySizeToGridCountWeight(size) * 2,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-
-  factory SliverPostGridDelegate.small(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: 1,
-        crossAxisCount: displaySizeToGridCountWeight(size) * 3,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-  factory SliverPostGridDelegate.large(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: 0.65,
-        crossAxisCount: displaySizeToGridCountWeight(size),
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-}
-
 int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
       ScreenSize.small => 1,
       ScreenSize.medium => 2,
       ScreenSize.large => 3,
       ScreenSize.veryLarge => 4,
     };
-
-(
-  int crossAxisCount,
-  double mainAxisSpacing,
-  double crossAxisSpacing,
-) gridSizeToGridData({
-  required GridSize size,
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  return switch (size) {
-    GridSize.large => (
-        displaySizeToGridCountWeight(displaySize),
-        spacing,
-        spacing
-      ),
-    GridSize.normal => (
-        displaySizeToGridCountWeight(displaySize) * 2,
-        spacing,
-        spacing
-      ),
-    GridSize.small => (
-        displaySizeToGridCountWeight(displaySize) * 3,
-        spacing,
-        spacing
-      ),
-  };
-}
