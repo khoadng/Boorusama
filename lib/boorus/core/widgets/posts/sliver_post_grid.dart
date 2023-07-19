@@ -19,12 +19,6 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
-  final IndexedWidgetBuilder itemBuilder;
-  final bool refreshing;
-  final BooruError? error;
-  final List<Post> data;
-  final VoidCallback? onRetry;
-
   const SliverPostGrid({
     Key? key,
     required this.itemBuilder,
@@ -32,7 +26,15 @@ class SliverPostGrid extends ConsumerWidget {
     required this.error,
     required this.data,
     required this.onRetry,
+    this.constraints,
   }) : super(key: key);
+
+  final IndexedWidgetBuilder itemBuilder;
+  final bool refreshing;
+  final BooruError? error;
+  final List<Post> data;
+  final VoidCallback? onRetry;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,14 +84,20 @@ class SliverPostGrid extends ConsumerWidget {
           }
 
           if (refreshing) {
-            return const _Placeholder(usePlaceholder: true);
+            return _Placeholder(
+              usePlaceholder: true,
+              constraints: constraints,
+            );
           }
 
           if (data.isEmpty) {
             return const SliverToBoxAdapter(child: NoDataBox());
           }
 
-          final crossAxisCount = calculateGridCount(context, gridSize);
+          final crossAxisCount = calculateGridCount(
+            constraints?.maxWidth ?? context.screenWidth,
+            gridSize,
+          );
 
           return switch (imageListType) {
             ImageListType.standard => SliverGrid(
@@ -121,36 +129,29 @@ class SliverPostGrid extends ConsumerWidget {
 class _Placeholder extends StatelessWidget {
   const _Placeholder({
     required this.usePlaceholder,
+    this.constraints,
   });
 
   final bool usePlaceholder;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context) {
     return usePlaceholder
-        ? const SliverPostGridPlaceHolder()
+        ? SliverPostGridPlaceHolder(
+            constraints: constraints,
+          )
         : const SliverSizedBox.shrink();
   }
-}
-
-int calculateGridCount(BuildContext context, GridSize size) {
-  final screenWidth = context.screenWidth;
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  final weight = displaySizeToGridCountWeight(displaySize);
-
-  final count = switch (size) {
-    GridSize.small => 2.5 * weight,
-    GridSize.normal => 1.5 * weight,
-    GridSize.large => 1 * weight,
-  };
-
-  return count.toInt();
 }
 
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
+    this.constraints,
   });
+
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -161,7 +162,10 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
     return Builder(
       builder: (context) {
-        final crossAxisCount = calculateGridCount(context, gridSize);
+        final crossAxisCount = calculateGridCount(
+          constraints?.maxWidth ?? context.screenWidth,
+          gridSize,
+        );
 
         return switch (imageListType) {
           ImageListType.standard => SliverGrid(
@@ -202,10 +206,3 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     );
   }
 }
-
-int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
-      ScreenSize.small => 1,
-      ScreenSize.medium => 2,
-      ScreenSize.large => 3,
-      ScreenSize.veryLarge => 4,
-    };

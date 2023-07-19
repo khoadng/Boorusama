@@ -94,90 +94,95 @@ class _DanbooruInfinitePostListState
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
 
-    return PostGrid(
-      refreshAtStart: widget.refreshAtStart,
-      controller: widget.controller,
-      scrollController: _autoScrollController,
-      sliverHeaderBuilder: widget.sliverHeaderBuilder,
-      footerBuilder: (context, selectedItems) => DanbooruMultiSelectionActions(
-        selectedPosts: selectedItems,
-        endMultiSelect: () {
-          _multiSelectController.disableMultiSelect();
+    //FIXME: update other sites to use layout builder
+    return LayoutBuilder(
+      builder: (context, constraints) => PostGrid(
+        refreshAtStart: widget.refreshAtStart,
+        controller: widget.controller,
+        scrollController: _autoScrollController,
+        sliverHeaderBuilder: widget.sliverHeaderBuilder,
+        footerBuilder: (context, selectedItems) =>
+            DanbooruMultiSelectionActions(
+          selectedPosts: selectedItems,
+          endMultiSelect: () {
+            _multiSelectController.disableMultiSelect();
+          },
+        ),
+        multiSelectController: _multiSelectController,
+        onLoadMore: widget.onLoadMore,
+        onRefresh: widget.onRefresh,
+        blacklistedTags: {
+          ...globalBlacklist.map((e) => e.name),
+          if (danbooruBlacklist != null) ...danbooruBlacklist,
+        },
+        itemBuilder: (context, items, index) {
+          final post = items[index];
+
+          return ContextMenuRegion(
+            isEnabled: !post.isBanned && !multiSelect,
+            contextMenu: DanbooruPostContextMenu(
+              hasAccount: authState.isAuthenticated,
+              onMultiSelect: () {
+                _multiSelectController.enableMultiSelect();
+              },
+              post: post,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) => DanbooruImageGridItem(
+                post: post,
+                hideOverlay: false,
+                autoScrollOptions: AutoScrollOptions(
+                  controller: _autoScrollController,
+                  index: index,
+                ),
+                onTap: !multiSelect
+                    ? () {
+                        goToDetailPage(
+                          context: context,
+                          posts: items,
+                          initialIndex: index,
+                          scrollController: _autoScrollController,
+                        );
+                      }
+                    : null,
+                enableFav: !multiSelect && authState.isAuthenticated,
+                image: settings.imageListType == ImageListType.masonry
+                    ? BooruImage(
+                        aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                        imageUrl: post.thumbnailFromSettings(settings),
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        previewCacheManager:
+                            ref.watch(previewImageCacheManagerProvider),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      )
+                    : BooruImageLegacy(
+                        imageUrl: post.thumbnailFromSettings(settings),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      ),
+              ),
+            ),
+          );
+        },
+        bodyBuilder: (context, itemBuilder, refreshing, data) {
+          return SliverPostGrid(
+            constraints: constraints,
+            itemBuilder: itemBuilder,
+            refreshing: refreshing,
+            error: widget.errors,
+            data: data,
+            onRetry: () => widget.controller.refresh(),
+          );
         },
       ),
-      multiSelectController: _multiSelectController,
-      onLoadMore: widget.onLoadMore,
-      onRefresh: widget.onRefresh,
-      blacklistedTags: {
-        ...globalBlacklist.map((e) => e.name),
-        if (danbooruBlacklist != null) ...danbooruBlacklist,
-      },
-      itemBuilder: (context, items, index) {
-        final post = items[index];
-
-        return ContextMenuRegion(
-          isEnabled: !post.isBanned && !multiSelect,
-          contextMenu: DanbooruPostContextMenu(
-            hasAccount: authState.isAuthenticated,
-            onMultiSelect: () {
-              _multiSelectController.enableMultiSelect();
-            },
-            post: post,
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) => DanbooruImageGridItem(
-              post: post,
-              hideOverlay: false,
-              autoScrollOptions: AutoScrollOptions(
-                controller: _autoScrollController,
-                index: index,
-              ),
-              onTap: !multiSelect
-                  ? () {
-                      goToDetailPage(
-                        context: context,
-                        posts: items,
-                        initialIndex: index,
-                        scrollController: _autoScrollController,
-                      );
-                    }
-                  : null,
-              enableFav: !multiSelect && authState.isAuthenticated,
-              image: settings.imageListType == ImageListType.masonry
-                  ? BooruImage(
-                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                      imageUrl: post.thumbnailFromSettings(settings),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      placeholderUrl: post.thumbnailImageUrl,
-                      previewCacheManager:
-                          ref.watch(previewImageCacheManagerProvider),
-                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                    )
-                  : BooruImageLegacy(
-                      imageUrl: post.thumbnailFromSettings(settings),
-                      placeholderUrl: post.thumbnailImageUrl,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                    ),
-            ),
-          ),
-        );
-      },
-      bodyBuilder: (context, itemBuilder, refreshing, data) {
-        return SliverPostGrid(
-          itemBuilder: itemBuilder,
-          refreshing: refreshing,
-          error: widget.errors,
-          data: data,
-          onRetry: () => widget.controller.refresh(),
-        );
-      },
     );
   }
 }
