@@ -438,21 +438,18 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
               );
             },
           ),
+          ValueListenableBuilder(
+            valueListenable: selectedTagString,
+            builder: (context, value, _) => RelatedTagSection(
+              query: value,
+              onSelected: (tag) => selectedTagController.addTag(tag.tag),
+            ),
+          ),
           Expanded(
             child: DanbooruInfinitePostList(
               controller: controller,
               errors: errors,
               sliverHeaderBuilder: (context) => [
-                SliverToBoxAdapter(
-                  child: ValueListenableBuilder(
-                    valueListenable: selectedTagString,
-                    builder: (context, value, _) => RelatedTagSection(
-                      query: value,
-                      onSelected: (tag) =>
-                          selectedTagController.addTag(tag.tag),
-                    ),
-                  ),
-                ),
                 SliverToBoxAdapter(
                   child: Row(
                     children: [

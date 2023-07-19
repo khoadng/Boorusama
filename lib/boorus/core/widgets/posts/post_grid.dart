@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/scroll_to_top.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
@@ -183,182 +184,243 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
+    var content = SafeArea(
+      child: MultiSelectWidget<T>(
+        footerBuilder: widget.footerBuilder,
+        multiSelectController: _multiSelectController,
+        onMultiSelectChanged: (p0) => setState(() {
+          multiSelect = p0;
+        }),
+        headerBuilder: (context, selected, clearSelected) =>
+            widget.headerBuilder != null
+                ? widget.headerBuilder!(context, selected, clearSelected)
+                : AppBar(
+                    leading: IconButton(
+                      onPressed: () =>
+                          _multiSelectController.disableMultiSelect(),
+                      icon: const Icon(Icons.close),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: clearSelected,
+                        icon: const Icon(Icons.clear_all),
+                      ),
+                    ],
+                    title: selected.isEmpty
+                        ? const Text('Select items')
+                        : Text('${selected.length} Items selected'),
+                  ),
+        items: items,
+        itemBuilder: (context, index) =>
+            widget.itemBuilder(context, items, index),
+        scrollableWidgetBuilder: (context, items, itemBuilder) {
+          return Scaffold(
+            floatingActionButton: ScrollToTop(
+              scrollController: _autoScrollController,
+              onBottomReached: () {
+                if (controller.pageMode == PageMode.infinite && hasMore) {
+                  widget.onLoadMore?.call();
+                  controller.fetchMore();
+                }
+              },
+              child: widget.extendBody
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                        bottom: widget.extendBodyHeight ??
+                            kBottomNavigationBarHeight,
+                      ),
+                      child: FloatingActionButton(
+                        heroTag: null,
+                        child: const FaIcon(FontAwesomeIcons.angleUp),
+                        onPressed: () => _autoScrollController.jumpTo(0),
+                      ),
+                    )
+                  : FloatingActionButton(
+                      heroTag: null,
+                      child: const FaIcon(FontAwesomeIcons.angleUp),
+                      onPressed: () => _autoScrollController.jumpTo(0),
+                    ),
+            ),
+            body: RefreshIndicator(
+              notificationPredicate:
+                  widget.enablePullToRefresh ? (_) => true : (_) => false,
+              onRefresh: () async {
+                widget.onRefresh?.call();
+                _multiSelectController.clearSelected();
+                await controller.refresh();
+              },
+              child: ImprovedScrolling(
+                scrollController: _autoScrollController,
+                enableKeyboardScrolling: true,
+                enableMMBScrolling: true,
+                child: CustomScrollView(
+                  controller: _autoScrollController,
+                  slivers: [
+                    if (!multiSelect && widget.sliverHeaderBuilder != null)
+                      ...widget.sliverHeaderBuilder!(context),
+                    if (settings.showPostListConfigHeader && !refreshing)
+                      if (isMobilePlatform())
+                        SliverPinnedHeader(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: _buildConfigHeader(Axis.horizontal),
+                          ),
+                        ),
+                    const SliverSizedBox(
+                      height: 4,
+                    ),
+                    widget.bodyBuilder(
+                      context,
+                      itemBuilder,
+                      refreshing,
+                      items,
+                    ),
+                    if (pageMode == PageMode.infinite && loading)
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        sliver: SliverToBoxAdapter(
+                          child: Center(
+                            child: SpinKitPulse(
+                              color: context.theme.colorScheme.onBackground,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      const SliverSizedBox.shrink(),
+                    if (pageMode == PageMode.paginated)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 40),
+                          child: PageSelector(
+                            currentPage: page,
+                            onPrevious: controller.hasPreviousPage()
+                                ? () => controller.goToPreviousPage()
+                                : null,
+                            onNext: controller.hasNextPage()
+                                ? () => controller.goToNextPage()
+                                : null,
+                            onPageSelect: (page) => controller.jumpToPage(page),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
     return WillPopScope(
         onWillPop: _onWillPop,
         child: ColoredBox(
           color: context.theme.scaffoldBackgroundColor,
-          child: SafeArea(
-            child: MultiSelectWidget<T>(
-              footerBuilder: widget.footerBuilder,
-              multiSelectController: _multiSelectController,
-              onMultiSelectChanged: (p0) => setState(() {
-                multiSelect = p0;
-              }),
-              headerBuilder: (context, selected, clearSelected) =>
-                  widget.headerBuilder != null
-                      ? widget.headerBuilder!(context, selected, clearSelected)
-                      : AppBar(
-                          leading: IconButton(
-                            onPressed: () =>
-                                _multiSelectController.disableMultiSelect(),
-                            icon: const Icon(Icons.close),
-                          ),
-                          actions: [
-                            IconButton(
-                              onPressed: clearSelected,
-                              icon: const Icon(Icons.clear_all),
+          child: !isMobilePlatform()
+              ? Builder(builder: (context) {
+                  final gridSize = ref.watch(gridSizeSettingsProvider);
+                  final imageListType =
+                      ref.watch(imageListTypeSettingsProvider);
+                  final pageMode = ref.watch(pageModeSettingsProvider);
+
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ButtonBar(
+                              buttonPadding: EdgeInsets.zero,
+                              children: [
+                                IconButton(
+                                  iconSize: 18,
+                                  splashRadius: 18,
+                                  onPressed: () => controller.refresh(),
+                                  icon: const Icon(Icons.refresh),
+                                ),
+                              ],
                             ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              width: 230,
+                              child: PostGridActionSheet(
+                                popOnSelect: false,
+                                gridSize: gridSize,
+                                pageMode: pageMode,
+                                imageListType: imageListType,
+                                onModeChanged: (mode) => ref.setPageMode(mode),
+                                onGridChanged: (grid) => ref.setGridSize(grid),
+                                onImageListChanged: (imageListType) =>
+                                    ref.setImageListType(imageListType),
+                              ),
+                            ),
+                            if (settings.showPostListConfigHeader &&
+                                !refreshing &&
+                                _hasBlacklistedTags)
+                              SizedBox(
+                                width: 230,
+                                child: _buildConfigHeader(Axis.vertical),
+                              ),
                           ],
-                          title: selected.isEmpty
-                              ? const Text('Select items')
-                              : Text('${selected.length} Items selected'),
                         ),
-              items: items,
-              itemBuilder: (context, index) =>
-                  widget.itemBuilder(context, items, index),
-              scrollableWidgetBuilder: (context, items, itemBuilder) {
-                return Scaffold(
-                  floatingActionButton: ScrollToTop(
-                    scrollController: _autoScrollController,
-                    onBottomReached: () {
-                      if (controller.pageMode == PageMode.infinite && hasMore) {
-                        widget.onLoadMore?.call();
-                        controller.fetchMore();
-                      }
-                    },
-                    child: widget.extendBody
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                              bottom: widget.extendBodyHeight ??
-                                  kBottomNavigationBarHeight,
-                            ),
-                            child: FloatingActionButton(
-                              heroTag: null,
-                              child: const FaIcon(FontAwesomeIcons.angleUp),
-                              onPressed: () => _autoScrollController.jumpTo(0),
-                            ),
-                          )
-                        : FloatingActionButton(
-                            heroTag: null,
-                            child: const FaIcon(FontAwesomeIcons.angleUp),
-                            onPressed: () => _autoScrollController.jumpTo(0),
-                          ),
-                  ),
-                  body: RefreshIndicator(
-                    notificationPredicate:
-                        widget.enablePullToRefresh ? (_) => true : (_) => false,
-                    onRefresh: () async {
-                      widget.onRefresh?.call();
-                      _multiSelectController.clearSelected();
-                      await controller.refresh();
-                    },
-                    child: ImprovedScrolling(
-                      scrollController: _autoScrollController,
-                      enableKeyboardScrolling: true,
-                      enableMMBScrolling: true,
-                      child: CustomScrollView(
-                        controller: _autoScrollController,
-                        slivers: [
-                          if (!multiSelect &&
-                              widget.sliverHeaderBuilder != null)
-                            ...widget.sliverHeaderBuilder!(context),
-                          if (settings.showPostListConfigHeader && !refreshing)
-                            SliverPinnedHeader(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: PostListConfigurationHeader(
-                                  hasBlacklist: _hasBlacklistedTags,
-                                  tags: widget.blacklistedTags
-                                      .map((e) => (
-                                            name: e,
-                                            count: tagCounts[e] ?? 0,
-                                            active: filters[e] ?? false,
-                                          ))
-                                      .where((element) => element.count > 0)
-                                      .toList(),
-                                  trailing: ButtonBar(
-                                    children: [
-                                      InkWell(
-                                        onTap: () => controller.refresh(),
-                                        child: const Icon(Icons.refresh),
-                                      ),
-                                      const PostGridConfigIconButton(),
-                                    ],
-                                  ),
-                                  onClosed: () {
-                                    ref.setPostListConfigHeaderStatus(
-                                      active: false,
-                                    );
-                                    showSimpleSnackBar(
-                                      duration: const Duration(seconds: 5),
-                                      context: context,
-                                      content: const Text(
-                                          'You can always show this header again in Settings.'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () =>
-                                            ref.setPostListConfigHeaderStatus(
-                                                active: true),
-                                      ),
-                                    );
-                                  },
-                                  onDisableAll: _disableAll,
-                                  onEnableAll: _enableAll,
-                                  onChanged: _update,
-                                  hiddenCount: filteredItems.length,
-                                ),
-                              ),
-                            ),
-                          const SliverSizedBox(
-                            height: 4,
-                          ),
-                          widget.bodyBuilder(
-                            context,
-                            itemBuilder,
-                            refreshing,
-                            items,
-                          ),
-                          if (pageMode == PageMode.infinite && loading)
-                            SliverPadding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: SpinKitPulse(
-                                    color:
-                                        context.theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            const SliverSizedBox.shrink(),
-                          if (pageMode == PageMode.paginated)
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 40),
-                                child: PageSelector(
-                                  currentPage: page,
-                                  onPrevious: controller.hasPreviousPage()
-                                      ? () => controller.goToPreviousPage()
-                                      : null,
-                                  onNext: controller.hasNextPage()
-                                      ? () => controller.goToNextPage()
-                                      : null,
-                                  onPageSelect: (page) =>
-                                      controller.jumpToPage(page),
-                                ),
-                              ),
-                            ),
-                        ],
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                      Expanded(child: content),
+                    ],
+                  );
+                })
+              : content,
         ));
+  }
+
+  Widget _buildConfigHeader(Axis axis) {
+    return PostListConfigurationHeader(
+      axis: axis,
+      initiallyExpanded: axis == Axis.vertical,
+      hasBlacklist: _hasBlacklistedTags,
+      tags: widget.blacklistedTags
+          .map((e) => (
+                name: e,
+                count: tagCounts[e] ?? 0,
+                active: filters[e] ?? false,
+              ))
+          .where((element) => element.count > 0)
+          .toList(),
+      trailing: axis == Axis.horizontal
+          ? ButtonBar(
+              children: [
+                InkWell(
+                  onTap: () => controller.refresh(),
+                  child: const Icon(Icons.refresh),
+                ),
+                const PostGridConfigIconButton(),
+              ],
+            )
+          : null,
+      onClosed: () {
+        ref.setPostListConfigHeaderStatus(
+          active: false,
+        );
+        showSimpleSnackBar(
+          duration: const Duration(seconds: 5),
+          context: context,
+          content:
+              const Text('You can always show this header again in Settings.'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () => ref.setPostListConfigHeaderStatus(active: true),
+          ),
+        );
+      },
+      onDisableAll: _disableAll,
+      onEnableAll: _enableAll,
+      onChanged: _update,
+      hiddenCount: filteredItems.length,
+    );
   }
 
   void _update(tag, hide) {

@@ -30,12 +30,13 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 8),
+      color: context.theme.scaffoldBackgroundColor,
       height: 50,
       child: ListView(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
+          const SizedBox(width: 8),
           ...widget.relatedTag.tags.take(15).map((item) => _RelatedTagChip(
                 relatedTag: item,
                 onPressed: () => widget.onSelected(item),

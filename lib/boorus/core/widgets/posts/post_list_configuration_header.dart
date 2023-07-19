@@ -24,6 +24,8 @@ class PostListConfigurationHeader extends StatefulWidget {
     this.trailing,
     this.toolBarLeadingBuilder,
     this.hasBlacklist = false,
+    this.initiallyExpanded = false,
+    this.axis = Axis.horizontal,
   });
 
   final List<HiddenData> tags;
@@ -35,6 +37,8 @@ class PostListConfigurationHeader extends StatefulWidget {
   final int hiddenCount;
   final Widget Function(BuildContext contex)? toolBarLeadingBuilder;
   final bool hasBlacklist;
+  final bool initiallyExpanded;
+  final Axis axis;
 
   @override
   State<PostListConfigurationHeader> createState() =>
@@ -45,14 +49,41 @@ class _PostListConfigurationHeaderState
     extends State<PostListConfigurationHeader> {
   var expanded = false;
 
+  bool get allTagsHidden => widget.tags.every((e) => !e.active);
+
   @override
   Widget build(BuildContext context) {
-    final allTagsHidden = widget.tags.every((e) => !e.active);
+    var tags = [
+      for (var tag in widget.tags)
+        _BadgedChip(
+          label: tag.name.replaceUnderscoreWithSpace(),
+          count: tag.count,
+          active: tag.active,
+          onChanged: (value) => widget.onChanged(tag.name, value),
+        ),
+      ActionChip(
+        visualDensity: const ShrinkVisualDensity(),
+        shape: StadiumBorder(
+          side: BorderSide(
+            width: 1,
+            color: context.theme.hintColor,
+          ),
+        ),
+        label: allTagsHidden
+            ? const Text('Re-enable all')
+            : const Text('Disable all'),
+        onPressed: allTagsHidden ? widget.onEnableAll : widget.onDisableAll,
+      ),
+    ];
 
     return Card(
-      color: expanded ? null : Colors.transparent,
-      elevation: expanded ? null : 0,
-      shadowColor: expanded ? null : Colors.transparent,
+      color: widget.axis == Axis.horizontal && expanded
+          ? null
+          : Colors.transparent,
+      elevation: widget.axis == Axis.horizontal && expanded ? null : 0,
+      shadowColor: widget.axis == Axis.horizontal && expanded
+          ? null
+          : Colors.transparent,
       child: Theme(
         data: Theme.of(context).copyWith(
           dividerColor: Colors.transparent,
@@ -64,8 +95,18 @@ class _PostListConfigurationHeaderState
         ),
         child: widget.hasBlacklist
             ? ExpansionTile(
+                initiallyExpanded: widget.initiallyExpanded,
+                leading: Column(
+                  children: [
+                    const Spacer(),
+                    !expanded
+                        ? const Icon(Icons.keyboard_arrow_down)
+                        : const Icon(Icons.keyboard_arrow_up),
+                    const Spacer()
+                  ],
+                ),
                 controlAffinity: ListTileControlAffinity.leading,
-                trailing: expanded
+                trailing: widget.axis == Axis.horizontal && expanded
                     ? IconButton(
                         onPressed: widget.onClosed,
                         icon: const Icon(Icons.close),
@@ -105,34 +146,23 @@ class _PostListConfigurationHeaderState
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: Wrap(
-                      spacing: 8,
-                      children: [
-                        for (var tag in widget.tags)
-                          _BadgedChip(
-                            label: tag.name.replaceUnderscoreWithSpace(),
-                            count: tag.count,
-                            active: tag.active,
-                            onChanged: (value) =>
-                                widget.onChanged(tag.name, value),
+                    child: widget.axis == Axis.horizontal
+                        ? Wrap(
+                            spacing: 8,
+                            children: tags,
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var tag in tags)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                  ),
+                                  child: tag,
+                                ),
+                            ],
                           ),
-                        ActionChip(
-                          visualDensity: const ShrinkVisualDensity(),
-                          shape: StadiumBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: context.theme.hintColor,
-                            ),
-                          ),
-                          label: allTagsHidden
-                              ? const Text('Re-enable all')
-                              : const Text('Disable all'),
-                          onPressed: allTagsHidden
-                              ? widget.onEnableAll
-                              : widget.onDisableAll,
-                        ),
-                      ],
-                    ),
                   )
                 ],
               )
