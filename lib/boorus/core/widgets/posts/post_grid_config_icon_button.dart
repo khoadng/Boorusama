@@ -132,7 +132,6 @@ class PostGridActionSheet extends ConsumerWidget {
     final desktopButtons = [
       ListTile(
         contentPadding: EdgeInsets.zero,
-        visualDensity: const ShrinkVisualDensity(),
         title: const Text('Page mode'),
         trailing: OptionDropDownButton(
           backgroundColor: Colors.transparent,
@@ -150,7 +149,6 @@ class PostGridActionSheet extends ConsumerWidget {
       ),
       ListTile(
         contentPadding: EdgeInsets.zero,
-        visualDensity: const ShrinkVisualDensity(),
         title: const Text('Grid'),
         trailing: OptionDropDownButton(
           backgroundColor: Colors.transparent,
@@ -168,7 +166,6 @@ class PostGridActionSheet extends ConsumerWidget {
       ),
       ListTile(
         contentPadding: EdgeInsets.zero,
-        visualDensity: const ShrinkVisualDensity(),
         title: const Text('Image list'),
         trailing: OptionDropDownButton(
           backgroundColor: Colors.transparent,

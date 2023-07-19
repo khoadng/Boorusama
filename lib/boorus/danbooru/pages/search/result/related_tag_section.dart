@@ -14,20 +14,25 @@ class RelatedTagSection extends ConsumerWidget {
     super.key,
     required this.query,
     required this.onSelected,
+    this.backgroundColor,
   });
 
   final String query;
   final void Function(RelatedTagItem tag) onSelected;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(danbooruRelatedTagProvider(query));
 
     return tag == null
-        ? const TagChipsPlaceholder()
+        ? TagChipsPlaceholder(
+            backgroundColor: backgroundColor,
+          )
         : tag.tags.isEmpty
             ? const SizedBox()
             : RelatedTagHeader(
+                backgroundColor: backgroundColor,
                 relatedTag: tag,
                 onSelected: onSelected,
               );

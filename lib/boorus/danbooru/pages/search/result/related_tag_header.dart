@@ -17,10 +17,12 @@ class RelatedTagHeader extends StatefulWidget {
     super.key,
     required this.relatedTag,
     required this.onSelected,
+    this.backgroundColor,
   });
 
   final RelatedTag relatedTag;
   final void Function(RelatedTagItem item) onSelected;
+  final Color? backgroundColor;
 
   @override
   State<RelatedTagHeader> createState() => _RelatedTagHeaderState();
@@ -30,7 +32,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.theme.scaffoldBackgroundColor,
+      color: widget.backgroundColor,
       height: 50,
       child: ListView(
         shrinkWrap: true,

@@ -334,6 +334,7 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
             page,
           ),
       builder: (context, controller, errors) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ValueListenableBuilder(
             valueListenable: showSuggestions,
@@ -440,9 +441,13 @@ class _DanbooruHome2State extends ConsumerState<DanbooruHome2> {
           ),
           ValueListenableBuilder(
             valueListenable: selectedTagString,
-            builder: (context, value, _) => RelatedTagSection(
-              query: value,
-              onSelected: (tag) => selectedTagController.addTag(tag.tag),
+            builder: (context, value, _) => Material(
+              color: context.theme.scaffoldBackgroundColor,
+              child: RelatedTagSection(
+                backgroundColor: Colors.transparent,
+                query: value,
+                onSelected: (tag) => selectedTagController.addTag(tag.tag),
+              ),
             ),
           ),
           Expanded(

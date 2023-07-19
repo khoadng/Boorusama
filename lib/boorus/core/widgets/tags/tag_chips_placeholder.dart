@@ -14,15 +14,17 @@ class TagChipsPlaceholder extends StatelessWidget {
     super.key,
     this.height,
     this.itemCount,
+    this.backgroundColor,
   });
 
   final double? height;
   final int? itemCount;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 8),
+      color: backgroundColor,
       height: height ?? 50,
       child: ListView.builder(
         shrinkWrap: true,
@@ -30,7 +32,10 @@ class TagChipsPlaceholder extends StatelessWidget {
         itemCount: itemCount ?? 20,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: EdgeInsets.only(
+              left: index == 0 ? 8 : 4,
+              right: 4,
+            ),
             child: ChoiceChip(
               disabledColor: context.theme.cardColor,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
