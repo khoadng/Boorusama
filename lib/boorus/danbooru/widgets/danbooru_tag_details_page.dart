@@ -6,8 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_scatter/flutter_scatter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/widgets/tag_detail_region.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'related_tag_cloud_chip.dart';
@@ -21,14 +25,12 @@ class DanbooruTagDetailsPage extends ConsumerStatefulWidget {
     required this.otherNamesBuilder,
     required this.backgroundImageUrl,
     this.extraBuilder,
-    this.includeHeaders = true,
   });
 
   final String tagName;
   final String backgroundImageUrl;
   final Widget Function(BuildContext context) otherNamesBuilder;
   final List<Widget> Function(BuildContext context)? extraBuilder;
-  final bool includeHeaders;
 
   @override
   ConsumerState<DanbooruTagDetailsPage> createState() =>
@@ -38,6 +40,7 @@ class DanbooruTagDetailsPage extends ConsumerStatefulWidget {
 class _DanbooruTagDetailsPageState
     extends ConsumerState<DanbooruTagDetailsPage> {
   final _dummyTags = generateDummyTags(_kTagCloudTotal);
+  final selectedCategory = ValueNotifier(TagFilterCategory.newest);
 
   @override
   void initState() {
@@ -51,24 +54,57 @@ class _DanbooruTagDetailsPageState
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
     final tags = related?.tags.take(_kTagCloudTotal).toList() ?? [];
 
-    return TagDetailPage(
-      tagName: widget.tagName,
-      otherNamesBuilder: widget.otherNamesBuilder,
-      backgroundImageUrl: widget.backgroundImageUrl,
-      extraBuilder: (context) => _buildExtra(related, context, tags),
-      includeHeaders: widget.includeHeaders,
+    return TagDetailsRegion(
+      detailsBuilder: (context) => Column(
+        children: [
+          TagTitleName(tagName: widget.tagName),
+          const SizedBox(height: 12),
+          widget.otherNamesBuilder(context),
+          const SizedBox(height: 36),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: _buildTagCloud(related, context, tags),
+          ),
+        ],
+      ),
+      builder: (_) => DanbooruPostScope(
+        fetcher: (page) =>
+            ref.read(danbooruArtistCharacterPostRepoProvider).getPosts(
+                  queryFromTagFilterCategory(
+                    category: selectedCategory.value,
+                    tag: widget.tagName,
+                    builder: tagFilterCategoryToString,
+                  ),
+                  page,
+                ),
+        builder: (context, controller, errors) => DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 10),
+              sliver: SliverToBoxAdapter(
+                child: CategoryToggleSwitch(
+                  onToggle: (category) {
+                    selectedCategory.value = category;
+                    controller.refresh();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  List<Widget> _buildExtra(
+  Widget _buildTagCloud(
     RelatedTag? related,
     BuildContext context,
     List<RelatedTagItem> tags,
   ) {
-    return [
-      if (related == null)
-        SliverToBoxAdapter(
-          child: FittedBox(
+    return related == null
+        ? FittedBox(
             child: Scatter(
               fillGaps: true,
               delegate: FermatSpiralScatterDelegate(
@@ -84,11 +120,8 @@ class _DanbooruTagDetailsPageState
                   ),
               ],
             ),
-          ),
-        )
-      else
-        SliverToBoxAdapter(
-          child: FittedBox(
+          )
+        : FittedBox(
             child: Scatter(
               fillGaps: true,
               delegate: FermatSpiralScatterDelegate(
@@ -106,8 +139,6 @@ class _DanbooruTagDetailsPageState
                   ),
               ],
             ),
-          ),
-        )
-    ];
+          );
   }
 }
