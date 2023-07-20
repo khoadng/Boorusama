@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
@@ -19,12 +20,12 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
+import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/booru_bottom_bar.dart';
 import 'package:boorusama/boorus/core/widgets/current_booru_tile.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -37,7 +38,6 @@ import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.d
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/other_features_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
@@ -48,7 +48,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
 
@@ -502,7 +502,7 @@ void _onTextChanged(
     ..selection = TextSelection.collapsed(offset: controller.text.length);
 }
 
-class _MobileScope extends StatelessWidget {
+class _MobileScope extends ConsumerWidget {
   const _MobileScope({
     required this.controller,
     required this.config,
@@ -512,9 +512,13 @@ class _MobileScope extends StatelessWidget {
   final BooruConfig config;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final authState = ref.watch(authenticationProvider);
+    // Only used to force rebuild when language changes
+    ref.watch(settingsProvider.select((value) => value.language));
+
     return AnnotatedRegion(
-      key: ValueKey(config.id),
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
@@ -523,61 +527,89 @@ class _MobileScope extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: controller.scaffoldKey,
-        drawer: const SideBarMenu(
+        drawer: SideBarMenu(
           width: 300,
           popOnSelect: true,
           padding: EdgeInsets.zero,
+          initialContentBuilder: (context) => [
+            SideMenuTile(
+              icon: const Icon(Icons.explore),
+              title: const Text('Explore'),
+              onTap: () => context.navigator.push(MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                        appBar: AppBar(
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                        ),
+                        body: const ExplorePage(),
+                      ))),
+            ),
+            SideMenuTile(
+              icon: const Icon(Icons.photo_album_outlined),
+              title: const Text('Pools'),
+              onTap: () {
+                goToPoolPage(context, ref);
+              },
+            ),
+            SideMenuTile(
+              icon: const Icon(Icons.forum_outlined),
+              title: const Text('forum.forum').tr(),
+              onTap: () {
+                goToForumPage(context);
+              },
+            ),
+            if (authState.isAuthenticated) ...[
+              SideMenuTile(
+                icon: const Icon(Icons.favorite_outline),
+                title: Text('profile.favorites'.tr()),
+                onTap: () {
+                  goToFavoritesPage(context, booruConfig.login);
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.collections),
+                title: const Text('favorite_groups.favorite_groups').tr(),
+                onTap: () {
+                  goToFavoriteGroupPage(context);
+                },
+              ),
+              SideMenuTile(
+                icon: const Icon(Icons.search),
+                title: const Text('saved_search.saved_search').tr(),
+                onTap: () {
+                  goToSavedSearchPage(context, booruConfig.login);
+                },
+              ),
+              SideMenuTile(
+                icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
+                title: const Text(
+                  'blacklisted_tags.blacklisted_tags',
+                ).tr(),
+                onTap: () {
+                  goToBlacklistedTagPage(context);
+                },
+              ),
+            ]
+          ],
         ),
         body: Column(
           children: [
             const NetworkUnavailableIndicatorWithState(),
             Expanded(
-                child: ValueListenableBuilder(
-              valueListenable: controller,
-              builder: (context, value, child) => AnimatedIndexedStack(
-                index: value,
-                children: [
-                  LatestView(
-                    toolbarBuilder: (context) => SliverAppBar(
-                      backgroundColor: context.theme.scaffoldBackgroundColor,
-                      toolbarHeight: kToolbarHeight * 1.2,
-                      primary: true,
-                      title: HomeSearchBar(
-                        onMenuTap: controller.openMenu,
-                        onTap: () => goToSearchPage(context),
-                      ),
-                      floating: true,
-                      snap: true,
-                      automaticallyImplyLeading: false,
-                    ),
+              child: LatestView(
+                toolbarBuilder: (context) => SliverAppBar(
+                  backgroundColor: context.theme.scaffoldBackgroundColor,
+                  toolbarHeight: kToolbarHeight * 1.2,
+                  primary: true,
+                  title: HomeSearchBar(
+                    onMenuTap: controller.openMenu,
+                    onTap: () => goToSearchPage(context),
                   ),
-                  const ExplorePage(),
-                  const OtherFeaturesPage(),
-                ],
+                  floating: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                ),
               ),
-            )),
-          ],
-        ),
-        bottomNavigationBar: BooruBottomBar(
-          onTabChanged: controller.goToTab,
-          items: (currentIndex) => [
-            BottomNavigationBarItem(
-              label: 'Home',
-              icon: currentIndex == 0
-                  ? const Icon(Icons.dashboard)
-                  : const Icon(Icons.dashboard_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'Explore',
-              icon: currentIndex == 1
-                  ? const Icon(Icons.explore)
-                  : const Icon(Icons.explore_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'More',
-              icon: currentIndex == 2
-                  ? const Icon(Icons.more_horiz)
-                  : const Icon(Icons.more_horiz_outlined),
             ),
           ],
         ),
