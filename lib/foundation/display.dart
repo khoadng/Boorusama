@@ -35,7 +35,7 @@ int calculateGridCount(double width, GridSize size) {
     GridSize.large => 1 * weight,
   };
 
-  return count.toInt();
+  return count.round();
 }
 
 class Screen {

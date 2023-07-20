@@ -349,13 +349,9 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
           .where((element) => element.count > 0)
           .toList(),
       trailing: axis == Axis.horizontal
-          ? ButtonBar(
+          ? const ButtonBar(
               children: [
-                InkWell(
-                  onTap: () => controller.refresh(),
-                  child: const Icon(Icons.refresh),
-                ),
-                const PostGridConfigIconButton(),
+                PostGridConfigIconButton(),
               ],
             )
           : null,
