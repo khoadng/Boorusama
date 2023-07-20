@@ -43,6 +43,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.testbooru ||
       BooruType.e621 =>
         CreateDanbooruConfigPage(
+          initialRatingFilter: ratingFilter,
+          initialHideDeleted: hideDeleted,
           backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
@@ -54,6 +56,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booru: widget.booru,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
+          initialRatingFilter: ratingFilter,
+          initialHideDeleted: hideDeleted,
           backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
@@ -67,6 +71,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
       BooruType.lolibooru ||
       BooruType.sakugabooru =>
         CreateMoebooruConfigPage(
+          initialRatingFilter: ratingFilter,
           backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onHashedPasswordChanged: (value) => setState(() => apiKey = value),
@@ -78,6 +83,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booruFactory: booruFactory,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
+          initialRatingFilter: ratingFilter,
           backgroundColor: widget.backgroundColor,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),

@@ -54,9 +54,8 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
-          initialRatingFilter: widget.booruConfig.ratingFilter,
-          initialHideDeleted: widget.booruConfig.deletedItemBehavior ==
-              BooruConfigDeletedItemBehavior.hide,
+          initialRatingFilter: ratingFilter,
+          initialHideDeleted: hideDeleted,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -70,9 +69,8 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
-          initialRatingFilter: widget.booruConfig.ratingFilter,
-          initialHideDeleted: widget.booruConfig.deletedItemBehavior ==
-              BooruConfigDeletedItemBehavior.hide,
+          initialRatingFilter: ratingFilter,
+          initialHideDeleted: hideDeleted,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
@@ -88,7 +86,7 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           initialHashedPassword: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
-          initialRatingFilter: widget.booruConfig.ratingFilter,
+          initialRatingFilter: ratingFilter,
           onLoginChanged: (value) => setState(() => login = value),
           onHashedPasswordChanged: (value) =>
               setState(() => apiKey = hashBooruPasswordSHA1(
@@ -107,7 +105,7 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
           initialConfigName: widget.booruConfig.name,
-          initialRatingFilter: widget.booruConfig.ratingFilter,
+          initialRatingFilter: ratingFilter,
           onLoginChanged: (value) => setState(() => login = value),
           onApiKeyChanged: (value) => setState(() => apiKey = value),
           onConfigNameChanged: (value) => setState(() => configName = value),
