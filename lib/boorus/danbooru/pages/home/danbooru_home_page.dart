@@ -11,18 +11,20 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_section.dart';
+import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
-class GelbooruHomePage extends ConsumerStatefulWidget {
-  const GelbooruHomePage({
-    super.key,
-  });
+class DanbooruHomePage extends ConsumerStatefulWidget {
+  const DanbooruHomePage({super.key});
 
   @override
-  ConsumerState<GelbooruHomePage> createState() => _GelbooruHomePageState();
+  ConsumerState<DanbooruHomePage> createState() => _DanbooruHomePageState();
 }
 
-class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
+class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   late final selectedTagController =
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
@@ -31,6 +33,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
     super.initState();
     ref.read(searchHistoryProvider.notifier).fetchHistories();
     ref.read(postCountStateProvider.notifier).getPostCount([]);
+    ref.read(danbooruRelatedTagsProvider.notifier).fetch('');
   }
 
   @override
@@ -41,8 +44,8 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return PostScope(
-      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
+    return DanbooruPostScope(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
             selectedTagController.rawTagsString,
             page,
           ),
@@ -53,10 +56,21 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
             onSearch: () => _onSearch(controller),
             selectedTagController: selectedTagController,
           ),
+          ValueListenableBuilder(
+            valueListenable: selectedTagString,
+            builder: (context, value, _) => Material(
+              color: context.theme.scaffoldBackgroundColor,
+              child: RelatedTagSection(
+                backgroundColor: Colors.transparent,
+                query: value,
+                onSelected: (tag) => selectedTagController.addTag(tag.tag),
+              ),
+            ),
+          ),
           Expanded(
-            child: GelbooruInfinitePostList(
-              errors: errors,
+            child: DanbooruInfinitePostList(
               controller: controller,
+              errors: errors,
               sliverHeaderBuilder: (context) => [
                 SliverToBoxAdapter(
                   child: Row(
@@ -85,6 +99,9 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
   void _onSearch(
     PostGridController postController,
   ) {
+    ref
+        .read(danbooruRelatedTagsProvider.notifier)
+        .fetch(selectedTagController.rawTagsString);
     ref
         .read(postCountStateProvider.notifier)
         .getPostCount(selectedTagController.rawTags);

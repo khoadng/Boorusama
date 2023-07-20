@@ -17,12 +17,13 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_recommend_artist_list.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class GelbooruPostDetailPage extends ConsumerStatefulWidget {
-  const GelbooruPostDetailPage({
+class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
+  const GelbooruPostDetailsPage({
     super.key,
     required this.posts,
     required this.initialIndex,
@@ -45,7 +46,7 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
     return MaterialPageRoute(
       builder: (_) => GelbooruProvider(
         builder: (gcontext) {
-          return GelbooruPostDetailPage(
+          return GelbooruPostDetailsPage(
             posts: posts,
             initialIndex: initialIndex,
             onExit: (page) => scrollController?.scrollToIndex(page),
@@ -57,11 +58,12 @@ class GelbooruPostDetailPage extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<GelbooruPostDetailPage> createState() => _PostDetailPageState();
+  ConsumerState<GelbooruPostDetailsPage> createState() =>
+      _PostDetailPageState();
 }
 
-class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
-    with PostDetailsPageMixin<GelbooruPostDetailPage, Post> {
+class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
+    with PostDetailsPageMixin<GelbooruPostDetailsPage, Post> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
 
@@ -120,20 +122,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
                   childCount: widgets.length,
                 ),
               ),
-              RecommendArtistList(
-                onHeaderTap: (index) =>
-                    goToGelbooruArtistPage(ref, context, artists[index].tag),
-                onTap: (recommendIndex, postIndex) =>
-                    goToGelbooruPostDetailsPage(
-                  ref: ref,
-                  context: context,
-                  posts: artists[recommendIndex].posts,
-                  initialIndex: postIndex,
-                  settings: ref.read(settingsProvider),
-                ),
-                recommends: artists,
-                imageUrl: (item) => item.thumbnailImageUrl,
-              )
+              GelbooruRecommendedArtistList(artists: artists)
             ],
           ),
         );
@@ -210,6 +199,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailPage>
       if (expandedOnCurrentPage) ...[
         if (widget.hasDetailsTagList)
           TagsTile(
+            tags: ref.watch(tagsProvider),
             post: post,
             onTagTap: (tag) =>
                 goToGelbooruSearchPage(ref, context, tag: tag.rawName),

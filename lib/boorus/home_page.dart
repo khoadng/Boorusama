@@ -16,8 +16,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/home.dart';
@@ -164,17 +163,7 @@ class _Boorus extends StatelessWidget {
             return DanbooruScope(config: config);
           case BooruType.gelbooru:
           case BooruType.rule34xxx:
-            final gkey = ValueKey(config.id);
-
-            return HomePageScope(
-              builder: (context, tab, controller) => GelbooruProvider(
-                key: gkey,
-                builder: (gcontext) => GelbooruHomePage(
-                  key: gkey,
-                  controller: controller,
-                ),
-              ),
-            );
+            return GelbooruScope(config: config);
           case BooruType.konachan:
           case BooruType.yandere:
           case BooruType.sakugabooru:

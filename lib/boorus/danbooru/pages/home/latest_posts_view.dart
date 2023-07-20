@@ -7,17 +7,17 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
   const LatestView({
     super.key,
-    required this.toolbarBuilder,
+    required this.searchBar,
   });
 
-  final Widget Function(BuildContext context) toolbarBuilder;
+  final Widget searchBar;
 
   @override
   ConsumerState<LatestView> createState() => _LatestViewState();
@@ -44,11 +44,19 @@ class _LatestViewState extends ConsumerState<LatestView> {
         controller: controller,
         scrollController: _autoScrollController,
         sliverHeaderBuilder: (context) => [
-          widget.toolbarBuilder(context),
+          SliverAppBar(
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            toolbarHeight: kToolbarHeight * 1.2,
+            primary: true,
+            title: widget.searchBar,
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+          ),
           SliverToBoxAdapter(
             child: ValueListenableBuilder<String>(
               valueListenable: _selectedTag,
-              builder: (context, value, child) => _MostSearchTagSection(
+              builder: (context, value, child) => MostSearchTagList(
                 selected: value,
                 onSelected: (search) {
                   _selectedTag.value =
@@ -61,24 +69,6 @@ class _LatestViewState extends ConsumerState<LatestView> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _MostSearchTagSection extends StatelessWidget {
-  const _MostSearchTagSection({
-    required this.onSelected,
-    required this.selected,
-  });
-
-  final void Function(Search search) onSelected;
-  final String selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return MostSearchTagList(
-      onSelected: onSelected,
-      selected: selected,
     );
   }
 }

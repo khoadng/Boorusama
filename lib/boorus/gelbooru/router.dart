@@ -10,13 +10,17 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/comments/gelbooru_comment_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,
@@ -27,13 +31,30 @@ void goToGelbooruPostDetailsPage({
   AutoScrollController? scrollController,
 }) {
   final booru = ref.read(currentBooruProvider);
-  context.navigator.push(GelbooruPostDetailPage.routeOf(
-    booru: booru,
-    posts: posts,
-    initialIndex: initialIndex,
-    scrollController: scrollController,
-    settings: settings,
-  ));
+
+  if (isMobilePlatform() && context.orientation.isPortrait) {
+    context.navigator.push(GelbooruPostDetailsPage.routeOf(
+      booru: booru,
+      posts: posts,
+      initialIndex: initialIndex,
+      scrollController: scrollController,
+      settings: settings,
+    ));
+  } else {
+    showDesktopFullScreenWindow(
+      context,
+      builder: (_) => GelbooruProvider(
+        builder: (context) => GelbooruPostDetailsDesktopPage(
+          initialIndex: initialIndex,
+          posts: posts,
+          onExit: (index) {
+            scrollController?.scrollToIndex(index);
+          },
+          hasDetailsTagList: booru.booruType.supportTagDetails,
+        ),
+      ),
+    );
+  }
 }
 
 void goToGelbooruSearchPage(

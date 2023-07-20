@@ -125,17 +125,18 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  CircularIconButton(
-                                    onPressed: () =>
-                                        showMaterialModalBottomSheet(
-                                      context: context,
-                                      backgroundColor:
-                                          context.theme.scaffoldBackgroundColor,
-                                      builder: (context) =>
-                                          widget.infoBuilder(context),
+                                  if (isSmall)
+                                    CircularIconButton(
+                                      onPressed: () =>
+                                          showMaterialModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: context
+                                            .theme.scaffoldBackgroundColor,
+                                        builder: (context) =>
+                                            widget.infoBuilder(context),
+                                      ),
+                                      icon: const Icon(Icons.info),
                                     ),
-                                    icon: const Icon(Icons.info),
-                                  ),
                                   widget.topRightBuilder!.call(context),
                                 ],
                               ),
