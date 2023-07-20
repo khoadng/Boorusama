@@ -44,6 +44,7 @@ import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_sectio
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -79,9 +80,16 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
     return DanbooruProvider(
       builder: (context) => CustomContextMenuOverlay(
         child: isMobilePlatform()
-            ? _MobileScope(
-                controller: controller,
-                config: widget.config,
+            ? OrientationBuilder(
+                builder: (context, orientation) => orientation.isPortrait
+                    ? _MobileScope(
+                        controller: controller,
+                        config: widget.config,
+                      )
+                    : _DesktopScope(
+                        controller: controller,
+                        config: widget.config,
+                      ),
               )
             : _DesktopScope(
                 controller: controller,

@@ -84,7 +84,7 @@ Future<void> goToDetailPage({
   AutoScrollController? scrollController,
   bool hero = false,
 }) {
-  if (isMobilePlatform()) {
+  if (isMobilePlatform() && context.orientation.isPortrait) {
     return context.navigator.push(DanbooruPostDetailsPage.routeOf(
       context,
       posts: posts,

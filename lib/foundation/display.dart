@@ -56,3 +56,13 @@ class Screen {
         ScreenSize.veryLarge => ScreenSize.veryLarge
       };
 }
+
+extension DisplayX on BuildContext {
+  Screen get screen => Screen.of(this);
+  Orientation get orientation => MediaQuery.of(this).orientation;
+}
+
+extension OrientationX on Orientation {
+  bool get isLandscape => this == Orientation.landscape;
+  bool get isPortrait => this == Orientation.portrait;
+}

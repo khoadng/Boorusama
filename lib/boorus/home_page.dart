@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/home_page_scope.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/home.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -88,26 +89,28 @@ class _HomePageState extends ConsumerState<HomePage> {
     final config = ref.watch(currentBooruConfigProvider);
     final booru = ref.watch(currentBooruProvider);
 
-    return ConditionalParentWidget(
-      condition: isDesktopPlatform(),
-      conditionalBuilder: (child) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const BooruSelector(),
-          const VerticalDivider(
-            thickness: 1,
-            width: 1,
-          ),
-          Expanded(
-            child: child,
-          )
-        ],
-      ),
-      child: _Boorus(
-        key: ValueKey(config),
-        booru: booru,
-        ref: ref,
-        config: config,
+    return OrientationBuilder(
+      builder: (context, orientation) => ConditionalParentWidget(
+        condition: isDesktopPlatform() || orientation.isLandscape,
+        conditionalBuilder: (child) => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const BooruSelector(),
+            const VerticalDivider(
+              thickness: 1,
+              width: 1,
+            ),
+            Expanded(
+              child: child,
+            )
+          ],
+        ),
+        child: _Boorus(
+          key: ValueKey(config),
+          booru: booru,
+          ref: ref,
+          config: config,
+        ),
       ),
     );
   }

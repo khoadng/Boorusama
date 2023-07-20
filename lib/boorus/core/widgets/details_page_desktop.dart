@@ -4,6 +4,12 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+// Project imports:
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/circular_icon_button.dart';
 
 class DetailsPageDesktop extends ConsumerStatefulWidget {
   const DetailsPageDesktop({
@@ -49,6 +55,8 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmall = Screen.of(context).size == ScreenSize.small;
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.arrowRight): () => _nextPost(),
@@ -93,34 +101,55 @@ class _DetailsPageDesktopState extends ConsumerState<DetailsPageDesktop> {
                             child: const Icon(Icons.arrow_back),
                           ),
                         ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: MaterialButton(
-                            color: Theme.of(context).cardColor,
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
-                            onPressed: () => _onExit(),
-                            child: const Icon(Icons.close),
+                      SafeArea(
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: MaterialButton(
+                              color: Theme.of(context).cardColor,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(20),
+                              onPressed: () => _onExit(),
+                              child: const Icon(Icons.close),
+                            ),
                           ),
                         ),
                       ),
                       if (widget.topRightBuilder != null)
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: widget.topRightBuilder!.call(context),
+                        SafeArea(
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircularIconButton(
+                                    onPressed: () =>
+                                        showMaterialModalBottomSheet(
+                                      context: context,
+                                      backgroundColor:
+                                          context.theme.scaffoldBackgroundColor,
+                                      builder: (context) =>
+                                          widget.infoBuilder(context),
+                                    ),
+                                    icon: const Icon(Icons.info),
+                                  ),
+                                  widget.topRightBuilder!.call(context),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 400,
-                  child: widget.infoBuilder(context),
-                ),
+                if (!isSmall)
+                  SizedBox(
+                    width: 350,
+                    child: widget.infoBuilder(context),
+                  ),
               ],
             ),
           ),
