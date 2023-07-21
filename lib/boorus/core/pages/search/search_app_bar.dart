@@ -20,6 +20,8 @@ class SearchAppBar extends ConsumerWidget {
     this.onChanged,
     this.trailingSearchButton,
     this.autofocus,
+    this.dense,
+    this.height,
   });
 
   final TextEditingController queryEditingController;
@@ -30,12 +32,15 @@ class SearchAppBar extends ConsumerWidget {
   final void Function(String value)? onChanged;
   final Widget? trailingSearchButton;
   final bool? autofocus;
+  final bool? dense;
+  final double? height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
 
     final searchAppBar = BooruSearchBar(
+      dense: dense,
       autofocus: autofocus ?? settings.autoFocusSearchBar,
       focus: focusNode,
       queryEditingController: queryEditingController,
@@ -70,7 +75,7 @@ class SearchAppBar extends ConsumerWidget {
       backgroundColor: context.theme.scaffoldBackgroundColor,
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
-      toolbarHeight: kToolbarHeight * 1.2,
+      toolbarHeight: height ?? kToolbarHeight * 1.2,
       title: trailingSearchButton != null
           ? LayoutBuilder(
               builder: (context, constraints) => Row(

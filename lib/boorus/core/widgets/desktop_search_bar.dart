@@ -126,7 +126,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 ),
               ),
               child: SearchAppBar(
+                dense: true,
                 autofocus: false,
+                height: kToolbarHeight * 0.9,
                 focusNode: focusNode,
                 queryEditingController: textEditingController,
                 onChanged: (value) => ref
@@ -146,8 +148,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   shape: const CircleBorder(),
                   onPressed: () => widget.onSearch(),
                   child: const Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Icon(Icons.search),
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.search, size: 20),
                   ),
                 ),
               ),

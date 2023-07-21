@@ -20,6 +20,7 @@ class BooruSearchBar extends StatefulWidget {
     this.constraints,
     this.focus,
     this.backgroundColor,
+    this.dense,
   });
 
   final VoidCallback? onTap;
@@ -34,6 +35,7 @@ class BooruSearchBar extends StatefulWidget {
   final String? hintText;
   final FocusNode? focus;
   final Color? backgroundColor;
+  final bool? dense;
 
   @override
   State<BooruSearchBar> createState() => _BooruSearchBarState();
@@ -80,6 +82,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   onChanged: (value) => widget.onChanged?.call(value),
                   enabled: widget.enabled,
                   decoration: InputDecoration(
+                    isDense: widget.dense,
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
