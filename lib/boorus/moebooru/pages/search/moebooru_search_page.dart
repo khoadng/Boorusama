@@ -144,10 +144,6 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Spacer(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
                     ],
                   ),
                 ),

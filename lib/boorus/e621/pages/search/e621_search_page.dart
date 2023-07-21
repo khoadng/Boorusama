@@ -137,18 +137,6 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                   onDeleted: (value) => searchController.resetToOptions(),
                   controller: selectedTagController,
                 )),
-                const SliverToBoxAdapter(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),

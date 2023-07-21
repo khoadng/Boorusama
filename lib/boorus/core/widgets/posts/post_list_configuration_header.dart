@@ -21,8 +21,8 @@ class PostListConfigurationHeader extends StatefulWidget {
     required this.onClosed,
     required this.onDisableAll,
     required this.onEnableAll,
+    required this.postCount,
     this.trailing,
-    this.toolBarLeadingBuilder,
     this.hasBlacklist = false,
     this.initiallyExpanded = false,
     this.axis = Axis.horizontal,
@@ -35,10 +35,10 @@ class PostListConfigurationHeader extends StatefulWidget {
   final VoidCallback onDisableAll;
   final VoidCallback onEnableAll;
   final int hiddenCount;
-  final Widget Function(BuildContext contex)? toolBarLeadingBuilder;
   final bool hasBlacklist;
   final bool initiallyExpanded;
   final Axis axis;
+  final int postCount;
 
   @override
   State<PostListConfigurationHeader> createState() =>
@@ -90,6 +90,7 @@ class _PostListConfigurationHeaderState
           listTileTheme: ListTileTheme.of(context).copyWith(
             contentPadding: EdgeInsets.only(left: widget.hasBlacklist ? 6 : 0),
             horizontalTitleGap: 0,
+            minVerticalPadding: 0,
             visualDensity: const ShrinkVisualDensity(),
           ),
         ),
@@ -100,8 +101,8 @@ class _PostListConfigurationHeaderState
                   children: [
                     const Spacer(),
                     !expanded
-                        ? const Icon(Icons.keyboard_arrow_down)
-                        : const Icon(Icons.keyboard_arrow_up),
+                        ? const Icon(Icons.keyboard_arrow_right)
+                        : const Icon(Icons.keyboard_arrow_down),
                     const Spacer()
                   ],
                 ),
@@ -127,7 +128,7 @@ class _PostListConfigurationHeaderState
                           visualDensity: const ShrinkVisualDensity(),
                           backgroundColor: context.colorScheme.primary,
                           label: Text(
-                            widget.hiddenCount.toString(),
+                            '${widget.hiddenCount} of ${widget.postCount}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -167,10 +168,15 @@ class _PostListConfigurationHeaderState
                 ],
               )
             : ListTile(
+                minVerticalPadding: 0,
+                contentPadding: EdgeInsets.zero,
                 title: Row(
                   children: [
-                    widget.toolBarLeadingBuilder?.call(context) ??
-                        const SizedBox.shrink(),
+                    if (widget.axis == Axis.horizontal)
+                      Text(
+                        '${widget.postCount} Posts',
+                        style: context.textTheme.titleLarge,
+                      ),
                     const Spacer(),
                     FittedBox(
                       child: widget.trailing,

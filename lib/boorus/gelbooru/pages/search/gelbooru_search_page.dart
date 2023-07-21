@@ -170,10 +170,6 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                           selectedTags: selectedTagController.rawTags,
                         ),
                       const Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
                     ],
                   ),
                 ),

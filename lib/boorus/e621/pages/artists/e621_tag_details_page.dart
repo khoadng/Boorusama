@@ -64,7 +64,6 @@ class _TagDetailPageState extends ConsumerState<E621TagDetailPage> {
                   },
                   icon: const Icon(Icons.download),
                 ),
-                const PostGridConfigIconButton(),
               ],
             ),
           if (widget.includeHeaders)

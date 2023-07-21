@@ -13,7 +13,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 
-//FIXME: remove this button usage in other sites
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({super.key});
 

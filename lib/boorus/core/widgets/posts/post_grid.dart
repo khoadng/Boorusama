@@ -338,6 +338,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   Widget _buildConfigHeader(Axis axis) {
     return PostListConfigurationHeader(
       axis: axis,
+      postCount: items.length + filteredItems.length,
       initiallyExpanded: axis == Axis.vertical,
       hasBlacklist: _hasBlacklistedTags,
       tags: widget.blacklistedTags
