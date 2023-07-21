@@ -15,19 +15,15 @@ import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_note.dart';
-import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
-import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
-import 'package:boorusama/boorus/e621/router.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'e621_information_section.dart';
 import 'e621_post_action_toolbar.dart';
+import 'e621_recommended_artist_list.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
@@ -148,40 +144,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
               ),
               // const RelatedPostsSection(),
               if (expanded && page == currentPage)
-                Builder(
-                  builder: (context) {
-                    final artist = posts[page].artistTags.firstOrNull;
-                    return ref.watch(e621ArtistPostsProvider(artist)).maybeWhen(
-                          data: (posts) => RecommendPosts(
-                            title: artist?.replaceUnderscoreWithSpace() ?? '',
-                            items: posts.take(30).toList(),
-                            onTap: (index) => goToE621DetailsPage(
-                              context: context,
-                              posts: posts,
-                              initialPage: index,
-                            ),
-                            onHeaderTap: () =>
-                                goToE621ArtistPage(context, artist ?? ''),
-                            imageUrl: (item) => item.thumbnailFromSettings(
-                              ref.read(settingsProvider),
-                            ),
-                          ),
-                          orElse: () => const SliverSizedBox.shrink(),
-                        );
-                  },
-                ),
-              // RecommendCharacterList(
-              //   onHeaderTap: (index) =>
-              //       goToCharacterPage(context, characters[index].tag),
-              //   onTap: (recommendIndex, postIndex) => goToDetailPage(
-              //     context: context,
-              //     posts: characters[recommendIndex].posts,
-              //     initialIndex: postIndex,
-              //     hero: false,
-              //   ),
-              //   recommends: characters,
-              //   imageUrl: (item) => item.url360x360,
-              // ),
+                E621RecommendedArtistList(post: posts[page]),
             ],
           ),
         );

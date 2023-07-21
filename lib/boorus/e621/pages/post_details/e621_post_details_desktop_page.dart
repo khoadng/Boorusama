@@ -15,21 +15,19 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
+import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'danbooru_information_section.dart';
-import 'danbooru_more_action_button.dart';
-import 'danbooru_post_action_toolbar.dart';
-import 'danbooru_post_details_page.dart';
-import 'danbooru_recommend_artist_list.dart';
-import 'danbooru_recommend_character_list.dart';
-import 'related_posts_section.dart';
+import 'e621_information_section.dart';
+import 'e621_post_action_toolbar.dart';
+import 'e621_post_details_page.dart';
+import 'e621_recommended_artist_list.dart';
 
-class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
-  const DanbooruPostDetailsDesktopPage({
+class E621PostDetailsDesktopPage extends ConsumerStatefulWidget {
+  const E621PostDetailsDesktopPage({
     super.key,
     required this.initialIndex,
     required this.posts,
@@ -37,7 +35,7 @@ class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   });
 
   final int initialIndex;
-  final List<DanbooruPost> posts;
+  final List<E621Post> posts;
   final void Function(int index) onExit;
 
   @override
@@ -46,9 +44,10 @@ class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruPostDetailsDesktopPageState
-    extends ConsumerState<DanbooruPostDetailsDesktopPage> with DebounceMixin {
+    extends ConsumerState<E621PostDetailsDesktopPage> with DebounceMixin {
   late var page = widget.initialIndex;
   Timer? _debounceTimer;
+  var loading = false;
 
   @override
   void dispose() {
@@ -59,18 +58,15 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
-    final tags = post.extractTagDetails();
-    final artists = ref.watch(danbooruPostDetailsArtistProvider(post.id));
-    final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
     final auth = ref.watch(authenticationProvider);
-    final isFav = ref.watch(danbooruFavoriteProvider(post.id));
+    final isFav = ref.watch(e621FavoriteProvider(post.id));
 
     return CallbackShortcuts(
       bindings: {
         if (auth.isAuthenticated)
           const SingleActivator(LogicalKeyboardKey.keyF): () => !isFav
-              ? ref.danbooruFavorites.add(post.id)
-              : ref.danbooruFavorites.remove(post.id),
+              ? ref.read(e621FavoritesProvider.notifier).add(post.id)
+              : ref.read(e621FavoritesProvider.notifier).remove(post.id),
         const SingleActivator(
           LogicalKeyboardKey.keyF,
           control: true,
@@ -81,14 +77,17 @@ class _DanbooruPostDetailsDesktopPageState
         initialPage: widget.initialIndex,
         totalPages: widget.posts.length,
         onPageChanged: (page) {
-          setState(() => this.page = page);
+          setState(() {
+            this.page = page;
+            loading = true;
+          });
           _debounceTimer?.cancel();
           _debounceTimer = Timer(const Duration(seconds: 1), () {
-            widget.posts[page].loadDetailsFrom(ref);
             ref.read(notesControllerProvider(post).notifier).load();
+            setState(() => loading = false);
           });
         },
-        topRightBuilder: (context) => DanbooruMoreActionButton(
+        topRightBuilder: (context) => GeneralMoreActionButton(
           post: post,
         ),
         mediaBuilder: (context) {
@@ -99,13 +98,7 @@ class _DanbooruPostDetailsDesktopPageState
             heroTag: "",
             aspectRatio: post.aspectRatio,
             imageUrl: post.sampleImageUrl,
-            // Prevent placeholder image from showing when first loaded a post with translated image
             placeholderImageUrl: post.thumbnailImageUrl,
-            // currentPage == widget.intitialIndex && post.isTranslated
-            //     ? null
-            //     : post.thumbnailImageUrl,
-            // onCached: (path) =>
-            //     ref.read(postShareProvider(post).notifier).setImagePath(path ?? ''),
             previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             imageOverlayBuilder: (constraints) =>
                 noteOverlayBuilderDelegate(constraints, post, noteState),
@@ -119,33 +112,29 @@ class _DanbooruPostDetailsDesktopPageState
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    DanbooruInformationSection(
+                    E621InformationSection(
                       post: post,
-                      showSource: true,
                     ),
                     const Divider(height: 8, thickness: 1),
-                    RepaintBoundary(
-                      child: DanbooruPostActionToolbar(post: post),
-                    ),
+                    E621PostActionToolbar(post: post),
                     const Divider(height: 8, thickness: 1),
-                    DanbooruArtistSection(post: post),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: DanbooruPostStatsTile(post: post),
-                    ),
+                    E621ArtistSection(post: post),
+                    //FIXME: implement stats tile
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 8),
+                    //   child: DanbooruPostStatsTile(post: post),
+                    // ),
                     const Divider(height: 8, thickness: 1),
-                    TagsTile(
-                        tags: tags
-                            .where((e) => e.postId == post.id)
-                            .map((e) => e.name)
-                            .toList()),
+                    E621TagsTile(post: post),
                     FileDetailsSection(post: post),
+                    const Divider(height: 8, thickness: 1),
                   ],
                 ),
               ),
-              RelatedPostsSection(post: post),
-              DanbooruRecommendArtistList(artists: artists),
-              DanbooruRecommendCharacterList(characters: characters),
+              E621RecommendedArtistList(
+                post: post,
+                allowFetch: !loading,
+              ),
             ],
           );
         },

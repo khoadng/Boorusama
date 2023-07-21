@@ -6,20 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_selector.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
-import 'package:boorusama/boorus/e621/pages/home/e621_bottom_bar.dart';
-import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
+import 'package:boorusama/boorus/e621/e621_scope.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
-import 'package:boorusama/boorus/home_page_scope.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/pages/home.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions/permissions.dart';
@@ -138,24 +133,7 @@ class _Boorus extends StatelessWidget {
             );
           case BooruType.e621:
           case BooruType.e926:
-            return E621Provider(
-              builder: (context) => HomePageScope(
-                bottomBar: (context, controller) => ValueListenableBuilder(
-                  valueListenable: controller,
-                  builder: (context, value, child) => E621BottomBar(
-                    initialValue: value,
-                    onTabChanged: (value) => controller.goToTab(value),
-                    isAuthenticated:
-                        ref.watch(authenticationProvider).isAuthenticated,
-                  ),
-                ),
-                builder: (context, tab, controller) => E621HomePage(
-                  key: ValueKey(config.id),
-                  controller: controller,
-                  bottomBar: tab,
-                ),
-              ),
-            );
+            return E621Scope(config: config);
           case BooruType.aibooru:
           case BooruType.danbooru:
           case BooruType.safebooru:
@@ -168,27 +146,25 @@ class _Boorus extends StatelessWidget {
           case BooruType.yandere:
           case BooruType.sakugabooru:
           case BooruType.lolibooru:
-            final gkey = ValueKey(config.id);
-
-            return HomePageScope(
-              bottomBar: (context, controller) => ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (context, value, child) => MoebooruBottomBar(
-                  initialValue: value,
-                  onTabChanged: (value) => controller.goToTab(value),
-                ),
-              ),
-              builder: (context, tab, controller) => MoebooruProvider(
-                key: gkey,
-                builder: (gcontext) => MoebooruHomePage(
-                  key: gkey,
-                  controller: controller,
-                  bottomBar: tab,
-                ),
-              ),
-            );
+            return MoebooruScope(config: config);
         }
       },
     );
+  }
+}
+
+class HomePageController extends ValueNotifier<int> {
+  HomePageController({
+    required this.scaffoldKey,
+  }) : super(0);
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  void goToTab(int index) {
+    value = index;
+  }
+
+  void openMenu() {
+    scaffoldKey.currentState!.openDrawer();
   }
 }

@@ -1,89 +1,76 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
-import 'package:boorusama/boorus/home_page_scope.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'e621_other_features_page.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
     super.key,
-    required this.controller,
-    required this.bottomBar,
   });
-
-  final HomePageController controller;
-  final Widget bottomBar;
 
   @override
   ConsumerState<E621HomePage> createState() => _E621HomePageState();
 }
 
 class _E621HomePageState extends ConsumerState<E621HomePage> {
+  late final selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(searchHistoryProvider.notifier).fetchHistories();
+  }
+
+  @override
+  void dispose() {
+    selectedTagController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness:
-            context.themeMode.isLight ? Brightness.dark : Brightness.light,
-      ),
-      child: Scaffold(
-        extendBody: true,
-        resizeToAvoidBottomInset: false,
-        body: Column(
-          children: [
-            const NetworkUnavailableIndicatorWithState(),
-            Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: widget.controller,
-                builder: (context, index, _) => AnimatedIndexedStack(
-                  index: index,
-                  children: [
-                    PostScope(
-                      fetcher: (page) =>
-                          ref.read(e621PostRepoProvider).getPosts('', page),
-                      builder: (context, controller, errors) =>
-                          E621InfinitePostList(
-                        errors: errors,
-                        controller: controller,
-                        sliverHeaderBuilder: (context) => [
-                          SliverAppBar(
-                            backgroundColor:
-                                context.theme.scaffoldBackgroundColor,
-                            toolbarHeight: kToolbarHeight * 1.2,
-                            title: HomeSearchBar(
-                              onMenuTap: widget.controller.openMenu,
-                              onTap: () => goToE621SearchPage(context),
-                            ),
-                            floating: true,
-                            snap: true,
-                            automaticallyImplyLeading: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const E621PopularPage(),
-                    const E621OtherFeaturesPage(),
-                  ],
-                ),
-              ),
+    return PostScope(
+      fetcher: (page) => ref.read(e621PostRepoProvider).getPosts(
+            selectedTagController.rawTagsString,
+            page,
+          ),
+      builder: (context, controller, errors) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DesktopSearchbar(
+            onSearch: () => _onSearch(controller),
+            selectedTagController: selectedTagController,
+          ),
+          Expanded(
+            child: E621InfinitePostList(
+              controller: controller,
+              errors: errors,
             ),
-          ],
-        ),
-        bottomNavigationBar: widget.bottomBar,
+          ),
+        ],
       ),
     );
+  }
+
+  var selectedTagString = ValueNotifier('');
+
+  void _onSearch(
+    PostGridController postController,
+  ) {
+    ref
+        .read(searchHistoryProvider.notifier)
+        .addHistory(selectedTagController.rawTagsString);
+    selectedTagString.value = selectedTagController.rawTagsString;
+    postController.refresh();
   }
 }

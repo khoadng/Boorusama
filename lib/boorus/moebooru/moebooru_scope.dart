@@ -9,22 +9,26 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
-import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/boorus/home_page.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/pages/home.dart';
+import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
+import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
+import 'package:boorusama/boorus/moebooru/pages/posts.dart';
+import 'package:boorusama/boorus/moebooru/router.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
-class GelbooruScope extends ConsumerStatefulWidget {
-  const GelbooruScope({
+class MoebooruScope extends ConsumerStatefulWidget {
+  const MoebooruScope({
     super.key,
     required this.config,
   });
@@ -32,17 +36,42 @@ class GelbooruScope extends ConsumerStatefulWidget {
   final BooruConfig config;
 
   @override
-  ConsumerState<GelbooruScope> createState() => _DanbooruScopeState();
+  ConsumerState<MoebooruScope> createState() => _DanbooruScopeState();
 }
 
-class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
+class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
   @override
   Widget build(BuildContext context) {
-    return GelbooruProvider(
+    return MoebooruProvider(
       builder: (context) => BooruScope(
         config: widget.config,
         mobileView: (controller) => _buildMobileHomeView(controller),
-        mobileMenuBuilder: (context, controller) => [],
+        mobileMenuBuilder: (context, controller) => [
+          SideMenuTile(
+            icon: const Icon(Icons.explore),
+            title: const Text('Popular'),
+            onTap: () => context.navigator.push(MaterialPageRoute(
+                builder: (_) => Scaffold(
+                      appBar: AppBar(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                      ),
+                      body: const MoebooruPopularPage(),
+                    ))),
+          ),
+          SideMenuTile(
+            icon: const Icon(Icons.local_fire_department),
+            title: const Text('Hot'),
+            onTap: () => context.navigator.push(MaterialPageRoute(
+                builder: (_) => Scaffold(
+                      appBar: AppBar(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                      ),
+                      body: const MoebooruPopularRecentPage(),
+                    ))),
+          ),
+        ],
         desktopMenuBuilder: (context, controller, constraints) => [
           HomeNavigationTile(
             value: 0,
@@ -52,9 +81,25 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
             icon: const Icon(Icons.dashboard_outlined),
             title: 'Home',
           ),
-          const Divider(),
           HomeNavigationTile(
             value: 1,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.explore),
+            icon: const Icon(Icons.explore_outlined),
+            title: 'Explore',
+          ),
+          HomeNavigationTile(
+            value: 2,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.local_fire_department),
+            icon: const Icon(Icons.local_fire_department_outlined),
+            title: 'Hot',
+          ),
+          const Divider(),
+          HomeNavigationTile(
+            value: 3,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.bookmark),
@@ -62,7 +107,7 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
             title: 'sideMenu.your_bookmarks'.tr(),
           ),
           HomeNavigationTile(
-            value: 2,
+            value: 4,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.list_alt),
@@ -70,7 +115,7 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
             title: 'sideMenu.your_blacklist'.tr(),
           ),
           HomeNavigationTile(
-            value: 3,
+            value: 5,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.download),
@@ -89,7 +134,9 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
           ),
         ],
         desktopViews: const [
-          GelbooruHomePage(),
+          MoebooruHomePage(),
+          MoebooruPopularPage(),
+          MoebooruPopularRecentPage(),
           BookmarkPage(),
           BlacklistedTagPage(),
           BulkDownloadPage(),
@@ -101,8 +148,8 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
   Widget _buildMobileHomeView(HomePageController controller) {
     return PostScope(
       fetcher: (page) =>
-          ref.watch(gelbooruPostRepoProvider).getPostsFromTags('', page),
-      builder: (context, postController, errors) => GelbooruInfinitePostList(
+          ref.read(moebooruPostRepoProvider).getPostsFromTags('', page),
+      builder: (context, postController, errors) => MoebooruInfinitePostList(
         errors: errors,
         controller: postController,
         sliverHeaderBuilder: (context) => [
@@ -111,7 +158,7 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
             toolbarHeight: kToolbarHeight * 1.2,
             title: HomeSearchBar(
               onMenuTap: controller.openMenu,
-              onTap: () => goToGelbooruSearchPage(ref, context),
+              onTap: () => goToMoebooruSearchPage(ref, context),
             ),
             floating: true,
             snap: true,

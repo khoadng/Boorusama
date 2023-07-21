@@ -239,42 +239,62 @@ class _MoebooruPostDetailsPageState
           (source) => SourceSection(source: source),
           () => const SizedBox.shrink(),
         ),
-        ref.watch(moebooruCommentsProvider(post.id)).when(
-              data: (comments) => comments.isEmpty
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Divider(
-                            thickness: 1.5,
-                          ),
-                          Text(
-                            'comment.comments'.tr(),
-                            style: context.textTheme.titleLarge!.copyWith(
-                              color: context.theme.hintColor,
-                              fontSize: 16,
-                            ),
-                          ),
-                          ...comments
-                              .map((comment) => Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child:
-                                        MoebooruCommentItem(comment: comment),
-                                  ))
-                              .toList()
-                        ],
-                      ),
-                    ),
-              loading: () => const SizedBox.shrink(),
-              error: (e, __) => const SizedBox.shrink(),
-            ),
+        MoebooruCommentSection(post: post),
       ],
     ];
+  }
+}
+
+class MoebooruCommentSection extends ConsumerWidget {
+  const MoebooruCommentSection({
+    super.key,
+    required this.post,
+    this.allowFetch = true,
+  });
+
+  final Post post;
+  final bool allowFetch;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!allowFetch) {
+      return const SizedBox.shrink();
+    }
+
+    final asyncData = ref.watch(moebooruCommentsProvider(post.id));
+
+    return asyncData.when(
+      data: (comments) => comments.isEmpty
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(
+                    thickness: 1.5,
+                  ),
+                  Text(
+                    'comment.comments'.tr(),
+                    style: context.textTheme.titleLarge!.copyWith(
+                      color: context.theme.hintColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                  ...comments
+                      .map((comment) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: MoebooruCommentItem(comment: comment),
+                          ))
+                      .toList()
+                ],
+              ),
+            ),
+      loading: () => const SizedBox.shrink(),
+      error: (e, __) => const SizedBox.shrink(),
+    );
   }
 }

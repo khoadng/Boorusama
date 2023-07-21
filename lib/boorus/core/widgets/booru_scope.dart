@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/core/pages/home/side_bar_menu.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/custom_context_menu_overlay.dart';
 import 'package:boorusama/boorus/core/widgets/network_indicator_with_state.dart';
-import 'package:boorusama/boorus/home_page_scope.dart';
+import 'package:boorusama/boorus/home_page.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
