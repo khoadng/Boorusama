@@ -94,7 +94,6 @@ class _DanbooruInfinitePostListState
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
 
-    //FIXME: update other sites to use layout builder
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
         refreshAtStart: widget.refreshAtStart,

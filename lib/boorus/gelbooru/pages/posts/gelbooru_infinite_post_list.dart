@@ -86,96 +86,99 @@ class _DanbooruInfinitePostListState
     final settings = ref.watch(settingsProvider);
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
-    return PostGrid(
-      controller: widget.controller,
-      refreshAtStart: widget.refreshAtStart,
-      scrollController: _autoScrollController,
-      sliverHeaderBuilder: widget.sliverHeaderBuilder,
-      footerBuilder: (context, selectedItems) => DefaultMultiSelectionActions(
-        selectedPosts: selectedItems,
-        endMultiSelect: () {
-          _multiSelectController.disableMultiSelect();
+    return LayoutBuilder(
+      builder: (context, constraints) => PostGrid(
+        controller: widget.controller,
+        refreshAtStart: widget.refreshAtStart,
+        scrollController: _autoScrollController,
+        sliverHeaderBuilder: widget.sliverHeaderBuilder,
+        footerBuilder: (context, selectedItems) => DefaultMultiSelectionActions(
+          selectedPosts: selectedItems,
+          endMultiSelect: () {
+            _multiSelectController.disableMultiSelect();
+          },
+        ),
+        multiSelectController: _multiSelectController,
+        onLoadMore: widget.onLoadMore,
+        onRefresh: widget.onRefresh,
+        blacklistedTags: {
+          ...globalBlacklist.map((e) => e.name),
+        },
+        itemBuilder: (context, items, index) {
+          final post = items[index];
+
+          return ContextMenuRegion(
+            isEnabled: !multiSelect,
+            contextMenu: GelbooruPostContextMenu(
+              hasAccount: false,
+              onMultiSelect: () {
+                _multiSelectController.enableMultiSelect();
+              },
+              post: post,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) => ImageGridItem(
+                onTap: !multiSelect
+                    ? () {
+                        goToGelbooruPostDetailsPage(
+                          ref: ref,
+                          context: context,
+                          posts: items,
+                          initialIndex: index,
+                          scrollController: _autoScrollController,
+                          settings: ref.read(settingsProvider),
+                        );
+                      }
+                    : null,
+                isFaved: false,
+                enableFav: false,
+                onFavToggle: (isFaved) async {},
+                autoScrollOptions: AutoScrollOptions(
+                  controller: _autoScrollController,
+                  index: index,
+                ),
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                hasComments: post.hasComment,
+                hasParentOrChildren: post.hasParentOrChildren,
+                score: settings.showScoresInGrid ? post.score : null,
+                image: settings.imageListType == ImageListType.masonry
+                    ? BooruImage(
+                        aspectRatio: post.aspectRatio,
+                        imageUrl: post.thumbnailFromSettings(settings),
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        previewCacheManager:
+                            ref.watch(previewImageCacheManagerProvider),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      )
+                    : BooruImageLegacy(
+                        imageUrl: post.thumbnailFromSettings(settings),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
+                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
+                      ),
+              ),
+            ),
+          );
+        },
+        bodyBuilder: (context, itemBuilder, refreshing, data) {
+          return SliverPostGrid(
+            constraints: constraints,
+            itemBuilder: itemBuilder,
+            refreshing: refreshing,
+            error: widget.errors,
+            data: data,
+            onRetry: () => widget.controller.refresh(),
+          );
         },
       ),
-      multiSelectController: _multiSelectController,
-      onLoadMore: widget.onLoadMore,
-      onRefresh: widget.onRefresh,
-      blacklistedTags: {
-        ...globalBlacklist.map((e) => e.name),
-      },
-      itemBuilder: (context, items, index) {
-        final post = items[index];
-
-        return ContextMenuRegion(
-          isEnabled: !multiSelect,
-          contextMenu: GelbooruPostContextMenu(
-            hasAccount: false,
-            onMultiSelect: () {
-              _multiSelectController.enableMultiSelect();
-            },
-            post: post,
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) => ImageGridItem(
-              onTap: !multiSelect
-                  ? () {
-                      goToGelbooruPostDetailsPage(
-                        ref: ref,
-                        context: context,
-                        posts: items,
-                        initialIndex: index,
-                        scrollController: _autoScrollController,
-                        settings: ref.read(settingsProvider),
-                      );
-                    }
-                  : null,
-              isFaved: false,
-              enableFav: false,
-              onFavToggle: (isFaved) async {},
-              autoScrollOptions: AutoScrollOptions(
-                controller: _autoScrollController,
-                index: index,
-              ),
-              isAnimated: post.isAnimated,
-              isTranslated: post.isTranslated,
-              hasComments: post.hasComment,
-              hasParentOrChildren: post.hasParentOrChildren,
-              score: settings.showScoresInGrid ? post.score : null,
-              image: settings.imageListType == ImageListType.masonry
-                  ? BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl: post.thumbnailFromSettings(settings),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      placeholderUrl: post.thumbnailImageUrl,
-                      previewCacheManager:
-                          ref.watch(previewImageCacheManagerProvider),
-                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                    )
-                  : BooruImageLegacy(
-                      imageUrl: post.thumbnailFromSettings(settings),
-                      placeholderUrl: post.thumbnailImageUrl,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                      cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                    ),
-            ),
-          ),
-        );
-      },
-      bodyBuilder: (context, itemBuilder, refreshing, data) {
-        return SliverPostGrid(
-          itemBuilder: itemBuilder,
-          refreshing: refreshing,
-          error: widget.errors,
-          data: data,
-          onRetry: () => widget.controller.refresh(),
-        );
-      },
     );
   }
 }
