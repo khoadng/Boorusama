@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
+import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
@@ -23,7 +24,6 @@ import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
-import 'danbooru_note_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_recommend_artist_list.dart';
 import 'danbooru_recommend_character_list.dart';
@@ -164,7 +164,7 @@ class _DanbooruPostDetailsPageState
         final post = posts[page];
 
         return [
-          DanbooruNoteActionButton(
+          NoteActionButton(
             post: post,
             showDownload: !expanded && noteState.notes.isEmpty,
             enableNotes: noteState.enableNotes,

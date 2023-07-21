@@ -5,12 +5,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/posts/danbooru_post.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/circular_icon_button.dart';
 
-class DanbooruNoteActionButton extends StatelessWidget {
-  const DanbooruNoteActionButton({
+class NoteActionButton extends StatelessWidget {
+  const NoteActionButton({
     super.key,
     required this.post,
     required this.showDownload,
@@ -19,7 +19,7 @@ class DanbooruNoteActionButton extends StatelessWidget {
     required this.onToggleNotes,
   });
 
-  final DanbooruPost post;
+  final Post post;
   final bool showDownload;
   final bool enableNotes;
   final VoidCallback onDownload;
