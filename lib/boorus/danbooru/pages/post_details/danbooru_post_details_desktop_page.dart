@@ -98,7 +98,7 @@ class _DanbooruPostDetailsDesktopPageState
             useHero: false,
             heroTag: "",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+            imageUrl: post.sampleImageUrl,
             // Prevent placeholder image from showing when first loaded a post with translated image
             placeholderImageUrl: post.thumbnailImageUrl,
             // currentPage == widget.intitialIndex && post.isTranslated

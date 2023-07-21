@@ -98,7 +98,7 @@ class _DanbooruPostDetailsDesktopPageState
             useHero: false,
             heroTag: "",
             aspectRatio: post.aspectRatio,
-            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+            imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
             previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             width: post.width,
