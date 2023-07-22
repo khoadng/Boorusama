@@ -285,7 +285,7 @@ void goToQuickSearchPage(
     ensureValidTag: ensureValidTag,
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => Builder(
-      builder: (_) {
+      builder: (context) {
         final booru = ref.watch(currentBooruProvider);
 
         switch (booru.booruType) {
