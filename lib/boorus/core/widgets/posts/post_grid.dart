@@ -264,7 +264,8 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                       },
                       child: ImprovedScrolling(
                         scrollController: _autoScrollController,
-                        enableKeyboardScrolling: true,
+                        // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
+                        enableKeyboardScrolling: false,
                         enableMMBScrolling: true,
                         child: CustomScrollView(
                           controller: _autoScrollController,
