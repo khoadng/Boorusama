@@ -8,20 +8,24 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   const BoorusamaColors({
     required this.videoPlayerBackgroundColor,
     required this.themeMode,
+    required this.selectedColor,
   });
 
   final Color videoPlayerBackgroundColor;
   final ThemeMode themeMode;
+  final Color selectedColor;
 
   @override
   ThemeExtension<BoorusamaColors> copyWith({
     Color? videoPlayerBackgroundColor,
     ThemeMode? themeMode,
+    Color? selectedColor,
   }) =>
       BoorusamaColors(
         videoPlayerBackgroundColor:
             videoPlayerBackgroundColor ?? this.videoPlayerBackgroundColor,
         themeMode: themeMode ?? this.themeMode,
+        selectedColor: selectedColor ?? this.selectedColor,
       );
 
   @override
@@ -39,6 +43,8 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
           ) ??
           videoPlayerBackgroundColor,
       themeMode: other.themeMode,
+      selectedColor:
+          Color.lerp(selectedColor, other.selectedColor, t) ?? selectedColor,
     );
   }
 }

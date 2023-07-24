@@ -37,9 +37,7 @@ class NavigationTile extends StatelessWidget {
       ),
       child: Material(
         borderRadius: BorderRadius.circular(4),
-        color: selected
-            ? Theme.of(context).colorScheme.primary
-            : Colors.transparent,
+        color: selected ? context.colors.selectedColor : Colors.transparent,
         child: InkWell(
           hoverColor: context.theme.hoverColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(4),

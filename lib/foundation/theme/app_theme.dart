@@ -14,6 +14,7 @@ class AppTheme {
       const BoorusamaColors(
         videoPlayerBackgroundColor: Colors.white,
         themeMode: ThemeMode.light,
+        selectedColor: Colors.grey,
       ),
     ],
     appBarTheme: ThemeData.light().appBarTheme.copyWith(
@@ -54,6 +55,7 @@ class AppTheme {
       const BoorusamaColors(
         videoPlayerBackgroundColor: Colors.black,
         themeMode: ThemeMode.dark,
+        selectedColor: Color.fromARGB(255, 40, 40, 40),
       ),
     ],
     appBarTheme: ThemeData.dark().appBarTheme.copyWith(
@@ -92,6 +94,7 @@ class AppTheme {
       const BoorusamaColors(
         videoPlayerBackgroundColor: Colors.black,
         themeMode: ThemeMode.amoledDark,
+        selectedColor: Color.fromARGB(255, 40, 40, 40),
       ),
     ],
     scaffoldBackgroundColor: Colors.black,
