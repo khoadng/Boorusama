@@ -77,6 +77,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
               const SizedBox(width: 10),
               Expanded(
                 child: TextFormField(
+                  onTapOutside: (event) => widget.focus?.unfocus(),
                   focusNode: widget.focus,
                   onFieldSubmitted: (value) => widget.onSubmitted?.call(value),
                   onChanged: (value) => widget.onChanged?.call(value),
