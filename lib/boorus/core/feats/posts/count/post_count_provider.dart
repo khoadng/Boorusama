@@ -26,3 +26,6 @@ final postCountProvider = Provider<PostCountState>(
     postCountStateProvider,
   ],
 );
+
+final emptyPostCountRepoProvider =
+    Provider<PostCountRepository>((ref) => const EmptyPostCountRepository());
