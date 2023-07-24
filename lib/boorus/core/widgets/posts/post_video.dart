@@ -36,7 +36,8 @@ class _BooruVideoState extends State<BooruVideo> {
   @override
   void initState() {
     super.initState();
-    _videoPlayerController = VideoPlayerController.network(widget.url);
+    _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.url)); // TODO: dangerous parsing here
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,

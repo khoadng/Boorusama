@@ -40,7 +40,7 @@ class BoorusRoutes {
         builder: (context, state) => AddBooruPage(
           backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
-              state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+              state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
         ),
       );
 
@@ -229,9 +229,9 @@ class Routes {
             name: '/bookmarks/details',
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
-              name: '${state.name}?index=${state.queryParameters['index']}',
+              name: '${state.name}?index=${state.uri.queryParameters['index']}',
               child: BookmarkDetailsPage(
-                initialIndex: state.queryParameters['index']?.toInt() ?? 0,
+                initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
               ),
               transitionsBuilder: leftToRightTransitionBuilder(),
             ),
