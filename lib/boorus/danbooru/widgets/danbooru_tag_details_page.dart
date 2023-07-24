@@ -7,7 +7,7 @@ import 'package:flutter_scatter/flutter_scatter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/tag_details_sliver_app_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/widgets/tag_detail_region.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'related_tag_cloud_chip.dart';
 
 const _kTagCloudTotal = 30;
@@ -85,23 +84,8 @@ class _DanbooruTagDetailsPageState
           controller: controller,
           sliverHeaderBuilder: (context) => [
             if (isMobilePlatform()) ...[
-              SliverAppBar(
-                floating: true,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                backgroundColor: context.theme.scaffoldBackgroundColor,
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      goToBulkDownloadPage(
-                        context,
-                        [widget.tagName],
-                        ref: ref,
-                      );
-                    },
-                    icon: const Icon(Icons.download),
-                  ),
-                ],
+              TagDetailsSlilverAppBar(
+                tagName: widget.tagName,
               ),
               SliverToBoxAdapter(
                 child: Column(

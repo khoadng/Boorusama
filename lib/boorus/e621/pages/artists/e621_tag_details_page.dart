@@ -6,11 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
-import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/tag_details_sliver_app_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class E621TagDetailPage extends ConsumerStatefulWidget {
@@ -48,23 +47,8 @@ class _TagDetailPageState extends ConsumerState<E621TagDetailPage> {
         controller: controller,
         sliverHeaderBuilder: (context) => [
           if (widget.includeHeaders)
-            SliverAppBar(
-              floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    goToBulkDownloadPage(
-                      context,
-                      [widget.tagName],
-                      ref: ref,
-                    );
-                  },
-                  icon: const Icon(Icons.download),
-                ),
-              ],
+            TagDetailsSlilverAppBar(
+              tagName: widget.tagName,
             ),
           if (widget.includeHeaders)
             SliverToBoxAdapter(

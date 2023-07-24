@@ -77,8 +77,8 @@ class BooruSelector extends ConsumerWidget {
                               switch (PostSource.from(config.url)) {
                                 WebSource source => FittedBox(
                                     child: CachedNetworkImage(
-                                      width: 32,
-                                      height: 32,
+                                      width: 24,
+                                      height: 24,
                                       fit: BoxFit.cover,
                                       fadeInDuration:
                                           const Duration(milliseconds: 100),

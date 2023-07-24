@@ -36,7 +36,9 @@ class ResultCounter extends StatelessWidget {
     if (count > 0) {
       return Text(
         'search.result_counter'.plural(count),
-        style: Theme.of(context).textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
       );
     } else {
       return Text(
