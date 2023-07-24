@@ -9,11 +9,11 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
@@ -41,7 +41,9 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
     return GelbooruProvider(
       builder: (context) => BooruScope(
         config: widget.config,
-        mobileView: (controller) => _buildMobileHomeView(controller),
+        mobileView: (controller) => _GelbooruMobileHomeView(
+          controller: controller,
+        ),
         mobileMenuBuilder: (context, controller) => [],
         desktopMenuBuilder: (context, controller, constraints) => [
           HomeNavigationTile(
@@ -97,11 +99,20 @@ class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
       ),
     );
   }
+}
 
-  Widget _buildMobileHomeView(HomePageController controller) {
+class _GelbooruMobileHomeView extends ConsumerWidget {
+  const _GelbooruMobileHomeView({
+    required this.controller,
+  });
+
+  final HomePageController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return PostScope(
-      fetcher: (page) =>
-          ref.watch(gelbooruPostRepoProvider).getPostsFromTags('', page),
+      // Need to use generic repo here because this is used not only for Gelbooru
+      fetcher: (page) => ref.read(postRepoProvider).getPostsFromTags('', page),
       builder: (context, postController, errors) => GelbooruInfinitePostList(
         errors: errors,
         controller: postController,
