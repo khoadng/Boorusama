@@ -111,4 +111,11 @@ class GelbooruPost extends Equatable
 
   @override
   final DateTime? createdAt;
+
+  @override
+  bool? get hasSound => tags.contains('sound') ? true : null;
+  @override
+  String get videoUrl => thumbnailImageUrl;
+  @override
+  String get videoThumbnailUrl => originalImageUrl;
 }

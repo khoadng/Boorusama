@@ -175,7 +175,7 @@ class _MoebooruPostDetailsPageState
                 backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
-                url: post.sampleImageUrl,
+                url: post.videoUrl,
                 aspectRatio: post.aspectRatio,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
@@ -205,7 +205,7 @@ class _MoebooruPostDetailsPageState
         )
       else if (post.isVideo)
         BooruImage(
-          imageUrl: post.thumbnailImageUrl,
+          imageUrl: post.videoThumbnailUrl,
           fit: BoxFit.contain,
         )
       else

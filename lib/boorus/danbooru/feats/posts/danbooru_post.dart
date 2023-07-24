@@ -141,6 +141,13 @@ class DanbooruPost extends Equatable
   bool get hasFavorite => favCount > 0;
 
   @override
+  bool? get hasSound => metaTags.contains('sound') ? true : null;
+  @override
+  String get videoUrl => sampleImageUrl;
+  @override
+  String get videoThumbnailUrl => url720x720;
+
+  @override
   final PostSource source;
 
   bool get viewable => [
@@ -292,12 +299,6 @@ extension PostX on DanbooruPost {
         duration: duration,
         variants: variants,
       );
-}
-
-extension DanbooruPostVideoX on DanbooruPost {
-  bool get hasSound => metaTags.contains('sound');
-  String get videoUrl => sampleImageUrl;
-  String get videoThumbnailUrl => url720x720;
 }
 
 extension DanbooruPostImageX on DanbooruPost {

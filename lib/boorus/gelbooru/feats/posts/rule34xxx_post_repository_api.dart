@@ -16,6 +16,8 @@ import 'rule34xxx_post_dto.dart';
 List<GelbooruPost> _parsePostInIsolate(HttpResponse<dynamic> value) {
   final dtos = <Rule34xxxPostDto>[];
 
+  if (value.data == null) return [];
+
   for (final item in value.data) {
     dtos.add(Rule34xxxPostDto.fromJson(item));
   }

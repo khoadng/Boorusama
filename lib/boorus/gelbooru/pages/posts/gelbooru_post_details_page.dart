@@ -159,7 +159,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
                 backgroundColor: context.colors.videoPlayerBackgroundColor,
               )
             : BooruVideo(
-                url: post.originalImageUrl,
+                url: post.videoUrl,
                 aspectRatio: post.aspectRatio,
                 onCurrentPositionChanged: onCurrentPositionChanged,
                 onVisibilityChanged: onVisibilityChanged,
@@ -189,7 +189,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
         )
       else if (post.isVideo)
         BooruImage(
-          imageUrl: post.thumbnailImageUrl,
+          imageUrl: post.videoThumbnailUrl,
           fit: BoxFit.contain,
         )
       else

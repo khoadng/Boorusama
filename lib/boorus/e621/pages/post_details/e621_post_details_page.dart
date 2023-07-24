@@ -241,7 +241,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
         )
       else if (post.isVideo)
         BooruImage(
-          imageUrl: post.thumbnailFromSettings(ref.watch(settingsProvider)),
+          imageUrl: post.videoThumbnailUrl,
           fit: BoxFit.contain,
         )
       else

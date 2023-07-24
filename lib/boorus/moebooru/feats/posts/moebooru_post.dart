@@ -81,4 +81,11 @@ class MoebooruPost extends Equatable
 
   @override
   final DateTime? createdAt;
+
+  @override
+  bool? get hasSound => null;
+  @override
+  String get videoUrl => originalImageUrl;
+  @override
+  String get videoThumbnailUrl => thumbnailImageUrl;
 }

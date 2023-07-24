@@ -32,7 +32,7 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(GelbooruPostDto dto) {
   return GelbooruPost(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',
-    sampleImageUrl: dto.sampleUrl ?? '',
+    sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
     originalImageUrl: dto.fileUrl ?? '',
     tags: dto.tags?.split(' ').toList() ?? [],
     width: dto.width?.toDouble() ?? 0,
