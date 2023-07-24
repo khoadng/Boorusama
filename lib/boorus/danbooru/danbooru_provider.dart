@@ -56,7 +56,7 @@ class DanbooruProvider extends ConsumerWidget {
 }
 
 String encodeDanbooruAuthHeader(String login, String apiKey) =>
-    base64Encode('$login:$apiKey'.codeUnits);
+    base64Encode(utf8.encode('$login:$apiKey'));
 
 final danbooruApiProvider = Provider<DanbooruApi>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
