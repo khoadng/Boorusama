@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/core/widgets/current_booru_tile.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'side_menu_tile.dart';
 
 class SideBarMenu extends ConsumerWidget {
@@ -35,9 +34,11 @@ class SideBarMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SideBar(
-      width: min(context.screenWidth * 0.8, 500),
-      content: Row(
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      constraints:
+          BoxConstraints.expand(width: min(context.screenWidth * 0.8, 500)),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SafeArea(child: BooruSelector()),

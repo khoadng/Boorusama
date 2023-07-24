@@ -33,7 +33,6 @@ export 'result_counter.dart';
 export 'route_transition_builder.dart';
 export 'selectable_icon_button.dart';
 export 'shadow_gradient_overlay.dart';
-export 'side_bar.dart';
 export 'side_sheet.dart';
 export 'slide_in_route.dart';
 export 'square_chip.dart';
