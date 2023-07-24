@@ -19,6 +19,9 @@ class SideMenuTile extends StatelessWidget {
       color: Colors.transparent,
       child: Ink(
         child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+          visualDensity: VisualDensity.compact,
+          minVerticalPadding: 0,
           leading: icon,
           title: title,
           onTap: onTap,
