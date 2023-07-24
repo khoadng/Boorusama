@@ -64,6 +64,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
                 builder: (_) => Scaffold(
                       appBar: AppBar(
                         elevation: 0,
+                        title: const Text('Explore'),
                         backgroundColor: Colors.transparent,
                       ),
                       body: const ExplorePage(),

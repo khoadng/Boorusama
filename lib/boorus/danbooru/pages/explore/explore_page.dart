@@ -19,9 +19,6 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'explore_mixins.dart';
 import 'explore_section.dart';
 
-const double _kMaxHeight = 250;
-const _padding = EdgeInsets.symmetric(horizontal: 2);
-
 class ExplorePage extends ConsumerWidget {
   const ExplorePage({
     super.key,
@@ -51,36 +48,6 @@ class ExplorePage extends ConsumerWidget {
       ),
     );
   }
-}
-
-Widget mapToCarousel(
-  BuildContext context,
-  List<DanbooruPost> posts,
-  WidgetRef ref,
-) {
-  return posts.isNotEmpty
-      ? _ExploreList(
-          posts: posts,
-          onTap: (index) {
-            goToDetailPage(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-              hero: false,
-            );
-          },
-        )
-      : SizedBox(
-          height: _kMaxHeight,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) => Padding(
-              padding: _padding,
-              child: createRandomPlaceholderContainer(context),
-            ),
-          ),
-        );
 }
 
 class _MostViewedExplore extends ConsumerStatefulWidget {
@@ -120,7 +87,7 @@ class _MostViewedExploreState extends ConsumerState<_MostViewedExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => mapToCarousel(context, posts, ref),
+      builder: (_) => ExploreList(posts: posts),
       onPressed: () => goToExploreMostViewedPage(context),
     );
   }
@@ -166,7 +133,7 @@ class _HotExploreState extends ConsumerState<_HotExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => mapToCarousel(context, posts, ref),
+      builder: (_) => ExploreList(posts: posts),
       onPressed: () => goToExploreHotPage(context),
     );
   }
@@ -212,7 +179,7 @@ class _PopularExploreState extends ConsumerState<_PopularExplore>
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => mapToCarousel(context, posts, ref),
+      builder: (_) => ExploreList(posts: posts),
       onPressed: () => goToExplorePopularPage(context),
     );
   }
@@ -221,84 +188,88 @@ class _PopularExploreState extends ConsumerState<_PopularExplore>
   PostGridController<DanbooruPost> get controller => _controller;
 }
 
-class _ExploreList extends StatefulWidget {
-  const _ExploreList({
+class ExploreList extends ConsumerWidget {
+  const ExploreList({
+    super.key,
     required this.posts,
-    required this.onTap,
   });
 
   final List<DanbooruPost> posts;
-  final void Function(int index) onTap;
 
   @override
-  State<_ExploreList> createState() => _ExploreListState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
 
-class _ExploreListState extends State<_ExploreList> {
-  final scrollController = ScrollController();
+    return posts.isNotEmpty
+        ? SizedBox(
+            height: height,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final post = posts[index];
 
-  @override
-  void dispose() {
-    super.dispose();
-    scrollController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: _kMaxHeight,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final posts = widget.posts;
-          final post = posts[index];
-
-          return Padding(
-            padding: _padding,
-            child: GestureDetector(
-              onTap: () => widget.onTap(index),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  BooruImage(
-                    aspectRatio: post.aspectRatio,
-                    imageUrl: post.url720x720,
-                    placeholderUrl: post.thumbnailImageUrl,
-                  ),
-                  if (post.isAnimated)
-                    Positioned(
-                      top: 5,
-                      left: 5,
-                      child: VideoPlayDurationIcon(
-                        duration: post.duration,
-                        hasSound: post.hasSound,
-                      ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: GestureDetector(
+                    onTap: () => goToDetailPage(
+                      context: context,
+                      posts: posts,
+                      initialIndex: index,
+                      hero: false,
                     ),
-                  Positioned.fill(
-                    child: ShadowGradientOverlay(
-                      alignment: Alignment.bottomCenter,
-                      colors: [
-                        const Color(0xC2000000),
-                        Colors.black12.withOpacity(0),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        BooruImage(
+                          aspectRatio: post.aspectRatio,
+                          imageUrl: post.url720x720,
+                          placeholderUrl: post.thumbnailImageUrl,
+                        ),
+                        if (post.isAnimated)
+                          Positioned(
+                            top: 5,
+                            left: 5,
+                            child: VideoPlayDurationIcon(
+                              duration: post.duration,
+                              hasSound: post.hasSound,
+                            ),
+                          ),
+                        Positioned.fill(
+                          child: ShadowGradientOverlay(
+                            alignment: Alignment.bottomCenter,
+                            colors: [
+                              const Color(0xC2000000),
+                              Colors.black12.withOpacity(0),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          left: 5,
+                          bottom: 1,
+                          child: Text(
+                            '${index + 1}',
+                            style: context.textTheme.displayMedium!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Positioned(
-                    left: 5,
-                    bottom: 1,
-                    child: Text(
-                      '${index + 1}',
-                      style: context.textTheme.displayMedium!
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
-                ],
+                );
+              },
+              itemCount: posts.length,
+            ),
+          )
+        : SizedBox(
+            height: height,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 20,
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: createRandomPlaceholderContainer(context),
               ),
             ),
           );
-        },
-        itemCount: widget.posts.length,
-      ),
-    );
   }
 }
