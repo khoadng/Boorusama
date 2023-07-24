@@ -38,6 +38,7 @@ class GelbooruPostRepositoryApi
     int? limit,
   }) =>
       TaskEither.Do(($) async {
+        final lim = await getPostsPerPage();
         final response = await $(tryParseResponse(
           fetcher: () => api.getPosts(
             booruConfig.apiKey,
@@ -48,6 +49,7 @@ class GelbooruPostRepositoryApi
             getTags(booruConfig, tags).join(' '),
             '1',
             (page - 1).toString(),
+            limit: limit ?? lim,
           ),
         ));
 

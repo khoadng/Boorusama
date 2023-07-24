@@ -17,8 +17,9 @@ abstract class GelbooruApi {
     @Query('q') String q,
     @Query('tags') String tags,
     @Query('json') String json,
-    @Query('pid') String pid,
-  );
+    @Query('pid') String pid, {
+    @Query('limit') int? limit,
+  });
 
   @GET('/index.php')
   Future<HttpResponse> getTags(
