@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/posts/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
@@ -200,41 +200,22 @@ class _DanbooruPostDetailsPageState
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final tags = post.extractTagDetails();
     final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = post.isVideo
-        ? extension(post.sampleImageUrl) == '.webm'
-            ? EmbeddedWebViewWebm(
-                url: post.sampleImageUrl,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-                backgroundColor: context.colors.videoPlayerBackgroundColor,
-              )
-            : BooruVideo(
-                url: post.videoUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-        : InteractiveBooruImage(
-            useHero: page == currentPage,
-            heroTag: "${post.id}_hero",
-            aspectRatio: post.aspectRatio,
-            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
-            // Prevent placeholder image from showing when first loaded a post with translated image
-            placeholderImageUrl:
-                currentPage == widget.intitialIndex && post.isTranslated
-                    ? null
-                    : post.thumbnailImageUrl,
-            onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            imageOverlayBuilder: (constraints) =>
-                noteOverlayBuilderDelegate(constraints, post, noteState),
-            width: post.width,
-            height: post.height,
-            onZoomUpdated: onZoomUpdated,
-          );
+    final media = PostMedia(
+      post: post,
+      imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
+      // Prevent placeholder image from showing when first loaded a post with translated image
+      placeholderImageUrl:
+          currentPage == widget.intitialIndex && post.isTranslated
+              ? null
+              : post.thumbnailImageUrl,
+      onImageTap: onImageTap,
+      onCurrentVideoPositionChanged: onCurrentPositionChanged,
+      onVideoVisibilityChanged: onVisibilityChanged,
+      imageOverlayBuilder: (constraints) =>
+          noteOverlayBuilderDelegate(constraints, post, noteState),
+      useHero: page == currentPage,
+      onImageZoomUpdated: onZoomUpdated,
+    );
 
     return [
       if (!expandedOnCurrentPage)

@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
@@ -21,7 +20,6 @@ import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'moebooru_information_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -166,35 +164,16 @@ class _MoebooruPostDetailsPageState
   ) {
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = post.isVideo
-        ? extension(post.sampleImageUrl) == '.webm'
-            ? EmbeddedWebViewWebm(
-                url: post.sampleImageUrl,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-                backgroundColor: context.colors.videoPlayerBackgroundColor,
-              )
-            : BooruVideo(
-                url: post.videoUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-        : InteractiveBooruImage(
-            useHero: page == currentPage,
-            heroTag: "${post.id}_hero",
-            aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            width: post.width,
-            height: post.height,
-            onZoomUpdated: onZoomUpdated,
-          );
+    final media = PostMedia(
+      post: post,
+      imageUrl: post.sampleImageUrl,
+      placeholderImageUrl: post.thumbnailImageUrl,
+      onImageTap: onImageTap,
+      onCurrentVideoPositionChanged: onCurrentPositionChanged,
+      onVideoVisibilityChanged: onVisibilityChanged,
+      useHero: page == currentPage,
+      onImageZoomUpdated: onZoomUpdated,
+    );
 
     return [
       if (!expandedOnCurrentPage)
