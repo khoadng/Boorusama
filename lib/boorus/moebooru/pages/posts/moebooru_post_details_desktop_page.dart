@@ -11,11 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/core/widgets/posts/source_section.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
@@ -86,15 +85,11 @@ class _MoebooruPostDetailsDesktopPageState
           post: post,
         ),
         mediaBuilder: (context) {
-          return InteractiveBooruImage(
-            useHero: false,
-            heroTag: "",
-            aspectRatio: post.aspectRatio,
+          return PostMedia(
+            post: post,
             imageUrl: post.sampleImageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            width: post.width,
-            height: post.height,
+            autoPlay: true,
           );
         },
         infoBuilder: (context) {

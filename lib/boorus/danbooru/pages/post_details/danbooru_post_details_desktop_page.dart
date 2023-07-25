@@ -11,11 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/boorus/core/widgets/interactive_booru_image.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -94,23 +93,15 @@ class _DanbooruPostDetailsDesktopPageState
         mediaBuilder: (context) {
           final noteState = ref.watch(notesControllerProvider(post));
 
-          return InteractiveBooruImage(
-            useHero: false,
-            heroTag: "",
-            aspectRatio: post.aspectRatio,
+          return PostMedia(
+            post: post,
             imageUrl: post.sampleImageUrl,
             // Prevent placeholder image from showing when first loaded a post with translated image
-            placeholderImageUrl: post.thumbnailImageUrl,
-            // currentPage == widget.intitialIndex && post.isTranslated
-            //     ? null
-            //     : post.thumbnailImageUrl,
-            // onCached: (path) =>
-            //     ref.read(postShareProvider(post).notifier).setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
+            placeholderImageUrl:
+                post.isTranslated ? null : post.thumbnailImageUrl,
             imageOverlayBuilder: (constraints) =>
                 noteOverlayBuilderDelegate(constraints, post, noteState),
-            width: post.width,
-            height: post.height,
+            autoPlay: true,
           );
         },
         infoBuilder: (context) {
