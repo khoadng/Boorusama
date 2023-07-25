@@ -5,22 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
-class BooruSelector extends ConsumerWidget {
+class BooruSelector extends ConsumerStatefulWidget {
   const BooruSelector({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final configs = ref.watch(booruConfigProvider);
+  ConsumerState<BooruSelector> createState() => _BooruSelectorState();
+}
+
+class _BooruSelectorState extends ConsumerState<BooruSelector> {
+  @override
+  Widget build(BuildContext context) {
+    final configs = ref.watch(configsProvider);
     final currentConfig = ref.watch(currentBooruConfigProvider);
 
     void show(BooruConfig config) {
@@ -40,89 +48,115 @@ class BooruSelector extends ConsumerWidget {
       );
     }
 
+    void hide() => context.contextMenuOverlay.hide();
+
     return SizedBox(
       width: 68,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Column(
-              children: [
-                for (final config in configs)
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                    child: Material(
-                      color: currentConfig == config
-                          ? context.colorScheme.primary
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(4),
-                      child: InkWell(
-                        hoverColor: context.theme.hoverColor.withOpacity(0.1),
-                        onSecondaryTap: () => show(config),
-                        onLongPress: () => show(config),
-                        onTap: () => ref
-                            .read(currentBooruConfigProvider.notifier)
-                            .update(config),
-                        child: Container(
-                          width: 60,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              switch (PostSource.from(config.url)) {
-                                WebSource source => FittedBox(
-                                    child: CachedNetworkImage(
-                                      width: 24,
-                                      height: 24,
-                                      fit: BoxFit.cover,
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 100),
-                                      fadeOutDuration:
-                                          const Duration(milliseconds: 200),
-                                      imageUrl: source.faviconUrl,
-                                      errorWidget: (context, url, error) =>
-                                          const SizedBox.shrink(),
-                                      errorListener: (e) {
-                                        // Ignore error
-                                      },
+        child: CustomScrollView(
+          slivers: [
+            ReorderableSliverList(
+                onReorderStarted: (index) => show(configs[index]),
+                onHover: (start, current) => hide(),
+                delegate: ReorderableSliverChildBuilderDelegate(
+                  (context, index) {
+                    final config = configs[index];
+
+                    return Padding(
+                      key: ValueKey(config.id),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 4),
+                      child: Material(
+                        color: currentConfig == config
+                            ? context.colorScheme.primary
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(4),
+                        child: InkWell(
+                          hoverColor: context.theme.hoverColor.withOpacity(0.1),
+                          onSecondaryTap: () => show(config),
+                          onTap: () => ref
+                              .read(currentBooruConfigProvider.notifier)
+                              .update(config),
+                          child: Container(
+                            width: 60,
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                switch (PostSource.from(config.url)) {
+                                  WebSource source => FittedBox(
+                                      child: CachedNetworkImage(
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.cover,
+                                        fadeInDuration:
+                                            const Duration(milliseconds: 100),
+                                        fadeOutDuration:
+                                            const Duration(milliseconds: 200),
+                                        imageUrl: source.faviconUrl,
+                                        errorWidget: (context, url, error) =>
+                                            const SizedBox.shrink(),
+                                        errorListener: (e) {
+                                          // Ignore error
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                _ => const Card(
-                                    child: SizedBox(
-                                      width: 24,
-                                      height: 24,
+                                  _ => const Card(
+                                      child: SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                      ),
                                     ),
+                                },
+                                const SizedBox(height: 4),
+                                Text(
+                                  config.name,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 10,
                                   ),
-                              },
-                              const SizedBox(height: 4),
-                              Text(
-                                config.name,
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 10,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                IconButton(
-                  splashRadius: 20,
-                  onPressed: () => context.go('/boorus/add'),
-                  icon: const Icon(Icons.add),
+                    );
+                  },
+                  childCount: configs.length,
                 ),
-              ],
+                onReorder: (oldIndex, newIndex) {
+                  final orders = ref.read(configIdOrdersProvider);
+                  final newOrders = (orders.isEmpty
+                          ? [for (final config in configs) config.id]
+                          : orders)
+                      .toList();
+
+                  newOrders.reorder(oldIndex, newIndex);
+
+                  ref.setBooruConfigOrder(newOrders);
+                }),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Column(
+                  children: [
+                    IconButton(
+                      splashRadius: 20,
+                      onPressed: () => context.go('/boorus/add'),
+                      icon: const Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

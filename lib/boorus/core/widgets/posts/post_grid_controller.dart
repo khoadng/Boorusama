@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/dart.dart';
 
 typedef ItemFetcher<T> = Future<List<T>> Function(int page);
 typedef ItemRefresher<T> = Future<List<T>> Function();
@@ -153,8 +154,7 @@ class PostGridController<T> extends ChangeNotifier {
     void Function()? onSuccess,
   }) {
     final data = [..._items];
-    final item = data.removeAt(fromIndex);
-    data.insert(toIndex, item);
+    data.reorder(fromIndex, toIndex);
     onSuccess?.call();
 
     _items = data;

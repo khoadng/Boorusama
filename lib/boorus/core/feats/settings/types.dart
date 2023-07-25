@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 enum ImageQuality {
@@ -57,6 +58,7 @@ class Settings extends Equatable {
     required this.autoFocusSearchBar,
     required this.postsPerPage,
     required this.currentBooruConfigId,
+    required this.booruConfigIdOrders,
     required this.downloadQuality,
     required this.showScoresInGrid,
     required this.showPostListConfigHeader,
@@ -95,6 +97,9 @@ class Settings extends Equatable {
         autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         postsPerPage = json['postsPerPage'] ?? 60,
         currentBooruConfigId = json['currentBooruConfigId'],
+        booruConfigIdOrders = json['booruConfigIdOrders'] != null
+            ? castOrFallback<String>(json['booruConfigIdOrders'], '')
+            : '',
         showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
@@ -116,6 +121,7 @@ class Settings extends Equatable {
     autoFocusSearchBar: true,
     postsPerPage: 60,
     currentBooruConfigId: -1,
+    booruConfigIdOrders: '',
     downloadQuality: DownloadQuality.original,
     showScoresInGrid: false,
     showPostListConfigHeader: true,
@@ -147,6 +153,8 @@ class Settings extends Equatable {
 
   final int currentBooruConfigId;
 
+  final String booruConfigIdOrders;
+
   final DownloadQuality downloadQuality;
 
   final bool showScoresInGrid;
@@ -170,6 +178,7 @@ class Settings extends Equatable {
     bool? autoFocusSearchBar,
     int? postsPerPage,
     int? currentBooruConfigId,
+    String? booruConfigIdOrders,
     DownloadQuality? downloadQuality,
     bool? showScoresInGrid,
     bool? showPostListConfigHeader,
@@ -192,6 +201,7 @@ class Settings extends Equatable {
         autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
         postsPerPage: postsPerPage ?? this.postsPerPage,
         currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
+        booruConfigIdOrders: booruConfigIdOrders ?? this.booruConfigIdOrders,
         downloadQuality: downloadQuality ?? this.downloadQuality,
         showScoresInGrid: showScoresInGrid ?? this.showScoresInGrid,
         showPostListConfigHeader:
@@ -215,6 +225,7 @@ class Settings extends Equatable {
         'autoFocusSearchBar': autoFocusSearchBar,
         'postsPerPage': postsPerPage,
         'currentBooruConfigId': currentBooruConfigId,
+        'booruConfigIdOrders': booruConfigIdOrders,
         'downloadQuality': downloadQuality.index,
         'showScoresInGrid': showScoresInGrid,
         'showPostListConfigHeader': showPostListConfigHeader,
@@ -238,6 +249,7 @@ class Settings extends Equatable {
         autoFocusSearchBar,
         postsPerPage,
         currentBooruConfigId,
+        booruConfigIdOrders,
         downloadQuality,
         showScoresInGrid,
         showPostListConfigHeader,

@@ -23,7 +23,10 @@ dependencies:
   chewie: ^1.4.0
   collection: ^1.17.0
   connectivity_plus: ^4.0.0
-  context_menus: ^1.0.2
+  context_menus:
+    git:
+      url: https://github.com/khoadng/flutter-context-menu.git
+      ref: e0ee29b44156afa167d8328299e00486d2787b4b
   crypto: ^3.0.2
   device_info_plus: ^8.2.2
   dio: ^5.2.1
@@ -93,6 +96,10 @@ dependencies:
   rate_my_app: ^2.0.0
   recase: ^4.1.0
   reorderable_grid_view: ^2.2.6
+  reorderables:
+    git:
+      url: https://github.com/khoadng/reorderables.git
+      ref: 69d1b8b272f3b77dc6a6b7399fa8931cdd660d77
   retrofit: ^4.0.1
   rich_text_controller:
     git:

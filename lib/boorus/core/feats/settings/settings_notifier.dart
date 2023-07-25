@@ -72,4 +72,10 @@ extension SettingsNotifierX on WidgetRef {
           showPostListConfigHeader: active,
         ),
       );
+
+  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
+        read(settingsProvider).copyWith(
+          booruConfigIdOrders: configIds.join(' '),
+        ),
+      );
 }

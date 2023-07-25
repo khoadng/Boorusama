@@ -55,4 +55,18 @@ extension ListX<E> on List<E> {
       return null;
     }
   }
+
+  bool reorder(int oldIndex, int newIndex) {
+    // Check if oldIndex and newIndex are within the bounds of the list
+    if (oldIndex < 0 ||
+        oldIndex >= length ||
+        newIndex < 0 ||
+        newIndex >= length) return false;
+
+    final item = removeAt(oldIndex);
+
+    insert(newIndex, item);
+
+    return true;
+  }
 }

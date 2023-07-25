@@ -311,10 +311,11 @@ packages:
   context_menus:
     dependency: "direct main"
     description:
-      name: context_menus
-      sha256: "25313f2a17dc936f541f8012761648cb58d936c5d6f6bf7282f137a4b9dedddb"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: e0ee29b44156afa167d8328299e00486d2787b4b
+      resolved-ref: e0ee29b44156afa167d8328299e00486d2787b4b
+      url: "https://github.com/khoadng/flutter-context-menu.git"
+    source: git
     version: "1.0.2"
   convert:
     dependency: transitive
@@ -1332,6 +1333,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.6"
+  reorderables:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "69d1b8b272f3b77dc6a6b7399fa8931cdd660d77"
+      resolved-ref: "69d1b8b272f3b77dc6a6b7399fa8931cdd660d77"
+      url: "https://github.com/khoadng/reorderables.git"
+    source: git
+    version: "0.6.0"
   retrofit:
     dependency: "direct main"
     description:
