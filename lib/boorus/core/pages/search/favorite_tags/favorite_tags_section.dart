@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
 import '../common/option_tags_arena.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';

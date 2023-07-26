@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'pool_image.dart';
 

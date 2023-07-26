@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
+import 'package:boorusama/string.dart';
 
 class UserAgentGeneratorImpl implements UserAgentGenerator {
   UserAgentGeneratorImpl({

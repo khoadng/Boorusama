@@ -10,7 +10,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/rule34xxx/rule34xxx_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 import 'rule34xxx_autocomplete_dto.dart';
 
 (int count, String label) extractDataFromTagLabel(String input) {

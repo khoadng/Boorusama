@@ -6,9 +6,9 @@ import 'package:filesize/filesize.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
 
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({

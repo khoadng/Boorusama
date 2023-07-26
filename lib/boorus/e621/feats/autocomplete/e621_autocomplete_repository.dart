@@ -4,8 +4,8 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_repository.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/string.dart';
 import 'e621_autocomplete_dto.dart';
 
 class E621AutocompleteRepository implements AutocompleteRepository {

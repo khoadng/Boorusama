@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/downloads/widgets/bulk_download_tile.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 enum BulkDownloadFilter {

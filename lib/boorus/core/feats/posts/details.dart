@@ -7,8 +7,8 @@ import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/string.dart';
 
 mixin PostDetailsTagsX<T extends Post>
     on AutoDisposeFamilyNotifier<List<Recommend<T>>, int> {

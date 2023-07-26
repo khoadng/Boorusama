@@ -8,9 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
 
 class PoolTiles extends StatelessWidget {
   const PoolTiles({

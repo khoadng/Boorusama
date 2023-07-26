@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 
 String? booruFilterConfigToE621Tag(BooruConfigRatingFilter? filter) {
   if (filter == null) return null;

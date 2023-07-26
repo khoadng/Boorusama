@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/forums/forum_post_header.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 import 'danbooru_forum_vote_chip.dart';
 
 class DanbooruForumPostsPage extends ConsumerWidget {
