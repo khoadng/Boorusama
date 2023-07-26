@@ -12,7 +12,7 @@ class Rule34xxxPostDto {
   final String? owner;
   final int? parentId;
   final String? rating;
-  final bool? sample;
+  final int? sample;
   final int? sampleHeight;
   final int? sampleWidth;
   final int? score;
