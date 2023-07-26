@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/time.dart';
 import 'package:boorusama/utils/html_utils.dart';
 
 class PoolDetailPage extends ConsumerWidget {

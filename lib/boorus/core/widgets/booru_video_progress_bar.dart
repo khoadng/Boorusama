@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/video_progress_bar.dart';
 
 // Class to store duration and position of video

@@ -9,7 +9,7 @@ import 'package:xml/xml.dart';
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/gelbooru_comment.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/time.dart';
 import 'gelbooru_comment_dto.dart';
 
 abstract interface class GelbooruCommentRepository {
