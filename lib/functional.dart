@@ -3,10 +3,10 @@
 /// avoid conflicts with the `State` class from the Flutter SDK.
 
 // Package imports:
-import 'package:fpdart/fpdart.dart' as fpdart show State;
+import 'package:fpdart/fpdart.dart' as fpdart show State, Option, Either;
 
 // The `fpdart` library is used to create functional programming constructs.
-export 'package:fpdart/fpdart.dart' hide State, Tuple2;
+export 'package:fpdart/fpdart.dart' hide State;
 export 'package:fast_immutable_collections/fast_immutable_collections.dart'
     hide Predicate;
 
@@ -19,3 +19,10 @@ export 'package:boorusama/utils/fp_utils.dart';
 
 /// A type alias for the `State` class from the `fpdart` library.
 typedef FpState<S, A> = fpdart.State<S, A>;
+
+extension FpdartOnNullable<T> on T? {
+  fpdart.Option<T> toOption() => fpdart.Option.fromNullable(this);
+
+  fpdart.Either<L, T> toEither<L>(L Function() onNull) =>
+      fpdart.Either.fromNullable(this, onNull);
+}

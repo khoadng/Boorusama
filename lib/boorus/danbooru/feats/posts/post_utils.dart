@@ -13,11 +13,11 @@ Option<String> tagFilterCategoryToString(TagFilterCategory category) =>
 
 extension PostDetailsPostX on DanbooruPost {
   void loadDetailsFrom(WidgetRef ref) {
-    ref.read(danbooruPostDetailsChildrenProvider(this.id).notifier).load(this);
-    ref.read(danbooruPostDetailsArtistProvider(this.id).notifier).load(this);
-    ref.read(danbooruPostDetailsCharacterProvider(this.id).notifier).load(this);
-    ref.read(danbooruPostDetailsPoolsProvider(this.id).notifier).load();
-    ref.read(danbooruCommentsProvider.notifier).load(this.id);
-    ref.read(danbooruArtistCommentariesProvider.notifier).load(this.id);
+    ref.read(danbooruPostDetailsChildrenProvider(id).notifier).load(this);
+    ref.read(danbooruPostDetailsArtistProvider(id).notifier).load(this);
+    ref.read(danbooruPostDetailsCharacterProvider(id).notifier).load(this);
+    ref.read(danbooruPostDetailsPoolsProvider(id).notifier).load();
+    ref.read(danbooruCommentsProvider.notifier).load(id);
+    ref.read(danbooruArtistCommentariesProvider.notifier).load(id);
   }
 }
