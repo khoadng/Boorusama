@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruForumsApi {
+mixin DanbooruApiForums {
   @GET('/forum_topics.json')
   Future<HttpResponse> getForumTopics({
     @Query('page') int? page,

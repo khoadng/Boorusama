@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruFavoritesApi {
+mixin DanbooruApiFavorites {
   @POST('/favorites.json')
   Future<HttpResponse> addToFavorites(
     @Query('post_id') int postId,

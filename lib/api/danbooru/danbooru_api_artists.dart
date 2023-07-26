@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruArtistsApi {
+mixin DanbooruApiArtists {
   @GET('/artists.json')
   Future<HttpResponse> getArtist(
     @Query('search[name]') String name, {

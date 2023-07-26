@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruCommentsApi {
+mixin DanbooruApiComments {
   @GET('/comments.json')
   Future<HttpResponse> getComments(
     @Query('search[post_id]') int postId,

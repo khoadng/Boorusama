@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruExploresApi {
+mixin DanbooruApiExplores {
   @GET('/explore/posts/popular.json')
   Future<HttpResponse> getPopularPosts(
     @Query('date') String date,

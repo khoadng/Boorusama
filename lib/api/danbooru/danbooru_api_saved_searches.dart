@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruSavedSearchesApi {
+mixin DanbooruApiSavedSearches {
   @GET('/saved_searches.json')
   Future<HttpResponse> getSavedSearches(
     @Query('page') int page,

@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruTagsApi {
+mixin DanbooruApiTags {
   @GET('/tags.json')
   Future<HttpResponse> getTagsByNamePattern(
     @Query('page') int page,

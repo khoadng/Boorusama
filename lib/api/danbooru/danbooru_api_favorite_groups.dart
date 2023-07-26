@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruFavoriteGroupsApi {
+mixin DanbooruApiFavoriteGroups {
   @GET('/favorite_groups.json')
   Future<HttpResponse> getFavoriteGroups({
     @Query('page') int? page,

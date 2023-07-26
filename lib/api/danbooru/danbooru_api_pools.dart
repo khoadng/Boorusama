@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruPoolsApi {
+mixin DanbooruApiPools {
   @GET('/pools.json')
   Future<HttpResponse> getPools(
     @Query('page') int page,

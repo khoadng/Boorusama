@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-mixin DanbooruUsersApi {
+mixin DanbooruApiUsers {
   @GET('/users.json')
   Future<HttpResponse> getUsersByIdStringComma(
     @Query('search[id]') String idComma,

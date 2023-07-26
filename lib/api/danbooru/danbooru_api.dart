@@ -5,34 +5,34 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'danbooru_artists_api.dart';
-import 'danbooru_comments_api.dart';
-import 'danbooru_explores_api.dart';
-import 'danbooru_favorite_groups_api.dart';
-import 'danbooru_favorites_api.dart';
-import 'danbooru_forums_api.dart';
-import 'danbooru_pools_api.dart';
-import 'danbooru_posts_api.dart';
-import 'danbooru_saved_searches_api.dart';
-import 'danbooru_tags_api.dart';
-import 'danbooru_users_api.dart';
+import 'danbooru_api_artists.dart';
+import 'danbooru_api_comments.dart';
+import 'danbooru_api_explores.dart';
+import 'danbooru_api_favorite_groups.dart';
+import 'danbooru_api_favorites.dart';
+import 'danbooru_api_forums.dart';
+import 'danbooru_api_pools.dart';
+import 'danbooru_api_posts.dart';
+import 'danbooru_api_saved_searches.dart';
+import 'danbooru_api_tags.dart';
+import 'danbooru_api_users.dart';
 
 part 'danbooru_api.g.dart';
 
 @RestApi()
 abstract class DanbooruApi
     with
-        DanbooruPostsApi,
-        DanbooruTagsApi,
-        DanbooruFavoritesApi,
-        DanbooruCommentsApi,
-        DanbooruUsersApi,
-        DanbooruArtistsApi,
-        DanbooruExploresApi,
-        DanbooruSavedSearchesApi,
-        DanbooruFavoriteGroupsApi,
-        DanbooruForumsApi,
-        DanbooruPoolsApi {
+        DanbooruApiPosts,
+        DanbooruApiTags,
+        DanbooruApiFavorites,
+        DanbooruApiComments,
+        DanbooruApiUsers,
+        DanbooruApiArtists,
+        DanbooruApiExplores,
+        DanbooruApiSavedSearches,
+        DanbooruApiFavoriteGroups,
+        DanbooruApiForums,
+        DanbooruApiPools {
   factory DanbooruApi(
     Dio dio, {
     String baseUrl,
