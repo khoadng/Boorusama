@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/tag_detail_region.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'related_tag_cloud_chip.dart';
 
@@ -83,7 +84,7 @@ class _DanbooruTagDetailsPageState
           errors: errors,
           controller: controller,
           sliverHeaderBuilder: (context) => [
-            if (isMobilePlatform()) ...[
+            if (isMobilePlatform() && context.orientation.isPortrait) ...[
               TagDetailsSlilverAppBar(
                 tagName: widget.tagName,
               ),

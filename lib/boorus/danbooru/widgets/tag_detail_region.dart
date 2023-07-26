@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -24,8 +25,9 @@ class TagDetailsRegion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return !isMobilePlatform()
-        ? Material(
+    return isMobilePlatform() && context.orientation.isPortrait
+        ? builder(context)
+        : Material(
             color: context.colorScheme.background,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -63,7 +65,6 @@ class TagDetailsRegion extends ConsumerWidget {
                 ),
               ],
             ),
-          )
-        : builder(context);
+          );
   }
 }
