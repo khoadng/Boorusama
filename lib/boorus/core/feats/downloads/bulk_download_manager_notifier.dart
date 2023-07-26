@@ -1,13 +1,12 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/foundation/permissions/permission.dart';
+import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/utils/duration_utils.dart';
 
 const _serviceName = 'Bulk Download Manager';
