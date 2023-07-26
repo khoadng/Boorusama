@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
-// Package imports:
-import 'package:recase/recase.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';

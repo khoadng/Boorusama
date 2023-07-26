@@ -1,6 +1,7 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
 import 'danbooru_artist_url.dart';
 
 class DanbooruArtist extends Equatable {
