@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -12,22 +11,19 @@ import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentar
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/post_note.dart';
-import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
+import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
-import 'package:boorusama/boorus/e621/feats/artists/e621_artist_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
-import 'package:boorusama/boorus/e621/router.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'e621_information_section.dart';
 import 'e621_post_action_toolbar.dart';
+import 'e621_recommended_artist_list.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
   const E621PostDetailsPage({
@@ -148,102 +144,29 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
               ),
               // const RelatedPostsSection(),
               if (expanded && page == currentPage)
-                Builder(
-                  builder: (context) {
-                    final artist = posts[page].artistTags.firstOrNull;
-                    return ref.watch(e621ArtistPostsProvider(artist)).maybeWhen(
-                          data: (posts) => RecommendPosts(
-                            title: artist?.replaceAll('_', ' ') ?? '',
-                            items: posts.take(30).toList(),
-                            onTap: (index) => goToE621DetailsPage(
-                              context: context,
-                              posts: posts,
-                              initialPage: index,
-                            ),
-                            onHeaderTap: () =>
-                                goToE621ArtistPage(context, artist ?? ''),
-                            imageUrl: (item) => item.thumbnailFromSettings(
-                              ref.read(settingsProvider),
-                            ),
-                          ),
-                          orElse: () => const SliverSizedBox.shrink(),
-                        );
-                  },
-                ),
-              // RecommendCharacterList(
-              //   onHeaderTap: (index) =>
-              //       goToCharacterPage(context, characters[index].tag),
-              //   onTap: (recommendIndex, postIndex) => goToDetailPage(
-              //     context: context,
-              //     posts: characters[recommendIndex].posts,
-              //     initialIndex: postIndex,
-              //     hero: false,
-              //   ),
-              //   recommends: characters,
-              //   imageUrl: (item) => item.url360x360,
-              // ),
+                E621RecommendedArtistList(post: posts[page]),
             ],
           ),
         );
       },
       pageCount: posts.length,
       topRightButtonsBuilder: (page, expanded) {
-        final noteState = ref.watch(notesControllerProvider(posts[page]));
+        final post = posts[page];
+        final noteState = ref.watch(notesControllerProvider(post));
 
         return [
-          Builder(
-            builder: (_) {
-              final theme = ref.watch(themeProvider);
-
-              if (!posts[page].isTranslated) {
-                return const SizedBox.shrink();
-              }
-
-              if (!expanded && noteState.notes.isEmpty) {
-                return ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        context.colorScheme.background.withOpacity(0.8),
-                    padding: const EdgeInsets.all(4),
-                  ),
-                  icon: const Icon(Icons.download_rounded),
-                  label: const Text('Notes'),
-                  onPressed: () => ref
-                      .read(notesControllerProvider(posts[page]).notifier)
-                      .load(),
-                );
-              }
-
-              return CircularIconButton(
-                icon: noteState.enableNotes
-                    ? Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: FaIcon(
-                          FontAwesomeIcons.eyeSlash,
-                          size: 18,
-                          color: theme == ThemeMode.light
-                              ? context.colorScheme.onPrimary
-                              : null,
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: FaIcon(
-                          FontAwesomeIcons.eye,
-                          size: 18,
-                          color: theme == ThemeMode.light
-                              ? context.colorScheme.onPrimary
-                              : null,
-                        ),
-                      ),
-                onPressed: () => ref
-                    .read(notesControllerProvider(posts[page]).notifier)
-                    .toggleNoteVisibility(),
-              );
-            },
+          NoteActionButton(
+            post: post,
+            showDownload: !expanded && noteState.notes.isEmpty,
+            enableNotes: noteState.enableNotes,
+            onDownload: () =>
+                ref.read(notesControllerProvider(post).notifier).load(),
+            onToggleNotes: () => ref
+                .read(notesControllerProvider(post).notifier)
+                .toggleNoteVisibility(),
           ),
           GeneralMoreActionButton(
-            post: posts[page],
+            post: post,
           ),
         ];
       },
@@ -257,59 +180,27 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final noteState = ref.watch(notesControllerProvider(post));
     // final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     // final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = post.isVideo
-        ? post.format == 'webm'
-            ? EmbeddedWebViewWebm(
-                url: post.originalImageUrl,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
-              )
-            : BooruVideo(
-                url: post.videoUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-        : InteractiveBooruImage(
-            useHero: page == currentPage,
-            heroTag: "${post.id}_hero",
-            aspectRatio: post.aspectRatio,
-            imageUrl: post.thumbnailFromSettings(ref.read(settingsProvider)),
-            // Prevent placeholder image from showing when first loaded a post with translated image
-            placeholderImageUrl:
-                currentPage == widget.intitialIndex && post.isTranslated
-                    ? null
-                    : post.thumbnailImageUrl,
-            onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            imageOverlayBuilder: (constraints) => [
-              if (noteState.enableNotes)
-                ...noteState.notes
-                    .map((e) => e.adjustNoteCoordFor(
-                          posts[page],
-                          widthConstraint: constraints.maxWidth,
-                          heightConstraint: constraints.maxHeight,
-                        ))
-                    .map((e) => PostNote(
-                          coordinate: e.coordinate,
-                          content: e.content,
-                        )),
-            ],
-            width: post.width,
-            height: post.height,
-            onZoomUpdated: onZoomUpdated,
-          );
+    final media = PostMedia(
+      post: post,
+      imageUrl: post.sampleImageUrl,
+      // Prevent placeholder image from showing when first loaded a post with translated image
+      placeholderImageUrl:
+          currentPage == widget.intitialIndex && post.isTranslated
+              ? null
+              : post.thumbnailImageUrl,
+      onImageTap: onImageTap,
+      onCurrentVideoPositionChanged: onCurrentPositionChanged,
+      onVideoVisibilityChanged: onVisibilityChanged,
+      imageOverlayBuilder: (constraints) =>
+          noteOverlayBuilderDelegate(constraints, post, noteState),
+      useHero: page == currentPage,
+      onImageZoomUpdated: onZoomUpdated,
+    );
 
     return [
       if (!expandedOnCurrentPage)
@@ -320,7 +211,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
         )
       else if (post.isVideo)
         BooruImage(
-          imageUrl: post.thumbnailFromSettings(ref.watch(settingsProvider)),
+          imageUrl: post.videoThumbnailUrl,
           fit: BoxFit.contain,
         )
       else
@@ -387,7 +278,7 @@ class E621ArtistSection extends ConsumerWidget {
 
     return ArtistSection(
       //FIXME: shouldn't use danbooru's artist section, should separate it
-      artistCommentary: ArtistCommentary(
+      commentary: ArtistCommentary(
         originalTitle: '',
         originalDescription: commentary,
         translatedTitle: '',

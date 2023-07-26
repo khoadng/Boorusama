@@ -9,11 +9,10 @@ import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 part 'details_page_controller.dart';
@@ -170,8 +169,6 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
     return WillPopScope(
       onWillPop: () async {
         await _onBackButtonPressed();
@@ -210,8 +207,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           body: Stack(
             children: [
               _buildScrollContent(),
-              _buildNavigationButtonGroup(theme, context),
-              _buildTopRightButtonGroup(theme),
+              _buildNavigationButtonGroup(context),
+              _buildTopRightButtonGroup(),
               _buildBottomSheet(),
             ],
           ),
@@ -346,7 +343,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildNavigationButtonGroup(ThemeMode theme, BuildContext context) {
+  Widget _buildNavigationButtonGroup(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: isExpanded,
       builder: (_, expanded, __) => ValueListenableBuilder(
@@ -375,7 +372,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
     );
   }
 
-  Widget _buildTopRightButtonGroup(ThemeMode theme) {
+  Widget _buildTopRightButtonGroup() {
     return ValueListenableBuilder(
       valueListenable: isExpanded,
       builder: (_, expanded, __) => ValueListenableBuilder(
@@ -407,7 +404,7 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
   }
 }
 
-class _NavigationButtonBar extends ConsumerWidget {
+class _NavigationButtonBar extends StatelessWidget {
   const _NavigationButtonBar({
     required this.onBack,
   });
@@ -415,15 +412,13 @@ class _NavigationButtonBar extends ConsumerWidget {
   final VoidCallback onBack;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
-
+  Widget build(BuildContext context) {
     return Row(
       children: [
         CircularIconButton(
           icon: Padding(
             padding: const EdgeInsets.only(left: 8),
-            child: theme == ThemeMode.light
+            child: !context.themeMode.isDark
                 ? Icon(
                     Icons.arrow_back_ios,
                     color: context.colorScheme.onPrimary,
@@ -436,7 +431,7 @@ class _NavigationButtonBar extends ConsumerWidget {
           width: 4,
         ),
         CircularIconButton(
-          icon: theme == ThemeMode.light
+          icon: !context.themeMode.isDark
               ? Icon(
                   Icons.home,
                   color: context.colorScheme.onPrimary,

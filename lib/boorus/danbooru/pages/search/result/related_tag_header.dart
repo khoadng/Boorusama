@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'related_tag_chip.dart';
 import 'view_more_tag_button.dart';
 
@@ -17,28 +17,29 @@ class RelatedTagHeader extends StatefulWidget {
     super.key,
     required this.relatedTag,
     required this.onSelected,
+    this.backgroundColor,
   });
 
   final RelatedTag relatedTag;
   final void Function(RelatedTagItem item) onSelected;
+  final Color? backgroundColor;
 
   @override
   State<RelatedTagHeader> createState() => _RelatedTagHeaderState();
 }
 
 class _RelatedTagHeaderState extends State<RelatedTagHeader> {
-  late final tags = [...widget.relatedTag.tags]..shuffle();
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 8),
+      color: widget.backgroundColor,
       height: 50,
       child: ListView(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...tags.take(10).map((item) => _RelatedTagChip(
+          const SizedBox(width: 8),
+          ...widget.relatedTag.tags.take(15).map((item) => _RelatedTagChip(
                 relatedTag: item,
                 onPressed: () => widget.onSelected(item),
               )),
@@ -52,7 +53,10 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
               horizontal: 8,
               vertical: 10,
             ),
-            child: ViewMoreTagButton(relatedTag: widget.relatedTag),
+            child: ViewMoreTagButton(
+              relatedTag: widget.relatedTag,
+              onSelected: widget.onSelected,
+            ),
           ),
         ],
       ),
@@ -71,13 +75,13 @@ class _RelatedTagChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final theme = context.themeMode;
 
     return RelatedTagButton(
       backgroundColor: getTagColor(relatedTag.category, theme),
       onPressed: onPressed,
       label: Text(
-        relatedTag.tag.removeUnderscoreWithSpace(),
+        relatedTag.tag.replaceUnderscoreWithSpace(),
         overflow: TextOverflow.fade,
         maxLines: 1,
         softWrap: false,

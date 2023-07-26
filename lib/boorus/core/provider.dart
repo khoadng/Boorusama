@@ -23,7 +23,6 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
@@ -101,10 +100,6 @@ final loggerProvider =
 final bookmarkRepoProvider = Provider<BookmarkRepository>(
   (ref) => throw UnimplementedError(),
 );
-
-final themeProvider = Provider<ThemeMode>((ref) {
-  return ref.watch(settingsProvider).themeMode;
-});
 
 final deviceInfoProvider = Provider<DeviceInfo>((ref) {
   throw UnimplementedError();

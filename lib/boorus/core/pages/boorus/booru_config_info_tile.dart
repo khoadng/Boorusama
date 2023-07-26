@@ -7,10 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/booru_logo.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BooruConfigInfoTile extends ConsumerWidget {
@@ -35,8 +33,6 @@ class BooruConfigInfoTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
-
     return ListTile(
       visualDensity: VisualDensity.compact,
       horizontalTitleGap: 0,
@@ -51,7 +47,7 @@ class BooruConfigInfoTile extends ConsumerWidget {
       ),
       selected: selected ?? false,
       selectedTileColor: selectedTileColor,
-      title: Row(
+      title: Wrap(
         children: [
           Text(
             config.name,
@@ -66,10 +62,10 @@ class BooruConfigInfoTile extends ConsumerWidget {
               borderRadius: const BorderRadius.all(Radius.circular(4)),
               label: Text(
                 'Current'.toUpperCase(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
-                  color: theme.isDark ? Colors.black : Colors.white,
+                  color: Colors.white,
                 ),
               ),
               color: context.colorScheme.primary,
@@ -81,10 +77,10 @@ class BooruConfigInfoTile extends ConsumerWidget {
               borderRadius: const BorderRadius.all(Radius.circular(4)),
               label: Text(
                 config.ratingFilter.getRatingTerm().toUpperCase(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
-                  color: theme.isDark ? Colors.black : Colors.white,
+                  color: Colors.white,
                 ),
               ),
               color: Colors.green,

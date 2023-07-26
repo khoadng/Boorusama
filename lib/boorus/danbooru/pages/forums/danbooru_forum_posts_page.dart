@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/forums/forum_post_header.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'danbooru_forum_vote_chip.dart';
 
 class DanbooruForumPostsPage extends ConsumerWidget {
@@ -129,7 +130,7 @@ class _VoteChips extends ConsumerWidget {
           color: _color(e.type),
           borderColor: _borderColor(e.type),
           label: Text(
-            creator?.name.replaceAll('_', ' ') ?? 'User',
+            creator?.name.replaceUnderscoreWithSpace() ?? 'User',
             style: TextStyle(
               color: creator?.level.toOnDarkColor(),
               fontWeight: FontWeight.w500,

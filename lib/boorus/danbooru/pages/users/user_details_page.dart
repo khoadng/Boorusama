@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'user_info_box.dart';
 import 'user_stats_group.dart';
 
@@ -164,10 +165,7 @@ class _PreviewList extends ConsumerWidget {
             title,
             style: const TextStyle(fontWeight: FontWeight.w900),
           ),
-          visualDensity: const VisualDensity(
-            horizontal: -4,
-            vertical: -4,
-          ),
+          visualDensity: const ShrinkVisualDensity(),
           trailing: TextButton(
             onPressed: onViewMore,
             child: const Text('View all'),

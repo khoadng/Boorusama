@@ -7,13 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/warning_container.dart';
 
+//FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 class BlacklistedTagsPage extends ConsumerWidget {
   const BlacklistedTagsPage({
     super.key,
@@ -37,10 +38,16 @@ class BlacklistedTagsPage extends ConsumerWidget {
       onPressed: () {
         goToBlacklistedTagsSearchPage(
           context,
-          onSelectDone: (tagItems) {
+          ref: ref,
+          onSelectDone: (tagItems, currentQuery) {
+            final tagString = [
+              ...tagItems.map((e) => e.toString()),
+              if (currentQuery.isNotEmpty) currentQuery,
+            ].join(' ');
+
             ref
                 .read(danbooruBlacklistedTagsProvider.notifier)
-                .addWithToast(tag: tagItems.map((e) => e.toString()).join(' '));
+                .addWithToast(tag: tagString);
             context.navigator.pop();
           },
         );
@@ -83,15 +90,19 @@ class BlacklistedTagsList extends ConsumerWidget {
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
                           context,
+                          ref: ref,
                           initialTags: tag.split(' '),
-                          onSelectDone: (tagItems) {
+                          onSelectDone: (tagItems, currentQuery) {
+                            final tagString = [
+                              ...tagItems.map((e) => e.toString()),
+                              if (currentQuery.isNotEmpty) currentQuery,
+                            ].join(' ');
+
                             ref
                                 .read(danbooruBlacklistedTagsProvider.notifier)
                                 .replace(
                                   oldTag: tag,
-                                  newTag: tagItems
-                                      .map((e) => e.toString())
-                                      .join(' '),
+                                  newTag: tagString,
                                 );
                             context.navigator.pop();
                           },

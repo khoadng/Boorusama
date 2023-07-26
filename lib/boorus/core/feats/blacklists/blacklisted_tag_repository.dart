@@ -7,10 +7,5 @@ abstract class GlobalBlacklistedTagRepository {
   Future<BlacklistedTag> addTag(String tag);
   Future<void> removeTag(int tagId);
   Future<List<BlacklistedTag>> getBlacklist();
+  Future<BlacklistedTag> updateTag(int tagId, String newTag);
 }
-
-Future<Set<String>> getBlacklistedTags(
-        GlobalBlacklistedTagRepository blacklistedTagRepository) =>
-    blacklistedTagRepository
-        .getBlacklist()
-        .then((tags) => tags.map((tag) => tag.name).toSet());

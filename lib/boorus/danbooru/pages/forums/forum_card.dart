@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/compact_chip.dart';
 
 class ForumCard extends ConsumerWidget {
@@ -36,7 +36,7 @@ class ForumCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = generateChipColors(creatorColor, ref.watch(themeProvider));
+    final colors = generateChipColors(creatorColor, context.themeMode);
 
     return InkWell(
       onTap: onTap,
@@ -76,7 +76,7 @@ class ForumCard extends ConsumerWidget {
               Row(
                 children: [
                   CompactChip(
-                    label: creatorName.replaceAll('_', ' '),
+                    label: creatorName.replaceUnderscoreWithSpace(),
                     backgroundColor: colors.backgroundColor,
                     textColor: colors.foregroundColor,
                     onTap: onCreatorTap,

@@ -11,11 +11,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/search/suggestions_notifier.dart';
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
 void showSimpleTagSearchView(
@@ -54,9 +55,7 @@ void showSimpleTagSearchView(
   }
 }
 
-final _queryProvider = StateProvider.autoDispose<String>((ref) => "");
-
-class SimpleTagSearchView extends ConsumerWidget {
+class SimpleTagSearchView extends ConsumerStatefulWidget {
   const SimpleTagSearchView({
     super.key,
     required this.onSelected,
@@ -77,58 +76,77 @@ class SimpleTagSearchView extends ConsumerWidget {
   final Color? Function(AutocompleteData tag)? textColorBuilder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final query = ref.watch(_queryProvider);
-    final suggestionTags = ref.watch(suggestionsQuickSearchProvider)[query] ??
-        <AutocompleteData>[].lock;
-    final tags = ensureValidTag
-        ? suggestionTags.where((e) => e.category != null).toIList()
-        : suggestionTags;
+  ConsumerState<SimpleTagSearchView> createState() =>
+      _SimpleTagSearchViewState();
+}
 
-    return Scaffold(
-      floatingActionButton: floatingActionButton?.call(query),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            child: BooruSearchBar(
-              backgroundColor: context.colorScheme.background,
-              leading: backButton,
-              autofocus: true,
-              onSubmitted: (text) => onSubmitted?.call(context, text),
-              onChanged: (value) {
-                ref.read(_queryProvider.notifier).state = value;
-                ref
-                    .read(suggestionsQuickSearchProvider.notifier)
-                    .getSuggestions(value);
-              },
-            ),
-          ),
-          tags.isNotEmpty
-              ? Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: TagSuggestionItems(
-                      textColorBuilder: textColorBuilder,
-                      backgroundColor: context.colorScheme.background,
-                      tags: tags,
-                      onItemTap: (tag) {
-                        if (closeOnSelected) {
-                          context.navigator.pop();
-                        }
-                        onSelected(tag);
-                      },
-                      currentQuery: query,
-                    ),
-                  ),
-                )
-              : const Expanded(
-                  child: Center(
-                    child: SizedBox.shrink(),
-                  ),
+class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
+  final textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    textEditingController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: textEditingController,
+      builder: (context, query, child) {
+        final suggestionTags = ref.watch(suggestionProvider(query.text));
+        final tags = widget.ensureValidTag
+            ? suggestionTags.where((e) => e.category != null).toIList()
+            : suggestionTags;
+
+        return Scaffold(
+          floatingActionButton: widget.floatingActionButton?.call(query.text),
+          body: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: BooruSearchBar(
+                  queryEditingController: textEditingController,
+                  backgroundColor: context.colorScheme.background,
+                  leading: widget.backButton,
+                  autofocus: true,
+                  onSubmitted: (text) =>
+                      widget.onSubmitted?.call(context, text),
+                  onChanged: (value) {
+                    ref
+                        .read(suggestionsProvider.notifier)
+                        .getSuggestions(value);
+                  },
                 ),
-        ],
-      ),
+              ),
+              tags.isNotEmpty
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TagSuggestionItems(
+                          textColorBuilder: widget.textColorBuilder,
+                          backgroundColor: context.colorScheme.background,
+                          tags: tags,
+                          onItemTap: (tag) {
+                            if (widget.closeOnSelected) {
+                              context.navigator.pop();
+                            }
+                            widget.onSelected(tag);
+                          },
+                          currentQuery: query.text,
+                        ),
+                      ),
+                    )
+                  : const Expanded(
+                      child: Center(
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

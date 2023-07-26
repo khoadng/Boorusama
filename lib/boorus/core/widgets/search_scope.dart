@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +9,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 
 class SearchScope extends ConsumerStatefulWidget {
   const SearchScope({
@@ -17,16 +16,19 @@ class SearchScope extends ConsumerStatefulWidget {
     this.pattern,
     this.initialQuery,
     required this.builder,
+    this.selectedTagController,
   });
 
   final Map<RegExp, TextStyle>? pattern;
+  final SelectedTagController? selectedTagController;
   final String? initialQuery;
   final Widget Function(
     DisplayState state,
-    ThemeMode theme,
     FocusNode focus,
     RichTextController controller,
-    List<TagSearchItem> selectedTags,
+    SelectedTagController selectedTagController,
+    SearchPageController notifier,
+    bool allowSearch,
   ) builder;
 
   @override
@@ -42,6 +44,18 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     onMatch: (match) {},
   );
   final focus = FocusNode();
+  late final selectedTagController = widget.selectedTagController ??
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  late final searchController = SearchPageController(
+    textEditingController: queryEditingController,
+    searchHistory: ref.read(searchHistoryProvider.notifier),
+    selectedTagController: selectedTagController,
+    searchStateController: displayState,
+    suggestions: ref.read(suggestionsProvider.notifier),
+  );
+
+  final displayState = ValueNotifier(DisplayState.options);
 
   @override
   void initState() {
@@ -49,9 +63,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
-        ref
-            .read(searchProvider.notifier)
-            .skipToResultWithTag(widget.initialQuery!);
+        searchController.skipToResultWithTag(widget.initialQuery!);
       }
     });
   }
@@ -59,41 +71,48 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
   @override
   void dispose() {
     queryEditingController.dispose();
+    if (widget.selectedTagController == null) {
+      selectedTagController.dispose();
+    }
+
+    searchController.dispose();
+
     focus.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      sanitizedQueryProvider,
-      (prev, curr) {
-        if (prev != curr) {
-          final displayState = ref.read(searchProvider);
-          if (curr.isEmpty && displayState != DisplayState.result) {
-            queryEditingController.clear();
-          }
-        }
-      },
-    );
-
     return GestureDetector(
       onTap: () => context.focusScope.unfocus(),
       child: Builder(
         builder: (context) {
-          final displayState = ref.watch(searchProvider);
-          final theme = ref.watch(themeProvider);
-          final selectedTags = ref.watch(selectedTagsProvider);
-
-          return widget.builder(
-            displayState,
-            theme,
-            focus,
-            queryEditingController,
-            selectedTags,
+          return ValueListenableBuilder(
+            valueListenable: selectedTagController,
+            builder: (context, tags, child) {
+              return ValueListenableBuilder(
+                valueListenable: displayState,
+                builder: (context, state, child) {
+                  return widget.builder(
+                    state,
+                    focus,
+                    queryEditingController,
+                    selectedTagController,
+                    searchController,
+                    allowSearch(state, tags),
+                  );
+                },
+              );
+            },
           );
         },
       ),
     );
   }
+
+  bool allowSearch(DisplayState state, List<TagSearchItem> tags) =>
+      switch (state) {
+        DisplayState.options => tags.isNotEmpty,
+        _ => false,
+      };
 }

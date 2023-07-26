@@ -2,30 +2,41 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
-class RelatedTagActionSheet extends ConsumerWidget {
+class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
     super.key,
     required this.relatedTag,
+    required this.onSelected,
   });
 
   final RelatedTag relatedTag;
+  final void Function(RelatedTagItem tag) onSelected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+  ConsumerState<RelatedTagActionSheet> createState() =>
+      _RelatedTagActionSheetState();
+}
 
+class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
+  late final tags = widget.relatedTag.tags
+      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
+
+  @override
+  Widget build(BuildContext context) {
     final booru = ref.watch(currentBooruProvider);
 
     return Scaffold(
@@ -42,11 +53,11 @@ class RelatedTagActionSheet extends ConsumerWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           title: Text(
-            relatedTag.tags[index].tag.removeUnderscoreWithSpace(),
+            tags[index].tag.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: getTagColor(relatedTag.tags[index].category, theme),
+              color: getTagColor(tags[index].category, context.themeMode),
             ),
           ),
           trailing: PopupMenuButton(
@@ -58,12 +69,11 @@ class RelatedTagActionSheet extends ConsumerWidget {
               PopupMenuItem(
                 padding: EdgeInsets.zero,
                 child: ListTile(
-                  visualDensity:
-                      const VisualDensity(horizontal: -4, vertical: -4),
+                  visualDensity: const ShrinkVisualDensity(),
                   onTap: () {
                     context.navigator.pop();
                     context.navigator.pop();
-                    //FIXME: implement this
+                    widget.onSelected(tags[index]);
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
                   trailing: const FaIcon(
@@ -75,13 +85,12 @@ class RelatedTagActionSheet extends ConsumerWidget {
               PopupMenuItem(
                 padding: EdgeInsets.zero,
                 child: ListTile(
-                  visualDensity:
-                      const VisualDensity(horizontal: -4, vertical: -4),
+                  visualDensity: const ShrinkVisualDensity(),
                   onTap: () {
                     context.navigator.pop();
                     launchWikiPage(
                       booru.url,
-                      relatedTag.tags[index].tag,
+                      tags[index].tag,
                     );
                   },
                   title: const Text('tag.related.open_wiki').tr(),
@@ -94,7 +103,7 @@ class RelatedTagActionSheet extends ConsumerWidget {
             ],
           ),
         ),
-        itemCount: relatedTag.tags.length,
+        itemCount: tags.length,
       ),
     );
   }

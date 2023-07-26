@@ -11,8 +11,10 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
   const FavoriteGroupsPage({
@@ -46,7 +48,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
 
                     return ListTile(
                       title: Text(
-                        group.name.replaceAll('_', ' '),
+                        group.name.replaceUnderscoreWithSpace(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

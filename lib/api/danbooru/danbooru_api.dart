@@ -220,7 +220,8 @@ abstract class DanbooruApi {
 
   @GET('/related_tag.json')
   Future<HttpResponse> getRelatedTag(
-    @Query('search[query]') String query, {
+    @Query('search[query]') String query,
+    @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
 

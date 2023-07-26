@@ -4,6 +4,7 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_repository.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'e621_autocomplete_dto.dart';
 
@@ -34,7 +35,7 @@ AutocompleteData e621AutocompleteDtoToAutocompleteData(
 ) {
   return AutocompleteData(
     type: AutocompleteData.tag,
-    label: dto.name?.replaceAll('_', ' ') ?? '',
+    label: dto.name?.replaceUnderscoreWithSpace() ?? '',
     value: dto.name ?? '',
     category: intToE621TagCategory(dto.category).name,
     postCount: dto.postCount,
@@ -47,7 +48,7 @@ List<AutocompleteData> parseAutocompleteData(List<E621Tag> tags) =>
 
 AutocompleteData mapTagToAutocomplete(E621Tag tag) => AutocompleteData(
       type: AutocompleteData.tag,
-      label: tag.name.replaceAll('_', ' '),
+      label: tag.name.replaceUnderscoreWithSpace(),
       value: tag.name,
       postCount: tag.postCount,
       category: tag.category.name,

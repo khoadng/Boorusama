@@ -15,3 +15,6 @@ final tagsProvider = NotifierProvider<TagsNotifier, List<TagGroupItem>?>(
 
 final tagRepoProvider =
     Provider<TagRepository>((ref) => throw UnimplementedError());
+
+final emptyTagRepoProvider =
+    Provider<TagRepository>((ref) => EmptyTagRepository());

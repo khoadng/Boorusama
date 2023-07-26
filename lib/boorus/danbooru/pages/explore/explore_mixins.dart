@@ -2,10 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 
-mixin PostExplorerMixin<T extends StatefulWidget, E> on State<T> {
+mixin PostExplorerMixin<T extends StatefulWidget, E extends Post> on State<T> {
   PostGridController<E> get controller;
+
+  Set<String> get blacklistedTags;
 
   var posts = <E>[];
 
@@ -26,7 +29,7 @@ mixin PostExplorerMixin<T extends StatefulWidget, E> on State<T> {
   void _onControllerChange() {
     if (controller.items.isNotEmpty) {
       setState(() {
-        posts = controller.items;
+        posts = filterTags(controller.items, blacklistedTags);
       });
     }
   }

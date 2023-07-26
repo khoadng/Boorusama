@@ -10,8 +10,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/widgets/post_note.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -164,10 +166,6 @@ Future<bool> launchExternalUrlString(
   return true;
 }
 
-extension StringX on String {
-  String removeUnderscoreWithSpace() => replaceAll('_', ' ');
-}
-
 void showSimpleSnackBar({
   required BuildContext context,
   required Widget content,
@@ -232,3 +230,19 @@ Future<bool> launchWikiPage(String endpoint, String tag) => launchExternalUrl(
       Uri.parse('$endpoint/wiki_pages/$tag'),
       mode: LaunchMode.platformDefault,
     );
+
+List<Widget> noteOverlayBuilderDelegate(BoxConstraints constraints, Post post,
+        NotesControllerState noteState) =>
+    [
+      if (noteState.enableNotes)
+        ...noteState.notes
+            .map((e) => e.adjustNoteCoordFor(
+                  post,
+                  widthConstraint: constraints.maxWidth,
+                  heightConstraint: constraints.maxHeight,
+                ))
+            .map((e) => PostNote(
+                  coordinate: e.coordinate,
+                  content: e.content,
+                )),
+    ];

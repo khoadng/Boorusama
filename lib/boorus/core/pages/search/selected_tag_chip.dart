@@ -6,7 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 // Project imports:
 
@@ -31,7 +33,7 @@ class SelectedTagChip extends StatelessWidget {
       children: [
         if (hasOperator)
           Chip(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            visualDensity: const ShrinkVisualDensity(),
             backgroundColor: Colors.purple,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: const RoundedRectangleBorder(
@@ -47,7 +49,7 @@ class SelectedTagChip extends StatelessWidget {
           ),
         if (hasMeta)
           Chip(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            visualDensity: const ShrinkVisualDensity(),
             backgroundColor: context.colorScheme.secondary,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: _getOutlineBorderForMetaChip(hasOperator),
@@ -57,7 +59,7 @@ class SelectedTagChip extends StatelessWidget {
             ),
           ),
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: Colors.grey[800],
           shape: hasAny
               ? const RoundedRectangleBorder(
@@ -79,7 +81,7 @@ class SelectedTagChip extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.85,
             ),
             child: Text(
-              tagSearchItem.tag.replaceAll('_', ' '),
+              tagSearchItem.tag.replaceUnderscoreWithSpace(),
               overflow: TextOverflow.fade,
               style: const TextStyle(color: Colors.white70),
             ),

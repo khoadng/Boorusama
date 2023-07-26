@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
@@ -31,4 +32,9 @@ mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
   PoolRepository get poolRepository => ref.read(danbooruPoolRepoProvider);
 
   PostPreviewPreloader? get previewPreloader => ref.read(previewLoaderProvider);
+
+  Set<String> get blacklistedTags => {
+        ...ref.read(globalBlacklistedTagsProvider).map((e) => e.name),
+        ...ref.read(danbooruBlacklistedTagsProvider) ?? [],
+      };
 }

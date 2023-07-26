@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
@@ -8,9 +8,8 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
@@ -31,8 +30,6 @@ class TagSuggestionItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
-
     return Material(
       color: backgroundColor ?? context.theme.scaffoldBackgroundColor,
       elevation: 4,
@@ -57,7 +54,6 @@ class TagSuggestionItems extends ConsumerWidget {
                     : null,
                 title: _getTitle(
                   tag,
-                  theme,
                   currentQuery,
                   textColorBuilder?.call(tag),
                 ),
@@ -72,11 +68,10 @@ class TagSuggestionItems extends ConsumerWidget {
 
 Widget _getTitle(
   AutocompleteData tag,
-  ThemeMode theme,
   String currentQuery,
   Color? color,
 ) {
-  final query = currentQuery.replaceAll('_', ' ').toLowerCase();
+  final query = currentQuery.replaceUnderscoreWithSpace().toLowerCase();
   return tag.hasAlias
       ? Html(
           style: {
@@ -90,7 +85,7 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
+              '<p>${tag.antecedent!.replaceUnderscoreWithSpace().replaceAll(query, '<b>$query</b>')} ➞ ${tag.label.replaceAll(query, '<b>$query</b>')}</p>',
         )
       : Html(
           style: {
@@ -104,6 +99,6 @@ Widget _getTitle(
             ),
           },
           data:
-              '<p>${tag.label.replaceAll(query.replaceAll('_', ' '), '<b>$query</b>')}</p>',
+              '<p>${tag.label.replaceAll(query.replaceUnderscoreWithSpace(), '<b>$query</b>')}</p>',
         );
 }

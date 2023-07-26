@@ -3,10 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/utils.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 
 mixin PostDetailsTagsX<T extends Post>
@@ -16,6 +17,11 @@ mixin PostDetailsTagsX<T extends Post>
     staleDuration: const Duration(minutes: 10),
     maxCapacity: 100,
   );
+
+  GlobalBlacklistedTagRepository get blacklistedTagRepository =>
+      ref.read(globalBlacklistedTagRepoProvider);
+
+  List<String> get blacklistedTags;
 
   Future<void> fetchPosts(
     List<String> tags,
@@ -38,13 +44,21 @@ mixin PostDetailsTagsX<T extends Post>
         posts = posts.take(limit).toList();
       }
 
+      final blacklistedTags = await blacklistedTagRepository.getBlacklist();
+
       state = [
         ...state,
         Recommend(
           type: type,
-          title: tag.removeUnderscoreWithSpace(),
+          title: tag.replaceUnderscoreWithSpace(),
           tag: tag,
-          posts: posts.where((e) => !e.isFlash).toList(),
+          posts: filterTags(
+            posts.where((e) => !e.isFlash).toList(),
+            {
+              ...blacklistedTags.map((e) => e.name),
+              ...this.blacklistedTags,
+            },
+          ),
         ),
       ];
     }
@@ -80,6 +94,9 @@ class BooruPostDetailsArtistNotifier
             .toList(),
         RecommendType.artist,
       );
+
+  @override
+  List<String> get blacklistedTags => [];
 }
 
 extension PostDetailsX on Post {

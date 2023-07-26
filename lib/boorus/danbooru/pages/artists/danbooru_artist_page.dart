@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,23 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/boorus/danbooru/widgets/danbooru_tag_details_page.dart';
 
-Widget provideArtistPageDependencies(
-  BuildContext context, {
-  required String artist,
-  required Widget page,
-}) =>
-    DanbooruProvider(
-      builder: (_) {
-        return CustomContextMenuOverlay(
-          child: page,
-        );
-      },
-    );
-
-class DanbooruArtistPage extends ConsumerWidget {
+class DanbooruArtistPage extends ConsumerStatefulWidget {
   const DanbooruArtistPage({
     super.key,
     required this.artistName,
@@ -35,39 +21,37 @@ class DanbooruArtistPage extends ConsumerWidget {
   final String backgroundImageUrl;
 
   static Widget of(BuildContext context, String tag) {
-    return provideArtistPageDependencies(
-      context,
-      artist: tag,
-      page: DanbooruArtistPage(
-        artistName: tag,
-        backgroundImageUrl: '',
-      ),
+    return DanbooruProvider(
+      builder: (_) {
+        return CustomContextMenuOverlay(
+          child: DanbooruArtistPage(
+            artistName: tag,
+            backgroundImageUrl: '',
+          ),
+        );
+      },
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final artist = ref.watch(danbooruArtistProvider(artistName));
+  ConsumerState<DanbooruArtistPage> createState() => _DanbooruArtistPageState();
+}
 
-    return Screen.of(context).size == ScreenSize.small
-        ? TagDetailPage(
-            tagName: artistName,
-            otherNamesBuilder: (_) => artist.when(
-              data: (data) => TagOtherNames(otherNames: data.otherNames),
-              error: (error, stackTrace) =>
-                  const SizedBox(height: 40, width: 40),
-              loading: () => const TagOtherNames(otherNames: null),
-            ),
-            backgroundImageUrl: backgroundImageUrl,
-          )
-        : TagDetailPageDesktop(
-            tagName: artistName,
-            otherNamesBuilder: (_) => artist.when(
-              data: (data) => TagOtherNames(otherNames: data.otherNames),
-              error: (error, stackTrace) =>
-                  const SizedBox(height: 40, width: 40),
-              loading: () => const TagOtherNames(otherNames: null),
-            ),
-          );
+class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
+  @override
+  Widget build(BuildContext context) {
+    final artist = ref.watch(danbooruArtistProvider(widget.artistName));
+
+    return DanbooruTagDetailsPage(
+      tagName: widget.artistName,
+      otherNamesBuilder: (_) => artist.when(
+        data: (data) => data.otherNames.isNotEmpty
+            ? TagOtherNames(otherNames: data.otherNames)
+            : const SizedBox.shrink(),
+        error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
+        loading: () => const TagOtherNames(otherNames: null),
+      ),
+      backgroundImageUrl: widget.backgroundImageUrl,
+    );
   }
 }

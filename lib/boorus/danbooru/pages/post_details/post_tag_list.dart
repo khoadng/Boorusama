@@ -11,7 +11,6 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PostTagList extends ConsumerWidget {
@@ -141,7 +141,7 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final theme = context.themeMode;
     final colors = generateChipColors(getTagColor(tag.category, theme), theme);
     final numberColors = generateChipColors(Colors.grey[600]!, theme);
 
@@ -149,7 +149,7 @@ class _Chip extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: colors.backgroundColor,
           side: BorderSide(
             color: colors.borderColor,
@@ -176,7 +176,7 @@ class _Chip extends ConsumerWidget {
           ),
         ),
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: numberColors.backgroundColor,
           side: BorderSide(
             color: numberColors.borderColor,

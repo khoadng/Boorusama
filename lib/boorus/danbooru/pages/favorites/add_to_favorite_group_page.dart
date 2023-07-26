@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
@@ -138,7 +139,7 @@ class _FavoriteGroupList extends ConsumerWidget {
           animation: animation,
           child: ListTile(
             title: Text(
-              group.name.replaceAll('_', ' '),
+              group.name.replaceUnderscoreWithSpace(),
             ),
             subtitle: Text(group.updatedAt
                 .fuzzify(locale: Localizations.localeOf(context))),
@@ -167,7 +168,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',
-                                group.name.replaceAll('_', ' '),
+                                group.name.replaceUnderscoreWithSpace(),
                               ),
                         ),
                       );

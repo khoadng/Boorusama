@@ -6,8 +6,8 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/types.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class TimeScaleToggleSwitch extends StatefulWidget {
   const TimeScaleToggleSwitch({

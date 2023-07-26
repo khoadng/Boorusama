@@ -19,43 +19,22 @@ final suggestionsProvider = NotifierProvider<SuggestionsNotifier,
 );
 
 final fallbackSuggestionsProvider =
-    StateProvider<IList<AutocompleteData>>((ref) {
+    StateProvider.autoDispose<IList<AutocompleteData>>((ref) {
   return <AutocompleteData>[].lock;
 });
 
-final suggestionProvider = Provider.family<IList<AutocompleteData>, String>(
+final suggestionProvider =
+    Provider.autoDispose.family<IList<AutocompleteData>, String>(
   (ref, tag) {
     final suggestions = ref.watch(suggestionsProvider);
-    return suggestions[tag] ?? ref.watch(fallbackSuggestionsProvider);
+    return suggestions[sanitizeQuery(tag)] ??
+        ref.watch(fallbackSuggestionsProvider);
   },
   dependencies: [
     suggestionsProvider,
+    fallbackSuggestionsProvider,
   ],
 );
-
-final suggestionsQuickSearchProvider = NotifierProvider<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>>(
-  SuggestionsNotifier.new,
-  dependencies: [
-    autocompleteRepoProvider,
-    currentBooruConfigProvider,
-  ],
-);
-
-final suggestionQuickSearchProvider =
-    Provider.family<IList<AutocompleteData>, String>(
-  (ref, tag) {
-    final suggestions = ref.watch(suggestionsQuickSearchProvider);
-    return suggestions[tag] ?? <AutocompleteData>[].lock;
-  },
-  dependencies: [suggestionsQuickSearchProvider],
-);
-
-final shouldNotFetchSuggestionsProvider = Provider.autoDispose<bool>((ref) {
-  final query = ref.watch(sanitizedQueryProvider);
-  final operator = ref.watch(filterOperatorProvider);
-  return query.length == 1 && operator != FilterOperator.none;
-});
 
 class SuggestionsNotifier
     extends Notifier<IMap<String, IList<AutocompleteData>>> with DebounceMixin {
@@ -69,16 +48,21 @@ class SuggestionsNotifier
   }
 
   void getSuggestions(String query) {
-    if (state.containsKey(query)) return;
-    if (ref.read(shouldNotFetchSuggestionsProvider)) return;
     if (query.isEmpty) return;
+
+    final op = getFilterOperator(query);
+    final sanitized = sanitizeQuery(query);
+
+    if (sanitized.length == 1 && op != FilterOperator.none) return;
+
+    if (state.containsKey(sanitized)) return;
 
     debounce(
       'suggestions',
       () async {
         final data =
-            await ref.read(autocompleteRepoProvider).getAutocomplete(query);
-        state = state.add(query, data.lock);
+            await ref.read(autocompleteRepoProvider).getAutocomplete(sanitized);
+        state = state.add(sanitized, data.lock);
         ref.read(fallbackSuggestionsProvider.notifier).state = data.lock;
       },
       duration: const Duration(milliseconds: 200),

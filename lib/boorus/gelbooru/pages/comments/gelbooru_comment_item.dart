@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/dtext/html_converter.dart';
 import 'package:boorusama/boorus/core/widgets/comment_header.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class GelbooruCommentItem extends ConsumerWidget {
   const GelbooruCommentItem({

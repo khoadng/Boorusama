@@ -32,6 +32,8 @@ class CompactChip extends StatelessWidget {
           ),
           child: Text(
             label,
+            softWrap: false,
+            maxLines: 1,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: textColor,

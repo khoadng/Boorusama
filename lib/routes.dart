@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,12 +9,14 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/booru_dialog.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/core/pages/bookmarks/bookmark_details.dart';
 import 'boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'boorus/core/pages/boorus/add_booru_page.dart';
-import 'boorus/core/pages/boorus/manage_booru_user_page.dart';
 import 'boorus/core/pages/settings/appearance_page.dart';
 import 'boorus/core/pages/settings/changelog_page.dart';
 import 'boorus/core/pages/settings/download_page.dart';
@@ -25,7 +26,6 @@ import 'boorus/core/pages/settings/privacy_page.dart';
 import 'boorus/core/pages/settings/search_settings_page.dart';
 import 'boorus/core/pages/settings/settings_page.dart';
 import 'boorus/core/pages/settings/settings_page_desktop.dart';
-import 'boorus/danbooru/router.dart';
 import 'boorus/home_page.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
@@ -34,16 +34,40 @@ class BoorusRoutes {
   BoorusRoutes._();
 
   static GoRoute add() => GoRoute(
-        path: 'add',
-        name: '/boorus/add',
+        path: 'boorus/add',
+        redirect: (context, state) =>
+            isMobilePlatform() ? null : '/desktop/boorus/add',
         builder: (context, state) => AddBooruPage(
+          backgroundColor: context.theme.scaffoldBackgroundColor,
           setCurrentBooruOnSubmit:
-              state.queryParameters["setAsCurrent"]?.toBool() ?? false,
+              state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
         ),
       );
 
+  //FIXME: create custom page builder, also can't tap outside to dismiss
+  static GoRoute addDesktop() => GoRoute(
+      path: 'desktop/boorus/add',
+      pageBuilder: (context, state) => DialogPage(
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => BooruDialog(
+              padding: const EdgeInsets.all(16),
+              color: context.theme.canvasColor,
+              width: 400,
+              child: IntrinsicHeight(
+                child: AddBooruPage(
+                  backgroundColor: context.theme.canvasColor,
+                  setCurrentBooruOnSubmit: false,
+                ),
+              ),
+            ),
+          ));
+
   static GoRoute update(Ref ref) => GoRoute(
-        path: ':id/update',
+        path: 'boorus/:id/update',
+        redirect: (context, state) => isMobilePlatform()
+            ? null
+            : '/desktop/boorus/${state.pathParameters['id']}/update',
         pageBuilder: (context, state) {
           final idParam = state.pathParameters['id'];
           final id = idParam?.toInt();
@@ -53,8 +77,33 @@ class BoorusRoutes {
 
           return MaterialPage(
             key: state.pageKey,
-            name: '/boorus/$idParam/update',
             child: UpdateBooruPage(booruConfig: config),
+          );
+        },
+      );
+
+  static GoRoute updateDesktop(Ref ref) => GoRoute(
+        path: 'desktop/boorus/:id/update',
+        pageBuilder: (context, state) {
+          final idParam = state.pathParameters['id'];
+          final id = idParam?.toInt();
+          final config = ref
+              .read(booruConfigProvider)
+              .firstWhere((element) => element.id == id);
+
+          return DialogPage(
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => BooruDialog(
+              padding: const EdgeInsets.all(16),
+              color: context.theme.canvasColor,
+              width: 400,
+              child: IntrinsicHeight(
+                child: UpdateBooruPage(
+                  booruConfig: config,
+                ),
+              ),
+            ),
           );
         },
       );
@@ -147,40 +196,21 @@ class Routes {
         builder: (context, state) => ConditionalParentWidget(
           condition: canRate(),
           conditionalBuilder: (child) => createAppRatingWidget(child: child),
-          child: CallbackShortcuts(
-            bindings: {
-              const SingleActivator(
-                LogicalKeyboardKey.keyF,
-                control: true,
-              ): () => goToSearchPage(context),
-            },
-            child: const CustomContextMenuOverlay(
-              child: Focus(
-                autofocus: true,
-                child: HomePage(),
-              ),
+          child: const CustomContextMenuOverlay(
+            child: Focus(
+              autofocus: true,
+              child: HomePage(),
             ),
           ),
         ),
         routes: [
-          boorus(ref),
-          settings(),
-          bookmarks(),
-        ],
-      );
-
-  static GoRoute boorus(Ref ref) => GoRoute(
-        path: 'boorus',
-        name: '/boorus',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const ManageBooruPage(),
-          transitionsBuilder: leftToRightTransitionBuilder(),
-        ),
-        routes: [
-          BoorusRoutes.add(),
           BoorusRoutes.update(ref),
+          BoorusRoutes.updateDesktop(ref),
+          BoorusRoutes.add(),
+          BoorusRoutes.addDesktop(),
+          settings(),
+          settingsDesktop(),
+          bookmarks(),
         ],
       );
 
@@ -199,9 +229,9 @@ class Routes {
             name: '/bookmarks/details',
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
-              name: '${state.name}?index=${state.queryParameters['index']}',
+              name: '${state.name}?index=${state.uri.queryParameters['index']}',
               child: BookmarkDetailsPage(
-                initialIndex: state.queryParameters['index']?.toInt() ?? 0,
+                initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
               ),
               transitionsBuilder: leftToRightTransitionBuilder(),
             ),
@@ -212,12 +242,12 @@ class Routes {
   static GoRoute settings() => GoRoute(
         path: 'settings',
         name: '/settings',
+        redirect: (context, state) =>
+            !isMobilePlatform() ? '/desktop/settings' : null,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           name: state.name,
-          child: isMobilePlatform()
-              ? const SettingsPage()
-              : const SettingsPageDesktop(),
+          child: const SettingsPage(),
           transitionsBuilder: leftToRightTransitionBuilder(),
         ),
         routes: [
@@ -229,5 +259,40 @@ class Routes {
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),
         ],
+      );
+
+  static GoRoute settingsDesktop() => GoRoute(
+        path: 'desktop/settings',
+        name: '/desktop/settings',
+        pageBuilder: (context, state) => DialogPage(
+            key: state.pageKey,
+            name: state.name,
+            builder: (context) => Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: context.screenWidth * 0.05,
+                    horizontal: context.screenHeight * 0.1,
+                  ),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  child: Dialog(
+                    backgroundColor: Theme.of(context).cardColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: SettingsPageDesktop(),
+                      ),
+                    ),
+                  ),
+                )),
       );
 }

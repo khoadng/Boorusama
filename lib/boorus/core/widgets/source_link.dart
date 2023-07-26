@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({

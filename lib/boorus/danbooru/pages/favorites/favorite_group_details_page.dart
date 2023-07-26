@@ -19,9 +19,10 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 // Flutter imports:
@@ -128,7 +129,7 @@ class _FavoriteGroupDetailsPageState
           : null,
       appBar: AppBar(
         centerTitle: false,
-        title: Text(widget.group.name.replaceAll('_', ' ')),
+        title: Text(widget.group.name.replaceUnderscoreWithSpace()),
         elevation: 0,
         shadowColor: Colors.transparent,
         backgroundColor: context.theme.scaffoldBackgroundColor,

@@ -6,6 +6,7 @@ import 'package:context_menus/context_menus.dart';
 
 // Project imports:
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({
@@ -31,7 +32,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
           child: Ink(
             child: ListTile(
               dense: true,
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              visualDensity: const ShrinkVisualDensity(),
               hoverColor: context.colorScheme.primary,
               onTap: config.onPressed,
               title: Text(config.label),

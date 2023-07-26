@@ -8,11 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import '../common/option_tags_arena.dart';
@@ -84,15 +82,16 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final theme = ref.watch(themeProvider);
         final colors = generateChipColors(
-            theme.isDark ? Colors.white : Colors.black, theme);
+          context.themeMode.isDark ? Colors.white : Colors.black,
+          context.themeMode,
+        );
 
         return RawChip(
           visualDensity: VisualDensity.compact,
           onPressed: editMode ? null : () => onTagTap?.call(tag.name),
           label: Text(
-            tag.name.replaceAll('_', ' '),
+            tag.name.replaceUnderscoreWithSpace(),
             style: TextStyle(
               color: colors.foregroundColor,
             ),

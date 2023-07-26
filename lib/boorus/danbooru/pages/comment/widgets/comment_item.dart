@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/pages/comment/widgets/danbooru_comment
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class CommentItem extends ConsumerWidget {
   const CommentItem({

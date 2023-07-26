@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 extension StringX on String {
   String getFirstCharacter() => this == '' ? '' : this[0];
   String getLastCharacter() => this == '' ? '' : this[length - 1];
@@ -29,6 +32,8 @@ extension StringX on String {
 
   int? toInt() => int.tryParse(this);
   bool? toBool() => bool.tryParse(this);
+
+  String replaceUnderscoreWithSpace() => replaceAll('_', ' ');
 }
 
 extension StringNullX on String? {
@@ -39,4 +44,15 @@ extension StringNullX on String? {
 
     return this!.split(' ');
   }
+}
+
+String generateRandomWord(final int minLength, final int maxLength) {
+  final rand = Random();
+  final length = rand.nextInt(maxLength - minLength) + minLength;
+  final aCode = 'a'.codeUnitAt(0);
+  final zCode = 'z'.codeUnitAt(0);
+
+  return String.fromCharCodes([
+    for (var i = 0; i < length; i++) rand.nextInt(zCode - aCode + 1) + aCode,
+  ]);
 }

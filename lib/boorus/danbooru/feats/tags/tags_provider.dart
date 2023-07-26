@@ -10,8 +10,6 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import 'package:boorusama/functional.dart';
 
-part 'related_tags_provider.dart';
-
 final popularSearchProvider = Provider<PopularSearchRepository>(
   (ref) {
     return PopularSearchRepositoryApi(

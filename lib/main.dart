@@ -55,12 +55,12 @@ void main() async {
 
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
-      const initialSize = Size(1024, 600);
-      const minSize = Size(300, 300);
+      const initialSize = Size(950, 500);
+      const minSize = Size(950, 500);
       appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
-      appWindow.show();
+      appWindow.maximize();
     });
   }
 

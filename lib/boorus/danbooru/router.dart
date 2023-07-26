@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -22,9 +21,7 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/characters/character_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/characters/character_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/pages/characters/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/comment_update_page.dart';
@@ -40,6 +37,7 @@ import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart'
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
@@ -51,33 +49,20 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'router_page_constant.dart';
 
 void goToArtistPage(BuildContext context, String artist) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => DanbooruArtistPage.of(context, artist),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => DanbooruArtistPage.of(context, artist),
-    );
-  }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruArtistPage.of(context, artist),
+  ));
 }
 
 void goToCharacterPage(BuildContext context, String tag) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => CharacterPage.of(context, tag),
-    ));
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (_) => CharacterPageDesktop.of(context, tag),
-    );
-  }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => DanbooruCharacterPage.of(context, tag),
+  ));
 }
 
 void goToFavoritesPage(BuildContext context, String? username) {
@@ -99,27 +84,28 @@ Future<void> goToDetailPage({
   AutoScrollController? scrollController,
   bool hero = false,
 }) {
-  return context.navigator.push(DanbooruPostDetailsPage.routeOf(
-    context,
-    posts: posts,
-    scrollController: scrollController,
-    initialIndex: initialIndex,
-    hero: hero,
-  ));
-  // showDesktopFullScreenWindow(
-  //   context,
-  //   builder: (_) => providePostDetailPageDependencies(
-  //     context,
-  //     posts,
-  //     initialIndex,
-  //     tags,
-  //     scrollController,
-  //     PostDetailPageDesktop(
-  //       intitialIndex: initialIndex,
-  //       posts: posts,
-  //     ),
-  //   ),
-  // );
+  if (isMobilePlatform() && context.orientation.isPortrait) {
+    return context.navigator.push(DanbooruPostDetailsPage.routeOf(
+      context,
+      posts: posts,
+      scrollController: scrollController,
+      initialIndex: initialIndex,
+      hero: hero,
+    ));
+  } else {
+    return showDesktopFullScreenWindow(
+      context,
+      builder: (_) => DanbooruProvider(
+        builder: (context) => DanbooruPostDetailsDesktopPage(
+          initialIndex: initialIndex,
+          posts: posts,
+          onExit: (index) {
+            scrollController?.scrollToIndex(index);
+          },
+        ),
+      ),
+    );
+  }
 }
 
 void goToSearchPage(
@@ -169,25 +155,12 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
-  if (isMobilePlatform()) {
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => provideBlacklistedTagPageDependencies(
-        context,
-        page: const BlacklistedTagsPage(),
-      ),
-    ));
-  }
-  // else {
-  // showDesktopDialogWindow(
-  //   context,
-  //   width: min(MediaQuery.of(context).size.width * 0.8, 700),
-  //   height: min(MediaQuery.of(context).size.height * 0.8, 600),
-  //   builder: (_) => provideBlacklistedTagPageDependencies(
-  //     context,
-  //     page: const BlacklistedTagsPageDesktop(),
-  //   ),
-  // );
-  // }
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => provideBlacklistedTagPageDependencies(
+      context,
+      page: const BlacklistedTagsPage(),
+    ),
+  ));
 }
 
 Widget provideBlacklistedTagPageDependencies(
@@ -195,24 +168,6 @@ Widget provideBlacklistedTagPageDependencies(
   required Widget page,
 }) =>
     DanbooruProvider(builder: (_) => page);
-
-void goToBlacklistedTagsSearchPage(
-  BuildContext context, {
-  required void Function(List<TagSearchItem> tags) onSelectDone,
-  List<String>? initialTags,
-}) {
-  context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => BlacklistedTagsSearchPage(
-        initialTags: initialTags,
-        onSelectedDone: onSelectDone,
-      ),
-    ),
-    settings: const RouteSettings(
-      name: RouterPageConstant.blacklistedSearch,
-    ),
-  ));
-}
 
 void goToCommentPage(BuildContext context, int postId) {
   showCommentPage(
@@ -304,9 +259,11 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
 void goToRelatedTagsPage(
   BuildContext context, {
   required RelatedTag relatedTag,
+  required void Function(RelatedTagItem tag) onSelected,
 }) {
   final page = RelatedTagActionSheet(
     relatedTag: relatedTag,
+    onSelected: onSelected,
   );
   if (Screen.of(context).size == ScreenSize.small) {
     showBarModalBottomSheet(

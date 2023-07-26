@@ -55,4 +55,121 @@ extension PostX on Post {
 
     return tags;
   }
+
+  bool containsTagPattern(String pattern) => checkIfTagsContainsTagExpression(
+      TagFilterData(
+        tags: tags,
+        rating: rating,
+        score: score,
+      ),
+      pattern);
+}
+
+extension PostsX on List<Post> {
+  Map<String, int> extractTagsWithoutCount() {
+    final tagCounts = <String, int>{};
+
+    for (final item in this) {
+      for (final tag in item.tags) {
+        if (tagCounts.containsKey(tag)) {
+          tagCounts[tag] = tagCounts[tag]! + 1;
+        } else {
+          tagCounts[tag] = 1;
+        }
+      }
+    }
+
+    return tagCounts;
+  }
+
+  Map<String, int> countTagPattern(Iterable<String> patterns) {
+    final tagCounts = <String, int>{
+      for (final pattern in patterns) pattern: 0,
+    };
+
+    for (final item in this) {
+      for (final pattern in patterns) {
+        if (item.containsTagPattern(pattern)) {
+          tagCounts[pattern] = tagCounts[pattern]! + 1;
+        }
+      }
+    }
+
+    return tagCounts;
+  }
+}
+
+extension TagFilterDataX on List<String> {
+  TagFilterData toTagFilterData() => TagFilterData.tags(tags: this);
+}
+
+class TagFilterData {
+  TagFilterData({
+    required this.tags,
+    required this.rating,
+    required this.score,
+  });
+
+  TagFilterData.tags({
+    required this.tags,
+  })  : rating = Rating.general,
+        score = 0;
+
+  final List<String> tags;
+  final Rating rating;
+  final int score;
+}
+
+bool checkIfTagsContainsTagExpression(
+    final TagFilterData filterData, final String tagExpression) {
+  // Split the tagExpression by spaces to handle multiple tags
+  final expressions = tagExpression.split(' ');
+
+  // Process each tag in the expression
+  for (final expression in expressions) {
+    // Handle metatag "rating"
+    if (expression.startsWith('rating:')) {
+      final targetRating =
+          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
+      if (filterData.rating != targetRating) {
+        return false;
+      }
+    }
+    // Handle NOT operator with metatag "rating"
+    else if (expression.startsWith('-rating:')) {
+      final targetRating =
+          expression.endsWith('explicit') ? Rating.explicit : Rating.general;
+      if (filterData.rating == targetRating) {
+        return false;
+      }
+    }
+    // Handle metatag "score"
+    else if (expression.startsWith('score:')) {
+      final targetScore = int.tryParse(expression.split('<')[1]) ?? 0;
+      if (!(filterData.score < targetScore)) {
+        return false;
+      }
+    }
+    // Handle NOT operator
+    else if (expression.startsWith('-')) {
+      if (filterData.tags.contains(expression.substring(1))) {
+        return false;
+      }
+    }
+    // Default AND operation
+    else if (!filterData.tags.contains(expression) &&
+        !expression.startsWith('~')) {
+      return false;
+    }
+  }
+
+  // OR operation check
+  if (expressions.any((exp) => exp.startsWith('~')) &&
+      !expressions
+          .where((exp) => exp.startsWith('~'))
+          .any((orExp) => filterData.tags.contains(orExp.substring(1)))) {
+    return false;
+  }
+
+  return true; // If all checks pass, return true
 }

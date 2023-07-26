@@ -19,11 +19,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({
     super.key,
     required this.post,
-    required this.onToggleSlideShow,
+    this.onToggleSlideShow,
   });
 
   final DanbooruPost post;
-  final VoidCallback onToggleSlideShow;
+  final VoidCallback? onToggleSlideShow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,7 +61,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   goToOriginalImagePage(context, post);
                   break;
                 case 'toggle_slide_show':
-                  onToggleSlideShow();
+                  onToggleSlideShow?.call();
                   break;
                 // ignore: no_default_cases
                 default:

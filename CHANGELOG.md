@@ -1,3 +1,12 @@
+# 3.3.0
+- Groundwork for desktop version
+- Move all items in the bottom navigation bar to the side drawer
+- Update overall UI, UX for creating/editing/selecting sites
+- Blacklisted tags are now can be turned on/off in image list
+- Global blacklisted tags are now using Danbooru's blacklist syntax. Also support filter using rating and score
+- [Danbooru] Add related tags and tag cloud 
+- Minor bug fixes and UI adjustments
+
 # 3.2.1
 - Fix an issue that causes users to be unable to select a download folder if the app is installed in a different user space
 - Minor updates to Chinese (Simplified) translation

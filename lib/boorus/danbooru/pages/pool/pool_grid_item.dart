@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'pool_image.dart';
 
@@ -51,7 +51,7 @@ class PoolGridItem extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
-                  pool.name.removeUnderscoreWithSpace(),
+                  pool.name.replaceUnderscoreWithSpace(),
                   style: const TextStyle(fontWeight: FontWeight.w600),
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,

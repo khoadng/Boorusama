@@ -17,8 +17,9 @@ abstract class Rule34xxxApi {
     @Query('q') String q,
     @Query('tags') String tags,
     @Query('json') String json,
-    @Query('pid') String pid,
-  );
+    @Query('pid') String pid, {
+    @Query('limit') int? limit,
+  });
 
   @GET('/public/autocomplete.php')
   Future<HttpResponse> autocomplete(

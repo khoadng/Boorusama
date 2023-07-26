@@ -17,6 +17,7 @@ class BooruVideo extends StatefulWidget {
     required this.aspectRatio,
     this.onCurrentPositionChanged,
     this.onVisibilityChanged,
+    this.autoPlay = false,
   });
 
   final String url;
@@ -24,6 +25,7 @@ class BooruVideo extends StatefulWidget {
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
   final void Function(bool value)? onVisibilityChanged;
+  final bool autoPlay;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -36,11 +38,16 @@ class _BooruVideoState extends State<BooruVideo> {
   @override
   void initState() {
     super.initState();
-    _videoPlayerController = VideoPlayerController.network(widget.url);
+    _initVideoPlayerController();
+  }
+
+  void _initVideoPlayerController() {
+    _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.url)); // TODO: dangerous parsing here
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.aspectRatio,
-      autoPlay: false,
+      autoPlay: widget.autoPlay,
       customControls: MaterialDesktopControls(
         onVisibilityChanged: widget.onVisibilityChanged,
       ),
@@ -49,6 +56,12 @@ class _BooruVideoState extends State<BooruVideo> {
     );
 
     _listenToVideoPosition();
+  }
+
+  void _disposeVideoPlayerController() {
+    _videoPlayerController.removeListener(_onChanged);
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
   }
 
   // Listen to the video position and report it back to the parent widget
@@ -66,10 +79,18 @@ class _BooruVideoState extends State<BooruVideo> {
   }
 
   @override
+  void didUpdateWidget(BooruVideo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.url != oldWidget.url) {
+      _disposeVideoPlayerController();
+      _initVideoPlayerController();
+    }
+  }
+
+  @override
   void dispose() {
-    _videoPlayerController.removeListener(_onChanged);
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    _disposeVideoPlayerController();
     super.dispose();
   }
 

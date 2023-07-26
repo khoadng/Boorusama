@@ -17,6 +17,10 @@ class DownloadNotifications {
   DownloadNotifications._(this._flutterLocalNotificationsPlugin);
 
   static Future<DownloadNotifications> create() async {
+    if (isWindows()) {
+      return DownloadNotifications._(null);
+    }
+
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     const InitializationSettings initializationSettings =
         InitializationSettings(
@@ -32,7 +36,7 @@ class DownloadNotifications {
     return DownloadNotifications._(flutterLocalNotificationsPlugin);
   }
 
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+  final FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
 
   Future<void> showInProgress(String fileName, String path) {
     return _showNotification(fileName, 'in progress', payload: path);
@@ -48,6 +52,9 @@ class DownloadNotifications {
 
   Future<void> _showNotification(String title, String body,
       {String? payload}) async {
+    //TODO: implement custom notification for windows
+    if (isWindows()) return;
+
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       title,
       title,
@@ -61,7 +68,7 @@ class DownloadNotifications {
       ),
     );
 
-    await _flutterLocalNotificationsPlugin.show(
+    await _flutterLocalNotificationsPlugin?.show(
       title.hashCode,
       title,
       body,

@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class BulkDownloadTile extends ConsumerWidget {
   const BulkDownloadTile({
@@ -47,10 +48,7 @@ class BulkDownloadTile extends ConsumerWidget {
                     children: [
                       switch (data) {
                         BulkDownloadDone d when d.alreadyExists => Chip(
-                            visualDensity: const VisualDensity(
-                              horizontal: -4,
-                              vertical: -4,
-                            ),
+                            visualDensity: const ShrinkVisualDensity(),
                             backgroundColor: context.theme.colorScheme.primary,
                             label: const Text(
                               'File exists',
@@ -62,19 +60,13 @@ class BulkDownloadTile extends ConsumerWidget {
                         _ => const SizedBox.shrink(),
                       },
                       Chip(
-                        visualDensity: const VisualDensity(
-                          horizontal: -4,
-                          vertical: -4,
-                        ),
+                        visualDensity: const ShrinkVisualDensity(),
                         label: Text(extension(data.url)),
                       ),
                       if (fileSizes[data.url] != null &&
                           fileSizes[data.url]! > 0)
                         Chip(
-                          visualDensity: const VisualDensity(
-                            horizontal: -4,
-                            vertical: -4,
-                          ),
+                          visualDensity: const ShrinkVisualDensity(),
                           label: Text(filesize(fileSizes[data.url], 1)),
                         ),
                     ],
@@ -169,10 +161,7 @@ class BulkDownloadTile extends ConsumerWidget {
                     ),
                   BulkDownloadDone d => ListTile(
                       dense: true,
-                      visualDensity: const VisualDensity(
-                        vertical: -4,
-                        horizontal: -4,
-                      ),
+                      visualDensity: const ShrinkVisualDensity(),
                       minVerticalPadding: 0,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: const Icon(

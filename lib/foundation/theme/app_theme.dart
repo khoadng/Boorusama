@@ -1,11 +1,22 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
+
+// Project imports:
+import 'colors.dart';
+import 'theme_mode.dart';
 
 class AppTheme {
   // Private Constructor
   AppTheme._();
 
   static final lightTheme = ThemeData.light().copyWith(
+    extensions: [
+      const BoorusamaColors(
+        videoPlayerBackgroundColor: Colors.white,
+        themeMode: ThemeMode.light,
+        selectedColor: Colors.grey,
+      ),
+    ],
     appBarTheme: ThemeData.light().appBarTheme.copyWith(
           color: ThemeData.light().scaffoldBackgroundColor,
           foregroundColor: Colors.black,
@@ -40,6 +51,13 @@ class AppTheme {
     ).copyWith(background: const Color.fromARGB(255, 240, 240, 240)),
   );
   static final darkTheme = ThemeData.dark().copyWith(
+    extensions: [
+      const BoorusamaColors(
+        videoPlayerBackgroundColor: Colors.black,
+        themeMode: ThemeMode.dark,
+        selectedColor: Color.fromARGB(255, 40, 40, 40),
+      ),
+    ],
     appBarTheme: ThemeData.dark().appBarTheme.copyWith(
           color: ThemeData.dark().scaffoldBackgroundColor,
         ),
@@ -72,6 +90,13 @@ class AppTheme {
   );
 
   static final darkAmoledTheme = ThemeData.dark().copyWith(
+    extensions: [
+      const BoorusamaColors(
+        videoPlayerBackgroundColor: Colors.black,
+        themeMode: ThemeMode.amoledDark,
+        selectedColor: Color.fromARGB(255, 40, 40, 40),
+      ),
+    ],
     scaffoldBackgroundColor: Colors.black,
     cardColor: const Color.fromARGB(255, 36, 36, 36),
     elevatedButtonTheme: ElevatedButtonThemeData(

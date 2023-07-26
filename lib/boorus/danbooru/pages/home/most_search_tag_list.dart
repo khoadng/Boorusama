@@ -6,13 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -27,7 +24,6 @@ class MostSearchTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncData = ref.watch(trendingTagsProvider);
-    final theme = ref.watch(themeProvider);
 
     return asyncData.when(
       data: (searches) => searches.isNotEmpty
@@ -46,7 +42,10 @@ class MostSearchTagList extends ConsumerWidget {
 
                   final colors = category == null
                       ? null
-                      : generateChipColors(getTagColor(category, theme), theme);
+                      : generateChipColors(
+                          getTagColor(category, context.themeMode),
+                          context.themeMode,
+                        );
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -59,7 +58,7 @@ class MostSearchTagList extends ConsumerWidget {
                       side: BorderSide(
                         width: 1.5,
                         color: isSelected
-                            ? theme.isDark
+                            ? context.themeMode.isDark
                                 ? Colors.white
                                 : Colors.black
                             : colors?.borderColor ?? Colors.transparent,
@@ -73,10 +72,10 @@ class MostSearchTagList extends ConsumerWidget {
                           maxWidth: MediaQuery.of(context).size.width * 0.85,
                         ),
                         child: Text(
-                          searches[index].keyword.removeUnderscoreWithSpace(),
+                          searches[index].keyword.replaceUnderscoreWithSpace(),
                           style: TextStyle(
                             color: isSelected
-                                ? theme.isDark
+                                ? context.themeMode.isDark
                                     ? Colors.black
                                     : Colors.white
                                 : colors?.foregroundColor,

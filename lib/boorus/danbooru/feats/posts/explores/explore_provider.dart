@@ -37,7 +37,6 @@ final danbooruExploreRepoProvider = Provider<ExploreRepository>(
         api: ref.watch(danbooruApiProvider),
         postRepository: ref.watch(danbooruPostRepoProvider),
         settingsRepository: ref.watch(settingsRepoProvider),
-        blacklistedTagRepository: ref.watch(globalBlacklistedTagRepoProvider),
         shouldFilter: switch (
             ref.watch(currentBooruConfigProvider).ratingFilter) {
           BooruConfigRatingFilter.hideNSFW => (post) =>

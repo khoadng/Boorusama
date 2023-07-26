@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/foundation/crypto.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/create_booru_config_name_field.dart';
 
 class CreateMoebooruConfigPage extends StatefulWidget {
@@ -30,6 +30,7 @@ class CreateMoebooruConfigPage extends StatefulWidget {
     this.initialHashedPassword,
     this.initialConfigName,
     this.initialRatingFilter,
+    this.backgroundColor,
   });
 
   final String? initialLogin;
@@ -43,6 +44,7 @@ class CreateMoebooruConfigPage extends StatefulWidget {
   final void Function(String value) onConfigNameChanged;
   final void Function(BooruConfigRatingFilter? value) onRatingFilterChanged;
   final void Function()? onSubmit;
+  final Color? backgroundColor;
 
   final Booru booru;
 
@@ -58,6 +60,7 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
+      backgroundColor: widget.backgroundColor,
       booru: widget.booru,
       children: [
         Padding(

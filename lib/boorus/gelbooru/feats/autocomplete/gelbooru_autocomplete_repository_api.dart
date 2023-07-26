@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'gelbooru_autocomplete_dto.dart';
 
@@ -22,7 +23,7 @@ List<AutocompleteData> _mapDtoToAutocomplete(
             return AutocompleteData.isTagType(e.type)
                 ? AutocompleteData(
                     type: e.type,
-                    label: e.label!,
+                    label: e.label?.replaceUnderscoreWithSpace() ?? '<empty>',
                     value: e.value!,
                     category: e.category?.toString(),
                     postCount: e.postCount,

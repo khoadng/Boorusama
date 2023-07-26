@@ -52,6 +52,7 @@ class E621Post extends Equatable
         ...characterTags,
         ...artistTags,
         ...generalTags,
+        ...copyrightTags,
         ...metaTags,
         ...speciesTags,
         ...invalidTags,
@@ -100,7 +101,13 @@ class E621Post extends Equatable
   final int favCount;
   final bool isFavorited;
   final String description;
+
+  @override
+  bool? get hasSound => metaTags.contains('sound') ? true : null;
+  @override
   final String videoUrl;
+  @override
+  String get videoThumbnailUrl => sampleImageUrl;
 
   @override
   String getLink(String baseUrl) =>

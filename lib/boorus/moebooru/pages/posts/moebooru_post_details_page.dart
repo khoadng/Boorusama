@@ -1,17 +1,16 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
@@ -19,10 +18,8 @@ import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'moebooru_information_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -165,39 +162,18 @@ class _MoebooruPostDetailsPageState
     int currentPage,
     WidgetRef ref,
   ) {
-    final theme = ref.watch(themeProvider);
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = post.isVideo
-        ? extension(post.sampleImageUrl) == '.webm'
-            ? EmbeddedWebViewWebm(
-                url: post.sampleImageUrl,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-                backgroundColor:
-                    theme == ThemeMode.light ? Colors.white : Colors.black,
-              )
-            : BooruVideo(
-                url: post.sampleImageUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentPositionChanged,
-                onVisibilityChanged: onVisibilityChanged,
-              )
-        : InteractiveBooruImage(
-            useHero: page == currentPage,
-            heroTag: "${post.id}_hero",
-            aspectRatio: post.aspectRatio,
-            imageUrl: post.sampleImageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
-            onTap: onImageTap,
-            onCached: (path) => ref
-                .read(postShareProvider(post).notifier)
-                .setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
-            width: post.width,
-            height: post.height,
-            onZoomUpdated: onZoomUpdated,
-          );
+    final media = PostMedia(
+      post: post,
+      imageUrl: post.sampleImageUrl,
+      placeholderImageUrl: post.thumbnailImageUrl,
+      onImageTap: onImageTap,
+      onCurrentVideoPositionChanged: onCurrentPositionChanged,
+      onVideoVisibilityChanged: onVisibilityChanged,
+      useHero: page == currentPage,
+      onImageZoomUpdated: onZoomUpdated,
+    );
 
     return [
       if (!expandedOnCurrentPage)
@@ -208,7 +184,7 @@ class _MoebooruPostDetailsPageState
         )
       else if (post.isVideo)
         BooruImage(
-          imageUrl: post.thumbnailImageUrl,
+          imageUrl: post.videoThumbnailUrl,
           fit: BoxFit.contain,
         )
       else
@@ -242,42 +218,62 @@ class _MoebooruPostDetailsPageState
           (source) => SourceSection(source: source),
           () => const SizedBox.shrink(),
         ),
-        ref.watch(moebooruCommentsProvider(post.id)).when(
-              data: (comments) => comments.isEmpty
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Divider(
-                            thickness: 1.5,
-                          ),
-                          Text(
-                            'comment.comments'.tr(),
-                            style: context.textTheme.titleLarge!.copyWith(
-                              color: context.theme.hintColor,
-                              fontSize: 16,
-                            ),
-                          ),
-                          ...comments
-                              .map((comment) => Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child:
-                                        MoebooruCommentItem(comment: comment),
-                                  ))
-                              .toList()
-                        ],
-                      ),
-                    ),
-              loading: () => const SizedBox.shrink(),
-              error: (e, __) => const SizedBox.shrink(),
-            ),
+        MoebooruCommentSection(post: post),
       ],
     ];
+  }
+}
+
+class MoebooruCommentSection extends ConsumerWidget {
+  const MoebooruCommentSection({
+    super.key,
+    required this.post,
+    this.allowFetch = true,
+  });
+
+  final Post post;
+  final bool allowFetch;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!allowFetch) {
+      return const SizedBox.shrink();
+    }
+
+    final asyncData = ref.watch(moebooruCommentsProvider(post.id));
+
+    return asyncData.when(
+      data: (comments) => comments.isEmpty
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(
+                    thickness: 1.5,
+                  ),
+                  Text(
+                    'comment.comments'.tr(),
+                    style: context.textTheme.titleLarge!.copyWith(
+                      color: context.theme.hintColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                  ...comments
+                      .map((comment) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: MoebooruCommentItem(comment: comment),
+                          ))
+                      .toList()
+                ],
+              ),
+            ),
+      loading: () => const SizedBox.shrink(),
+      error: (e, __) => const SizedBox.shrink(),
+    );
   }
 }

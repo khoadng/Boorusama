@@ -34,25 +34,26 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: switch (Screen.of(context).size) {
-              ScreenSize.small => 3,
-              ScreenSize.medium => 4,
-              ScreenSize.large => 6,
-              ScreenSize.veryLarge => 7,
-            },
-            crossAxisSpacing: 3,
-            mainAxisSpacing: 3,
-          ),
-          shrinkWrap: true,
-          physics: physics ?? const NeverScrollableScrollPhysics(),
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
+        child: LayoutBuilder(
+          builder: (context, constraints) => GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: switch (
+                  screenWidthToDisplaySize(constraints.maxWidth)) {
+                ScreenSize.small => 3,
+                ScreenSize.medium => 4,
+                ScreenSize.large => 6,
+                ScreenSize.veryLarge => 7,
+              },
+              crossAxisSpacing: 3,
+              mainAxisSpacing: 3,
+            ),
+            shrinkWrap: true,
+            physics: physics ?? const NeverScrollableScrollPhysics(),
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
 
-            return LayoutBuilder(
-              builder: (context, constraints) => ImageGridItem(
+              return ImageGridItem(
                 onTap: () => onTap(index),
                 isAnimated: post.isAnimated,
                 isTranslated: post.isTranslated,
@@ -61,9 +62,9 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
                   placeholderUrl: post.thumbnailImageUrl,
                   fit: BoxFit.cover,
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

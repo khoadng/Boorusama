@@ -10,6 +10,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/rule34xxx/rule34xxx_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'rule34xxx_autocomplete_dto.dart';
 
 (int count, String label) extractDataFromTagLabel(String input) {
@@ -47,7 +48,7 @@ List<AutocompleteData> _mapDtoToAutocomplete(
 
             return AutocompleteData(
               type: 'tag',
-              label: label,
+              label: label.replaceUnderscoreWithSpace(),
               value: e.value!,
               category: stringToTagCategory(e.type!).stringify(),
               postCount: count,

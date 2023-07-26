@@ -4,7 +4,6 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/api/rule34xxx/rule34xxx_api.dart';
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -17,6 +16,8 @@ import 'rule34xxx_post_dto.dart';
 List<GelbooruPost> _parsePostInIsolate(HttpResponse<dynamic> value) {
   final dtos = <Rule34xxxPostDto>[];
 
+  if (value.data == null) return [];
+
   for (final item in value.data) {
     dtos.add(Rule34xxxPostDto.fromJson(item));
   }
@@ -25,19 +26,16 @@ List<GelbooruPost> _parsePostInIsolate(HttpResponse<dynamic> value) {
 }
 
 class Rule34xxxPostRepositoryApi
-    with GlobalBlacklistedTagFilterMixin, SettingsRepositoryMixin
+    with SettingsRepositoryMixin
     implements PostRepository {
   const Rule34xxxPostRepositoryApi({
     required this.api,
     required this.booruConfig,
-    required this.blacklistedTagRepository,
     required this.settingsRepository,
   });
 
   final Rule34xxxApi api;
   final BooruConfig booruConfig;
-  @override
-  final GlobalBlacklistedTagRepository blacklistedTagRepository;
   @override
   final SettingsRepository settingsRepository;
 
@@ -57,6 +55,7 @@ class Rule34xxxPostRepositoryApi
     int? limit,
   }) =>
       TaskEither.Do(($) async {
+        final lim = await getPostsPerPage();
         final response = await $(tryParseResponse(
           fetcher: () => api.getPosts(
             booruConfig.apiKey,
@@ -67,15 +66,14 @@ class Rule34xxxPostRepositoryApi
             getTags(booruConfig, tags).join(' '),
             '1',
             (page - 1).toString(),
+            limit: limit ?? lim,
           ),
         ));
 
         final data =
             await $(tryParseJsonFromResponse(response, _parsePostInIsolate));
 
-        final filtered = await $(tryFilterBlacklistedTags(data));
-
-        return filtered;
+        return data;
       });
 }
 

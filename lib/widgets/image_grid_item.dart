@@ -36,7 +36,7 @@ class ImageGridItem extends StatelessWidget {
     this.isFaved,
     this.hideOverlay = false,
     this.duration,
-    this.hasSound = false,
+    this.hasSound,
     this.score,
   });
 
@@ -53,7 +53,7 @@ class ImageGridItem extends StatelessWidget {
   final bool? isFaved;
   final bool hideOverlay;
   final double? duration;
-  final bool hasSound;
+  final bool? hasSound;
   final int? score;
 
   @override

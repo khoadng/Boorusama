@@ -7,6 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/utils.dart';
 
+// Project imports:
+
 class NonQuote extends StatelessWidget {
   const NonQuote({super.key, required this.text});
   final String text;

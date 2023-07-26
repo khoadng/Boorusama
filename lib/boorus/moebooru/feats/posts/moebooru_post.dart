@@ -64,9 +64,9 @@ class MoebooruPost extends Equatable
   final int score;
 
   @override
-  String getLink(String baseUrl) {
-    return '$baseUrl/post/show/$id';
-  }
+  String getLink(String baseUrl) => baseUrl.endsWith('/')
+      ? '${baseUrl}post/show/$id'
+      : '$baseUrl/post/show/$id';
 
   @override
   Uri getUriLink(String baseUrl) {
@@ -81,4 +81,11 @@ class MoebooruPost extends Equatable
 
   @override
   final DateTime? createdAt;
+
+  @override
+  bool? get hasSound => null;
+  @override
+  String get videoUrl => originalImageUrl;
+  @override
+  String get videoThumbnailUrl => thumbnailImageUrl;
 }

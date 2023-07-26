@@ -1,97 +1,76 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/moebooru/pages/home/moebooru_bottom_bar.dart';
-import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
-import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
     super.key,
-    required this.onMenuTap,
   });
-
-  final VoidCallback? onMenuTap;
 
   @override
   ConsumerState<MoebooruHomePage> createState() => _MoebooruHomePageState();
 }
 
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final viewIndex = ValueNotifier(0);
+  late final selectedTagController =
+      SelectedTagController(tagInfo: ref.read(tagInfoProvider));
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(searchHistoryProvider.notifier).fetchHistories();
+  }
+
+  @override
+  void dispose() {
+    selectedTagController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness:
-            theme == ThemeMode.light ? Brightness.dark : Brightness.light,
-      ),
-      child: Scaffold(
-        extendBody: true,
-        key: scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        body: Column(
-          children: [
-            const NetworkUnavailableIndicatorWithState(),
-            Expanded(
-              child: ValueListenableBuilder<int>(
-                valueListenable: viewIndex,
-                builder: (context, index, _) => AnimatedIndexedStack(
-                  index: index,
-                  children: [
-                    PostScope(
-                      fetcher: (page) =>
-                          ref.read(postRepoProvider).getPostsFromTags('', page),
-                      builder: (context, controller, errors) =>
-                          MoebooruInfinitePostList(
-                        errors: errors,
-                        controller: controller,
-                        sliverHeaderBuilder: (context) => [
-                          SliverAppBar(
-                            backgroundColor:
-                                context.theme.scaffoldBackgroundColor,
-                            toolbarHeight: kToolbarHeight * 1.2,
-                            title: HomeSearchBar(
-                              onMenuTap: widget.onMenuTap,
-                              onTap: () => goToMoebooruSearchPage(ref, context),
-                            ),
-                            floating: true,
-                            snap: true,
-                            automaticallyImplyLeading: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const MoebooruPopularPage(),
-                    const MoebooruPopularRecentPage(),
-                  ],
-                ),
-              ),
+    return PostScope(
+      fetcher: (page) => ref.watch(moebooruPostRepoProvider).getPostsFromTags(
+            selectedTagController.rawTagsString,
+            page,
+          ),
+      builder: (context, controller, errors) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DesktopSearchbar(
+            onSearch: () => _onSearch(controller),
+            selectedTagController: selectedTagController,
+          ),
+          Expanded(
+            child: MoebooruInfinitePostList(
+              errors: errors,
+              controller: controller,
             ),
-          ],
-        ),
-        bottomNavigationBar: MoebooruBottomBar(
-          initialValue: viewIndex.value,
-          onTabChanged: (value) => viewIndex.value = value,
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  var selectedTagString = ValueNotifier('');
+
+  void _onSearch(
+    PostGridController postController,
+  ) {
+    ref
+        .read(searchHistoryProvider.notifier)
+        .addHistory(selectedTagController.rawTagsString);
+    selectedTagString.value = selectedTagController.rawTagsString;
+    postController.refresh();
   }
 }

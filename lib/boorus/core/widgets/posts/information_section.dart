@@ -9,8 +9,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/compact_chip.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -54,7 +53,7 @@ class InformationSection extends StatelessWidget {
                   characterTags.isEmpty
                       ? 'Original'
                       : generateCharacterOnlyReadableName(characterTags)
-                          .removeUnderscoreWithSpace()
+                          .replaceUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
                   style: context.textTheme.titleLarge,
@@ -66,7 +65,7 @@ class InformationSection extends StatelessWidget {
                   copyrightTags.isEmpty
                       ? 'Original'
                       : generateCopyrightOnlyReadableName(copyrightTags)
-                          .removeUnderscoreWithSpace()
+                          .replaceUnderscoreWithSpace()
                           .titleCase,
                   overflow: TextOverflow.fade,
                   style: context.textTheme.bodyMedium,
@@ -80,7 +79,7 @@ class InformationSection extends StatelessWidget {
                       Flexible(
                         child: CompactChip(
                           textColor: Colors.white,
-                          label: artistTags.first.removeUnderscoreWithSpace(),
+                          label: artistTags.first.replaceUnderscoreWithSpace(),
                           onTap: () =>
                               onArtistTagTap?.call(context, artistTags.first),
                           backgroundColor: getTagColor(

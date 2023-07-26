@@ -63,4 +63,19 @@ extension SettingsNotifierX on WidgetRef {
           pageMode: mode,
         ),
       );
+
+  Future<void> setPostListConfigHeaderStatus({
+    required bool active,
+  }) =>
+      updateSettings(
+        read(settingsProvider).copyWith(
+          showPostListConfigHeader: active,
+        ),
+      );
+
+  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
+        read(settingsProvider).copyWith(
+          booruConfigIdOrders: configIds.join(' '),
+        ),
+      );
 }

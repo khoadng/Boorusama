@@ -36,7 +36,8 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(themeProvider);
+    final theme =
+        ref.watch(settingsProvider.select((value) => value.themeMode));
     final router = ref.watch(routerProvider(widget.settings));
 
     return Portal(

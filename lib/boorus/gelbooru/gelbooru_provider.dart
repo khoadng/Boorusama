@@ -52,7 +52,7 @@ class GelbooruProvider extends ConsumerWidget {
           autocompleteRepoProvider.overrideWith(
               (ref) => ref.watch(gelbooruAutocompleteRepoProvider)),
         if (booru.booruType == BooruType.rule34xxx)
-          tagRepoProvider.overrideWithValue(EmptyTagRepository())
+          tagRepoProvider.overrideWith((ref) => ref.watch(emptyTagRepoProvider))
         else
           tagRepoProvider
               .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
@@ -61,7 +61,7 @@ class GelbooruProvider extends ConsumerWidget {
               .overrideWith((ref) => ref.watch(gelbooruPostCountRepoProvider))
         else
           postCountRepoProvider
-              .overrideWithValue(const EmptyPostCountRepository()),
+              .overrideWith((ref) => ref.watch(emptyPostCountRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
       ],

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class AddToBlacklistPage extends ConsumerWidget {
   const AddToBlacklistPage({
@@ -20,8 +20,6 @@ class AddToBlacklistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -39,7 +37,7 @@ class AddToBlacklistPage extends ConsumerWidget {
             title: Text(
               tags[index].displayName,
               style: TextStyle(
-                color: getTagColor(tags[index].category, theme),
+                color: getTagColor(tags[index].category, context.themeMode),
               ),
             ),
             onTap: () {

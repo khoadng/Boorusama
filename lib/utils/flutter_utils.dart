@@ -2,14 +2,6 @@
 import 'package:flutter/material.dart';
 
 extension FlutterX on BuildContext {
-  ThemeData get theme => Theme.of(this);
-
-  TextTheme get textTheme => theme.textTheme;
-
-  IconThemeData get iconTheme => theme.iconTheme;
-
-  ColorScheme get colorScheme => theme.colorScheme;
-
   DefaultTextStyle get defaultTextStyle => DefaultTextStyle.of(this);
 
   MediaQueryData get mediaQuery => MediaQuery.of(this);
@@ -17,6 +9,8 @@ extension FlutterX on BuildContext {
   double get screenHeight => mediaQuery.size.height;
 
   double get screenWidth => mediaQuery.size.width;
+
+  double get screenAspectRatio => mediaQuery.size.aspectRatio;
 
   NavigatorState get navigator => Navigator.of(this);
 
@@ -36,4 +30,8 @@ extension MaterialStateHelpers on Iterable<MaterialState> {
   bool get isScrolledUnder => contains(MaterialState.scrolledUnder);
   bool get isDisabled => contains(MaterialState.disabled);
   bool get isError => contains(MaterialState.error);
+}
+
+class ShrinkVisualDensity extends VisualDensity {
+  const ShrinkVisualDensity() : super(horizontal: -4, vertical: -4);
 }

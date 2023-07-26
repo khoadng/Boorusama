@@ -9,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/pages/settings/appearance_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/download_page.dart';
-import 'package:boorusama/boorus/core/pages/settings/general_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/language_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/performance_page.dart';
 import 'package:boorusama/boorus/core/pages/settings/privacy_page.dart';
@@ -18,7 +17,10 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'about_page.dart';
+import 'changelog_page.dart';
+import 'debug_logs_page.dart';
 
 class SettingsPageDesktop extends StatelessWidget {
   const SettingsPageDesktop({
@@ -37,6 +39,7 @@ class SettingsPageDesktop extends StatelessWidget {
             ),
             const Spacer(),
             IconButton(
+              splashRadius: 18,
               onPressed: () => context.navigator.pop(),
               icon: const Icon(Icons.close),
             ),
@@ -63,9 +66,10 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
   final currentTab = ValueNotifier(0);
   @override
   Widget build(BuildContext context) {
-    final packageInfo = ref.watch(packageInfoProvider);
+    final appInfo = ref.watch(appInfoProvider);
+    ref.watch(settingsProvider.select((value) => value.language));
 
-    return ValueListenableBuilder<int>(
+    return ValueListenableBuilder(
       valueListenable: currentTab,
       builder: (context, index, _) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,43 +87,43 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   ListTile(
                     textColor: index == 0 ? Colors.white : null,
                     tileColor: index == 0 ? Colors.grey[800] : null,
-                    title: const Text('settings.general').tr(),
+                    title: const Text('settings.appearance.appearance').tr(),
                     onTap: () => currentTab.value = 0,
                   ),
                   ListTile(
                     textColor: index == 1 ? Colors.white : null,
                     tileColor: index == 1 ? Colors.grey[800] : null,
-                    title: const Text('settings.appearance.appearance').tr(),
+                    title: const Text('settings.language.language').tr(),
                     onTap: () => currentTab.value = 1,
                   ),
                   ListTile(
                     textColor: index == 2 ? Colors.white : null,
                     tileColor: index == 2 ? Colors.grey[800] : null,
-                    title: const Text('settings.language.language').tr(),
+                    title: const Text('download.download').tr(),
                     onTap: () => currentTab.value = 2,
                   ),
                   ListTile(
                     textColor: index == 3 ? Colors.white : null,
                     tileColor: index == 3 ? Colors.grey[800] : null,
-                    title: const Text('download.download').tr(),
+                    title: const Text('settings.performance.performance').tr(),
                     onTap: () => currentTab.value = 3,
                   ),
                   ListTile(
                     textColor: index == 4 ? Colors.white : null,
                     tileColor: index == 4 ? Colors.grey[800] : null,
-                    title: const Text('settings.performance.performance').tr(),
+                    title: const Text('settings.search.search').tr(),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(
                     textColor: index == 5 ? Colors.white : null,
                     tileColor: index == 5 ? Colors.grey[800] : null,
-                    title: const Text('settings.search.search').tr(),
+                    title: const Text('settings.privacy.privacy').tr(),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(
                     textColor: index == 6 ? Colors.white : null,
                     tileColor: index == 6 ? Colors.grey[800] : null,
-                    title: const Text('settings.privacy.privacy').tr(),
+                    title: const Text('settings.debug_logs.debug_logs').tr(),
                     onTap: () => currentTab.value = 6,
                   ),
                   const Divider(
@@ -128,17 +132,24 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                     indent: 10,
                   ),
                   ListTile(
+                    title: const Text('settings.changelog').tr(),
+                    onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => Container(
+                              margin: const EdgeInsets.all(120),
+                              child: const ChangelogPage(),
+                            )),
+                  ),
+                  ListTile(
+                    title: const Text('settings.help_us_translate').tr(),
+                    onTap: () =>
+                        launchExternalUrlString(appInfo.translationProjectUrl),
+                  ),
+                  ListTile(
                     title: const Text('settings.information').tr(),
-                    onTap: () => showAboutDialog(
+                    onTap: () => showDialog(
                       context: context,
-                      applicationIcon: Image.asset(
-                        'assets/icon/icon-512x512.png',
-                        width: 64,
-                        height: 64,
-                      ),
-                      applicationVersion: packageInfo.version,
-                      applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
-                      applicationName: ref.watch(appInfoProvider).appName,
+                      builder: (context) => const AboutPage(),
                     ),
                   ),
                   const Padding(
@@ -156,9 +167,6 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
             child: IndexedStack(
               index: index,
               children: const [
-                GeneralPage(
-                  hasAppBar: false,
-                ),
                 AppearancePage(
                   hasAppBar: false,
                 ),
@@ -175,6 +183,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   hasAppBar: false,
                 ),
                 PrivacyPage(
+                  hasAppBar: false,
+                ),
+                DebugLogsPage(
                   hasAppBar: false,
                 ),
               ],

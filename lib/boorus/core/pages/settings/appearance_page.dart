@@ -7,9 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_tile.dart';
@@ -142,6 +141,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               value: settings.showScoresInGrid,
               onChanged: (value) => ref
                   .updateSettings(settings.copyWith(showScoresInGrid: value)),
+            ),
+            SwitchListTile.adaptive(
+              title: const Text('Show posts configuration header').tr(),
+              value: settings.showPostListConfigHeader,
+              onChanged: (value) =>
+                  ref.setPostListConfigHeaderStatus(active: value),
             ),
             const SizedBox(
               height: 10,

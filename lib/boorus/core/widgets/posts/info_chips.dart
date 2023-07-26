@@ -9,6 +9,7 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class InfoChips extends StatelessWidget {
   const InfoChips({
@@ -65,7 +66,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: leftColor,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: RoundedRectangleBorder(
@@ -78,7 +79,7 @@ class _InfoChip extends StatelessWidget {
           label: leftLabel,
         ),
         Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          visualDensity: const ShrinkVisualDensity(),
           backgroundColor: rightColor,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: context.theme.hintColor),

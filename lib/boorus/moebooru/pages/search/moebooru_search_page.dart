@@ -4,9 +4,9 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/search/default_search_suggestion_view.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 
 class MoebooruSearchPage extends ConsumerStatefulWidget {
   const MoebooruSearchPage({
@@ -40,14 +41,9 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
       child: MoebooruProvider(
         builder: (gcontext) {
           return CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                selectedTagsProvider.overrideWith(SelectedTagsNotifier.new),
-              ],
-              child: MoebooruSearchPage(
-                metatagHighlightColor: context.colorScheme.primary,
-                initialQuery: tag,
-              ),
+            child: MoebooruSearchPage(
+              metatagHighlightColor: context.colorScheme.primary,
+              initialQuery: tag,
             ),
           );
         },
@@ -64,27 +60,47 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
   Widget build(BuildContext context) {
     return SearchScope(
       initialQuery: widget.initialQuery,
-      builder: (state, theme, focus, controller, tags) => switch (state) {
+      builder: (state, focus, controller, selectedTagController,
+              searchController, allowSearch) =>
+          switch (state) {
         DisplayState.options => Scaffold(
-            floatingActionButton: const SearchButton(),
+            floatingActionButton: SearchButton(
+              allowSearch: allowSearch,
+              onSearch: searchController.search,
+            ),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SelectedTagListWithData(
-                      tags: tags,
-                    ),
-                    const SearchLandingView(),
-                  ],
+              child: CustomScrollView(slivers: [
+                SliverPinnedHeader(
+                  child: SelectedTagListWithData(
+                    controller: selectedTagController,
+                    onDeleted: (value) => searchController.resetToOptions(),
+                  ),
                 ),
-              ),
+                SliverToBoxAdapter(
+                  child: SearchLandingView(
+                    onHistoryCleared: () => ref
+                        .read(searchHistoryProvider.notifier)
+                        .clearHistories(),
+                    onHistoryRemoved: (value) => ref
+                        .read(searchHistoryProvider.notifier)
+                        .removeHistory(value.query),
+                    onHistoryTap: (value) =>
+                        searchController.tapHistoryTag(value),
+                    onTagTap: (value) => searchController.tapTag(value),
+                  ),
+                ),
+              ]),
             ),
           ),
         DisplayState.suggestion => Scaffold(
@@ -93,35 +109,41 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
               child: SearchAppBar(
                 focusNode: focus,
                 queryEditingController: controller,
+                onSubmitted: (value) => searchController.submit(value),
+                onBack: () => state != DisplayState.options
+                    ? searchController.resetToOptions()
+                    : context.navigator.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(
-              tags: tags,
+              selectedTagController: selectedTagController,
+              textEditingController: controller,
+              searchController: searchController,
             ),
           ),
         DisplayState.result => PostScope(
             fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  ref.read(selectedRawTagStringProvider).join(' '),
+                  selectedTagController.rawTags.join(' '),
                   page,
                 ),
             builder: (context, controller, errors) => MoebooruInfinitePostList(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
-                const SearchAppBarResultView(),
+                SearchAppBarResultView(
+                  onTap: () => searchController.goToSuggestions(),
+                  onBack: () => searchController.resetToOptions(),
+                ),
                 SliverToBoxAdapter(
                     child: SelectedTagListWithData(
-                  tags: tags,
+                  controller: selectedTagController,
+                  onDeleted: (value) => searchController.resetToOptions(),
                 )),
                 const SliverToBoxAdapter(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Spacer(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: PostGridConfigIconButton(),
-                      ),
                     ],
                   ),
                 ),

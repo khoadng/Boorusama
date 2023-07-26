@@ -6,10 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/booru_chip.dart';
 
 class TrendingTags extends ConsumerWidget {
   const TrendingTags({
@@ -23,7 +24,7 @@ class TrendingTags extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final theme = context.themeMode;
 
     return tags != null && tags!.isNotEmpty
         ? Wrap(
@@ -32,22 +33,17 @@ class TrendingTags extends ConsumerWidget {
             children: tags!.take(20).map((e) {
               final category =
                   ref.watch(danbooruTagCategoryProvider(e.keyword));
-              final colors = category == null
-                  ? null
-                  : generateChipColors(getTagColor(category, theme), theme);
+              final color =
+                  category == null ? null : getTagColor(category, theme);
 
-              return RawChip(
-                visualDensity: VisualDensity.compact,
-                side: BorderSide(
-                  width: 1.5,
-                  color: colors?.borderColor ?? Colors.transparent,
-                ),
+              return BooruChip(
+                visualDensity: VisualDensity.comfortable,
+                color: category != null ? getTagColor(category, theme) : null,
                 onPressed: () => onTagTap?.call(e.keyword),
-                backgroundColor: colors?.backgroundColor,
                 label: Text(
-                  e.keyword.replaceAll('_', ' '),
+                  e.keyword.replaceUnderscoreWithSpace(),
                   style: TextStyle(
-                    color: colors?.foregroundColor,
+                    color: theme.isDark ? color : Colors.white,
                   ),
                 ),
               );

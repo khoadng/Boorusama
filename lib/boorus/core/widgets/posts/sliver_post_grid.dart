@@ -15,15 +15,10 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class SliverPostGrid extends ConsumerWidget {
-  final IndexedWidgetBuilder itemBuilder;
-  final bool refreshing;
-  final BooruError? error;
-  final List<Post> data;
-  final VoidCallback? onRetry;
-
   const SliverPostGrid({
     Key? key,
     required this.itemBuilder,
@@ -31,7 +26,15 @@ class SliverPostGrid extends ConsumerWidget {
     required this.error,
     required this.data,
     required this.onRetry,
+    this.constraints,
   }) : super(key: key);
+
+  final IndexedWidgetBuilder itemBuilder;
+  final bool refreshing;
+  final BooruError? error;
+  final List<Post> data;
+  final VoidCallback? onRetry;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,28 +84,28 @@ class SliverPostGrid extends ConsumerWidget {
           }
 
           if (refreshing) {
-            return const _Placeholder(usePlaceholder: true);
+            return _Placeholder(
+              usePlaceholder: true,
+              constraints: constraints,
+            );
           }
 
           if (data.isEmpty) {
             return const SliverToBoxAdapter(child: NoDataBox());
           }
 
-          final payload = gridSizeToGridData(
-            size: gridSize,
-            spacing: imageGridSpacing,
-            screenWidth: MediaQuery.of(context).size.width,
+          final crossAxisCount = calculateGridCount(
+            constraints?.maxWidth ?? context.screenWidth,
+            gridSize,
           );
-          final crossAxisCount = payload.$1;
-          final mainAxisSpacing = payload.$2;
-          final crossAxisSpacing = payload.$3;
 
           return switch (imageListType) {
             ImageListType.standard => SliverGrid(
-                gridDelegate: gridSizeToGridDelegate(
-                  size: gridSize,
-                  spacing: imageGridSpacing,
-                  screenWidth: MediaQuery.of(context).size.width,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 0.65,
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: imageGridSpacing,
+                  crossAxisSpacing: imageGridSpacing,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   itemBuilder,
@@ -111,8 +114,8 @@ class SliverPostGrid extends ConsumerWidget {
               ),
             ImageListType.masonry => SliverMasonryGrid.count(
                 crossAxisCount: crossAxisCount,
-                mainAxisSpacing: mainAxisSpacing,
-                crossAxisSpacing: crossAxisSpacing,
+                mainAxisSpacing: imageGridSpacing,
+                crossAxisSpacing: imageGridSpacing,
                 childCount: data.length,
                 itemBuilder: itemBuilder,
               ),
@@ -126,14 +129,18 @@ class SliverPostGrid extends ConsumerWidget {
 class _Placeholder extends StatelessWidget {
   const _Placeholder({
     required this.usePlaceholder,
+    this.constraints,
   });
 
   final bool usePlaceholder;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context) {
     return usePlaceholder
-        ? const SliverPostGridPlaceHolder()
+        ? SliverPostGridPlaceHolder(
+            constraints: constraints,
+          )
         : const SliverSizedBox.shrink();
   }
 }
@@ -141,7 +148,10 @@ class _Placeholder extends StatelessWidget {
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
+    this.constraints,
   });
+
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,128 +160,49 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = ref.watch(gridSpacingSettingsProvider);
     final imageBorderRadius = ref.watch(imageBorderRadiusSettingsProvider);
 
-    final data = gridSizeToGridData(
-      size: gridSize,
-      spacing: imageGridSpacing,
-      screenWidth: MediaQuery.of(context).size.width,
+    return Builder(
+      builder: (context) {
+        final crossAxisCount = calculateGridCount(
+          constraints?.maxWidth ?? context.screenWidth,
+          gridSize,
+        );
+
+        return switch (imageListType) {
+          ImageListType.standard => SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 0.65,
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: imageGridSpacing,
+                crossAxisSpacing: imageGridSpacing,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, _) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: context.theme.cardColor,
+                      borderRadius: BorderRadius.circular(
+                        imageBorderRadius,
+                      ),
+                    ),
+                  );
+                },
+                childCount: 100,
+              ),
+            ),
+          ImageListType.masonry => SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: imageGridSpacing,
+              crossAxisSpacing: imageGridSpacing,
+              childCount: 100,
+              itemBuilder: (context, index) {
+                return createRandomPlaceholderContainer(
+                  context,
+                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                );
+              },
+            )
+        };
+      },
     );
-    final crossAxisCount = data.$1;
-    final mainAxisSpacing = data.$2;
-    final crossAxisSpacing = data.$3;
-
-    return switch (imageListType) {
-      ImageListType.standard => SliverGrid(
-          gridDelegate: gridSizeToGridDelegate(
-            size: gridSize,
-            spacing: imageGridSpacing,
-            screenWidth: MediaQuery.of(context).size.width,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (context, _) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: context.theme.cardColor,
-                  borderRadius: BorderRadius.circular(
-                    imageBorderRadius,
-                  ),
-                ),
-              );
-            },
-            childCount: 100,
-          ),
-        ),
-      ImageListType.masonry => SliverMasonryGrid.count(
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          childCount: 100,
-          itemBuilder: (context, index) {
-            return createRandomPlaceholderContainer(
-              context,
-              borderRadius: BorderRadius.circular(imageBorderRadius),
-            );
-          },
-        )
-    };
   }
-}
-
-SliverGridDelegate gridSizeToGridDelegate({
-  required GridSize size,
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  return switch (size) {
-    GridSize.large => SliverPostGridDelegate.large(spacing, displaySize),
-    GridSize.small => SliverPostGridDelegate.small(spacing, displaySize),
-    GridSize.normal => SliverPostGridDelegate.normal(spacing, displaySize)
-  };
-}
-
-class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
-  SliverPostGridDelegate({
-    required super.crossAxisCount,
-    required super.mainAxisSpacing,
-    required super.crossAxisSpacing,
-    required super.childAspectRatio,
-    super.mainAxisExtent,
-  });
-  factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
-        crossAxisCount: displaySizeToGridCountWeight(size) * 2,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-
-  factory SliverPostGridDelegate.small(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: 1,
-        crossAxisCount: displaySizeToGridCountWeight(size) * 3,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-  factory SliverPostGridDelegate.large(double spacing, ScreenSize size) =>
-      SliverPostGridDelegate(
-        childAspectRatio: 0.65,
-        crossAxisCount: displaySizeToGridCountWeight(size),
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-      );
-}
-
-int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
-      ScreenSize.small => 1,
-      ScreenSize.medium => 2,
-      ScreenSize.large || ScreenSize.veryLarge => 3,
-    };
-
-(
-  int crossAxisCount,
-  double mainAxisSpacing,
-  double crossAxisSpacing,
-) gridSizeToGridData({
-  required GridSize size,
-  required double spacing,
-  required double screenWidth,
-}) {
-  final displaySize = screenWidthToDisplaySize(screenWidth);
-  return switch (size) {
-    GridSize.large => (
-        displaySizeToGridCountWeight(displaySize),
-        spacing,
-        spacing
-      ),
-    GridSize.normal => (
-        displaySizeToGridCountWeight(displaySize) * 2,
-        spacing,
-        spacing
-      ),
-    GridSize.small => (
-        displaySizeToGridCountWeight(displaySize) * 3,
-        spacing,
-        spacing
-      ),
-  };
 }
