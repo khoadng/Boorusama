@@ -1,11 +1,11 @@
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:media_scanner/media_scanner.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 

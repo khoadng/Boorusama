@@ -3,10 +3,10 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 
 DownloadPathOrError downloadUrl({

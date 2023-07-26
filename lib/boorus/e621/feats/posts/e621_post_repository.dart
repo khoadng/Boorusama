@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/api/e621/e621_api.dart';
@@ -10,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/e621/feats/posts/utils.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'e621_parser.dart';
 import 'e621_post.dart';

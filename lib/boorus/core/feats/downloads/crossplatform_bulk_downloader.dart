@@ -6,12 +6,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:media_scanner/media_scanner.dart';
-import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class CrossplatformBulkDownloader implements BulkDownloader {

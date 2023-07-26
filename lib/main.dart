@@ -6,7 +6,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 import 'package:video_player_win/video_player_win.dart';
 
@@ -29,6 +28,7 @@ import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'app.dart';
 import 'foundation/i18n.dart';

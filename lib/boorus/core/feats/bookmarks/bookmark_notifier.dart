@@ -2,7 +2,6 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/toast.dart';
 

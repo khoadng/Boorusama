@@ -2,10 +2,10 @@
 
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/image.dart';
+import 'package:boorusama/foundation/path.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin {
   const Bookmark({
