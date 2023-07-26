@@ -57,7 +57,7 @@
             "show_translated": "Übersetzt anzeigen",
             "login_required_notice": "Du musst dich anmelden, um diese Aktion durchzuführen",
             "open_wiki": "Wiki öffnen",
-            "add_to_blacklist": "Zu schwarzer Liste hinzufügen",
+            "add_to_blacklist": "Zu Ausgeblendeten Tags hinzufügen",
             "add_to_favorites": "Zu Favoriten hinzufügen",
             "copy_and_open_saved_search": "Gespeicherte Suche kopieren und öffnen",
             "score": {
@@ -75,7 +75,7 @@
         "action": {
             "preview": "Vorschau",
             "view_comments": "Kommentare anzeigen",
-            "add_to_favorite_group": "Zur Favoritengruppe hinzufügen",
+            "add_to_favorite_group": "Zur Gruppe hinzufügen",
             "select": "Auswählen"
         },
         "image_fullview": {
@@ -119,14 +119,14 @@
             "rate_limited": "Du hast ein Rate Limit. Bitte versuche es später noch einmal",
             "pagination_limit": "Du hast das Seitenlimit erreicht. Das bedeutet du kannst nicht mehr weiter blättern",
             "max_capacity": "Der Server ist stark belastet und kann die Anfrage nicht bearbeiten, bitte versuche es später noch einmal",
-            "down": "Der Server ist ausgefallen. Bitte versuche es später noch einmal.",
+            "down": "Der Server ist ausgefallen. Bitte versuche es später noch einmal",
             "access_denied": "Zugriff abgelehnt",
             "forbidden": "Authentifizierung fehlgeschlagen",
             "unknown": "Unbekannter Serverfehler, bitte melde dieses Problem an den Entwickler"
         },
         "hint": "Suche...",
         "no_result": "Wir haben weit und breit gesucht, aber keine Ergebnisse gefunden.",
-        "empty": "Solche leere..",
+        "empty": "Solche leere",
         "search_options": "Suchoptionen",
         "metatags_notice": "Freie Metatags werden nicht auf die Tag-Suchgrenzen angerechnet",
         "history": {
@@ -135,7 +135,13 @@
             "recent": "Neueste"
         },
         "trending": "Aktuell",
-        "remove_all_selected": "Ausgewählte Tags entfernen"
+        "remove_all_selected": "Ausgewählte Tags entfernen",
+        "result_counter": {
+            "one": "{} Ergebnis",
+            "other": "{} Ergebnisse"
+        },
+        "no_result_notice": "Kein Ergebnis",
+        "search_in_progress_notice": "Suche..."
     },
     "pool": {
         "pool": "Pool",
@@ -167,13 +173,14 @@
         },
         "general": "Allgemein",
         "search": {
-            "search": "Suche"
+            "search": "Suche",
+            "auto_focus_search_bar": "Automatisch Suchleiste fokussieren wenn die Suchansicht geöffnet wird"
         },
         "information": "Information",
         "changelog": "Änderungsprotokoll",
         "infinite_scroll_warning": "Kann die App zum Absturz bringen, wenn du lange scrollst",
         "result_layout": {
-            "result_layout": "Endlayout",
+            "result_layout": "Seitenlayout",
             "infinite_scroll": "Endloses Scrollen",
             "pagination": "Seitennummerierung"
         },
@@ -252,10 +259,12 @@
     "blacklisted_tags": {
         "remove": "Entfernen",
         "edit": "Bearbeiten",
-        "blacklisted_tags": "Auf der schwarzen Liste stehende Tags",
-        "load_error": "Die Tags auf der schwarzen Liste konnten nicht geladen werden",
-        "updated": "Tags auf der schwarzen Liste aktualisiert",
-        "limitation_notice": "Unterstützt nur den <b>NOT</b> Operator und den <b>OR</b> Operator.\n\nBlacklisting mit Metatags funktioniert in der aktuellen Version nicht."
+        "blacklisted_tags": "Ausgeblendete Tags",
+        "load_error": "Ausgeblendete Tags konnten nicht geladen werden",
+        "updated": "Ausgeblendete Tags aktualisiert",
+        "limitation_notice": "Unterstützt nur <b>NOT</b> Operator, <b>OR</b> Operator, <b>Score</b> Metatag und <b>Rating</b> Metatag\n\nDas Ausblenden von Tags mit Metatags funktioniert in der aktuellen Version nicht.",
+        "failed_to_add": "Tag konnte nicht hinzugefügt werden",
+        "failed_to_remove": "Tag konnte nicht entfernt werden"
     },
     "download": {
         "download": "Download",
@@ -289,7 +298,7 @@
             "other": "{} Bilder herunterladen"
         },
         "bulk": {
-            "all_done_notification_message": "Alle Downloads sind abgeschlossen"
+            "all_done_notification_message": "Alle Downloads abgeschlossen"
         }
     },
     "saved_search": {
@@ -304,7 +313,7 @@
         "update_saved_search": "Gespeicherte Suche aktualisieren",
         "saved_search_updated": "Gespeicherte Suche wurde aktualisiert",
         "saved_search_feed": "Feed",
-        "saved_search_help": "Was ist es?",
+        "saved_search_help": "Was ist das?",
         "saved_search_examples": "Beispiele",
         "saved_search_try": "Versuch es",
         "saved_search_query": "Anfrage",
@@ -324,11 +333,11 @@
         "failed_to_favorite": "Post konnte nicht zu den Favoriten hinzugefügt werden"
     },
     "favorite_groups": {
-        "favorite_groups": "Favorisierte Gruppen",
-        "empty_group_notice": "Keine Favorisierten Gruppen vorhanden",
+        "favorite_groups": "Gruppen",
+        "empty_group_notice": "Keine Gruppen vorhanden",
         "create_group": "Gruppe erstellen",
         "edit_group": "Gruppe bearbeiten",
-        "add_to_group_dialog_title": "Zu Favorisierter Gruppe hinzufügen",
+        "add_to_group_dialog_title": "Zu Gruppe hinzufügen",
         "add_to": "Hinzufügen zu",
         "create": "Erstellen",
         "private": "Privat",
@@ -337,13 +346,13 @@
         "group_name": "Gruppenname",
         "group_name_hint": "Neue Gruppe",
         "all_posts": "Posts",
-        "initial_posts_hint": "ID-Nummern getrennt durch Leerzeichen eingeben (optional)",
+        "initial_posts_hint": "IDs getrennt durch Leerzeichen eingeben (optional)",
         "is_private_group_option": "Private Gruppe",
         "create_group_cancel": "Abbrechen",
         "create_group_confirm": "OK",
-        "max_limit_warning": "Ein Mitglied kann nur 10 Favorisierte Gruppen erstellen",
+        "max_limit_warning": "Ein Mitglied kann nur 10 Gruppen erstellen",
         "duplicate_items_warning_notification": "Die eingegebenen Posts sind bereits in der Gruppe vorhanden",
-        "detete_confirmation": "Bist du sicher, dass du diese Favorisierte Gruppe löschen möchtest?",
+        "detete_confirmation": "Bist du sicher, dass du diese Gruppe löschen möchtest",
         "group_item_counter": {
             "one": "{} Post",
             "other": "{} Posts"
@@ -353,7 +362,7 @@
         "favorites": "Favoriten",
         "or": "oder",
         "import": "Importieren",
-        "import_hint": "Tag-String hier durch Leerzeichen getrennt eingeben.",
+        "import_hint": "Tag-String hier eingeben. Durch Leerzeichen getrennt.",
         "cancel": "Abbrechen",
         "export": "Exportieren",
         "export_notification": "Tag-String in die Zwischenablage kopiert"
@@ -368,9 +377,9 @@
     "sideMenu": {
         "settings": "Einstellungen",
         "manage_boorus": "Boorus verwalten",
-        "your_bookmarks": "Deine Lesezeichen",
-        "your_blacklist": "Schwarze Liste",
-        "bulk_download": "Massen-Download"
+        "your_bookmarks": "Lesezeichen",
+        "your_blacklist": "Ausgeblendete Tags",
+        "bulk_download": "Bulk-Download"
     },
     "dateRange": {
         "day": "Tag",
@@ -379,23 +388,34 @@
     },
     "booru": {
         "addNew": "Neues Booru hinzufügen",
-        "add_booru_source_title": "Eine Quelle hinzufügen. Anmeldedaten leer lassen, um anonym zu bleiben",
+        "add_booru_source_title": "Eine Quelle hinzufügen, Anmeldedaten leer lassen, um anonym zu bleiben",
         "add_random_booru_warning": "Dieser Booru wird noch nicht offiziell unterstützt. Wahrscheinlich wird es nicht funktionieren.",
         "booru_engine_input_label": "Booru Engine (*)",
         "config_name_label": "Konfigurationsname (*)",
         "site_url_label": "Seiten-URL",
         "login_name_label": "Login",
         "password_api_key_label": "API Schlüssel",
-        "password_hashed_label": "Passwort gehasht (schreibgeschützt)",
+        "password_hashed_label": "Gehashtes Passwort(schreibgeschützt)",
         "password_label": "Passwort",
         "content_filtering_label": "Inhaltsfilterung",
         "hide_deleted_label": "Gelöschte Beiträge ausblenden",
-        "config_booru_confirm": "OK"
+        "config_booru_confirm": "OK",
+        "add_a_booru_site": "Booru Seite hinzufügen",
+        "next_step": "Weiter",
+        "site_url": "URL",
+        "unsupported_warning": "Dieses Booru wird momentan nicht unterstützt.",
+        "validation_empty_url": "URL ist leer",
+        "validation_invalid_url": "\"{0}\" ist keine gültige URL",
+        "validation_invalid_http_url": "\"{0}\" ist keine HTTP oder HTTPS URL",
+        "validation_missing_trailing_slash": "\"{0}\" fehlt ein abschließender Schrägstrich",
+        "validation_redundant_www": "\"{0}\" enthält überflüssiges \"www\"",
+        "validation_contains_spaces": "\"{0}\" enthält Leerzeichen",
+        "validation_missing_scheme": "\"{0}\" entspricht keinem Schema (z.B. https://)"
     },
     "blacklist": {
         "manage": {
-            "title": "Schwarze Liste",
-            "empty_blacklist": "Keine Tags auf der schwarzen Liste"
+            "title": "Ausgeblendete Tags",
+            "empty_blacklist": "Keine Ausgeblendeten Tags vorhanden"
         }
     },
     "bookmark": {

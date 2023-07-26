@@ -2,7 +2,7 @@
     "generic": {
         "done": "完成",
         "errors": {
-            "no_data": "没有数据",
+            "no_data": "无可用数据",
             "unknown": "发生错误"
         },
         "action": {
@@ -18,14 +18,14 @@
         "favorites": "喜爱"
     },
     "network": {
-        "unavailable": "网络无法连接"
+        "unavailable": "网络不可用"
     },
     "tag": {
         "related": {
             "more": "更多",
             "related": "相关的",
             "add_to_current_search": "添加到当前搜索",
-            "open_wiki": "打开wiki"
+            "open_wiki": "打开维基"
         },
         "explore": {
             "new": "新的",
@@ -34,7 +34,6 @@
     },
     "post": {
         "detail": {
-            "view": "显示",
             "slide_show": {
                 "interval": "间隔（秒）",
                 "skip_anim": "跳过动画",
