@@ -63,6 +63,7 @@ class _DanbooruTagDetailsPageState
           TagTitleName(tagName: widget.tagName),
           const SizedBox(height: 12),
           widget.otherNamesBuilder(context),
+          ...widget.extraBuilder?.call(context) ?? [],
           const SizedBox(height: 36),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),

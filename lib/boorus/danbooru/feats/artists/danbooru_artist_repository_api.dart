@@ -1,16 +1,12 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
-import 'package:boorusama/foundation/http/http.dart';
 
-List<DanbooruArtist> parseArtist(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => DanbooruArtistDto.fromJson(item),
-    ).map((e) => e.toEntity()).toList();
+const _kArtistParams =
+    'id,created_at,name,updated_at,is_deleted,group_name,is_banned,other_names,urls';
 
 class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
   DanbooruArtistRepositoryApi({
@@ -24,7 +20,11 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
       {CancelToken? cancelToken}) async {
     try {
       return _api
-          .getArtist(name, cancelToken: cancelToken)
+          .getArtist(
+            name,
+            _kArtistParams,
+            cancelToken: cancelToken,
+          )
           .then(parseArtist)
           .then((artists) =>
               artists.isEmpty ? DanbooruArtist.empty() : artists.first);
@@ -46,20 +46,5 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
         );
       }
     }
-  }
-}
-
-extension ArtistDtoX on DanbooruArtistDto {
-  DanbooruArtist toEntity() {
-    return DanbooruArtist(
-      createdAt: createdAt,
-      id: id,
-      name: name,
-      groupName: groupName,
-      isBanned: isBanned,
-      isDeleted: isDeleted,
-      otherNames: List<String>.of(otherNames),
-      updatedAt: updatedAt,
-    );
   }
 }

@@ -1,6 +1,8 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+import 'danbooru_artist_url.dart';
+
 class DanbooruArtist extends Equatable {
   const DanbooruArtist({
     required this.id,
@@ -11,6 +13,7 @@ class DanbooruArtist extends Equatable {
     required this.isDeleted,
     required this.otherNames,
     required this.name,
+    required this.urls,
   });
 
   factory DanbooruArtist.empty() => DanbooruArtist(
@@ -22,6 +25,7 @@ class DanbooruArtist extends Equatable {
         isDeleted: false,
         otherNames: const [],
         updatedAt: DateTime(1),
+        urls: const [],
       );
 
   final int id;
@@ -32,6 +36,7 @@ class DanbooruArtist extends Equatable {
   final bool isBanned;
   final List<String> otherNames;
   final String name;
+  final List<DanbooruArtistUrl> urls;
 
   @override
   List<Object?> get props => [
@@ -43,6 +48,7 @@ class DanbooruArtist extends Equatable {
         isBanned,
         otherNames,
         name,
+        urls,
       ];
 }
 
@@ -63,5 +69,6 @@ extension DanbooruArtistX on DanbooruArtist {
         isDeleted: isDeleted,
         otherNames: otherNames ?? this.otherNames,
         name: name ?? this.name,
+        urls: urls,
       );
 }

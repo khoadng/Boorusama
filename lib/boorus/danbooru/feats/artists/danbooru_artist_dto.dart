@@ -1,3 +1,6 @@
+// Project imports:
+import 'danbooru_artist_url_dto.dart';
+
 class DanbooruArtistDto {
   DanbooruArtistDto({
     required this.id,
@@ -8,6 +11,7 @@ class DanbooruArtistDto {
     required this.groupName,
     required this.isBanned,
     required this.otherNames,
+    required this.urls,
   });
 
   factory DanbooruArtistDto.fromJson(Map<String, dynamic> json) =>
@@ -20,6 +24,8 @@ class DanbooruArtistDto {
         groupName: json['group_name'],
         isBanned: json['is_banned'],
         otherNames: List<String>.from(json['other_names'].map((x) => x)),
+        urls: List<DanbooruArtistUrlDto>.from(
+            json['urls'].map((x) => DanbooruArtistUrlDto.fromJson(x))),
       );
 
   final int id;
@@ -30,4 +36,5 @@ class DanbooruArtistDto {
   final String groupName;
   final bool isBanned;
   final List<String> otherNames;
+  final List<DanbooruArtistUrlDto> urls;
 }

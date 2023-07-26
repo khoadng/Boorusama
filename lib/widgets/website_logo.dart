@@ -8,18 +8,20 @@ class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
     super.key,
     required this.url,
+    this.size = 32,
   });
 
   final String url;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: 32,
-        minHeight: 32,
-        maxWidth: 32,
-        maxHeight: 32,
+      constraints: BoxConstraints(
+        maxWidth: size,
+        maxHeight: size,
+        minWidth: size,
+        minHeight: size,
       ),
       child: CachedNetworkImage(
         fit: BoxFit.cover,
