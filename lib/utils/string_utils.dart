@@ -37,7 +37,14 @@ extension StringX on String {
 }
 
 extension StringNullX on String? {
-  bool isNotNullAndEmpty() => this != null && this != '';
+  bool isBlank() {
+    if (this == null) return true;
+
+    return this!.trim().isEmpty;
+  }
+
+  bool isNotBlank() => !isBlank();
+
   List<String> splitByWhitespace() {
     if (this == null) return [];
     if (this!.isEmpty) return [];

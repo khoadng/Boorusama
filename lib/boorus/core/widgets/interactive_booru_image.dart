@@ -133,7 +133,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
               placeholderFadeInDuration: Duration.zero,
               fadeOutDuration: Duration.zero,
               fadeInDuration: Duration.zero,
-              placeholder: widget.placeholderImageUrl.isNotNullAndEmpty()
+              placeholder: widget.placeholderImageUrl.isNotBlank()
                   ? (context, url) => CachedNetworkImage(
                         httpHeaders: {
                           'User-Agent':
