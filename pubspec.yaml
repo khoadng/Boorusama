@@ -92,7 +92,6 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
       ref: flutter-3.0
-  quiver: ^3.2.1
   rate_my_app: ^2.0.0
   recase: ^4.1.0
   reorderable_grid_view: ^2.2.6
