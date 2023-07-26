@@ -95,6 +95,7 @@ class _DanbooruTagDetailsPageState
                   children: [
                     TagTitleName(tagName: widget.tagName),
                     widget.otherNamesBuilder(context),
+                    ...widget.extraBuilder?.call(context) ?? [],
                   ],
                 ),
               ),

@@ -76,7 +76,7 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
                         onTap: () => launchExternalUrlString(source.url),
                         child: WebsiteLogo(
                           url: source.faviconUrl,
-                          size: 20,
+                          size: 24,
                         ),
                       ),
                     ),
