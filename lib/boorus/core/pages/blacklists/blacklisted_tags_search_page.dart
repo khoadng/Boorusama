@@ -172,7 +172,7 @@ class _BlacklistedTagsSearchPageState
             maxWidth: MediaQuery.of(context).size.width * 0.85,
           ),
           child: Text(
-            tagSearchItem.tag,
+            tagSearchItem.toString(),
             overflow: TextOverflow.fade,
           ),
         ),
