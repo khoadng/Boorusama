@@ -17,7 +17,9 @@ import 'danbooru_forum_posts_page.dart';
 import 'forum_card.dart';
 
 class DanbooruForumPage extends ConsumerWidget {
-  const DanbooruForumPage({super.key});
+  const DanbooruForumPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,10 +48,12 @@ class DanbooruForumPage extends ConsumerWidget {
           onCreatorTap: () =>
               goToUserDetailsPage(ref, context, uid: topic.creator.id),
           onTap: () => context.navigator.push(MaterialPageRoute(
-              builder: (_) => DanbooruForumPostsPage(
-                    topicId: topic.id,
-                    originalPostId: topic.originalPost.id,
-                  ))),
+            builder: (_) => DanbooruForumPostsPage(
+              topicId: topic.id,
+              originalPostId: topic.originalPost.id,
+              title: topic.title,
+            ),
+          )),
         ),
         pagedBuilder: (controller, builder) => PagedListView(
           pagingController: controller,

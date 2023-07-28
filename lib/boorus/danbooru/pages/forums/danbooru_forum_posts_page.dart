@@ -25,10 +25,12 @@ class DanbooruForumPostsPage extends ConsumerWidget {
     super.key,
     required this.topicId,
     required this.originalPostId,
+    required this.title,
   });
 
   final int topicId;
   final int originalPostId;
+  final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +38,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forum Posts'),
+        title: Text(title),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -49,7 +51,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
         firstPageKey: originalPostId,
         provider: danbooruForumPostsProvider(topicId),
         itemBuilder: (context, post, index) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
