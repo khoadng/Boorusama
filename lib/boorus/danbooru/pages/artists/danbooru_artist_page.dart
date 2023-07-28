@@ -65,8 +65,10 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
 
             urls.sort((a, b) => b.url.compareTo(a.url));
 
-            return OverflowBar(
+            return Wrap(
               spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
               children: [
                 for (final url in urls)
                   PostSource.from(url.url).whenWeb(
