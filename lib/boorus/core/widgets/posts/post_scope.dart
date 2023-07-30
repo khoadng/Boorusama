@@ -48,7 +48,9 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
     return widget.fetcher(page).run().then((value) => value.fold(
           (l) {
-            setState(() => errors = l);
+            if (mounted) {
+              setState(() => errors = l);
+            }
             return <T>[];
           },
           (r) => r,

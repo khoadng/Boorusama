@@ -16,6 +16,7 @@ import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 import 'saved_search_landing_view.dart';
 
 class SavedSearchFeedPage extends ConsumerWidget {

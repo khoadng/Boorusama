@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({

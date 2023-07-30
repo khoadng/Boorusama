@@ -1,3 +1,5 @@
+import 'package:boorusama/utils/utils.dart';
+
 class Rule34xxxPostDto {
   final String? previewUrl;
   final String? sampleUrl;
@@ -12,7 +14,7 @@ class Rule34xxxPostDto {
   final String? owner;
   final int? parentId;
   final String? rating;
-  final int? sample;
+  final bool? sample;
   final int? sampleHeight;
   final int? sampleWidth;
   final int? score;
@@ -48,6 +50,7 @@ class Rule34xxxPostDto {
   });
 
   factory Rule34xxxPostDto.fromJson(Map<String, dynamic> json) {
+    json['sample'] = 1;
     return Rule34xxxPostDto(
       previewUrl: json['preview_url'],
       sampleUrl: json['sample_url'],
@@ -62,7 +65,10 @@ class Rule34xxxPostDto {
       owner: json['owner'],
       parentId: json['parent_id'],
       rating: json['rating'],
-      sample: json['sample'],
+      // Not necessary, but it's here to err on the side of caution.
+      sample: json['sample'] != null
+          ? castOrFallback<bool>(json['sample'], false)
+          : null,
       sampleHeight: json['sample_height'],
       sampleWidth: json['sample_width'],
       score: json['score'],

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
+
+// Project imports:
+import 'package:boorusama/time.dart';
 
 String formatDurationForMedia(Duration duration) {
   final seconds = duration.inSeconds % 60;
@@ -69,7 +71,7 @@ extension DateTimeX on DateTime {
     final now = DateTime.now();
     final ago = now.subtract(now.difference(this));
 
-    return timeago.format(
+    return format(
       ago,
       locale: locale.toLanguageTag(),
     );

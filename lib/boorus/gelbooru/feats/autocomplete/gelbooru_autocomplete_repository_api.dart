@@ -4,8 +4,8 @@ import 'package:retrofit/retrofit.dart';
 // Project imports:
 import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/string.dart';
 import 'gelbooru_autocomplete_dto.dart';
 
 List<GelbooruAutocompleteDto> _parseAutocomplete(HttpResponse<dynamic> value) =>

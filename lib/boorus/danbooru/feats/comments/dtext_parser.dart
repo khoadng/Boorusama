@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/comments/parse_utils.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 
 String parseDtext(String text) => text.pipe([
       bold,

@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/danbooru_comment_header.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment/widgets/youtube_preview_box.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/time.dart';
 
 class CommentItem extends ConsumerWidget {
   const CommentItem({

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
 
 // Project imports:
@@ -13,7 +12,10 @@ void main() {
 
     final actual = items.replaceAt(2, 100);
 
-    expect(listsEqual(expected, actual), isTrue);
+    for (var i = 0; i < items.length; i++) {
+      expect(actual[i], expected[i]);
+    }
+
     expect(identical(actual, items), isFalse);
   });
 
@@ -24,7 +26,10 @@ void main() {
 
     final actual = items.replaceFirst(100, (e) => e == 3);
 
-    expect(listsEqual(expected, actual), isTrue);
+    for (var i = 0; i < items.length; i++) {
+      expect(actual[i], expected[i]);
+    }
+
     expect(identical(actual, items), isFalse);
   });
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/string.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({

@@ -133,8 +133,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
       onExpanded: widget.hasDetailsTagList
           ? (currentPage) => ref.read(tagsProvider.notifier).load(
                 posts[currentPage].tags,
-                onSuccess: (tags) =>
-                    posts[currentPage].loadArtistPostsFrom(ref, tags),
+                onSuccess: (tags) {
+                  if (!mounted) return;
+                  posts[currentPage].loadArtistPostsFrom(ref, tags);
+                },
               )
           : null,
     );

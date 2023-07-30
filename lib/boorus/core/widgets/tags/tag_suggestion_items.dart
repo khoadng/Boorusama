@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({

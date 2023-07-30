@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends ConsumerStatefulWidget {
@@ -115,8 +115,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
                           final baseOffset =
                               max(0, queryTextController.selection.baseOffset);
                           queryTextController
-                            ..text = StringUtils.addCharAtPosition(
-                              queryTextController.text,
+                            ..text = queryTextController.text.addCharAtPosition(
                               tag.value,
                               baseOffset,
                             )

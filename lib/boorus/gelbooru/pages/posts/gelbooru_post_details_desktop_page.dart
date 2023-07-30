@@ -81,6 +81,7 @@ class _DanbooruPostDetailsDesktopPageState
                 ref.read(tagsProvider.notifier).load(
                   widget.posts[page].tags,
                   onSuccess: (tags) {
+                    if (!mounted) return;
                     widget.posts[page].loadArtistPostsFrom(ref, tags);
                     setState(() => loading = false);
                   },

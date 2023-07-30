@@ -12,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
@@ -133,7 +133,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
               placeholderFadeInDuration: Duration.zero,
               fadeOutDuration: Duration.zero,
               fadeInDuration: Duration.zero,
-              placeholder: widget.placeholderImageUrl.isNotNullAndEmpty()
+              placeholder: widget.placeholderImageUrl.isNotBlank()
                   ? (context, url) => CachedNetworkImage(
                         httpHeaders: {
                           'User-Agent':

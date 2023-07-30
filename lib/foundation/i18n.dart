@@ -10,7 +10,9 @@ import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart' as el;
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart';
+
+// Project imports:
+import 'package:boorusama/time.dart';
 
 export 'package:easy_localization/easy_localization.dart'
     hide

@@ -1,15 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
-// Package imports:
-import 'package:recase/recase.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/string.dart';
+import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/compact_chip.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

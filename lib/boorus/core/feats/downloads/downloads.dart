@@ -8,7 +8,6 @@ export 'bulk_downloader.dart';
 export 'crossplatform_bulk_downloader.dart';
 export 'download.dart';
 export 'download_options.dart';
-export 'download_path_handler.dart';
 export 'download_provider.dart';
 export 'download_service.dart';
 export 'download_utils.dart';

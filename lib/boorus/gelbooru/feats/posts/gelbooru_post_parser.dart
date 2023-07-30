@@ -4,7 +4,7 @@ import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/time.dart';
 import 'gelbooru_post.dart';
 import 'gelbooru_post_dto.dart';
 
