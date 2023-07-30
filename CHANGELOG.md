@@ -1,6 +1,7 @@
 # 3.3.1
-- Fix an issue where a certain site will not parse data correctly
-- Minor UI adjustments
+- Fix an issue where a certain site does not parse data correctly.
+- [Danbooru] Show artists' URLs on the artist page.
+- Minor UI adjustments.
 
 # 3.3.0
 - Groundwork for desktop version
