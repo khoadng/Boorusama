@@ -21,6 +21,7 @@ class BooruSearchBar extends StatefulWidget {
     this.focus,
     this.backgroundColor,
     this.dense,
+    this.onTapOutside,
   });
 
   final VoidCallback? onTap;
@@ -36,6 +37,7 @@ class BooruSearchBar extends StatefulWidget {
   final FocusNode? focus;
   final Color? backgroundColor;
   final bool? dense;
+  final VoidCallback? onTapOutside;
 
   @override
   State<BooruSearchBar> createState() => _BooruSearchBarState();
@@ -77,7 +79,10 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
               const SizedBox(width: 10),
               Expanded(
                 child: TextFormField(
-                  onTapOutside: (event) => widget.focus?.unfocus(),
+                  onTapOutside: (event) {
+                    widget.focus?.unfocus();
+                    widget.onTapOutside?.call();
+                  },
                   focusNode: widget.focus,
                   onFieldSubmitted: (value) => widget.onSubmitted?.call(value),
                   onChanged: (value) => widget.onChanged?.call(value),

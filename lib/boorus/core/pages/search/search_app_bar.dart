@@ -22,6 +22,7 @@ class SearchAppBar extends ConsumerWidget {
     this.autofocus,
     this.dense,
     this.height,
+    this.onTapOutside,
   });
 
   final TextEditingController queryEditingController;
@@ -34,6 +35,7 @@ class SearchAppBar extends ConsumerWidget {
   final bool? autofocus;
   final bool? dense;
   final double? height;
+  final VoidCallback? onTapOutside;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,6 +44,7 @@ class SearchAppBar extends ConsumerWidget {
     final searchAppBar = BooruSearchBar(
       dense: dense,
       autofocus: autofocus ?? settings.autoFocusSearchBar,
+      onTapOutside: onTapOutside,
       focus: focusNode,
       queryEditingController: queryEditingController,
       leading: onBack != null

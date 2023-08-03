@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/widgets/split.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,7 +67,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
               builder: (context, orientation) =>
                   orientation.isPortrait ? _buildMobile() : _buildDesktop(),
             )
-          : _buildDesktop(),
+          : _buildDesktop(resizable: true),
     );
   }
 
@@ -82,10 +83,11 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     );
   }
 
-  Widget _buildDesktop() {
+  Widget _buildDesktop({bool resizable = false}) {
     return BooruDesktopScope(
       controller: controller,
       config: widget.config,
+      resizable: resizable,
       menuBuilder: (context, constraints) => widget.desktopMenuBuilder(
         context,
         controller,
@@ -103,6 +105,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
     required this.config,
     required this.menuBuilder,
     required this.views,
+    this.resizable = false,
   });
 
   final HomePageController controller;
@@ -111,6 +114,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
       menuBuilder;
 
   final List<Widget> views;
+  final bool resizable;
 
   @override
   ConsumerState<BooruDesktopScope> createState() => _BooruDesktopScopeState();
@@ -119,54 +123,66 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colorScheme.background,
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final content = ValueListenableBuilder(
+      valueListenable: widget.controller,
+      builder: (context, value, child) => LazyIndexedStack(
+        index: value,
+        children: widget.views,
+      ),
+    );
+
+    final menu = SizedBox(
+      width: 220,
+      child: Column(
         children: [
-          SizedBox(
-            width: 220,
-            child: Column(
-              children: [
-                const CurrentBooruTile(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 8),
-                        Theme(
-                          data: context.theme.copyWith(
-                            iconTheme:
-                                context.theme.iconTheme.copyWith(size: 20),
-                          ),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: widget.menuBuilder(
-                                context,
-                                constraints,
-                              ),
-                            ),
-                          ),
+          const CurrentBooruTile(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  Theme(
+                    data: context.theme.copyWith(
+                      iconTheme: context.theme.iconTheme.copyWith(size: 20),
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: widget.menuBuilder(
+                          context,
+                          constraints,
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: widget.controller,
-              builder: (context, value, child) => LazyIndexedStack(
-                index: value,
-                children: widget.views,
+                ],
               ),
             ),
-          )
+          ),
         ],
       ),
+    );
+    return Scaffold(
+      backgroundColor: context.colorScheme.background,
+      body: !widget.resizable
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                menu,
+                Expanded(
+                  child: content,
+                )
+              ],
+            )
+          : Split(
+              axis: Axis.horizontal,
+              minSizes: const [55, 600],
+              initialFractions: const [0.18, 0.82],
+              children: [
+                menu,
+                content,
+              ],
+            ),
     );
   }
 }
