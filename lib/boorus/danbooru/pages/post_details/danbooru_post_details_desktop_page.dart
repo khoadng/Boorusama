@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
@@ -58,7 +59,11 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
-    final tags = post.extractTagDetails();
+    final tags = post
+        .extractTagDetails()
+        .where((e) => e.postId == post.id)
+        .map((e) => e.name)
+        .toList();
     final artists = ref.watch(danbooruPostDetailsArtistProvider(post.id));
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
     final auth = ref.watch(authenticationProvider);
@@ -81,11 +86,15 @@ class _DanbooruPostDetailsDesktopPageState
         totalPages: widget.posts.length,
         onPageChanged: (page) {
           setState(() => this.page = page);
+          ref.read(tagsProvider.notifier).load(tags);
           _debounceTimer?.cancel();
-          _debounceTimer = Timer(const Duration(seconds: 1), () {
-            widget.posts[page].loadDetailsFrom(ref);
-            ref.read(notesControllerProvider(post).notifier).load();
-          });
+          _debounceTimer = Timer(
+            const Duration(seconds: 1),
+            () {
+              widget.posts[page].loadDetailsFrom(ref);
+              ref.read(notesControllerProvider(post).notifier).load();
+            },
+          );
         },
         topRightBuilder: (context) => DanbooruMoreActionButton(
           post: post,
@@ -125,11 +134,7 @@ class _DanbooruPostDetailsDesktopPageState
                       child: DanbooruPostStatsTile(post: post),
                     ),
                     const Divider(height: 8, thickness: 1),
-                    TagsTile(
-                        tags: tags
-                            .where((e) => e.postId == post.id)
-                            .map((e) => e.name)
-                            .toList()),
+                    TagsTile(tags: tags),
                     FileDetailsSection(post: post),
                   ],
                 ),

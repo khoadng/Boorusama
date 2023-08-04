@@ -21,7 +21,7 @@ final popularSearchProvider = Provider<PopularSearchRepository>(
 final danbooruTagRepoProvider = Provider<TagRepository>(
   (ref) {
     return TagCacher(
-      cache: LruCacher(capacity: 1000),
+      cache: LruCacher(capacity: 2000),
       repo: TagRepositoryApi(
         ref.watch(danbooruApiProvider),
       ),

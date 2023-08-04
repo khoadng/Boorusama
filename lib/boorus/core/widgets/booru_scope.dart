@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/widgets/split.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,6 +16,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
+import 'package:boorusama/widgets/split.dart';
 import 'current_booru_tile.dart';
 
 class BooruScope extends ConsumerStatefulWidget {
