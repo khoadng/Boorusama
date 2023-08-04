@@ -23,6 +23,7 @@ class SearchAppBar extends ConsumerWidget {
     this.dense,
     this.height,
     this.onTapOutside,
+    this.onFocusChanged,
   });
 
   final TextEditingController queryEditingController;
@@ -36,6 +37,7 @@ class SearchAppBar extends ConsumerWidget {
   final bool? dense;
   final double? height;
   final VoidCallback? onTapOutside;
+  final void Function(bool value)? onFocusChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,6 +49,7 @@ class SearchAppBar extends ConsumerWidget {
       onTapOutside: onTapOutside,
       focus: focusNode,
       queryEditingController: queryEditingController,
+      onFocusChanged: onFocusChanged,
       leading: onBack != null
           ? IconButton(
               splashRadius: 16,
