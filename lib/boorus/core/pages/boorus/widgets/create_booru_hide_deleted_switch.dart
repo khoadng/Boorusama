@@ -9,17 +9,21 @@ class CreateBooruHideDeletedSwitch extends StatelessWidget {
     super.key,
     required this.onChanged,
     this.value,
+    this.subtitle,
   });
 
   final void Function(bool value) onChanged;
+  final Widget? subtitle;
   final bool? value;
 
   @override
   Widget build(BuildContext context) {
     return SwitchListTile.adaptive(
+      contentPadding: EdgeInsets.zero,
       title: const Text('booru.hide_deleted_label').tr(),
       value: value ?? false,
       onChanged: onChanged,
+      subtitle: subtitle,
     );
   }
 }
