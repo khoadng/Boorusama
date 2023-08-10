@@ -22,6 +22,7 @@ Future<void> _download(
   final service = ref.read(downloadServiceProvider);
   final fileNameGenerator = ref.read(downloadFileNameGeneratorProvider);
   final downloadUrl = ref.read(downloadUrlProvider(downloadable));
+  final logger = ref.read(loggerProvider);
 
   Future<void> download() async => service
       .downloadWithSettings(
@@ -42,9 +43,15 @@ Future<void> _download(
   if (permission == PermissionStatus.granted) {
     download();
   } else {
+    logger.logI('Single Download', 'Permission not granted, requesting...');
     ref.read(deviceStoragePermissionProvider.notifier).requestPermission(
       onDone: (isGranted) {
-        if (isGranted) download();
+        if (isGranted) {
+          download();
+        } else {
+          logger.logI('Single Download',
+              'Storage permission request denied, aborting...');
+        }
       },
     );
   }
