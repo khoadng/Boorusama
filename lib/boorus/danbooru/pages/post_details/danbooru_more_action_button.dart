@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -41,6 +42,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
             onSelected: (value) {
               switch (value) {
                 case 'download':
+                  showDownloadStartToast(context);
                   download(post);
                   break;
                 case 'add_to_favgroup':

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -32,6 +33,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           builder: (context, download) => IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () {
+                    showDownloadStartToast(context);
                     // ignore: prefer_foreach
                     for (final p in selectedPosts) {
                       download(p);

@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -210,6 +211,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
           builder: (context, download) => IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () {
+                    showDownloadStartToast(context);
                     // ignore: prefer_foreach
                     for (final p in selectedPosts) {
                       download(p);
