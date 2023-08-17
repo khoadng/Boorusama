@@ -61,6 +61,10 @@ class SearchHistoryNotifier extends StateNotifier<SearchHistoryState> {
   }
 
   Future<void> addHistory(String history) async {
+    // If history length is larger than 255 characters, we will not add it.
+    // This is a limitation of Hive.
+    if (history.length > 255) return;
+
     final histories = await _searchHistoryRepository.addHistory(history);
     state = state.copyWith(
       histories: _sortByDateDesc(histories),
