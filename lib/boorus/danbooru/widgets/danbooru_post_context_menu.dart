@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -50,7 +51,10 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
-            onPressed: () => download(post),
+            onPressed: () {
+              showDownloadStartToast(context);
+              download(post);
+            },
           ),
           if (!isBookmarked)
             ContextMenuButtonConfig(
@@ -119,7 +123,10 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
           ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
-            onPressed: () => download(post),
+            onPressed: () {
+              showDownloadStartToast(context);
+              download(post);
+            },
           ),
           if (authState.isAuthenticated)
             ContextMenuButtonConfig(
