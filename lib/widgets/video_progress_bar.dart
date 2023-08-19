@@ -85,7 +85,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               playedColor: widget.playedColor,
               bufferedColor: widget.bufferedColor,
               handleColor: widget.handleColor,
-              useHandle: false,
+              useHandle: true,
             ),
           ),
         ),

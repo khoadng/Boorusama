@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class DesktopSearchbar extends ConsumerStatefulWidget {
@@ -40,20 +41,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   late final selectedTagController = widget.selectedTagController;
 
   @override
-  void initState() {
-    super.initState();
-    focusNode.addListener(_onFocusChanged);
-  }
-
-  @override
   void dispose() {
     textEditingController.dispose();
     focusNode.dispose();
     super.dispose();
-  }
-
-  void _onFocusChanged() {
-    showSuggestions.value = focusNode.hasFocus;
   }
 
   @override
@@ -89,6 +80,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                               selectedTagController.addTag(tag.value);
                               textEditingController.clear();
                               showSuggestions.value = false;
+                              context.focusScope.unfocus();
                             },
                             textColorBuilder: (tag) =>
                                 generateAutocompleteTagColor(
@@ -131,6 +123,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 height: kToolbarHeight * 0.9,
                 focusNode: focusNode,
                 queryEditingController: textEditingController,
+                onFocusChanged: (value) => showSuggestions.value = value,
                 onChanged: (value) => ref
                     .read(suggestionsProvider.notifier)
                     .getSuggestions(value),

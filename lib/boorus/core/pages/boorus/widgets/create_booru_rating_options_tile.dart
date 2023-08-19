@@ -19,6 +19,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       title: const Text('booru.content_filtering_label').tr(),
       trailing: OptionDropDownButton(

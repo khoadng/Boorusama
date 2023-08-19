@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/utils/utils.dart';
 
 class Rule34xxxPostDto {

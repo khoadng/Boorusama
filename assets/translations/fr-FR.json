@@ -137,7 +137,14 @@
             "recent": "Récent"
         },
         "trending": "Tendance",
-        "remove_all_selected": "Supprimer les tags sélectionnés"
+        "remove_all_selected": "Supprimer les tags sélectionnés",
+        "result_counter": {
+            "one": "{} résultat",
+            "many": "{} résultats",
+            "other": "{} résultats"
+        },
+        "no_result_notice": "Aucun résultat",
+        "search_in_progress_notice": "Recherche..."
     },
     "pool": {
         "pool": "Albums",
@@ -257,7 +264,9 @@
         "blacklisted_tags": "Tags blacklistés",
         "load_error": "Échec du chargement des tags blacklistés",
         "updated": "Tags blacklistés mis à jour",
-        "limitation_notice": "Supporte uniquement les opérateurs <b>NOT</b> et <b>OR</b>.\n\nLe blacklisting de tags meta ne fonctionne pas pour la version actuelle."
+        "limitation_notice": "Supporte uniquement les opérateurs <b>NOT</b> et <b>OR</b>.\n\nLe blacklisting de tags meta ne fonctionne pas pour la version actuelle.",
+        "failed_to_add": "Échec de l'ajout du tag",
+        "failed_to_remove": "Échec de la suppression du tag"
     },
     "download": {
         "download": "Téléchargement",
@@ -344,7 +353,7 @@
         "group_name": "Nom de groupe",
         "group_name_hint": "Nouveau groupe",
         "all_posts": "Posts",
-        "initial_posts_hint": "Entre ",
+        "initial_posts_hint": "Entrer les nombres de l'ID, séparés par des espaces (optionnel)",
         "is_private_group_option": "Groupe privé",
         "create_group_cancel": "Annuler",
         "create_group_confirm": "OK",
@@ -398,7 +407,15 @@
         "password_label": "Mot de passe",
         "content_filtering_label": "Filtre du contenu",
         "hide_deleted_label": "Cacher les posts supprimés",
-        "config_booru_confirm": "OK"
+        "config_booru_confirm": "OK",
+        "add_a_booru_site": "Ajouter un site booru",
+        "next_step": "Suivant",
+        "site_url": "URL du site",
+        "unsupported_warning": "Ce booru n'est pas encore supporté.",
+        "validation_empty_url": "URL vide",
+        "validation_invalid_url": "\"{0}\" n'est pas une URL valide",
+        "validation_invalid_http_url": "\"{0}\" n'est pas une URL HTTP ou HTTPS",
+        "validation_missing_trailing_slash": "\"{0}\" "
     },
     "blacklist": {
         "manage": {

@@ -115,8 +115,10 @@ class _DanbooruPostDetailsPageState
               if (posts[page].isVideo)
                 ValueListenableBuilder<VideoProgress>(
                   valueListenable: videoProgress,
-                  builder: (_, progress, __) =>
-                      BooruVideoProgressBar(progress: progress),
+                  builder: (_, progress, __) => BooruVideoProgressBar(
+                    progress: progress,
+                    onSeek: (position) => onVideoSeekTo(position, page),
+                  ),
                 ),
               DanbooruInformationSection(
                 post: posts[page],
@@ -215,6 +217,10 @@ class _DanbooruPostDetailsPageState
           noteOverlayBuilderDelegate(constraints, post, noteState),
       useHero: page == currentPage,
       onImageZoomUpdated: onZoomUpdated,
+      onVideoPlayerCreated: (controller) =>
+          onVideoPlayerCreated(controller, page),
+      onWebmVideoPlayerCreated: (controller) =>
+          onWebmVideoPlayerCreated(controller, page),
     );
 
     return [

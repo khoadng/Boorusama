@@ -23,6 +23,10 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   Future<void> add(String tag) async {
     if (tag.isEmpty) return;
 
+    // If a tag length is larger than 255 characters, we will not add it.
+    // This is a limitation of Hive.
+    if (tag.length > 255) return;
+
     await repo.create(name: tag);
 
     final tags = await repo.getAll();

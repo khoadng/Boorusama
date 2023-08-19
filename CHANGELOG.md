@@ -1,3 +1,8 @@
+# 3.3.2
+- Include some text to make configuring sites less confusing
+- Reintroduce video handle for skipping forward and backward.
+- Show download toast when a download starts
+
 # 3.3.1
 - Fix an issue where a certain site does not parse data correctly.
 - [Danbooru] Show artists' URLs on the artist page.

@@ -21,6 +21,8 @@ class BooruSearchBar extends StatefulWidget {
     this.focus,
     this.backgroundColor,
     this.dense,
+    this.onTapOutside,
+    this.onFocusChanged,
   });
 
   final VoidCallback? onTap;
@@ -36,6 +38,8 @@ class BooruSearchBar extends StatefulWidget {
   final FocusNode? focus;
   final Color? backgroundColor;
   final bool? dense;
+  final VoidCallback? onTapOutside;
+  final void Function(bool value)? onFocusChanged;
 
   @override
   State<BooruSearchBar> createState() => _BooruSearchBarState();
@@ -76,30 +80,40 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
               widget.leading ?? const SizedBox.shrink(),
               const SizedBox(width: 10),
               Expanded(
-                child: TextFormField(
-                  onTapOutside: (event) => widget.focus?.unfocus(),
+                child: Focus(
                   focusNode: widget.focus,
-                  onFieldSubmitted: (value) => widget.onSubmitted?.call(value),
-                  onChanged: (value) => widget.onChanged?.call(value),
-                  enabled: widget.enabled,
-                  decoration: InputDecoration(
-                    isDense: widget.dense,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.only(
-                      bottom: 11,
-                      top: 11,
-                      right: 15,
+                  onFocusChange: widget.onFocusChanged,
+                  child: TextFormField(
+                    onTapOutside: (event) {
+                      if (widget.onTapOutside == null) {
+                        widget.focus?.unfocus();
+                      } else {
+                        widget.onTapOutside?.call();
+                      }
+                    },
+                    onFieldSubmitted: (value) =>
+                        widget.onSubmitted?.call(value),
+                    onChanged: (value) => widget.onChanged?.call(value),
+                    enabled: widget.enabled,
+                    decoration: InputDecoration(
+                      isDense: widget.dense,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.only(
+                        bottom: 11,
+                        top: 11,
+                        right: 15,
+                      ),
+                      hintText: widget.hintText ?? 'search.hint'.tr(),
                     ),
-                    hintText: widget.hintText ?? 'search.hint'.tr(),
+                    autofocus: widget.autofocus,
+                    controller: _textEditingController,
+                    style: context.theme.inputDecorationTheme.hintStyle,
                   ),
-                  autofocus: widget.autofocus,
-                  controller: _textEditingController,
-                  style: context.theme.inputDecorationTheme.hintStyle,
                 ),
               ),
               widget.trailing ?? const SizedBox.shrink(),
