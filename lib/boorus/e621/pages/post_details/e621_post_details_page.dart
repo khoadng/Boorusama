@@ -107,8 +107,10 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
               if (posts[page].isVideo)
                 ValueListenableBuilder<VideoProgress>(
                   valueListenable: videoProgress,
-                  builder: (_, progress, __) =>
-                      BooruVideoProgressBar(progress: progress),
+                  builder: (_, progress, __) => BooruVideoProgressBar(
+                    progress: progress,
+                    onSeek: (position) => onVideoSeekTo(position, page),
+                  ),
                 ),
               E621InformationSection(
                 post: posts[page],
@@ -200,6 +202,10 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
           noteOverlayBuilderDelegate(constraints, post, noteState),
       useHero: page == currentPage,
       onImageZoomUpdated: onZoomUpdated,
+      onVideoPlayerCreated: (controller) =>
+          onVideoPlayerCreated(controller, page),
+      onWebmVideoPlayerCreated: (controller) =>
+          onWebmVideoPlayerCreated(controller, page),
     );
 
     return [

@@ -93,8 +93,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
           if (posts[page].isVideo)
             ValueListenableBuilder<VideoProgress>(
               valueListenable: videoProgress,
-              builder: (_, progress, __) =>
-                  BooruVideoProgressBar(progress: progress),
+              builder: (_, progress, __) => BooruVideoProgressBar(
+                progress: progress,
+                onSeek: (position) => onVideoSeekTo(position, page),
+              ),
             ),
           GelbooruPostActionToolbar(post: posts[page]),
         ],
@@ -160,6 +162,10 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
       onVideoVisibilityChanged: onVisibilityChanged,
       useHero: page == currentPage,
       onImageZoomUpdated: onZoomUpdated,
+      onVideoPlayerCreated: (controller) =>
+          onVideoPlayerCreated(controller, page),
+      onWebmVideoPlayerCreated: (controller) =>
+          onWebmVideoPlayerCreated(controller, page),
     );
 
     return [

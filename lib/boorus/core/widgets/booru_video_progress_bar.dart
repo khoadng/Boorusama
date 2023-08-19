@@ -28,9 +28,11 @@ class BooruVideoProgressBar extends StatelessWidget {
   const BooruVideoProgressBar({
     super.key,
     required this.progress,
+    this.onSeek,
   });
 
   final VideoProgress progress;
+  final void Function(Duration position)? onSeek;
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +51,7 @@ class BooruVideoProgressBar extends StatelessWidget {
               duration: progress.duration,
               position: progress.position,
               buffered: const [],
-              seekTo: (position) {
-                // webmVideoController.value
-                //     ?.seek(position.inSeconds.toDouble());
-              },
+              seekTo: (position) => onSeek?.call(position),
               barHeight: 2.0,
               handleHeight: 5.0,
               drawShadow: true,

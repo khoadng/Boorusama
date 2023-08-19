@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
@@ -26,6 +27,8 @@ class PostMedia extends ConsumerWidget {
     this.useHero = false,
     this.imageOverlayBuilder,
     this.autoPlay = false,
+    this.onVideoPlayerCreated,
+    this.onWebmVideoPlayerCreated,
   });
 
   final Post post;
@@ -38,8 +41,9 @@ class PostMedia extends ConsumerWidget {
       onCurrentVideoPositionChanged;
   final void Function(bool value)? onVideoVisibilityChanged;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
-  //TODO: this only apply to mp4 video
   final bool autoPlay;
+  final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
+  final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,6 +55,8 @@ class PostMedia extends ConsumerWidget {
                     onCurrentPositionChanged: onCurrentVideoPositionChanged,
                     onVisibilityChanged: onVideoVisibilityChanged,
                     backgroundColor: context.colors.videoPlayerBackgroundColor,
+                    onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
+                    autoPlay: autoPlay,
                   )
                 : Stack(
                     children: [
@@ -77,6 +83,7 @@ class PostMedia extends ConsumerWidget {
                 onCurrentPositionChanged: onCurrentVideoPositionChanged,
                 onVisibilityChanged: onVideoVisibilityChanged,
                 autoPlay: autoPlay,
+                onVideoPlayerCreated: onVideoPlayerCreated,
               )
         : InteractiveBooruImage(
             useHero: useHero,

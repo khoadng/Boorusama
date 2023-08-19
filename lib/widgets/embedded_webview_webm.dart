@@ -27,6 +27,7 @@ class WebmVideoController {
 
   Future<void> load(String html) async {
     await _webViewController.loadHtmlString(html);
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   Timer? _positionCheckTimer;
@@ -38,8 +39,7 @@ class WebmVideoController {
       if (_playing) {
         final currentPosition = await getCurrentTime();
         final totalDuration = await getDuration();
-        onCurrentPositionChanged?.call(
-            currentPosition, totalDuration.isNaN ? 0 : totalDuration);
+        onCurrentPositionChanged?.call(currentPosition, totalDuration ?? 0);
       }
     });
   }
@@ -50,13 +50,13 @@ class WebmVideoController {
 
   double? _duration;
   // get video duration
-  Future<double> getDuration() async {
+  Future<double?> getDuration() async {
     if (_duration != null) return _duration!;
 
     final duration = await _webViewController.runJavaScriptReturningResult(
         'document.getElementById("video").duration;');
-    _duration ??= duration.toDoubleOrNull() ?? 0;
-    return _duration!;
+    _duration = duration.toDoubleOrNull();
+    return _duration;
   }
 
   // get current video time
@@ -143,6 +143,8 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.onVisibilityChanged,
     this.onCurrentPositionChanged,
     this.backgroundColor,
+    this.onWebmVideoPlayerCreated,
+    this.autoPlay = false,
   });
 
   final String url;
@@ -150,6 +152,8 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final void Function(bool value)? onVisibilityChanged;
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
+  final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
+  final bool autoPlay;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -169,6 +173,7 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
       widget.url,
       backgroundColor: widget.backgroundColor ?? Colors.black,
     ));
+    widget.onWebmVideoPlayerCreated?.call(webmVideoController);
   }
 
   @override
