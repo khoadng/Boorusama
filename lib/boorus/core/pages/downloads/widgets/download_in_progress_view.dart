@@ -111,14 +111,15 @@ class DownloadInProgressView extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Builder(builder: (context) {
             final selectedFilter = ref.watch(bulkDownloadFilterProvider);
-            return OptionDropDownButton<BulkDownloadFilter>(
+            return OptionDropDownButton(
+              alignment: AlignmentDirectional.centerStart,
               value: selectedFilter,
               onChanged: (value) {
                 if (value == null) return;
                 ref.read(bulkDownloadFilterProvider.notifier).state = value;
               },
               items: BulkDownloadFilter.values
-                  .map((value) => DropdownMenuItem<BulkDownloadFilter>(
+                  .map((value) => DropdownMenuItem(
                         value: value,
                         child: Text(value.name.sentenceCase),
                       ))

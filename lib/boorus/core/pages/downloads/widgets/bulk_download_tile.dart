@@ -63,6 +63,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         visualDensity: const ShrinkVisualDensity(),
                         label: Text(extension(data.url)),
                       ),
+                      const SizedBox(width: 4),
                       if (fileSizes[data.url] != null &&
                           fileSizes[data.url]! > 0)
                         Chip(
@@ -137,7 +138,7 @@ class BulkDownloadTile extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  BulkDownloadFailed _ => ListTile(
+                  BulkDownloadFailed d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -145,8 +146,12 @@ class BulkDownloadTile extends ConsumerWidget {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       title: _Title(data: data),
                       subtitle: const Text('Failed', maxLines: 1),
+                      trailing: _RetryButton(
+                        url: d.url,
+                        fileName: d.fileName,
+                      ),
                     ),
-                  BulkDownloadCanceled _ => ListTile(
+                  BulkDownloadCanceled d => ListTile(
                       dense: true,
                       visualDensity: const VisualDensity(
                         vertical: -4,
@@ -158,6 +163,10 @@ class BulkDownloadTile extends ConsumerWidget {
                         color: context.theme.hintColor,
                       ),
                       subtitle: const Text('Canceled', maxLines: 1),
+                      trailing: _RetryButton(
+                        url: d.url,
+                        fileName: d.fileName,
+                      ),
                     ),
                   BulkDownloadDone d => ListTile(
                       dense: true,
@@ -190,6 +199,26 @@ class BulkDownloadTile extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RetryButton extends ConsumerWidget {
+  const _RetryButton({
+    required this.url,
+    required this.fileName,
+  });
+
+  final String url;
+  final String fileName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      visualDensity: const ShrinkVisualDensity(),
+      onPressed: () =>
+          ref.read(bulkDownloaderManagerProvider.notifier).retry(url, fileName),
+      icon: const Icon(Icons.refresh),
     );
   }
 }
