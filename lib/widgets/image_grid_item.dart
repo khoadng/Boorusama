@@ -38,6 +38,7 @@ class ImageGridItem extends StatelessWidget {
     this.duration,
     this.hasSound,
     this.score,
+    this.isAI = false,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -55,6 +56,7 @@ class ImageGridItem extends StatelessWidget {
   final double? duration;
   final bool? hasSound;
   final int? score;
+  final bool isAI;
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +157,21 @@ class ImageGridItem extends StatelessWidget {
               const ImageOverlayIcon(icon: Icons.comment, size: 20),
             if (hasParentOrChildren ?? false)
               const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
+            if (isAI)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                height: 25,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: const BorderRadius.all(Radius.circular(4)),
+                ),
+                child: const Text(
+                  'AI',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              )
           ],
         ),
       ),

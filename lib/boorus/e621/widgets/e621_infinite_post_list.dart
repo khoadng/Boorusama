@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -122,6 +123,7 @@ class _MoebooruInfinitePostListState
             ),
             child: LayoutBuilder(
               builder: (context, constraints) => ImageGridItem(
+                isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
                         goToE621DetailsPage(

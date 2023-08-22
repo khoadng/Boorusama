@@ -63,6 +63,9 @@ extension PostX on Post {
         score: score,
       ),
       pattern);
+
+  bool get isAI =>
+      tags.contains('ai-generated') || tags.contains('ai_generated');
 }
 
 extension PostsX on List<Post> {
