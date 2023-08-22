@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +14,10 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
 import 'package:boorusama/foundation/loggers/ui_logger.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/widgets/toast.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -63,6 +68,12 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
               icon: const Icon(Icons.copy),
               onPressed: copyLogsToClipboard,
             ),
+            IconButton(
+              icon: const Icon(Icons.download),
+              onPressed: () async {
+                await writeLogsToFile(logs);
+              },
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -82,6 +93,24 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       child: _buildBody(logs),
     );
   }
+
+  Future<void> writeLogsToFile(List<LogData> logs) async =>
+      tryGetDownloadDirectory().run().then((value) => value.fold(
+            (error) => showErrorToast(error.name),
+            (directory) async {
+              final file = File('${directory.path}/boorusama_logs.txt');
+              final buffer = StringBuffer();
+              for (final log in logs) {
+                buffer.write(
+                    '[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
+              }
+              await file.writeAsString(buffer.toString());
+              showSuccessToast(
+                'Logs written to ${file.path}',
+                duration: const Duration(seconds: 4),
+              );
+            },
+          ));
 
   Widget _buildBody(List<LogData> logs) {
     return ListView.builder(
