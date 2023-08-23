@@ -1,9 +1,13 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_handler/share_handler.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
@@ -12,6 +16,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -27,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 
@@ -43,6 +49,70 @@ class DanbooruScope extends ConsumerStatefulWidget {
 }
 
 class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
+  StreamSubscription? _sharedMediaSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    // Only support Android for now
+    if (!isAndroid()) return;
+
+    _sharedMediaSubscription =
+        ShareHandler.instance.sharedMediaStream.listen(_onSharedTextsReceived);
+  }
+
+  void _onSharedTextsReceived(SharedMedia media) {
+    final text = media.content;
+
+    if (text != null) {
+      context.navigator.push(MaterialPageRoute(
+        builder: (context) {
+          final config = ref.read(currentBooruConfigProvider);
+          final booruName = config.booruType.stringify();
+          final booruUrl = config.url;
+
+          return AlertDialog(
+            title: Text('Upload to $booruName'),
+            content: Text(
+                'Are you sure you want to upload to $booruName?\n\n$text \n\nYou need to be logged in the browser to upload.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  final uri = Uri.tryParse(text);
+
+                  if (uri != null) {
+                    final encodedUri = Uri.encodeFull(text);
+                    final url = '${booruUrl}uploads/new?url=$encodedUri';
+                    launchExternalUrlString(url);
+                  }
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      ));
+    }
+  }
+
+  @override
+  void dispose() {
+    _sharedMediaSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = ref.read(authenticationProvider);

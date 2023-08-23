@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:

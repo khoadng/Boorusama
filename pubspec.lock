@@ -1383,6 +1383,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  share_handler:
+    dependency: "direct main"
+    description:
+      name: share_handler
+      sha256: "1cafe26e024e988de3aff73c5425a48a1374e497152ddd4f54fc9f48c40e80fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.17"
+  share_handler_android:
+    dependency: transitive
+    description:
+      name: share_handler_android
+      sha256: "6e752f2c4f67a9f7bef5503f6e1b0dd6075e127cafe7763d92649559c3692bc6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
+  share_handler_ios:
+    dependency: transitive
+    description:
+      name: share_handler_ios
+      sha256: "25815e7946b03848f404bd5bc8e58c94060dd050fb7fe3a2b556a464379c5ee1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.10"
+  share_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: share_handler_platform_interface
+      sha256: "7a4df95a87b326b2f07458d937f2281874567c364b7b7ebe4e7d50efaae5f106"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   share_plus:
     dependency: "direct main"
     description:
