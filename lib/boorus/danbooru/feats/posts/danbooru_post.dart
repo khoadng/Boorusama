@@ -141,6 +141,9 @@ class DanbooruPost extends Equatable
   bool get hasFavorite => favCount > 0;
 
   @override
+  int? get downvotes => -downScore;
+
+  @override
   bool? get hasSound => metaTags.contains('sound') ? true : null;
   @override
   String get videoUrl => sampleImageUrl;

@@ -88,4 +88,6 @@ class MoebooruPost extends Equatable
   String get videoUrl => originalImageUrl;
   @override
   String get videoThumbnailUrl => thumbnailImageUrl;
+  @override
+  int? get downvotes => null;
 }
