@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
@@ -24,7 +25,12 @@ Dio dio(
     headers: {
       'User-Agent': generator.generate(),
     },
-  ));
+  ))
+    ..httpClientAdapter = Http2Adapter(
+      ConnectionManager(
+        idleTimeout: const Duration(seconds: 30),
+      ),
+    );
 
   dio.interceptors.add(
     DioCacheInterceptor(

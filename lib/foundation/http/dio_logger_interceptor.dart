@@ -5,6 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/path.dart';
+
+const _kImageExtensions = [
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.gif',
+  '.webp',
+];
 
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({
@@ -18,6 +27,13 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    // Don't log image requests
+    final ext = extension(options.uri.toString());
+    if (_kImageExtensions.contains(ext)) {
+      super.onRequest(options, handler);
+      return;
+    }
+
     logger.logI('Network', 'Sending ${options.method} to ${options.uri}');
     requestTimeLogs[options.uri.toString()] = DateTime.now();
     super.onRequest(options, handler);
@@ -25,6 +41,13 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    final ext = extension(response.requestOptions.uri.toString());
+
+    if (_kImageExtensions.contains(ext)) {
+      super.onResponse(response, handler);
+      return;
+    }
+
     final duration = getRequestDuration(response.requestOptions);
     logger.logI('Network',
         'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero} and took ${duration}ms');
@@ -34,6 +57,14 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
+
+    final ext = extension(response?.requestOptions.uri.toString() ?? '');
+
+    if (_kImageExtensions.contains(ext)) {
+      super.onError(err, handler);
+      return;
+    }
+
     final duration = getRequestDuration(response?.requestOptions);
 
     if (response != null) {
