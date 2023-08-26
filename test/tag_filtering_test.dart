@@ -256,6 +256,19 @@ void main() {
         );
       });
 
+      test('positive 3 (downvotes)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                  tags: ['a', 'b', 'c'],
+                  rating: Rating.explicit,
+                  score: -10,
+                  downvotes: 10),
+              'a downvotes:>5'),
+          true,
+        );
+      });
+
       test('negative 1 (rating)', () {
         expect(
           checkIfTagsContainsTagExpression(
@@ -272,6 +285,32 @@ void main() {
               TagFilterData(
                   tags: ['a', 'b', 'c'], rating: Rating.explicit, score: -1),
               'a score:<-5'),
+          false,
+        );
+      });
+
+      test('negative 3 (downvotes)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                  tags: ['a', 'b', 'c'],
+                  rating: Rating.explicit,
+                  score: -10,
+                  downvotes: 10),
+              'a downvotes:>15'),
+          false,
+        );
+      });
+
+      test('negative 4 (downvotes null)', () {
+        expect(
+          checkIfTagsContainsTagExpression(
+              TagFilterData(
+                  tags: ['a', 'b', 'c'],
+                  rating: Rating.explicit,
+                  score: -10,
+                  downvotes: null),
+              'a downvotes:<5'),
           false,
         );
       });

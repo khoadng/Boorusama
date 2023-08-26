@@ -62,6 +62,7 @@ extension PostX on Post {
         tags: tags,
         rating: rating,
         score: score,
+        downvotes: downvotes,
       ),
       pattern);
 
@@ -112,20 +113,25 @@ class TagFilterData {
     required this.tags,
     required this.rating,
     required this.score,
+    this.downvotes,
   });
 
   TagFilterData.tags({
     required this.tags,
   })  : rating = Rating.general,
-        score = 0;
+        score = 0,
+        downvotes = null;
 
   final List<String> tags;
   final Rating rating;
   final int score;
+  final int? downvotes;
 }
 
 bool checkIfTagsContainsTagExpression(
-    final TagFilterData filterData, final String tagExpression) {
+  final TagFilterData filterData,
+  final String tagExpression,
+) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions = tagExpression.split(' ');
 
@@ -148,9 +154,17 @@ bool checkIfTagsContainsTagExpression(
       }
     }
     // Handle metatag "score"
-    else if (expression.startsWith('score:')) {
+    else if (expression.startsWith('score:') && expression.contains('<')) {
       final targetScore = int.tryParse(expression.split('<')[1]) ?? 0;
       if (!(filterData.score < targetScore)) {
+        return false;
+      }
+      // Handle metatag "downvotes"
+    } else if (expression.startsWith('downvotes:') &&
+        expression.contains('>')) {
+      final targetDownvotes = int.tryParse(expression.split('>')[1]) ?? 0;
+      if (filterData.downvotes == null ||
+          !(filterData.downvotes! > targetDownvotes)) {
         return false;
       }
     }
