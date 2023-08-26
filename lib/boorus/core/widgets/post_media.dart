@@ -29,6 +29,7 @@ class PostMedia extends ConsumerWidget {
     this.autoPlay = false,
     this.onVideoPlayerCreated,
     this.onWebmVideoPlayerCreated,
+    this.inFocus = false,
   });
 
   final Post post;
@@ -44,47 +45,54 @@ class PostMedia extends ConsumerWidget {
   final bool autoPlay;
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
+  final bool inFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return post.isVideo
-        ? extension(post.videoUrl) == '.webm'
-            ? !isDesktopPlatform()
-                ? EmbeddedWebViewWebm(
+        ? !inFocus
+            ? BooruImage(
+                imageUrl: post.videoThumbnailUrl,
+                fit: BoxFit.contain,
+              )
+            : extension(post.videoUrl) == '.webm'
+                ? !isDesktopPlatform()
+                    ? EmbeddedWebViewWebm(
+                        url: post.videoUrl,
+                        onCurrentPositionChanged: onCurrentVideoPositionChanged,
+                        onVisibilityChanged: onVideoVisibilityChanged,
+                        backgroundColor:
+                            context.colors.videoPlayerBackgroundColor,
+                        onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
+                        autoPlay: autoPlay,
+                      )
+                    : Stack(
+                        children: [
+                          Positioned.fill(
+                            child: BooruImage(
+                              aspectRatio: post.aspectRatio,
+                              imageUrl: post.thumbnailImageUrl,
+                              placeholderUrl: post.thumbnailImageUrl,
+                              previewCacheManager:
+                                  ref.watch(previewImageCacheManagerProvider),
+                            ),
+                          ),
+                          const Center(
+                            child: Card(
+                              child: Text(
+                                  'Cant play WEBM video on desktop for now'),
+                            ),
+                          ),
+                        ],
+                      )
+                : BooruVideo(
                     url: post.videoUrl,
+                    aspectRatio: post.aspectRatio,
                     onCurrentPositionChanged: onCurrentVideoPositionChanged,
                     onVisibilityChanged: onVideoVisibilityChanged,
-                    backgroundColor: context.colors.videoPlayerBackgroundColor,
-                    onWebmVideoPlayerCreated: onWebmVideoPlayerCreated,
                     autoPlay: autoPlay,
+                    onVideoPlayerCreated: onVideoPlayerCreated,
                   )
-                : Stack(
-                    children: [
-                      Positioned.fill(
-                        child: BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: post.thumbnailImageUrl,
-                          placeholderUrl: post.thumbnailImageUrl,
-                          previewCacheManager:
-                              ref.watch(previewImageCacheManagerProvider),
-                        ),
-                      ),
-                      const Center(
-                        child: Card(
-                          child:
-                              Text('Cant play WEBM video on desktop for now'),
-                        ),
-                      ),
-                    ],
-                  )
-            : BooruVideo(
-                url: post.videoUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged: onCurrentVideoPositionChanged,
-                onVisibilityChanged: onVideoVisibilityChanged,
-                autoPlay: autoPlay,
-                onVideoPlayerCreated: onVideoPlayerCreated,
-              )
         : InteractiveBooruImage(
             useHero: useHero,
             heroTag: "${post.id}_hero",

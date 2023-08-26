@@ -188,6 +188,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
     // final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
     final expandedOnCurrentPage = expanded && page == currentPage;
     final media = PostMedia(
+      inFocus: !expanded && page == currentPage,
       post: post,
       imageUrl: post.sampleImageUrl,
       // Prevent placeholder image from showing when first loaded a post with translated image
@@ -206,6 +207,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
           onVideoPlayerCreated(controller, page),
       onWebmVideoPlayerCreated: (controller) =>
           onWebmVideoPlayerCreated(controller, page),
+      autoPlay: true,
     );
 
     return [
@@ -214,11 +216,6 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
           height: MediaQuery.of(context).size.height -
               MediaQuery.of(context).viewPadding.top,
           child: RepaintBoundary(child: media),
-        )
-      else if (post.isVideo)
-        BooruImage(
-          imageUrl: post.videoThumbnailUrl,
-          fit: BoxFit.contain,
         )
       else
         RepaintBoundary(child: media),

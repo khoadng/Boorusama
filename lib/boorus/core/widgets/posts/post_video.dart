@@ -55,6 +55,7 @@ class _BooruVideoState extends State<BooruVideo> {
       ),
       looping: true,
       autoInitialize: true,
+      showControlsOnInitialize: false,
     );
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
