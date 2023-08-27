@@ -22,6 +22,7 @@ Dio dio(
 ) {
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl ?? '',
+    validateStatus: _validateStatus,
     headers: {
       'User-Agent': generator.generate(),
     },
@@ -50,4 +51,10 @@ Dio dio(
   );
 
   return dio;
+}
+
+bool _validateStatus(int? status) {
+  if (status == null) return false;
+
+  return status >= 200 && status < 300 || status == 304;
 }
