@@ -1,6 +1,6 @@
 // Flutter imports:
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
@@ -79,10 +79,10 @@ void initializeErrorHandlers(Settings settings) {
     if (kReleaseMode &&
         isFirebaseCrashlyticsSupportedPlatforms() &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      // Ignore video errors
-      if (details.exception is PlatformException) {
-        final exception = details.exception as PlatformException;
-        if (exception.code == 'VideoError') return;
+      // Ignore 304 errors
+      if (details.exception is DioException) {
+        final exception = details.exception as DioException;
+        if (exception.response?.statusCode == 304) return;
       }
 
       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
@@ -98,6 +98,11 @@ void initializeErrorHandlers(Settings settings) {
     if (kReleaseMode &&
         isFirebaseCrashlyticsSupportedPlatforms() &&
         settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      // Ignore 304 errors
+      if (error is DioException) {
+        if (error.response?.statusCode == 304) return true;
+      }
+
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     }
 
