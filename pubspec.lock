@@ -413,6 +413,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  dio_http2_adapter:
+    dependency: "direct main"
+    description:
+      name: dio_http2_adapter
+      sha256: "3d81128cf389649ae6ac5cce23bcf5f9b254882b7f27185ca3b0d443ee9b825c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1+1"
   easy_localization:
     dependency: "direct main"
     description:
@@ -843,6 +851,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.6"
+  http2:
+    dependency: transitive
+    description:
+      name: http2
+      sha256: "38db0c4aa9f1cd238a5d2e86aa0cc7cc91c77e0c6c94ba64bbe85e4ff732a952"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -1383,6 +1399,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  share_handler:
+    dependency: "direct main"
+    description:
+      name: share_handler
+      sha256: "1cafe26e024e988de3aff73c5425a48a1374e497152ddd4f54fc9f48c40e80fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.17"
+  share_handler_android:
+    dependency: transitive
+    description:
+      name: share_handler_android
+      sha256: "6e752f2c4f67a9f7bef5503f6e1b0dd6075e127cafe7763d92649559c3692bc6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
+  share_handler_ios:
+    dependency: transitive
+    description:
+      name: share_handler_ios
+      sha256: "25815e7946b03848f404bd5bc8e58c94060dd050fb7fe3a2b556a464379c5ee1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.10"
+  share_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: share_handler_platform_interface
+      sha256: "7a4df95a87b326b2f07458d937f2281874567c364b7b7ebe4e7d50efaae5f106"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   share_plus:
     dependency: "direct main"
     description:

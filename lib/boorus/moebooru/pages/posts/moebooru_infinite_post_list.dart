@@ -116,6 +116,7 @@ class _MoebooruInfinitePostListState
             ),
             child: LayoutBuilder(
               builder: (context, constraints) => ImageGridItem(
+                isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
                         goToMoebooruDetailsPage(

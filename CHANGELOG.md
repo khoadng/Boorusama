@@ -1,3 +1,11 @@
+# 3.3.3
+- Autoplay MP4 videos.
+- Add a button to retry a failed/canceled download in bulk download page
+- Introduce a `downvotes` metatag to the global blacklist for filtering posts with more than a specified number of downvotes (e.g. `downvotes:5`).
+- Enhance loading speed in specific scenarios.
+- [Danbooru] Enable users to share any links and redirect them to the upload page.
+- Resolve an issue causing the app to crash when consecutively opening multiple videos.
+
 # 3.3.2
 - Include some text to make configuring sites less confusing
 - Reintroduce video handle for skipping forward and backward.

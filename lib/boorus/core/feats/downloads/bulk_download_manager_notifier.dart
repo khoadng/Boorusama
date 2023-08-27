@@ -119,6 +119,18 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
     ref.invalidate(bulkDownloadSelectedTagsProvider);
   }
 
+  Future<void> retry(String url, String fileName) async {
+    bulkDownloadState.updateDownloadToInitilizingState(url);
+
+    final storagePath = ref.read(bulkDownloadOptionsProvider).storagePath;
+
+    await downloader.enqueueDownload(
+      url: url,
+      path: storagePath,
+      fileNameBuilder: () => fileName,
+    );
+  }
+
   Future<void> pause(String url) async {
     bulkDownloadState.updateDownloadToInitilizingState(url);
     await downloader.pause(url);

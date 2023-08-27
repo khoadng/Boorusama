@@ -103,7 +103,7 @@ class CreateDanbooruConfigPage extends StatelessWidget {
                   value: initialHideDeleted,
                   onChanged: onHideDeletedChanged,
                   subtitle: Text(
-                    'Hide poor quality images. There might be cases where images of good enough quality slip through, so you may want to leave this option disabled.',
+                    'Hide low-quality images, some decent ones might also be hidden.',
                     style: context.textTheme.titleSmall!.copyWith(
                       color: context.theme.hintColor,
                       fontSize: 14,

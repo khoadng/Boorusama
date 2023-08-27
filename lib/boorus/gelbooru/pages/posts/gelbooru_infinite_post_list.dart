@@ -118,6 +118,7 @@ class _DanbooruInfinitePostListState
             ),
             child: LayoutBuilder(
               builder: (context, constraints) => ImageGridItem(
+                isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
                         goToGelbooruPostDetailsPage(

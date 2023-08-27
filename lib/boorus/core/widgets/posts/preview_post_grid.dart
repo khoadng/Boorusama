@@ -54,6 +54,7 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
               final post = posts[index];
 
               return ImageGridItem(
+                isAI: post.isAI,
                 onTap: () => onTap(index),
                 isAnimated: post.isAnimated,
                 isTranslated: post.isTranslated,
@@ -107,6 +108,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: ImageGridItem(
+                    isAI: post.isAI,
                     isAnimated: post.isAnimated,
                     isTranslated: post.isTranslated,
                     onTap: () => onTap(index),
