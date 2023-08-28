@@ -1,7 +1,12 @@
+# 3.3.4
+- Fix an error that causes a certain site to not load properly
+- [Danbooru] Add censored tags to the default blacklist if the user doesn't have the privilege to view them.
+- Minor bug fixes.
+
 # 3.3.3
 - Autoplay MP4 videos.
 - Add a button to retry a failed/canceled download in bulk download page
-- Introduce a `downvotes` metatag to the global blacklist for filtering posts with more than a specified number of downvotes (e.g. `downvotes:5`).
+- Introduce a `downvotes` metatag to the global blacklist for filtering posts with more than a specified number of downvotes (e.g. `downvotes:>5`).
 - Enhance loading speed in specific scenarios.
 - [Danbooru] Enable users to share any links and redirect them to the upload page.
 - Resolve an issue causing the app to crash when consecutively opening multiple videos.
