@@ -10,14 +10,15 @@ import 'package:boorusama/foundation/networking/dio_http_file_service.dart';
 
 class PreviewImageCacheManager extends CacheManager {
   PreviewImageCacheManager({
-    required Dio dio,
+    Dio? dio,
   }) : super(Config(
           _key,
           stalePeriod: const Duration(days: 1),
           maxNrOfCacheObjects: 1000,
           repo: JsonCacheInfoRepository(databaseName: _key),
           fileSystem: IOFileSystem(_key),
-          fileService: DioHttpFileService(dio),
+          fileService:
+              dio != null ? DioHttpFileService(dio) : HttpFileService(),
         ));
 
   static const _key = 'appPreviewImageCache';

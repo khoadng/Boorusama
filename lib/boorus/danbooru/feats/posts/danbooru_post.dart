@@ -171,6 +171,8 @@ class DanbooruPost extends Equatable
   List<Object?> get props => [id];
 }
 
+const kCensoredTags = ['loli', 'shota'];
+
 extension PostX on DanbooruPost {
   String get url180x180 =>
       variants.firstWhereOrNull((e) => e.is180x180)?.url ?? thumbnailImageUrl;
@@ -188,10 +190,9 @@ extension PostX on DanbooruPost {
       variants.firstWhereOrNull((e) => e.isOriginal)?.url ?? originalImageUrl;
 
   bool get hasCensoredTags {
-    const censoredTags = ['loli', 'shota'];
     final tagSet = tags.toSet();
 
-    return censoredTags.any(tagSet.contains);
+    return kCensoredTags.any(tagSet.contains);
   }
 
   List<PostDetailTag> extractTagDetails() {

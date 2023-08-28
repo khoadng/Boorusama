@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
