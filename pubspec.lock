@@ -416,10 +416,11 @@ packages:
   dio_http2_adapter:
     dependency: "direct main"
     description:
-      name: dio_http2_adapter
-      sha256: "3d81128cf389649ae6ac5cce23bcf5f9b254882b7f27185ca3b0d443ee9b825c"
-      url: "https://pub.dev"
-    source: hosted
+      path: "plugins/http2_adapter"
+      ref: "9c565a556fffeb868e29c5e26200a153d7e80c0c"
+      resolved-ref: "9c565a556fffeb868e29c5e26200a153d7e80c0c"
+      url: "https://github.com/khoadng/dio.git"
+    source: git
     version: "2.3.1+1"
   easy_localization:
     dependency: "direct main"
