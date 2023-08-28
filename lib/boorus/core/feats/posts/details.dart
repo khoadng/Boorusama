@@ -28,6 +28,8 @@ mixin PostDetailsTagsX<T extends Post>
     RecommendType type, {
     int? limit,
   }) async {
+    final blacklistedTags = await blacklistedTagRepository.getBlacklist();
+
     for (final tag in tags) {
       if (state.any((e) => e.tag == tag)) continue;
       List<T> posts;
@@ -43,8 +45,6 @@ mixin PostDetailsTagsX<T extends Post>
       if (limit != null) {
         posts = posts.take(limit).toList();
       }
-
-      final blacklistedTags = await blacklistedTagRepository.getBlacklist();
 
       state = [
         ...state,

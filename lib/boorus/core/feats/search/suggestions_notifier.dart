@@ -57,13 +57,18 @@ class SuggestionsNotifier
 
     if (state.containsKey(sanitized)) return;
 
+    final fallback = ref.read(fallbackSuggestionsProvider.notifier);
+    final autocompleteRepo = ref.read(autocompleteRepoProvider);
+
     debounce(
       'suggestions',
       () async {
-        final data =
-            await ref.read(autocompleteRepoProvider).getAutocomplete(sanitized);
+        final data = await autocompleteRepo.getAutocomplete(sanitized);
         state = state.add(sanitized, data.lock);
-        ref.read(fallbackSuggestionsProvider.notifier).state = data.lock;
+
+        if (fallback.hasListeners) {
+          fallback.state = data.lock;
+        }
       },
       duration: const Duration(milliseconds: 200),
     );
