@@ -8,7 +8,7 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
@@ -25,12 +25,15 @@ Dio dio(
     headers: {
       'User-Agent': generator.generate(),
     },
-  ))
-    ..httpClientAdapter = Http2Adapter(
+  ));
+
+  if (booruConfig.booruType.supportHttp2) {
+    dio.httpClientAdapter = Http2Adapter(
       ConnectionManager(
         idleTimeout: const Duration(seconds: 30),
       ),
     );
+  }
 
   dio.interceptors.add(
     DioCacheInterceptor(

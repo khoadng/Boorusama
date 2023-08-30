@@ -105,6 +105,17 @@ extension BooruTypeX on BooruType {
 
   bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
 
+  bool get supportHttp2 =>
+      isDanbooruBased ||
+      isGelbooruBased ||
+      [
+        BooruType.sakugabooru,
+        BooruType.yandere,
+        BooruType.konachan,
+        BooruType.e621,
+        BooruType.e926,
+      ].contains(this);
+
   int toBooruId() => switch (this) {
         BooruType.danbooru => 1,
         BooruType.safebooru => 2,
