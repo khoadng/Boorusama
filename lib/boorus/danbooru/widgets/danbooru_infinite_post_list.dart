@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -94,6 +95,7 @@ class _DanbooruInfinitePostListState
 
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
+    final currentUser = ref.watch(danbooruCurrentUserProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -114,6 +116,9 @@ class _DanbooruInfinitePostListState
         blacklistedTags: {
           ...globalBlacklist.map((e) => e.name),
           if (danbooruBlacklist != null) ...danbooruBlacklist,
+          if (currentUser == null) ...kCensoredTags,
+          if (currentUser != null && !isBooruGoldPlusAccount(currentUser.level))
+            ...kCensoredTags,
         },
         itemBuilder: (context, items, index) {
           final post = items[index];

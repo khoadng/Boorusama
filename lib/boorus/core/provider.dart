@@ -115,8 +115,7 @@ final appInfoProvider = Provider<AppInfo>((ref) {
 
 final previewImageCacheManagerProvider =
     Provider<PreviewImageCacheManager>((ref) {
-  final dio = ref.watch(dioProvider(''));
-  return PreviewImageCacheManager(dio: dio);
+  return PreviewImageCacheManager();
 });
 
 final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
