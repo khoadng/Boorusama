@@ -187,6 +187,8 @@ Future<Object?> goToFavoriteTagImportPage(
 }
 
 void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
+  final previewCacheManager = ref.read(previewImageCacheManagerProvider);
+
   showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -197,7 +199,7 @@ void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
         placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
-        previewCacheManager: ref.read(previewImageCacheManagerProvider),
+        previewCacheManager: previewCacheManager,
       ),
     ),
   );

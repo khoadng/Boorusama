@@ -56,6 +56,7 @@ class _DanbooruTagDetailsPageState
     final related =
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
     final tags = related?.tags.take(_kTagCloudTotal).toList() ?? [];
+    final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider);
 
     return TagDetailsRegion(
       detailsBuilder: (context) => Column(
@@ -72,15 +73,14 @@ class _DanbooruTagDetailsPageState
         ],
       ),
       builder: (_) => DanbooruPostScope(
-        fetcher: (page) =>
-            ref.read(danbooruArtistCharacterPostRepoProvider).getPosts(
-                  queryFromTagFilterCategory(
-                    category: selectedCategory.value,
-                    tag: widget.tagName,
-                    builder: tagFilterCategoryToString,
-                  ),
-                  page,
-                ),
+        fetcher: (page) => postRepo.getPosts(
+          queryFromTagFilterCategory(
+            category: selectedCategory.value,
+            tag: widget.tagName,
+            builder: tagFilterCategoryToString,
+          ),
+          page,
+        ),
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,
