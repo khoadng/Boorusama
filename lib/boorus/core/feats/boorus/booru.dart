@@ -107,7 +107,6 @@ extension BooruTypeX on BooruType {
 
   bool get supportHttp2 =>
       isDanbooruBased ||
-      isGelbooruBased ||
       [
         BooruType.sakugabooru,
         BooruType.yandere,
