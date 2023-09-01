@@ -9,6 +9,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'firebase/firebase.dart';
 
+export 'firebase/firebase.dart';
+
 bool isAnalyticsEnabled(Settings settings) =>
     settings.dataCollectingStatus == DataCollectingStatus.allow &&
     kReleaseMode &&
