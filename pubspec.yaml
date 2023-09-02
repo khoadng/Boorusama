@@ -117,7 +117,7 @@ dependencies:
   stack_trace: ^1.11.0
   timeago: ^3.5.0
   toggle_switch: ^2.1.0
-  url_launcher: ^6.1.12
+  url_launcher: ^6.1.14
   version: ^3.0.2
   video_player: ^2.7.0
   video_player_macos: ^2.0.1
