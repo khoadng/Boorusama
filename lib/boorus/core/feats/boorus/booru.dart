@@ -115,6 +115,9 @@ extension BooruTypeX on BooruType {
         BooruType.e926,
       ].contains(this);
 
+  bool get hasCensoredTagsBanned =>
+      this == BooruType.danbooru || this == BooruType.testbooru;
+
   int toBooruId() => switch (this) {
         BooruType.danbooru => 1,
         BooruType.safebooru => 2,
