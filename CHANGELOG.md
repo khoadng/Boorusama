@@ -1,3 +1,7 @@
+# 3.3.5
+- Fix an issue from the previous update that causes some sites to not load properly
+- Minor bug fixes
+
 # 3.3.4
 - Fix an error that causes a certain site to not load properly
 - [Danbooru] Add censored tags to the default blacklist if the user doesn't have the privilege to view them.

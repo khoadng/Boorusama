@@ -8,8 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -37,6 +39,17 @@ class _AppState extends ConsumerState<App> {
     final theme =
         ref.watch(settingsProvider.select((value) => value.themeMode));
     final router = ref.watch(routerProvider(widget.settings));
+
+    ref.listen(
+      currentBooruConfigProvider,
+      (p, c) {
+        if (p != c) {
+          if (isAnalyticsEnabled(widget.settings)) {
+            changeCurrentAnalyticConfig(c);
+          }
+        }
+      },
+    );
 
     return Portal(
       child: OKToast(
