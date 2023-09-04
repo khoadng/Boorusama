@@ -76,6 +76,8 @@ extension DateTimeX on DateTime {
       locale: locale.toLanguageTag(),
     );
   }
+
+  String yyyyMMddWithHyphen() => DateFormat('yyyy-MM-dd').format(this);
 }
 
 extension DateFormatX on DateFormat {

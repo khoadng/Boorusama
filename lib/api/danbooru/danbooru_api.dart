@@ -13,6 +13,7 @@ import 'danbooru_api_favorites.dart';
 import 'danbooru_api_forums.dart';
 import 'danbooru_api_pools.dart';
 import 'danbooru_api_posts.dart';
+import 'danbooru_api_reports.dart';
 import 'danbooru_api_saved_searches.dart';
 import 'danbooru_api_tags.dart';
 import 'danbooru_api_users.dart';
@@ -32,6 +33,7 @@ abstract class DanbooruApi
         DanbooruApiSavedSearches,
         DanbooruApiFavoriteGroups,
         DanbooruApiForums,
+        DanbooruApiReports,
         DanbooruApiPools {
   factory DanbooruApi(
     Dio dio, {

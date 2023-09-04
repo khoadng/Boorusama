@@ -6,6 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/time.dart';
 
 List<Search> parseSearch(HttpResponse<dynamic> value) => parseResponse(
       value: value,
@@ -23,8 +24,7 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
   final DanbooruApi _api;
   final _cache = <String, List<Search>>{};
 
-  String _getKeyFromDateTime(DateTime date) =>
-      '${date.year}-${date.month}-${date.day}';
+  String _getKeyFromDateTime(DateTime date) => date.yyyyMMddWithHyphen();
 
   @override
   Future<List<Search>> getSearchByDate(DateTime date) async {
@@ -34,9 +34,7 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
     }
     try {
       final result = await _api
-          .getPopularSearchByDate(
-            '${date.year}-${date.month}-${date.day}',
-          )
+          .getPopularSearchByDate(date.yyyyMMddWithHyphen())
           .then(parseSearch);
       _cache[key] = result;
       return result;

@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/time.dart';
 
 class ExploreRepositoryApi
     with SettingsRepositoryMixin
@@ -43,7 +44,7 @@ class ExploreRepositoryApi
       TaskEither.Do(($) async {
         final response = await $(tryParseResponse(
           fetcher: () => api.getMostViewedPosts(
-            '${date.year}-${date.month}-${date.day}',
+            date.yyyyMMddWithHyphen(),
           ),
         ));
 
@@ -64,7 +65,7 @@ class ExploreRepositoryApi
       TaskEither.Do(($) async {
         final response = await $(tryParseResponse(
           fetcher: () => getPostsPerPage().then((lim) => api.getPopularPosts(
-                '${date.year}-${date.month}-${date.day}',
+                date.yyyyMMddWithHyphen(),
                 scale.toString().split('.').last,
                 page,
                 limit ?? lim,
