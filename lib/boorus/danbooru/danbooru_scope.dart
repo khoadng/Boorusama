@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
@@ -30,6 +31,7 @@ import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
+import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -50,11 +52,26 @@ class DanbooruScope extends ConsumerStatefulWidget {
 
 class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   StreamSubscription? _sharedMediaSubscription;
+  int? userId;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final config = widget.config;
+
+      final id = await ref
+          .read(booruUserIdentityProviderProvider)
+          .getAccountIdFromConfig(config);
+
+      if (id != null) {
+        setState(() {
+          userId = id;
+        });
+      }
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -127,6 +144,16 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           ),
         ),
         mobileMenuBuilder: (context, controller) => [
+          if (auth.isAuthenticated && userId != null)
+            SideMenuTile(
+              icon: const Icon(Icons.account_box),
+              title: const Text('Profile'),
+              onTap: () {
+                context.navigator.push(MaterialPageRoute(
+                  builder: (_) => UserDetailsPage(uid: userId!),
+                ));
+              },
+            ),
           SideMenuTile(
             icon: const Icon(Icons.explore),
             title: const Text('Explore'),
@@ -221,8 +248,19 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             title: 'forum.forum'.tr(),
           ),
           if (auth.isAuthenticated) ...[
+            if (userId != null)
+              HomeNavigationTile(
+                value: 4,
+                controller: controller,
+                constraints: constraints,
+                selectedIcon: const Icon(Icons.account_box),
+                icon: const Icon(Icons.account_box_outlined),
+                title: 'Profile',
+              )
+            else
+              const SizedBox(),
             HomeNavigationTile(
-              value: 4,
+              value: 5,
               controller: controller,
               constraints: constraints,
               selectedIcon: const Icon(Icons.favorite),
@@ -230,7 +268,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
               title: 'Favorites',
             ),
             HomeNavigationTile(
-              value: 5,
+              value: 6,
               controller: controller,
               constraints: constraints,
               selectedIcon: const Icon(Icons.collections),
@@ -238,7 +276,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
               title: 'favorite_groups.favorite_groups'.tr(),
             ),
             HomeNavigationTile(
-              value: 6,
+              value: 7,
               controller: controller,
               constraints: constraints,
               selectedIcon: const Icon(Icons.saved_search),
@@ -246,7 +284,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
               title: 'saved_search.saved_search'.tr(),
             ),
             HomeNavigationTile(
-              value: 7,
+              value: 8,
               controller: controller,
               constraints: constraints,
               selectedIcon: const Icon(Icons.tag),
@@ -256,7 +294,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           ],
           const Divider(),
           HomeNavigationTile(
-            value: 8,
+            value: 9,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.bookmark),
@@ -264,7 +302,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             title: 'sideMenu.your_bookmarks'.tr(),
           ),
           HomeNavigationTile(
-            value: 9,
+            value: 10,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.list_alt),
@@ -272,7 +310,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             title: 'sideMenu.your_blacklist'.tr(),
           ),
           HomeNavigationTile(
-            value: 10,
+            value: 11,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.download),
@@ -296,6 +334,10 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           const PoolPage(),
           const DanbooruForumPage(),
           if (auth.isAuthenticated) ...[
+            if (userId != null)
+              UserDetailsPage(uid: userId!)
+            else
+              const SizedBox(),
             FavoritesPage(username: widget.config.login!),
             const FavoriteGroupsPage(),
             const SavedSearchFeedPage(),
