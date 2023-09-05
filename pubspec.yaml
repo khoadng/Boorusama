@@ -46,6 +46,7 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_crashlytics: ^3.3.3
   firebase_performance: ^0.9.2+3
+  fl_chart: ^0.63.0
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0

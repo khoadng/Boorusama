@@ -28,6 +28,7 @@ class DanbooruCommentHeader extends ConsumerWidget {
         ref,
         context,
         uid: comment.authorId,
+        username: comment.authorName,
       ),
     );
   }

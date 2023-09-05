@@ -59,8 +59,12 @@ class DanbooruForumPostsPage extends ConsumerWidget {
                 authorName: post.creator.name,
                 createdAt: post.createdAt,
                 authorLevel: post.creator.level,
-                onTap: () =>
-                    goToUserDetailsPage(ref, context, uid: post.creator.id),
+                onTap: () => goToUserDetailsPage(
+                  ref,
+                  context,
+                  uid: post.creator.id,
+                  username: post.creator.name,
+                ),
               ),
               Html(
                 onLinkTap: (url, context, attributes, element) =>

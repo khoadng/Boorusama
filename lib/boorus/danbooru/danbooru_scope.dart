@@ -149,9 +149,12 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
               icon: const Icon(Icons.account_box),
               title: const Text('Profile'),
               onTap: () {
-                context.navigator.push(MaterialPageRoute(
-                  builder: (_) => UserDetailsPage(uid: userId!),
-                ));
+                goToUserDetailsPage(
+                  ref,
+                  context,
+                  uid: userId!,
+                  username: widget.config.login!,
+                );
               },
             ),
           SideMenuTile(
@@ -335,7 +338,10 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           const DanbooruForumPage(),
           if (auth.isAuthenticated) ...[
             if (userId != null)
-              UserDetailsPage(uid: userId!)
+              UserDetailsPage(
+                uid: userId!,
+                username: widget.config.login!,
+              )
             else
               const SizedBox(),
             FavoritesPage(username: widget.config.login!),
