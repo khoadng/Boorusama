@@ -107,8 +107,9 @@ class UserDetailsPage extends ConsumerWidget {
                                           child: _buildChart(context, data)),
                                     ],
                                   ),
-                                  orElse: () => const CircularProgressIndicator
-                                      .adaptive(),
+                                  orElse: () => const Center(
+                                    child: CircularProgressIndicator.adaptive(),
+                                  ),
                                 ),
                           ),
                         ),
@@ -120,9 +121,6 @@ class UserDetailsPage extends ConsumerWidget {
                             .maybeWhen(
                               data: (data) {
                                 final tags = data.tags.take(5).toList();
-                                final percent = tags
-                                    .map((e) => e.frequency)
-                                    .reduce((a, b) => a + b);
 
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 24),
@@ -131,7 +129,7 @@ class UserDetailsPage extends ConsumerWidget {
                                         CrossAxisAlignment.stretch,
                                     children: [
                                       Text(
-                                        'Top 5 copyrights (${(percent * 100).toStringAsFixed(1)}% of uploads)',
+                                        'Top 5 copyrights',
                                         style: context.textTheme.titleMedium!
                                             .copyWith(
                                           fontWeight: FontWeight.bold,
@@ -143,8 +141,8 @@ class UserDetailsPage extends ConsumerWidget {
                                   ),
                                 );
                               },
-                              orElse: () =>
-                                  const CircularProgressIndicator.adaptive(),
+                              orElse: () => const Center(
+                                  child: CircularProgressIndicator.adaptive()),
                             ),
                       _UserUploads(uid: uid, user: user),
                       _UserFavorites(uid: uid, user: user),
