@@ -14,12 +14,17 @@ class RelatedTagRepositoryApi implements RelatedTagRepository {
   final DanbooruApi api;
 
   @override
-  Future<RelatedTag> getRelatedTag(String query) => api
-      .getRelatedTag(query, _kTagLimit)
-      .then(extractData)
-      .then(RelatedTagDto.fromJson)
-      .then(relatedTagDtoToRelatedTag)
-      .catchError((obj) => const RelatedTag.empty());
+  Future<RelatedTag> getRelatedTag(
+    String query, {
+    TagCategory? category,
+    RelatedType? order,
+  }) =>
+      api
+          .getRelatedTag(query, category?.name, order?.name, _kTagLimit)
+          .then(extractData)
+          .then(RelatedTagDto.fromJson)
+          .then(relatedTagDtoToRelatedTag)
+          .catchError((obj) => const RelatedTag.empty());
 }
 
 RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
@@ -32,6 +37,7 @@ RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
                     jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
                     cosineSimilarity: e.cosineSimilarity ?? 0.0,
                     overlapCoefficient: e.overlapCoefficient ?? 0.0,
+                    frequency: e.frequency ?? 0,
                     postCount: e.tag?.postCount ?? 0,
                   ))
               .toList()

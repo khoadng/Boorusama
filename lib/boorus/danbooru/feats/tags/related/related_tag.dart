@@ -38,6 +38,7 @@ class RelatedTagItem extends Equatable {
     required this.jaccardSimilarity,
     required this.cosineSimilarity,
     required this.overlapCoefficient,
+    required this.frequency,
     required this.postCount,
   });
 
@@ -46,6 +47,7 @@ class RelatedTagItem extends Equatable {
   final double jaccardSimilarity;
   final double cosineSimilarity;
   final double overlapCoefficient;
+  final double frequency;
   final int postCount;
 
   @override
@@ -55,6 +57,7 @@ class RelatedTagItem extends Equatable {
         jaccardSimilarity,
         cosineSimilarity,
         overlapCoefficient,
+        frequency,
       ];
 }
 
@@ -65,6 +68,7 @@ List<RelatedTagItem> generateDummyTags(int count) => [
           cosineSimilarity: 1,
           jaccardSimilarity: 1,
           overlapCoefficient: 1,
+          frequency: 1,
           postCount: 1,
           category: switch (i % 10) {
             0 => TagCategory.artist,
@@ -75,3 +79,10 @@ List<RelatedTagItem> generateDummyTags(int count) => [
           },
         ),
     ];
+
+enum RelatedType {
+  jaccard,
+  cosine,
+  overlap,
+  frequency,
+}

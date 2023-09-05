@@ -7,16 +7,20 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
+import 'package:boorusama/widgets/booru_chip.dart';
 import 'user_info_box.dart';
 import 'user_stats_group.dart';
 
@@ -30,6 +34,15 @@ final userDataProvider = FutureProvider.family
     from: DateTime.now().subtract(const Duration(days: 30)),
     to: DateTime.now(),
   );
+});
+
+final userCopyrightDataProvider =
+    FutureProvider.family<RelatedTag, String>((ref, username) async {
+  return ref.watch(danbooruRelatedTagRepProvider).getRelatedTag(
+        'user:$username',
+        order: RelatedType.frequency,
+        category: TagCategory.copyright,
+      );
 });
 
 class UserDetailsPage extends ConsumerWidget {
@@ -99,6 +112,40 @@ class UserDetailsPage extends ConsumerWidget {
                                 ),
                           ),
                         ),
+                      if (user.uploadCount > 0)
+                        ref
+                            .watch(userCopyrightDataProvider(
+                              user.name,
+                            ))
+                            .maybeWhen(
+                              data: (data) {
+                                final tags = data.tags.take(5).toList();
+                                final percent = tags
+                                    .map((e) => e.frequency)
+                                    .reduce((a, b) => a + b);
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 24),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text(
+                                        'Top 5 copyrights (${(percent * 100).toStringAsFixed(1)}% of uploads)',
+                                        style: context.textTheme.titleMedium!
+                                            .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      _buildTags(tags, context),
+                                    ],
+                                  ),
+                                );
+                              },
+                              orElse: () =>
+                                  const CircularProgressIndicator.adaptive(),
+                            ),
                       _UserUploads(uid: uid, user: user),
                       _UserFavorites(uid: uid, user: user),
                     ],
@@ -115,6 +162,42 @@ class UserDetailsPage extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTags(List<RelatedTagItem> tags, BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: tags
+          .map(
+            (e) => BooruChip(
+              color: getTagColor(TagCategory.copyright, context.themeMode),
+              onPressed: () => goToSearchPage(
+                context,
+                tag: e.tag,
+              ),
+              label: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.8),
+                  child: RichText(
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      text: e.tag.replaceUnderscoreWithSpace(),
+                      style: TextStyle(
+                        color: getTagColor(
+                            TagCategory.copyright, context.themeMode),
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
+                          style: context.textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  )),
+            ),
+          )
+          .toList(),
     );
   }
 

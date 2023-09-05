@@ -25,6 +25,8 @@ mixin DanbooruApiTags {
   @GET('/related_tag.json')
   Future<HttpResponse> getRelatedTag(
     @Query('search[query]') String query,
+    @Query('search[category]') String? category,
+    @Query('search[order]') String? order,
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
