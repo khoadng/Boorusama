@@ -25,8 +25,8 @@ import 'user_info_box.dart';
 import 'user_stats_group.dart';
 
 final userDataProvider = FutureProvider.family
-    .autoDispose<List<DanbooruReportDataPoint>, String>((ref, tag) {
-  return ref.watch(danbooruPostReportProvider).getPostReports(
+    .autoDispose<List<DanbooruReportDataPoint>, String>((ref, tag) async {
+  final data = await ref.watch(danbooruPostReportProvider).getPostReports(
     tags: [
       tag,
     ],
@@ -34,6 +34,10 @@ final userDataProvider = FutureProvider.family
     from: DateTime.now().subtract(const Duration(days: 30)),
     to: DateTime.now(),
   );
+
+  data.sort((a, b) => a.date.compareTo(b.date));
+
+  return data;
 });
 
 final userCopyrightDataProvider =
@@ -108,7 +112,12 @@ class UserDetailsPage extends ConsumerWidget {
                                     ],
                                   ),
                                   orElse: () => const Center(
-                                    child: CircularProgressIndicator.adaptive(),
+                                    child: SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child:
+                                          CircularProgressIndicator.adaptive(),
+                                    ),
                                   ),
                                 ),
                           ),
@@ -142,7 +151,12 @@ class UserDetailsPage extends ConsumerWidget {
                                 );
                               },
                               orElse: () => const Center(
-                                  child: CircularProgressIndicator.adaptive()),
+                                child: SizedBox(
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator.adaptive(),
+                                ),
+                              ),
                             ),
                       _UserUploads(uid: uid, user: user),
                       _UserFavorites(uid: uid, user: user),
@@ -156,7 +170,7 @@ class UserDetailsPage extends ConsumerWidget {
             child: Text('Fail to load profile'),
           ),
           loading: () => const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator.adaptive(),
           ),
         ),
       ),
@@ -215,6 +229,30 @@ class UserDetailsPage extends ConsumerWidget {
 
     return BarChart(
       BarChartData(
+        barTouchData: BarTouchData(
+          enabled: true,
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: context.theme.cardColor,
+            fitInsideHorizontally: true,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final date = data[groupIndex].date;
+              return BarTooltipItem(
+                  '${date.day}/${date.month}/${date.year}',
+                  context.textTheme.bodySmall!.copyWith(
+                    color: context.theme.textTheme.bodyLarge!.color,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: '\n${rod.toY.toInt()} posts',
+                      style: context.textTheme.bodySmall!.copyWith(
+                        color: context.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ]);
+            },
+          ),
+        ),
         titlesData: FlTitlesData(
           topTitles: const AxisTitles(
             sideTitles: SideTitles(showTitles: false),
