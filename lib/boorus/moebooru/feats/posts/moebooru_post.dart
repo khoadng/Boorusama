@@ -27,6 +27,7 @@ class MoebooruPost extends Equatable
     required this.fileSize,
     required this.score,
     required this.createdAt,
+    required this.parentId,
   });
 
   @override
@@ -90,4 +91,6 @@ class MoebooruPost extends Equatable
   String get videoThumbnailUrl => thumbnailImageUrl;
   @override
   int? get downvotes => null;
+  @override
+  final int? parentId;
 }

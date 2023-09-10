@@ -117,6 +117,7 @@ E621Post postDtoToPost(E621PostDto dto) {
     isFavorited: dto.isFavorited ?? false,
     sources: dto.sources?.map(PostSource.from).toList() ?? [],
     description: dto.description ?? '',
+    parentId: dto.relationships?.parentId,
   );
 }
 

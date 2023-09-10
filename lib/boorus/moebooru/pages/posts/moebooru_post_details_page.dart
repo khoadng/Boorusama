@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'moebooru_information_section.dart';
+import 'moebooru_related_post_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPage({
@@ -132,6 +133,8 @@ class _MoebooruPostDetailsPageState
         final widgets =
             _buildWidgets(context, expanded, page, currentPage, ref);
 
+        final expandedOnCurrentPage = expanded && page == currentPage;
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: CustomScrollView(
@@ -144,6 +147,8 @@ class _MoebooruPostDetailsPageState
                   childCount: widgets.length,
                 ),
               ),
+              if (expandedOnCurrentPage)
+                MoebooruRelatedPostsSection(post: posts[page]),
             ],
           ),
         );

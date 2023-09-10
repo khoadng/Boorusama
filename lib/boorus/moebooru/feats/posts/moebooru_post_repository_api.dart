@@ -66,6 +66,10 @@ class MoebooruPostRepositoryApi
 }
 
 MoebooruPost postDtoToPost(PostDto postDto) {
+  final hasChildren = postDto.hasChildren ?? false;
+  final hasParent = postDto.parentId != null;
+  final hasParentOrChildren = hasChildren || hasParent;
+
   return MoebooruPost(
     id: postDto.id ?? 0,
     thumbnailImageUrl: postDto.previewUrl ?? '',
@@ -76,7 +80,7 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     rating: mapStringToRating(postDto.rating ?? ''),
     hasComment: false,
     isTranslated: false,
-    hasParentOrChildren: postDto.hasChildren ?? false,
+    hasParentOrChildren: hasParentOrChildren,
     width: postDto.width?.toDouble() ?? 1,
     height: postDto.height?.toDouble() ?? 1,
     md5: postDto.md5 ?? '',
@@ -86,5 +90,6 @@ MoebooruPost postDtoToPost(PostDto postDto) {
     createdAt: postDto.createdAt != null
         ? DateTime.fromMillisecondsSinceEpoch(postDto.createdAt! * 1000)
         : null,
+    parentId: postDto.parentId,
   );
 }

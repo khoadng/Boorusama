@@ -95,5 +95,6 @@ GelbooruPost _postDtoToPost(Rule34xxxPostDto dto) {
     fileSize: 0,
     score: dto.score ?? 0,
     createdAt: null,
+    parentId: dto.parentId,
   );
 }

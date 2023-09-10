@@ -47,3 +47,25 @@ final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
     currentBooruConfigProvider,
   ],
 );
+
+final moebooruPostDetailsChildrenProvider =
+    FutureProvider.family.autoDispose<List<Post>?, Post>(
+  (ref, post) async {
+    if (!post.hasParentOrChildren) return null;
+
+    final repo = ref.watch(moebooruPostRepoProvider);
+
+    final query =
+        post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';
+
+    final posts = await repo.getPostsFromTags(query, 1).run();
+
+    return posts.fold(
+      (l) => null,
+      (r) => r,
+    );
+  },
+  dependencies: [
+    moebooruPostRepoProvider,
+  ],
+);

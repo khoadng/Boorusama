@@ -26,6 +26,7 @@ class GelbooruPost extends Equatable
     required this.fileSize,
     required this.score,
     required this.createdAt,
+    required this.parentId,
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruPost.empty() => GelbooruPost(
@@ -45,6 +46,7 @@ class GelbooruPost extends Equatable
         fileSize: 0,
         score: 0,
         createdAt: null,
+        parentId: null,
       );
 
   final String _sampleImageUrl;
@@ -121,4 +123,7 @@ class GelbooruPost extends Equatable
   String get videoUrl => originalImageUrl;
   @override
   String get videoThumbnailUrl => thumbnailImageUrl;
+
+  @override
+  final int? parentId;
 }

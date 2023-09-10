@@ -47,6 +47,7 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(GelbooruPostDto dto) {
     fileSize: 0,
     score: dto.score ?? 0,
     createdAt: dto.createdAt != null ? parseRFC822String(dto.createdAt!) : null,
+    parentId: dto.parentId != 0 ? dto.parentId : null,
   );
 }
 

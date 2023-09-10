@@ -20,6 +20,7 @@ abstract class Post extends Equatable
   bool get hasComment;
   bool get isTranslated;
   bool get hasParentOrChildren;
+  int? get parentId;
   PostSource get source;
   int get score;
   int? get downvotes;
