@@ -5,26 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
-class ImportFavoriteTagsDialog extends ConsumerStatefulWidget {
-  const ImportFavoriteTagsDialog({
+//FIXME: don't reuse translation keys with favorites tags
+class ImportTagsDialog extends ConsumerStatefulWidget {
+  const ImportTagsDialog({
     super.key,
     this.padding,
+    this.hint,
+    required this.onImport,
   });
 
   final double? padding;
+  final String? hint;
+  final void Function(String tagString) onImport;
 
   @override
-  ConsumerState<ImportFavoriteTagsDialog> createState() =>
-      _ImportFavoriteTagsDialogState();
+  ConsumerState<ImportTagsDialog> createState() => _ImportTagsDialogState();
 }
 
-class _ImportFavoriteTagsDialogState
-    extends ConsumerState<ImportFavoriteTagsDialog> {
+class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
   final textController = TextEditingController();
 
   @override
@@ -69,7 +71,8 @@ class _ImportFavoriteTagsDialogState
                   maxLines: null,
                   decoration: InputDecoration(
                     hintMaxLines: 6,
-                    hintText: '${'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
+                    hintText:
+                        '${widget.hint ?? 'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
                     filled: true,
                     fillColor: context.theme.cardColor,
                     enabledBorder: const OutlineInputBorder(
@@ -88,15 +91,13 @@ class _ImportFavoriteTagsDialogState
                 ),
               ),
               const SizedBox(height: 24),
-              ValueListenableBuilder<TextEditingValue>(
+              ValueListenableBuilder(
                 valueListenable: textController,
                 builder: (context, value, child) => ElevatedButton(
                   onPressed: value.text.isNotEmpty
                       ? () {
                           context.navigator.pop();
-                          ref
-                              .read(favoriteTagsProvider.notifier)
-                              .import(value.text);
+                          widget.onImport(value.text);
                         }
                       : null,
                   child: const Text('favorite_tags.import').tr(),

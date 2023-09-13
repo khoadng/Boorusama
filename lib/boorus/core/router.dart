@@ -33,9 +33,9 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import '../../widgets/image_grid_item.dart';
 import '../../widgets/info_container.dart';
-import 'pages/search/favorite_tags/import_favorite_tag_dialog.dart';
 import 'pages/search/full_history_view.dart';
 import 'utils.dart';
+import 'widgets/import_tag_dialog.dart';
 
 void goToHomePage(
   BuildContext context, {
@@ -174,14 +174,17 @@ void goToMetatagsPage(
 
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
+  WidgetRef ref,
 ) {
   return showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
       name: RouterPageConstant.favoriteTagsImport,
     ),
-    pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+    pageBuilder: (context, _, __) => ImportTagsDialog(
       padding: isMobilePlatform() ? 0 : 8,
+      onImport: (tagString) =>
+          ref.read(favoriteTagsProvider.notifier).import(tagString),
     ),
   );
 }

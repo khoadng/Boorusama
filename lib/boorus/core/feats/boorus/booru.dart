@@ -105,6 +105,8 @@ extension BooruTypeX on BooruType {
 
   bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
 
+  bool get supportBlacklistedTags => isDanbooruBased;
+
   bool get supportHttp2 =>
       isDanbooruBased ||
       [

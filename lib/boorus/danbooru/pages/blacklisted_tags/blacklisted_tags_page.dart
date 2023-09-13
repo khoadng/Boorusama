@@ -7,12 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 class BlacklistedTagsPage extends ConsumerWidget {
@@ -22,11 +24,32 @@ class BlacklistedTagsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(danbooruBlacklistedTagsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(context, ref),
+          if (tags != null)
+            ImportExportTagButton(
+              tags: tags,
+              onImport: (tagString) {
+                final tags = sanitizeBlacklistTagString(tagString);
+
+                if (tags == null) {
+                  showErrorToast('Invalid tag format');
+                  return;
+                }
+
+                //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
+                for (final tag in tags) {
+                  ref
+                      .read(danbooruBlacklistedTagsProvider.notifier)
+                      .add(tag: tag);
+                }
+              },
+            ),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),
