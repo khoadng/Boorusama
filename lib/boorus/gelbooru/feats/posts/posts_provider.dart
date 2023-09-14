@@ -8,7 +8,6 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
-import 'gelbooru_post_count_repository.dart';
 
 final gelbooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
@@ -19,6 +18,23 @@ final gelbooruPostRepoProvider = Provider<PostRepository>(
 
     return GelbooruPostRepositoryApi(
       api: api,
+      booruConfig: booruConfig,
+      settingsRepository: settingsRepository,
+    );
+  },
+);
+
+final gelbooruV2dot0PostRepoProvider =
+    Provider<GelbooruV0Dot2PostRepositoryApi>(
+  (ref) {
+    final api = ref.watch(gelbooruV2dot0ApiProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
+    final settingsRepository = ref.watch(settingsRepoProvider);
+
+    return GelbooruV0Dot2PostRepositoryApi(
+      api: api,
+      baseUrl: booruConfig.url,
       booruConfig: booruConfig,
       settingsRepository: settingsRepository,
     );

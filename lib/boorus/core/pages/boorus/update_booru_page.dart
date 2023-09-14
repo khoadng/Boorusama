@@ -131,6 +131,7 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
             login: login,
             apiKey: apiKey,
             booru: widget.booruConfig.booruType,
+            booruHint: widget.booruConfig.booruType,
             configName: configName,
             hideDeleted: hideDeleted,
             ratingFilter: ratingFilter,

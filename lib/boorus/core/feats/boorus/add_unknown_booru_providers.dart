@@ -50,7 +50,8 @@ final newbooruConfigProvider =
   return AddNewBooruConfig(
     login: ref.watch(booruLoginProvider),
     apiKey: ref.watch(booruApiKeyProvider),
-    booru: booruEngineToBooruType(engine ?? BooruEngine.danbooru),
+    booru: BooruType.unknown,
+    booruHint: booruEngineToBooruType(engine ?? BooruEngine.danbooru),
     configName: ref.watch(booruConfigNameProvider),
     hideDeleted: ref.watch(booruDeletedItemBehaviorProvider) ==
         BooruConfigDeletedItemBehavior.hide,

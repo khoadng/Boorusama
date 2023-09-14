@@ -8,6 +8,7 @@ class BooruConfig extends Equatable {
   const BooruConfig({
     required this.id,
     required this.booruId,
+    required this.booruIdHint,
     required this.apiKey,
     required this.login,
     required this.name,
@@ -19,6 +20,7 @@ class BooruConfig extends Equatable {
   static const BooruConfig empty = BooruConfig(
     id: -1,
     booruId: -1,
+    booruIdHint: -1,
     apiKey: null,
     login: null,
     name: '',
@@ -29,6 +31,7 @@ class BooruConfig extends Equatable {
 
   final int id;
   final int booruId;
+  final int booruIdHint;
   final String url;
   final String? apiKey;
   final String? login;
@@ -40,6 +43,7 @@ class BooruConfig extends Equatable {
   List<Object?> get props => [
         id,
         booruId,
+        booruIdHint,
         apiKey,
         login,
         name,
