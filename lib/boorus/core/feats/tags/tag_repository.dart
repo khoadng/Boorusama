@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'tag.dart';
 
 abstract class TagRepository {
-  Future<List<Tag>> getTagsByNameComma(
-    String stringComma,
+  Future<List<Tag>> getTagsByName(
+    List<String> tags,
     int page, {
     CancelToken? cancelToken,
   });

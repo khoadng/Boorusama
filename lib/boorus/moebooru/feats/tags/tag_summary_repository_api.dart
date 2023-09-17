@@ -1,24 +1,23 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/moebooru/moebooru_api.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
+import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/foundation/http/request_deduplicator_mixin.dart';
 import 'tag_summary.dart';
-import 'tag_summary_dto.dart';
 import 'tag_summary_repository.dart';
 import 'tag_summary_repository_file.dart';
 
 class MoebooruTagSummaryRepository
-    with RequestDeduplicator<HttpResponse<dynamic>>
+    with RequestDeduplicator<TagSummaryDto>
     implements TagSummaryRepository {
   MoebooruTagSummaryRepository(
-    this.api,
+    this.client,
     this.store,
   );
 
-  final MoebooruApi api;
+  final MoebooruClient client;
   final TagSummaryRepositoryFile store;
 
   @override
@@ -30,20 +29,14 @@ class MoebooruTagSummaryRepository
         return convertTagSummaryDtoToTagSummaryList(cached);
       }
 
-      var response = await deduplicate('key', () => api.getTagSummary());
+      var tagSummaryDto =
+          await deduplicate('key', () => client.getTagSummary());
 
-      if ([200, 304].contains(response.response.statusCode)) {
-        var tagSummaryDto = TagSummaryDto.fromJson(response.data);
+      await store.saveTagSummaries(tagSummaryDto);
 
-        await store.saveTagSummaries(tagSummaryDto);
+      final data = convertTagSummaryDtoToTagSummaryList(tagSummaryDto);
 
-        final data = convertTagSummaryDtoToTagSummaryList(tagSummaryDto);
-
-        return data;
-      } else {
-        throw Exception(
-            'Failed to get tag summaries: ${response.response.statusCode}');
-      }
+      return data;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {
         rethrow;

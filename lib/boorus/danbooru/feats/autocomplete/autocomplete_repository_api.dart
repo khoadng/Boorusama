@@ -1,17 +1,7 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete_dto.dart';
-import 'package:boorusama/foundation/http/http.dart';
-
-List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
-    parseResponse(
-      value: value,
-      converter: (data) => AutocompleteDto.fromJson(data),
-    );
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 
 List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .map((e) {
@@ -55,19 +45,16 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 
 class AutocompleteRepositoryApi implements AutocompleteRepository {
   const AutocompleteRepositoryApi({
-    required this.api,
+    required this.client,
   });
 
-  final DanbooruApi api;
+  final DanbooruClient client;
 
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) => api
+  Future<List<AutocompleteData>> getAutocomplete(String query) => client
       .autocomplete(
-        query,
-        'tag_query',
-        20,
+        query: query,
       )
-      .then(parseAutocomplete)
       .then(mapDtoToAutocomplete)
       .catchError((_) => <AutocompleteData>[]);
 }

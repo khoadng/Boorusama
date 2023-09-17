@@ -1,5 +1,4 @@
 export 'wiki.dart';
-export 'wiki_dto.dart';
 export 'wiki_repository.dart';
 export 'wiki_repository_api.dart';
 export 'wiki_state.dart';

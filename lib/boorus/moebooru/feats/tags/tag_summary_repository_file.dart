@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'tag_summary_dto.dart';
+import 'package:boorusama/clients/moebooru/types/types.dart';
 
 class TagSummaryRepositoryFile {
   TagSummaryRepositoryFile(this.path);

@@ -1,34 +1,24 @@
-// Package imports:
-import 'package:retrofit/retrofit.dart';
-
 // Project imports:
-import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/utils.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
+import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
-
-List<MoebooruPost> parsePost(
-  HttpResponse<dynamic> value,
-) =>
-    parseResponse(
-      value: value,
-      converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e)).toList();
 
 class MoebooruPostRepositoryApi
     with SettingsRepositoryMixin
     implements PostRepository {
   MoebooruPostRepositoryApi(
-    this._api,
+    this.client,
     this.booruConfig,
     this.settingsRepository,
   );
 
-  final MoebooruApi _api;
+  final MoebooruClient client;
   final BooruConfig booruConfig;
   @override
   final SettingsRepository settingsRepository;
@@ -49,17 +39,15 @@ class MoebooruPostRepositoryApi
     int? limit,
   }) =>
       TaskEither.Do(($) async {
-        final response = await $(tryParseResponse(
-          fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-                booruConfig.login,
-                booruConfig.apiKey,
-                page,
-                getTags(booruConfig, tags).join(' '),
-                limit ?? lim,
+        final response = await $(tryFetchRemoteData(
+          fetcher: () => getPostsPerPage().then((lim) => client.getPosts(
+                page: page,
+                tags: getTags(booruConfig, tags),
+                limit: limit ?? lim,
               )),
         ));
 
-        final data = await $(tryParseJsonFromResponse(response, parsePost));
+        final data = response.map(postDtoToPost).toList();
 
         return data;
       });

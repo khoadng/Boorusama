@@ -1,29 +1,20 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'post_vote.dart';
-import 'post_vote_dto.dart';
 import 'post_vote_repository.dart';
-
-List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => PostVoteDto.fromJson(item),
-    ).map(postVoteDtoToPostVote).toList();
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
-    required DanbooruApi api,
+    required this.client,
     required this.booruConfig,
     required this.booruUserIdentityProvider,
-  }) : _api = api;
+  });
 
   final BooruConfig booruConfig;
-  final DanbooruApi _api;
+  final DanbooruClient client;
   final BooruUserIdentityProvider booruUserIdentityProvider;
 
   @override
@@ -33,35 +24,21 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
         await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
     if (id == null) return [];
 
-    return _api
+    return client
         .getPostVotes(
-          1,
-          postIds.join(','),
-          id.toString(),
-          false,
-          100,
+          postIds: postIds,
+          userId: id,
+          isDeleted: false,
+          limit: 100,
         )
-        .then(parsePostVote);
+        .then((value) => value.map(postVoteDtoToPostVote).toList());
   }
 
-  @override
-  Future<List<PostVote>> getAllVotes(int postId, int page) => _api
-      .getPostVotes(
-        page,
-        postId.toString(),
-        null,
-        false,
-        100,
-      )
-      .then(parsePostVote);
-
-  Future<PostVote?> _vote(int postId, int score) => _api
+  Future<PostVote?> _vote(int postId, int score) => client
       .votePost(
-        postId,
-        score,
+        postId: postId,
+        score: score,
       )
-      .then(extractData)
-      .then(PostVoteDto.fromJson)
       .then(postVoteDtoToPostVote)
       .then((value) => Future<PostVote?>.value(value))
       .catchError((e) => null);

@@ -14,7 +14,7 @@ part 'pools_search_provider.dart';
 final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {
   return PoolCacher(
     PoolRepositoryApi(
-      ref.watch(danbooruApiProvider),
+      ref.watch(danbooruClientProvider),
     ),
   );
 });

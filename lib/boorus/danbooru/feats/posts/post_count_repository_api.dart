@@ -1,22 +1,18 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 
 class PostCountRepositoryApi implements PostCountRepository {
   const PostCountRepositoryApi({
-    required this.api,
+    required this.client,
     this.extraTags = const [],
   });
 
-  final DanbooruApi api;
+  final DanbooruClient client;
   final List<String> extraTags;
 
   @override
-  Future<int?> count(List<String> tags) => api
-      .countPosts(
-        [...tags, ...extraTags].join(' '),
-      )
-      .then((value) => value.data['counts']['posts'])
-      .then((value) => Future<int?>.value(value))
-      .catchError((_) => null);
+  Future<int?> count(List<String> tags) => client.countPosts(
+        tags: [...tags, ...extraTags],
+      );
 }

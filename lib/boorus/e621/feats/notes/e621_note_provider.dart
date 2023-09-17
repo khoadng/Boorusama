@@ -8,6 +8,6 @@ import 'package:boorusama/boorus/e621/feats/notes/e621_note_repository.dart';
 
 final e621NoteRepoProvider = Provider<NoteRepository>((ref) {
   return E621NoteRepositoryApi(
-    ref.watch(e621ApiProvider),
+    ref.watch(e621ClientProvider),
   );
 });

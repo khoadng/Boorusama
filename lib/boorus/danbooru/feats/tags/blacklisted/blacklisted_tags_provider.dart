@@ -14,12 +14,12 @@ final danbooruBlacklistedTagRepoProvider = Provider<BlacklistedTagsRepository>(
   (ref) {
     return BlacklistedTagsRepositoryImpl(
       ref.watch(danbooruUserRepoProvider),
-      ref.watch(danbooruApiProvider),
+      ref.watch(danbooruClientProvider),
     );
   },
   dependencies: [
     danbooruUserRepoProvider,
-    danbooruApiProvider,
+    danbooruClientProvider,
   ],
 );
 

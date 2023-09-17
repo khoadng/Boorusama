@@ -7,6 +7,6 @@ import 'package:boorusama/boorus/danbooru/feats/reports/danbooru_report_reposito
 
 final danbooruPostReportProvider = Provider<DanbooruReportRepository>((ref) {
   return DanbooruReportRepositoryApi(
-    danbooruApi: ref.watch(danbooruApiProvider),
+    client: ref.watch(danbooruClientProvider),
   );
 });

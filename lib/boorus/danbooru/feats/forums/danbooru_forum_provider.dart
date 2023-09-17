@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 final danbooruForumTopicRepoProvider =
     Provider<DanbooruForumTopicRepository>((ref) {
   return DanbooruForumTopicRepositoryApi(
-    api: ref.watch(danbooruApiProvider),
+    client: ref.watch(danbooruClientProvider),
   );
 });
 
@@ -24,7 +24,7 @@ final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose<
 final danbooruForumPostRepoProvider =
     Provider<DanbooruForumPostRepository>((ref) {
   return DanbooruForumPostRepositoryApi(
-    api: ref.watch(danbooruApiProvider),
+    client: ref.watch(danbooruClientProvider),
     onFetched: (posts) => ref
         .read(danbooruCreatorsProvider.notifier)
         .load(posts.expand((e) => e.votes).map((e) => e.creatorId).toList()),

@@ -1,9 +1,9 @@
 // Project imports:
-import 'package:boorusama/api/gelbooru/gelbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/utils.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 import 'gelbooru_post_parser.dart';
@@ -12,12 +12,12 @@ class GelbooruPostRepositoryApi
     with SettingsRepositoryMixin
     implements PostRepository {
   const GelbooruPostRepositoryApi({
-    required this.api,
+    required this.client,
     required this.booruConfig,
     required this.settingsRepository,
   });
 
-  final GelbooruApi api;
+  final GelbooruClient client;
   final BooruConfig booruConfig;
   @override
   final SettingsRepository settingsRepository;
@@ -39,24 +39,15 @@ class GelbooruPostRepositoryApi
   }) =>
       TaskEither.Do(($) async {
         final lim = await getPostsPerPage();
-        final response = await $(tryParseResponse(
-          fetcher: () => api.getPosts(
-            booruConfig.apiKey,
-            booruConfig.login,
-            'dapi',
-            'post',
-            'index',
-            getTags(booruConfig, tags).join(' '),
-            '1',
-            (page - 1).toString(),
+        final response = await $(tryFetchRemoteData(
+          fetcher: () => client.getPosts(
+            tags: getTags(booruConfig, tags),
+            page: page,
             limit: limit ?? lim,
           ),
         ));
 
-        final data = await $(tryParseJsonFromResponse(
-          response,
-          parseGelbooruResponse,
-        ));
+        final data = response.map(gelbooruPostDtoToGelbooruPost).toList();
 
         return data;
       });

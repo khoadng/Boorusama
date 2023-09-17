@@ -26,7 +26,7 @@ final danbooruFavoriteGroupPreviewsProvider =
 final danbooruFavoriteGroupRepoProvider =
     Provider<FavoriteGroupRepository>((ref) {
   return FavoriteGroupRepositoryApi(
-    api: ref.watch(danbooruApiProvider),
+    client: ref.watch(danbooruClientProvider),
   );
 });
 

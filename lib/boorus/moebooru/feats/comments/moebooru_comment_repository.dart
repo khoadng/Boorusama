@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/moebooru/feats/comments/moebooru_comment_parser.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'moebooru_comment.dart';
+import 'moebooru_comment_parser.dart';
 
 abstract interface class MoebooruCommentRepository {
   Future<List<MoebooruComment>> getComments(int postId);
@@ -10,16 +10,16 @@ abstract interface class MoebooruCommentRepository {
 
 class MoebooruCommentRepositoryApi implements MoebooruCommentRepository {
   MoebooruCommentRepositoryApi({
-    required this.api,
+    required this.client,
     required this.booruConfig,
   });
 
-  final MoebooruApi api;
+  final MoebooruClient client;
   final BooruConfig booruConfig;
 
   @override
-  Future<List<MoebooruComment>> getComments(int postId) => api
-      .getComments(booruConfig.login, booruConfig.apiKey, postId)
-      .then(parseMoebooruComments)
+  Future<List<MoebooruComment>> getComments(int postId) => client
+      .getComments(postId: postId)
+      .then((value) => value.map(moebooruCommentDtoToMoebooruComment).toList())
       .catchError((e) => <MoebooruComment>[]);
 }

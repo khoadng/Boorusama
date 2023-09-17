@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 
 final e621PostRepoProvider = Provider<E621PostRepository>((ref) {
   return E621PostRepositoryApi(
-    ref.watch(e621ApiProvider),
+    ref.watch(e621ClientProvider),
     ref.watch(currentBooruConfigProvider),
     ref.watch(settingsRepoProvider),
     onFetch: (posts) => ref.read(e621FavoritesProvider.notifier).preload(posts),
@@ -19,7 +19,7 @@ final e621PostRepoProvider = Provider<E621PostRepository>((ref) {
 
 final e621PopularPostRepoProvider = Provider<E621PopularRepository>((ref) {
   return E621PopularRepositoryApi(
-    ref.watch(e621ApiProvider),
+    ref.watch(e621ClientProvider),
     ref.watch(currentBooruConfigProvider),
     ref.watch(settingsRepoProvider),
   );

@@ -15,17 +15,21 @@ class MoebooruTagRepository extends TagRepository {
   final TagSummaryRepository repo;
 
   @override
-  Future<List<Tag>> getTagsByNameComma(
-    String stringComma,
+  Future<List<Tag>> getTagsByName(
+    List<String> tags,
     int page, {
     CancelToken? cancelToken,
   }) async {
-    final tags = stringComma.split(',').map((e) => e.trim()).toList();
+    final value = tags.map((e) => e.trim()).toList();
 
     final data = await repo.getTagSummaries();
     final map = {for (var item in data) item.name: item};
 
-    return tags.map((e) => map[e]).whereNotNull().map(tagSummaryToTag).toList();
+    return value
+        .map((e) => map[e])
+        .whereNotNull()
+        .map(tagSummaryToTag)
+        .toList();
   }
 }
 

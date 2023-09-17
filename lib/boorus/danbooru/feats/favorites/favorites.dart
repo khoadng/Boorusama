@@ -1,7 +1,5 @@
 export 'favorite.dart';
-export 'favorite_dto.dart';
 export 'favorite_group.dart';
-export 'favorite_group_dto.dart';
 export 'favorite_group_repository.dart';
 export 'favorite_group_repository_api.dart';
 export 'favorite_groups_filterable_notifier.dart';

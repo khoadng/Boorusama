@@ -1,9 +1,10 @@
 // Project imports:
-import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/clients/e621/types/types.dart' as e;
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
@@ -16,12 +17,12 @@ class E621PopularRepositoryApi
     with SettingsRepositoryMixin
     implements E621PopularRepository {
   E621PopularRepositoryApi(
-    this.api,
+    this.client,
     this.booruConfig,
     this.settingsRepository,
   );
 
-  final E621Api api;
+  final E621Client client;
   final BooruConfig booruConfig;
 
   @override
@@ -41,21 +42,20 @@ class E621PopularRepositoryApi
         final key = _buildKey(dateString, timeScaleString);
         final cached = _cache.get(key);
 
-        if (cached != null && cached.isNotEmpty) {
-          return cached;
-        }
+        if (cached != null && cached.isNotEmpty) return cached;
 
-        final response = await $(tryParseResponse(
-          fetcher: () => api.getPopularPosts(
-            booruConfig.login,
-            booruConfig.apiKey,
-            dateString,
-            timeScaleString,
+        final response = await $(tryFetchRemoteData(
+          fetcher: () => client.getPopularPosts(
+            date: date,
+            scale: switch (timeScale) {
+              TimeScale.day => e.TimeScale.day,
+              TimeScale.week => e.TimeScale.week,
+              TimeScale.month => e.TimeScale.month,
+            },
           ),
         ));
 
-        final dtos = await $(tryParseJsonFromResponse(response, parseDtos));
-        final data = dtos.map(postDtoToPost).toList();
+        final data = response.map(postDtoToPost).toList();
 
         final filteredNoImage = filterPostWithNoImage(data);
 

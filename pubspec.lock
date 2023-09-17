@@ -1351,22 +1351,6 @@ packages:
       url: "https://github.com/khoadng/reorderables.git"
     source: git
     version: "0.6.0"
-  retrofit:
-    dependency: "direct main"
-    description:
-      name: retrofit
-      sha256: "5eedbd8f73697f190dabc88520e0bcf2d3b2d9b9ad5c837f1dbb3ee6172d7709"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
-  retrofit_generator:
-    dependency: "direct dev"
-    description:
-      name: retrofit_generator
-      sha256: "9499eb46b3657a62192ddbc208ff7e6c6b768b19e83c1ee6f6b119c864b99690"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.8"
   rich_text_controller:
     dependency: "direct main"
     description:
@@ -1733,14 +1717,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  tuple:
-    dependency: transitive
-    description:
-      name: tuple
-      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:

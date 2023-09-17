@@ -12,7 +12,7 @@ import 'moebooru_post_repository_api.dart';
 
 final moebooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final api = ref.watch(moebooruApiProvider);
+    final api = ref.watch(moebooruClientProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     final settingsRepository = ref.watch(settingsRepoProvider);
@@ -24,7 +24,7 @@ final moebooruPostRepoProvider = Provider<PostRepository>(
     );
   },
   dependencies: [
-    moebooruApiProvider,
+    moebooruClientProvider,
     globalBlacklistedTagRepoProvider,
     currentBooruConfigProvider,
     settingsRepoProvider,
@@ -33,7 +33,7 @@ final moebooruPostRepoProvider = Provider<PostRepository>(
 
 final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
   (ref) {
-    final api = ref.watch(moebooruApiProvider);
+    final api = ref.watch(moebooruClientProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return MoebooruPopularRepositoryApi(
@@ -42,7 +42,7 @@ final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
     );
   },
   dependencies: [
-    moebooruApiProvider,
+    moebooruClientProvider,
     globalBlacklistedTagRepoProvider,
     currentBooruConfigProvider,
   ],

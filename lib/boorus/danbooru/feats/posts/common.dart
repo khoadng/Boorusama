@@ -1,23 +1,11 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/danbooru/types/post_dto.dart';
 import 'package:boorusama/string.dart';
 import 'danbooru_post.dart';
-import 'post_dto.dart';
 import 'post_variant.dart';
-
-List<DanbooruPost> parsePost(
-  HttpResponse<dynamic> value,
-) =>
-    parseResponse(
-      value: value,
-      converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e)).toList();
 
 // convert a BooruConfig and an orignal tag list to List<String>
 List<String> getTags(BooruConfig booruConfig, String tags) {

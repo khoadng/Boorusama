@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 
@@ -47,8 +48,11 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
     if (idsNotInCached.isNotEmpty) {
       try {
         creators = await repo
-            .getUsersByIdStringComma(
-              idsNotInCached.join(','),
+            .getUsersByIds(
+              idsNotInCached
+                  .map((e) => int.tryParse(e))
+                  .whereNotNull()
+                  .toList(),
               cancelToken: cancelToken,
             )
             .then((value) => value.map(Creator.fromUser).toList());

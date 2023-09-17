@@ -104,7 +104,6 @@ dependencies:
     git:
       url: https://github.com/khoadng/reorderables.git
       ref: 69d1b8b272f3b77dc6a6b7399fa8931cdd660d77
-  retrofit: ^4.0.1
   rich_text_controller:
     git:
       url: https://github.com/khoadng/rich_text_controller.git
@@ -137,7 +136,6 @@ dev_dependencies:
   hive_generator: ^2.0.1
   import_sorter: ^4.6.0
   mocktail: ^1.0.0
-  retrofit_generator: ^7.0.8
   test: ^1.21.1
 
 flutter_icons:

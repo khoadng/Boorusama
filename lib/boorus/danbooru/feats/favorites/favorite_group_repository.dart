@@ -2,11 +2,6 @@
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 
 abstract class FavoriteGroupRepository {
-  Future<List<FavoriteGroup>> getFavoriteGroups({
-    String? name,
-    int? page,
-  });
-
   Future<List<FavoriteGroup>> getFavoriteGroupsByCreatorName({
     required String name,
     int? page,

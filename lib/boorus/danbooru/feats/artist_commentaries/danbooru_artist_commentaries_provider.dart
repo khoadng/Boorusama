@@ -12,7 +12,7 @@ final danbooruArtistCommentaryRepoProvider =
     Provider<DanbooruArtistCommentaryRepository>(
   (ref) {
     return DanbooruArtistCommentaryRepositoryApi(
-      ref.watch(danbooruApiProvider),
+      ref.watch(danbooruClientProvider),
     );
   },
 );

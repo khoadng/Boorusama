@@ -13,7 +13,7 @@ import 'package:boorusama/functional.dart';
 final popularSearchProvider = Provider<PopularSearchRepository>(
   (ref) {
     return PopularSearchRepositoryApi(
-      api: ref.watch(danbooruApiProvider),
+      client: ref.watch(danbooruClientProvider),
     );
   },
 );
@@ -23,7 +23,7 @@ final danbooruTagRepoProvider = Provider<TagRepository>(
     return TagCacher(
       cache: LruCacher(capacity: 2000),
       repo: TagRepositoryApi(
-        ref.watch(danbooruApiProvider),
+        ref.watch(danbooruClientProvider),
       ),
     );
   },

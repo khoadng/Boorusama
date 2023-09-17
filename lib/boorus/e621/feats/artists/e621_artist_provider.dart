@@ -9,7 +9,7 @@ import 'package:boorusama/functional.dart';
 
 final e621ArtistRepoProvider = Provider<E621ArtistRepository>((ref) {
   return E621ArtistRepositoryApi(
-    ref.watch(e621ApiProvider),
+    ref.watch(e621ClientProvider),
   );
 });
 

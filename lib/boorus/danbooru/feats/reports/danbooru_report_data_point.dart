@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/clients/danbooru/types/types.dart';
+
 class DanbooruReportDataPoint extends Equatable {
   const DanbooruReportDataPoint({
     required this.date,
@@ -24,25 +27,8 @@ class DanbooruReportDataPoint extends Equatable {
   List<Object?> get props => [date, postCount];
 }
 
-class DanbooruReportDataPointDto {
-  final String? date;
-  final int? posts;
-
-  DanbooruReportDataPointDto({
-    this.date,
-    this.posts,
-  });
-
-  factory DanbooruReportDataPointDto.fromJson(Map<String, dynamic> json) {
-    return DanbooruReportDataPointDto(
-      date: json['date'],
-      posts: json['posts'],
-    );
-  }
-}
-
 DanbooruReportDataPoint danbooruReportDataPointDtoToDanbooruReportDataPoint(
-  DanbooruReportDataPointDto dto,
+  ReportDataPointDto dto,
 ) {
   return DanbooruReportDataPoint(
     date: dto.date != null ? DateTime.parse(dto.date!) : DateTime.now(),

@@ -7,6 +7,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 
 final danbooruNoteRepoProvider = Provider<NoteRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
+  final api = ref.watch(danbooruClientProvider);
   return NoteRepositoryApi(api);
 });

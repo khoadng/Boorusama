@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 
 final gelbooruCommentRepoProvider = Provider<GelbooruCommentRepository>(
   (ref) => GelbooruCommentRepositoryApi(
-    api: ref.watch(gelbooruApiProvider),
+    client: ref.watch(gelbooruClientProvider),
     booruConfig: ref.watch(currentBooruConfigProvider),
   ),
 );

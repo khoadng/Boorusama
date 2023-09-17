@@ -69,14 +69,10 @@ class Pool extends Equatable {
 }
 
 enum PoolOrder {
-  latest('updated_at'),
-  newest('created_at'),
-  postCount('post_count'),
-  name('name');
-
-  const PoolOrder(this.key);
-
-  final String key;
+  latest,
+  newest,
+  postCount,
+  name,
 }
 
 typedef PoolName = String;

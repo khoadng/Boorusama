@@ -1,25 +1,18 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
-
-List<Pool> parsePool(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => PoolDto.fromJson(item),
-    ).map(poolDtoToPool).toList();
 
 class PoolRepositoryApi
     with RequestDeduplicator<List<Pool>>
     implements PoolRepository {
   PoolRepositoryApi(
-    this._api,
+    this.client,
   );
 
-  final DanbooruApi _api;
+  final DanbooruClient client;
   final _cache = Cache<List<Pool>>(
     maxCapacity: 10,
     staleDuration: const Duration(seconds: 10),
@@ -33,7 +26,7 @@ class PoolRepositoryApi
     String? name,
     String? description,
   ) =>
-      '$page-${category?.toString()}-${order?.key}-$name-$description';
+      '$page-${category?.toString()}-${order?.name}-$name-$description';
 
   @override
   Future<List<Pool>> getPools(
@@ -52,16 +45,27 @@ class PoolRepositoryApi
 
     final pools = await deduplicate(
       key,
-      () => _api
+      () => client
           .getPools(
-            page,
-            _limit,
-            category: category?.toString(),
-            order: order?.key,
+            page: page,
+            limit: _limit,
+            category: switch (category) {
+              PoolCategory.collection => danbooru.PoolCategory.collection,
+              PoolCategory.series => danbooru.PoolCategory.series,
+              PoolCategory.unknown => null,
+              null => null,
+            },
+            order: switch (order) {
+              PoolOrder.newest => danbooru.PoolOrder.createdAt,
+              PoolOrder.latest => danbooru.PoolOrder.updatedAt,
+              PoolOrder.postCount => danbooru.PoolOrder.postCount,
+              PoolOrder.name => danbooru.PoolOrder.name,
+              null => null,
+            },
             name: name,
             description: description,
           )
-          .then(parsePool),
+          .then((value) => value.map(poolDtoToPool).toList()),
     );
 
     _cache.set(key, pools);
@@ -70,27 +74,27 @@ class PoolRepositoryApi
   }
 
   @override
-  Future<List<Pool>> getPoolsByPostId(int postId) => _api
+  Future<List<Pool>> getPoolsByPostId(int postId) => client
       .getPoolsFromPostId(
-        postId,
-        _limit,
+        postId: postId,
+        limit: _limit,
       )
-      .then(parsePool);
+      .then((value) => value.map(poolDtoToPool).toList());
 
   @override
   Future<List<Pool>> getPoolsByPostIds(List<int> postIds) {
     if (postIds.isEmpty) return Future.value([]);
 
-    return _api
+    return client
         .getPoolsFromPostIds(
-          postIds.join(' '),
-          _limit,
+          postIds: postIds,
+          limit: _limit,
         )
-        .then(parsePool);
+        .then((value) => value.map(poolDtoToPool).toList());
   }
 }
 
-Pool poolDtoToPool(PoolDto dto) => Pool(
+Pool poolDtoToPool(danbooru.PoolDto dto) => Pool(
       id: dto.id!,
       postIds: dto.postIds!,
       category: stringToPoolCategory(dto.category),

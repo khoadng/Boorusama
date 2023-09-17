@@ -10,7 +10,7 @@ class DanbooruForumTopicsNotifier
     required DanbooruForumTopicRepository repo,
   }) : super(
           load: (key, limit) =>
-              repo.getForumTopicsOrEmpty(key).then((value) => value.unlock),
+              repo.getForumTopicsOrEmpty(key).then((value) => value),
           nextPageKeyBuilder: NextPageKeyBuilderDefault.mysqlPagination,
         );
 }

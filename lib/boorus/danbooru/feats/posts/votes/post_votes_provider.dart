@@ -13,20 +13,14 @@ import 'post_votes_notifier.dart';
 
 final danbooruPostVoteRepoProvider = Provider<PostVoteRepository>(
   (ref) {
-    final api = ref.watch(danbooruApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
-    final booruUserIdentityProvider =
-        ref.watch(booruUserIdentityProviderProvider);
-
     return PostVoteApiRepositoryApi(
-      api: api,
-      booruConfig: booruConfig,
-      booruUserIdentityProvider: booruUserIdentityProvider,
+      client: ref.watch(danbooruClientProvider),
+      booruConfig: ref.watch(currentBooruConfigProvider),
+      booruUserIdentityProvider: ref.watch(booruUserIdentityProviderProvider),
     );
   },
   dependencies: [
-    danbooruApiProvider,
+    danbooruClientProvider,
     currentBooruConfigProvider,
     booruUserIdentityProviderProvider,
   ],

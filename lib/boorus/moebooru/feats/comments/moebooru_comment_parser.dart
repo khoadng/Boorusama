@@ -1,12 +1,8 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'moebooru_comment.dart';
-import 'moebooru_comment_dto.dart';
 
-MoebooruComment moebooruCommentDtoToMoebooruComment(MoebooruCommentDto dto) {
+MoebooruComment moebooruCommentDtoToMoebooruComment(CommentDto dto) {
   return MoebooruComment(
     id: dto.id ?? 0,
     createdAt: DateTime.tryParse(dto.createdAt ?? '') ?? DateTime.now(),
@@ -16,9 +12,3 @@ MoebooruComment moebooruCommentDtoToMoebooruComment(MoebooruCommentDto dto) {
     body: dto.body ?? '',
   );
 }
-
-List<MoebooruComment> parseMoebooruComments(HttpResponse<dynamic> response) =>
-    parseResponse(
-      value: response,
-      converter: (item) => MoebooruCommentDto.fromJson(item),
-    ).map(moebooruCommentDtoToMoebooruComment).toList();

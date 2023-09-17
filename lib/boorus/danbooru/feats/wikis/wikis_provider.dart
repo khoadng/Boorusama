@@ -7,9 +7,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
 
 final danbooruWikiRepoProvider = Provider<WikiRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-
-  return WikiRepositoryApi(api);
+  return WikiRepositoryApi(ref.watch(danbooruClientProvider));
 });
 
 final danbooruWikisProvider =

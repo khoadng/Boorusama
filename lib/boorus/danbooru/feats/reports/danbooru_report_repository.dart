@@ -1,8 +1,7 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client_reports.dart';
 import 'danbooru_report_data_point.dart';
-import 'danbooru_report_parser.dart';
 import 'types.dart';
 
 abstract class DanbooruReportRepository {
@@ -16,10 +15,10 @@ abstract class DanbooruReportRepository {
 
 class DanbooruReportRepositoryApi implements DanbooruReportRepository {
   DanbooruReportRepositoryApi({
-    required this.danbooruApi,
+    required this.client,
   });
 
-  final DanbooruApi danbooruApi;
+  final DanbooruClient client;
 
   @override
   Future<List<DanbooruReportDataPoint>> getPostReports({
@@ -28,12 +27,19 @@ class DanbooruReportRepositoryApi implements DanbooruReportRepository {
     required DateTime from,
     required DateTime to,
   }) =>
-      danbooruApi
+      client
           .getPostReport(
-            tags.join(' '),
-            period.name,
-            from.yyyyMMddWithHyphen(),
-            to.yyyyMMddWithHyphen(),
+            tags: tags,
+            period: switch (period) {
+              DanbooruReportPeriod.day => ReportPeriod.day,
+              DanbooruReportPeriod.week => ReportPeriod.week,
+              DanbooruReportPeriod.month => ReportPeriod.month,
+              DanbooruReportPeriod.year => ReportPeriod.year,
+            },
+            from: from,
+            to: to,
           )
-          .then(parsePostReport);
+          .then((value) => value
+              .map(danbooruReportDataPointDtoToDanbooruReportDataPoint)
+              .toList());
 }

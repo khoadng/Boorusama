@@ -117,8 +117,6 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
   }
 }
 
-String tagsToTagString(List<String> tags) => tags.join('\n');
-
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
   Future<void> addWithToast({
     required String tag,

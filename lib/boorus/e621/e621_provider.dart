@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/notes/note_provider.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
+import 'package:boorusama/clients/e621/e621_client.dart';
 
 class E621Provider extends StatelessWidget {
   const E621Provider({
@@ -44,10 +44,16 @@ class E621Provider extends StatelessWidget {
   }
 }
 
-final e621ApiProvider = Provider<E621Api>((ref) {
+final e621ClientProvider = Provider<E621Client>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final dio = ref.watch(dioProvider(booruConfig.url));
-  return E621Api(dio);
+
+  return E621Client(
+    baseUrl: booruConfig.url,
+    dio: dio,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
+  );
 });
 
 final e621DownloadFileNameGeneratorProvider =

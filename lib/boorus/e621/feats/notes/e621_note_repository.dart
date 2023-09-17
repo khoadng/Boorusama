@@ -1,28 +1,25 @@
 // Project imports:
-import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/clients/e621/types/types.dart';
 import 'e621_note.dart';
-import 'e621_note_dto.dart';
 
 class E621NoteRepositoryApi implements NoteRepository {
-  E621NoteRepositoryApi(this.api);
+  E621NoteRepositoryApi(
+    this.client,
+  );
 
-  final E621Api api;
+  final E621Client client;
 
   @override
-  Future<List<Note>> getNotes(int postId) => api
-      .getNotes(postId, 200)
-      .then((value) => parseResponse(
-            value: value,
-            converter: (item) => E621NoteDto.fromJson(item),
-          ))
+  Future<List<Note>> getNotes(int postId) => client
+      .getNotes(postId: postId)
       .then((value) => value.map(e621NoteDtoToE621Note).toList())
       .then((value) => value.map(e621NoteToNote).toList())
       .catchError((_) => <Note>[]);
 }
 
-E621Note e621NoteDtoToE621Note(E621NoteDto dto) {
+E621Note e621NoteDtoToE621Note(NoteDto dto) {
   return E621Note(
     x: dto.x ?? 0,
     y: dto.y ?? 0,

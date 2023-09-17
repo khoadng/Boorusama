@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/foundation/http/http.dart';
 
 abstract class BooruUserIdentityProvider {
@@ -56,8 +56,8 @@ class BooruUserIdentityProviderImpl
       case BooruType.aibooru:
         accountId = await deduplicate(
           cacheKey,
-          () => DanbooruApi(dio, baseUrl: booru.url)
-              .getProfile(login, apiKey)
+          () => DanbooruClient(baseUrl: booru.url, login: login, apiKey: apiKey)
+              .getProfile()
               .then((value) => value.data)
               .then((value) => value['id'])
               .catchError((_) => null),
