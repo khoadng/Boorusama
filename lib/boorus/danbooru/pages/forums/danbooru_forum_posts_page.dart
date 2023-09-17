@@ -9,7 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/dtext/html_converter.dart';
 import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -34,7 +34,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +80,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
                         left: BorderSide(color: Colors.grey, width: 3)),
                   )
                 },
-                data: dtext(post.body, booru: booru),
+                data: dtext(post.body, booruUrl: booruConfig.url),
               ),
               const SizedBox(height: 8),
               if (post.votes.isNotEmpty)

@@ -30,11 +30,11 @@ void goToGelbooruPostDetailsPage({
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
-  final booru = ref.read(currentBooruProvider);
+  final booruConfig = ref.read(currentBooruConfigProvider);
 
   if (isMobilePlatform() && context.orientation.isPortrait) {
     context.navigator.push(GelbooruPostDetailsPage.routeOf(
-      booru: booru,
+      booruConfig: booruConfig,
       posts: posts,
       initialIndex: initialIndex,
       scrollController: scrollController,
@@ -50,7 +50,7 @@ void goToGelbooruPostDetailsPage({
           onExit: (index) {
             scrollController?.scrollToIndex(index);
           },
-          hasDetailsTagList: booru.booruType.supportTagDetails,
+          hasDetailsTagList: booruConfig.booruType.supportTagDetails,
         ),
       ),
     );

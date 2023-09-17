@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 
 class AddBookmarksButton extends ConsumerWidget {
@@ -21,13 +21,14 @@ class AddBookmarksButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return IconButton(
       onPressed: posts.isNotEmpty
           ? () async {
               ref.bookmarks.addBookmarksWithToast(
-                booru,
+                booruConfig.booruId,
+                booruConfig.url,
                 posts,
               );
               onPressed();

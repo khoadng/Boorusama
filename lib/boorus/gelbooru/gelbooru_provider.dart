@@ -26,9 +26,7 @@ class GelbooruProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final booru = booruConfig.createBooruFrom(booruFactory);
+    final booru = ref.watch(currentBooruConfigProvider);
 
     return ProviderScope(
       overrides: [
@@ -51,7 +49,10 @@ class GelbooruProvider extends ConsumerWidget {
         // post count
         if (booru.booruType == BooruType.gelbooru)
           postCountRepoProvider
-              .overrideWith((ref) => ref.watch(gelbooruPostCountRepoProvider)),
+              .overrideWith((ref) => ref.watch(gelbooruPostCountRepoProvider))
+        else
+          postCountRepoProvider
+              .overrideWith((ref) => ref.watch(emptyPostCountRepoProvider)),
       ],
       child: Builder(
         builder: builder,

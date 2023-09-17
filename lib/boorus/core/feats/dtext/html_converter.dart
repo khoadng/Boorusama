@@ -1,12 +1,11 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'dtext_grammar.dart';
 
 String dtext(
   String value, {
-  required Booru booru,
+  required String booruUrl,
 }) {
-  final tagSearchUrl = '${booru.url}/posts?tags=';
+  final tagSearchUrl = '$booruUrl/posts?tags=';
   final result =
       DTextGrammarDefinition(tagSearchUrl: tagSearchUrl).build().parse(value);
   return result.isSuccess ? grammarToHtmlString(result.value) : value;

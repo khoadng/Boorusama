@@ -6,8 +6,8 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -28,9 +28,10 @@ class GeneralPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
     final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked = bookmarkState.isBookmarked(post, booru.booruType);
+    final isBookmarked =
+        bookmarkState.isBookmarked(post, booruConfig.booruType);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -56,8 +57,8 @@ class GeneralPostContextMenu extends ConsumerWidget {
               'post.detail.add_to_bookmark'.tr(),
               onPressed: () => ref.bookmarks
                 ..addBookmarkWithToast(
-                  post.sampleImageUrl,
-                  booru,
+                  booruConfig.booruId,
+                  booruConfig.url,
                   post,
                 ),
             )
@@ -66,7 +67,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
               'post.detail.remove_from_bookmark'.tr(),
               onPressed: () => ref.bookmarks
                 ..removeBookmarkWithToast(
-                  bookmarkState.getBookmark(post, booru.booruType)!,
+                  bookmarkState.getBookmark(post, booruConfig.booruType)!,
                 ),
             ),
           if (onMultiSelect != null)

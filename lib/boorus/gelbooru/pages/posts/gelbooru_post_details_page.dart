@@ -36,7 +36,7 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   final bool hasDetailsTagList;
 
   static MaterialPageRoute routeOf({
-    required Booru booru,
+    required BooruConfig booruConfig,
     required Settings settings,
     required List<Post> posts,
     required int initialIndex,
@@ -49,7 +49,7 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
             posts: posts,
             initialIndex: initialIndex,
             onExit: (page) => scrollController?.scrollToIndex(page),
-            hasDetailsTagList: booru.booruType.supportTagDetails,
+            hasDetailsTagList: booruConfig.booruType.supportTagDetails,
           );
         },
       ),

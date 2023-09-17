@@ -23,7 +23,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booru = ref.watch(currentBooruConfigProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(

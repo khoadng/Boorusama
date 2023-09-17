@@ -74,7 +74,7 @@ void goToBlacklistedTagsSearchPage(
   List<String>? initialTags,
   required WidgetRef ref,
 }) {
-  final booru = ref.read(currentBooruProvider);
+  final booru = ref.read(currentBooruConfigProvider);
 
   context.navigator.push(MaterialPageRoute(
     builder: (_) {
@@ -291,7 +291,7 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => Builder(
       builder: (context) {
-        final booru = ref.watch(currentBooruProvider);
+        final booru = ref.watch(currentBooruConfigProvider);
 
         switch (booru.booruType) {
           case BooruType.unknown:
@@ -463,7 +463,7 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  final booru = ref.read(currentBooruProvider);
+  final booru = ref.read(currentBooruConfigProvider);
   ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
 
   context.navigator.push(PageTransition(

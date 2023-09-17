@@ -22,7 +22,7 @@ class GelbooruCommentItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ class GelbooruCommentItem extends ConsumerWidget {
           },
           data: dtext(
             comment.body,
-            booru: booru,
+            booruUrl: booruConfig.url,
           ),
         )
       ],

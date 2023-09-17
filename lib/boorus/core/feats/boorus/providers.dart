@@ -23,31 +23,6 @@ final currentBooruConfigProvider =
   ],
 );
 
-final currentBooruProvider = Provider<Booru>(
-  (ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final booruType = intToBooruType(booruConfig.booruId);
-
-    if (booruType == BooruType.unknown) {
-      final booruTypeHint = intToBooruType(booruConfig.booruIdHint);
-
-      //FIXME: workaround for old data
-      if (booruTypeHint == BooruType.unknown) {
-        return booruFactory.from(type: BooruType.danbooru);
-      }
-
-      return booruFactory.from(type: booruTypeHint);
-    } else {
-      return booruFactory.from(type: booruType);
-    }
-  },
-  dependencies: [
-    currentBooruConfigProvider,
-    booruFactoryProvider,
-  ],
-);
-
 final configIdOrdersProvider = Provider<List<int>>((ref) {
   final orderString =
       ref.watch(settingsProvider.select((value) => value.booruConfigIdOrders));

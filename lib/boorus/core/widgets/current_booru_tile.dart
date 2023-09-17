@@ -18,7 +18,7 @@ class CurrentBooruTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
-    final booru = ref.watch(currentBooruProvider);
+    final booru = ref.watch(currentBooruConfigProvider);
 
     final logo = switch (PostSource.from(booruConfig.url)) {
       WebSource s => BooruLogo(source: s),
@@ -35,7 +35,7 @@ class CurrentBooruTile extends ConsumerWidget {
               title: Wrap(
                 children: [
                   Text(
-                    booruConfig.isUnverified(booru)
+                    booruConfig.isUnverified()
                         ? Uri.parse(booruConfig.url).host
                         : booru.booruType.stringify(),
                     maxLines: 1,

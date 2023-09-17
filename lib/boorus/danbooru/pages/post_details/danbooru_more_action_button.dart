@@ -28,7 +28,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
     final authenticationState = ref.watch(authenticationProvider);
 
     return DownloadProviderWidget(
@@ -56,7 +56,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
-                    post.getUriLink(booru.url),
+                    post.getUriLink(booruConfig.url),
                   );
                   break;
                 case 'view_original':

@@ -46,13 +46,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }
 
   Future<void> addBookmarks(
-    Booru booru,
+    int booruId,
+    String booruUrl,
     List<Post> posts, {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
     try {
-      final bookmarks = await bookmarkRepository.addBookmarks(booru, posts);
+      final bookmarks =
+          await bookmarkRepository.addBookmarks(booruId, booruUrl, posts);
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.addAll(bookmarks),
@@ -63,14 +65,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }
 
   Future<void> addBookmark(
-    String url,
-    Booru booru,
+    int booruId,
+    String booruUrl,
     Post post, {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
     try {
-      final bookmark = await bookmarkRepository.addBookmark(booru, post);
+      final bookmark =
+          await bookmarkRepository.addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.add(bookmark),
@@ -138,18 +141,27 @@ extension BookmarkNotifierX on WidgetRef {
 }
 
 extension BookmarkCubitToastX on BookmarkNotifier {
-  Future<void> addBookmarkWithToast(String url, Booru booru, Post post) =>
+  Future<void> addBookmarkWithToast(
+    int booruId,
+    String booruUrl,
+    Post post,
+  ) =>
       addBookmark(
-        url,
-        booru,
+        booruId,
+        booruUrl,
         post,
         onSuccess: () => showSuccessToast('bookmark.added'.tr()),
         onError: () => showErrorToast('bookmark.failed_to_add'.tr()),
       );
 
-  Future<void> addBookmarksWithToast(Booru booru, List<Post> posts) =>
+  Future<void> addBookmarksWithToast(
+    int booruId,
+    String booruUrl,
+    List<Post> posts,
+  ) =>
       addBookmarks(
-        booru,
+        booruId,
+        booruUrl,
         posts,
         onSuccess: () => showSuccessToast(
           'bookmark.many_added'.tr().replaceAll('{0}', '${posts.length}'),
