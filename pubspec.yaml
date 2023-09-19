@@ -53,7 +53,7 @@ dependencies:
   flutter_download_manager:
     git:
       url: https://github.com/khoadng/flutter_download_manager.git
-      ref: dio
+      ref: error-handler
   flutter_html:
     git:
       url: https://github.com/khoadng/flutter_html.git

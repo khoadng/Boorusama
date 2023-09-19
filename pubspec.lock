@@ -631,8 +631,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: dio
-      resolved-ref: "8db12c256f658ab21f7f33f3a049d7010845595f"
+      ref: error-handler
+      resolved-ref: c0e09333d60c3b2e9d476d3eb0d8a8929b51c3d4
       url: "https://github.com/khoadng/flutter_download_manager.git"
     source: git
     version: "0.5.5"
