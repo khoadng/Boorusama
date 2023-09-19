@@ -101,6 +101,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           url: widget.url,
         ),
       BooruType.zerochan => CreateAnonConfigPage(
+          backgroundColor: widget.backgroundColor,
           onConfigNameChanged: (value) => setState(() => configName = value),
           onSubmit: allowSubmit() ? submit : null,
           booruType: widget.booruType,
