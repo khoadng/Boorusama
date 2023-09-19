@@ -13,3 +13,20 @@ bool isFirebaseAnalyticsSupportedPlatforms() =>
 Future<void> initializeFirebaseAnalytics() async {
   await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(!kDebugMode);
 }
+
+Future<void> sendBooruAddedEvent({
+  required String url,
+  required String hintSite,
+  required int totalSites,
+  required bool hasLogin,
+}) async {
+  await FirebaseAnalytics.instance.logEvent(
+    name: 'site_add',
+    parameters: {
+      'url': url,
+      'total_sites': totalSites,
+      'hint_site': hintSite,
+      'has_login': hasLogin,
+    },
+  );
+}

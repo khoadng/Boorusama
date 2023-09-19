@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/analytics.dart';
 
 class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   @override
@@ -143,6 +144,12 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
         }
 
         onSuccess?.call(config);
+        sendBooruAddedEvent(
+          url: config.url,
+          hintSite: config.booruType.name,
+          totalSites: state.length,
+          hasLogin: config.hasLoginDetails(),
+        );
 
         add(config);
       }
