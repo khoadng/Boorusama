@@ -76,5 +76,11 @@
         "url" : "https://e926.net/",
         "cheatsheet" : "https://e926.net/help/cheatsheet",
         "login_type" : "login_api_key"
+    },
+    {
+        "name" : "zerochan",
+        "url" : "https://zerochan.net/",
+        "cheatsheet" : "https://www.zerochan.net/faq",
+        "login_type" : "not_supported"
     }
 ]

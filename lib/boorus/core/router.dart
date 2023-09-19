@@ -27,6 +27,7 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -112,6 +113,13 @@ void goToBlacklistedTagsSearchPage(
         case BooruType.gelbooru:
         case BooruType.rule34xxx:
           return GelbooruProvider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+        case BooruType.zerochan:
+          return ZerochanProvider(
             builder: (context) => BlacklistedTagsSearchPage(
               initialTags: initialTags,
               onSelectedDone: onSelectDone,
@@ -412,6 +420,34 @@ void goToQuickSearchPage(
                           generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
+          case BooruType.zerochan:
+            return ZerochanProvider(
+              builder: (context) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => context.navigator.pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    ),
+            );
         }
       },
     ),
@@ -495,6 +531,15 @@ Future<void> goToBulkDownloadPage(
         case BooruType.rule34xxx:
           return GelbooruProvider(
             builder: (context) => const BulkDownloadPage(),
+          );
+        case BooruType.zerochan:
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Bulk download'),
+            ),
+            body: const Center(
+              child: Text('Sorry, not supported yet :('),
+            ),
           );
       }
     }),

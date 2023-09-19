@@ -25,7 +25,7 @@ class PostDto {
       thumbnail: json['thumbnail'],
       source: json['source'],
       tag: json['tag'],
-      tags: json['tags'],
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 

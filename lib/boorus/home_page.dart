@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_scope.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_scope.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -142,6 +143,8 @@ class _Boorus extends StatelessWidget {
           case BooruType.sakugabooru:
           case BooruType.lolibooru:
             return MoebooruScope(config: config);
+          case BooruType.zerochan:
+            return ZerochanScope(config: config);
         }
       },
     );

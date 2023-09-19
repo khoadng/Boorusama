@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
@@ -95,6 +96,12 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           onConfigNameChanged: (value) => setState(() => configName = value),
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
+          onSubmit: allowSubmit() ? submit : null,
+          booruType: widget.booruType,
+          url: widget.url,
+        ),
+      BooruType.zerochan => CreateAnonConfigPage(
+          onConfigNameChanged: (value) => setState(() => configName = value),
           onSubmit: allowSubmit() ? submit : null,
           booruType: widget.booruType,
           url: widget.url,

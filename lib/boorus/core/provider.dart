@@ -89,8 +89,13 @@ final userAgentGeneratorProvider = Provider<UserAgentGenerator>(
   (ref) {
     final appVersion = ref.watch(packageInfoProvider).version;
     final appName = ref.watch(appInfoProvider).appName;
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
-    return UserAgentGeneratorImpl(appVersion: appVersion, appName: appName);
+    return UserAgentGeneratorImpl(
+      appVersion: appVersion,
+      appName: appName,
+      config: booruConfig,
+    );
   },
 );
 

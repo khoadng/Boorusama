@@ -66,7 +66,7 @@ class SuggestionsNotifier
         final data = await autocompleteRepo.getAutocomplete(sanitized);
         state = state.add(sanitized, data.lock);
 
-        if (fallback.hasListeners) {
+        if (fallback.mounted && fallback.hasListeners) {
           fallback.state = data.lock;
         }
       },

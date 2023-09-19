@@ -46,6 +46,7 @@ enum BooruType {
   lolibooru,
   e621,
   e926,
+  zerochan,
 }
 
 enum BooruEngine {
@@ -56,6 +57,7 @@ enum BooruEngine {
 }
 
 enum LoginType {
+  notSupported,
   loginAndApiKey,
   loginAndPasswordHashed,
 }
@@ -84,6 +86,7 @@ extension BooruTypeX on BooruType {
         BooruType.lolibooru => 'Lolibooru',
         BooruType.e621 => 'e621',
         BooruType.e926 => 'e926',
+        BooruType.zerochan => 'Zerochan',
       };
 
   bool get isGelbooruBased =>
@@ -107,6 +110,8 @@ extension BooruTypeX on BooruType {
 
   bool get supportBlacklistedTags => isDanbooruBased;
 
+  bool get hasUnknownFullImageUrl => this == BooruType.zerochan;
+
   bool get supportHttp2 =>
       isDanbooruBased ||
       [
@@ -115,6 +120,7 @@ extension BooruTypeX on BooruType {
         BooruType.konachan,
         BooruType.e621,
         BooruType.e926,
+        BooruType.zerochan,
       ].contains(this);
 
   bool get hasCensoredTagsBanned =>
@@ -133,6 +139,7 @@ extension BooruTypeX on BooruType {
         BooruType.lolibooru => 10,
         BooruType.e621 => 11,
         BooruType.e926 => 12,
+        BooruType.zerochan => 13,
         BooruType.unknown => 0,
       };
 }
@@ -140,6 +147,7 @@ extension BooruTypeX on BooruType {
 LoginType stringToLoginType(String value) => switch (value) {
       'login_api_key' => LoginType.loginAndApiKey,
       'login_password_hashed' => LoginType.loginAndPasswordHashed,
+      'not_supported' => LoginType.notSupported,
       _ => throw ArgumentError('Invalid login type: $value')
     };
 
@@ -156,6 +164,7 @@ BooruType intToBooruType(int value) => switch (value) {
       10 => BooruType.lolibooru,
       11 => BooruType.e621,
       12 => BooruType.e926,
+      13 => BooruType.zerochan,
       _ => BooruType.unknown
     };
 
@@ -172,6 +181,7 @@ BooruType stringToBooruType(String value) => switch (value) {
       'lolibooru' => BooruType.lolibooru,
       'e621' => BooruType.e621,
       'e926' => BooruType.e926,
+      'zerochan' => BooruType.zerochan,
       _ => BooruType.unknown
     };
 

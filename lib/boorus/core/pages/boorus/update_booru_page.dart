@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.d
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/crypto.dart';
+import 'create_anon_config_page.dart';
 import 'create_gelbooru_config_page.dart';
 import 'create_moebooru_config_page.dart';
 
@@ -121,6 +122,13 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           onConfigNameChanged: (value) => setState(() => configName = value),
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
+          onSubmit: allowSubmit() ? submit : null,
+          booruType: booruType,
+          url: url,
+          isUnkown: isUnkown,
+        ),
+      BooruType.zerochan => CreateAnonConfigPage(
+          onConfigNameChanged: (value) => setState(() => configName = value),
           onSubmit: allowSubmit() ? submit : null,
           booruType: booruType,
           url: url,
