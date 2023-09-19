@@ -51,7 +51,8 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
       return;
     }
 
-    final tags = [...state!, tag];
+    // Duplicate tags are not allowed
+    final tags = {...state!, tag}.toList();
 
     try {
       await repo.setBlacklistedTags(id, tags);
@@ -115,8 +116,6 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     }
   }
 }
-
-String tagsToTagString(List<String> tags) => tags.join('\n');
 
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
   Future<void> addWithToast({

@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.d
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/crypto.dart';
+import 'create_anon_config_page.dart';
 import 'create_gelbooru_config_page.dart';
 import 'create_moebooru_config_page.dart';
 
@@ -32,13 +33,17 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
   late var ratingFilter = widget.booruConfig.ratingFilter;
   late var hideDeleted = widget.booruConfig.deletedItemBehavior ==
       BooruConfigDeletedItemBehavior.hide;
-  late Booru booru;
+  late BooruType booruType;
+  late String url;
+  late bool isUnkown;
 
   BooruFactory get booruFactory => ref.read(booruFactoryProvider);
 
   @override
   void initState() {
-    booru = booruFactory.from(type: widget.booruConfig.booruType);
+    booruType = widget.booruConfig.booruType;
+    url = widget.booruConfig.url;
+    isUnkown = widget.booruConfig.isUnverified();
 
     super.initState();
   }
@@ -63,7 +68,9 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
               setState(() => ratingFilter = value!),
           onHideDeletedChanged: (value) => setState(() => hideDeleted = value),
           onSubmit: allowSubmit() ? submit : null,
-          booru: booru,
+          booruType: booruType,
+          url: url,
+          isUnkown: isUnkown,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
           initialApiKey: widget.booruConfig.apiKey,
@@ -76,7 +83,9 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           onConfigNameChanged: (value) => setState(() => configName = value),
           onHideDeletedChanged: (value) => setState(() => hideDeleted = value),
           onSubmit: allowSubmit() ? submit : null,
-          booru: booru,
+          booruType: booruType,
+          url: url,
+          isUnkown: isUnkown,
         ),
       BooruType.konachan ||
       BooruType.yandere ||
@@ -90,7 +99,7 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           onLoginChanged: (value) => setState(() => login = value),
           onHashedPasswordChanged: (value) =>
               setState(() => apiKey = hashBooruPasswordSHA1(
-                    booru: booru,
+                    booru: booruFactory.from(type: booruType),
                     booruFactory: booruFactory,
                     password: apiKey,
                   )),
@@ -98,8 +107,10 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
-          booru: booru,
+          booruType: booruType,
+          url: url,
           booruFactory: booruFactory,
+          isUnkown: isUnkown,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
           initialApiKey: widget.booruConfig.apiKey,
@@ -112,7 +123,16 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
-          booru: booru,
+          booruType: booruType,
+          url: url,
+          isUnkown: isUnkown,
+        ),
+      BooruType.zerochan => CreateAnonConfigPage(
+          onConfigNameChanged: (value) => setState(() => configName = value),
+          onSubmit: allowSubmit() ? submit : null,
+          booruType: booruType,
+          url: url,
+          isUnkown: isUnkown,
         ),
       BooruType.unknown => const SizedBox(),
     };
@@ -131,6 +151,7 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
             login: login,
             apiKey: apiKey,
             booru: widget.booruConfig.booruType,
+            booruHint: widget.booruConfig.booruType,
             configName: configName,
             hideDeleted: hideDeleted,
             ratingFilter: ratingFilter,

@@ -1,28 +1,50 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
 
 const _kTagLimit = 300;
 
 class RelatedTagRepositoryApi implements RelatedTagRepository {
   const RelatedTagRepositoryApi(
-    this.api,
+    this.client,
   );
 
-  final DanbooruApi api;
+  final DanbooruClient client;
 
   @override
-  Future<RelatedTag> getRelatedTag(String query) => api
-      .getRelatedTag(query, _kTagLimit)
-      .then(extractData)
-      .then(RelatedTagDto.fromJson)
-      .then(relatedTagDtoToRelatedTag)
-      .catchError((obj) => const RelatedTag.empty());
+  Future<RelatedTag> getRelatedTag(
+    String query, {
+    TagCategory? category,
+    RelatedType? order,
+  }) =>
+      client
+          .getRelatedTag(
+            query: query,
+            category: switch (category) {
+              TagCategory.artist => danbooru.TagCategory.artist,
+              TagCategory.charater => danbooru.TagCategory.character,
+              TagCategory.general => danbooru.TagCategory.general,
+              TagCategory.copyright => danbooru.TagCategory.copyright,
+              TagCategory.meta => danbooru.TagCategory.meta,
+              TagCategory.invalid_ => null,
+              null => null,
+            },
+            order: switch (order) {
+              RelatedType.cosine => danbooru.RelatedType.cosine,
+              RelatedType.jaccard => danbooru.RelatedType.jaccard,
+              RelatedType.overlap => danbooru.RelatedType.overlap,
+              RelatedType.frequency => danbooru.RelatedType.frequency,
+              null => null,
+            },
+            limit: _kTagLimit,
+          )
+          .then(relatedTagDtoToRelatedTag)
+          .catchError((obj) => const RelatedTag.empty());
 }
 
-RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
+RelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) => RelatedTag(
       query: dto.query ?? '',
       tags: dto.relatedTags != null
           ? dto.relatedTags!
@@ -32,6 +54,7 @@ RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
                     jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
                     cosineSimilarity: e.cosineSimilarity ?? 0.0,
                     overlapCoefficient: e.overlapCoefficient ?? 0.0,
+                    frequency: e.frequency ?? 0,
                     postCount: e.tag?.postCount ?? 0,
                   ))
               .toList()

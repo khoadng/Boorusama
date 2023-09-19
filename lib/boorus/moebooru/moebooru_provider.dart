@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
@@ -14,6 +13,7 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomple
 import 'package:boorusama/boorus/moebooru/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 
 class MoebooruProvider extends StatelessWidget {
   const MoebooruProvider({
@@ -45,9 +45,12 @@ class MoebooruProvider extends StatelessWidget {
   }
 }
 
-final moebooruApiProvider = Provider<MoebooruApi>((ref) {
+final moebooruClientProvider = Provider<MoebooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final dio = ref.watch(dioProvider(booruConfig.url));
 
-  return MoebooruApi(dio);
+  return MoebooruClient.custom(
+    baseUrl: booruConfig.url,
+    dio: dio,
+  );
 });

@@ -18,12 +18,14 @@ class CreateGelbooruConfigPage extends StatelessWidget {
     required this.onConfigNameChanged,
     required this.onRatingFilterChanged,
     required this.onSubmit,
-    required this.booru,
+    required this.booruType,
+    required this.url,
     this.initialLogin,
     this.initialApiKey,
     this.initialConfigName,
     this.initialRatingFilter,
     this.backgroundColor,
+    this.isUnkown = false,
   });
 
   final String? initialLogin;
@@ -39,13 +41,17 @@ class CreateGelbooruConfigPage extends StatelessWidget {
 
   final Color? backgroundColor;
 
-  final Booru booru;
+  final BooruType booruType;
+  final String url;
+  final bool isUnkown;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
       backgroundColor: backgroundColor,
-      booru: booru,
+      booruType: booruType,
+      url: url,
+      isUnknown: isUnkown,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(

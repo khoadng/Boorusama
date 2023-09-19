@@ -10,7 +10,7 @@ import 'package:boorusama/functional.dart';
 
 final e621FavoritesRepoProvider = Provider<E621FavoritesRepository>((ref) {
   return E621FavoritesRepositoryApi(
-    ref.read(e621ApiProvider),
+    ref.read(e621ClientProvider),
     ref.read(currentBooruConfigProvider),
     ref.read(e621PostRepoProvider),
   );

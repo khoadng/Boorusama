@@ -1,80 +1,65 @@
-// Package imports:
-import 'package:retrofit/retrofit.dart';
-
 // Project imports:
-import 'package:boorusama/api/moebooru/moebooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
+import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 import 'moebooru_post_repository_api.dart';
 
-List<MoebooruPost> parsePost(
-  HttpResponse<dynamic> value,
-) =>
-    parseResponse(
-      value: value,
-      converter: (item) => PostDto.fromJson(item),
-    ).map((e) => postDtoToPost(e)).toList();
-
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(
-    this._api,
+    this.client,
     this.booruConfig,
   );
 
-  final MoebooruApi _api;
+  final MoebooruClient client;
   final BooruConfig booruConfig;
 
   @override
-  PostsOrError getPopularPostsByDay(DateTime dateTime) => tryParseResponse(
-        fetcher: () => _api.getPopularPostsByDay(
-          booruConfig.login,
-          booruConfig.apiKey,
-          dateTime.day,
-          dateTime.month,
-          dateTime.year,
-        ),
-      ).flatMap(
-          (response) => TaskEither.fromEither(Either.of(parsePost(response))));
+  PostsOrError getPopularPostsByDay(DateTime dateTime) =>
+      TaskEither.Do(($) async {
+        final data = await $(tryFetchRemoteData(
+          fetcher: () => client.getPopularPostsByDay(date: dateTime),
+        ));
+
+        return data.map(postDtoToPost).toList();
+      });
 
   @override
-  PostsOrError getPopularPostsByMonth(DateTime dateTime) => tryParseResponse(
-      fetcher: () => _api.getPopularPostsByMonth(
-            booruConfig.login,
-            booruConfig.apiKey,
-            dateTime.month,
-            dateTime.year,
-          )).flatMap(
-      (response) => TaskEither.fromEither(Either.of(parsePost(response))));
+  PostsOrError getPopularPostsByMonth(DateTime dateTime) =>
+      TaskEither.Do(($) async {
+        final data = await $(tryFetchRemoteData(
+          fetcher: () => client.getPopularPostsByMonth(date: dateTime),
+        ));
+
+        return data.map(postDtoToPost).toList();
+      });
 
   @override
-  PostsOrError getPopularPostsByWeek(DateTime dateTime) => tryParseResponse(
-      fetcher: () => _api.getPopularPostsByWeek(
-            booruConfig.login,
-            booruConfig.apiKey,
-            dateTime.day,
-            dateTime.month,
-            dateTime.year,
-          )).flatMap(
-      (response) => TaskEither.fromEither(Either.of(parsePost(response))));
+  PostsOrError getPopularPostsByWeek(DateTime dateTime) =>
+      TaskEither.Do(($) async {
+        final data = await $(tryFetchRemoteData(
+          fetcher: () => client.getPopularPostsByWeek(date: dateTime),
+        ));
+
+        return data.map(postDtoToPost).toList();
+      });
 
   @override
   PostsOrError getPopularPostsRecent(MoebooruTimePeriod period) =>
-      tryParseResponse(
-          fetcher: () => _api.getPopularPostsRecent(
-                booruConfig.login,
-                booruConfig.apiKey,
-                moebooruTimePeriodToString(period),
-              )).flatMap(
-          (response) => TaskEither.fromEither(Either.of(parsePost(response))));
-}
+      TaskEither.Do(($) async {
+        final data = await $(tryFetchRemoteData(
+          fetcher: () => client.getPopularPostsRecent(
+              period: switch (period) {
+            MoebooruTimePeriod.day => TimePeriod.day,
+            MoebooruTimePeriod.week => TimePeriod.week,
+            MoebooruTimePeriod.month => TimePeriod.month,
+            MoebooruTimePeriod.year => TimePeriod.year,
+          }),
+        ));
 
-String moebooruTimePeriodToString(MoebooruTimePeriod period) =>
-    switch (period) {
-      MoebooruTimePeriod.day => '1d',
-      MoebooruTimePeriod.week => '1w',
-      MoebooruTimePeriod.month => '1m',
-      MoebooruTimePeriod.year => '1y'
-    };
+        return data.map(postDtoToPost).toList();
+      });
+}

@@ -1,27 +1,21 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/foundation/http/http.dart';
-
-List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => FavoriteDto.fromJson(item),
-    ).map(favoriteDtoToFavorite).toList();
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(
-    this._api,
+    this.client,
   );
 
-  final DanbooruApi _api;
+  final DanbooruClient client;
 
   @override
-  Future<bool> addToFavorites(int postId) => _api
-          .addToFavorites(postId)
+  Future<bool> addToFavorites(int postId) => client
+          .addToFavorites(postId: postId)
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
@@ -35,8 +29,8 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
       });
 
   @override
-  Future<bool> removeFromFavorites(int postId) => _api
-          .removeFromFavorites(postId)
+  Future<bool> removeFromFavorites(int postId) => client
+          .removeFromFavorites(postId: postId)
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
@@ -55,32 +49,23 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
     int userId,
     int limit,
   ) =>
-      _api
+      client
           .filterFavoritesFromUserId(
-            postIds.join(','),
-            userId,
-            limit,
+            postIds: postIds,
+            userId: userId,
+            limit: limit,
           )
-          .then(parseFavorite)
+          .then((value) => value.map(favoriteDtoToFavorite).toList())
           .catchError((Object obj) => <Favorite>[]);
 
   @override
-  Future<bool> checkIfFavoritedByUser(
-    int userId,
-    int postId,
-  ) =>
-      _api
-          .filterFavoritesFromUserId(
-            postId.toString(),
-            userId,
-            20,
-          )
-          .then((value) => (value.response.data as List).isNotEmpty)
-          .catchError((Object obj) => false);
-
-  @override
-  Future<List<Favorite>> getFavorites(int postId, int page) =>
-      _api.getFavorites(postId, page, 100).then(parseFavorite);
+  Future<List<Favorite>> getFavorites(int postId, int page) => client
+      .getFavorites(
+        postId: postId,
+        page: page,
+        limit: 100,
+      )
+      .then((value) => value.map(favoriteDtoToFavorite).toList());
 }
 
 Favorite favoriteDtoToFavorite(FavoriteDto d) => Favorite(

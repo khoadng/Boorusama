@@ -24,8 +24,10 @@ class CreateMoebooruConfigPage extends StatefulWidget {
     required this.onConfigNameChanged,
     required this.onRatingFilterChanged,
     required this.onSubmit,
-    required this.booru,
+    required this.booruType,
+    required this.url,
     required this.booruFactory,
+    this.isUnkown = false,
     this.initialLogin,
     this.initialHashedPassword,
     this.initialConfigName,
@@ -46,7 +48,9 @@ class CreateMoebooruConfigPage extends StatefulWidget {
   final void Function()? onSubmit;
   final Color? backgroundColor;
 
-  final Booru booru;
+  final BooruType booruType;
+  final String url;
+  final bool isUnkown;
 
   @override
   State<CreateMoebooruConfigPage> createState() =>
@@ -61,7 +65,9 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
       backgroundColor: widget.backgroundColor,
-      booru: widget.booru,
+      booruType: widget.booruType,
+      url: widget.url,
+      isUnknown: widget.isUnkown,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -93,7 +99,7 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
 
                   password = value;
                   hashedPassword = hashBooruPasswordSHA1(
-                    booru: widget.booru,
+                    booru: widget.booruFactory.from(type: widget.booruType),
                     booruFactory: widget.booruFactory,
                     password: value,
                   );

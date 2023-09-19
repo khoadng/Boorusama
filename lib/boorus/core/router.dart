@@ -27,15 +27,16 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import '../../widgets/image_grid_item.dart';
 import '../../widgets/info_container.dart';
-import 'pages/search/favorite_tags/import_favorite_tag_dialog.dart';
 import 'pages/search/full_history_view.dart';
 import 'utils.dart';
+import 'widgets/import_tag_dialog.dart';
 
 void goToHomePage(
   BuildContext context, {
@@ -74,7 +75,7 @@ void goToBlacklistedTagsSearchPage(
   List<String>? initialTags,
   required WidgetRef ref,
 }) {
-  final booru = ref.read(currentBooruProvider);
+  final booru = ref.read(currentBooruConfigProvider);
 
   context.navigator.push(MaterialPageRoute(
     builder: (_) {
@@ -112,6 +113,13 @@ void goToBlacklistedTagsSearchPage(
         case BooruType.gelbooru:
         case BooruType.rule34xxx:
           return GelbooruProvider(
+            builder: (context) => BlacklistedTagsSearchPage(
+              initialTags: initialTags,
+              onSelectedDone: onSelectDone,
+            ),
+          );
+        case BooruType.zerochan:
+          return ZerochanProvider(
             builder: (context) => BlacklistedTagsSearchPage(
               initialTags: initialTags,
               onSelectedDone: onSelectDone,
@@ -174,14 +182,17 @@ void goToMetatagsPage(
 
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
+  WidgetRef ref,
 ) {
   return showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
       name: RouterPageConstant.favoriteTagsImport,
     ),
-    pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+    pageBuilder: (context, _, __) => ImportTagsDialog(
       padding: isMobilePlatform() ? 0 : 8,
+      onImport: (tagString) =>
+          ref.read(favoriteTagsProvider.notifier).import(tagString),
     ),
   );
 }
@@ -288,7 +299,7 @@ void goToQuickSearchPage(
     floatingActionButton: floatingActionButton,
     builder: (_, isMobile) => Builder(
       builder: (context) {
-        final booru = ref.watch(currentBooruProvider);
+        final booru = ref.watch(currentBooruConfigProvider);
 
         switch (booru.booruType) {
           case BooruType.unknown:
@@ -409,6 +420,34 @@ void goToQuickSearchPage(
                           generateAutocompleteTagColor(tag, context.themeMode),
                     ),
             );
+          case BooruType.zerochan:
+            return ZerochanProvider(
+              builder: (context) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => context.navigator.pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    ),
+            );
         }
       },
     ),
@@ -460,7 +499,7 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  final booru = ref.read(currentBooruProvider);
+  final booru = ref.read(currentBooruConfigProvider);
   ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
 
   context.navigator.push(PageTransition(
@@ -492,6 +531,15 @@ Future<void> goToBulkDownloadPage(
         case BooruType.rule34xxx:
           return GelbooruProvider(
             builder: (context) => const BulkDownloadPage(),
+          );
+        case BooruType.zerochan:
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Bulk download'),
+            ),
+            body: const Center(
+              child: Text('Sorry, not supported yet :('),
+            ),
           );
       }
     }),

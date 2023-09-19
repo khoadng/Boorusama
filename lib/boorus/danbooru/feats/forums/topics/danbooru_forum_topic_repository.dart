@@ -1,58 +1,54 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client_forums.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 
 typedef DanbooruForumTopicsOrError
-    = TaskEither<BooruError, IList<DanbooruForumTopic>>;
+    = TaskEither<BooruError, List<DanbooruForumTopic>>;
 
 abstract interface class DanbooruForumTopicRepository {
   DanbooruForumTopicsOrError getForumTopics(int page);
 }
 
 extension DanbooruForumTopicRepositoryX on DanbooruForumTopicRepository {
-  Future<IList<DanbooruForumTopic>> getForumTopicsOrEmpty(int page) =>
+  Future<List<DanbooruForumTopic>> getForumTopicsOrEmpty(int page) =>
       getForumTopics(page)
           .run()
-          .then((value) => value.getOrElse((e) => <DanbooruForumTopic>[].lock));
+          .then((value) => value.getOrElse((e) => <DanbooruForumTopic>[]));
 }
-
-const _forumParams =
-    'id,creator,updater,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level,original_post';
 
 class DanbooruForumTopicRepositoryApi implements DanbooruForumTopicRepository {
   DanbooruForumTopicRepositoryApi({
-    required this.api,
+    required this.client,
   });
 
-  final DanbooruApi api;
+  final DanbooruClient client;
 
   @override
   DanbooruForumTopicsOrError getForumTopics(int page) =>
       TaskEither.Do(($) async {
-        var response = await $(tryParseResponse(
-          fetcher: () => api.getForumTopics(
-            order: 'sticky',
+        var value = await $(tryFetchRemoteData(
+          fetcher: () => client.getForumTopics(
+            order: TopicOrder.sticky,
             page: page,
             limit: 50,
-            only: _forumParams,
           ),
         ));
 
-        var data = parseResponse(
-          value: response,
-          converter: (item) => DanbooruForumTopicDto.fromJson(item),
-        ).map(danbooruForumTopicDtoToDanbooruForumTopic).toIList();
+        var data =
+            value.map(danbooruForumTopicDtoToDanbooruForumTopic).toList();
 
         return data;
       });
 }
 
 DanbooruForumTopic danbooruForumTopicDtoToDanbooruForumTopic(
-  DanbooruForumTopicDto dto,
+  ForumTopicDto dto,
 ) =>
     DanbooruForumTopic(
       id: dto.id ?? 0,

@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/functional.dart';
 
@@ -13,15 +12,15 @@ class BookmarkHiveRepository implements BookmarkRepository {
   final Box<BookmarkHiveObject> _box;
 
   @override
-  Future<Bookmark> addBookmark(Booru booru, Post post) async {
+  Future<Bookmark> addBookmark(int booruId, String booruUrl, Post post) async {
     final favoriteHiveObject = BookmarkHiveObject(
-      booruId: booru.booruType.toBooruId(),
+      booruId: booruId,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       thumbnailUrl: post.thumbnailImageUrl,
       sampleUrl: post.sampleImageUrl,
       originalUrl: post.originalImageUrl,
-      sourceUrl: post.getLink(booru.url),
+      sourceUrl: post.getLink(booruUrl),
       width: post.width,
       height: post.height,
       md5: post.md5,
@@ -57,8 +56,12 @@ class BookmarkHiveRepository implements BookmarkRepository {
           TaskEither.fromEither(tryMapBookmarkHiveObjectsToBookmarks(objects)));
 
   @override
-  Future<List<Bookmark>> addBookmarks(Booru booru, List<Post> posts) async {
-    final futures = posts.map((post) => addBookmark(booru, post));
+  Future<List<Bookmark>> addBookmarks(
+    int booruId,
+    String booruUrl,
+    List<Post> posts,
+  ) async {
+    final futures = posts.map((post) => addBookmark(booruId, booruUrl, post));
     final bookmarks = await Future.wait(futures);
     return bookmarks.toList();
   }

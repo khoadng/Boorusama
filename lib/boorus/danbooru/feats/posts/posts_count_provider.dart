@@ -2,10 +2,11 @@ part of 'posts_provider.dart';
 
 final danbooruPostCountRepoProvider = Provider<PostCountRepository>((ref) {
   return PostCountRepositoryApi(
-    api: ref.watch(danbooruApiProvider),
+    client: ref.watch(danbooruClientProvider),
     //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags: ref.watch(currentBooruProvider).booruType == BooruType.safebooru
-        ? ['rating:general']
-        : [],
+    extraTags:
+        ref.watch(currentBooruConfigProvider).booruType == BooruType.safebooru
+            ? ['rating:general']
+            : [],
   );
 });

@@ -1,81 +1,59 @@
-// Package imports:
-import 'package:retrofit/dio.dart';
-
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
-import 'package:boorusama/foundation/http/http.dart';
-
-List<SavedSearch> parseSavedSearch(HttpResponse<dynamic> value) =>
-    parseResponse(
-      value: value,
-      converter: (item) => SavedSearchDto.fromJson(item),
-    ).map(savedSearchDtoToSaveSearch).toList();
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class SavedSearchRepositoryApi implements SavedSearchRepository {
   const SavedSearchRepositoryApi(
-    this.api,
+    this.client,
   );
 
-  final DanbooruApi api;
+  final DanbooruClient client;
 
   @override
   Future<List<SavedSearch>> getSavedSearches({
     required int page,
   }) =>
-      api
+      client
           .getSavedSearches(
-            page,
+            page: page,
             //TODO: shouldn't hardcode it
-            1000,
+            limit: 1000,
           )
-          .then(parseSavedSearch);
+          .then((value) => value.map(savedSearchDtoToSaveSearch).toList());
 
   @override
   Future<SavedSearch?> createSavedSearch({
     required String query,
     String? label,
   }) =>
-      api.postSavedSearch(
-        {
-          'saved_search[query]': query,
-          'saved_search[label_string]': label ?? '',
-        },
-      ).then((value) => value.response.statusCode == 201
-          ? _parseSingleSavedSearch(value)
-          : null);
+      client
+          .postSavedSearch(
+            query: query,
+            label: label,
+          )
+          .then(savedSearchDtoToSaveSearch);
 
   @override
   Future<bool> updateSavedSearch(
     int id, {
     String? query,
     String? label,
-  }) {
-    if ([query, label].every((e) => e == null)) return Future.value(false);
-    final map = <String, dynamic>{};
-
-    if (query != null) {
-      map['saved_search[query]'] = query;
-    }
-
-    if (label != null) {
-      map['saved_search[label_string]'] = label;
-    }
-
-    return api
-        .patchSavedSearch(
-          id,
-          map,
-        )
-        .then((value) => value.response.statusCode == 204);
-  }
+  }) =>
+      client
+          .patchSavedSearch(
+            id: id,
+            query: query,
+            label: label,
+          )
+          .then((value) => true)
+          .catchError((obj) => false);
 
   @override
-  Future<bool> deleteSavedSearch(int id) => api
-      .deleteSavedSearch(
-        id,
-      )
-      .then((value) => value.response.statusCode == 204);
+  Future<bool> deleteSavedSearch(int id) => client
+      .deleteSavedSearch(id: id)
+      .then((value) => true)
+      .catchError((obj) => false);
 }
 
 SavedSearch savedSearchDtoToSaveSearch(SavedSearchDto dto) => SavedSearch(
@@ -85,9 +63,4 @@ SavedSearch savedSearchDtoToSaveSearch(SavedSearchDto dto) => SavedSearch(
       createdAt: dto.createdAt ?? DateTime(1),
       updatedAt: dto.updatedAt ?? DateTime(1),
       canDelete: dto.id! > 0,
-    );
-
-SavedSearch _parseSingleSavedSearch(HttpResponse<dynamic> value) =>
-    savedSearchDtoToSaveSearch(
-      SavedSearchDto.fromJson(value.response.data),
     );

@@ -1,32 +1,16 @@
-// Package imports:
-import 'package:retrofit/retrofit.dart';
-
 // Project imports:
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'danbooru_artist.dart';
-import 'danbooru_artist_dto.dart';
 import 'danbooru_artist_url.dart';
-import 'danbooru_artist_url_dto.dart';
 
-List<DanbooruArtist> parseArtist(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => DanbooruArtistDto.fromJson(item),
-    ).map(artistDtoToArtist).toList();
-
-List<DanbooruArtistUrl> parseArtistUrls(HttpResponse<dynamic> value) =>
-    parseResponse(
-      value: value,
-      converter: (item) => DanbooruArtistUrlDto.fromJson(item),
-    ).map(artistUrlDtoToArtistUrl).toList();
-
-DanbooruArtistUrl artistUrlDtoToArtistUrl(DanbooruArtistUrlDto dto) {
+DanbooruArtistUrl artistUrlDtoToArtistUrl(ArtistUrlDto dto) {
   return DanbooruArtistUrl(
     url: dto.url ?? "",
     isActive: dto.isActive ?? true,
   );
 }
 
-DanbooruArtist artistDtoToArtist(DanbooruArtistDto dto) {
+DanbooruArtist artistDtoToArtist(ArtistDto dto) {
   return DanbooruArtist(
     createdAt: dto.createdAt,
     id: dto.id,

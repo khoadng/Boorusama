@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags_section.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -22,7 +22,8 @@ class DanbooruMetatagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booru = booruConfig.createBooruFrom(ref.watch(booruFactoryProvider));
     final userMetatags = ref.watch(danbooruUserMetatagsProvider);
     final metatags = ref.watch(metatagsProvider);
 

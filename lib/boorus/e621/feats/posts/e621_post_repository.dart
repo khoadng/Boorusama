@@ -2,18 +2,17 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/api/e621/e621_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/booru_config.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/e621/feats/posts/utils.dart';
+import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/clients/e621/types/types.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
-import 'e621_parser.dart';
 import 'e621_post.dart';
-import 'e621_post_dto.dart';
 
 typedef E621PostsOrError = PostsOrErrorCore<E621Post>;
 
@@ -25,13 +24,13 @@ class E621PostRepositoryApi
     with SettingsRepositoryMixin
     implements E621PostRepository {
   E621PostRepositoryApi(
-    this.api,
+    this.client,
     this.booruConfig,
     this.settingsRepository, {
     required this.onFetch,
   });
 
-  final E621Api api;
+  final E621Client client;
   final BooruConfig booruConfig;
   final void Function(List<E621Post> posts) onFetch;
 
@@ -59,19 +58,16 @@ class E621PostRepositoryApi
         }
 
         final response = await $(
-          tryParseResponse(
-            fetcher: () => getPostsPerPage().then((lim) => api.getPosts(
-                  booruConfig.login,
-                  booruConfig.apiKey,
-                  page,
-                  getTags(booruConfig, tags).join(' '),
-                  limit ?? lim,
+          tryFetchRemoteData(
+            fetcher: () => getPostsPerPage().then((lim) => client.getPosts(
+                  page: page,
+                  tags: getTags(booruConfig, tags),
+                  limit: limit ?? lim,
                 )),
           ),
         );
 
-        final dtos = await $(tryParseJsonFromResponse(response, parseDtos));
-        final data = dtos.map(postDtoToPost).toList();
+        final data = response.map(postDtoToPost).toList();
 
         _cache.set(key, data);
 
@@ -79,7 +75,7 @@ class E621PostRepositoryApi
       });
 }
 
-E621Post postDtoToPost(E621PostDto dto) {
+E621Post postDtoToPost(PostDto dto) {
   final videoUrl = extractSampleVideoUrl(dto);
   final format = videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
 
@@ -117,10 +113,11 @@ E621Post postDtoToPost(E621PostDto dto) {
     isFavorited: dto.isFavorited ?? false,
     sources: dto.sources?.map(PostSource.from).toList() ?? [],
     description: dto.description ?? '',
+    parentId: dto.relationships?.parentId,
   );
 }
 
-String extractSampleVideoUrl(E621PostDto dto) {
+String extractSampleVideoUrl(PostDto dto) {
   final p720 = dto.sample?.alternates?['720p']?.urls
           ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
       '';

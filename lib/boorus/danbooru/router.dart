@@ -230,16 +230,15 @@ void goToUserDetailsPage(
   WidgetRef ref,
   BuildContext context, {
   required int uid,
+  required String username,
 }) {
   context.navigator.push(
     MaterialPageRoute(
       builder: (_) => DanbooruProvider(
         builder: (_) => UserDetailsPage(
           uid: uid,
+          username: username,
         ),
-      ),
-      settings: const RouteSettings(
-        name: RouterPageConstant.commentUpdate,
       ),
     ),
   );

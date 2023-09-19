@@ -4,6 +4,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 class BooruConfigData {
   const BooruConfigData({
     required this.booruId,
+    required this.booruIdHint,
     required this.apiKey,
     required this.login,
     required this.name,
@@ -14,12 +15,14 @@ class BooruConfigData {
 
   factory BooruConfigData.anonymous({
     required BooruType booru,
+    required BooruType booruHint,
     required String name,
     required BooruConfigRatingFilter filter,
     required String url,
   }) =>
       BooruConfigData(
         booruId: booru.toBooruId(),
+        booruIdHint: booruHint.toBooruId(),
         apiKey: '',
         login: '',
         url: url,
@@ -32,6 +35,7 @@ class BooruConfigData {
     try {
       return BooruConfigData(
         booruId: json['booruId'] as int,
+        booruIdHint: json['booruIdHint'] as int?,
         apiKey: json['apiKey'] as String,
         login: json['login'] as String,
         url: json['url'] as String,
@@ -47,6 +51,7 @@ class BooruConfigData {
   Map<String, dynamic> toJson() {
     return {
       'booruId': booruId,
+      'booruIdHint': booruIdHint,
       'apiKey': apiKey,
       'login': login,
       'url': url,
@@ -57,6 +62,7 @@ class BooruConfigData {
   }
 
   final int booruId;
+  final int? booruIdHint;
   final String apiKey;
   final String login;
   final String name;
@@ -74,6 +80,7 @@ BooruConfig? convertToBooruConfig({
   return BooruConfig(
     id: id,
     booruId: booruConfigData.booruId,
+    booruIdHint: booruConfigData.booruIdHint ?? booruConfigData.booruId,
     apiKey: booruConfigData.apiKey.isEmpty ? null : booruConfigData.apiKey,
     login: booruConfigData.login.isEmpty ? null : booruConfigData.login,
     url: booruConfigData.url,

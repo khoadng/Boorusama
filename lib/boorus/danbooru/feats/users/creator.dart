@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'user.dart';
 import 'user_level.dart';
 
@@ -55,3 +56,11 @@ class Creator extends Equatable {
 
 typedef CreatorId = int;
 typedef CreatorName = String;
+
+Creator creatorDtoToCreator(CreatorDto? d) => d != null
+    ? Creator(
+        id: d.id!,
+        name: d.name ?? '',
+        level: d.level == null ? UserLevel.member : intToUserLevel(d.level!),
+      )
+    : Creator.empty();

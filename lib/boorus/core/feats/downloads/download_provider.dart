@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -33,12 +34,18 @@ final downloadServiceProvider = Provider<DownloadService>(
   (ref) {
     final dio = ref.watch(dioProvider(''));
     final notifications = ref.watch(downloadNotificationProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
-    return DioDownloadService(dio, notifications);
+    return DioDownloadService(
+      dio,
+      notifications,
+      retryOn404: booruConfig.booruType.hasUnknownFullImageUrl,
+    );
   },
   dependencies: [
     dioProvider,
     downloadNotificationProvider,
+    currentBooruConfigProvider,
   ],
 );
 

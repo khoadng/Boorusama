@@ -29,8 +29,7 @@ class DanbooruTagCategoryNotifier extends Notifier<IMap<String, TagCategory>> {
     }
 
     if (unknownCategories.isNotEmpty) {
-      final unknownTags =
-          await tagRepo.getTagsByNameComma(unknownCategories.join(','), 1);
+      final unknownTags = await tagRepo.getTagsByName(unknownCategories, 1);
 
       for (final tag in unknownTags) {
         await categoryRepo.save(tag.name, tag.category);

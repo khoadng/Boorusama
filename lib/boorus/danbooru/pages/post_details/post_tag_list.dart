@@ -32,7 +32,7 @@ class PostTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
-    final booru = ref.watch(currentBooruProvider);
+    final booru = ref.watch(currentBooruConfigProvider);
     final tags = ref.watch(tagsProvider);
 
     if (tags == null) {
@@ -72,7 +72,7 @@ class PostTagList extends ConsumerWidget {
   Widget _buildTags(
     BuildContext context,
     WidgetRef ref,
-    Booru booru,
+    BooruConfig booru,
     AuthenticationState authenticationState,
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,

@@ -115,7 +115,7 @@ app.*.symbols
 
 # Boorusama repo-specific
 *.freezed.dart
-*.g.dart
+# *.g.dart
 *.mocks.dart
 
 .env

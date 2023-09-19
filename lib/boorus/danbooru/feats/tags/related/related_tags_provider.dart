@@ -8,9 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruRelatedTagRepProvider = Provider<RelatedTagRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-
-  return RelatedTagRepositoryApi(api);
+  return RelatedTagRepositoryApi(ref.watch(danbooruClientProvider));
 });
 
 final danbooruRelatedTagsProvider =

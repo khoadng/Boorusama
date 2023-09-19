@@ -8,49 +8,24 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
-import 'gelbooru_post_count_repository.dart';
 
 final gelbooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final api = ref.watch(gelbooruApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
-    final settingsRepository = ref.watch(settingsRepoProvider);
-
     return GelbooruPostRepositoryApi(
-      api: api,
-      booruConfig: booruConfig,
-      settingsRepository: settingsRepository,
-    );
-  },
-);
-
-final rule34xxxPostRepoProvider = Provider<PostRepository>(
-  (ref) {
-    final api = ref.watch(rule34xxxApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-
-    final settingsRepository = ref.watch(settingsRepoProvider);
-
-    return Rule34xxxPostRepositoryApi(
-      api: api,
-      booruConfig: booruConfig,
-      settingsRepository: settingsRepository,
+      client: ref.watch(gelbooruClientProvider),
+      booruConfig: ref.watch(currentBooruConfigProvider),
+      settingsRepository: ref.watch(settingsRepoProvider),
     );
   },
 );
 
 final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final api = ref.watch(gelbooruApiProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final settingsRepository = ref.watch(settingsRepoProvider);
-
     return PostRepositoryCacher(
       repository: GelbooruPostRepositoryApi(
-        api: api,
-        booruConfig: booruConfig,
-        settingsRepository: settingsRepository,
+        client: ref.watch(gelbooruClientProvider),
+        booruConfig: ref.watch(currentBooruConfigProvider),
+        settingsRepository: ref.watch(settingsRepoProvider),
       ),
       cache: LruCacher<String, List<Post>>(capacity: 100),
     );
@@ -59,7 +34,7 @@ final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
 
 final gelbooruPostCountRepoProvider = Provider<PostCountRepository>((ref) {
   return GelbooruPostCountRepositoryApi(
-    api: ref.watch(gelbooruApiProvider),
+    client: ref.watch(gelbooruClientProvider),
     booruConfig: ref.watch(currentBooruConfigProvider),
   );
 });

@@ -1,30 +1,20 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/foundation/http/http.dart';
-
-List<Search> parseSearch(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => Search(
-        keyword: item[0],
-        hitCount: item[1].toInt(),
-      ),
-    );
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/time.dart';
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({
-    required DanbooruApi api,
-  }) : _api = api;
+    required this.client,
+  });
 
-  final DanbooruApi _api;
+  final DanbooruClient client;
   final _cache = <String, List<Search>>{};
 
-  String _getKeyFromDateTime(DateTime date) =>
-      '${date.year}-${date.month}-${date.day}';
+  String _getKeyFromDateTime(DateTime date) => date.yyyyMMddWithHyphen();
 
   @override
   Future<List<Search>> getSearchByDate(DateTime date) async {
@@ -33,11 +23,13 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
       return _cache[key]!;
     }
     try {
-      final result = await _api
-          .getPopularSearchByDate(
-            '${date.year}-${date.month}-${date.day}',
-          )
-          .then(parseSearch);
+      final result =
+          await client.getPopularSearchByDate(date: date).then((value) => value
+              .map((e) => Search(
+                    hitCount: e.hitCount,
+                    keyword: e.keyword,
+                  ))
+              .toList());
       _cache[key] = result;
       return result;
     } on DioException catch (e, stackTrace) {

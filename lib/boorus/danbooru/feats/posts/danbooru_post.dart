@@ -121,6 +121,7 @@ class DanbooruPost extends Equatable
   final int fileSize;
   final bool isBanned;
   final bool hasChildren;
+  @override
   final int? parentId;
   final bool hasLarge;
   @override

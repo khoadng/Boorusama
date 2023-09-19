@@ -6,16 +6,16 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 
 final danbooruArtistRepoProvider = Provider<DanbooruArtistRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-
-  return DanbooruArtistRepositoryApi(api: api);
+  return DanbooruArtistRepositoryApi(
+    client: ref.watch(danbooruClientProvider),
+  );
 });
 
 final danbooruArtistUrlRepoProvider = Provider<DanbooruArtistUrlRepository>(
   (ref) {
-    final api = ref.watch(danbooruApiProvider);
-
-    return DanbooruArtistUrlRepositoryApi(api: api);
+    return DanbooruArtistUrlRepositoryApi(
+      client: ref.watch(danbooruClientProvider),
+    );
   },
 );
 

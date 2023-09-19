@@ -1,17 +1,16 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'blacklisted_tags_notifier.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 
 class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   BlacklistedTagsRepositoryImpl(
     this.userRepository,
-    this.api,
+    this.client,
   );
 
   final UserRepository userRepository;
-  final DanbooruApi api;
+  final DanbooruClient client;
   final Map<int, List<String>> _blacklistedTagsCache = {};
 
   @override
@@ -34,9 +33,9 @@ class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
     List<String> tags,
   ) async {
     try {
-      await api.setBlacklistedTags(
-        userId,
-        tagsToTagString(tags),
+      await client.setBlacklistedTags(
+        id: userId,
+        blacklistedTags: tags,
       );
 
       // Clear the cache for the user

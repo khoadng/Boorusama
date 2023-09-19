@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -8,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
@@ -22,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 
 class DanbooruProvider extends ConsumerWidget {
   const DanbooruProvider({
@@ -55,26 +52,21 @@ class DanbooruProvider extends ConsumerWidget {
   }
 }
 
-String encodeDanbooruAuthHeader(String login, String apiKey) =>
-    base64Encode(utf8.encode('$login:$apiKey'));
-
-final danbooruApiProvider = Provider<DanbooruApi>((ref) {
+final danbooruClientProvider = Provider<DanbooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final dio = ref.watch(dioProvider(booruConfig.url));
 
-  if (booruConfig.hasLoginDetails()) {
-    dio.options.headers['Authorization'] =
-        'Basic ${encodeDanbooruAuthHeader(booruConfig.login!, booruConfig.apiKey!)}';
-  } else {
-    dio.options.headers.remove('Authorization');
-  }
-
-  return DanbooruApi(dio);
+  return DanbooruClient(
+    dio: dio,
+    baseUrl: booruConfig.url,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
+  );
 });
 
 final danbooruAutocompleteRepoProvider =
     Provider<AutocompleteRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
+  final client = ref.watch(danbooruClientProvider);
 
-  return AutocompleteRepositoryApi(api: api);
+  return AutocompleteRepositoryApi(client: client);
 });

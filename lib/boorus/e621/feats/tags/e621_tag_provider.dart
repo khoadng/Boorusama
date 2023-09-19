@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/e621/feats/tags/e621_tag_repository.dart';
 
 final e621TagRepoProvider = Provider<E621TagRepository>((ref) {
   return E621TagRepositoryApi(
-    ref.watch(e621ApiProvider),
+    ref.watch(e621ClientProvider),
     ref.watch(currentBooruConfigProvider),
   );
 });

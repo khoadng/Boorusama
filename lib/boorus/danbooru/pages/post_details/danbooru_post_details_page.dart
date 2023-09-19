@@ -27,10 +27,10 @@ import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_recommend_artist_list.dart';
 import 'danbooru_recommend_character_list.dart';
+import 'danbooru_related_posts_section.dart';
 import 'pool_tiles.dart';
 import 'post_stats_tile.dart';
 import 'post_tag_list.dart';
-import 'related_posts_section.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
@@ -153,7 +153,7 @@ class _DanbooruPostDetailsPageState
                   childCount: widgets.length,
                 ),
               ),
-              RelatedPostsSection(post: posts[page]),
+              DanbooruRelatedPostsSection(post: posts[page]),
               DanbooruRecommendArtistList(artists: artists),
               DanbooruRecommendCharacterList(characters: characters),
             ],

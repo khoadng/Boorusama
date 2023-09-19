@@ -9,7 +9,7 @@ import 'moebooru_comment_repository.dart';
 
 final moebooruCommentRepoProvider = Provider<MoebooruCommentRepository>((ref) {
   return MoebooruCommentRepositoryApi(
-    api: ref.watch(moebooruApiProvider),
+    client: ref.watch(moebooruClientProvider),
     booruConfig: ref.watch(currentBooruConfigProvider),
   );
 });

@@ -16,17 +16,11 @@ import 'package:boorusama/foundation/loggers/loggers.dart';
 part 'posts_count_provider.dart';
 
 final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
-  final api = ref.watch(danbooruApiProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-
-  final settingsRepo = ref.watch(settingsRepoProvider);
-  final logger = ref.watch(loggerProvider);
-
   return PostRepositoryApi(
-    api,
-    booruConfig,
-    settingsRepo,
-    !kReleaseMode ? logger : EmptyLogger(),
+    ref.watch(danbooruClientProvider),
+    ref.watch(currentBooruConfigProvider),
+    ref.watch(settingsRepoProvider),
+    !kReleaseMode ? ref.watch(loggerProvider) : EmptyLogger(),
   );
 });
 

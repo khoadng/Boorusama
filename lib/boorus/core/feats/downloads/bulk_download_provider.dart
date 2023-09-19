@@ -48,9 +48,10 @@ final bulkDownloadOptionsProvider = StateProvider<DownloadOptions>((ref) {
 });
 
 final bulkDownloadProvider = Provider<BulkDownloader>((ref) {
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider);
-
-  return CrossplatformBulkDownloader(userAgentGenerator);
+  return CrossplatformBulkDownloader(
+    userAgentGenerator: ref.watch(userAgentGeneratorProvider),
+    logger: ref.watch(loggerProvider),
+  );
 });
 
 final bulkDownloadDataProvider = StreamProvider<BulkDownloadStatus>(

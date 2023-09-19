@@ -1,12 +1,11 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'danbooru_forum_post.dart';
-import 'danbooru_forum_post_dto.dart';
 import 'danbooru_forum_post_vote.dart';
-import 'danbooru_forum_post_vote_dto.dart';
 
 DanbooruForumPostVote danbooruForumPostVoteDtoToDanbooruForumPostVote(
-  DanbooruForumPostVoteDto dto,
+  ForumPostVoteDto dto,
 ) {
   return DanbooruForumPostVote(
     id: dto.id ?? 0,
@@ -18,8 +17,7 @@ DanbooruForumPostVote danbooruForumPostVoteDtoToDanbooruForumPostVote(
   );
 }
 
-DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(
-    DanbooruForumPostDto dto) {
+DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(ForumPostDto dto) {
   return DanbooruForumPost(
     id: dto.id ?? -1,
     createdAt:

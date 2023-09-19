@@ -9,7 +9,7 @@ import 'gelbooru_tag_repository_api.dart';
 
 final gelbooruTagRepoProvider = Provider<TagRepository>(
   (ref) {
-    final api = ref.watch(gelbooruApiProvider);
+    final api = ref.watch(gelbooruClientProvider);
 
     return TagCacher(
       cache: LruCacher(capacity: 1000),

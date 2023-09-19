@@ -10,7 +10,7 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
   @override
   List<SavedSearch>? build() {
     final config = ref.watch(currentBooruConfigProvider);
-    if (config.booruType.isDanbooruBased) {
+    if (config.booruType.isDanbooruBased && config.hasLoginDetails()) {
       fetch();
     }
 

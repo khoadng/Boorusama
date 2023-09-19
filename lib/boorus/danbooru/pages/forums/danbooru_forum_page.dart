@@ -45,8 +45,12 @@ class DanbooruForumPage extends ConsumerWidget {
           creatorColor: !context.themeMode.isDark
               ? topic.creator.level.toColor()
               : topic.creator.level.toOnDarkColor(),
-          onCreatorTap: () =>
-              goToUserDetailsPage(ref, context, uid: topic.creator.id),
+          onCreatorTap: () => goToUserDetailsPage(
+            ref,
+            context,
+            uid: topic.creator.id,
+            username: topic.creator.name,
+          ),
           onTap: () => context.navigator.push(MaterialPageRoute(
             builder: (_) => DanbooruForumPostsPage(
               topicId: topic.id,

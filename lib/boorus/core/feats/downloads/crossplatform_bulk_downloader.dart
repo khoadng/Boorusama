@@ -11,15 +11,23 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/foundation/http/user_agent_generator.dart';
+import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class CrossplatformBulkDownloader implements BulkDownloader {
   final DownloadManager _downloadManager;
+  final LoggerService? logger;
   final _downloadDataController = BehaviorSubject<BulkDownloadStatus>();
+  final void Function(Object error)? onError;
 
-  CrossplatformBulkDownloader(UserAgentGenerator userAgentGenerator)
-      : _downloadManager = DownloadManager(
+  CrossplatformBulkDownloader({
+    required UserAgentGenerator userAgentGenerator,
+    this.logger,
+    this.onError,
+  }) : _downloadManager = DownloadManager(
+          onError: (error) =>
+              logger?.logE('Bulk Downloader', 'Download error: $error'),
           dio: Dio(
             BaseOptions(
               headers: {

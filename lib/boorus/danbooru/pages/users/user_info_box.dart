@@ -28,7 +28,7 @@ class UserInfoBox extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  user.name,
+                  user.name.replaceAll('_', ' '),
                   style: context.textTheme.titleLarge?.copyWith(
                     color: user.level.toColor(),
                   ),

@@ -1,9 +1,8 @@
 // Project imports:
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'user.dart';
-import 'user_dto.dart';
 import 'user_level.dart';
 import 'user_self.dart';
-import 'user_self_dto.dart';
 
 User userDtoToUser(
   UserDto d,

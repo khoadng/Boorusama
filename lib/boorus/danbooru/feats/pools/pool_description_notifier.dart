@@ -11,7 +11,7 @@ final poolDescriptionProvider =
     NotifierProvider.family<PoolDescriptionNotifier, PoolDescriptionState, int>(
   PoolDescriptionNotifier.new,
   dependencies: [
-    currentBooruProvider,
+    currentBooruConfigProvider,
     poolDescriptionRepoProvider,
   ],
 );
@@ -26,7 +26,7 @@ class PoolDescriptionNotifier
   }
 
   Future<void> fetch(int poolId) async {
-    final endpoint = ref.read(currentBooruProvider).url;
+    final endpoint = ref.read(currentBooruConfigProvider).url;
     final html =
         await ref.read(poolDescriptionRepoProvider).getDescription(poolId);
     final description = htmlStringToDescriptionHtmlString(html);

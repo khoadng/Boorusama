@@ -28,7 +28,7 @@ class TagsNotifier extends Notifier<List<TagGroupItem>?> {
 
     if (filtered.isEmpty) return;
 
-    final tags = await repo.getTagsByNameComma(filtered.join(','), 1);
+    final tags = await repo.getTagsByName(filtered, 1);
 
     tags.sort((a, b) => a.rawName.compareTo(b.rawName));
     final group = tags

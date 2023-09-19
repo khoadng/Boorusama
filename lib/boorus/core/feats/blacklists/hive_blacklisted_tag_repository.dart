@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
@@ -15,7 +16,11 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   }
 
   @override
-  Future<BlacklistedTag> addTag(String tag) async {
+  Future<BlacklistedTag?> addTag(String tag) async {
+    final existingTag = _box.values.firstWhereOrNull((e) => e.name == tag);
+
+    if (existingTag != null) return null;
+
     final createdDate = DateTime.now();
     final obj = BlacklistedTagHiveObject(
       name: tag,

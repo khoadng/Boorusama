@@ -12,7 +12,7 @@ import 'moebooru_post_repository_api.dart';
 
 final moebooruPostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final api = ref.watch(moebooruApiProvider);
+    final api = ref.watch(moebooruClientProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     final settingsRepository = ref.watch(settingsRepoProvider);
@@ -24,7 +24,7 @@ final moebooruPostRepoProvider = Provider<PostRepository>(
     );
   },
   dependencies: [
-    moebooruApiProvider,
+    moebooruClientProvider,
     globalBlacklistedTagRepoProvider,
     currentBooruConfigProvider,
     settingsRepoProvider,
@@ -33,7 +33,7 @@ final moebooruPostRepoProvider = Provider<PostRepository>(
 
 final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
   (ref) {
-    final api = ref.watch(moebooruApiProvider);
+    final api = ref.watch(moebooruClientProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return MoebooruPopularRepositoryApi(
@@ -42,8 +42,30 @@ final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
     );
   },
   dependencies: [
-    moebooruApiProvider,
+    moebooruClientProvider,
     globalBlacklistedTagRepoProvider,
     currentBooruConfigProvider,
+  ],
+);
+
+final moebooruPostDetailsChildrenProvider =
+    FutureProvider.family.autoDispose<List<Post>?, Post>(
+  (ref, post) async {
+    if (!post.hasParentOrChildren) return null;
+
+    final repo = ref.watch(moebooruPostRepoProvider);
+
+    final query =
+        post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';
+
+    final posts = await repo.getPostsFromTags(query, 1).run();
+
+    return posts.fold(
+      (l) => null,
+      (r) => r,
+    );
+  },
+  dependencies: [
+    moebooruPostRepoProvider,
   ],
 );

@@ -10,13 +10,14 @@ updates:
       time: "17:00"
     target-branch: "dev"
 
+  # Temporarily disable Dependabot for Dart pub, not really useful for now
   # Maintain dependencies for Dart pub
-  - package-ecosystem: "pub"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "17:00"
-    target-branch: "dev"
-    open-pull-requests-limit: 5
+  # - package-ecosystem: "pub"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "saturday"
+  #     time: "17:00"
+  #   target-branch: "dev"
+  #   open-pull-requests-limit: 5
 

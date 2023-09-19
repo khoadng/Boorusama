@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
@@ -20,17 +20,18 @@ class BookmarkPostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
     final bookmarkState = ref.watch(bookmarkProvider);
 
-    final isBookmarked = bookmarkState.isBookmarked(post, booru.booruType);
+    final isBookmarked =
+        bookmarkState.isBookmarked(post, booruConfig.booruType);
 
     return isBookmarked
         ? IconButton(
             splashRadius: 16,
             onPressed: () {
               ref.bookmarks.removeBookmarkWithToast(
-                bookmarkState.getBookmark(post, booru.booruType)!,
+                bookmarkState.getBookmark(post, booruConfig.booruType)!,
               );
             },
             icon: const FaIcon(
@@ -43,8 +44,8 @@ class BookmarkPostButton extends ConsumerWidget {
             splashRadius: 16,
             onPressed: () {
               ref.bookmarks.addBookmarkWithToast(
-                "",
-                booru,
+                booruConfig.booruId,
+                booruConfig.url,
                 post,
               );
             },

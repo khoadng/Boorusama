@@ -9,6 +9,5 @@ abstract class FavoritePostRepository {
     int userId,
     int limit,
   );
-  Future<bool> checkIfFavoritedByUser(int userId, int postId);
   Future<List<Favorite>> getFavorites(int postId, int page);
 }

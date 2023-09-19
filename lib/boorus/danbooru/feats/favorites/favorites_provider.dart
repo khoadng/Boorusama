@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 
 final danbooruFavoriteRepoProvider = Provider<FavoritePostRepository>((ref) {
   return FavoritePostRepositoryApi(
-    ref.watch(danbooruApiProvider),
+    ref.watch(danbooruClientProvider),
   );
 });
 

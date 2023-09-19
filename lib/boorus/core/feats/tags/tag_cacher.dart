@@ -15,12 +15,11 @@ class TagCacher implements TagRepository {
   final Cacher<String, Tag> cache;
 
   @override
-  Future<List<Tag>> getTagsByNameComma(
-    String stringComma,
+  Future<List<Tag>> getTagsByName(
+    List<String> tags,
     int page, {
     CancelToken? cancelToken,
   }) async {
-    final tags = stringComma.split(',');
     final cachedTags = tags
         .where((tag) => cache.exist(tag))
         .map((e) => cache.get(e)!)
@@ -30,7 +29,7 @@ class TagCacher implements TagRepository {
     var freshTags = <Tag>[];
 
     if (freshTagKeys.isNotEmpty) {
-      freshTags = await repo.getTagsByNameComma(freshTagKeys.join(','), page);
+      freshTags = await repo.getTagsByName(freshTagKeys, page);
     }
 
     for (final tag in freshTags) {

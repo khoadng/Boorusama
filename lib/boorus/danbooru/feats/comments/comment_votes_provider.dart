@@ -9,7 +9,7 @@ import 'comments.dart';
 final danbooruCommentVoteRepoProvider =
     Provider<CommentVoteApiRepository>((ref) {
   return CommentVoteApiRepository(
-    ref.watch(danbooruApiProvider),
+    ref.watch(danbooruClientProvider),
   );
 });
 

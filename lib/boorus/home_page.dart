@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_scope.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_scope.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -80,7 +81,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
 
     final config = ref.watch(currentBooruConfigProvider);
-    final booru = ref.watch(currentBooruProvider);
 
     return OrientationBuilder(
       builder: (context, orientation) => ConditionalParentWidget(
@@ -100,7 +100,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
         child: _Boorus(
           key: ValueKey(config),
-          booru: booru,
           ref: ref,
           config: config,
         ),
@@ -112,12 +111,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 class _Boorus extends StatelessWidget {
   const _Boorus({
     super.key,
-    required this.booru,
     required this.ref,
     required this.config,
   });
 
-  final Booru booru;
   final WidgetRef ref;
   final BooruConfig config;
 
@@ -125,7 +122,7 @@ class _Boorus extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        switch (booru.booruType) {
+        switch (config.booruType) {
           case BooruType.unknown:
             return const Center(
               child: Text('Unknown booru'),
@@ -146,6 +143,8 @@ class _Boorus extends StatelessWidget {
           case BooruType.sakugabooru:
           case BooruType.lolibooru:
             return MoebooruScope(config: config);
+          case BooruType.zerochan:
+            return ZerochanScope(config: config);
         }
       },
     );

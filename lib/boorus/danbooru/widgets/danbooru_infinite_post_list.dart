@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -96,6 +97,8 @@ class _DanbooruInfinitePostListState
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
     final currentUser = ref.watch(danbooruCurrentUserProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final isUnverified = booruConfig.isUnverified();
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -116,8 +119,14 @@ class _DanbooruInfinitePostListState
         blacklistedTags: {
           ...globalBlacklist.map((e) => e.name),
           if (danbooruBlacklist != null) ...danbooruBlacklist,
-          if (currentUser == null) ...kCensoredTags,
-          if (currentUser != null && !isBooruGoldPlusAccount(currentUser.level))
+          if (!isUnverified &&
+              booruConfig.booruType.hasCensoredTagsBanned &&
+              currentUser == null)
+            ...kCensoredTags,
+          if (!isUnverified &&
+              booruConfig.booruType.hasCensoredTagsBanned &&
+              currentUser != null &&
+              !isBooruGoldPlusAccount(currentUser.level))
             ...kCensoredTags,
         },
         itemBuilder: (context, items, index) {

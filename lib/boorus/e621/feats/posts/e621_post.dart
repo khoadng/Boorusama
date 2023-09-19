@@ -43,6 +43,7 @@ class E621Post extends Equatable
     required this.sources,
     required this.description,
     required this.videoUrl,
+    required this.parentId,
   });
 
   @override
@@ -129,6 +130,9 @@ class E621Post extends Equatable
 
   @override
   final DateTime createdAt;
+
+  @override
+  final int? parentId;
 }
 
 extension PostImageX on E621Post {

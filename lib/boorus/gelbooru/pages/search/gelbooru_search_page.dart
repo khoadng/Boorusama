@@ -164,7 +164,7 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (ref.watch(currentBooruProvider).booruType ==
+                      if (ref.watch(currentBooruConfigProvider).booruType ==
                           BooruType.gelbooru)
                         ResultHeaderWithProvider(
                           selectedTags: selectedTagController.rawTags,

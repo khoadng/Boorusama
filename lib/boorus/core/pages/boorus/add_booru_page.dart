@@ -38,7 +38,7 @@ class AddBooruPage extends ConsumerStatefulWidget {
 class _AddBooruPageState extends ConsumerState<AddBooruPage> {
   var phase = AddBooruPhase.url;
   var url = '';
-  Booru? booru;
+  BooruType? booru;
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +46,13 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
       AddBooruPhase.url => AddBooruPageInternal(
           backgroundColor: widget.backgroundColor,
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-          onUnknownBooruSubmit: (url) => setState(() {
-            phase = AddBooruPhase.newUnknownBooru;
+          onBooruSubmit: (url) => setState(() {
+            final booruFactory = ref.read(booruFactoryProvider);
+            booru = getBooruType(url, booruFactory.booruData);
+            phase = booru == BooruType.unknown
+                ? AddBooruPhase.newUnknownBooru
+                : AddBooruPhase.newKnownBooru;
             this.url = url;
-          }),
-          onKnownBooruSubmit: (booru) => setState(() {
-            phase = AddBooruPhase.newKnownBooru;
-            this.booru = booru;
           }),
         ),
       AddBooruPhase.newUnknownBooru => AddUnknownBooruPage(
@@ -61,7 +61,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           backgroundColor: widget.backgroundColor,
         ),
       AddBooruPhase.newKnownBooru => CreateBooruPage(
-          booru: booru!,
+          url: url,
+          booruType: booru!,
           backgroundColor: widget.backgroundColor,
         ),
     };
@@ -73,14 +74,12 @@ class AddBooruPageInternal extends ConsumerStatefulWidget {
     super.key,
     required this.setCurrentBooruOnSubmit,
     this.backgroundColor,
-    this.onUnknownBooruSubmit,
-    this.onKnownBooruSubmit,
+    this.onBooruSubmit,
   });
 
   final bool setCurrentBooruOnSubmit;
   final Color? backgroundColor;
-  final void Function(String url)? onUnknownBooruSubmit;
-  final void Function(Booru booru)? onKnownBooruSubmit;
+  final void Function(String url)? onBooruSubmit;
 
   @override
   ConsumerState<AddBooruPageInternal> createState() =>
@@ -223,13 +222,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
   }
 
   void _onNext(String url) {
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final booru = getBooruType(url, booruFactory.booruData);
-    if (booru == BooruType.unknown) {
-      widget.onUnknownBooruSubmit?.call(url);
-    } else {
-      widget.onKnownBooruSubmit?.call(booruFactory.from(type: booru));
-    }
+    widget.onBooruSubmit?.call(url);
   }
 }
 

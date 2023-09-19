@@ -10,13 +10,17 @@ class CreateBooruScaffold extends StatelessWidget {
   const CreateBooruScaffold({
     super.key,
     this.backgroundColor,
-    required this.booru,
+    required this.booruType,
+    required this.url,
     required this.children,
+    this.isUnknown = false,
   });
 
   final List<Widget> children;
-  final Booru booru;
   final Color? backgroundColor;
+  final BooruType booruType;
+  final String url;
+  final bool isUnknown;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,9 @@ class CreateBooruScaffold extends StatelessWidget {
             Row(
               children: [
                 SelectedBooruChip(
-                  booru: booru,
+                  booruType: booruType,
+                  url: url,
+                  isUnknown: isUnknown,
                 ),
                 const Spacer(),
                 IconButton(

@@ -34,7 +34,7 @@ final danbooruExploreRepoProvider = Provider<ExploreRepository>(
   (ref) {
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
-        api: ref.watch(danbooruApiProvider),
+        client: ref.watch(danbooruClientProvider),
         postRepository: ref.watch(danbooruPostRepoProvider),
         settingsRepository: ref.watch(settingsRepoProvider),
         shouldFilter: switch (
@@ -52,7 +52,7 @@ final danbooruExploreRepoProvider = Provider<ExploreRepository>(
     );
   },
   dependencies: [
-    danbooruApiProvider,
+    danbooruClientProvider,
     danbooruPostRepoProvider,
     settingsRepoProvider,
     globalBlacklistedTagRepoProvider,

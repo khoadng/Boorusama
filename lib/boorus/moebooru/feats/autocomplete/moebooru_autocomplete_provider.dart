@@ -17,7 +17,7 @@ final moebooruAutocompleteRepoProvider =
 });
 
 final moebooruTagSummaryRepoProvider = Provider<TagSummaryRepository>((ref) {
-  final api = ref.watch(moebooruApiProvider);
+  final api = ref.watch(moebooruClientProvider);
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final path = '${Uri.encodeComponent(booruConfig.url)}_tag_summary';
 

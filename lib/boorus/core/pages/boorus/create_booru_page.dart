@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
@@ -15,11 +16,13 @@ import 'create_moebooru_config_page.dart';
 class CreateBooruPage extends ConsumerStatefulWidget {
   const CreateBooruPage({
     super.key,
-    required this.booru,
+    required this.url,
+    required this.booruType,
     this.backgroundColor,
   });
 
-  final Booru booru;
+  final String url;
+  final BooruType booruType;
   final Color? backgroundColor;
 
   @override
@@ -37,7 +40,7 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
 
   @override
   Widget build(BuildContext context) {
-    return switch (widget.booru.booruType) {
+    return switch (widget.booruType) {
       BooruType.danbooru ||
       BooruType.aibooru ||
       BooruType.testbooru ||
@@ -53,7 +56,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
               setState(() => ratingFilter = value!),
           onHideDeletedChanged: (value) => setState(() => hideDeleted = value),
           onSubmit: allowSubmit() ? submit : null,
-          booru: widget.booru,
+          booruType: widget.booruType,
+          url: widget.url,
         ),
       BooruType.safebooru || BooruType.e926 => CreateDanbooruConfigPage(
           initialRatingFilter: ratingFilter,
@@ -64,7 +68,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           onConfigNameChanged: (value) => setState(() => configName = value),
           onHideDeletedChanged: (value) => setState(() => hideDeleted = value),
           onSubmit: allowSubmit() ? submit : null,
-          booru: widget.booru,
+          booruType: widget.booruType,
+          url: widget.url,
         ),
       BooruType.konachan ||
       BooruType.yandere ||
@@ -79,7 +84,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
-          booru: widget.booru,
+          booruType: widget.booruType,
+          url: widget.url,
           booruFactory: booruFactory,
         ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
@@ -91,7 +97,15 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           onRatingFilterChanged: (value) =>
               setState(() => ratingFilter = value!),
           onSubmit: allowSubmit() ? submit : null,
-          booru: widget.booru,
+          booruType: widget.booruType,
+          url: widget.url,
+        ),
+      BooruType.zerochan => CreateAnonConfigPage(
+          backgroundColor: widget.backgroundColor,
+          onConfigNameChanged: (value) => setState(() => configName = value),
+          onSubmit: allowSubmit() ? submit : null,
+          booruType: widget.booruType,
+          url: widget.url,
         ),
       BooruType.unknown => const SizedBox(),
     };
@@ -109,11 +123,12 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           newConfig: AddNewBooruConfig(
             login: login,
             apiKey: apiKey,
-            booru: widget.booru.booruType,
+            booru: widget.booruType,
+            booruHint: widget.booruType,
             configName: configName,
             hideDeleted: hideDeleted,
             ratingFilter: ratingFilter,
-            url: widget.booru.url,
+            url: widget.url,
           ),
         );
     context.navigator.pop();

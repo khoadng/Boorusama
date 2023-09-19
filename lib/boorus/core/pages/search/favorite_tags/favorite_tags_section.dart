@@ -44,7 +44,7 @@ class FavoriteTagsSection extends ConsumerWidget {
               ),
               onSelected: (value) {
                 if (value == 'import') {
-                  goToFavoriteTagImportPage(context);
+                  goToFavoriteTagImportPage(context, ref);
                 } else if (value == 'export') {
                   ref.read(favoriteTagsProvider.notifier).export(
                     onDone: (tagString) {

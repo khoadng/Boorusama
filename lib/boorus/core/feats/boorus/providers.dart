@@ -23,20 +23,6 @@ final currentBooruConfigProvider =
   ],
 );
 
-final currentBooruProvider = Provider<Booru>(
-  (ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final booru = booruFactory.from(type: intToBooruType(booruConfig.booruId));
-
-    return booru;
-  },
-  dependencies: [
-    currentBooruConfigProvider,
-    booruFactoryProvider,
-  ],
-);
-
 final configIdOrdersProvider = Provider<List<int>>((ref) {
   final orderString =
       ref.watch(settingsProvider.select((value) => value.booruConfigIdOrders));

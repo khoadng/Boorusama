@@ -93,7 +93,7 @@ Future<List<User>> Function(List<Favorite> favs) createUserWith(
         return [];
       }
 
-      return userRepository.getUsersByIdStringComma(
-        favs.map((e) => e.userId).join(','),
+      return userRepository.getUsersByIds(
+        favs.map((e) => e.userId).toList(),
       );
     };

@@ -22,13 +22,15 @@ class CreateDanbooruConfigPage extends StatelessWidget {
     this.onRatingFilterChanged,
     required this.onHideDeletedChanged,
     required this.onSubmit,
-    required this.booru,
+    required this.booruType,
+    required this.url,
     this.initialLogin,
     this.initialApiKey,
     this.initialConfigName,
     this.initialRatingFilter,
     this.initialHideDeleted,
     this.backgroundColor,
+    this.isUnkown = false,
   });
 
   final String? initialLogin;
@@ -45,13 +47,17 @@ class CreateDanbooruConfigPage extends StatelessWidget {
   final void Function()? onSubmit;
   final Color? backgroundColor;
 
-  final Booru booru;
+  final String url;
+  final BooruType booruType;
+  final bool isUnkown;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
       backgroundColor: backgroundColor,
-      booru: booru,
+      booruType: booruType,
+      url: url,
+      isUnknown: isUnkown,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(

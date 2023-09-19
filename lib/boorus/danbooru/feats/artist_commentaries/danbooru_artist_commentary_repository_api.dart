@@ -2,17 +2,17 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'danbooru_artist_commentary_dto.dart';
 import 'danbooru_artist_commentary_repository.dart';
 
 class DanbooruArtistCommentaryRepositoryApi
     with CacheMixin<ArtistCommentary>
     implements DanbooruArtistCommentaryRepository {
-  DanbooruArtistCommentaryRepositoryApi(this._api);
-  final DanbooruApi _api;
+  DanbooruArtistCommentaryRepositoryApi(this.client);
+  final DanbooruClient client;
 
   @override
   int get maxCapacity => 100;
@@ -28,68 +28,42 @@ class DanbooruArtistCommentaryRepositoryApi
     if (cached != null) return cached;
 
     try {
-      final value = await _api.getArtistCommentary(
-        postId,
+      final data = await client.getFirstMatchingArtistCommentary(
+        postId: postId,
         cancelToken: cancelToken,
       );
-      final commentaries = <DanbooruArtistCommentaryDto>[];
 
-      for (final item in value.response.data) {
-        try {
-          final commentary = DanbooruArtistCommentaryDto.fromJson(item);
-          commentaries.add(commentary);
-        } catch (e) {
-          // ignore: avoid_print
-          print("Cant parse ${item['id']}");
-        }
-      }
-
-      final ac = commentaries.isNotEmpty
-          ? commentaries.first.toEntity()
-          : DanbooruArtistCommentaryDto(
-              createdAt: DateTime.now(),
-              id: -1,
-              postId: -1,
-              updatedAt: DateTime.now(),
-            ).toEntity();
+      final ac = artistCommentaryDtoToArtistCommentary(data);
 
       set('$postId', ac);
       return ac;
-    } on DioException catch (e, stackTrace) {
-      if (e.type == DioExceptionType.cancel) {
-        // Cancel token triggered, skip this request
-        return DanbooruArtistCommentaryDto(
-          createdAt: DateTime.now(),
-          id: -1,
-          postId: -1,
-          updatedAt: DateTime.now(),
-        ).toEntity();
-      } else {
-        Error.throwWithStackTrace(
-          Exception("Failed to get artist's comment for $postId"),
-          stackTrace,
-        );
-      }
+    } catch (e) {
+      return const ArtistCommentary(
+        originalTitle: '',
+        originalDescription: '',
+        translatedTitle: '',
+        translatedDescription: '',
+      );
     }
   }
 }
 
 ArtistCommentary artistCommentaryDtoToArtistCommentary(
-        DanbooruArtistCommentaryDto d) =>
-    ArtistCommentary(
-      originalTitle: d.originalTitle ?? '',
-      originalDescription: d.originalDescription ?? '',
-      translatedTitle: d.translatedTitle ?? '',
-      translatedDescription: d.translatedDescription ?? '',
-    );
-
-extension ArtistCommentaryDtoX on DanbooruArtistCommentaryDto {
-  ArtistCommentary toEntity() {
-    return ArtistCommentary(
-      originalTitle: originalTitle ?? '',
-      originalDescription: originalDescription ?? '',
-      translatedTitle: translatedTitle ?? '',
-      translatedDescription: translatedDescription ?? '',
+  ArtistCommentaryDto? d,
+) {
+  if (d == null) {
+    return const ArtistCommentary(
+      originalTitle: '',
+      originalDescription: '',
+      translatedTitle: '',
+      translatedDescription: '',
     );
   }
+
+  return ArtistCommentary(
+    originalTitle: d.originalTitle ?? '',
+    originalDescription: d.originalDescription ?? '',
+    translatedTitle: d.translatedTitle ?? '',
+    translatedDescription: d.translatedDescription ?? '',
+  );
 }

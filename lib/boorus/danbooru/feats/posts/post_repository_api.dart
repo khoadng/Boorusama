@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/logger.dart';
@@ -15,14 +15,14 @@ class PostRepositoryApi
     with SettingsRepositoryMixin, LoggerMixin
     implements DanbooruPostRepository {
   PostRepositoryApi(
-    DanbooruApi api,
+    DanbooruClient client,
     this.booruConfig,
     this.settingsRepository,
     this.logger,
-  ) : _api = api;
+  ) : _client = client;
 
   final BooruConfig booruConfig;
-  final DanbooruApi _api;
+  final DanbooruClient _client;
   @override
   final SettingsRepository settingsRepository;
   final Cache<List<DanbooruPost>> _cache = Cache(
@@ -48,17 +48,17 @@ class PostRepositoryApi
           return cached;
         }
 
-        final response = await $(
-          tryParseResponse(
-            fetcher: () => getPostsPerPage().then((lim) => _api.getPosts(
-                  page,
-                  getTags(booruConfig, tags).join(' '),
-                  limit ?? lim,
+        final dtos = await $(
+          tryFetchRemoteData(
+            fetcher: () => getPostsPerPage().then((lim) => _client.getPosts(
+                  page: page,
+                  tags: getTags(booruConfig, tags),
+                  limit: limit ?? lim,
                 )),
           ),
         );
 
-        final data = await $(tryParseJsonFromResponse(response, parsePost));
+        final data = dtos.map(postDtoToPost).toList();
 
         _cache.set(key, data);
 

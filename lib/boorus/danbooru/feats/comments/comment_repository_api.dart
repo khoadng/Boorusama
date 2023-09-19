@@ -1,70 +1,55 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'comment.dart';
-import 'comment_dto.dart';
 import 'comment_repository.dart';
-
-const String commentResourceApiParam =
-    'creator,id,post_id,body,score,is_deleted,created_at,updated_at,is_sticky,do_not_bump_post,updater_id';
-
-List<Comment> parseComment(HttpResponse<dynamic> value) => parseResponse(
-      value: value,
-      converter: (item) => CommentDto.fromJson(item),
-    ).map(commentDtoToComment).toList();
 
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
-    DanbooruApi api,
-  ) : _api = api;
+    DanbooruClient client,
+  ) : _client = client;
 
-  final DanbooruApi _api;
+  final DanbooruClient _client;
 
   @override
   Future<List<Comment>> getCommentsFromPostId(
     int postId, {
     CancelToken? cancelToken,
   }) =>
-      _api
+      _client
           .getComments(
-            postId,
-            1000,
-            only: commentResourceApiParam,
+            postId: postId,
+            limit: 1000,
             cancelToken: cancelToken,
           )
-          .then(parseComment)
-          .catchError((Object error) {
-        throw Exception('Failed to get comments for $postId');
-      });
+          .then((dtos) => dtos.map(commentDtoToComment).toList());
 
   @override
-  Future<bool> postComment(int postId, String content) => _api
+  Future<bool> postComment(int postId, String content) => _client
       .postComment(
-        postId,
-        content,
-        true,
+        postId: postId,
+        content: content,
       )
       .then((_) => true)
       .catchError((Object obj) => false);
 
   @override
-  Future<bool> updateComment(int commentId, String content) => _api
+  Future<bool> updateComment(int commentId, String content) => _client
       .updateComment(
-        commentId,
-        content,
+        commentId: commentId,
+        content: content,
       )
       .then((_) => true)
       .catchError((Object obj) => false);
 
   @override
-  Future<bool> deleteComment(int commentId) => _api
+  Future<bool> deleteComment(int commentId) => _client
       .deleteComment(
-        commentId,
+        commentId: commentId,
       )
       .then((_) => true)
       .catchError((Object obj) => false);

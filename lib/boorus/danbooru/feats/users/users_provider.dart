@@ -15,7 +15,7 @@ import 'package:boorusama/functional.dart';
 
 final danbooruUserRepoProvider = Provider<UserRepository>((ref) {
   return UserRepositoryApi(
-    ref.watch(danbooruApiProvider),
+    ref.watch(danbooruClientProvider),
     ref.watch(tagInfoProvider).defaultBlacklistedTags,
   );
 });

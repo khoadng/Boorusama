@@ -1,7 +1,7 @@
 // Project imports:
-import 'package:boorusama/api/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/danbooru_artist_parser.dart';
-import 'package:boorusama/boorus/danbooru/feats/artists/danbooru_artist_url.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'danbooru_artist_parser.dart';
+import 'danbooru_artist_url.dart';
 
 abstract interface class DanbooruArtistUrlRepository {
   Future<List<DanbooruArtistUrl>> getArtistUrls(int artistId);
@@ -9,14 +9,14 @@ abstract interface class DanbooruArtistUrlRepository {
 
 class DanbooruArtistUrlRepositoryApi implements DanbooruArtistUrlRepository {
   DanbooruArtistUrlRepositoryApi({
-    required this.api,
+    required this.client,
   });
 
-  final DanbooruApi api;
+  final DanbooruClient client;
 
   @override
-  Future<List<DanbooruArtistUrl>> getArtistUrls(int artistId) => api
-      .getArtistUrls(artistId)
-      .then(parseArtistUrls)
+  Future<List<DanbooruArtistUrl>> getArtistUrls(int artistId) => client
+      .getArtistUrls(artistId: artistId)
+      .then((urls) => urls.map(artistUrlDtoToArtistUrl).toList())
       .catchError((e) => <DanbooruArtistUrl>[]);
 }

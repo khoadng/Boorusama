@@ -9,10 +9,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/warning_container.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BlacklistedTagPage extends ConsumerWidget {
   const BlacklistedTagPage({
@@ -21,6 +22,8 @@ class BlacklistedTagPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(globalBlacklistedTagsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklist.manage.title').tr(),
@@ -44,6 +47,12 @@ class BlacklistedTagPage extends ConsumerWidget {
               );
             },
             icon: const FaIcon(FontAwesomeIcons.plus),
+          ),
+          ImportExportTagButton(
+            onImport: (tagString) => ref
+                .read(globalBlacklistedTagsProvider.notifier)
+                .addTagStringWithToast(tagString),
+            tags: tags.map((e) => e.name).toList(),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 import 'post.dart';
@@ -13,6 +14,38 @@ abstract class PostRepository {
     int page, {
     int? limit,
   });
+}
+
+class PostRepositoryBuilder
+    with SettingsRepositoryMixin
+    implements PostRepository {
+  const PostRepositoryBuilder({
+    required this.settingsRepository,
+    required PostsOrError Function(
+      String tags,
+      int page, {
+      int? limit,
+    }) getPosts,
+  }) : _getPostsFromTags = getPosts;
+
+  final PostsOrError Function(
+    String tags,
+    int page, {
+    int? limit,
+  }) _getPostsFromTags;
+
+  @override
+  final SettingsRepository settingsRepository;
+
+  @override
+  PostsOrError getPostsFromTags(String tags, int page, {int? limit}) =>
+      TaskEither.Do(($) async {
+        var lim = limit;
+
+        lim ??= await getPostsPerPage();
+
+        return $(_getPostsFromTags(tags, page, limit: lim));
+      });
 }
 
 Future<List<Post>> getPostsFromTagsOrEmptyFrom(

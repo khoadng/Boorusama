@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -10,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
-class BooruImage extends ConsumerWidget {
+class BooruImage extends ConsumerStatefulWidget {
   const BooruImage({
     super.key,
     required this.imageUrl,
@@ -33,18 +36,26 @@ class BooruImage extends ConsumerWidget {
   final int? cacheHeight;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (imageUrl.isEmpty) {
+  ConsumerState<BooruImage> createState() => _BooruImageState();
+}
+
+class _BooruImageState extends ConsumerState<BooruImage> {
+  var uniqueKey = UniqueKey();
+  var remainingRetry = calculateExponentialBackoffTimes(3, 3);
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.imageUrl.isEmpty) {
       return AspectRatio(
-        aspectRatio: aspectRatio,
-        child: _Empty(borderRadius: borderRadius),
+        aspectRatio: widget.aspectRatio,
+        child: _Empty(borderRadius: widget.borderRadius),
       );
     }
 
     return Container(
       decoration: BoxDecoration(
         borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+            widget.borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
           color: context.theme.dividerColor,
           width: 1,
@@ -52,43 +63,59 @@ class BooruImage extends ConsumerWidget {
       ),
       child: ClipRRect(
         borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+            widget.borderRadius ?? const BorderRadius.all(Radius.circular(4)),
         child: AspectRatio(
-          aspectRatio: aspectRatio,
+          aspectRatio: widget.aspectRatio,
           child: CachedNetworkImage(
+            cacheKey: uniqueKey.toString(),
             httpHeaders: {
               'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
             },
-            errorListener: (e) {},
-            memCacheWidth: cacheWidth,
-            memCacheHeight: cacheHeight,
-            fit: fit ?? BoxFit.fill,
-            imageUrl: imageUrl,
-            placeholder: (context, url) =>
-                placeholderUrl != null && placeholderUrl!.isNotEmpty
-                    ? CachedNetworkImage(
-                        httpHeaders: {
-                          'User-Agent':
-                              ref.watch(userAgentGeneratorProvider).generate(),
-                        },
-                        errorListener: (e) {},
-                        fit: fit ?? BoxFit.fill,
-                        imageUrl: placeholderUrl!,
-                        cacheManager: previewCacheManager,
-                        fadeInDuration: Duration.zero,
-                        fadeOutDuration: Duration.zero,
-                        placeholder: (context, url) => ImagePlaceHolder(
-                          borderRadius: borderRadius ??
-                              const BorderRadius.all(Radius.circular(8)),
-                        ),
-                      )
-                    : ImagePlaceHolder(
-                        borderRadius: borderRadius ??
-                            const BorderRadius.all(Radius.circular(8)),
-                      ),
+            errorListener: (e) {
+              if (e is SocketException) {
+                // set unique key after 3s to force reload
+                if (remainingRetry.isNotEmpty) {
+                  final delay = remainingRetry.removeAt(0);
+                  Future.delayed(
+                    Duration(seconds: delay),
+                    () {
+                      if (mounted) setState(() => uniqueKey = UniqueKey());
+                    },
+                  );
+                }
+              } else {
+                // Ignore other errors
+              }
+            },
+            memCacheWidth: widget.cacheWidth,
+            memCacheHeight: widget.cacheHeight,
+            fit: widget.fit ?? BoxFit.fill,
+            imageUrl: widget.imageUrl,
+            placeholder: (context, url) => widget.placeholderUrl != null &&
+                    widget.placeholderUrl!.isNotEmpty
+                ? CachedNetworkImage(
+                    httpHeaders: {
+                      'User-Agent':
+                          ref.watch(userAgentGeneratorProvider).generate(),
+                    },
+                    errorListener: (e) {},
+                    fit: widget.fit ?? BoxFit.fill,
+                    imageUrl: widget.placeholderUrl!,
+                    cacheManager: widget.previewCacheManager,
+                    fadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    placeholder: (context, url) => ImagePlaceHolder(
+                      borderRadius: widget.borderRadius ??
+                          const BorderRadius.all(Radius.circular(8)),
+                    ),
+                  )
+                : ImagePlaceHolder(
+                    borderRadius: widget.borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                  ),
             errorWidget: (context, url, error) => ErrorPlaceholder(
-              borderRadius:
-                  borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+              borderRadius: widget.borderRadius ??
+                  const BorderRadius.all(Radius.circular(8)),
             ),
             fadeInDuration: const Duration(microseconds: 200),
             fadeOutDuration: const Duration(microseconds: 500),
@@ -97,6 +124,16 @@ class BooruImage extends ConsumerWidget {
       ),
     );
   }
+}
+
+List<int> calculateExponentialBackoffTimes(int baseValue, int maxRetries) {
+  final retryTimes = <int>[];
+
+  for (var retryCount = 0; retryCount < maxRetries; retryCount++) {
+    retryTimes.add(baseValue * (1 << retryCount));
+  }
+
+  return retryTimes;
 }
 
 class _Empty extends StatelessWidget {

@@ -40,7 +40,7 @@ class E621PostTagList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
-    final booru = ref.watch(currentBooruProvider);
+    final booru = ref.watch(currentBooruConfigProvider);
     final tags = <E621TagGroup>[
       if (post.artistTags.isNotEmpty)
         (
@@ -120,7 +120,7 @@ class E621PostTagList extends ConsumerWidget {
   Widget _buildTags(
     BuildContext context,
     WidgetRef ref,
-    Booru booru,
+    BooruConfig booru,
     AuthenticationState authenticationState,
     E621TagGroup group,
     // {

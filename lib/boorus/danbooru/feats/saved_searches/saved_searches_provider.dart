@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 
 final danbooruSavedSearchRepoProvider = Provider<SavedSearchRepository>((ref) {
   return SavedSearchRepositoryApi(
-    ref.watch(danbooruApiProvider),
+    ref.watch(danbooruClientProvider),
   );
 });
 

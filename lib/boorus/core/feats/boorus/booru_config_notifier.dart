@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/analytics.dart';
 
 class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   @override
@@ -56,11 +57,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
             name: config.configName,
             url: config.url,
             booruId: config.booru.toBooruId(),
+            booruIdHint: config.booruHint.toBooruId(),
           )
         : BooruConfigData(
             login: config.login,
             apiKey: config.apiKey,
             booruId: config.booru.toBooruId(),
+            booruIdHint: config.booruHint.toBooruId(),
             deletedItemBehavior: config.hideDeleted
                 ? BooruConfigDeletedItemBehavior.hide.index
                 : BooruConfigDeletedItemBehavior.show.index,
@@ -95,6 +98,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
       if (newConfig.login.isEmpty && newConfig.apiKey.isEmpty) {
         final booruConfigData = BooruConfigData.anonymous(
           booru: newConfig.booru,
+          booruHint: newConfig.booruHint,
           filter: newConfig.ratingFilter,
           name: newConfig.configName,
           url: newConfig.url,
@@ -127,6 +131,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
           name: newConfig.configName,
           url: newConfig.url,
           booruId: newConfig.booru.toBooruId(),
+          booruIdHint: newConfig.booruHint.toBooruId(),
         );
 
         final config =
@@ -139,6 +144,12 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
         }
 
         onSuccess?.call(config);
+        sendBooruAddedEvent(
+          url: config.url,
+          hintSite: config.booruType.name,
+          totalSites: state.length,
+          hasLogin: config.hasLoginDetails(),
+        );
 
         add(config);
       }
@@ -157,11 +168,13 @@ class AddNewBooruConfig {
     required this.hideDeleted,
     required this.ratingFilter,
     required this.url,
+    required this.booruHint,
   });
 
   final String login;
   final String apiKey;
   final BooruType booru;
+  final BooruType booruHint;
   final String configName;
   final bool hideDeleted;
   final BooruConfigRatingFilter ratingFilter;
