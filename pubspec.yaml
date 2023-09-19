@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none"
-version: 3.3.5+63
+version: 3.4.0+64
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

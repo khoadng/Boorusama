@@ -1,3 +1,12 @@
+# 3.4.0
+- [Danbooru] Add Profile page
+- [Moebooru] Show parent/child posts in post details
+- Add an option to import/export blacklisted tags as text
+- Add support for all Gelbooru v0.2 sites (hopefully)
+- Add support for Zerochan
+- Only auto-blacklists censored tags on Danbooru, not other Danbooru-based sites
+- Fix an issue where video don't display duration on some sites
+
 # 3.3.5
 - Fix an issue from the previous update that causes some sites to not load properly
 - Minor bug fixes
