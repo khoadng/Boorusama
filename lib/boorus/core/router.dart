@@ -16,9 +16,7 @@ import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/add_to_global_blacklist_page.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tags_search_page.dart';
-import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -32,6 +30,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/router.dart';
 import '../../widgets/image_grid_item.dart';
 import '../../widgets/info_container.dart';
 import 'pages/search/full_history_view.dart';
@@ -55,16 +54,6 @@ void goToOriginalImagePage(BuildContext context, Post post) {
       post: post,
       initialOrientation: MediaQuery.of(context).orientation,
     ),
-  ));
-}
-
-void goToGlobalBlacklistedTagsPage(BuildContext context) {
-  context.navigator.push(PageTransition(
-    type: PageTransitionType.rightToLeft,
-    settings: const RouteSettings(
-      name: RouterPageConstant.globalBlacklistedTags,
-    ),
-    child: const BlacklistedTagPage(),
   ));
 }
 
@@ -499,51 +488,9 @@ Future<void> goToBulkDownloadPage(
   List<String>? tags, {
   required WidgetRef ref,
 }) async {
-  final booru = ref.read(currentBooruConfigProvider);
   ref.read(bulkDownloadSelectedTagsProvider.notifier).addTags(tags);
 
-  context.navigator.push(PageTransition(
-    type: PageTransitionType.rightToLeft,
-    child: Builder(builder: (_) {
-      switch (booru.booruType) {
-        case BooruType.e621:
-        case BooruType.e926:
-          return E621Provider(
-            builder: (context) => const BulkDownloadPage(),
-          );
-        case BooruType.unknown:
-          throw UnimplementedError();
-        case BooruType.konachan:
-        case BooruType.yandere:
-        case BooruType.sakugabooru:
-        case BooruType.lolibooru:
-          return MoebooruProvider(
-            builder: (context) => const BulkDownloadPage(),
-          );
-        case BooruType.danbooru:
-        case BooruType.safebooru:
-        case BooruType.testbooru:
-        case BooruType.aibooru:
-          return DanbooruProvider(
-            builder: (context) => const BulkDownloadPage(),
-          );
-        case BooruType.gelbooru:
-        case BooruType.rule34xxx:
-          return GelbooruProvider(
-            builder: (context) => const BulkDownloadPage(),
-          );
-        case BooruType.zerochan:
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Bulk download'),
-            ),
-            body: const Center(
-              child: Text('Sorry, not supported yet :('),
-            ),
-          );
-      }
-    }),
-  ));
+  context.go('/bulk_downloads');
 }
 
 Future<T?> showDesktopFullScreenWindow<T>(

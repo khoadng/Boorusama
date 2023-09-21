@@ -72,7 +72,7 @@ class SideBarMenu extends ConsumerWidget {
                       title: const Text('sideMenu.your_blacklist').tr(),
                       onTap: () {
                         if (popOnSelect) context.navigator.pop();
-                        goToGlobalBlacklistedTagsPage(context);
+                        context.go('/global_blacklisted_tags');
                       },
                     ),
                     SideMenuTile(
