@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -90,6 +91,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
   final urlController = TextEditingController();
   final booruUrlError = ValueNotifier(left(BooruUrlError.emptyUrl));
   final inputText = ValueNotifier('');
+  String? storagePath;
 
   @override
   void dispose() {
@@ -201,6 +203,57 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                 : const SizedBox.shrink(),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 16,
+          ),
+          child: Text(
+            'Or browse a local booru on your device',
+            style: context.textTheme.headlineSmall!
+                .copyWith(fontWeight: FontWeight.w900),
+          ),
+        ),
+        const Divider(
+          thickness: 2,
+          endIndent: 16,
+          indent: 16,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Material(
+            child: Ink(
+              decoration: BoxDecoration(
+                color: context.theme.cardColor,
+                border: Border.fromBorderSide(
+                  BorderSide(color: context.theme.hintColor),
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+              ),
+              child: ListTile(
+                visualDensity: VisualDensity.compact,
+                minVerticalPadding: 0,
+                onTap: () => _pickFolder(),
+                title: storagePath != null && storagePath!.isNotEmpty
+                    ? Text(
+                        storagePath!,
+                        overflow: TextOverflow.fade,
+                      )
+                    : Text(
+                        'settings.download.select_a_folder'.tr(),
+                        overflow: TextOverflow.fade,
+                        style: context.textTheme.titleMedium!
+                            .copyWith(color: context.theme.hintColor),
+                      ),
+                trailing: IconButton(
+                  onPressed: () => _pickFolder(),
+                  icon: const Icon(Icons.folder),
+                ),
+              ),
+            ),
+          ),
+        ),
+
         ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => Padding(
@@ -219,6 +272,15 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
         ),
       ],
     );
+  }
+
+  Future<void> _pickFolder() async {
+    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    if (selectedDirectory != null) {
+      setState(() {
+        storagePath = selectedDirectory;
+      });
+    }
   }
 
   void _onNext(String url) {
