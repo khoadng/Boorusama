@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
-import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 
 class E621Provider extends StatelessWidget {
@@ -29,7 +28,6 @@ class E621Provider extends StatelessWidget {
       overrides: [
         bulkDownloadFileNameProvider
             .overrideWithValue(Md5OnlyFileNameGenerator()),
-        postRepoProvider.overrideWith((ref) => ref.watch(e621PostRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(e621DownloadFileNameGeneratorProvider)),
         noteRepoProvider.overrideWith((ref) => ref.watch(e621NoteRepoProvider)),

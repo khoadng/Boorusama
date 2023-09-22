@@ -74,6 +74,8 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return SearchScope(
       initialQuery: widget.initialQuery,
       builder: (state, focus, controller, selectedTagController,
@@ -143,10 +145,11 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
             ),
           ),
         DisplayState.result => PostScope(
-            fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  selectedTagController.rawTags.join(' '),
-                  page,
-                ),
+            fetcher: (page) =>
+                ref.watch(postRepoProvider(config)).getPostsFromTags(
+                      selectedTagController.rawTags.join(' '),
+                      page,
+                    ),
             builder: (context, controller, errors) => GelbooruInfinitePostList(
               errors: errors,
               controller: controller,

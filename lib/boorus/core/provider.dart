@@ -15,9 +15,13 @@ import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
+import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete_providers.dart';
+import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
@@ -75,8 +79,25 @@ final autocompleteRepoProvider =
                 ),
             });
 
-final postRepoProvider =
-    Provider<PostRepository>((ref) => throw UnimplementedError());
+final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
+    (ref, config) => switch (config.booruType) {
+          BooruType.danbooru ||
+          BooruType.aibooru ||
+          BooruType.safebooru ||
+          BooruType.testbooru =>
+            ref.watch(danbooruPostRepoProvider),
+          BooruType.gelbooru ||
+          BooruType.rule34xxx =>
+            ref.watch(gelbooruPostRepoProvider),
+          BooruType.konachan ||
+          BooruType.yandere ||
+          BooruType.sakugabooru ||
+          BooruType.lolibooru =>
+            ref.watch(moebooruPostRepoProvider),
+          BooruType.e621 || BooruType.e926 => ref.watch(e621PostRepoProvider),
+          BooruType.zerochan => ref.watch(zerochanPostRepoProvider),
+          BooruType.unknown => ref.watch(emptyPostRepoProvider),
+        });
 
 final postArtistCharacterRepoProvider =
     Provider<PostRepository>((ref) => throw UnimplementedError());

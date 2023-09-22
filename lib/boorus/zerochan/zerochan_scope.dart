@@ -108,8 +108,11 @@ class _SimpleMobileHomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return PostScope(
-      fetcher: (page) => ref.read(postRepoProvider).getPostsFromTags('', page),
+      fetcher: (page) =>
+          ref.read(postRepoProvider(config)).getPostsFromTags('', page),
       builder: (context, postController, errors) => SimpleInfinitePostList(
           errors: errors,
           controller: postController,

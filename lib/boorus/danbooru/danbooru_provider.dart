@@ -32,8 +32,6 @@ class DanbooruProvider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        postRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruPostRepoProvider)),
         bulkDownloadFileNameProvider
             .overrideWithValue(BoorusamaStyledFileNameGenerator()),
         tagRepoProvider

@@ -47,6 +47,8 @@ class SimpleSearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<SimpleSearchPage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return SearchScope(
       initialQuery: widget.initialQuery,
       builder: (state, focus, controller, selectedTagController,
@@ -113,10 +115,11 @@ class _SearchPageState extends ConsumerState<SimpleSearchPage> {
             ),
           ),
         DisplayState.result => PostScope(
-            fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  selectedTagController.rawTags.join(' '),
-                  page,
-                ),
+            fetcher: (page) =>
+                ref.watch(postRepoProvider(config)).getPostsFromTags(
+                      selectedTagController.rawTags.join(' '),
+                      page,
+                    ),
             builder: (context, controller, errors) => SimpleInfinitePostList(
               errors: errors,
               controller: controller,

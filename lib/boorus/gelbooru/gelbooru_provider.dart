@@ -33,9 +33,6 @@ class GelbooruProvider extends ConsumerWidget {
             .overrideWithValue(Md5OnlyFileNameGenerator()),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
-        // posts
-        postRepoProvider
-            .overrideWith((ref) => ref.watch(gelbooruPostRepoProvider)),
         // artist/character posts
         postArtistCharacterRepoProvider.overrideWith(
             (ref) => ref.watch(gelbooruArtistCharacterPostRepoProvider)),

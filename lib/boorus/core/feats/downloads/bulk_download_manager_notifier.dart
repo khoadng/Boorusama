@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -20,7 +21,8 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
   StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
       ref.read(bulkDownloadManagerStatusProvider.notifier);
 
-  PostRepository get postRepo => ref.read(postRepoProvider);
+  PostRepository get postRepo =>
+      ref.read(postRepoProvider(ref.read(currentBooruConfigProvider)));
 
   LoggerService get logger => ref.read(loggerProvider);
 

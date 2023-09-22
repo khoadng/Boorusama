@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/downloads/download_provider.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 
@@ -28,8 +27,6 @@ class MoebooruProvider extends StatelessWidget {
       overrides: [
         bulkDownloadFileNameProvider
             .overrideWithValue(Md5OnlyFileNameGenerator()),
-        postRepoProvider
-            .overrideWith((ref) => ref.watch(moebooruPostRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
         tagRepoProvider

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
@@ -39,8 +40,10 @@ class _SimpleHomePageState extends ConsumerState<SimpleHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return PostScope(
-      fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
+      fetcher: (page) => ref.watch(postRepoProvider(config)).getPostsFromTags(
             selectedTagController.rawTagsString,
             page,
           ),

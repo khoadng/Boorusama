@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
@@ -58,6 +59,8 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return SearchScope(
       initialQuery: widget.initialQuery,
       builder: (state, focus, controller, selectedTagController,
@@ -122,10 +125,11 @@ class _SearchPageState extends ConsumerState<MoebooruSearchPage> {
             ),
           ),
         DisplayState.result => PostScope(
-            fetcher: (page) => ref.watch(postRepoProvider).getPostsFromTags(
-                  selectedTagController.rawTags.join(' '),
-                  page,
-                ),
+            fetcher: (page) =>
+                ref.watch(postRepoProvider(config)).getPostsFromTags(
+                      selectedTagController.rawTags.join(' '),
+                      page,
+                    ),
             builder: (context, controller, errors) => MoebooruInfinitePostList(
               errors: errors,
               controller: controller,
