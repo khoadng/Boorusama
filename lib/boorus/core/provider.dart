@@ -14,6 +14,11 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
+import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete_providers.dart';
+import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -46,7 +51,29 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
 );
 
 final autocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) => throw UnimplementedError());
+    Provider.family<AutocompleteRepository, BooruConfig>(
+        (ref, config) => switch (config.booruType) {
+              BooruType.danbooru ||
+              BooruType.aibooru ||
+              BooruType.safebooru ||
+              BooruType.testbooru =>
+                ref.watch(danbooruAutocompleteRepoProvider),
+              BooruType.gelbooru ||
+              BooruType.rule34xxx =>
+                ref.watch(gelbooruAutocompleteRepoProvider),
+              BooruType.konachan ||
+              BooruType.yandere ||
+              BooruType.sakugabooru ||
+              BooruType.lolibooru =>
+                ref.watch(moebooruAutocompleteRepoProvider),
+              BooruType.e621 ||
+              BooruType.e926 =>
+                ref.watch(e621AutocompleteRepoProvider),
+              BooruType.zerochan => ref.watch(zerochanAutocompleteRepoProvider),
+              BooruType.unknown => AutocompleteRepositoryBuilder(
+                  autocomplete: (_) async => [],
+                ),
+            });
 
 final postRepoProvider =
     Provider<PostRepository>((ref) => throw UnimplementedError());

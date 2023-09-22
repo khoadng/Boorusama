@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 
-final suggestionsProvider = NotifierProvider<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>>(
+final suggestionsProvider = NotifierProvider.family<SuggestionsNotifier,
+    IMap<String, IList<AutocompleteData>>, BooruConfig>(
   SuggestionsNotifier.new,
   dependencies: [
     autocompleteRepoProvider,
@@ -26,24 +26,25 @@ final fallbackSuggestionsProvider =
 final suggestionProvider =
     Provider.autoDispose.family<IList<AutocompleteData>, String>(
   (ref, tag) {
-    final suggestions = ref.watch(suggestionsProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final suggestions = ref.watch(suggestionsProvider(booruConfig));
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);
   },
   dependencies: [
     suggestionsProvider,
     fallbackSuggestionsProvider,
+    currentBooruConfigProvider,
   ],
 );
 
 class SuggestionsNotifier
-    extends Notifier<IMap<String, IList<AutocompleteData>>> with DebounceMixin {
+    extends FamilyNotifier<IMap<String, IList<AutocompleteData>>, BooruConfig>
+    with DebounceMixin {
   SuggestionsNotifier() : super();
 
   @override
-  IMap<String, IList<AutocompleteData>> build() {
-    ref.watch(currentBooruConfigProvider);
-
+  IMap<String, IList<AutocompleteData>> build(BooruConfig arg) {
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
@@ -58,7 +59,7 @@ class SuggestionsNotifier
     if (state.containsKey(sanitized)) return;
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
-    final autocompleteRepo = ref.read(autocompleteRepoProvider);
+    final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
 
     debounce(
       'suggestions',

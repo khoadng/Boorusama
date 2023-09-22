@@ -62,60 +62,12 @@ void goToBlacklistedTagsSearchPage(
   required void Function(List<TagSearchItem> tags, String currentQuery)
       onSelectDone,
   List<String>? initialTags,
-  required WidgetRef ref,
 }) {
-  final booru = ref.read(currentBooruConfigProvider);
-
   context.navigator.push(MaterialPageRoute(
-    builder: (_) {
-      switch (booru.booruType) {
-        case BooruType.e621:
-        case BooruType.e926:
-          return E621Provider(
-            builder: (context) => BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
-          );
-        case BooruType.unknown:
-          throw UnimplementedError();
-        case BooruType.konachan:
-        case BooruType.yandere:
-        case BooruType.sakugabooru:
-        case BooruType.lolibooru:
-          return MoebooruProvider(
-            builder: (context) => BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
-          );
-        case BooruType.danbooru:
-        case BooruType.safebooru:
-        case BooruType.testbooru:
-        case BooruType.aibooru:
-          return DanbooruProvider(
-            builder: (context) => BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
-          );
-        case BooruType.gelbooru:
-        case BooruType.rule34xxx:
-          return GelbooruProvider(
-            builder: (context) => BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
-          );
-        case BooruType.zerochan:
-          return ZerochanProvider(
-            builder: (context) => BlacklistedTagsSearchPage(
-              initialTags: initialTags,
-              onSelectedDone: onSelectDone,
-            ),
-          );
-      }
-    },
+    builder: (_) => BlacklistedTagsSearchPage(
+      initialTags: initialTags,
+      onSelectedDone: onSelectDone,
+    ),
     settings: const RouteSettings(
       name: RouterPageConstant.blacklistedSearch,
     ),

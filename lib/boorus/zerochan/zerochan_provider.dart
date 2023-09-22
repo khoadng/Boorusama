@@ -31,8 +31,6 @@ class ZerochanProvider extends ConsumerWidget {
             .overrideWith((ref) => DownloadUrlBaseNameFileNameGenerator()),
         postRepoProvider
             .overrideWith((ref) => ref.watch(zerochanPostRepoProvider)),
-        autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(zerochanAutocompleteRepoProvider)),
       ],
       child: Builder(
         builder: builder,

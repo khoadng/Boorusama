@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
@@ -52,7 +53,8 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
     searchStateController: displayState,
-    suggestions: ref.read(suggestionsProvider.notifier),
+    suggestions: ref.read(
+        suggestionsProvider(ref.read(currentBooruConfigProvider)).notifier),
   );
 
   final displayState = ValueNotifier(DisplayState.options);

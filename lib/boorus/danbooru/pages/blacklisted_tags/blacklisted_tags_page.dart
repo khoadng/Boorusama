@@ -61,7 +61,6 @@ class BlacklistedTagsPage extends ConsumerWidget {
       onPressed: () {
         goToBlacklistedTagsSearchPage(
           context,
-          ref: ref,
           onSelectDone: (tagItems, currentQuery) {
             final tagString = [
               ...tagItems.map((e) => e.toString()),
@@ -113,7 +112,6 @@ class BlacklistedTagsList extends ConsumerWidget {
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
                           context,
-                          ref: ref,
                           initialTags: tag.split(' '),
                           onSelectDone: (tagItems, currentQuery) {
                             final tagString = [

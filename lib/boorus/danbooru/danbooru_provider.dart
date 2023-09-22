@@ -40,8 +40,6 @@ class DanbooruProvider extends ConsumerWidget {
             .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
-        autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider)),
         noteRepoProvider
             .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
         postCountRepoProvider

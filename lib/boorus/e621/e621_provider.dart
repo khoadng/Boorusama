@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/feats/notes/note_provider.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
@@ -33,8 +32,6 @@ class E621Provider extends StatelessWidget {
         postRepoProvider.overrideWith((ref) => ref.watch(e621PostRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(e621DownloadFileNameGeneratorProvider)),
-        autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(e621AutocompleteRepoProvider)),
         noteRepoProvider.overrideWith((ref) => ref.watch(e621NoteRepoProvider)),
       ],
       child: Builder(

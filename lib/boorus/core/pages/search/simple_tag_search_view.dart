@@ -11,6 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -91,6 +92,8 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watch(currentBooruConfigProvider);
+
     return ValueListenableBuilder(
       valueListenable: textEditingController,
       builder: (context, query, child) {
@@ -115,7 +118,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                       widget.onSubmitted?.call(context, text),
                   onChanged: (value) {
                     ref
-                        .read(suggestionsProvider.notifier)
+                        .read(suggestionsProvider(config).notifier)
                         .getSuggestions(value);
                   },
                 ),

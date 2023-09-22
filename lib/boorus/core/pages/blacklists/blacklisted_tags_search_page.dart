@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
@@ -52,8 +53,10 @@ class _BlacklistedTagsSearchPageState
   }
 
   void _onTextChanged() {
+    final config = ref.read(currentBooruConfigProvider);
+
     ref
-        .read(suggestionsProvider.notifier)
+        .read(suggestionsProvider(config).notifier)
         .getSuggestions(queryEditingController.text);
 
     setState(() {

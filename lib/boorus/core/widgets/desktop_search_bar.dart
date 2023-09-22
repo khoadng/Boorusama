@@ -9,6 +9,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/utils.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
@@ -49,6 +50,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.read(currentBooruConfigProvider);
+
     return ValueListenableBuilder(
       valueListenable: showSuggestions,
       builder: (context, show, child) {
@@ -125,7 +128,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 queryEditingController: textEditingController,
                 onFocusChanged: (value) => showSuggestions.value = value,
                 onChanged: (value) => ref
-                    .read(suggestionsProvider.notifier)
+                    .read(suggestionsProvider(config).notifier)
                     .getSuggestions(value),
                 onSubmitted: (value) {
                   selectedTagController.addTag(value);
