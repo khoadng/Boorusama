@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/count/post_count_provider.dart';
@@ -32,8 +31,6 @@ class DanbooruProvider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        bulkDownloadFileNameProvider
-            .overrideWithValue(BoorusamaStyledFileNameGenerator()),
         tagRepoProvider
             .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
         downloadFileNameGeneratorProvider.overrideWith(

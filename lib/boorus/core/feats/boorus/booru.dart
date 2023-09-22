@@ -106,6 +106,8 @@ extension BooruTypeX on BooruType {
         BooruType.safebooru,
       ].contains(this);
 
+  bool get isE621Based => this == BooruType.e621 || this == BooruType.e926;
+
   bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
 
   bool get supportBlacklistedTags => isDanbooruBased;

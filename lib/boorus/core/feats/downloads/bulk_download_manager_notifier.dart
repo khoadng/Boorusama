@@ -21,8 +21,9 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
   StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
       ref.read(bulkDownloadManagerStatusProvider.notifier);
 
-  PostRepository get postRepo =>
-      ref.read(postRepoProvider(ref.read(currentBooruConfigProvider)));
+  PostRepository get postRepo => ref.read(postRepoProvider(booruConfig));
+
+  BooruConfig get booruConfig => ref.read(currentBooruConfigProvider);
 
   LoggerService get logger => ref.read(loggerProvider);
 
@@ -68,7 +69,8 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
-    final fileNameGenerator = ref.read(bulkDownloadFileNameProvider);
+    final fileNameGenerator =
+        ref.read(bulkDownloadFileNameProvider(booruConfig));
 
     try {
       var page = 1;

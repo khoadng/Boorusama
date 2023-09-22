@@ -13,7 +13,6 @@ final suggestionsProvider = NotifierProvider.family<SuggestionsNotifier,
     IMap<String, IList<AutocompleteData>>, BooruConfig>(
   SuggestionsNotifier.new,
   dependencies: [
-    autocompleteRepoProvider,
     currentBooruConfigProvider,
   ],
 );

@@ -26,8 +26,6 @@ class E621Provider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        bulkDownloadFileNameProvider
-            .overrideWithValue(Md5OnlyFileNameGenerator()),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(e621DownloadFileNameGeneratorProvider)),
         noteRepoProvider.overrideWith((ref) => ref.watch(e621NoteRepoProvider)),

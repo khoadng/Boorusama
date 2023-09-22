@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -62,8 +63,6 @@ final bulkDownloaderManagerProvider =
     NotifierProvider<BulkDownloadManagerNotifier, void>(
   BulkDownloadManagerNotifier.new,
   dependencies: [
-    bulkDownloadFileNameProvider,
-    postRepoProvider,
     currentBooruConfigProvider,
   ],
 );
@@ -83,8 +82,17 @@ final bulkDownloadManagerStatusProvider =
   return BulkDownloadManagerStatus.initial;
 });
 
-final bulkDownloadFileNameProvider = Provider<FileNameGenerator<Post>>((ref) {
-  throw UnimplementedError();
+final bulkDownloadFileNameProvider =
+    Provider.family<FileNameGenerator<Post>, BooruConfig>((ref, config) {
+  if (config.booruType.isDanbooruBased) {
+    return BoorusamaStyledFileNameGenerator();
+  }
+
+  if (config.booruType.isE621Based || config.booruType.isGelbooruBased) {
+    return Md5OnlyFileNameGenerator();
+  }
+
+  return DownloadUrlBaseNameFileNameGenerator();
 });
 
 final bulkDownloadStateProvider =

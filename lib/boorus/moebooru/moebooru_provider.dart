@@ -25,8 +25,6 @@ class MoebooruProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        bulkDownloadFileNameProvider
-            .overrideWithValue(Md5OnlyFileNameGenerator()),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(moebooruDownloadFileNameGeneratorProvider)),
         tagRepoProvider

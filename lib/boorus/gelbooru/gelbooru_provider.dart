@@ -29,8 +29,6 @@ class GelbooruProvider extends ConsumerWidget {
 
     return ProviderScope(
       overrides: [
-        bulkDownloadFileNameProvider
-            .overrideWithValue(Md5OnlyFileNameGenerator()),
         downloadFileNameGeneratorProvider.overrideWith(
             (ref) => ref.watch(gelbooruDownloadFileNameGeneratorProvider)),
         // artist/character posts
