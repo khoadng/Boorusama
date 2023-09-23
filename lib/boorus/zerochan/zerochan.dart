@@ -11,36 +11,37 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/pages/home/home_page_scaffold.dart';
 
-class ZerochanBuilder extends SimpleBooruBuilder {
-  ZerochanBuilder()
-      : super(
-          createConfigPageBuilder: (
-            context,
-            url,
-            booruType, {
-            backgroundColor,
-          }) =>
-              ZerochanCreateConfigPage(
+class ZerochanBuilder implements BooruBuilder {
+  @override
+  CreateConfigPageBuilder get createConfigPageBuilder => (
+        context,
+        url,
+        booruType, {
+        backgroundColor,
+      }) =>
+          ZerochanCreateConfigPage(
             url: url,
             booruType: booruType,
             backgroundColor: backgroundColor,
-          ),
-          homePageBuilder: (
+          );
+
+  @override
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => const HomePageScaffold();
+
+  //FIXME: this is a hack, we should have a proper update page
+  @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+        context,
+        config, {
+        backgroundColor,
+      }) =>
+          createConfigPageBuilder(
             context,
-            config,
-          ) =>
-              const HomePageScaffold(),
-          updateConfigPageBuilder: (
-            context,
-            config, {
-            backgroundColor,
-          }) =>
-              ZerochanCreateConfigPage(
-            url: config.url,
-            booruType: config.booruType,
+            config.url,
+            config.booruType,
             backgroundColor: backgroundColor,
-          ),
-        );
+          );
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

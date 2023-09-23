@@ -42,6 +42,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+
     return switch (phase) {
       AddBooruPhase.url => AddBooruPageInternal(
           backgroundColor: widget.backgroundColor,

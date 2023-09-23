@@ -104,7 +104,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 }
 
-class _Boorus extends StatelessWidget {
+class _Boorus extends ConsumerWidget {
   const _Boorus({
     super.key,
     required this.ref,
@@ -115,7 +115,9 @@ class _Boorus extends StatelessWidget {
   final BooruConfig config;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+
     if (booruBuilders.containsKey(config.booruType)) {
       return booruBuilders[config.booruType]!.homePageBuilder(context, config);
     } else {

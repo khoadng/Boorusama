@@ -78,6 +78,8 @@ class BoorusRoutes {
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
+          final booruBuilders = ref.read(booruBuildersProvider);
+
           return MaterialPage(
             key: state.pageKey,
             child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
@@ -103,6 +105,8 @@ class BoorusRoutes {
           final config = ref
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
+
+          final booruBuilders = ref.read(booruBuildersProvider);
 
           return DialogPage(
             key: state.pageKey,
