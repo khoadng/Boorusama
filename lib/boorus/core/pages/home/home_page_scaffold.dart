@@ -3,43 +3,53 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/home/simple_home_page.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/pages/home/desktop_home_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
-import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/boorus/core/widgets/posts/simple_infinite_post_list.dart';
-import 'package:boorusama/boorus/home_page.dart';
-import 'package:boorusama/boorus/zerochan/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'mobile_home_page_scaffold.dart';
 
-class ZerochanHomePage extends ConsumerStatefulWidget {
-  const ZerochanHomePage({
+class HomePageScaffold extends ConsumerStatefulWidget {
+  const HomePageScaffold({
     super.key,
     required this.config,
+    required this.onPostTap,
+    required this.onSearchTap,
   });
 
   final BooruConfig config;
+  final void Function(
+    BuildContext context,
+    List<Post> posts,
+    Post post,
+    AutoScrollController scrollController,
+    Settings settings,
+    int initialIndex,
+  ) onPostTap;
+  final void Function() onSearchTap;
 
   @override
-  ConsumerState<ZerochanHomePage> createState() => _ZerochanHomePageState();
+  ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
 }
 
-class _ZerochanHomePageState extends ConsumerState<ZerochanHomePage> {
+class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   @override
   Widget build(BuildContext context) {
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => _SimpleMobileHomeView(
+      mobileView: (controller) => MobileHomePageScaffold(
         controller: controller,
+        onPostTap: widget.onPostTap,
+        onSearchTap: widget.onSearchTap,
       ),
       mobileMenuBuilder: (context, controller) => [],
       desktopMenuBuilder: (context, controller, constraints) => [
@@ -88,52 +98,10 @@ class _ZerochanHomePageState extends ConsumerState<ZerochanHomePage> {
         ),
       ],
       desktopViews: const [
-        SimpleHomePage(),
+        DesktopHomePageScaffold(),
         BookmarkPage(),
         BlacklistedTagPage(),
       ],
-    );
-  }
-}
-
-class _SimpleMobileHomeView extends ConsumerWidget {
-  const _SimpleMobileHomeView({
-    required this.controller,
-  });
-
-  final HomePageController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.read(currentBooruConfigProvider);
-
-    return PostScope(
-      fetcher: (page) =>
-          ref.read(postRepoProvider(config)).getPostsFromTags('', page),
-      builder: (context, postController, errors) => SimpleInfinitePostList(
-          errors: errors,
-          controller: postController,
-          sliverHeaderBuilder: (context) => [
-                SliverAppBar(
-                  backgroundColor: context.theme.scaffoldBackgroundColor,
-                  toolbarHeight: kToolbarHeight * 1.2,
-                  title: HomeSearchBar(
-                    onMenuTap: controller.openMenu,
-                    onTap: () => goToZerochanSearchPage(context),
-                  ),
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
-                ),
-              ],
-          onPostTap: (context, posts, post, scrollController, settings,
-                  initialIndex) =>
-              goToZerochanPostDetailsPage(
-                context: context,
-                posts: posts,
-                scrollController: scrollController,
-                initialIndex: initialIndex,
-              )),
     );
   }
 }

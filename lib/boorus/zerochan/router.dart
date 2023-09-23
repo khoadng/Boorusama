@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/search/simple_search_page.dart';
 import 'package:boorusama/boorus/core/pages/simple_post_details_page.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 
 void goToZerochanSearchPage(
@@ -18,18 +17,16 @@ void goToZerochanSearchPage(
 }) {
   context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
-    child: CustomContextMenuOverlay(
-      child: SimpleSearchPage(
-          initialQuery: tag,
-          onPostTap: (context, posts, post, scrollController, settings,
-                  initialIndex) =>
-              goToZerochanPostDetailsPage(
-                context: context,
-                posts: posts,
-                initialIndex: initialIndex,
-                scrollController: scrollController,
-              )),
-    ),
+    child: SimpleSearchPage(
+        initialQuery: tag,
+        onPostTap:
+            (context, posts, post, scrollController, settings, initialIndex) =>
+                goToZerochanPostDetailsPage(
+                  context: context,
+                  posts: posts,
+                  initialIndex: initialIndex,
+                  scrollController: scrollController,
+                )),
   ));
 }
 

@@ -49,108 +49,110 @@ class _SearchPageState extends ConsumerState<SimpleSearchPage> {
   Widget build(BuildContext context) {
     final config = ref.read(currentBooruConfigProvider);
 
-    return SearchScope(
-      initialQuery: widget.initialQuery,
-      builder: (state, focus, controller, selectedTagController,
-              searchController, allowSearch) =>
-          switch (state) {
-        DisplayState.options => Scaffold(
-            floatingActionButton: SearchButton(
-              allowSearch: allowSearch,
-              onSearch: () {
-                searchController.search();
-              },
-            ),
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-              child: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                onBack: () => state != DisplayState.options
-                    ? searchController.resetToOptions()
-                    : context.navigator.pop(),
+    return CustomContextMenuOverlay(
+      child: SearchScope(
+        initialQuery: widget.initialQuery,
+        builder: (state, focus, controller, selectedTagController,
+                searchController, allowSearch) =>
+            switch (state) {
+          DisplayState.options => Scaffold(
+              floatingActionButton: SearchButton(
+                allowSearch: allowSearch,
+                onSearch: () {
+                  searchController.search();
+                },
+              ),
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: controller,
+                  onSubmitted: (value) => searchController.submit(value),
+                  onBack: () => state != DisplayState.options
+                      ? searchController.resetToOptions()
+                      : context.navigator.pop(),
+                ),
+              ),
+              body: SafeArea(
+                child: CustomScrollView(slivers: [
+                  SliverPinnedHeader(
+                    child: SelectedTagListWithData(
+                      controller: selectedTagController,
+                      onDeleted: (value) => searchController.resetToOptions(),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SearchLandingView(
+                      onHistoryCleared: () => ref
+                          .read(searchHistoryProvider.notifier)
+                          .clearHistories(),
+                      onHistoryRemoved: (value) => ref
+                          .read(searchHistoryProvider.notifier)
+                          .removeHistory(value.query),
+                      onHistoryTap: (value) =>
+                          searchController.tapHistoryTag(value),
+                      onTagTap: (value) => searchController.tapTag(value),
+                    ),
+                  ),
+                ]),
               ),
             ),
-            body: SafeArea(
-              child: CustomScrollView(slivers: [
-                SliverPinnedHeader(
-                  child: SelectedTagListWithData(
+          DisplayState.suggestion => Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
+                child: SearchAppBar(
+                  focusNode: focus,
+                  queryEditingController: controller,
+                  onSubmitted: (value) => searchController.submit(value),
+                  onBack: () => state != DisplayState.options
+                      ? searchController.resetToOptions()
+                      : context.navigator.pop(),
+                ),
+              ),
+              body: DefaultSearchSuggestionView(
+                selectedTagController: selectedTagController,
+                textEditingController: controller,
+                searchController: searchController,
+              ),
+            ),
+          DisplayState.result => PostScope(
+              fetcher: (page) =>
+                  ref.watch(postRepoProvider(config)).getPostsFromTags(
+                        selectedTagController.rawTags.join(' '),
+                        page,
+                      ),
+              builder: (context, controller, errors) => SimpleInfinitePostList(
+                errors: errors,
+                controller: controller,
+                sliverHeaderBuilder: (context) => [
+                  SearchAppBarResultView(
+                    onTap: () => searchController.goToSuggestions(),
+                    onBack: () => searchController.resetToOptions(),
+                  ),
+                  SliverToBoxAdapter(
+                      child: SelectedTagListWithData(
                     controller: selectedTagController,
                     onDeleted: (value) => searchController.resetToOptions(),
+                  )),
+                  SliverToBoxAdapter(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (ref.watch(currentBooruConfigProvider).booruType ==
+                            BooruType.gelbooru)
+                          ResultHeaderWithProvider(
+                            selectedTags: selectedTagController.rawTags,
+                          ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
-                ),
-                SliverToBoxAdapter(
-                  child: SearchLandingView(
-                    onHistoryCleared: () => ref
-                        .read(searchHistoryProvider.notifier)
-                        .clearHistories(),
-                    onHistoryRemoved: (value) => ref
-                        .read(searchHistoryProvider.notifier)
-                        .removeHistory(value.query),
-                    onHistoryTap: (value) =>
-                        searchController.tapHistoryTag(value),
-                    onTagTap: (value) => searchController.tapTag(value),
-                  ),
-                ),
-              ]),
-            ),
-          ),
-        DisplayState.suggestion => Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-              child: SearchAppBar(
-                focusNode: focus,
-                queryEditingController: controller,
-                onSubmitted: (value) => searchController.submit(value),
-                onBack: () => state != DisplayState.options
-                    ? searchController.resetToOptions()
-                    : context.navigator.pop(),
+                ],
+                onPostTap: widget.onPostTap,
               ),
             ),
-            body: DefaultSearchSuggestionView(
-              selectedTagController: selectedTagController,
-              textEditingController: controller,
-              searchController: searchController,
-            ),
-          ),
-        DisplayState.result => PostScope(
-            fetcher: (page) =>
-                ref.watch(postRepoProvider(config)).getPostsFromTags(
-                      selectedTagController.rawTags.join(' '),
-                      page,
-                    ),
-            builder: (context, controller, errors) => SimpleInfinitePostList(
-              errors: errors,
-              controller: controller,
-              sliverHeaderBuilder: (context) => [
-                SearchAppBarResultView(
-                  onTap: () => searchController.goToSuggestions(),
-                  onBack: () => searchController.resetToOptions(),
-                ),
-                SliverToBoxAdapter(
-                    child: SelectedTagListWithData(
-                  controller: selectedTagController,
-                  onDeleted: (value) => searchController.resetToOptions(),
-                )),
-                SliverToBoxAdapter(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (ref.watch(currentBooruConfigProvider).booruType ==
-                          BooruType.gelbooru)
-                        ResultHeaderWithProvider(
-                          selectedTags: selectedTagController.rawTags,
-                        ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
-              ],
-              onPostTap: widget.onPostTap,
-            ),
-          ),
-      },
+        },
+      ),
     );
   }
 }

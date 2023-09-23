@@ -13,16 +13,18 @@ import 'package:boorusama/boorus/core/widgets/posts/simple_infinite_post_list.da
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 
-class SimpleHomePage extends ConsumerStatefulWidget {
-  const SimpleHomePage({
+class DesktopHomePageScaffold extends ConsumerStatefulWidget {
+  const DesktopHomePageScaffold({
     super.key,
   });
 
   @override
-  ConsumerState<SimpleHomePage> createState() => _SimpleHomePageState();
+  ConsumerState<DesktopHomePageScaffold> createState() =>
+      _DesktopHomePageScaffoldState();
 }
 
-class _SimpleHomePageState extends ConsumerState<SimpleHomePage> {
+class _DesktopHomePageScaffoldState
+    extends ConsumerState<DesktopHomePageScaffold> {
   late final selectedTagController =
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
