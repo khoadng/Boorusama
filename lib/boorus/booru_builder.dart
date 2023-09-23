@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
+import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
@@ -92,11 +92,11 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       ),
       BooruType.e621: E621Builder(
         postRepo: ref.watch(e621PostRepoProvider),
-        autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
+        client: ref.watch(e621ClientProvider),
       ),
       BooruType.e926: E621Builder(
         postRepo: ref.watch(e621PostRepoProvider),
-        autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
+        client: ref.watch(e621ClientProvider),
       ),
       BooruType.aibooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
