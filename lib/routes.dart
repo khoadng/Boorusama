@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -268,17 +267,14 @@ class Routes {
             name: state.name,
             child: Builder(builder: (_) {
               switch (booru.booruType) {
-                case BooruType.e621:
-                case BooruType.e926:
-                  return E621Provider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
                 case BooruType.unknown:
                   throw UnimplementedError();
                 case BooruType.konachan:
                 case BooruType.yandere:
                 case BooruType.sakugabooru:
                 case BooruType.lolibooru:
+                case BooruType.e621:
+                case BooruType.e926:
                   return const BulkDownloadPage();
                 case BooruType.danbooru:
                 case BooruType.safebooru:

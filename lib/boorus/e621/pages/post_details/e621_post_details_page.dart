@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -45,12 +44,10 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
     bool hero = false,
   }) =>
       MaterialPageRoute(
-          builder: (_) => E621Provider(
-                builder: (_) => E621PostDetailsPage(
-                  intitialIndex: initialIndex,
-                  posts: posts,
-                  onExit: (page) => scrollController?.scrollToIndex(page),
-                ),
+          builder: (_) => E621PostDetailsPage(
+                intitialIndex: initialIndex,
+                posts: posts,
+                onExit: (page) => scrollController?.scrollToIndex(page),
               ));
 
   @override

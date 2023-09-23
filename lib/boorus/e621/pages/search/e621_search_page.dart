@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/flutter.dart';
@@ -32,19 +31,16 @@ class E621SearchPage extends ConsumerStatefulWidget {
   final String? initialQuery;
 
   static Route<T> routeOf<T>({
+    required BuildContext context,
     String? tag,
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: E621Provider(
-        builder: (context) {
-          return CustomContextMenuOverlay(
-            child: E621SearchPage(
-              metatagHighlightColor: context.colorScheme.primary,
-              initialQuery: tag,
-            ),
-          );
-        },
+      child: CustomContextMenuOverlay(
+        child: E621SearchPage(
+          metatagHighlightColor: context.colorScheme.primary,
+          initialQuery: tag,
+        ),
       ),
     );
   }

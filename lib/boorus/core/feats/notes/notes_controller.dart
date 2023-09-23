@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/functional.dart';
 
 class NotesControllerState extends Equatable {
@@ -52,7 +53,9 @@ class NotesControllerNotifier
 
   Future<void> load() async {
     if (state.notes.isEmpty && arg.isTranslated) {
-      final notes = await ref.read(noteRepoProvider).getNotes(arg.id);
+      final notes = await ref
+          .read(noteRepoProvider(ref.read(currentBooruConfigProvider)))
+          .getNotes(arg.id);
       state = state.copyWith(
         notes: notes.lock,
       );

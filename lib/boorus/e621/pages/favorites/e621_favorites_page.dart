@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -18,10 +17,8 @@ class E621FavoritesPage extends ConsumerWidget {
     super.key,
   });
 
-  static Widget of(BuildContext context) => E621Provider(
-        builder: (_) => const CustomContextMenuOverlay(
-          child: E621FavoritesPage(),
-        ),
+  static Widget of(BuildContext context) => const CustomContextMenuOverlay(
+        child: E621FavoritesPage(),
       );
 
   @override

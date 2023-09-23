@@ -6,7 +6,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/artists/e621_artist_page.dart';
 import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
@@ -36,12 +35,10 @@ void goToE621DetailsPage({
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => E621Provider(
-        builder: (context) => E621PostDetailsDesktopPage(
-          initialIndex: initialPage,
-          posts: posts,
-          onExit: (index) => scrollController?.scrollToIndex(index),
-        ),
+      builder: (context) => E621PostDetailsDesktopPage(
+        initialIndex: initialPage,
+        posts: posts,
+        onExit: (index) => scrollController?.scrollToIndex(index),
       ),
     );
   }
@@ -51,7 +48,10 @@ void goToE621SearchPage(
   BuildContext context, {
   String? tag,
 }) =>
-    context.navigator.push(E621SearchPage.routeOf(tag: tag));
+    context.navigator.push(E621SearchPage.routeOf(
+      context: context,
+      tag: tag,
+    ));
 
 void goToE621FavoritesPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(

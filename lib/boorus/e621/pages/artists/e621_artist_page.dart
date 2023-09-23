@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'e621_tag_details_page.dart';
 
@@ -19,14 +18,10 @@ class E621ArtistPage extends ConsumerWidget {
   final String artistName;
 
   static Widget of(BuildContext context, String tag) {
-    return E621Provider(
-      builder: (_) {
-        return CustomContextMenuOverlay(
-          child: E621ArtistPage(
-            artistName: tag,
-          ),
-        );
-      },
+    return CustomContextMenuOverlay(
+      child: E621ArtistPage(
+        artistName: tag,
+      ),
     );
   }
 
