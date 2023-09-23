@@ -1,22 +1,20 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/post_media.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -55,100 +53,35 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
       _E621PostDetailsPageState();
 }
 
-class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
-    with PostDetailsPageMixin<E621PostDetailsPage, E621Post> {
-  late final _controller = DetailsPageController(
-      swipeDownToDismiss: !posts[widget.intitialIndex].isVideo);
-
-  @override
-  DetailsPageController get controller => _controller;
-
-  @override
-  Function(int page) get onPageChanged => (page) => ref
-      .read(postShareProvider(posts[page]).notifier)
-      .updateInformation(posts[page]);
-
-  @override
+class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
   List<E621Post> get posts => widget.posts;
 
   @override
-  int get initialPage => widget.intitialIndex;
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return DetailsPage(
-      controller: controller,
-      intitialIndex: widget.intitialIndex,
+    final settings = ref.watch(settingsProvider);
+
+    return PostDetailsPageScaffold(
+      posts: posts,
+      initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
-      onPageChanged: onSwiped,
-      bottomSheet: (page) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
-            border: Border(
-              top: BorderSide(
-                color: context.theme.dividerColor,
-                width: 1,
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (posts[page].isVideo)
-                ValueListenableBuilder<VideoProgress>(
-                  valueListenable: videoProgress,
-                  builder: (_, progress, __) => BooruVideoProgressBar(
-                    progress: progress,
-                    onSeek: (position) => onVideoSeekTo(position, page),
-                  ),
-                ),
-              E621InformationSection(
-                post: posts[page],
-                showSource: true,
-              ),
-              E621PostActionToolbar(post: posts[page]),
-            ],
-          ),
-        );
-      },
-      targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-        imageUrl: posts[page].thumbnailFromSettings(ref.read(settingsProvider)),
-        aspectRatio: posts[page].aspectRatio,
+      onTagTap: (tag) => goToE621SearchPage(context, tag: tag),
+      toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
+      sliverArtistPostsBuilder: (context, post) =>
+          E621RecommendedArtistList(post: post),
+      tagListBuilder: (context, post) => E621TagsTile(post: post),
+      infoBuilder: (context, post) => E621InformationSection(
+        post: post,
+        showSource: true,
       ),
-      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets =
-            _buildWidgets(context, expanded, page, currentPage, ref);
-
-        // final characters =
-        //     ref.watch(danbooruPostDetailsCharacterProvider(posts[page].id));
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: CustomScrollView(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            controller: PageContentScrollController.of(context),
-            slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => widgets[index],
-                  childCount: widgets.length,
-                ),
-              ),
-              // const RelatedPostsSection(),
-              if (expanded && page == currentPage)
-                E621RecommendedArtistList(post: posts[page]),
-            ],
-          ),
-        );
+      swipeImageUrlBuilder: (post) => post.thumbnailFromSettings(settings),
+      placeholderImageUrlBuilder: (post, currentPage) =>
+          currentPage == widget.intitialIndex && post.isTranslated
+              ? null
+              : post.thumbnailImageUrl,
+      imageOverlayBuilder: (constraints, post) {
+        final noteState = ref.watch(notesControllerProvider(post));
+        return noteOverlayBuilderDelegate(constraints, post, noteState);
       },
-      pageCount: posts.length,
       topRightButtonsBuilder: (page, expanded) {
         final post = posts[page];
         final noteState = ref.watch(notesControllerProvider(post));
@@ -169,100 +102,11 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage>
           ),
         ];
       },
+      showSourceTile: false,
+      artistInfoBuilder: (context, post) => E621ArtistSection(post: post),
     );
-  }
-
-  List<Widget> _buildWidgets(
-    BuildContext context,
-    bool expanded,
-    int page,
-    int currentPage,
-    WidgetRef ref,
-  ) {
-    final post = posts[page];
-    final noteState = ref.watch(notesControllerProvider(post));
-    // final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
-    // final tags = ref.watch(danbooruPostDetailsTagsProvider(post.id));
-    final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = PostMedia(
-      inFocus: !expanded && page == currentPage,
-      post: post,
-      imageUrl: post.sampleImageUrl,
-      // Prevent placeholder image from showing when first loaded a post with translated image
-      placeholderImageUrl:
-          currentPage == widget.intitialIndex && post.isTranslated
-              ? null
-              : post.thumbnailImageUrl,
-      onImageTap: onImageTap,
-      onCurrentVideoPositionChanged: onCurrentPositionChanged,
-      onVideoVisibilityChanged: onVisibilityChanged,
-      imageOverlayBuilder: (constraints) =>
-          noteOverlayBuilderDelegate(constraints, post, noteState),
-      useHero: page == currentPage,
-      onImageZoomUpdated: onZoomUpdated,
-      onVideoPlayerCreated: (controller) =>
-          onVideoPlayerCreated(controller, page),
-      onWebmVideoPlayerCreated: (controller) =>
-          onWebmVideoPlayerCreated(controller, page),
-      autoPlay: true,
-    );
-
-    return [
-      if (!expandedOnCurrentPage)
-        SizedBox(
-          height: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).viewPadding.top,
-          child: RepaintBoundary(child: media),
-        )
-      else
-        RepaintBoundary(child: media),
-      if (!expandedOnCurrentPage)
-        SizedBox(height: MediaQuery.of(context).size.height),
-      if (expandedOnCurrentPage) ...[
-        E621InformationSection(
-          post: post,
-          showSource: true,
-        ),
-        const Divider(height: 8, thickness: 1),
-        RepaintBoundary(
-          child: E621PostActionToolbar(post: post),
-        ),
-        const Divider(height: 8, thickness: 1),
-        E621ArtistSection(post: post),
-        //FIXME: implement stats tile
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(vertical: 8),
-        //   child: DanbooruPostStatsTile(post: post),
-        // ),
-        const Divider(height: 8, thickness: 1),
-        E621TagsTile(post: post),
-        FileDetailsSection(post: post),
-        const Divider(height: 8, thickness: 1),
-      ],
-    ];
   }
 }
-
-// class DanbooruPostStatsTile extends ConsumerWidget {
-//   const DanbooruPostStatsTile({
-//     super.key,
-//     required this.post,
-//   });
-
-//   final DanbooruPost post;
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final comments = ref.watch(danbooruCommentProvider(post.id));
-
-//     return RepaintBoundary(
-//       child: PostStatsTile(
-//         post: post,
-//         totalComments: comments?.length ?? 0,
-//       ),
-//     );
-//   }
-// }
 
 class E621ArtistSection extends ConsumerWidget {
   const E621ArtistSection({

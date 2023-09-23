@@ -64,8 +64,8 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
   ) onPostTap;
 
   @override
-  ConsumerState<InfinitePostListScaffold> createState() =>
-      _InfinitePostListScaffoldState();
+  ConsumerState<InfinitePostListScaffold<T>> createState() =>
+      _InfinitePostListScaffoldState<T>();
 }
 
 class _InfinitePostListScaffoldState<T extends Post>
@@ -158,7 +158,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                 isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
-                        widget.onPostTap.call(
+                        widget.onPostTap(
                           context,
                           items,
                           post,
