@@ -1,10 +1,13 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
-import 'package:flutter/widgets.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,

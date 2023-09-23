@@ -1,6 +1,6 @@
+// Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-
 import 'create_danbooru_config_page.dart';
 import 'danbooru_scope.dart';
 

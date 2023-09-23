@@ -1,16 +1,18 @@
 // Flutter imports:
-import 'package:boorusama/flutter.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_api_key_field.dart';
+import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/flutter.dart';
 
 class CreateGelbooruConfigPage extends ConsumerStatefulWidget {
   const CreateGelbooruConfigPage({

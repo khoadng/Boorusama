@@ -1,7 +1,7 @@
+// Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
-
 import 'create_moebooru_config_page.dart';
 
 class MoebooruBuilder implements BooruBuilder {
