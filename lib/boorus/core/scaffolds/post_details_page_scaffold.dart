@@ -14,8 +14,8 @@ import 'package:boorusama/boorus/core/widgets/simple_post_action_toolbar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class SimplePostDetailsPage extends ConsumerStatefulWidget {
-  const SimplePostDetailsPage({
+class PostDetailsPageScaffold extends ConsumerStatefulWidget {
+  const PostDetailsPageScaffold({
     super.key,
     required this.posts,
     required this.initialIndex,
@@ -29,11 +29,13 @@ class SimplePostDetailsPage extends ConsumerStatefulWidget {
   final void Function(String tag) onTagTap;
 
   @override
-  ConsumerState<SimplePostDetailsPage> createState() => _PostDetailPageState();
+  ConsumerState<PostDetailsPageScaffold> createState() =>
+      _PostDetailPageScaffoldState();
 }
 
-class _PostDetailPageState extends ConsumerState<SimplePostDetailsPage>
-    with PostDetailsPageMixin<SimplePostDetailsPage, Post> {
+class _PostDetailPageScaffoldState
+    extends ConsumerState<PostDetailsPageScaffold>
+    with PostDetailsPageMixin<PostDetailsPageScaffold, Post> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
 

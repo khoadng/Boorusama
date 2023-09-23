@@ -2,9 +2,14 @@
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
+import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'e621_scope.dart';
 
 class E621Builder implements BooruBuilder {
+  E621Builder({required this.postRepo});
+
+  final E621PostRepository postRepo;
+
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
@@ -31,4 +36,10 @@ class E621Builder implements BooruBuilder {
             config: config,
             backgroundColor: backgroundColor,
           );
+
+  @override
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
+        tags,
+        page,
+      );
 }

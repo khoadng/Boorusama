@@ -12,15 +12,15 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/home/desktop_home_page_scaffold.dart';
-import 'package:boorusama/boorus/core/pages/search/simple_search_page.dart';
-import 'package:boorusama/boorus/core/pages/simple_post_details_page.dart';
+import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
+import 'desktop_home_page_scaffold.dart';
 import 'mobile_home_page_scaffold.dart';
+import 'post_details_page_scaffold.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
@@ -123,7 +123,7 @@ void _goToSearchPage(
 }) {
   context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
-    child: SimpleSearchPage(
+    child: SearchPageScaffold(
         initialQuery: tag,
         onPostTap:
             (context, posts, post, scrollController, settings, initialIndex) =>
@@ -143,7 +143,7 @@ void _goToPostDetailsPage({
   AutoScrollController? scrollController,
 }) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => SimplePostDetailsPage(
+    builder: (_) => PostDetailsPageScaffold(
       posts: posts,
       initialIndex: initialIndex,
       onExit: (page) => scrollController?.scrollToIndex(page),

@@ -103,8 +103,9 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.lolibooru =>
             ref.watch(moebooruPostRepoProvider),
           BooruType.e621 || BooruType.e926 => ref.watch(e621PostRepoProvider),
-          BooruType.zerochan => ref.watch(zerochanPostRepoProvider),
-          BooruType.unknown => ref.watch(emptyPostRepoProvider),
+          BooruType.zerochan ||
+          BooruType.unknown =>
+            ref.watch(emptyPostRepoProvider),
         });
 
 final postArtistCharacterRepoProvider =

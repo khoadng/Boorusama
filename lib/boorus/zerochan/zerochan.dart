@@ -3,15 +3,30 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
-import 'package:boorusama/boorus/core/pages/home/home_page_scaffold.dart';
+import 'package:boorusama/boorus/core/scaffolds/home_page_scaffold.dart';
+import 'package:boorusama/clients/zerochan/types/types.dart';
+import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/path.dart' as path;
+import 'package:boorusama/functional.dart';
 
-class ZerochanBuilder implements BooruBuilder {
+class ZerochanBuilder with SettingsRepositoryMixin implements BooruBuilder {
+  const ZerochanBuilder({
+    required this.client,
+    required this.settingsRepository,
+  });
+
+  final ZerochanClient client;
+  @override
+  final SettingsRepository settingsRepository;
+
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
@@ -42,6 +57,44 @@ class ZerochanBuilder implements BooruBuilder {
             config.booruType,
             backgroundColor: backgroundColor,
           );
+
+  @override
+  PostFetcher get postFetcher => (page, tags) => TaskEither.Do(($) async {
+        final limit = await getPostsPerPage();
+        final posts = await client.getPosts(
+          tags: tags.split(' ').toList(),
+          page: page,
+          limit: limit,
+        );
+
+        return posts
+            .map((e) => SimplePost(
+                  id: e.id ?? 0,
+                  thumbnailImageUrl: e.thumbnail ?? '',
+                  sampleImageUrl: e.thumbnail ?? '',
+                  originalImageUrl: e.fileUrl() ?? '',
+                  tags: e.tags ?? [],
+                  rating: Rating.general,
+                  hasComment: false,
+                  isTranslated: false,
+                  hasParentOrChildren: false,
+                  source: PostSource.from(e.source),
+                  score: 0,
+                  duration: 0,
+                  fileSize: 0,
+                  format: path.extension(e.thumbnail ?? ''),
+                  hasSound: null,
+                  height: e.height?.toDouble() ?? 0,
+                  md5: '',
+                  videoThumbnailUrl: '',
+                  videoUrl: '',
+                  width: e.width?.toDouble() ?? 0,
+                  getLink: (baseUrl) => baseUrl.endsWith('/')
+                      ? '$baseUrl${e.id}'
+                      : '$baseUrl/${e.id}',
+                ))
+            .toList();
+      });
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {
@@ -93,6 +146,6 @@ class _ZerochanCreateConfigPageState
             url: widget.url,
           ),
         );
-    context.pop();
+    context.navigator.pop();
   }
 }

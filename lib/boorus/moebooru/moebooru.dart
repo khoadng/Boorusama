@@ -1,10 +1,17 @@
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'create_moebooru_config_page.dart';
 
 class MoebooruBuilder implements BooruBuilder {
+  MoebooruBuilder({
+    required this.postRepo,
+  });
+
+  final MoebooruPostRepositoryApi postRepo;
+
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
@@ -31,4 +38,10 @@ class MoebooruBuilder implements BooruBuilder {
             config: config,
             backgroundColor: backgroundColor,
           );
+
+  @override
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
+        tags,
+        page,
+      );
 }

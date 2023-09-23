@@ -16,8 +16,8 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class SimpleInfinitePostList extends ConsumerStatefulWidget {
-  const SimpleInfinitePostList({
+class InfinitePostListScaffold extends ConsumerStatefulWidget {
+  const InfinitePostListScaffold({
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -62,12 +62,12 @@ class SimpleInfinitePostList extends ConsumerStatefulWidget {
   )? onPostTap;
 
   @override
-  ConsumerState<SimpleInfinitePostList> createState() =>
-      _SimpleInfinitePostListState();
+  ConsumerState<InfinitePostListScaffold> createState() =>
+      _InfinitePostListScaffoldState();
 }
 
-class _SimpleInfinitePostListState
-    extends ConsumerState<SimpleInfinitePostList> {
+class _InfinitePostListScaffoldState
+    extends ConsumerState<InfinitePostListScaffold> {
   late final AutoScrollController _autoScrollController;
   final _multiSelectController = MultiSelectController<Post>();
   var multiSelect = false;

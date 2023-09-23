@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'moebooru_post_repository_api.dart';
 
-final moebooruPostRepoProvider = Provider<PostRepository>(
+final moebooruPostRepoProvider = Provider<MoebooruPostRepositoryApi>(
   (ref) {
     final api = ref.watch(moebooruClientProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);

@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/posts/simple_infinite_post_list.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/functional.dart';
 
 class DesktopHomePageScaffold extends ConsumerStatefulWidget {
   const DesktopHomePageScaffold({
@@ -42,13 +45,14 @@ class _DesktopHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final fetcher = booruBuilders[config.booruType]?.postFetcher;
 
     return PostScope(
-      fetcher: (page) => ref.watch(postRepoProvider(config)).getPostsFromTags(
-            selectedTagController.rawTagsString,
-            page,
-          ),
+      fetcher: (page) =>
+          fetcher?.call(page, selectedTagController.rawTagsString) ??
+          TaskEither.of(<Post>[]),
       builder: (context, controller, errors) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -57,7 +61,7 @@ class _DesktopHomePageScaffoldState
             selectedTagController: selectedTagController,
           ),
           Expanded(
-            child: SimpleInfinitePostList(
+            child: InfinitePostListScaffold(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
