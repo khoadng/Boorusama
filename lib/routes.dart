@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -35,18 +36,26 @@ import 'router.dart';
 class BoorusRoutes {
   BoorusRoutes._();
 
-  static GoRoute add() => GoRoute(
+  static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
-        builder: (context, state) => AddBooruPage(
-          backgroundColor: context.theme.scaffoldBackgroundColor,
-          setCurrentBooruOnSubmit:
-              state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
-        ),
+        builder: (context, state) {
+          final booruType = ref.read(currentBooruConfigProvider).booruType;
+
+          return AddBooruPage(
+            configPageBuilder: booruBuilders[booruType] != null
+                ? booruBuilders[booruType]!.configPageBuilder
+                : null,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            setCurrentBooruOnSubmit:
+                state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
+          );
+        },
       );
 
   //FIXME: create custom page builder, also can't tap outside to dismiss
+  //FIXME: doesn't work on desktop with new implementation
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
@@ -208,7 +217,7 @@ class Routes {
         routes: [
           BoorusRoutes.update(ref),
           BoorusRoutes.updateDesktop(ref),
-          BoorusRoutes.add(),
+          BoorusRoutes.add(ref),
           BoorusRoutes.addDesktop(),
           settings(),
           settingsDesktop(),

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
 import 'package:boorusama/boorus/e621/e621_scope.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
-import 'package:boorusama/boorus/zerochan/zerochan_scope.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -120,6 +120,10 @@ class _Boorus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (booruBuilders.containsKey(config.booruType)) {
+      return booruBuilders[config.booruType]!.homePageBuilder(context, config);
+    }
+
     return Builder(
       builder: (context) {
         switch (config.booruType) {
@@ -144,7 +148,7 @@ class _Boorus extends StatelessWidget {
           case BooruType.lolibooru:
             return MoebooruScope(config: config);
           case BooruType.zerochan:
-            return ZerochanScope(config: config);
+            throw UnimplementedError();
         }
       },
     );
