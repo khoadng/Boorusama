@@ -12,6 +12,8 @@ final moebooruClientProvider = Provider<MoebooruClient>((ref) {
 
   return MoebooruClient.custom(
     baseUrl: booruConfig.url,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
     dio: dio,
   );
 });

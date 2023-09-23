@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,18 +10,17 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/crypto.dart';
-import 'create_anon_config_page.dart';
 import 'create_gelbooru_config_page.dart';
-import 'create_moebooru_config_page.dart';
 
 class UpdateBooruPage extends ConsumerStatefulWidget {
   const UpdateBooruPage({
     super.key,
     required this.booruConfig,
+    this.backgroundColor,
   });
 
   final BooruConfig booruConfig;
+  final Color? backgroundColor;
 
   @override
   ConsumerState<UpdateBooruPage> createState() => _AddBooruPageState();
@@ -50,6 +50,14 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (booruBuilders[booruType] != null) {
+      return booruBuilders[booruType]!.updateConfigPageBuilder(
+        context,
+        widget.booruConfig,
+        backgroundColor: widget.backgroundColor,
+      );
+    }
+
     return switch (widget.booruConfig.booruType) {
       BooruType.danbooru ||
       BooruType.aibooru ||
@@ -87,31 +95,6 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           url: url,
           isUnkown: isUnkown,
         ),
-      BooruType.konachan ||
-      BooruType.yandere ||
-      BooruType.lolibooru ||
-      BooruType.sakugabooru =>
-        CreateMoebooruConfigPage(
-          initialHashedPassword: widget.booruConfig.apiKey,
-          initialLogin: widget.booruConfig.login,
-          initialConfigName: widget.booruConfig.name,
-          initialRatingFilter: ratingFilter,
-          onLoginChanged: (value) => setState(() => login = value),
-          onHashedPasswordChanged: (value) =>
-              setState(() => apiKey = hashBooruPasswordSHA1(
-                    booru: booruFactory.from(type: booruType),
-                    booruFactory: booruFactory,
-                    password: apiKey,
-                  )),
-          onConfigNameChanged: (value) => setState(() => configName = value),
-          onRatingFilterChanged: (value) =>
-              setState(() => ratingFilter = value!),
-          onSubmit: allowSubmit() ? submit : null,
-          booruType: booruType,
-          url: url,
-          booruFactory: booruFactory,
-          isUnkown: isUnkown,
-        ),
       BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
           initialApiKey: widget.booruConfig.apiKey,
           initialLogin: widget.booruConfig.login,
@@ -127,14 +110,13 @@ class _AddBooruPageState extends ConsumerState<UpdateBooruPage> {
           url: url,
           isUnkown: isUnkown,
         ),
-      BooruType.zerochan => CreateAnonConfigPage(
-          onConfigNameChanged: (value) => setState(() => configName = value),
-          onSubmit: allowSubmit() ? submit : null,
-          booruType: booruType,
-          url: url,
-          isUnkown: isUnkown,
-        ),
-      BooruType.unknown => const SizedBox(),
+      BooruType.zerochan ||
+      BooruType.konachan ||
+      BooruType.yandere ||
+      BooruType.lolibooru ||
+      BooruType.sakugabooru ||
+      BooruType.unknown =>
+        const SizedBox(),
     };
   }
 

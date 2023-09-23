@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -40,18 +39,11 @@ class BoorusRoutes {
         path: 'boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
-        builder: (context, state) {
-          final booruType = ref.read(currentBooruConfigProvider).booruType;
-
-          return AddBooruPage(
-            configPageBuilder: booruBuilders[booruType] != null
-                ? booruBuilders[booruType]!.configPageBuilder
-                : null,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            setCurrentBooruOnSubmit:
-                state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
-          );
-        },
+        builder: (context, state) => AddBooruPage(
+          backgroundColor: context.theme.scaffoldBackgroundColor,
+          setCurrentBooruOnSubmit:
+              state.uri.queryParameters["setAsCurrent"]?.toBool() ?? false,
+        ),
       );
 
   //FIXME: create custom page builder, also can't tap outside to dismiss
@@ -88,7 +80,10 @@ class BoorusRoutes {
 
           return MaterialPage(
             key: state.pageKey,
-            child: UpdateBooruPage(booruConfig: config),
+            child: UpdateBooruPage(
+              booruConfig: config,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
+            ),
           );
         },
       );
@@ -112,6 +107,7 @@ class BoorusRoutes {
               child: IntrinsicHeight(
                 child: UpdateBooruPage(
                   booruConfig: config,
+                  backgroundColor: context.theme.scaffoldBackgroundColor,
                 ),
               ),
             ),

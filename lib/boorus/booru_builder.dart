@@ -1,24 +1,37 @@
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:flutter/widgets.dart';
 
-typedef ConfigPageBuilder = Widget Function(
+typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
   String url,
   BooruType booruType, {
   Color? backgroundColor,
 });
+
+typedef UpdateConfigPageBuilder = Widget Function(
+  BuildContext context,
+  BooruConfig config, {
+  Color? backgroundColor,
+});
+
 typedef HomePageBuilder = Widget Function(
   BuildContext context,
   BooruConfig config,
 );
 
 abstract class BooruBuilder {
-  ConfigPageBuilder get configPageBuilder;
   HomePageBuilder get homePageBuilder;
+  CreateConfigPageBuilder get createConfigPageBuilder;
+  UpdateConfigPageBuilder get updateConfigPageBuilder;
 }
 
 //FIXME: shouldn't hardcode this, need to find a way to make this dynamic
 final booruBuilders = {
   BooruType.zerochan: ZerochanBuilder(),
+  BooruType.konachan: MoebooruBuilder(),
+  BooruType.yandere: MoebooruBuilder(),
+  BooruType.sakugabooru: MoebooruBuilder(),
+  BooruType.lolibooru: MoebooruBuilder(),
 };

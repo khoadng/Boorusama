@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 
 class ZerochanBuilder implements BooruBuilder {
   @override
-  ConfigPageBuilder get configPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
         url,
         booruType, {
@@ -23,6 +23,20 @@ class ZerochanBuilder implements BooruBuilder {
   @override
   HomePageBuilder get homePageBuilder =>
       (context, config) => ZerochanHomePage(config: config);
+
+  //FIXME: this is a hack, we should have a proper update page
+  @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+        context,
+        config, {
+        backgroundColor,
+      }) =>
+          createConfigPageBuilder(
+            context,
+            config.url,
+            config.booruType,
+            backgroundColor: backgroundColor,
+          );
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

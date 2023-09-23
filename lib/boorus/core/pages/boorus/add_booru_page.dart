@@ -27,12 +27,10 @@ class AddBooruPage extends ConsumerStatefulWidget {
     super.key,
     required this.setCurrentBooruOnSubmit,
     this.backgroundColor,
-    this.configPageBuilder,
   });
 
   final bool setCurrentBooruOnSubmit;
   final Color? backgroundColor;
-  final ConfigPageBuilder? configPageBuilder;
 
   @override
   ConsumerState<AddBooruPage> createState() => _AddBooruPageState();
@@ -63,8 +61,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
-      AddBooruPhase.newKnownBooru => widget.configPageBuilder != null
-          ? widget.configPageBuilder!(
+      AddBooruPhase.newKnownBooru => booruBuilders[booru!] != null
+          ? booruBuilders[booru!]!.createConfigPageBuilder(
               context,
               url,
               booru!,

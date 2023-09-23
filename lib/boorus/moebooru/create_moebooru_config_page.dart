@@ -1,5 +1,9 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,19 +18,12 @@ import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_b
 import 'package:boorusama/foundation/crypto.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'widgets/create_booru_config_name_field.dart';
 
-class CreateMoebooruConfigPage extends StatefulWidget {
+class CreateMoebooruConfigPage extends ConsumerStatefulWidget {
   const CreateMoebooruConfigPage({
     super.key,
-    required this.onLoginChanged,
-    required this.onHashedPasswordChanged,
-    required this.onConfigNameChanged,
-    required this.onRatingFilterChanged,
-    required this.onSubmit,
     required this.booruType,
     required this.url,
-    required this.booruFactory,
     this.isUnkown = false,
     this.initialLogin,
     this.initialHashedPassword,
@@ -40,12 +37,6 @@ class CreateMoebooruConfigPage extends StatefulWidget {
   final String? initialConfigName;
   final BooruConfigRatingFilter? initialRatingFilter;
 
-  final BooruFactory booruFactory;
-  final void Function(String value) onLoginChanged;
-  final void Function(String value) onHashedPasswordChanged;
-  final void Function(String value) onConfigNameChanged;
-  final void Function(BooruConfigRatingFilter? value) onRatingFilterChanged;
-  final void Function()? onSubmit;
   final Color? backgroundColor;
 
   final BooruType booruType;
@@ -53,13 +44,22 @@ class CreateMoebooruConfigPage extends StatefulWidget {
   final bool isUnkown;
 
   @override
-  State<CreateMoebooruConfigPage> createState() =>
+  ConsumerState<CreateMoebooruConfigPage> createState() =>
       _CreateMoebooruConfigPageState();
 }
 
-class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
+class _CreateMoebooruConfigPageState
+    extends ConsumerState<CreateMoebooruConfigPage> {
+  late var login = widget.initialLogin ?? '';
+  late var apiKey = widget.initialHashedPassword ?? '';
+  late var configName = widget.initialConfigName ?? '';
+  late var ratingFilter =
+      widget.initialRatingFilter ?? BooruConfigRatingFilter.none;
+
   late var hashedPassword = widget.initialHashedPassword ?? '';
   var password = '';
+
+  BooruFactory get booruFactory => ref.read(booruFactoryProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +78,14 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CreateBooruConfigNameField(
-                text: widget.initialConfigName,
-                onChanged: widget.onConfigNameChanged,
+                text: configName,
+                onChanged: (value) => setState(() => configName = value),
               ),
               const SizedBox(height: 16),
               CreateBooruLoginField(
                 hintText: 'my_login',
-                text: widget.initialLogin,
-                onChanged: widget.onLoginChanged,
+                text: login,
+                onChanged: (value) => setState(() => login = value),
                 labelText: 'booru.login_name_label'.tr(),
               ),
               const SizedBox(height: 16),
@@ -93,17 +93,17 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
                 onChanged: (value) => setState(() {
                   if (value.isEmpty) {
                     hashedPassword = '';
-                    widget.onHashedPasswordChanged('');
+                    setState(() => apiKey = value);
                     return;
                   }
 
                   password = value;
                   hashedPassword = hashBooruPasswordSHA1(
-                    booru: widget.booruFactory.from(type: widget.booruType),
-                    booruFactory: widget.booruFactory,
+                    booru: booruFactory.from(type: widget.booruType),
+                    booruFactory: booruFactory,
                     password: value,
                   );
-                  widget.onHashedPasswordChanged(hashedPassword);
+                  setState(() => apiKey = hashedPassword);
                 }),
               ),
               if (hashedPassword.isNotEmpty)
@@ -138,15 +138,39 @@ class _CreateMoebooruConfigPageState extends State<CreateMoebooruConfigPage> {
               ),
               const SizedBox(height: 16),
               CreateBooruRatingOptionsTile(
-                value: widget.initialRatingFilter,
-                onChanged: widget.onRatingFilterChanged,
+                value: ratingFilter,
+                onChanged: (value) =>
+                    value != null ? setState(() => ratingFilter = value) : null,
               ),
               const SizedBox(height: 16),
-              CreateBooruSubmitButton(onSubmit: widget.onSubmit),
+              CreateBooruSubmitButton(onSubmit: allowSubmit() ? submit : null),
             ],
           ),
         ),
       ],
     );
+  }
+
+  void submit() {
+    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+          newConfig: AddNewBooruConfig(
+            login: login,
+            apiKey: apiKey,
+            booru: widget.booruType,
+            booruHint: widget.booruType,
+            configName: configName,
+            hideDeleted: false,
+            ratingFilter: ratingFilter,
+            url: widget.url,
+          ),
+        );
+    context.navigator.pop();
+  }
+
+  bool allowSubmit() {
+    if (configName.isEmpty) return false;
+
+    return (login.isNotEmpty && apiKey.isNotEmpty) ||
+        (login.isEmpty && apiKey.isEmpty);
   }
 }
