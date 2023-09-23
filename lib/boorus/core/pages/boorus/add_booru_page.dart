@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -68,10 +67,11 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
               booru!,
               backgroundColor: widget.backgroundColor,
             )
-          : CreateBooruPage(
-              url: url,
-              booruType: booru!,
-              backgroundColor: widget.backgroundColor,
+          : Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: Text('Not implemented'),
+              ),
             ),
     };
   }

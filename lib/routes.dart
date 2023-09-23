@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -80,10 +80,17 @@ class BoorusRoutes {
 
           return MaterialPage(
             key: state.pageKey,
-            child: UpdateBooruPage(
-              booruConfig: config,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-            ),
+            child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+                  context,
+                  config,
+                  backgroundColor: context.theme.scaffoldBackgroundColor,
+                ) ??
+                Scaffold(
+                  appBar: AppBar(),
+                  body: const Center(
+                    child: Text('Not implemented'),
+                  ),
+                ),
           );
         },
       );
@@ -105,10 +112,17 @@ class BoorusRoutes {
               color: context.theme.canvasColor,
               width: 400,
               child: IntrinsicHeight(
-                child: UpdateBooruPage(
-                  booruConfig: config,
-                  backgroundColor: context.theme.scaffoldBackgroundColor,
-                ),
+                child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+                      context,
+                      config,
+                      backgroundColor: context.theme.canvasColor,
+                    ) ??
+                    Scaffold(
+                      appBar: AppBar(),
+                      body: const Center(
+                        child: Text('Not implemented'),
+                      ),
+                    ),
               ),
             ),
           );

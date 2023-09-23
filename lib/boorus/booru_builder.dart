@@ -1,4 +1,6 @@
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
@@ -37,4 +39,10 @@ final booruBuilders = {
   BooruType.lolibooru: MoebooruBuilder(),
   BooruType.gelbooru: GelbooruBuilder(),
   BooruType.rule34xxx: GelbooruBuilder(),
+  BooruType.e621: E621Builder(),
+  BooruType.e926: E621Builder(),
+  BooruType.aibooru: DanbooruBuilder(),
+  BooruType.danbooru: DanbooruBuilder(),
+  BooruType.safebooru: DanbooruBuilder(),
+  BooruType.testbooru: DanbooruBuilder(),
 };
