@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.d
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -39,15 +38,11 @@ class MoebooruSearchPage extends ConsumerStatefulWidget {
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: MoebooruProvider(
-        builder: (gcontext) {
-          return CustomContextMenuOverlay(
-            child: MoebooruSearchPage(
-              metatagHighlightColor: context.colorScheme.primary,
-              initialQuery: tag,
-            ),
-          );
-        },
+      child: CustomContextMenuOverlay(
+        child: MoebooruSearchPage(
+          metatagHighlightColor: context.colorScheme.primary,
+          initialQuery: tag,
+        ),
       ),
     );
   }

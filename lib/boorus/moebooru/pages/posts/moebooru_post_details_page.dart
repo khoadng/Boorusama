@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
@@ -14,7 +15,6 @@ import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/router.dart';
@@ -43,12 +43,10 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   }) {
     return MaterialPageRoute(
       builder: (_) {
-        return MoebooruProvider(
-          builder: (context) => MoebooruPostDetailsPage(
-            posts: posts,
-            onExit: (page) => scrollController?.scrollToIndex(page),
-            initialPage: initialIndex,
-          ),
+        return MoebooruPostDetailsPage(
+          posts: posts,
+          onExit: (page) => scrollController?.scrollToIndex(page),
+          initialPage: initialIndex,
         );
       },
     );
@@ -82,17 +80,21 @@ class _MoebooruPostDetailsPageState
   @override
   void initState() {
     super.initState();
-    ref.read(tagsProvider.notifier).load(posts[widget.initialPage].tags);
+    ref
+        .read(tagsProvider(ref.read(currentBooruConfigProvider)).notifier)
+        .load(posts[widget.initialPage].tags);
   }
 
   @override
   Widget build(BuildContext context) {
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
     return DetailsPage(
       controller: controller,
       intitialIndex: widget.initialPage,
       onExit: widget.onExit,
       onPageChanged: (page) {
-        ref.read(tagsProvider.notifier).load(posts[page].tags);
+        ref.read(tagsProvider(booruConfig).notifier).load(posts[page].tags);
         onSwiped(page);
       },
       bottomSheet: (page) {
@@ -130,8 +132,8 @@ class _MoebooruPostDetailsPageState
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets =
-            _buildWidgets(context, expanded, page, currentPage, ref);
+        final widgets = _buildWidgets(
+            context, expanded, page, currentPage, ref, booruConfig);
 
         final expandedOnCurrentPage = expanded && page == currentPage;
 
@@ -168,6 +170,7 @@ class _MoebooruPostDetailsPageState
     int page,
     int currentPage,
     WidgetRef ref,
+    BooruConfig booruConfig,
   ) {
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
@@ -214,7 +217,7 @@ class _MoebooruPostDetailsPageState
         Padding(
           padding: const EdgeInsets.all(8),
           child: PostTagList(
-            tags: ref.watch(tagsProvider),
+            tags: ref.watch(tagsProvider(booruConfig)),
             onTap: (tag) => goToMoebooruSearchPage(
               ref,
               context,

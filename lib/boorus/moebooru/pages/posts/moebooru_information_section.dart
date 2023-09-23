@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
@@ -19,7 +20,8 @@ class MoebooruInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(tagsProvider);
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final tags = ref.watch(tagsProvider(booruConfig));
     final characterTags =
         tags?.map((e) => e.extractCharacterTags()).expand((e) => e).toList();
     final artistTags =

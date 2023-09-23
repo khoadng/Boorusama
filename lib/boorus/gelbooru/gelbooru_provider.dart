@@ -7,10 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 
 class GelbooruProvider extends ConsumerWidget {
@@ -30,9 +28,6 @@ class GelbooruProvider extends ConsumerWidget {
         // artist/character posts
         postArtistCharacterRepoProvider.overrideWith(
             (ref) => ref.watch(gelbooruArtistCharacterPostRepoProvider)),
-        // tags
-        tagRepoProvider
-            .overrideWith((ref) => ref.watch(gelbooruTagRepoProvider)),
         // post count
         if (booru.booruType == BooruType.gelbooru)
           postCountRepoProvider

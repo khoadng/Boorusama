@@ -18,12 +18,15 @@ import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete_providers.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
@@ -208,3 +211,25 @@ final downloadFileNameGeneratorProvider =
       return DownloadUrlBaseNameFileNameGenerator();
   }
 });
+
+final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+    (ref, config) => switch (config.booruType) {
+          BooruType.danbooru ||
+          BooruType.aibooru ||
+          BooruType.safebooru ||
+          BooruType.testbooru =>
+            ref.watch(danbooruTagRepoProvider),
+          BooruType.gelbooru ||
+          BooruType.rule34xxx =>
+            ref.watch(gelbooruTagRepoProvider),
+          BooruType.konachan ||
+          BooruType.yandere ||
+          BooruType.sakugabooru ||
+          BooruType.lolibooru =>
+            ref.watch(moebooruTagRepoProvider),
+          BooruType.e621 ||
+          BooruType.e926 ||
+          BooruType.zerochan ||
+          BooruType.unknown =>
+            ref.watch(emptyTagRepoProvider),
+        });

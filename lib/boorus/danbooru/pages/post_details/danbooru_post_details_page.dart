@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/posts/providers.dart';
@@ -317,13 +318,16 @@ class TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) =>
-            value ? ref.read(tagsProvider.notifier).load(tags) : null,
+        onExpansionChanged: (value) => value
+            ? ref.read(tagsProvider(booruConfig).notifier).load(tags)
+            : null,
         children: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),

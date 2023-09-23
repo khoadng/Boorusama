@@ -2,22 +2,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/dart.dart';
 
 final invalidTags = [
   ':&lt;',
 ];
 
-class TagsNotifier extends Notifier<List<TagGroupItem>?> {
+class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
   @override
-  List<TagGroupItem>? build() {
+  List<TagGroupItem>? build(BooruConfig arg) {
     ref.watch(currentBooruConfigProvider);
     return null;
   }
 
-  TagRepository get repo => ref.read(tagRepoProvider);
+  TagRepository get repo => ref.read(tagRepoProvider(arg));
 
   Future<void> load(
     List<String> tagList, {

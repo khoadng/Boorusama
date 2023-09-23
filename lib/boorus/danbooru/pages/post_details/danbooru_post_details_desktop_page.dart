@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -68,6 +69,7 @@ class _DanbooruPostDetailsDesktopPageState
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
     final auth = ref.watch(authenticationProvider);
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return CallbackShortcuts(
       bindings: {
@@ -86,7 +88,7 @@ class _DanbooruPostDetailsDesktopPageState
         totalPages: widget.posts.length,
         onPageChanged: (page) {
           setState(() => this.page = page);
-          ref.read(tagsProvider.notifier).load(tags);
+          ref.read(tagsProvider(booruConfig).notifier).load(tags);
           _debounceTimer?.cancel();
           _debounceTimer = Timer(
             const Duration(seconds: 1),

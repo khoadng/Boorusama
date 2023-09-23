@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -55,6 +56,7 @@ class _MoebooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return CallbackShortcuts(
       bindings: {
@@ -72,7 +74,9 @@ class _MoebooruPostDetailsDesktopPageState
             this.page = page;
             loading = true;
           });
-          ref.read(tagsProvider.notifier).load(widget.posts[page].tags);
+          ref
+              .read(tagsProvider(booruConfig).notifier)
+              .load(widget.posts[page].tags);
           _debounceTimer?.cancel();
           _debounceTimer = Timer(
             const Duration(seconds: 1),
@@ -116,7 +120,7 @@ class _MoebooruPostDetailsDesktopPageState
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: PostTagList(
-                        tags: ref.watch(tagsProvider),
+                        tags: ref.watch(tagsProvider(booruConfig)),
                         onTap: (tag) => goToMoebooruSearchPage(
                           ref,
                           context,

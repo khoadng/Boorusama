@@ -82,6 +82,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
 
   @override
   Widget build(BuildContext context) {
+    final booruConfig = ref.watch(currentBooruConfigProvider);
+
     return DetailsPage(
       controller: controller,
       intitialIndex: widget.initialIndex,
@@ -106,8 +108,8 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets =
-            _buildWidgets(context, expanded, page, currentPage, ref);
+        final widgets = _buildWidgets(
+            context, expanded, page, currentPage, ref, booruConfig);
         final artists =
             ref.watch(booruPostDetailsArtistProvider(posts[page].id));
 
@@ -133,7 +135,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
         GeneralMoreActionButton(post: widget.posts[page]),
       ],
       onExpanded: widget.hasDetailsTagList
-          ? (currentPage) => ref.read(tagsProvider.notifier).load(
+          ? (currentPage) => ref.read(tagsProvider(booruConfig).notifier).load(
                 posts[currentPage].tags,
                 onSuccess: (tags) {
                   if (!mounted) return;
@@ -150,6 +152,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
     int page,
     int currentPage,
     WidgetRef ref,
+    BooruConfig booruConfig,
   ) {
     final post = posts[page];
     final expandedOnCurrentPage = expanded && page == currentPage;
@@ -184,7 +187,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage>
       if (expandedOnCurrentPage) ...[
         if (widget.hasDetailsTagList)
           TagsTile(
-            tags: ref.watch(tagsProvider),
+            tags: ref.watch(tagsProvider(booruConfig)),
             post: post,
             onTagTap: (tag) =>
                 goToGelbooruSearchPage(ref, context, tag: tag.rawName),

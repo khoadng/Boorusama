@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -56,6 +57,7 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
+    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return CallbackShortcuts(
       bindings: {
@@ -78,7 +80,7 @@ class _DanbooruPostDetailsDesktopPageState
             const Duration(seconds: 1),
             () {
               if (widget.hasDetailsTagList) {
-                ref.read(tagsProvider.notifier).load(
+                ref.read(tagsProvider(booruConfig).notifier).load(
                   widget.posts[page].tags,
                   onSuccess: (tags) {
                     if (!mounted) return;
@@ -115,7 +117,9 @@ class _DanbooruPostDetailsDesktopPageState
                     const Divider(height: 8, thickness: 1),
                     if (widget.hasDetailsTagList)
                       TagsTile(
-                        tags: loading ? null : ref.watch(tagsProvider),
+                        tags: loading
+                            ? null
+                            : ref.watch(tagsProvider(booruConfig)),
                         initialExpanded: true,
                         post: post,
                         onTagTap: (tag) => goToGelbooruSearchPage(

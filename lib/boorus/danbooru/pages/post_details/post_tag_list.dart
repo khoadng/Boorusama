@@ -33,7 +33,7 @@ class PostTagList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authenticationProvider);
     final booru = ref.watch(currentBooruConfigProvider);
-    final tags = ref.watch(tagsProvider);
+    final tags = ref.watch(tagsProvider(booru));
 
     if (tags == null) {
       return SpinKitPulse(

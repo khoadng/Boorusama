@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -280,9 +279,7 @@ class Routes {
                 case BooruType.yandere:
                 case BooruType.sakugabooru:
                 case BooruType.lolibooru:
-                  return MoebooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
+                  return const BulkDownloadPage();
                 case BooruType.danbooru:
                 case BooruType.safebooru:
                 case BooruType.testbooru:

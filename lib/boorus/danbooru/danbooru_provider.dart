@@ -9,12 +9,10 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/posts/count/post_count_provider.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 
 class DanbooruProvider extends ConsumerWidget {
@@ -29,8 +27,6 @@ class DanbooruProvider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        tagRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
         noteRepoProvider
             .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
         postCountRepoProvider
