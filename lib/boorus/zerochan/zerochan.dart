@@ -6,16 +6,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/scaffolds/home_page_scaffold.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/functional.dart';
+
+final zerochanClientProvider = Provider<ZerochanClient>((ref) {
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
+
+  return ZerochanClient(dio: dio);
+});
 
 class ZerochanBuilder with SettingsRepositoryMixin implements BooruBuilder {
   const ZerochanBuilder({
@@ -95,6 +104,20 @@ class ZerochanBuilder with SettingsRepositoryMixin implements BooruBuilder {
                 ))
             .toList();
       });
+
+  @override
+  AutocompleteFetcher get autocompleteFetcher => (query) async {
+        final tags = await client.getAutocomplete(query: query);
+
+        return tags
+            .map((e) => AutocompleteData(
+                  label: e.value?.toLowerCase() ?? '',
+                  value: e.value?.toLowerCase() ?? '',
+                  postCount: e.total,
+                  category: e.type?.toLowerCase() ?? '',
+                ))
+            .toList();
+      };
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'create_moebooru_config_page.dart';
@@ -8,9 +9,11 @@ import 'create_moebooru_config_page.dart';
 class MoebooruBuilder implements BooruBuilder {
   MoebooruBuilder({
     required this.postRepo,
+    required this.autocompleteRepo,
   });
 
   final MoebooruPostRepositoryApi postRepo;
+  final MoebooruAutocompleteRepository autocompleteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -44,4 +47,8 @@ class MoebooruBuilder implements BooruBuilder {
         tags,
         page,
       );
+
+  @override
+  AutocompleteFetcher get autocompleteFetcher =>
+      (query) => autocompleteRepo.getAutocomplete(query);
 }

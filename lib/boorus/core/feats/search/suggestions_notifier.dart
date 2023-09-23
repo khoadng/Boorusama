@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 
@@ -58,12 +58,15 @@ class SuggestionsNotifier
     if (state.containsKey(sanitized)) return;
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
-    final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
+    final booruBuilders = ref.read(booruBuildersProvider);
+    final autocompleteFetcher =
+        booruBuilders[arg.booruType]?.autocompleteFetcher;
 
     debounce(
       'suggestions',
       () async {
-        final data = await autocompleteRepo.getAutocomplete(sanitized);
+        final data = await (autocompleteFetcher?.call(sanitized) ??
+            Future.value(<AutocompleteData>[]));
         state = state.add(sanitized, data.lock);
 
         if (fallback.mounted && fallback.hasListeners) {
