@@ -11,8 +11,10 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
@@ -50,6 +52,10 @@ typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
   String query,
 );
 
+typedef FavoriteAdder = Future<bool> Function(int postId);
+typedef FavoriteRemover = Future<bool> Function(int postId);
+typedef FavoriteChecker = bool Function(int postId);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -59,6 +65,20 @@ abstract class BooruBuilder {
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;
+
+  // Action Builders
+  FavoriteAdder? get favoriteAdder;
+  FavoriteRemover? get favoriteRemover;
+  FavoriteChecker? get favoriteChecker;
+}
+
+mixin FavoriteNotSupportedMixin implements BooruBuilder {
+  @override
+  FavoriteAdder? get favoriteAdder => null;
+  @override
+  FavoriteRemover? get favoriteRemover => null;
+  @override
+  FavoriteChecker? get favoriteChecker => null;
 }
 
 final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
@@ -93,25 +113,35 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       BooruType.e621: E621Builder(
         postRepo: ref.watch(e621PostRepoProvider),
         client: ref.watch(e621ClientProvider),
+        favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
       ),
       BooruType.e926: E621Builder(
         postRepo: ref.watch(e621PostRepoProvider),
         client: ref.watch(e621ClientProvider),
+        favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
       ),
       BooruType.aibooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
+        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
+        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
       ),
       BooruType.danbooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
+        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
+        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
       ),
       BooruType.safebooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
+        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
+        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
       ),
       BooruType.testbooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
+        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
+        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
       ),
     });

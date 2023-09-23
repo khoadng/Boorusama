@@ -69,6 +69,8 @@ class E621PostRepositoryApi
 
         final data = response.map(postDtoToPost).toList();
 
+        onFetch(data);
+
         _cache.set(key, data);
 
         return data;

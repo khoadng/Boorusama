@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'create_danbooru_config_page.dart';
 import 'danbooru_scope.dart';
@@ -10,10 +11,13 @@ class DanbooruBuilder implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
+    required this.favoriteRepo,
+    required this.favoriteChecker,
   });
 
   final DanbooruPostRepository postRepo;
   final AutocompleteRepositoryApi autocompleteRepo;
+  final FavoritePostRepository favoriteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -51,4 +55,15 @@ class DanbooruBuilder implements BooruBuilder {
   @override
   AutocompleteFetcher get autocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query);
+
+  @override
+  FavoriteAdder? get favoriteAdder =>
+      (postId) => favoriteRepo.addToFavorites(postId);
+
+  @override
+  FavoriteRemover? get favoriteRemover =>
+      (postId) => favoriteRepo.removeFromFavorites(postId);
+
+  @override
+  final FavoriteChecker? favoriteChecker;
 }

@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_a
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'create_moebooru_config_page.dart';
 
-class MoebooruBuilder implements BooruBuilder {
+class MoebooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   MoebooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,

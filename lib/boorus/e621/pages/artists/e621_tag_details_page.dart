@@ -6,10 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/tag_details_sliver_app_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/functional.dart';
 
 class E621TagDetailPage extends ConsumerStatefulWidget {
@@ -42,7 +43,7 @@ class _TagDetailPageState extends ConsumerState<E621TagDetailPage> {
             ),
             page,
           ),
-      builder: (context, controller, errors) => E621InfinitePostList(
+      builder: (context, controller, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: controller,
         sliverHeaderBuilder: (context) => [
@@ -74,6 +75,14 @@ class _TagDetailPageState extends ConsumerState<E621TagDetailPage> {
             ),
           ),
         ],
+        onPostTap:
+            (context, posts, post, scrollController, settings, initialIndex) =>
+                goToE621DetailsPage(
+          context: context,
+          posts: posts,
+          initialPage: initialIndex,
+          scrollController: scrollController,
+        ),
       ),
     );
   }

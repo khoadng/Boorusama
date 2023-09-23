@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -19,7 +20,6 @@ import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
 import 'package:boorusama/boorus/e621/router.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -46,7 +46,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
       config: widget.config,
       mobileView: (controller) => PostScope(
         fetcher: (page) => ref.read(e621PostRepoProvider).getPosts('', page),
-        builder: (context, postController, errors) => E621InfinitePostList(
+        builder: (context, postController, errors) => InfinitePostListScaffold(
           errors: errors,
           controller: postController,
           sliverHeaderBuilder: (context) => [
@@ -62,6 +62,14 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
               automaticallyImplyLeading: false,
             ),
           ],
+          onPostTap: (context, posts, post, scrollController, settings,
+                  initialIndex) =>
+              goToE621DetailsPage(
+            context: context,
+            posts: posts,
+            initialPage: initialIndex,
+            scrollController: scrollController,
+          ),
         ),
       ),
       mobileMenuBuilder: (context, controller) => [

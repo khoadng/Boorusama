@@ -7,10 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -52,9 +53,17 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             selectedTagController: selectedTagController,
           ),
           Expanded(
-            child: E621InfinitePostList(
+            child: InfinitePostListScaffold(
               controller: controller,
               errors: errors,
+              onPostTap: (context, posts, post, scrollController, settings,
+                      initialIndex) =>
+                  goToE621DetailsPage(
+                context: context,
+                posts: posts,
+                initialPage: initialIndex,
+                scrollController: scrollController,
+              ),
             ),
           ),
         ],

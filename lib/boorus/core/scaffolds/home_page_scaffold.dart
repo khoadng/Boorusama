@@ -108,10 +108,20 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           onTap: () => context.go('/settings'),
         ),
       ],
-      desktopViews: const [
-        DesktopHomePageScaffold(),
-        BookmarkPage(),
-        BlacklistedTagPage(),
+      desktopViews: [
+        DesktopHomePageScaffold(
+          onPostTap: widget.onPostTap ??
+              (context, posts, post, scrollController, settings,
+                      initialIndex) =>
+                  _goToPostDetailsPage(
+                    context: context,
+                    posts: posts,
+                    initialIndex: initialIndex,
+                    scrollController: scrollController,
+                  ),
+        ),
+        const BookmarkPage(),
+        const BlacklistedTagPage(),
       ],
     );
   }

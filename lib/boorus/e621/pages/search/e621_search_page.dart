@@ -13,10 +13,11 @@ import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.da
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -120,7 +121,7 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                   selectedTagController.rawTags.join(' '),
                   page,
                 ),
-            builder: (context, controller, errors) => E621InfinitePostList(
+            builder: (context, controller, errors) => InfinitePostListScaffold(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [
@@ -134,6 +135,14 @@ class _SearchPageState extends ConsumerState<E621SearchPage> {
                   controller: selectedTagController,
                 )),
               ],
+              onPostTap: (context, posts, post, scrollController, settings,
+                      initialIndex) =>
+                  goToE621DetailsPage(
+                context: context,
+                posts: posts,
+                initialPage: initialIndex,
+                scrollController: scrollController,
+              ),
             ),
           ),
       },

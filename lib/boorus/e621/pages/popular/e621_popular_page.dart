@@ -6,11 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/types.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
+import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
@@ -68,10 +69,18 @@ class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: E621InfinitePostList(
+                child: InfinitePostListScaffold(
                   errors: errors,
                   controller: controller,
                   sliverHeaderBuilder: (context) => [],
+                  onPostTap: (context, posts, post, scrollController, settings,
+                          initialIndex) =>
+                      goToE621DetailsPage(
+                    context: context,
+                    posts: posts,
+                    initialPage: initialIndex,
+                    scrollController: scrollController,
+                  ),
                 ),
               ),
             ],

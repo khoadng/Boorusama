@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
@@ -24,4 +25,10 @@ final e621FavoritesProvider =
 final e621FavoriteProvider = Provider.family<bool, int>((ref, postId) {
   final favorites = ref.watch(e621FavoritesProvider);
   return favorites[postId] ?? false;
+});
+
+final e621FavoriteCheckerProvider = Provider<FavoriteChecker>((ref) {
+  final favorites = ref.watch(e621FavoritesProvider);
+
+  return (postId) => favorites[postId] ?? false;
 });

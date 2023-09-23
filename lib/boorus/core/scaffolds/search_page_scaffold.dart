@@ -28,7 +28,7 @@ class SearchPageScaffold extends ConsumerStatefulWidget {
   const SearchPageScaffold({
     super.key,
     this.initialQuery,
-    this.onPostTap,
+    required this.onPostTap,
   });
 
   final String? initialQuery;
@@ -39,7 +39,7 @@ class SearchPageScaffold extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     Settings settings,
     int initialIndex,
-  )? onPostTap;
+  ) onPostTap;
 
   @override
   ConsumerState<SearchPageScaffold> createState() => _SearchPageScaffoldState();

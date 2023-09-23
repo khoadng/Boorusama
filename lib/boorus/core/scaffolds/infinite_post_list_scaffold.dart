@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -16,7 +18,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class InfinitePostListScaffold extends ConsumerStatefulWidget {
+class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
   const InfinitePostListScaffold({
     super.key,
     this.onLoadMore,
@@ -30,46 +32,46 @@ class InfinitePostListScaffold extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.errors,
-    this.onPostTap,
+    required this.onPostTap,
   });
 
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
-  final Widget Function(Post post, void Function() next)? contextMenuBuilder;
+  final Widget Function(T post, void Function() next)? contextMenuBuilder;
 
   final bool extendBody;
   final double? extendBodyHeight;
 
-  final PostGridController<Post> controller;
+  final PostGridController<T> controller;
   final bool refreshAtStart;
 
   final BooruError? errors;
 
   final Widget Function(
-    List<Post> selectedPosts,
+    List<T> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
 
   final void Function(
     BuildContext context,
-    List<Post> posts,
-    Post post,
+    List<T> posts,
+    T post,
     AutoScrollController scrollController,
     Settings settings,
     int initialIndex,
-  )? onPostTap;
+  ) onPostTap;
 
   @override
   ConsumerState<InfinitePostListScaffold> createState() =>
       _InfinitePostListScaffoldState();
 }
 
-class _InfinitePostListScaffoldState
-    extends ConsumerState<InfinitePostListScaffold> {
+class _InfinitePostListScaffoldState<T extends Post>
+    extends ConsumerState<InfinitePostListScaffold<T>> {
   late final AutoScrollController _autoScrollController;
-  final _multiSelectController = MultiSelectController<Post>();
+  final _multiSelectController = MultiSelectController<T>();
   var multiSelect = false;
 
   @override
@@ -93,6 +95,18 @@ class _InfinitePostListScaffoldState
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
+
+    final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final favoriteAdder = booruBuilders[config.booruType]?.favoriteAdder;
+    final favoriteRemover = booruBuilders[config.booruType]?.favoriteRemover;
+    final favoriteChecker = booruBuilders[config.booruType]?.favoriteChecker;
+    final isAuthenticated = config.hasLoginDetails();
+
+    final canFavorite = favoriteAdder != null &&
+        favoriteRemover != null &&
+        favoriteChecker != null &&
+        isAuthenticated;
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(
@@ -129,15 +143,7 @@ class _InfinitePostListScaffoldState
                 isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
-                        // goToGelbooruPostDetailsPage(
-                        //   ref: ref,
-                        //   context: context,
-                        //   posts: items,
-                        //   initialIndex: index,
-                        //   scrollController: _autoScrollController,
-                        //   settings: ref.read(settingsProvider),
-                        // );
-                        widget.onPostTap?.call(
+                        widget.onPostTap.call(
                           context,
                           items,
                           post,
@@ -147,9 +153,17 @@ class _InfinitePostListScaffoldState
                         );
                       }
                     : null,
-                isFaved: false,
-                enableFav: false,
-                onFavToggle: (isFaved) async {},
+                isFaved: favoriteChecker?.call(post.id) ?? false,
+                enableFav: !multiSelect && canFavorite,
+                onFavToggle: (isFaved) async {
+                  if (isFaved) {
+                    if (favoriteAdder == null) return;
+                    await favoriteAdder(post.id);
+                  } else {
+                    if (favoriteRemover == null) return;
+                    await favoriteRemover(post.id);
+                  }
+                },
                 autoScrollOptions: AutoScrollOptions(
                   controller: _autoScrollController,
                   index: index,

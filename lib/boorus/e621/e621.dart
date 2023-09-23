@@ -12,6 +12,7 @@ class E621Builder implements BooruBuilder {
   E621Builder({
     required this.postRepo,
     required this.client,
+    required this.favoriteChecker,
   });
 
   final E621PostRepository postRepo;
@@ -45,7 +46,7 @@ class E621Builder implements BooruBuilder {
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
         tags,
         page,
       );
@@ -62,4 +63,19 @@ class E621Builder implements BooruBuilder {
                 antecedent: dto.antecedentName,
               ))
           .toList());
+
+  @override
+  FavoriteAdder? get favoriteAdder => (postId) => client
+      .addToFavorites(postId: postId)
+      .then((value) => true)
+      .catchError((obj) => false);
+
+  @override
+  FavoriteRemover? get favoriteRemover => (postId) => client
+      .removeFromFavorites(postId: postId)
+      .then((value) => true)
+      .catchError((obj) => false);
+
+  @override
+  final FavoriteChecker? favoriteChecker;
 }
