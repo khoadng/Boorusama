@@ -14,28 +14,36 @@ import 'package:boorusama/boorus/core/widgets/simple_post_action_toolbar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class PostDetailsPageScaffold extends ConsumerStatefulWidget {
+class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     super.key,
     required this.posts,
     required this.initialIndex,
     required this.onExit,
     required this.onTagTap,
+    this.toolbarBuilder,
+    this.sliverArtistPostsBuilder,
+    this.onExpanded,
+    this.tagListBuilder,
   });
 
   final int initialIndex;
-  final List<Post> posts;
+  final List<T> posts;
   final void Function(int page) onExit;
   final void Function(String tag) onTagTap;
+  final void Function(T post)? onExpanded;
+  final Widget Function(BuildContext context, T post)? toolbarBuilder;
+  final Widget Function(BuildContext context, T post)? sliverArtistPostsBuilder;
+  final Widget Function(BuildContext context, T post)? tagListBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold> createState() =>
       _PostDetailPageScaffoldState();
 }
 
-class _PostDetailPageScaffoldState
-    extends ConsumerState<PostDetailsPageScaffold>
-    with PostDetailsPageMixin<PostDetailsPageScaffold, Post> {
+class _PostDetailPageScaffoldState<T extends Post>
+    extends ConsumerState<PostDetailsPageScaffold<T>>
+    with PostDetailsPageMixin<PostDetailsPageScaffold<T>, T> {
   late final _controller = DetailsPageController(
       swipeDownToDismiss: !widget.posts[widget.initialIndex].isVideo);
 
@@ -48,7 +56,7 @@ class _PostDetailPageScaffoldState
       .updateInformation(posts[page]);
 
   @override
-  List<Post> get posts => widget.posts;
+  List<T> get posts => widget.posts;
 
   @override
   int get initialPage => widget.initialIndex;
@@ -71,7 +79,9 @@ class _PostDetailPageScaffoldState
                 onSeek: (position) => onVideoSeekTo(position, page),
               ),
             ),
-          SimplePostActionToolbar(post: posts[page]),
+          widget.toolbarBuilder != null
+              ? widget.toolbarBuilder!(context, posts[page])
+              : SimplePostActionToolbar(post: posts[page]),
         ],
       ),
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
@@ -94,6 +104,8 @@ class _PostDetailPageScaffoldState
                   childCount: widgets.length,
                 ),
               ),
+              if (widget.sliverArtistPostsBuilder != null)
+                widget.sliverArtistPostsBuilder!(context, posts[page]),
             ],
           ),
         );
@@ -102,6 +114,7 @@ class _PostDetailPageScaffoldState
       topRightButtonsBuilder: (page, expanded) => [
         GeneralMoreActionButton(post: widget.posts[page]),
       ],
+      onExpanded: (currentPage) => widget.onExpanded?.call(posts[currentPage]),
     );
   }
 
@@ -143,10 +156,19 @@ class _PostDetailPageScaffoldState
       if (!expandedOnCurrentPage)
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
-        BasicTagList(
-          tags: post.tags,
-          onTap: widget.onTagTap,
-        ),
+        const Divider(height: 8, thickness: 1),
+        if (widget.toolbarBuilder != null)
+          widget.toolbarBuilder!(context, post)
+        else
+          SimplePostActionToolbar(post: post),
+        const Divider(height: 8, thickness: 1),
+        if (widget.tagListBuilder != null)
+          widget.tagListBuilder!(context, post)
+        else
+          BasicTagList(
+            tags: post.tags,
+            onTap: widget.onTagTap,
+          ),
         const Divider(height: 8, thickness: 1),
         FileDetailsSection(
           post: post,
