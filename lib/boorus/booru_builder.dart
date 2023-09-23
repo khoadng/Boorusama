@@ -33,6 +33,23 @@ abstract class BooruBuilder {
   UpdateConfigPageBuilder get updateConfigPageBuilder;
 }
 
+class SimpleBooruBuilder implements BooruBuilder {
+  SimpleBooruBuilder({
+    required this.homePageBuilder,
+    required this.createConfigPageBuilder,
+    required this.updateConfigPageBuilder,
+  });
+
+  @override
+  final CreateConfigPageBuilder createConfigPageBuilder;
+
+  @override
+  final HomePageBuilder homePageBuilder;
+
+  @override
+  final UpdateConfigPageBuilder updateConfigPageBuilder;
+}
+
 //FIXME: shouldn't hardcode this, need to find a way to make this dynamic
 final booruBuilders = {
   BooruType.zerochan: ZerochanBuilder(),

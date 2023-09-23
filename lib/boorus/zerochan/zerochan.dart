@@ -10,54 +10,37 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/pages/home/home_page_scaffold.dart';
-import 'router.dart';
 
-class ZerochanBuilder implements BooruBuilder {
-  @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
-        context,
-        url,
-        booruType, {
-        backgroundColor,
-      }) =>
-          ZerochanCreateConfigPage(
+class ZerochanBuilder extends SimpleBooruBuilder {
+  ZerochanBuilder()
+      : super(
+          createConfigPageBuilder: (
+            context,
+            url,
+            booruType, {
+            backgroundColor,
+          }) =>
+              ZerochanCreateConfigPage(
             url: url,
             booruType: booruType,
             backgroundColor: backgroundColor,
-          );
-
-  @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        config: config,
-        onPostTap: (
-          context,
-          posts,
-          post,
-          scrollController,
-          settings,
-          initialIndex,
-        ) =>
-            goToZerochanPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        onSearchTap: () => goToZerochanSearchPage(context),
-      );
-
-  //FIXME: this is a hack, we should have a proper update page
-  @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
-        context,
-        config, {
-        backgroundColor,
-      }) =>
-          createConfigPageBuilder(
+          ),
+          homePageBuilder: (
             context,
-            config.url,
-            config.booruType,
+            config,
+          ) =>
+              const HomePageScaffold(),
+          updateConfigPageBuilder: (
+            context,
+            config, {
+            backgroundColor,
+          }) =>
+              ZerochanCreateConfigPage(
+            url: config.url,
+            booruType: config.booruType,
             backgroundColor: backgroundColor,
-          );
+          ),
+        );
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

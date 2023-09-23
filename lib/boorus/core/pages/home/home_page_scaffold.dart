@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -12,8 +13,11 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/home/desktop_home_page_scaffold.dart';
+import 'package:boorusama/boorus/core/pages/search/simple_search_page.dart';
+import 'package:boorusama/boorus/core/pages/simple_post_details_page.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'mobile_home_page_scaffold.dart';
@@ -21,12 +25,10 @@ import 'mobile_home_page_scaffold.dart';
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
     super.key,
-    required this.config,
-    required this.onPostTap,
-    required this.onSearchTap,
+    this.onPostTap,
+    this.onSearchTap,
   });
 
-  final BooruConfig config;
   final void Function(
     BuildContext context,
     List<Post> posts,
@@ -34,8 +36,8 @@ class HomePageScaffold extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     Settings settings,
     int initialIndex,
-  ) onPostTap;
-  final void Function() onSearchTap;
+  )? onPostTap;
+  final void Function()? onSearchTap;
 
   @override
   ConsumerState<HomePageScaffold> createState() => _HomePageScaffoldState();
@@ -44,12 +46,21 @@ class HomePageScaffold extends ConsumerStatefulWidget {
 class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watch(currentBooruConfigProvider);
+
     return BooruScope(
-      config: widget.config,
+      config: config,
       mobileView: (controller) => MobileHomePageScaffold(
         controller: controller,
-        onPostTap: widget.onPostTap,
-        onSearchTap: widget.onSearchTap,
+        onPostTap: widget.onPostTap ??
+            (context, posts, post, scrollController, settings, initialIndex) =>
+                _goToPostDetailsPage(
+                  context: context,
+                  posts: posts,
+                  initialIndex: initialIndex,
+                  scrollController: scrollController,
+                ),
+        onSearchTap: widget.onSearchTap ?? () => _goToSearchPage(context),
       ),
       mobileMenuBuilder: (context, controller) => [],
       desktopMenuBuilder: (context, controller, constraints) => [
@@ -104,4 +115,39 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
       ],
     );
   }
+}
+
+void _goToSearchPage(
+  BuildContext context, {
+  String? tag,
+}) {
+  context.navigator.push(PageTransition(
+    type: PageTransitionType.fade,
+    child: SimpleSearchPage(
+        initialQuery: tag,
+        onPostTap:
+            (context, posts, post, scrollController, settings, initialIndex) =>
+                _goToPostDetailsPage(
+                  context: context,
+                  posts: posts,
+                  initialIndex: initialIndex,
+                  scrollController: scrollController,
+                )),
+  ));
+}
+
+void _goToPostDetailsPage({
+  required BuildContext context,
+  required List<Post> posts,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+}) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => SimplePostDetailsPage(
+      posts: posts,
+      initialIndex: initialIndex,
+      onExit: (page) => scrollController?.scrollToIndex(page),
+      onTagTap: (tag) => _goToSearchPage(context, tag: tag),
+    ),
+  ));
 }
