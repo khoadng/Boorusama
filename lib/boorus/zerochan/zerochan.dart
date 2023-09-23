@@ -1,7 +1,7 @@
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
-import 'package:boorusama/boorus/zerochan/zerochan_scope.dart';
+import 'package:boorusama/boorus/zerochan/zerochan_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +22,7 @@ class ZerochanBuilder implements BooruBuilder {
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => ZerochanScope(config: config);
+      (context, config) => ZerochanHomePage(config: config);
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

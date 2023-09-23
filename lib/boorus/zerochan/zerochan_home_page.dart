@@ -21,8 +21,8 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
-class ZerochanScope extends ConsumerStatefulWidget {
-  const ZerochanScope({
+class ZerochanHomePage extends ConsumerStatefulWidget {
+  const ZerochanHomePage({
     super.key,
     required this.config,
   });
@@ -30,10 +30,10 @@ class ZerochanScope extends ConsumerStatefulWidget {
   final BooruConfig config;
 
   @override
-  ConsumerState<ZerochanScope> createState() => _DanbooruScopeState();
+  ConsumerState<ZerochanHomePage> createState() => _ZerochanHomePageState();
 }
 
-class _DanbooruScopeState extends ConsumerState<ZerochanScope> {
+class _ZerochanHomePageState extends ConsumerState<ZerochanHomePage> {
   @override
   Widget build(BuildContext context) {
     return BooruScope(
