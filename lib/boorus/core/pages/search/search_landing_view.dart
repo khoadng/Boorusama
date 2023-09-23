@@ -64,6 +64,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   @override
   Widget build(BuildContext context) {
     final histories = ref.watch(searchHistoryProvider);
+    final favoritesNotifier = ref.watch(favoriteTagsProvider.notifier);
 
     return FadeTransition(
       opacity: animationController,
@@ -87,10 +88,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                     ref: ref,
                     onSubmitted: (context, text) {
                       context.navigator.pop();
-                      ref.read(favoriteTagsProvider.notifier).add(text);
+                      favoritesNotifier.add(text);
                     },
-                    onSelected: (tag) =>
-                        ref.read(favoriteTagsProvider.notifier).add(tag.value),
+                    onSelected: (tag) => favoritesNotifier.add(tag.value),
                   );
                 },
                 onTagTap: (value) {
