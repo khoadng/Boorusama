@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
@@ -27,14 +26,12 @@ class ExploreMostViewedPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreMostViewed,
         ),
-        builder: (_) => DanbooruProvider(
-          builder: (_) => CustomContextMenuOverlay(
-            child: ProviderScope(
-              overrides: [
-                dateProvider.overrideWith((ref) => DateTime.now()),
-              ],
-              child: const ExploreMostViewedPage(),
-            ),
+        builder: (_) => CustomContextMenuOverlay(
+          child: ProviderScope(
+            overrides: [
+              dateProvider.overrideWith((ref) => DateTime.now()),
+            ],
+            child: const ExploreMostViewedPage(),
           ),
         ),
       );

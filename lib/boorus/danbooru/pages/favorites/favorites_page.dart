@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
@@ -24,10 +23,8 @@ class FavoritesPage extends ConsumerWidget {
     BuildContext context, {
     required String username,
   }) =>
-      DanbooruProvider(
-        builder: (_) => CustomContextMenuOverlay(
-          child: FavoritesPage(username: username),
-        ),
+      CustomContextMenuOverlay(
+        child: FavoritesPage(username: username),
       );
 
   final String username;

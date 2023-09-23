@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
@@ -32,11 +31,9 @@ class PoolDetailPage extends ConsumerWidget {
     BuildContext context, {
     required Pool pool,
   }) =>
-      DanbooruProvider(
-        builder: (_) => CustomContextMenuOverlay(
-          child: PoolDetailPage(
-            pool: pool,
-          ),
+      CustomContextMenuOverlay(
+        child: PoolDetailPage(
+          pool: pool,
         ),
       );
 

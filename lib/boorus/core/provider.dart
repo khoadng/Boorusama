@@ -108,7 +108,26 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
         });
 
 final postArtistCharacterRepoProvider =
-    Provider<PostRepository>((ref) => throw UnimplementedError());
+    Provider.family<PostRepository, BooruConfig>(
+        (ref, config) => switch (config.booruType) {
+              BooruType.danbooru ||
+              BooruType.aibooru ||
+              BooruType.safebooru ||
+              BooruType.testbooru =>
+                ref.watch(danbooruArtistCharacterPostRepoProvider),
+              BooruType.gelbooru ||
+              BooruType.rule34xxx =>
+                ref.watch(gelbooruArtistCharacterPostRepoProvider),
+              BooruType.konachan ||
+              BooruType.yandere ||
+              BooruType.sakugabooru ||
+              BooruType.lolibooru ||
+              BooruType.e621 ||
+              BooruType.e926 ||
+              BooruType.zerochan ||
+              BooruType.unknown =>
+                ref.watch(postRepoProvider(config)),
+            });
 
 final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
   () => throw UnimplementedError(),

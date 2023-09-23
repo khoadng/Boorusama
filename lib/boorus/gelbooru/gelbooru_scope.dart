@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
@@ -38,65 +37,63 @@ class GelbooruScope extends ConsumerStatefulWidget {
 class _DanbooruScopeState extends ConsumerState<GelbooruScope> {
   @override
   Widget build(BuildContext context) {
-    return GelbooruProvider(
-      builder: (context) => BooruScope(
-        config: widget.config,
-        mobileView: (controller) => _GelbooruMobileHomeView(
-          controller: controller,
-        ),
-        mobileMenuBuilder: (context, controller) => [],
-        desktopMenuBuilder: (context, controller, constraints) => [
-          HomeNavigationTile(
-            value: 0,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.dashboard),
-            icon: const Icon(Icons.dashboard_outlined),
-            title: 'Home',
-          ),
-          const Divider(),
-          HomeNavigationTile(
-            value: 1,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.bookmark),
-            icon: const Icon(Icons.bookmark_border_outlined),
-            title: 'sideMenu.your_bookmarks'.tr(),
-          ),
-          HomeNavigationTile(
-            value: 2,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.list_alt),
-            icon: const Icon(Icons.list_alt_outlined),
-            title: 'sideMenu.your_blacklist'.tr(),
-          ),
-          HomeNavigationTile(
-            value: 3,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.download),
-            icon: const Icon(Icons.download_outlined),
-            title: 'sideMenu.bulk_download'.tr(),
-          ),
-          const Divider(),
-          HomeNavigationTile(
-            value: 999,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.settings),
-            icon: const Icon(Icons.settings),
-            title: 'sideMenu.settings'.tr(),
-            onTap: () => context.go('/settings'),
-          ),
-        ],
-        desktopViews: const [
-          GelbooruHomePage(),
-          BookmarkPage(),
-          BlacklistedTagPage(),
-          BulkDownloadPage(),
-        ],
+    return BooruScope(
+      config: widget.config,
+      mobileView: (controller) => _GelbooruMobileHomeView(
+        controller: controller,
       ),
+      mobileMenuBuilder: (context, controller) => [],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        HomeNavigationTile(
+          value: 0,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.dashboard),
+          icon: const Icon(Icons.dashboard_outlined),
+          title: 'Home',
+        ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 1,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.bookmark),
+          icon: const Icon(Icons.bookmark_border_outlined),
+          title: 'sideMenu.your_bookmarks'.tr(),
+        ),
+        HomeNavigationTile(
+          value: 2,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.list_alt),
+          icon: const Icon(Icons.list_alt_outlined),
+          title: 'sideMenu.your_blacklist'.tr(),
+        ),
+        HomeNavigationTile(
+          value: 3,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.download),
+          icon: const Icon(Icons.download_outlined),
+          title: 'sideMenu.bulk_download'.tr(),
+        ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 999,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.settings),
+          icon: const Icon(Icons.settings),
+          title: 'sideMenu.settings'.tr(),
+          onTap: () => context.go('/settings'),
+        ),
+      ],
+      desktopViews: const [
+        GelbooruHomePage(),
+        BookmarkPage(),
+        BlacklistedTagPage(),
+        BulkDownloadPage(),
+      ],
     );
   }
 }

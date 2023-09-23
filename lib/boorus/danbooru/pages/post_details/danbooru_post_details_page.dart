@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -53,12 +52,10 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
     bool hero = false,
   }) =>
       MaterialPageRoute(
-          builder: (_) => DanbooruProvider(
-                builder: (_) => DanbooruPostDetailsPage(
-                  intitialIndex: initialIndex,
-                  posts: posts,
-                  onExit: (page) => scrollController?.scrollToIndex(page),
-                ),
+          builder: (_) => DanbooruPostDetailsPage(
+                intitialIndex: initialIndex,
+                posts: posts,
+                onExit: (page) => scrollController?.scrollToIndex(page),
               ));
 
   @override

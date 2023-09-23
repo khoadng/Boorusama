@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_recommend_artist_list.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
@@ -43,15 +42,11 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
     AutoScrollController? scrollController,
   }) {
     return MaterialPageRoute(
-      builder: (_) => GelbooruProvider(
-        builder: (gcontext) {
-          return GelbooruPostDetailsPage(
-            posts: posts,
-            initialIndex: initialIndex,
-            onExit: (page) => scrollController?.scrollToIndex(page),
-            hasDetailsTagList: booruConfig.booruType.supportTagDetails,
-          );
-        },
+      builder: (_) => GelbooruPostDetailsPage(
+        posts: posts,
+        initialIndex: initialIndex,
+        onExit: (page) => scrollController?.scrollToIndex(page),
+        hasDetailsTagList: booruConfig.booruType.supportTagDetails,
       ),
     );
   }

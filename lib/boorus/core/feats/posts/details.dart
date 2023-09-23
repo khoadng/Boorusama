@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -77,8 +78,8 @@ class BooruPostDetailsArtistNotifier
     extends AutoDisposeFamilyNotifier<List<Recommend<Post>>, int>
     with PostRepositoryMixin, PostDetailsTagsX<Post> {
   @override
-  PostRepository get postRepository =>
-      ref.read(postArtistCharacterRepoProvider);
+  PostRepository get postRepository => ref.read(
+      postArtistCharacterRepoProvider(ref.read(currentBooruConfigProvider)));
 
   @override
   Future<List<Post>> Function(String tag, int page) get fetcher =>

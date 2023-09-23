@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -41,15 +40,11 @@ class GelbooruSearchPage extends ConsumerStatefulWidget {
   }) {
     return PageTransition(
       type: PageTransitionType.fade,
-      child: GelbooruProvider(
-        builder: (gcontext) {
-          return CustomContextMenuOverlay(
-            child: GelbooruSearchPage(
-              metatagHighlightColor: context.colorScheme.primary,
-              initialQuery: tag,
-            ),
-          );
-        },
+      child: CustomContextMenuOverlay(
+        child: GelbooruSearchPage(
+          metatagHighlightColor: context.colorScheme.primary,
+          initialQuery: tag,
+        ),
       ),
     );
   }

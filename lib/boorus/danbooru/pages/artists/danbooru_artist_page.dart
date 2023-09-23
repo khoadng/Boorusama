@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/widgets/danbooru_tag_details_page.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -24,15 +23,11 @@ class DanbooruArtistPage extends ConsumerStatefulWidget {
   final String backgroundImageUrl;
 
   static Widget of(BuildContext context, String tag) {
-    return DanbooruProvider(
-      builder: (_) {
-        return CustomContextMenuOverlay(
-          child: DanbooruArtistPage(
-            artistName: tag,
-            backgroundImageUrl: '',
-          ),
-        );
-      },
+    return CustomContextMenuOverlay(
+      child: DanbooruArtistPage(
+        artistName: tag,
+        backgroundImageUrl: '',
+      ),
     );
   }
 

@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,23 +7,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-
-class DanbooruProvider extends ConsumerWidget {
-  const DanbooruProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [],
-      child: Builder(builder: builder),
-    );
-  }
-}
 
 final danbooruClientProvider = Provider<DanbooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);

@@ -10,8 +10,6 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -268,26 +266,19 @@ class Routes {
             child: Builder(builder: (_) {
               switch (booru.booruType) {
                 case BooruType.unknown:
-                  throw UnimplementedError();
                 case BooruType.konachan:
                 case BooruType.yandere:
                 case BooruType.sakugabooru:
                 case BooruType.lolibooru:
                 case BooruType.e621:
                 case BooruType.e926:
-                  return const BulkDownloadPage();
                 case BooruType.danbooru:
                 case BooruType.safebooru:
                 case BooruType.testbooru:
                 case BooruType.aibooru:
-                  return DanbooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
                 case BooruType.gelbooru:
                 case BooruType.rule34xxx:
-                  return GelbooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
+                  return const BulkDownloadPage();
                 case BooruType.zerochan:
                   return Scaffold(
                     appBar: AppBar(

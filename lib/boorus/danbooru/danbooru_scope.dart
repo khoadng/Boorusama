@@ -21,7 +21,6 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
@@ -134,232 +133,230 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
   Widget build(BuildContext context) {
     final auth = ref.read(authenticationProvider);
 
-    return DanbooruProvider(
-      builder: (context) => BooruScope(
-        config: widget.config,
-        mobileView: (controller) => LatestView(
-          searchBar: HomeSearchBar(
-            onMenuTap: controller.openMenu,
-            onTap: () => goToSearchPage(context),
-          ),
+    return BooruScope(
+      config: widget.config,
+      mobileView: (controller) => LatestView(
+        searchBar: HomeSearchBar(
+          onMenuTap: controller.openMenu,
+          onTap: () => goToSearchPage(context),
         ),
-        mobileMenuBuilder: (context, controller) => [
-          if (auth.isAuthenticated && userId != null)
-            SideMenuTile(
-              icon: const Icon(Icons.account_box),
-              title: const Text('Profile'),
-              onTap: () {
-                goToUserDetailsPage(
-                  ref,
-                  context,
-                  uid: userId!,
-                  username: widget.config.login!,
-                );
-              },
-            ),
+      ),
+      mobileMenuBuilder: (context, controller) => [
+        if (auth.isAuthenticated && userId != null)
           SideMenuTile(
-            icon: const Icon(Icons.explore),
-            title: const Text('Explore'),
-            onTap: () => context.navigator.push(MaterialPageRoute(
-                builder: (_) => Scaffold(
-                      appBar: AppBar(
-                        elevation: 0,
-                        title: const Text('Explore'),
-                        backgroundColor: Colors.transparent,
-                      ),
-                      body: const ExplorePage(),
-                    ))),
-          ),
-          SideMenuTile(
-            icon: const Icon(Icons.photo_album_outlined),
-            title: const Text('Pools'),
+            icon: const Icon(Icons.account_box),
+            title: const Text('Profile'),
             onTap: () {
-              goToPoolPage(context, ref);
-            },
-          ),
-          SideMenuTile(
-            icon: const Icon(Icons.forum_outlined),
-            title: const Text('forum.forum').tr(),
-            onTap: () {
-              goToForumPage(context);
-            },
-          ),
-          if (auth.isAuthenticated) ...[
-            SideMenuTile(
-              icon: const Icon(Icons.favorite_outline),
-              title: Text('profile.favorites'.tr()),
-              onTap: () {
-                goToFavoritesPage(context, widget.config.login);
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.collections),
-              title: const Text('favorite_groups.favorite_groups').tr(),
-              onTap: () {
-                goToFavoriteGroupPage(context);
-              },
-            ),
-            SideMenuTile(
-              icon: const Icon(Icons.search),
-              title: const Text('saved_search.saved_search').tr(),
-              onTap: () {
-                goToSavedSearchPage(context, widget.config.login);
-              },
-            ),
-            SideMenuTile(
-              icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
-              title: const Text(
-                'blacklisted_tags.blacklisted_tags',
-              ).tr(),
-              onTap: () {
-                goToBlacklistedTagPage(context);
-              },
-            ),
-          ]
-        ],
-        desktopMenuBuilder: (context, controller, constraints) => [
-          HomeNavigationTile(
-            value: 0,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.dashboard),
-            icon: const Icon(Icons.dashboard_outlined),
-            title: 'Home',
-          ),
-          HomeNavigationTile(
-            value: 1,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.explore),
-            icon: const Icon(Icons.explore_outlined),
-            title: 'Explore',
-          ),
-          HomeNavigationTile(
-            value: 2,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.photo_album),
-            icon: const Icon(Icons.photo_album_outlined),
-            title: 'Pools',
-          ),
-          HomeNavigationTile(
-            value: 3,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.forum),
-            icon: const Icon(Icons.forum_outlined),
-            title: 'forum.forum'.tr(),
-          ),
-          if (auth.isAuthenticated) ...[
-            if (userId != null)
-              HomeNavigationTile(
-                value: 4,
-                controller: controller,
-                constraints: constraints,
-                selectedIcon: const Icon(Icons.account_box),
-                icon: const Icon(Icons.account_box_outlined),
-                title: 'Profile',
-              )
-            else
-              const SizedBox(),
-            HomeNavigationTile(
-              value: 5,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: const Icon(Icons.favorite),
-              icon: const Icon(Icons.favorite_border_outlined),
-              title: 'Favorites',
-            ),
-            HomeNavigationTile(
-              value: 6,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: const Icon(Icons.collections),
-              icon: const Icon(Icons.collections_outlined),
-              title: 'favorite_groups.favorite_groups'.tr(),
-            ),
-            HomeNavigationTile(
-              value: 7,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: const Icon(Icons.saved_search),
-              icon: const Icon(Icons.saved_search_outlined),
-              title: 'saved_search.saved_search'.tr(),
-            ),
-            HomeNavigationTile(
-              value: 8,
-              controller: controller,
-              constraints: constraints,
-              selectedIcon: const Icon(Icons.tag),
-              icon: const Icon(Icons.tag_outlined),
-              title: 'blacklisted_tags.blacklisted_tags'.tr(),
-            ),
-          ],
-          const Divider(),
-          HomeNavigationTile(
-            value: 9,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.bookmark),
-            icon: const Icon(Icons.bookmark_border_outlined),
-            title: 'sideMenu.your_bookmarks'.tr(),
-          ),
-          HomeNavigationTile(
-            value: 10,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.list_alt),
-            icon: const Icon(Icons.list_alt_outlined),
-            title: 'sideMenu.your_blacklist'.tr(),
-          ),
-          HomeNavigationTile(
-            value: 11,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.download),
-            icon: const Icon(Icons.download_outlined),
-            title: 'sideMenu.bulk_download'.tr(),
-          ),
-          const Divider(),
-          HomeNavigationTile(
-            value: 999,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.settings),
-            icon: const Icon(Icons.settings),
-            title: 'sideMenu.settings'.tr(),
-            onTap: () => context.go('/settings'),
-          ),
-        ],
-        desktopViews: [
-          const DanbooruHomePage(),
-          const ExplorePage(),
-          const PoolPage(),
-          const DanbooruForumPage(),
-          if (auth.isAuthenticated) ...[
-            if (userId != null)
-              UserDetailsPage(
+              goToUserDetailsPage(
+                ref,
+                context,
                 uid: userId!,
                 username: widget.config.login!,
-              )
-            else
-              const SizedBox(),
-            FavoritesPage(username: widget.config.login!),
-            const FavoriteGroupsPage(),
-            const SavedSearchFeedPage(),
-            const BlacklistedTagsPage(),
-          ] else ...[
-            //TODO: hacky way to prevent accessing wrong index... Will need better solution
+              );
+            },
+          ),
+        SideMenuTile(
+          icon: const Icon(Icons.explore),
+          title: const Text('Explore'),
+          onTap: () => context.navigator.push(MaterialPageRoute(
+              builder: (_) => Scaffold(
+                    appBar: AppBar(
+                      elevation: 0,
+                      title: const Text('Explore'),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    body: const ExplorePage(),
+                  ))),
+        ),
+        SideMenuTile(
+          icon: const Icon(Icons.photo_album_outlined),
+          title: const Text('Pools'),
+          onTap: () {
+            goToPoolPage(context, ref);
+          },
+        ),
+        SideMenuTile(
+          icon: const Icon(Icons.forum_outlined),
+          title: const Text('forum.forum').tr(),
+          onTap: () {
+            goToForumPage(context);
+          },
+        ),
+        if (auth.isAuthenticated) ...[
+          SideMenuTile(
+            icon: const Icon(Icons.favorite_outline),
+            title: Text('profile.favorites'.tr()),
+            onTap: () {
+              goToFavoritesPage(context, widget.config.login);
+            },
+          ),
+          SideMenuTile(
+            icon: const Icon(Icons.collections),
+            title: const Text('favorite_groups.favorite_groups').tr(),
+            onTap: () {
+              goToFavoriteGroupPage(context);
+            },
+          ),
+          SideMenuTile(
+            icon: const Icon(Icons.search),
+            title: const Text('saved_search.saved_search').tr(),
+            onTap: () {
+              goToSavedSearchPage(context, widget.config.login);
+            },
+          ),
+          SideMenuTile(
+            icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
+            title: const Text(
+              'blacklisted_tags.blacklisted_tags',
+            ).tr(),
+            onTap: () {
+              goToBlacklistedTagPage(context);
+            },
+          ),
+        ]
+      ],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        HomeNavigationTile(
+          value: 0,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.dashboard),
+          icon: const Icon(Icons.dashboard_outlined),
+          title: 'Home',
+        ),
+        HomeNavigationTile(
+          value: 1,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.explore),
+          icon: const Icon(Icons.explore_outlined),
+          title: 'Explore',
+        ),
+        HomeNavigationTile(
+          value: 2,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.photo_album),
+          icon: const Icon(Icons.photo_album_outlined),
+          title: 'Pools',
+        ),
+        HomeNavigationTile(
+          value: 3,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.forum),
+          icon: const Icon(Icons.forum_outlined),
+          title: 'forum.forum'.tr(),
+        ),
+        if (auth.isAuthenticated) ...[
+          if (userId != null)
+            HomeNavigationTile(
+              value: 4,
+              controller: controller,
+              constraints: constraints,
+              selectedIcon: const Icon(Icons.account_box),
+              icon: const Icon(Icons.account_box_outlined),
+              title: 'Profile',
+            )
+          else
             const SizedBox(),
-            const SizedBox(),
-            const SizedBox(),
-            const SizedBox(),
-          ],
-          const BookmarkPage(),
-          const BlacklistedTagPage(),
-          const BulkDownloadPage(),
+          HomeNavigationTile(
+            value: 5,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.favorite),
+            icon: const Icon(Icons.favorite_border_outlined),
+            title: 'Favorites',
+          ),
+          HomeNavigationTile(
+            value: 6,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.collections),
+            icon: const Icon(Icons.collections_outlined),
+            title: 'favorite_groups.favorite_groups'.tr(),
+          ),
+          HomeNavigationTile(
+            value: 7,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.saved_search),
+            icon: const Icon(Icons.saved_search_outlined),
+            title: 'saved_search.saved_search'.tr(),
+          ),
+          HomeNavigationTile(
+            value: 8,
+            controller: controller,
+            constraints: constraints,
+            selectedIcon: const Icon(Icons.tag),
+            icon: const Icon(Icons.tag_outlined),
+            title: 'blacklisted_tags.blacklisted_tags'.tr(),
+          ),
         ],
-      ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 9,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.bookmark),
+          icon: const Icon(Icons.bookmark_border_outlined),
+          title: 'sideMenu.your_bookmarks'.tr(),
+        ),
+        HomeNavigationTile(
+          value: 10,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.list_alt),
+          icon: const Icon(Icons.list_alt_outlined),
+          title: 'sideMenu.your_blacklist'.tr(),
+        ),
+        HomeNavigationTile(
+          value: 11,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.download),
+          icon: const Icon(Icons.download_outlined),
+          title: 'sideMenu.bulk_download'.tr(),
+        ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 999,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.settings),
+          icon: const Icon(Icons.settings),
+          title: 'sideMenu.settings'.tr(),
+          onTap: () => context.go('/settings'),
+        ),
+      ],
+      desktopViews: [
+        const DanbooruHomePage(),
+        const ExplorePage(),
+        const PoolPage(),
+        const DanbooruForumPage(),
+        if (auth.isAuthenticated) ...[
+          if (userId != null)
+            UserDetailsPage(
+              uid: userId!,
+              username: widget.config.login!,
+            )
+          else
+            const SizedBox(),
+          FavoritesPage(username: widget.config.login!),
+          const FavoriteGroupsPage(),
+          const SavedSearchFeedPage(),
+          const BlacklistedTagsPage(),
+        ] else ...[
+          //TODO: hacky way to prevent accessing wrong index... Will need better solution
+          const SizedBox(),
+          const SizedBox(),
+          const SizedBox(),
+          const SizedBox(),
+        ],
+        const BookmarkPage(),
+        const BlacklistedTagPage(),
+        const BulkDownloadPage(),
+      ],
     );
   }
 }

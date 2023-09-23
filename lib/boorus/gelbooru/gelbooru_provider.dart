@@ -1,37 +1,10 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-
-class GelbooruProvider extends ConsumerWidget {
-  const GelbooruProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        // artist/character posts
-        postArtistCharacterRepoProvider.overrideWith(
-            (ref) => ref.watch(gelbooruArtistCharacterPostRepoProvider)),
-      ],
-      child: Builder(
-        builder: builder,
-      ),
-    );
-  }
-}
 
 final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);

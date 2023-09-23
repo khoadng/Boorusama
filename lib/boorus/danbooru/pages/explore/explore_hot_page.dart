@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/explore/explore_sliver_app_bar.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
@@ -22,10 +21,8 @@ class ExploreHotPage extends ConsumerWidget {
         settings: const RouteSettings(
           name: RouterPageConstant.exploreHot,
         ),
-        builder: (_) => DanbooruProvider(
-          builder: (_) => const CustomContextMenuOverlay(
-            child: ExploreHotPage(),
-          ),
+        builder: (_) => const CustomContextMenuOverlay(
+          child: ExploreHotPage(),
         ),
       );
 

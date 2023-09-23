@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/widgets/danbooru_tag_details_page.dart';
 
@@ -21,12 +20,10 @@ class DanbooruCharacterPage extends ConsumerWidget {
   final String backgroundImageUrl;
 
   static Widget of(BuildContext context, String tag) {
-    return DanbooruProvider(
-      builder: (_) => CustomContextMenuOverlay(
-        child: DanbooruCharacterPage(
-          characterName: tag,
-          backgroundImageUrl: '',
-        ),
+    return CustomContextMenuOverlay(
+      child: DanbooruCharacterPage(
+        characterName: tag,
+        backgroundImageUrl: '',
       ),
     );
   }

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -25,10 +24,8 @@ class SavedSearchFeedPage extends ConsumerWidget {
   });
 
   static Widget of(BuildContext context) {
-    return DanbooruProvider(
-      builder: (_) => const CustomContextMenuOverlay(
-        child: SavedSearchFeedPage(),
-      ),
+    return const CustomContextMenuOverlay(
+      child: SavedSearchFeedPage(),
     );
   }
 

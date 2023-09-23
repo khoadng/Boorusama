@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.d
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -40,14 +39,10 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
   static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
     return PageTransition(
         type: PageTransitionType.fade,
-        child: DanbooruProvider(
-          builder: (_) {
-            return CustomContextMenuOverlay(
-              child: DanbooruSearchPage(
-                initialQuery: tag,
-              ),
-            );
-          },
+        child: CustomContextMenuOverlay(
+          child: DanbooruSearchPage(
+            initialQuery: tag,
+          ),
         ));
   }
 

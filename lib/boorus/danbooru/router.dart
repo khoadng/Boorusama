@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dar
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -95,14 +94,12 @@ Future<void> goToDetailPage({
   } else {
     return showDesktopFullScreenWindow(
       context,
-      builder: (_) => DanbooruProvider(
-        builder: (context) => DanbooruPostDetailsDesktopPage(
-          initialIndex: initialIndex,
-          posts: posts,
-          onExit: (index) {
-            scrollController?.scrollToIndex(index);
-          },
-        ),
+      builder: (_) => DanbooruPostDetailsDesktopPage(
+        initialIndex: initialIndex,
+        posts: posts,
+        onExit: (index) {
+          scrollController?.scrollToIndex(index);
+        },
       ),
     );
   }
@@ -139,35 +136,22 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 void goToSavedSearchEditPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) {
-      return DanbooruProvider(
-        builder: (_) => const SavedSearchPage(),
-      );
+      return const SavedSearchPage();
     },
   ));
 }
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => const PoolPage(),
-    ),
+    builder: (_) => const PoolPage(),
   ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => provideBlacklistedTagPageDependencies(
-      context,
-      page: const BlacklistedTagsPage(),
-    ),
+    builder: (_) => const BlacklistedTagsPage(),
   ));
 }
-
-Widget provideBlacklistedTagPageDependencies(
-  BuildContext context, {
-  required Widget page,
-}) =>
-    DanbooruProvider(builder: (_) => page);
 
 void goToCommentPage(BuildContext context, int postId) {
   showCommentPage(
@@ -176,11 +160,9 @@ void goToCommentPage(BuildContext context, int postId) {
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (_, useAppBar) => DanbooruProvider(
-      builder: (_) => CommentPage(
-        useAppBar: useAppBar,
-        postId: postId,
-      ),
+    builder: (_, useAppBar) => CommentPage(
+      useAppBar: useAppBar,
+      postId: postId,
     ),
   );
 }
@@ -191,11 +173,9 @@ void goToCommentCreatePage(
   String? initialContent,
 }) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => CommentCreatePage(
-        postId: postId,
-        initialContent: initialContent,
-      ),
+    builder: (_) => CommentCreatePage(
+      postId: postId,
+      initialContent: initialContent,
     ),
     settings: const RouteSettings(
       name: RouterPageConstant.commentCreate,
@@ -212,12 +192,10 @@ void goToCommentUpdatePage(
 }) {
   context.navigator.push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider(
-        builder: (_) => CommentUpdatePage(
-          postId: postId,
-          commentId: commentId,
-          initialContent: commentBody,
-        ),
+      builder: (_) => CommentUpdatePage(
+        postId: postId,
+        commentId: commentId,
+        initialContent: commentBody,
       ),
       settings: const RouteSettings(
         name: RouterPageConstant.commentUpdate,
@@ -234,11 +212,9 @@ void goToUserDetailsPage(
 }) {
   context.navigator.push(
     MaterialPageRoute(
-      builder: (_) => DanbooruProvider(
-        builder: (_) => UserDetailsPage(
-          uid: uid,
-          username: username,
-        ),
+      builder: (_) => UserDetailsPage(
+        uid: uid,
+        username: username,
       ),
     ),
   );
@@ -246,9 +222,7 @@ void goToUserDetailsPage(
 
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => const PoolSearchPage(),
-    ),
+    builder: (_) => const PoolSearchPage(),
     settings: const RouteSettings(
       name: RouterPageConstant.poolSearch,
     ),
@@ -404,12 +378,10 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (___, _, __) => DanbooruProvider(
-      builder: (_) => EditFavoriteGroupDialog(
-        padding: isMobilePlatform() ? 0 : 8,
-        title: 'favorite_groups.create_group'.tr(),
-        enableManualDataInput: enableManualPostInput,
-      ),
+    pageBuilder: (___, _, __) => EditFavoriteGroupDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.create_group'.tr(),
+      enableManualDataInput: enableManualPostInput,
     ),
   );
 }
@@ -420,21 +392,17 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (dialogContext, _, __) => DanbooruProvider(
-      builder: (_) => EditFavoriteGroupDialog(
-        initialData: group,
-        padding: isMobilePlatform() ? 0 : 8,
-        title: 'favorite_groups.edit_group'.tr(),
-      ),
+    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
+      initialData: group,
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.edit_group'.tr(),
     ),
   );
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => const FavoriteGroupsPage(),
-    ),
+    builder: (_) => const FavoriteGroupsPage(),
   ));
 }
 
@@ -443,12 +411,10 @@ void goToFavoriteGroupDetailsPage(
   FavoriteGroup group,
 ) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => CustomContextMenuOverlay(
-        child: FavoriteGroupDetailsPage(
-          group: group,
-          postIds: QueueList.from(group.postIds),
-        ),
+    builder: (_) => CustomContextMenuOverlay(
+      child: FavoriteGroupDetailsPage(
+        group: group,
+        postIds: QueueList.from(group.postIds),
       ),
     ),
   ));
@@ -462,10 +428,8 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (_) => DanbooruProvider(
-      builder: (_) => AddToFavoriteGroupPage(
-        posts: posts,
-      ),
+    builder: (_) => AddToFavoriteGroupPage(
+      posts: posts,
     ),
   );
 }
@@ -486,8 +450,6 @@ Future<bool?> goToAddToBlacklistPage(
 
 void goToForumPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruProvider(
-      builder: (_) => const DanbooruForumPage(),
-    ),
+    builder: (_) => const DanbooruForumPage(),
   ));
 }
