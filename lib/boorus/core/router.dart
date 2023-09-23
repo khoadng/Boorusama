@@ -25,7 +25,6 @@ import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/e621/e621_provider.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
-import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -362,7 +361,7 @@ void goToQuickSearchPage(
                     ),
             );
           case BooruType.zerochan:
-            return ZerochanProvider(
+            return Builder(
               builder: (context) => isMobile
                   ? SimpleTagSearchView(
                       onSubmitted: (_, text) =>

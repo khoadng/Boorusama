@@ -1,41 +1,15 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
-
-class ZerochanProvider extends ConsumerWidget {
-  const ZerochanProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        downloadFileNameGeneratorProvider
-            .overrideWith((ref) => DownloadUrlBaseNameFileNameGenerator()),
-      ],
-      child: Builder(
-        builder: builder,
-      ),
-    );
-  }
-}
 
 final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);

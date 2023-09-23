@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/notes/note_provider.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
@@ -26,8 +24,6 @@ class E621Provider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        downloadFileNameGeneratorProvider.overrideWith(
-            (ref) => ref.watch(e621DownloadFileNameGeneratorProvider)),
         noteRepoProvider.overrideWith((ref) => ref.watch(e621NoteRepoProvider)),
       ],
       child: Builder(
@@ -47,9 +43,4 @@ final e621ClientProvider = Provider<E621Client>((ref) {
     login: booruConfig.login,
     apiKey: booruConfig.apiKey,
   );
-});
-
-final e621DownloadFileNameGeneratorProvider =
-    Provider<FileNameGenerator<Post>>((ref) {
-  return Md5OnlyFileNameGenerator();
 });

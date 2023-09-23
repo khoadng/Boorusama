@@ -9,10 +9,6 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/path.dart';
 
-final downloadFileNameGeneratorProvider = Provider<FileNameGenerator>((ref) {
-  throw UnimplementedError();
-});
-
 final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
 });

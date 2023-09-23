@@ -10,11 +10,13 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
@@ -181,4 +183,28 @@ final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
       'User-Agent': userAgentGenerator.generate(),
     },
   );
+});
+
+final downloadFileNameGeneratorProvider =
+    Provider.family<FileNameGenerator, BooruConfig>((ref, config) {
+  switch (config.booruType) {
+    case BooruType.danbooru ||
+          BooruType.aibooru ||
+          BooruType.safebooru ||
+          BooruType.testbooru:
+      return BoorusamaStyledFileNameGenerator();
+    case BooruType.gelbooru || BooruType.rule34xxx:
+      return DownloadUrlBaseNameFileNameGenerator();
+    case BooruType.konachan ||
+          BooruType.yandere ||
+          BooruType.sakugabooru ||
+          BooruType.lolibooru:
+      return DownloadUrlBaseNameFileNameGenerator();
+    case BooruType.e621 || BooruType.e926:
+      return Md5OnlyFileNameGenerator();
+    case BooruType.zerochan:
+      return DownloadUrlBaseNameFileNameGenerator();
+    case BooruType.unknown:
+      return DownloadUrlBaseNameFileNameGenerator();
+  }
 });

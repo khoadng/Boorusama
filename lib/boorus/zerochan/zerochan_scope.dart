@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/zerochan/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
-import 'zerochan_provider.dart';
 
 class ZerochanScope extends ConsumerStatefulWidget {
   const ZerochanScope({
@@ -37,64 +36,62 @@ class ZerochanScope extends ConsumerStatefulWidget {
 class _DanbooruScopeState extends ConsumerState<ZerochanScope> {
   @override
   Widget build(BuildContext context) {
-    return ZerochanProvider(
-      builder: (context) => BooruScope(
-        config: widget.config,
-        mobileView: (controller) => _SimpleMobileHomeView(
-          controller: controller,
-        ),
-        mobileMenuBuilder: (context, controller) => [],
-        desktopMenuBuilder: (context, controller, constraints) => [
-          HomeNavigationTile(
-            value: 0,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.dashboard),
-            icon: const Icon(Icons.dashboard_outlined),
-            title: 'Home',
-          ),
-          const Divider(),
-          HomeNavigationTile(
-            value: 1,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.bookmark),
-            icon: const Icon(Icons.bookmark_border_outlined),
-            title: 'sideMenu.your_bookmarks'.tr(),
-          ),
-          HomeNavigationTile(
-            value: 2,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.list_alt),
-            icon: const Icon(Icons.list_alt_outlined),
-            title: 'sideMenu.your_blacklist'.tr(),
-          ),
-          // HomeNavigationTile(
-          //   value: 3,
-          //   controller: controller,
-          //   constraints: constraints,
-          //   selectedIcon: const Icon(Icons.download),
-          //   icon: const Icon(Icons.download_outlined),
-          //   title: 'sideMenu.bulk_download'.tr(),
-          // ),
-          const Divider(),
-          HomeNavigationTile(
-            value: 999,
-            controller: controller,
-            constraints: constraints,
-            selectedIcon: const Icon(Icons.settings),
-            icon: const Icon(Icons.settings),
-            title: 'sideMenu.settings'.tr(),
-            onTap: () => context.go('/settings'),
-          ),
-        ],
-        desktopViews: const [
-          SimpleHomePage(),
-          BookmarkPage(),
-          BlacklistedTagPage(),
-        ],
+    return BooruScope(
+      config: widget.config,
+      mobileView: (controller) => _SimpleMobileHomeView(
+        controller: controller,
       ),
+      mobileMenuBuilder: (context, controller) => [],
+      desktopMenuBuilder: (context, controller, constraints) => [
+        HomeNavigationTile(
+          value: 0,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.dashboard),
+          icon: const Icon(Icons.dashboard_outlined),
+          title: 'Home',
+        ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 1,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.bookmark),
+          icon: const Icon(Icons.bookmark_border_outlined),
+          title: 'sideMenu.your_bookmarks'.tr(),
+        ),
+        HomeNavigationTile(
+          value: 2,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.list_alt),
+          icon: const Icon(Icons.list_alt_outlined),
+          title: 'sideMenu.your_blacklist'.tr(),
+        ),
+        // HomeNavigationTile(
+        //   value: 3,
+        //   controller: controller,
+        //   constraints: constraints,
+        //   selectedIcon: const Icon(Icons.download),
+        //   icon: const Icon(Icons.download_outlined),
+        //   title: 'sideMenu.bulk_download'.tr(),
+        // ),
+        const Divider(),
+        HomeNavigationTile(
+          value: 999,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.settings),
+          icon: const Icon(Icons.settings),
+          title: 'sideMenu.settings'.tr(),
+          onTap: () => context.go('/settings'),
+        ),
+      ],
+      desktopViews: const [
+        SimpleHomePage(),
+        BookmarkPage(),
+        BlacklistedTagPage(),
+      ],
     );
   }
 }
