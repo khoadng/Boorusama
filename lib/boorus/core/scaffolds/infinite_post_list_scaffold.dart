@@ -114,12 +114,20 @@ class _InfinitePostListScaffoldState<T extends Post>
         refreshAtStart: widget.refreshAtStart,
         scrollController: _autoScrollController,
         sliverHeaderBuilder: widget.sliverHeaderBuilder,
-        footerBuilder: (context, selectedItems) => DefaultMultiSelectionActions(
-          selectedPosts: selectedItems,
-          endMultiSelect: () {
-            _multiSelectController.disableMultiSelect();
-          },
-        ),
+        footerBuilder: (context, selectedItems) =>
+            widget.multiSelectActions != null
+                ? widget.multiSelectActions!.call(
+                    selectedItems,
+                    () {
+                      _multiSelectController.disableMultiSelect();
+                    },
+                  )
+                : DefaultMultiSelectionActions(
+                    selectedPosts: selectedItems,
+                    endMultiSelect: () {
+                      _multiSelectController.disableMultiSelect();
+                    },
+                  ),
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
@@ -131,13 +139,20 @@ class _InfinitePostListScaffoldState<T extends Post>
 
           return ContextMenuRegion(
             isEnabled: !multiSelect,
-            contextMenu: GeneralPostContextMenu(
-              hasAccount: false,
-              onMultiSelect: () {
-                _multiSelectController.enableMultiSelect();
-              },
-              post: post,
-            ),
+            contextMenu: widget.contextMenuBuilder != null
+                ? widget.contextMenuBuilder!.call(
+                    post,
+                    () {
+                      _multiSelectController.enableMultiSelect();
+                    },
+                  )
+                : GeneralPostContextMenu(
+                    hasAccount: false,
+                    onMultiSelect: () {
+                      _multiSelectController.enableMultiSelect();
+                    },
+                    post: post,
+                  ),
             child: LayoutBuilder(
               builder: (context, constraints) => ImageGridItem(
                 isAI: post.isAI,
