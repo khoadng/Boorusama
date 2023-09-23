@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'post_count_provider.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'post_count_state.dart';
 
 String generatePostCountKey(List<String> tags) =>
     tags.isEmpty ? '' : tags.join('+');
 
-class PostCountNotifier extends Notifier<PostCountState> {
+class PostCountNotifier extends FamilyNotifier<PostCountState, BooruConfig> {
   PostCountNotifier({
     this.cacheDuration = const Duration(minutes: 1),
   }) : super();
@@ -23,8 +23,7 @@ class PostCountNotifier extends Notifier<PostCountState> {
   final Map<String, DateTime> _postCountTimestamps = {};
 
   @override
-  PostCountState build() {
-    ref.watch(currentBooruConfigProvider);
+  PostCountState build(BooruConfig arg) {
     return PostCountState.initial();
   }
 
@@ -40,7 +39,7 @@ class PostCountNotifier extends Notifier<PostCountState> {
         return;
       }
 
-      final postCount = await ref.read(postCountRepoProvider).count(tags);
+      final postCount = await ref.read(postCountRepoProvider(arg)).count(tags);
       state = PostCountState({
         ...state.postCounts,
         cacheKey: postCount,

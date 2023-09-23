@@ -66,7 +66,8 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         ref
-            .read(postCountStateProvider.notifier)
+            .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
+                .notifier)
             .getPostCount([widget.initialQuery!]);
       }
     });
@@ -86,7 +87,9 @@ class _SearchPageState extends ConsumerState<GelbooruSearchPage> {
               allowSearch: allowSearch,
               onSearch: () {
                 ref
-                    .read(postCountStateProvider.notifier)
+                    .read(postCountStateProvider(
+                            ref.read(currentBooruConfigProvider))
+                        .notifier)
                     .getPostCount(selectedTagController.rawTags);
                 searchController.search();
               },

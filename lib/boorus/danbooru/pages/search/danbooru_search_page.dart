@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/pages/search/metatags/danbooru_metatags_section.dart';
@@ -65,7 +66,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         ref
-            .read(postCountStateProvider.notifier)
+            .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
+                .notifier)
             .getPostCount([widget.initialQuery!]);
 
         ref
@@ -195,7 +197,8 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         .read(danbooruRelatedTagsProvider.notifier)
         .fetch(selectedTagController.rawTagsString);
     ref
-        .read(postCountStateProvider.notifier)
+        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
+            .notifier)
         .getPostCount(selectedTagController.rawTags);
     searchController.search();
   }

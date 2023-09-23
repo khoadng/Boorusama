@@ -233,3 +233,24 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
         });
+
+final postCountRepoProvider = Provider.family<PostCountRepository, BooruConfig>(
+    (ref, config) => switch (config.booruType) {
+          BooruType.danbooru ||
+          BooruType.aibooru ||
+          BooruType.safebooru ||
+          BooruType.testbooru =>
+            ref.watch(danbooruPostCountRepoProvider),
+          BooruType.gelbooru ||
+          BooruType.rule34xxx =>
+            ref.watch(gelbooruPostCountRepoProvider),
+          BooruType.konachan ||
+          BooruType.yandere ||
+          BooruType.sakugabooru ||
+          BooruType.lolibooru ||
+          BooruType.e621 ||
+          BooruType.e926 ||
+          BooruType.zerochan ||
+          BooruType.unknown =>
+            ref.watch(emptyPostCountRepoProvider),
+        });

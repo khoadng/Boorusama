@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
@@ -21,20 +20,11 @@ class GelbooruProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruConfigProvider);
-
     return ProviderScope(
       overrides: [
         // artist/character posts
         postArtistCharacterRepoProvider.overrideWith(
             (ref) => ref.watch(gelbooruArtistCharacterPostRepoProvider)),
-        // post count
-        if (booru.booruType == BooruType.gelbooru)
-          postCountRepoProvider
-              .overrideWith((ref) => ref.watch(gelbooruPostCountRepoProvider))
-        else
-          postCountRepoProvider
-              .overrideWith((ref) => ref.watch(emptyPostCountRepoProvider)),
       ],
       child: Builder(
         builder: builder,

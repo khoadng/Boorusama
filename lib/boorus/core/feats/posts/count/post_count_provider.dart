@@ -7,23 +7,17 @@ import 'post_count_notifier.dart';
 import 'post_count_repository.dart';
 import 'post_count_state.dart';
 
-final postCountRepoProvider = Provider<PostCountRepository>((ref) {
-  throw UnimplementedError();
-});
-
 final postCountStateProvider =
-    NotifierProvider<PostCountNotifier, PostCountState>(
+    NotifierProvider.family<PostCountNotifier, PostCountState, BooruConfig>(
   PostCountNotifier.new,
-  dependencies: [
-    postCountRepoProvider,
-    currentBooruConfigProvider,
-  ],
 );
 
 final postCountProvider = Provider<PostCountState>(
-  (ref) => ref.watch(postCountStateProvider),
+  (ref) =>
+      ref.watch(postCountStateProvider(ref.watch(currentBooruConfigProvider))),
   dependencies: [
     postCountStateProvider,
+    currentBooruConfigProvider,
   ],
 );
 

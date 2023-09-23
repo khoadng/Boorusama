@@ -8,11 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/feats/posts/count/post_count_provider.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 
 class DanbooruProvider extends ConsumerWidget {
@@ -29,8 +27,6 @@ class DanbooruProvider extends ConsumerWidget {
       overrides: [
         noteRepoProvider
             .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
-        postCountRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruPostCountRepoProvider)),
       ],
       child: Builder(builder: builder),
     );
