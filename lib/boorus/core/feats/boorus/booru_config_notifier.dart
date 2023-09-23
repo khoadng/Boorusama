@@ -159,6 +159,28 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   }
 }
 
+extension BooruConfigNotifierX on BooruConfigNotifier {
+  void addOrUpdate({
+    required BooruConfig config,
+    required AddNewBooruConfig newConfig,
+  }) {
+    if (config.isDefault()) {
+      ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+            newConfig: newConfig,
+          );
+    } else {
+      ref.read(booruConfigProvider.notifier).update(
+            config: newConfig,
+            oldConfig: config,
+            id: config.id,
+            onSuccess: (booruConfig) => ref
+                .read(currentBooruConfigProvider.notifier)
+                .update(booruConfig),
+          );
+    }
+  }
+}
+
 class AddNewBooruConfig {
   AddNewBooruConfig({
     required this.login,

@@ -22,26 +22,13 @@ import 'package:boorusama/foundation/theme/theme.dart';
 class CreateMoebooruConfigPage extends ConsumerStatefulWidget {
   const CreateMoebooruConfigPage({
     super.key,
-    required this.booruType,
-    required this.url,
-    this.isUnkown = false,
-    this.initialLogin,
-    this.initialHashedPassword,
-    this.initialConfigName,
-    this.initialRatingFilter,
+    required this.config,
     this.backgroundColor,
   });
 
-  final String? initialLogin;
-  final String? initialHashedPassword;
-  final String? initialConfigName;
-  final BooruConfigRatingFilter? initialRatingFilter;
+  final BooruConfig config;
 
   final Color? backgroundColor;
-
-  final BooruType booruType;
-  final String url;
-  final bool isUnkown;
 
   @override
   ConsumerState<CreateMoebooruConfigPage> createState() =>
@@ -50,13 +37,12 @@ class CreateMoebooruConfigPage extends ConsumerStatefulWidget {
 
 class _CreateMoebooruConfigPageState
     extends ConsumerState<CreateMoebooruConfigPage> {
-  late var login = widget.initialLogin ?? '';
-  late var apiKey = widget.initialHashedPassword ?? '';
-  late var configName = widget.initialConfigName ?? '';
-  late var ratingFilter =
-      widget.initialRatingFilter ?? BooruConfigRatingFilter.none;
+  late var login = widget.config.login ?? '';
+  late var apiKey = widget.config.apiKey ?? '';
+  late var configName = widget.config.name;
+  late var ratingFilter = widget.config.ratingFilter;
 
-  late var hashedPassword = widget.initialHashedPassword ?? '';
+  late var hashedPassword = widget.config.apiKey ?? '';
   var password = '';
 
   BooruFactory get booruFactory => ref.read(booruFactoryProvider);
@@ -65,9 +51,9 @@ class _CreateMoebooruConfigPageState
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
       backgroundColor: widget.backgroundColor,
-      booruType: widget.booruType,
-      url: widget.url,
-      isUnknown: widget.isUnkown,
+      booruType: widget.config.booruType,
+      url: widget.config.url,
+      isUnknown: widget.config.isUnverified(),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -99,7 +85,7 @@ class _CreateMoebooruConfigPageState
 
                   password = value;
                   hashedPassword = hashBooruPasswordSHA1(
-                    booru: booruFactory.from(type: widget.booruType),
+                    booru: booruFactory.from(type: widget.config.booruType),
                     booruFactory: booruFactory,
                     password: value,
                   );
@@ -152,16 +138,17 @@ class _CreateMoebooruConfigPageState
   }
 
   void submit() {
-    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+    ref.read(booruConfigProvider.notifier).addOrUpdate(
+          config: widget.config,
           newConfig: AddNewBooruConfig(
             login: login,
             apiKey: apiKey,
-            booru: widget.booruType,
-            booruHint: widget.booruType,
+            booru: widget.config.booruType,
+            booruHint: widget.config.booruType,
             configName: configName,
             hideDeleted: false,
             ratingFilter: ratingFilter,
-            url: widget.url,
+            url: widget.config.url,
           ),
         );
     context.navigator.pop();

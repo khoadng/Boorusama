@@ -95,20 +95,9 @@ class _CreateGelbooruConfigPageState
       url: widget.config.url,
     );
 
-    if (widget.config.isDefault()) {
-      ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-            newConfig: config,
-          );
-    } else {
-      ref.read(booruConfigProvider.notifier).update(
-            config: config,
-            oldConfig: widget.config,
-            id: widget.config.id,
-            onSuccess: (booruConfig) => ref
-                .read(currentBooruConfigProvider.notifier)
-                .update(booruConfig),
-          );
-    }
+    ref
+        .read(booruConfigProvider.notifier)
+        .addOrUpdate(config: widget.config, newConfig: config);
 
     context.navigator.pop();
   }

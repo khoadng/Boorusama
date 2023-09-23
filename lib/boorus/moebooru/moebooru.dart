@@ -13,8 +13,7 @@ class MoebooruBuilder implements BooruBuilder {
         backgroundColor,
       }) =>
           CreateMoebooruConfigPage(
-            url: url,
-            booruType: booruType,
+            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
             backgroundColor: backgroundColor,
           );
 
@@ -29,13 +28,7 @@ class MoebooruBuilder implements BooruBuilder {
         backgroundColor,
       }) =>
           CreateMoebooruConfigPage(
-            initialHashedPassword: config.apiKey,
-            initialLogin: config.login,
-            initialConfigName: config.name,
-            initialRatingFilter: config.ratingFilter,
-            booruType: config.booruType,
-            url: config.url,
+            config: config,
             backgroundColor: backgroundColor,
-            isUnkown: config.isUnverified(),
           );
 }
