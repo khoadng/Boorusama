@@ -36,5 +36,6 @@ class MoebooruBuilder implements BooruBuilder {
             booruType: config.booruType,
             url: config.url,
             backgroundColor: backgroundColor,
+            isUnkown: config.isUnverified(),
           );
 }

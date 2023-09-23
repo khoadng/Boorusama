@@ -1,4 +1,5 @@
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:flutter/widgets.dart';
@@ -34,4 +35,6 @@ final booruBuilders = {
   BooruType.yandere: MoebooruBuilder(),
   BooruType.sakugabooru: MoebooruBuilder(),
   BooruType.lolibooru: MoebooruBuilder(),
+  BooruType.gelbooru: GelbooruBuilder(),
+  BooruType.rule34xxx: GelbooruBuilder(),
 };

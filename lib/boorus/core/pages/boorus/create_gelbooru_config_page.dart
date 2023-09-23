@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/flutter.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -8,50 +9,38 @@ import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_login_fi
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'widgets/create_booru_config_name_field.dart';
 
-class CreateGelbooruConfigPage extends StatelessWidget {
+class CreateGelbooruConfigPage extends ConsumerStatefulWidget {
   const CreateGelbooruConfigPage({
     super.key,
-    required this.onLoginChanged,
-    required this.onApiKeyChanged,
-    required this.onConfigNameChanged,
-    required this.onRatingFilterChanged,
-    required this.onSubmit,
-    required this.booruType,
-    required this.url,
-    this.initialLogin,
-    this.initialApiKey,
-    this.initialConfigName,
-    this.initialRatingFilter,
+    required this.config,
     this.backgroundColor,
-    this.isUnkown = false,
   });
 
-  final String? initialLogin;
-  final String? initialApiKey;
-  final String? initialConfigName;
-  final BooruConfigRatingFilter? initialRatingFilter;
-
-  final void Function(String value) onLoginChanged;
-  final void Function(String value) onApiKeyChanged;
-  final void Function(String value) onConfigNameChanged;
-  final void Function(BooruConfigRatingFilter? value) onRatingFilterChanged;
-  final void Function()? onSubmit;
-
+  final BooruConfig config;
   final Color? backgroundColor;
 
-  final BooruType booruType;
-  final String url;
-  final bool isUnkown;
+  @override
+  ConsumerState<CreateGelbooruConfigPage> createState() =>
+      _CreateGelbooruConfigPageState();
+}
+
+class _CreateGelbooruConfigPageState
+    extends ConsumerState<CreateGelbooruConfigPage> {
+  late var login = widget.config.login ?? '';
+  late var apiKey = widget.config.apiKey ?? '';
+  late var configName = widget.config.name;
+  late var ratingFilter = widget.config.ratingFilter;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
-      backgroundColor: backgroundColor,
-      booruType: booruType,
-      url: url,
-      isUnknown: isUnkown,
+      backgroundColor: widget.backgroundColor,
+      booruType: widget.config.booruType,
+      url: widget.config.url,
+      isUnknown: widget.config.isUnverified(),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -62,13 +51,13 @@ class CreateGelbooruConfigPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CreateBooruConfigNameField(
-                text: initialConfigName,
-                onChanged: onConfigNameChanged,
+                text: configName,
+                onChanged: (value) => setState(() => configName = value),
               ),
               const SizedBox(height: 16),
               CreateBooruLoginField(
-                text: initialLogin,
-                onChanged: onLoginChanged,
+                text: login,
+                onChanged: (value) => setState(() => login = value),
                 labelText: 'User ID',
                 hintText: '1234567',
               ),
@@ -76,20 +65,58 @@ class CreateGelbooruConfigPage extends StatelessWidget {
               CreateBooruApiKeyField(
                 hintText:
                     '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
-                text: initialApiKey,
-                onChanged: onApiKeyChanged,
+                text: apiKey,
+                onChanged: (value) => setState(() => apiKey = value),
               ),
               const SizedBox(height: 16),
               CreateBooruRatingOptionsTile(
-                value: initialRatingFilter,
-                onChanged: onRatingFilterChanged,
+                value: ratingFilter,
+                onChanged: (value) =>
+                    value != null ? setState(() => ratingFilter = value) : null,
               ),
               const SizedBox(height: 16),
-              CreateBooruSubmitButton(onSubmit: onSubmit),
+              CreateBooruSubmitButton(onSubmit: allowSubmit() ? submit : null),
             ],
           ),
         ),
       ],
     );
+  }
+
+  void submit() {
+    final config = AddNewBooruConfig(
+      login: login,
+      apiKey: apiKey,
+      booru: widget.config.booruType,
+      booruHint: widget.config.booruType,
+      configName: configName,
+      hideDeleted: false,
+      ratingFilter: ratingFilter,
+      url: widget.config.url,
+    );
+
+    if (widget.config.isDefault()) {
+      ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+            newConfig: config,
+          );
+    } else {
+      ref.read(booruConfigProvider.notifier).update(
+            config: config,
+            oldConfig: widget.config,
+            id: widget.config.id,
+            onSuccess: (booruConfig) => ref
+                .read(currentBooruConfigProvider.notifier)
+                .update(booruConfig),
+          );
+    }
+
+    context.navigator.pop();
+  }
+
+  bool allowSubmit() {
+    if (configName.isEmpty) return false;
+
+    return (login.isNotEmpty && apiKey.isNotEmpty) ||
+        (login.isEmpty && apiKey.isEmpty);
   }
 }

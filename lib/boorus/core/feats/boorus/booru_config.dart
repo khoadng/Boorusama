@@ -29,6 +29,22 @@ class BooruConfig extends Equatable {
     url: '',
   );
 
+  static BooruConfig defaultConfig({
+    required BooruType booruType,
+    required String url,
+  }) =>
+      BooruConfig(
+        id: -1,
+        booruId: booruType.toBooruId(),
+        booruIdHint: booruType.toBooruId(),
+        apiKey: null,
+        login: null,
+        name: '',
+        deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
+        ratingFilter: BooruConfigRatingFilter.none,
+        url: url,
+      );
+
   final int id;
   final int booruId;
   final int booruIdHint;
@@ -95,4 +111,6 @@ extension BooruConfigX on BooruConfig {
   BooruType get booruType => intToBooruType(booruIdHint);
 
   bool isUnverified() => booruId != booruIdHint;
+
+  bool isDefault() => id == -1;
 }

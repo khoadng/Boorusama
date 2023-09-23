@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
-import 'create_gelbooru_config_page.dart';
 
 class CreateBooruPage extends ConsumerStatefulWidget {
   const CreateBooruPage({
@@ -69,18 +68,8 @@ class _AddBooruPageState extends ConsumerState<CreateBooruPage> {
           booruType: widget.booruType,
           url: widget.url,
         ),
-      BooruType.gelbooru || BooruType.rule34xxx => CreateGelbooruConfigPage(
-          initialRatingFilter: ratingFilter,
-          backgroundColor: widget.backgroundColor,
-          onLoginChanged: (value) => setState(() => login = value),
-          onApiKeyChanged: (value) => setState(() => apiKey = value),
-          onConfigNameChanged: (value) => setState(() => configName = value),
-          onRatingFilterChanged: (value) =>
-              setState(() => ratingFilter = value!),
-          onSubmit: allowSubmit() ? submit : null,
-          booruType: widget.booruType,
-          url: widget.url,
-        ),
+      BooruType.gelbooru ||
+      BooruType.rule34xxx ||
       BooruType.zerochan ||
       BooruType.konachan ||
       BooruType.yandere ||
