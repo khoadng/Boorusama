@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,6 +12,7 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/simple_post_action_toolbar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -24,6 +24,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.onTagTap,
     this.toolbarBuilder,
     this.sliverArtistPostsBuilder,
+    this.sliverCharacterPostsBuilder,
     this.onExpanded,
     this.tagListBuilder,
     this.infoBuilder,
@@ -36,6 +37,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.onPageChanged,
     this.sliverRelatedPostsBuilder,
     this.commentsBuilder,
+    this.poolTileBuilder,
+    this.statsTileBuilder,
   });
 
   final int initialIndex;
@@ -48,10 +51,15 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
   final Widget Function(BuildContext context, T post)? sliverArtistPostsBuilder;
+  final Widget Function(BuildContext context, T post)?
+      sliverCharacterPostsBuilder;
   final Widget Function(BuildContext context, T post)? tagListBuilder;
   final Widget Function(BuildContext context, T post)? infoBuilder;
   final Widget Function(BuildContext context, T post)? artistInfoBuilder;
   final Widget Function(BuildContext context, T post)? commentsBuilder;
+  final Widget Function(BuildContext context, T post)? poolTileBuilder;
+  final Widget Function(BuildContext context, T post)? statsTileBuilder;
+
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded)?
@@ -152,14 +160,18 @@ class _PostDetailPageScaffoldState<T extends Post>
                   childCount: widgets.length,
                 ),
               ),
-              if (widget.sliverArtistPostsBuilder != null &&
-                  expanded &&
-                  page == currentPage)
-                widget.sliverArtistPostsBuilder!(context, posts[page]),
               if (widget.sliverRelatedPostsBuilder != null &&
                   expanded &&
                   page == currentPage)
                 widget.sliverRelatedPostsBuilder!(context, posts[page]),
+              if (widget.sliverArtistPostsBuilder != null &&
+                  expanded &&
+                  page == currentPage)
+                widget.sliverArtistPostsBuilder!(context, posts[page]),
+              if (widget.sliverCharacterPostsBuilder != null &&
+                  expanded &&
+                  page == currentPage)
+                widget.sliverCharacterPostsBuilder!(context, posts[page]),
             ],
           ),
         );
@@ -220,6 +232,8 @@ class _PostDetailPageScaffoldState<T extends Post>
       if (!expandedOnCurrentPage)
         SizedBox(height: MediaQuery.of(context).size.height),
       if (expandedOnCurrentPage) ...[
+        if (widget.poolTileBuilder != null)
+          widget.poolTileBuilder!(context, post),
         if (widget.infoBuilder != null) widget.infoBuilder!(context, post),
         const Divider(height: 8, thickness: 1),
         if (widget.toolbarBuilder != null)
@@ -229,6 +243,10 @@ class _PostDetailPageScaffoldState<T extends Post>
         if (widget.artistInfoBuilder != null) ...[
           const Divider(height: 8, thickness: 1),
           widget.artistInfoBuilder!(context, post),
+        ],
+        if (widget.statsTileBuilder != null) ...[
+          const Divider(height: 8, thickness: 1),
+          widget.statsTileBuilder!(context, post),
         ],
         const Divider(height: 8, thickness: 1),
         if (widget.tagListBuilder != null)

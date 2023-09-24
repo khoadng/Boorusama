@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/pool_tiles.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
@@ -27,7 +28,6 @@ import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_post_details_page.dart';
 import 'danbooru_recommend_artist_list.dart';
 import 'danbooru_recommend_character_list.dart';
-import 'danbooru_related_posts_section.dart';
 
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsDesktopPage({
@@ -65,8 +65,9 @@ class _DanbooruPostDetailsDesktopPageState
         .where((e) => e.postId == post.id)
         .map((e) => e.name)
         .toList();
-    final artists = ref.watch(danbooruPostDetailsArtistProvider(post.id));
-    final characters = ref.watch(danbooruPostDetailsCharacterProvider(post.id));
+    final artists = ref.watch(danbooruPostDetailsArtistProvider(post));
+    final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
+    final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final auth = ref.watch(authenticationProvider);
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
     final booruConfig = ref.watch(currentBooruConfigProvider);
@@ -141,9 +142,20 @@ class _DanbooruPostDetailsDesktopPageState
                   ],
                 ),
               ),
-              DanbooruRelatedPostsSection(post: post),
-              DanbooruRecommendArtistList(artists: artists),
-              DanbooruRecommendCharacterList(characters: characters),
+              pools.maybeWhen(
+                data: (pools) => PoolTiles(pools: pools),
+                orElse: () => const SliverToBoxAdapter(),
+              ),
+              artists.maybeWhen(
+                data: (artists) =>
+                    DanbooruRecommendArtistList(artists: artists),
+                orElse: () => const SliverToBoxAdapter(),
+              ),
+              characters.maybeWhen(
+                data: (characters) =>
+                    DanbooruRecommendCharacterList(characters: characters),
+                orElse: () => const SliverToBoxAdapter(),
+              ),
             ],
           );
         },
