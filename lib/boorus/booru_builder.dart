@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
@@ -49,6 +50,14 @@ typedef SearchPageBuilder = Widget Function(
   String? initialQuery,
 );
 
+typedef PostDetailsPageBuilder = Widget Function(
+  BuildContext context,
+  BooruConfig config,
+  List<Post> posts,
+  int initialIndex,
+  AutoScrollController? scrollController,
+);
+
 typedef PostFetcher = PostsOrError Function(
   int page,
   String tags,
@@ -70,6 +79,7 @@ abstract class BooruBuilder {
   CreateConfigPageBuilder get createConfigPageBuilder;
   UpdateConfigPageBuilder get updateConfigPageBuilder;
   SearchPageBuilder get searchPageBuilder;
+  PostDetailsPageBuilder get postDetailsPageBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;

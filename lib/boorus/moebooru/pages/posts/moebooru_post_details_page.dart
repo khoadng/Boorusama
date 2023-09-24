@@ -33,6 +33,7 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   final int initialPage;
   final void Function(int page) onExit;
 
+  @deprecated
   static MaterialPageRoute routeOf(
     BuildContext context, {
     required List<Post> posts,

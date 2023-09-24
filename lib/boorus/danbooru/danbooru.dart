@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
 import 'create_danbooru_config_page.dart';
 import 'danbooru_scope.dart';
@@ -77,4 +78,18 @@ class DanbooruBuilder implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder => (
+        context,
+        config,
+        posts,
+        initialIndex,
+        scrollController,
+      ) =>
+          DanbooruPostDetailsPage(
+            intitialIndex: initialIndex,
+            posts: posts.map((e) => e as DanbooruPost).toList(),
+            onExit: (page) => scrollController?.scrollToIndex(page),
+          );
 }

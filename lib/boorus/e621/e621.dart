@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
 import 'package:boorusama/boorus/e621/pages/search/e621_search_page.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'e621_scope.dart';
@@ -83,4 +84,18 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => E621SearchPage(initialQuery: initialQuery);
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder => (
+        context,
+        config,
+        posts,
+        initialIndex,
+        scrollController,
+      ) =>
+          E621PostDetailsPage(
+            intitialIndex: initialIndex,
+            posts: posts.map((e) => e as E621Post).toList(),
+            onExit: (page) => scrollController?.scrollToIndex(page),
+          );
 }

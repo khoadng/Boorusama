@@ -43,6 +43,7 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   final List<DanbooruPost> posts;
   final void Function(int page) onExit;
 
+  @deprecated
   static MaterialPageRoute routeOf(
     BuildContext context, {
     required List<DanbooruPost> posts,

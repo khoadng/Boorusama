@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
@@ -62,6 +63,22 @@ void goToSearchPage(
   } else {
     context.push('/search?$kInitialQueryKey=$tag');
   }
+}
+
+void goToPostDetailsPage({
+  required BuildContext context,
+  required List<Post> posts,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+}) {
+  context.go(
+    'details',
+    extra: (
+      initialIndex: initialIndex,
+      posts: posts,
+      scrollController: scrollController,
+    ),
+  );
 }
 
 void goToBlacklistedTagsSearchPage(

@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
+import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 
@@ -63,4 +64,19 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => GelbooruSearchPage(initialQuery: initialQuery);
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder => (
+        context,
+        booruConfig,
+        posts,
+        initialIndex,
+        scrollController,
+      ) =>
+          GelbooruPostDetailsPage(
+            posts: posts,
+            initialIndex: initialIndex,
+            onExit: (page) => scrollController?.scrollToIndex(page),
+            hasDetailsTagList: booruConfig.booruType.supportTagDetails,
+          );
 }

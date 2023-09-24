@@ -4,6 +4,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
+import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
 import 'create_moebooru_config_page.dart';
 
@@ -59,5 +60,19 @@ class MoebooruBuilder
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => MoebooruSearchPage(
             initialQuery: initialQuery,
+          );
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder => (
+        context,
+        config,
+        posts,
+        initialIndex,
+        scrollController,
+      ) =>
+          MoebooruPostDetailsPage(
+            posts: posts,
+            onExit: (page) => scrollController?.scrollToIndex(page),
+            initialPage: initialIndex,
           );
 }

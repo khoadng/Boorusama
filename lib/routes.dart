@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -217,6 +219,12 @@ class SettingsRoutes {
 
 const kInitialQueryKey = 'query';
 
+typedef DetailsPayload = ({
+  int initialIndex,
+  List<Post> posts,
+  AutoScrollController? scrollController,
+});
+
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -236,12 +244,39 @@ class Routes {
           BoorusRoutes.add(ref),
           BoorusRoutes.addDesktop(),
           search(ref),
+          postDetails(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
           globalBlacklistedTags(),
           bulkDownloads(ref),
         ],
+      );
+
+  static GoRoute postDetails(Ref ref) => GoRoute(
+        path: 'details',
+        name: '/details',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder =
+              booruBuilders[config.booruType]?.postDetailsPageBuilder;
+          final payload = state.extra as DetailsPayload;
+
+          return MaterialPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(
+                    context,
+                    config,
+                    payload.posts,
+                    payload.initialIndex,
+                    payload.scrollController,
+                  )
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+          );
+        },
       );
 
   static GoRoute search(Ref ref) => GoRoute(
@@ -254,7 +289,7 @@ class Routes {
           final query = state.uri.queryParameters[kInitialQueryKey];
 
           return CustomTransitionPage(
-            key: ValueKey(query),
+            key: state.pageKey,
             name: state.name,
             child: builder != null
                 ? builder(context, query)

@@ -30,6 +30,7 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   final void Function(int page) onExit;
   final bool hasDetailsTagList;
 
+  @deprecated
   static MaterialPageRoute routeOf({
     required BooruConfig booruConfig,
     required Settings settings,

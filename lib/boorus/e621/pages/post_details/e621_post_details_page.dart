@@ -34,6 +34,7 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
   final List<E621Post> posts;
   final void Function(int page) onExit;
 
+  @deprecated
   static MaterialPageRoute routeOf(
     BuildContext context, {
     required List<E621Post> posts,
