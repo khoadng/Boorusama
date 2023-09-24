@@ -122,7 +122,6 @@ class _MoebooruPostDetailsDesktopPageState
                       child: PostTagList(
                         tags: ref.watch(tagsProvider(booruConfig)),
                         onTap: (tag) => goToMoebooruSearchPage(
-                          ref,
                           context,
                           tag: tag.rawName,
                         ),

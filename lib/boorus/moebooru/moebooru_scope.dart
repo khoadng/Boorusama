@@ -155,7 +155,7 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
             toolbarHeight: kToolbarHeight * 1.2,
             title: HomeSearchBar(
               onMenuTap: controller.openMenu,
-              onTap: () => goToMoebooruSearchPage(ref, context),
+              onTap: () => goToMoebooruSearchPage(context),
             ),
             floating: true,
             snap: true,

@@ -77,7 +77,6 @@ class _MoebooruPostDetailsPageState
       initialIndex: widget.initialPage,
       onExit: widget.onExit,
       onTagTap: (tag) => goToMoebooruSearchPage(
-        ref,
         context,
         tag: tag,
       ),
@@ -87,7 +86,6 @@ class _MoebooruPostDetailsPageState
       tagListBuilder: (context, post) => PostTagList(
         tags: ref.watch(tagsProvider(booruConfig)),
         onTap: (tag) => goToMoebooruSearchPage(
-          ref,
           context,
           tag: tag.rawName,
         ),

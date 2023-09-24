@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -16,11 +15,11 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 void goToMoebooruSearchPage(
-  WidgetRef ref,
   BuildContext context, {
   String? tag,
 }) {
-  context.navigator.push(MoebooruSearchPage.routeOf(context, ref, tag: tag));
+  context.navigator
+      .push(MoebooruSearchPage.routeOf(context: context, tag: tag));
 }
 
 void goToMoebooruDetailsPage({
