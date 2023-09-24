@@ -6,8 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
+import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/e621/e621_provider.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -211,6 +217,8 @@ class Routes {
           settings(),
           settingsDesktop(),
           bookmarks(),
+          globalBlacklistedTags(),
+          bulkDownloads(ref),
         ],
       );
 
@@ -237,6 +245,70 @@ class Routes {
             ),
           ),
         ],
+      );
+
+  static GoRoute globalBlacklistedTags() => GoRoute(
+        path: 'global_blacklisted_tags',
+        name: '/global_blacklisted_tags',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const BlacklistedTagPage(),
+          transitionsBuilder: leftToRightTransitionBuilder(),
+        ),
+      );
+
+  static GoRoute bulkDownloads(Ref ref) => GoRoute(
+        path: 'bulk_downloads',
+        name: '/bulk_downloads',
+        pageBuilder: (context, state) {
+          final booru = ref.read(currentBooruConfigProvider);
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: Builder(builder: (_) {
+              switch (booru.booruType) {
+                case BooruType.e621:
+                case BooruType.e926:
+                  return E621Provider(
+                    builder: (context) => const BulkDownloadPage(),
+                  );
+                case BooruType.unknown:
+                  throw UnimplementedError();
+                case BooruType.konachan:
+                case BooruType.yandere:
+                case BooruType.sakugabooru:
+                case BooruType.lolibooru:
+                  return MoebooruProvider(
+                    builder: (context) => const BulkDownloadPage(),
+                  );
+                case BooruType.danbooru:
+                case BooruType.safebooru:
+                case BooruType.testbooru:
+                case BooruType.aibooru:
+                  return DanbooruProvider(
+                    builder: (context) => const BulkDownloadPage(),
+                  );
+                case BooruType.gelbooru:
+                case BooruType.rule34xxx:
+                  return GelbooruProvider(
+                    builder: (context) => const BulkDownloadPage(),
+                  );
+                case BooruType.zerochan:
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Bulk download'),
+                    ),
+                    body: const Center(
+                      child: Text('Sorry, not supported yet :('),
+                    ),
+                  );
+              }
+            }),
+            transitionsBuilder: leftToRightTransitionBuilder(),
+          );
+        },
       );
 
   static GoRoute settings() => GoRoute(
