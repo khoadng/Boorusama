@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
+import 'package:boorusama/boorus/moebooru/pages/posts/moebooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
 import 'create_moebooru_config_page.dart';
 
@@ -63,16 +64,16 @@ class MoebooruBuilder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder => (
-        context,
-        config,
-        posts,
-        initialIndex,
-        scrollController,
-      ) =>
-          MoebooruPostDetailsPage(
-            posts: posts,
-            onExit: (page) => scrollController?.scrollToIndex(page),
-            initialPage: initialIndex,
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) => payload.isDesktop
+          ? MoebooruPostDetailsDesktopPage(
+              posts: payload.posts,
+              onExit: (page) => payload.scrollController?.scrollToIndex(page),
+              initialIndex: payload.initialIndex,
+            )
+          : MoebooruPostDetailsPage(
+              posts: payload.posts,
+              onExit: (page) => payload.scrollController?.scrollToIndex(page),
+              initialPage: payload.initialIndex,
+            );
 }

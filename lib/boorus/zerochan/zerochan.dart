@@ -143,17 +143,11 @@ class ZerochanBuilder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder => (
-        context,
-        config,
-        posts,
-        initialIndex,
-        scrollController,
-      ) =>
-          ZerochanPostDetailsPage(
-            posts: posts,
-            initialIndex: initialIndex,
-            scrollController: scrollController,
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) => ZerochanPostDetailsPage(
+            posts: payload.posts,
+            initialIndex: payload.initialIndex,
+            scrollController: payload.scrollController,
           );
 }
 

@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -77,6 +78,7 @@ void goToPostDetailsPage({
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
+      isDesktop: isMobilePlatform() && context.orientation.isPortrait
     ),
   );
 }

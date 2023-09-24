@@ -223,6 +223,7 @@ typedef DetailsPayload = ({
   int initialIndex,
   List<Post> posts,
   AutoScrollController? scrollController,
+  bool isDesktop,
 });
 
 class Routes {
@@ -263,19 +264,24 @@ class Routes {
               booruBuilders[config.booruType]?.postDetailsPageBuilder;
           final payload = state.extra as DetailsPayload;
 
-          return MaterialPage(
-            key: state.pageKey,
-            name: state.name,
-            child: builder != null
-                ? builder(
-                    context,
-                    config,
-                    payload.posts,
-                    payload.initialIndex,
-                    payload.scrollController,
-                  )
-                : const Scaffold(body: Center(child: Text('Not implemented'))),
-          );
+          if (payload.isDesktop) {
+            return MaterialPage(
+              key: state.pageKey,
+              name: state.name,
+              child: builder != null
+                  ? builder(context, config, payload)
+                  : const Scaffold(
+                      body: Center(child: Text('Not implemented'))),
+            );
+          } else {
+            return builder != null
+                ? DialogPage(
+                    builder: (context) => builder(context, config, payload))
+                : DialogPage(
+                    builder: (_) => const Scaffold(
+                          body: Center(child: Text('Not implemented')),
+                        ));
+          }
         },
       );
 

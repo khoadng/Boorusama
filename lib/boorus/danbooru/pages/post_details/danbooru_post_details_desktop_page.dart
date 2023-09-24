@@ -143,7 +143,9 @@ class _DanbooruPostDetailsDesktopPageState
                 ),
               ),
               pools.maybeWhen(
-                data: (pools) => PoolTiles(pools: pools),
+                data: (pools) => SliverToBoxAdapter(
+                  child: PoolTiles(pools: pools),
+                ),
                 orElse: () => const SliverToBoxAdapter(),
               ),
               artists.maybeWhen(
