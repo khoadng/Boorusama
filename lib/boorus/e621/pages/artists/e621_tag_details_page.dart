@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/tag_details_sliver_app_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/functional.dart';
 
 class E621TagDetailPage extends ConsumerStatefulWidget {
@@ -77,10 +77,10 @@ class _TagDetailPageState extends ConsumerState<E621TagDetailPage> {
         ],
         onPostTap:
             (context, posts, post, scrollController, settings, initialIndex) =>
-                goToE621DetailsPage(
+                goToPostDetailsPage(
           context: context,
           posts: posts,
-          initialPage: initialIndex,
+          initialIndex: initialIndex,
           scrollController: scrollController,
         ),
       ),

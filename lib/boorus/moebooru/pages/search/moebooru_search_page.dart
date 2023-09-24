@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 
 class MoebooruSearchPage extends ConsumerWidget {
   const MoebooruSearchPage({
@@ -22,10 +22,10 @@ class MoebooruSearchPage extends ConsumerWidget {
     return SearchPageScaffold(
       onPostTap:
           (context, posts, post, scrollController, settings, initialIndex) =>
-              goToMoebooruDetailsPage(
+              goToPostDetailsPage(
         context: context,
         posts: posts,
-        initialPage: initialIndex,
+        initialIndex: initialIndex,
         scrollController: scrollController,
       ),
       fetcher: (page, tags) =>

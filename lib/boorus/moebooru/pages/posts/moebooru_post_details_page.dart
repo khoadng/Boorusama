@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
@@ -32,24 +31,6 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   final List<Post> posts;
   final int initialPage;
   final void Function(int page) onExit;
-
-  @deprecated
-  static MaterialPageRoute routeOf(
-    BuildContext context, {
-    required List<Post> posts,
-    required int initialIndex,
-    AutoScrollController? scrollController,
-  }) {
-    return MaterialPageRoute(
-      builder: (_) {
-        return MoebooruPostDetailsPage(
-          posts: posts,
-          onExit: (page) => scrollController?.scrollToIndex(page),
-          initialPage: initialIndex,
-        );
-      },
-    );
-  }
 
   @override
   ConsumerState<MoebooruPostDetailsPage> createState() =>

@@ -65,10 +65,10 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
           ],
           onPostTap: (context, posts, post, scrollController, settings,
                   initialIndex) =>
-              goToE621DetailsPage(
+              goToPostDetailsPage(
             context: context,
             posts: posts,
-            initialPage: initialIndex,
+            initialIndex: initialIndex,
             scrollController: scrollController,
           ),
         ),

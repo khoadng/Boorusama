@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
@@ -19,7 +18,6 @@ import 'package:boorusama/boorus/core/widgets/related_posts_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'danbooru_information_section.dart';
@@ -42,21 +40,6 @@ class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   final int intitialIndex;
   final List<DanbooruPost> posts;
   final void Function(int page) onExit;
-
-  @deprecated
-  static MaterialPageRoute routeOf(
-    BuildContext context, {
-    required List<DanbooruPost> posts,
-    required int initialIndex,
-    AutoScrollController? scrollController,
-    bool hero = false,
-  }) =>
-      MaterialPageRoute(
-          builder: (_) => DanbooruPostDetailsPage(
-                intitialIndex: initialIndex,
-                posts: posts,
-                onExit: (page) => scrollController?.scrollToIndex(page),
-              ));
 
   @override
   ConsumerState<DanbooruPostDetailsPage> createState() =>
@@ -93,7 +76,7 @@ class _DanbooruPostDetailsPageState
                 data: (posts) => RelatedPostsSection(
                   posts: posts,
                   imageUrl: (item) => item.url720x720,
-                  onTap: (index) => goToDetailPage(
+                  onTap: (index) => goToPostDetailsPage(
                     context: context,
                     posts: posts,
                     initialIndex: index,

@@ -1,9 +1,8 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
@@ -33,21 +32,6 @@ class E621PostDetailsPage extends ConsumerStatefulWidget {
   final int intitialIndex;
   final List<E621Post> posts;
   final void Function(int page) onExit;
-
-  @deprecated
-  static MaterialPageRoute routeOf(
-    BuildContext context, {
-    required List<E621Post> posts,
-    required int initialIndex,
-    AutoScrollController? scrollController,
-    bool hero = false,
-  }) =>
-      MaterialPageRoute(
-          builder: (_) => E621PostDetailsPage(
-                intitialIndex: initialIndex,
-                posts: posts,
-                onExit: (page) => scrollController?.scrollToIndex(page),
-              ));
 
   @override
   ConsumerState<E621PostDetailsPage> createState() =>

@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -390,7 +389,7 @@ class _PreviewList extends ConsumerWidget {
         ),
         PreviewPostList(
           posts: posts,
-          onTap: (index) => goToDetailPage(
+          onTap: (index) => goToPostDetailsPage(
             context: context,
             posts: posts.toList(),
             initialIndex: index,

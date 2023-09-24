@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_artist_list.dart';
 import 'package:boorusama/boorus/gelbooru/router.dart';
 
@@ -23,12 +23,10 @@ class GelbooruRecommendedArtistList extends ConsumerWidget {
     return RecommendArtistList(
       onHeaderTap: (index) =>
           goToGelbooruArtistPage(ref, context, artists[index].tag),
-      onTap: (recommendIndex, postIndex) => goToGelbooruPostDetailsPage(
-        ref: ref,
+      onTap: (recommendIndex, postIndex) => goToPostDetailsPage(
         context: context,
         posts: artists[recommendIndex].posts,
         initialIndex: postIndex,
-        settings: ref.read(settingsProvider),
       ),
       recommends: artists,
       imageUrl: (item) => item.thumbnailImageUrl,

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
@@ -34,10 +35,10 @@ class E621RecommendedArtistList extends ConsumerWidget {
           data: (posts) => RecommendPosts(
             title: artist?.replaceUnderscoreWithSpace() ?? '',
             items: posts.take(30).toList(),
-            onTap: (index) => goToE621DetailsPage(
+            onTap: (index) => goToPostDetailsPage(
               context: context,
               posts: posts,
-              initialPage: index,
+              initialIndex: index,
             ),
             onHeaderTap: () => goToE621ArtistPage(context, artist ?? ''),
             imageUrl: (item) => item.thumbnailFromSettings(

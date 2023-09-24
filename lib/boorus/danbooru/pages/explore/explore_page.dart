@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/types.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -211,11 +212,10 @@ class ExploreList extends ConsumerWidget {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: GestureDetector(
-                    onTap: () => goToDetailPage(
+                    onTap: () => goToPostDetailsPage(
                       context: context,
                       posts: posts,
                       initialIndex: index,
-                      hero: false,
                     ),
                     child: Stack(
                       alignment: Alignment.center,

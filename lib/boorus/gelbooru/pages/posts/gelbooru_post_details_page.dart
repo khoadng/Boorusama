@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
@@ -29,24 +27,6 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   final List<Post> posts;
   final void Function(int page) onExit;
   final bool hasDetailsTagList;
-
-  @deprecated
-  static MaterialPageRoute routeOf({
-    required BooruConfig booruConfig,
-    required Settings settings,
-    required List<Post> posts,
-    required int initialIndex,
-    AutoScrollController? scrollController,
-  }) {
-    return MaterialPageRoute(
-      builder: (_) => GelbooruPostDetailsPage(
-        posts: posts,
-        initialIndex: initialIndex,
-        onExit: (page) => scrollController?.scrollToIndex(page),
-        hasDetailsTagList: booruConfig.booruType.supportTagDetails,
-      ),
-    );
-  }
 
   @override
   ConsumerState<GelbooruPostDetailsPage> createState() =>

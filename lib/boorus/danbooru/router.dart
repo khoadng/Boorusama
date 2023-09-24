@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
@@ -36,8 +35,6 @@ import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart'
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_search_sheet.dart';
@@ -73,35 +70,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
-}
-
-Future<void> goToDetailPage({
-  required BuildContext context,
-  required List<DanbooruPost> posts,
-  required int initialIndex,
-  AutoScrollController? scrollController,
-  bool hero = false,
-}) {
-  if (isMobilePlatform() && context.orientation.isPortrait) {
-    return context.navigator.push(DanbooruPostDetailsPage.routeOf(
-      context,
-      posts: posts,
-      scrollController: scrollController,
-      initialIndex: initialIndex,
-      hero: hero,
-    ));
-  } else {
-    return showDesktopFullScreenWindow(
-      context,
-      builder: (_) => DanbooruPostDetailsDesktopPage(
-        initialIndex: initialIndex,
-        posts: posts,
-        onExit: (index) {
-          scrollController?.scrollToIndex(index);
-        },
-      ),
-    );
-  }
 }
 
 void goToExplorePopularPage(BuildContext context) =>

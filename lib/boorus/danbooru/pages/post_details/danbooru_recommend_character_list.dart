@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_character_list.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -19,11 +20,10 @@ class DanbooruRecommendCharacterList extends StatelessWidget {
   Widget build(BuildContext context) {
     return RecommendCharacterList(
       onHeaderTap: (index) => goToCharacterPage(context, characters[index].tag),
-      onTap: (recommendIndex, postIndex) => goToDetailPage(
+      onTap: (recommendIndex, postIndex) => goToPostDetailsPage(
         context: context,
         posts: characters[recommendIndex].posts,
         initialIndex: postIndex,
-        hero: false,
       ),
       recommends: characters,
       imageUrl: (item) => item.url360x360,

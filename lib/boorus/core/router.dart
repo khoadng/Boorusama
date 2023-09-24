@@ -73,12 +73,12 @@ void goToPostDetailsPage({
   AutoScrollController? scrollController,
 }) {
   context.go(
-    'details',
+    '/details',
     extra: (
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,
-      isDesktop: isMobilePlatform() && context.orientation.isPortrait
+      isDesktop: !(isMobilePlatform() && context.orientation.isPortrait)
     ),
   );
 }

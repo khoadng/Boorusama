@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
@@ -41,10 +41,10 @@ class E621FavoritesPage extends ConsumerWidget {
         ],
         onPostTap:
             (context, posts, post, scrollController, settings, initialIndex) =>
-                goToE621DetailsPage(
+                goToPostDetailsPage(
           context: context,
           posts: posts,
-          initialPage: initialIndex,
+          initialIndex: initialIndex,
           scrollController: scrollController,
         ),
       ),

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/error.dart';
 
 class MoebooruInfinitePostList extends ConsumerWidget {
@@ -31,10 +31,10 @@ class MoebooruInfinitePostList extends ConsumerWidget {
       sliverHeaderBuilder: sliverHeaderBuilder,
       onPostTap:
           (context, posts, post, scrollController, settings, initialIndex) =>
-              goToMoebooruDetailsPage(
+              goToPostDetailsPage(
         context: context,
         posts: posts,
-        initialPage: initialIndex,
+        initialIndex: initialIndex,
         scrollController: scrollController,
       ),
     );

@@ -264,7 +264,7 @@ class Routes {
               booruBuilders[config.booruType]?.postDetailsPageBuilder;
           final payload = state.extra as DetailsPayload;
 
-          if (payload.isDesktop) {
+          if (!payload.isDesktop) {
             return MaterialPage(
               key: state.pageKey,
               name: state.name,
