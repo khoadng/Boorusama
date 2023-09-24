@@ -16,10 +16,11 @@ import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dar
 import 'package:boorusama/boorus/gelbooru/pages/comments/gelbooru_comment_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/routes.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,
@@ -58,8 +59,13 @@ void goToGelbooruSearchPage(
   WidgetRef ref,
   BuildContext context, {
   String? tag,
-}) =>
-    context.navigator.push(GelbooruSearchPage.routeOf(ref, context, tag: tag));
+}) {
+  if (tag == null) {
+    context.push('/search');
+  } else {
+    context.push('/search?$kInitialQueryKey=$tag');
+  }
+}
 
 void goToGelbooruArtistPage(
   WidgetRef ref,

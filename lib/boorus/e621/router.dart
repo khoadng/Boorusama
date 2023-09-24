@@ -11,10 +11,11 @@ import 'package:boorusama/boorus/e621/pages/artists/e621_artist_page.dart';
 import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
-import 'package:boorusama/boorus/e621/pages/search/e621_search_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/routes.dart';
 
 void goToE621DetailsPage({
   required BuildContext context,
@@ -47,11 +48,13 @@ void goToE621DetailsPage({
 void goToE621SearchPage(
   BuildContext context, {
   String? tag,
-}) =>
-    context.navigator.push(E621SearchPage.routeOf(
-      context: context,
-      tag: tag,
-    ));
+}) {
+  if (tag == null) {
+    context.push('/search');
+  } else {
+    context.push('/search?$kInitialQueryKey=$tag');
+  }
+}
 
 void goToE621FavoritesPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(

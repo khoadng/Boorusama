@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
 import 'create_danbooru_config_page.dart';
 import 'danbooru_scope.dart';
 
@@ -72,4 +73,8 @@ class DanbooruBuilder implements BooruBuilder {
 
   @override
   PostCountFetcher? get postCountFetcher => (tags) => postCountRepo.count(tags);
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
 }

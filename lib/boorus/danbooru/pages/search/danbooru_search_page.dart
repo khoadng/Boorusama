@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -18,9 +17,7 @@ import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'landing/trending/trending_section.dart';
@@ -35,16 +32,6 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
 
   final String? initialQuery;
   final SelectedTagController? selectedTagController;
-
-  static Route<T> routeOf<T>(BuildContext context, {String? tag}) {
-    return PageTransition(
-        type: PageTransitionType.fade,
-        child: CustomContextMenuOverlay(
-          child: DanbooruSearchPage(
-            initialQuery: tag,
-          ),
-        ));
-  }
 
   @override
   ConsumerState<DanbooruSearchPage> createState() => _SearchPageState();
@@ -102,7 +89,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                     ? null
                     : () => state != DisplayState.options
                         ? searchController.resetToOptions()
-                        : context.navigator.pop(),
+                        : context.pop(),
               ),
             ),
             body: SafeArea(
@@ -152,7 +139,7 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
                 onSubmitted: (value) => searchController.submit(value),
                 onBack: () => state != DisplayState.options
                     ? searchController.resetToOptions()
-                    : context.navigator.pop(),
+                    : context.pop(),
               ),
             ),
             body: DefaultSearchSuggestionView(

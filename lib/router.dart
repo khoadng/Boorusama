@@ -11,7 +11,7 @@ import 'package:boorusama/foundation/loggers/logger.dart';
 import 'foundation/analytics.dart';
 import 'routes.dart';
 
-export 'package:go_router/go_router.dart' hide GoRouterHelper;
+export 'package:go_router/go_router.dart';
 
 final routerProvider = Provider.family<GoRouter, Settings>((ref, settings) {
   return GoRouter(
@@ -26,19 +26,6 @@ final routerProvider = Provider.family<GoRouter, Settings>((ref, settings) {
 
 class Router {
   static GoRouter of(BuildContext context) => GoRouter.of(context);
-}
-
-extension RouterX on BuildContext {
-  void go(
-    String location, {
-    Object? extra,
-  }) =>
-      Router.of(this).go(
-        location,
-        extra: extra,
-      );
-
-  bool canPop() => GoRouter.of(this).canPop();
 }
 
 class AppNavigatorObserver extends NavigatorObserver {

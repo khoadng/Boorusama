@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
+import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 
 class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
@@ -58,4 +59,8 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   @override
   PostCountFetcher? get postCountFetcher =>
       (tags) => client.countPosts(tags: tags);
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => GelbooruSearchPage(initialQuery: initialQuery);
 }

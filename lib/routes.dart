@@ -215,6 +215,8 @@ class SettingsRoutes {
       );
 }
 
+const kInitialQueryKey = 'query';
+
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -233,12 +235,33 @@ class Routes {
           BoorusRoutes.updateDesktop(ref),
           BoorusRoutes.add(ref),
           BoorusRoutes.addDesktop(),
+          search(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
           globalBlacklistedTags(),
           bulkDownloads(ref),
         ],
+      );
+
+  static GoRoute search(Ref ref) => GoRoute(
+        path: 'search',
+        name: '/search',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.searchPageBuilder;
+          final query = state.uri.queryParameters[kInitialQueryKey];
+
+          return CustomTransitionPage(
+            key: ValueKey(query),
+            name: state.name,
+            child: builder != null
+                ? builder(context, query)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: fadeTransitionBuilder(),
+          );
+        },
       );
 
   static GoRoute bookmarks() => GoRoute(

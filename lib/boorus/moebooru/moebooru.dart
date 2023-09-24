@@ -4,6 +4,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
+import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
 import 'create_moebooru_config_page.dart';
 
 class MoebooruBuilder
@@ -53,4 +54,10 @@ class MoebooruBuilder
   @override
   AutocompleteFetcher get autocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query);
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => MoebooruSearchPage(
+            initialQuery: initialQuery,
+          );
 }

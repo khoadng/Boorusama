@@ -44,6 +44,11 @@ typedef HomePageBuilder = Widget Function(
   BooruConfig config,
 );
 
+typedef SearchPageBuilder = Widget Function(
+  BuildContext context,
+  String? initialQuery,
+);
+
 typedef PostFetcher = PostsOrError Function(
   int page,
   String tags,
@@ -64,6 +69,7 @@ abstract class BooruBuilder {
   HomePageBuilder get homePageBuilder;
   CreateConfigPageBuilder get createConfigPageBuilder;
   UpdateConfigPageBuilder get updateConfigPageBuilder;
+  SearchPageBuilder get searchPageBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;

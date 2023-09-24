@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/scaffolds/home_page_scaffold.dart';
+import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/flutter.dart';
@@ -123,6 +124,32 @@ class ZerochanBuilder
                 ))
             .toList();
       };
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => ZerochanSearchPage(
+            initialQuery: initialQuery,
+          );
+}
+
+class ZerochanSearchPage extends ConsumerWidget {
+  const ZerochanSearchPage({
+    super.key,
+    this.initialQuery,
+  });
+
+  final String? initialQuery;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final fetcher = booruBuilders[BooruType.zerochan]?.postFetcher;
+
+    return SearchPageScaffold(
+      fetcher: (page, tags) =>
+          fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
+    );
+  }
 }
 
 class ZerochanCreateConfigPage extends ConsumerStatefulWidget {

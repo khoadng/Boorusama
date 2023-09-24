@@ -21,7 +21,7 @@ import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart
 import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/router.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -111,7 +111,7 @@ class _SearchPageScaffoldState<T extends Post>
                   onSubmitted: (value) => searchController.submit(value),
                   onBack: () => state != DisplayState.options
                       ? searchController.resetToOptions()
-                      : context.navigator.pop(),
+                      : context.pop(),
                 ),
               ),
               body: SafeArea(
@@ -147,7 +147,7 @@ class _SearchPageScaffoldState<T extends Post>
                   onSubmitted: (value) => searchController.submit(value),
                   onBack: () => state != DisplayState.options
                       ? searchController.resetToOptions()
-                      : context.navigator.pop(),
+                      : context.pop(),
                 ),
               ),
               body: DefaultSearchSuggestionView(

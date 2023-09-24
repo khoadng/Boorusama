@@ -9,17 +9,20 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts/moebooru_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/router.dart';
+import 'package:boorusama/routes.dart';
 
 void goToMoebooruSearchPage(
   BuildContext context, {
   String? tag,
 }) {
-  context.navigator
-      .push(MoebooruSearchPage.routeOf(context: context, tag: tag));
+  if (tag == null) {
+    context.push('/search');
+  } else {
+    context.push('/search?$kInitialQueryKey=$tag');
+  }
 }
 
 void goToMoebooruDetailsPage({
