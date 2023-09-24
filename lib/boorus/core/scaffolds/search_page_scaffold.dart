@@ -7,8 +7,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -21,21 +19,21 @@ import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/functional.dart';
 
-class SearchPageScaffold extends ConsumerStatefulWidget {
+class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
     super.key,
     this.initialQuery,
     required this.onPostTap,
     this.resultHeaderBuilder,
+    required this.fetcher,
   });
 
   final String? initialQuery;
   final void Function(
     BuildContext context,
-    List<Post> posts,
-    Post post,
+    List<T> posts,
+    T post,
     AutoScrollController scrollController,
     Settings settings,
     int initialIndex,
@@ -44,17 +42,17 @@ class SearchPageScaffold extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, List<String> tags)?
       resultHeaderBuilder;
 
+  final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
+
   @override
-  ConsumerState<SearchPageScaffold> createState() => _SearchPageScaffoldState();
+  ConsumerState<SearchPageScaffold<T>> createState() =>
+      _SearchPageScaffoldState<T>();
 }
 
-class _SearchPageScaffoldState extends ConsumerState<SearchPageScaffold> {
+class _SearchPageScaffoldState<T extends Post>
+    extends ConsumerState<SearchPageScaffold<T>> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[config.booruType]?.postFetcher;
-
     return CustomContextMenuOverlay(
       child: SearchScope(
         initialQuery: widget.initialQuery,
@@ -122,10 +120,8 @@ class _SearchPageScaffoldState extends ConsumerState<SearchPageScaffold> {
               ),
             ),
           DisplayState.result => PostScope(
-              fetcher: (page) =>
-                  fetcher?.call(
-                      page, selectedTagController.rawTags.join(' ')) ??
-                  TaskEither.of(<Post>[]),
+              fetcher: (page) => widget.fetcher
+                  .call(page, selectedTagController.rawTags.join(' ')),
               builder: (context, controller, errors) =>
                   InfinitePostListScaffold(
                 errors: errors,

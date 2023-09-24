@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -17,6 +18,7 @@ import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'desktop_home_page_scaffold.dart';
 import 'mobile_home_page_scaffold.dart';
@@ -47,6 +49,8 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final fetcher = booruBuilders[config.booruType]?.postFetcher;
 
     return BooruScope(
       config: config,
@@ -59,8 +63,15 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
                   posts: posts,
                   initialIndex: initialIndex,
                   scrollController: scrollController,
+                  fetcher: (page, tags) =>
+                      fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
                 ),
-        onSearchTap: widget.onSearchTap ?? () => _goToSearchPage(context),
+        onSearchTap: widget.onSearchTap ??
+            () => _goToSearchPage(
+                  context,
+                  fetcher: (page, tags) =>
+                      fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
+                ),
       ),
       mobileMenuBuilder: (context, controller) => [],
       desktopMenuBuilder: (context, controller, constraints) => [
@@ -118,6 +129,8 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
                     posts: posts,
                     initialIndex: initialIndex,
                     scrollController: scrollController,
+                    fetcher: (page, tags) =>
+                        fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
                   ),
         ),
         const BookmarkPage(),
@@ -127,29 +140,33 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   }
 }
 
-void _goToSearchPage(
+void _goToSearchPage<T extends Post>(
   BuildContext context, {
+  required PostsOrErrorCore<T> Function(int page, String tags) fetcher,
   String? tag,
 }) {
   context.navigator.push(PageTransition(
     type: PageTransitionType.fade,
-    child: SearchPageScaffold(
+    child: SearchPageScaffold<T>(
         initialQuery: tag,
+        fetcher: fetcher,
         onPostTap:
             (context, posts, post, scrollController, settings, initialIndex) =>
-                _goToPostDetailsPage(
+                _goToPostDetailsPage<T>(
                   context: context,
                   posts: posts,
                   initialIndex: initialIndex,
                   scrollController: scrollController,
+                  fetcher: fetcher,
                 )),
   ));
 }
 
-void _goToPostDetailsPage({
+void _goToPostDetailsPage<T extends Post>({
   required BuildContext context,
-  required List<Post> posts,
+  required List<T> posts,
   required int initialIndex,
+  required PostsOrErrorCore<T> Function(int page, String tags) fetcher,
   AutoScrollController? scrollController,
 }) {
   context.navigator.push(MaterialPageRoute(
@@ -157,7 +174,11 @@ void _goToPostDetailsPage({
       posts: posts,
       initialIndex: initialIndex,
       onExit: (page) => scrollController?.scrollToIndex(page),
-      onTagTap: (tag) => _goToSearchPage(context, tag: tag),
+      onTagTap: (tag) => _goToSearchPage(
+        context,
+        tag: tag,
+        fetcher: fetcher,
+      ),
     ),
   ));
 }
