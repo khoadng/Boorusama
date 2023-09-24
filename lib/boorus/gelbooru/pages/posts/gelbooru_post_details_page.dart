@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
+import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_recommend_artist_list.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -24,7 +25,7 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
   });
 
   final int initialIndex;
-  final List<Post> posts;
+  final List<GelbooruPost> posts;
   final void Function(int page) onExit;
   final bool hasDetailsTagList;
 
@@ -34,7 +35,7 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
-  List<Post> get posts => widget.posts;
+  List<GelbooruPost> get posts => widget.posts;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => GelbooruPostActionToolbar(post: post),
+      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       sliverArtistPostsBuilder: (context, post) =>
           GelbooruRecommendedArtistList(
         artists: ref.watch(booruPostDetailsArtistProvider(post.id)),

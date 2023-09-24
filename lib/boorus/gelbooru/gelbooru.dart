@@ -76,7 +76,7 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
               hasDetailsTagList: booruConfig.booruType.supportTagDetails,
             )
           : GelbooruPostDetailsPage(
-              posts: payload.posts,
+              posts: payload.posts.map((e) => e as GelbooruPost).toList(),
               initialIndex: payload.initialIndex,
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               hasDetailsTagList: booruConfig.booruType.supportTagDetails,
