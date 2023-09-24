@@ -1,3 +1,7 @@
+# 3.4.1
+- Fix an issue where some buttons are not tappable
+- Fix a bug that causes images to not load properly when switching between tabs
+
 # 3.4.0
 - [Danbooru] Add Profile page
 - [Moebooru] Show parent/child posts in post details
