@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
 import 'package:boorusama/boorus/e621/pages/search/e621_search_page.dart';
@@ -99,4 +100,8 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
               posts: payload.posts.map((e) => e as E621Post).toList(),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
             );
+
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => const E621FavoritesPage();
 }

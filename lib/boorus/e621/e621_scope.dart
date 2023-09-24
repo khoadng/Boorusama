@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -90,9 +89,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
-            onTap: () {
-              goToE621FavoritesPage(context);
-            },
+            onTap: () => goToFavoritesPage(context),
           ),
         ]
       ],

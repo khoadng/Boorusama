@@ -56,6 +56,11 @@ typedef PostDetailsPageBuilder = Widget Function(
   DetailsPayload payload,
 );
 
+typedef FavoritesPageBuilder = Widget Function(
+  BuildContext context,
+  BooruConfig config,
+);
+
 typedef PostFetcher = PostsOrError Function(
   int page,
   String tags,
@@ -78,6 +83,7 @@ abstract class BooruBuilder {
   UpdateConfigPageBuilder get updateConfigPageBuilder;
   SearchPageBuilder get searchPageBuilder;
   PostDetailsPageBuilder get postDetailsPageBuilder;
+  FavoritesPageBuilder? get favoritesPageBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -98,6 +104,8 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
   FavoriteRemover? get favoriteRemover => null;
   @override
   FavoriteChecker? get favoriteChecker => null;
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder => null;
 }
 
 mixin PostCountNotSupportedMixin implements BooruBuilder {

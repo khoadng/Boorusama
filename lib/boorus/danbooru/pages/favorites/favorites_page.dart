@@ -19,35 +19,29 @@ class FavoritesPage extends ConsumerWidget {
     required this.username,
   });
 
-  static Widget of(
-    BuildContext context, {
-    required String username,
-  }) =>
-      CustomContextMenuOverlay(
-        child: FavoritesPage(username: username),
-      );
-
   final String username;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DanbooruPostScope(
-      fetcher: (page) => ref
-          .read(danbooruPostRepoProvider)
-          .getPosts(buildFavoriteQuery(username), page),
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
-        controller: controller,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            title: const Text('profile.favorites').tr(),
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-          ),
-          const SliverSizedBox(height: 5),
-        ],
+    return CustomContextMenuOverlay(
+      child: DanbooruPostScope(
+        fetcher: (page) => ref
+            .read(danbooruPostRepoProvider)
+            .getPosts(buildFavoriteQuery(username), page),
+        builder: (context, controller, errors) => DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: const Text('profile.favorites').tr(),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
+            ),
+            const SliverSizedBox(height: 5),
+          ],
+        ),
       ),
     );
   }

@@ -30,7 +30,6 @@ import 'package:boorusama/boorus/danbooru/pages/favorites/add_to_favorite_group_
 import 'package:boorusama/boorus/danbooru/pages/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_group_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
@@ -57,12 +56,6 @@ void goToArtistPage(BuildContext context, String artist) {
 void goToCharacterPage(BuildContext context, String tag) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruCharacterPage.of(context, tag),
-  ));
-}
-
-void goToFavoritesPage(BuildContext context, String? username) {
-  context.navigator.push(MaterialPageRoute(
-    builder: (_) => FavoritesPage.of(context, username: username!),
   ));
 }
 

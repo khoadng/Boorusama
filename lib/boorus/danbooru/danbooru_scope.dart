@@ -188,7 +188,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context, widget.config.login);
+              goToFavoritesPage(context);
             },
           ),
           SideMenuTile(

@@ -18,34 +18,33 @@ class E621FavoritesPage extends ConsumerWidget {
     super.key,
   });
 
-  static Widget of(BuildContext context) => const CustomContextMenuOverlay(
-        child: E621FavoritesPage(),
-      );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostScope(
-      fetcher: (page) => ref.read(e621FavoritesRepoProvider).getFavorites(page),
-      builder: (context, controller, errors) => InfinitePostListScaffold(
-        errors: errors,
-        controller: controller,
-        sliverHeaderBuilder: (context) => [
-          SliverAppBar(
-            title: const Text('profile.favorites').tr(),
-            floating: true,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            backgroundColor: context.theme.scaffoldBackgroundColor,
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) =>
+            ref.read(e621FavoritesRepoProvider).getFavorites(page),
+        builder: (context, controller, errors) => InfinitePostListScaffold(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: const Text('profile.favorites').tr(),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
+            ),
+            const SliverSizedBox(height: 5),
+          ],
+          onPostTap: (context, posts, post, scrollController, settings,
+                  initialIndex) =>
+              goToPostDetailsPage(
+            context: context,
+            posts: posts,
+            initialIndex: initialIndex,
+            scrollController: scrollController,
           ),
-          const SliverSizedBox(height: 5),
-        ],
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-          scrollController: scrollController,
         ),
       ),
     );

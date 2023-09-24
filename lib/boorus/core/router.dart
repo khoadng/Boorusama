@@ -66,6 +66,10 @@ void goToSearchPage(
   }
 }
 
+void goToFavoritesPage(BuildContext context) {
+  context.go('/favorites');
+}
+
 void goToPostDetailsPage({
   required BuildContext context,
   required List<Post> posts,

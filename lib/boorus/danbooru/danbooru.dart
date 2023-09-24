@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
@@ -5,6 +8,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
@@ -92,5 +96,18 @@ class DanbooruBuilder implements BooruBuilder {
               intitialIndex: payload.initialIndex,
               posts: payload.posts.map((e) => e as DanbooruPost).toList(),
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
+            );
+
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => config.login != null
+          ? FavoritesPage(username: config.login!)
+          : Scaffold(
+              appBar: AppBar(
+                title: const Text('Favorites'),
+              ),
+              body: const Center(
+                child: Text('You must be logged in to view your favorites'),
+              ),
             );
 }

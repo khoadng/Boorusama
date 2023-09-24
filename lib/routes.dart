@@ -246,6 +246,7 @@ class Routes {
           BoorusRoutes.addDesktop(),
           search(ref),
           postDetails(ref),
+          favorites(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
@@ -301,6 +302,25 @@ class Routes {
                 ? builder(context, query)
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
             transitionsBuilder: fadeTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute favorites(Ref ref) => GoRoute(
+        path: 'favorites',
+        name: '/favorites',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.favoritesPageBuilder;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(context, config)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },
       );
