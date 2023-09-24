@@ -48,8 +48,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/routes.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'router_page_constant.dart';
 
@@ -103,17 +101,6 @@ Future<void> goToDetailPage({
         },
       ),
     );
-  }
-}
-
-void goToSearchPage(
-  BuildContext context, {
-  String? tag,
-}) {
-  if (tag == null) {
-    context.push('/search');
-  } else {
-    context.push('/search?$kInitialQueryKey=$tag');
   }
 }
 

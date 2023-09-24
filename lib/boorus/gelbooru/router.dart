@@ -19,8 +19,6 @@ import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_desk
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/routes.dart';
 
 void goToGelbooruPostDetailsPage({
   required WidgetRef ref,
@@ -52,18 +50,6 @@ void goToGelbooruPostDetailsPage({
         hasDetailsTagList: booruConfig.booruType.supportTagDetails,
       ),
     );
-  }
-}
-
-void goToGelbooruSearchPage(
-  WidgetRef ref,
-  BuildContext context, {
-  String? tag,
-}) {
-  if (tag == null) {
-    context.push('/search');
-  } else {
-    context.push('/search?$kInitialQueryKey=$tag');
   }
 }
 

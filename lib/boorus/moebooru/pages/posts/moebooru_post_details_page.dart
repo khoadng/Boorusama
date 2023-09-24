@@ -10,12 +10,12 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'moebooru_information_section.dart';
@@ -76,7 +76,7 @@ class _MoebooruPostDetailsPageState
       posts: posts,
       initialIndex: widget.initialPage,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToMoebooruSearchPage(
+      onTagTap: (tag) => goToSearchPage(
         context,
         tag: tag,
       ),
@@ -85,7 +85,7 @@ class _MoebooruPostDetailsPageState
           MoebooruRelatedPostsSection(post: post),
       tagListBuilder: (context, post) => PostTagList(
         tags: ref.watch(tagsProvider(booruConfig)),
-        onTap: (tag) => goToMoebooruSearchPage(
+        onTap: (tag) => goToSearchPage(
           context,
           tag: tag.rawName,
         ),

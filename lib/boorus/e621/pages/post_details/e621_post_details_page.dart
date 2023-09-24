@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
@@ -16,7 +17,6 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/pages/popular/e621_post_tag_list.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'e621_information_section.dart';
 import 'e621_post_action_toolbar.dart';
@@ -64,7 +64,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       posts: posts,
       initialIndex: widget.intitialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToE621SearchPage(context, tag: tag),
+      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => E621PostActionToolbar(post: post),
       sliverArtistPostsBuilder: (context, post) =>
           E621RecommendedArtistList(post: post),

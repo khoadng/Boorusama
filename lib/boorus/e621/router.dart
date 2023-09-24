@@ -14,8 +14,6 @@ import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/routes.dart';
 
 void goToE621DetailsPage({
   required BuildContext context,
@@ -42,17 +40,6 @@ void goToE621DetailsPage({
         onExit: (index) => scrollController?.scrollToIndex(index),
       ),
     );
-  }
-}
-
-void goToE621SearchPage(
-  BuildContext context, {
-  String? tag,
-}) {
-  if (tag == null) {
-    context.push('/search');
-  } else {
-    context.push('/search?$kInitialQueryKey=$tag');
   }
 }
 

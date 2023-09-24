@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
-import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/basic_tag_list.dart';
 import 'gelbooru_recommend_artist_list.dart';
@@ -122,8 +121,7 @@ class _DanbooruPostDetailsDesktopPageState
                             : ref.watch(tagsProvider(booruConfig)),
                         initialExpanded: true,
                         post: post,
-                        onTagTap: (tag) => goToGelbooruSearchPage(
-                          ref,
+                        onTagTap: (tag) => goToSearchPage(
                           context,
                           tag: tag.rawName,
                         ),
@@ -131,8 +129,7 @@ class _DanbooruPostDetailsDesktopPageState
                     else
                       BasicTagList(
                         tags: post.tags,
-                        onTap: (tag) =>
-                            goToGelbooruSearchPage(ref, context, tag: tag),
+                        onTap: (tag) => goToSearchPage(context, tag: tag),
                       ),
                   ],
                 ),

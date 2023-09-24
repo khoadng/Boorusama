@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
@@ -20,7 +21,6 @@ import 'package:boorusama/boorus/moebooru/pages/home.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -155,7 +155,7 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
             toolbarHeight: kToolbarHeight * 1.2,
             title: HomeSearchBar(
               onMenuTap: controller.openMenu,
-              onTap: () => goToMoebooruSearchPage(context),
+              onTap: () => goToSearchPage(context),
             ),
             floating: true,
             snap: true,

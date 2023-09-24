@@ -9,10 +9,10 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -161,7 +161,7 @@ class E621PostTagList extends ConsumerWidget {
             }
           },
           child: GestureDetector(
-            onTap: () => goToE621SearchPage(context, tag: tag),
+            onTap: () => goToSearchPage(context, tag: tag),
             child: _Chip(
               tag: tag,
               tagColor: group.category.toColor(),

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
@@ -55,7 +56,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
               toolbarHeight: kToolbarHeight * 1.2,
               title: HomeSearchBar(
                 onMenuTap: controller.openMenu,
-                onTap: () => goToE621SearchPage(context),
+                onTap: () => goToSearchPage(context),
               ),
               floating: true,
               snap: true,

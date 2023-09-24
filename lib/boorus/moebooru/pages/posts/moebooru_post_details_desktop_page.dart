@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/core/widgets/posts/source_section.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/boorus/moebooru/router.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'moebooru_information_section.dart';
 
@@ -121,7 +120,7 @@ class _MoebooruPostDetailsDesktopPageState
                       padding: const EdgeInsets.all(8),
                       child: PostTagList(
                         tags: ref.watch(tagsProvider(booruConfig)),
-                        onTap: (tag) => goToMoebooruSearchPage(
+                        onTap: (tag) => goToSearchPage(
                           context,
                           tag: tag.rawName,
                         ),

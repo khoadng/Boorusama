@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_recommend_artist_list.dart';
-import 'package:boorusama/boorus/gelbooru/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -63,7 +63,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       posts: posts,
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onTagTap: (tag) => goToGelbooruSearchPage(ref, context, tag: tag),
+      onTagTap: (tag) => goToSearchPage(context, tag: tag),
       toolbarBuilder: (context, post) => GelbooruPostActionToolbar(post: post),
       sliverArtistPostsBuilder: (context, post) =>
           GelbooruRecommendedArtistList(
@@ -73,12 +73,11 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
           ? TagsTile(
               tags: ref.watch(tagsProvider(booruConfig)),
               post: post,
-              onTagTap: (tag) =>
-                  goToGelbooruSearchPage(ref, context, tag: tag.rawName),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             )
           : BasicTagList(
               tags: post.tags,
-              onTap: (tag) => goToGelbooruSearchPage(ref, context, tag: tag),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
             ),
       onExpanded: (post) => widget.hasDetailsTagList
           ? ref.read(tagsProvider(booruConfig).notifier).load(
