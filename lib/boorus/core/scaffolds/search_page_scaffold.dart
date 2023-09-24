@@ -7,6 +7,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
@@ -16,6 +18,7 @@ import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -24,10 +27,10 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
     super.key,
     this.initialQuery,
-    required this.onPostTap,
-    this.resultHeaderBuilder,
+    this.onPostTap,
     required this.fetcher,
-  });
+    this.gridBuilder,
+  }) : assert(onPostTap != null || gridBuilder != null);
 
   final String? initialQuery;
   final void Function(
@@ -37,12 +40,15 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     AutoScrollController scrollController,
     Settings settings,
     int initialIndex,
-  ) onPostTap;
-
-  final Widget Function(BuildContext context, List<String> tags)?
-      resultHeaderBuilder;
+  )? onPostTap;
 
   final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
+
+  final Widget Function(
+    BuildContext context,
+    PostGridController<T> controller,
+    List<Widget> slivers,
+  )? gridBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -52,7 +58,30 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final config = ref.read(currentBooruConfigProvider);
+      final booruBuilders = ref.read(booruBuildersProvider);
+      final postCountFetcher =
+          booruBuilders[config.booruType]?.postCountFetcher;
+
+      if (postCountFetcher != null && widget.initialQuery != null) {
+        ref
+            .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
+                .notifier)
+            .getPostCount([widget.initialQuery!]);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final postCountFetcher = booruBuilders[config.booruType]?.postCountFetcher;
+
     return CustomContextMenuOverlay(
       child: SearchScope(
         initialQuery: widget.initialQuery,
@@ -63,6 +92,14 @@ class _SearchPageScaffoldState<T extends Post>
               floatingActionButton: SearchButton(
                 allowSearch: allowSearch,
                 onSearch: () {
+                  if (postCountFetcher != null) {
+                    ref
+                        .read(postCountStateProvider(
+                                ref.read(currentBooruConfigProvider))
+                            .notifier)
+                        .getPostCount(selectedTagController.rawTags);
+                  }
+
                   searchController.search();
                 },
               ),
@@ -122,11 +159,8 @@ class _SearchPageScaffoldState<T extends Post>
           DisplayState.result => PostScope(
               fetcher: (page) => widget.fetcher
                   .call(page, selectedTagController.rawTags.join(' ')),
-              builder: (context, controller, errors) =>
-                  InfinitePostListScaffold(
-                errors: errors,
-                controller: controller,
-                sliverHeaderBuilder: (context) => [
+              builder: (context, controller, errors) {
+                final slivers = [
                   SearchAppBarResultView(
                     onTap: () => searchController.goToSuggestions(),
                     onBack: () => searchController.resetToOptions(),
@@ -140,19 +174,28 @@ class _SearchPageScaffoldState<T extends Post>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (widget.resultHeaderBuilder != null) ...[
-                          widget.resultHeaderBuilder!(
-                            context,
-                            selectedTagController.rawTags,
-                          ),
+                        if (postCountFetcher != null) ...[
+                          ResultHeaderWithProvider(
+                              selectedTags: selectedTagController.rawTags),
                           const Spacer(),
                         ]
                       ],
                     ),
                   ),
-                ],
-                onPostTap: widget.onPostTap,
-              ),
+                ];
+
+                return widget.gridBuilder != null
+                    ? widget.gridBuilder!(context, controller, slivers)
+                    : InfinitePostListScaffold(
+                        errors: errors,
+                        controller: controller,
+                        sliverHeaderBuilder: (context) => slivers,
+                        onPostTap: widget.onPostTap ??
+                            (context, posts, post, scrollController, settings,
+                                    initialIndex) =>
+                                throw UnimplementedError(),
+                      );
+              },
             ),
         },
       ),
