@@ -1,8 +1,9 @@
 // Flutter imports:
+import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -10,10 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
 import 'package:boorusama/boorus/moebooru/pages/posts.dart';
@@ -58,24 +56,8 @@ class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _MoebooruPostDetailsPageState
-    extends ConsumerState<MoebooruPostDetailsPage>
-    with PostDetailsPageMixin<MoebooruPostDetailsPage, Post> {
-  late final _controller = DetailsPageController(
-      swipeDownToDismiss: !widget.posts[widget.initialPage].isVideo);
-
-  @override
-  DetailsPageController get controller => _controller;
-
-  @override
-  Function(int page) get onPageChanged => (page) => ref
-      .read(postShareProvider(posts[page]).notifier)
-      .updateInformation(posts[page]);
-
-  @override
+    extends ConsumerState<MoebooruPostDetailsPage> {
   List<Post> get posts => widget.posts;
-
-  @override
-  int get initialPage => widget.initialPage;
 
   @override
   void initState() {
@@ -88,150 +70,35 @@ class _MoebooruPostDetailsPageState
   @override
   Widget build(BuildContext context) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
+    final settings = ref.watch(settingsProvider);
 
-    return DetailsPage(
-      controller: controller,
-      intitialIndex: widget.initialPage,
+    return PostDetailsPageScaffold(
+      posts: posts,
+      initialIndex: widget.initialPage,
       onExit: widget.onExit,
-      onPageChanged: (page) {
-        ref.read(tagsProvider(booruConfig).notifier).load(posts[page].tags);
-        onSwiped(page);
-      },
-      bottomSheet: (page) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.theme.scaffoldBackgroundColor.withOpacity(0.8),
-            border: Border(
-              top: BorderSide(
-                color: context.theme.dividerColor,
-                width: 1,
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (posts[page].isVideo)
-                ValueListenableBuilder<VideoProgress>(
-                  valueListenable: videoProgress,
-                  builder: (_, progress, __) => BooruVideoProgressBar(
-                    progress: progress,
-                    onSeek: (position) => onVideoSeekTo(position, page),
-                  ),
-                ),
-              MoebooruInformationSection(
-                post: posts[page],
-              ),
-              MoebooruPostActionToolbar(post: posts[page]),
-            ],
-          ),
-        );
-      },
-      targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-        imageUrl: posts[page].thumbnailImageUrl,
-        aspectRatio: posts[page].aspectRatio,
+      onTagTap: (tag) => goToMoebooruSearchPage(
+        ref,
+        context,
+        tag: tag,
       ),
-      expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
-        final widgets = _buildWidgets(
-            context, expanded, page, currentPage, ref, booruConfig);
-
-        final expandedOnCurrentPage = expanded && page == currentPage;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: CustomScrollView(
-            physics: enableSwipe ? null : const NeverScrollableScrollPhysics(),
-            controller: PageContentScrollController.of(context),
-            slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => widgets[index],
-                  childCount: widgets.length,
-                ),
-              ),
-              if (expandedOnCurrentPage)
-                MoebooruRelatedPostsSection(post: posts[page]),
-            ],
-          ),
-        );
+      toolbarBuilder: (context, post) => MoebooruPostActionToolbar(post: post),
+      sliverRelatedPostsBuilder: (context, post) =>
+          MoebooruRelatedPostsSection(post: post),
+      tagListBuilder: (context, post) => PostTagList(
+        tags: ref.watch(tagsProvider(booruConfig)),
+        onTap: (tag) => goToMoebooruSearchPage(
+          ref,
+          context,
+          tag: tag.rawName,
+        ),
+      ),
+      commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
+      infoBuilder: (context, post) => MoebooruInformationSection(post: post),
+      swipeImageUrlBuilder: (post) => post.thumbnailFromSettings(settings),
+      onPageChanged: (post) {
+        ref.read(tagsProvider(booruConfig).notifier).load(post.tags);
       },
-      pageCount: widget.posts.length,
-      topRightButtonsBuilder: (currentPage, expanded) => [
-        GeneralMoreActionButton(
-          post: widget.posts[currentPage],
-        ),
-      ],
     );
-  }
-
-  List<Widget> _buildWidgets(
-    BuildContext context,
-    bool expanded,
-    int page,
-    int currentPage,
-    WidgetRef ref,
-    BooruConfig booruConfig,
-  ) {
-    final post = posts[page];
-    final expandedOnCurrentPage = expanded && page == currentPage;
-    final media = PostMedia(
-      inFocus: !expanded && page == currentPage,
-      post: post,
-      imageUrl: post.sampleImageUrl,
-      placeholderImageUrl: post.thumbnailImageUrl,
-      onImageTap: onImageTap,
-      onCurrentVideoPositionChanged: onCurrentPositionChanged,
-      onVideoVisibilityChanged: onVisibilityChanged,
-      useHero: page == currentPage,
-      onImageZoomUpdated: onZoomUpdated,
-      onVideoPlayerCreated: (controller) =>
-          onVideoPlayerCreated(controller, page),
-      onWebmVideoPlayerCreated: (controller) =>
-          onWebmVideoPlayerCreated(controller, page),
-      autoPlay: true,
-    );
-
-    return [
-      if (!expandedOnCurrentPage)
-        SizedBox(
-          height: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).viewPadding.top,
-          child: RepaintBoundary(child: media),
-        )
-      else
-        RepaintBoundary(child: media),
-      if (!expandedOnCurrentPage)
-        SizedBox(height: MediaQuery.of(context).size.height),
-      if (expandedOnCurrentPage) ...[
-        MoebooruInformationSection(post: post),
-        const Divider(
-          thickness: 1.5,
-          height: 4,
-        ),
-        FileDetailsSection(
-          post: post,
-        ),
-        const Divider(
-          thickness: 1.5,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: PostTagList(
-            tags: ref.watch(tagsProvider(booruConfig)),
-            onTap: (tag) => goToMoebooruSearchPage(
-              ref,
-              context,
-              tag: tag.rawName,
-            ),
-          ),
-        ),
-        post.source.whenWeb(
-          (source) => SourceSection(source: source),
-          () => const SizedBox.shrink(),
-        ),
-        MoebooruCommentSection(post: post),
-      ],
-    ];
   }
 }
 

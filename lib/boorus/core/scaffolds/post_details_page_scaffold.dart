@@ -33,6 +33,9 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.imageOverlayBuilder,
     this.artistInfoBuilder,
     this.showSourceTile = true,
+    this.onPageChanged,
+    this.sliverRelatedPostsBuilder,
+    this.commentsBuilder,
   });
 
   final int initialIndex;
@@ -40,6 +43,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function(int page) onExit;
   final void Function(String tag) onTagTap;
   final void Function(T post)? onExpanded;
+  final void Function(T post)? onPageChanged;
   final String Function(T post)? swipeImageUrlBuilder;
   final String? Function(T post, int currentPage)? placeholderImageUrlBuilder;
   final Widget Function(BuildContext context, T post)? toolbarBuilder;
@@ -47,6 +51,9 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)? tagListBuilder;
   final Widget Function(BuildContext context, T post)? infoBuilder;
   final Widget Function(BuildContext context, T post)? artistInfoBuilder;
+  final Widget Function(BuildContext context, T post)? commentsBuilder;
+  final Widget Function(BuildContext context, T post)?
+      sliverRelatedPostsBuilder;
   final List<Widget> Function(int currentPage, bool expanded)?
       topRightButtonsBuilder;
   final List<Widget> Function(BoxConstraints constraints, T post)?
@@ -84,7 +91,10 @@ class _PostDetailPageScaffoldState<T extends Post>
       controller: controller,
       intitialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onPageChanged: onSwiped,
+      onPageChanged: (page) {
+        onSwiped(page);
+        widget.onPageChanged?.call(posts[page]);
+      },
       bottomSheet: (page) {
         final bottomSheet = Column(
           mainAxisSize: MainAxisSize.min,
@@ -146,6 +156,10 @@ class _PostDetailPageScaffoldState<T extends Post>
                   expanded &&
                   page == currentPage)
                 widget.sliverArtistPostsBuilder!(context, posts[page]),
+              if (widget.sliverRelatedPostsBuilder != null &&
+                  expanded &&
+                  page == currentPage)
+                widget.sliverRelatedPostsBuilder!(context, posts[page]),
             ],
           ),
         );
@@ -231,6 +245,8 @@ class _PostDetailPageScaffoldState<T extends Post>
             (source) => SourceSection(source: source),
             () => const SizedBox.shrink(),
           ),
+        if (widget.commentsBuilder != null)
+          widget.commentsBuilder!(context, post),
       ],
     ];
   }
