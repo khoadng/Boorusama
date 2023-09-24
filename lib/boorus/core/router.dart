@@ -70,6 +70,15 @@ void goToFavoritesPage(BuildContext context) {
   context.go('/favorites');
 }
 
+void goToArtistPage(
+  BuildContext context,
+  String? artistName,
+) {
+  if (artistName == null) return;
+
+  context.push('/artists?$kArtistNameKey=$artistName');
+}
+
 void goToPostDetailsPage({
   required BuildContext context,
   required List<Post> posts,

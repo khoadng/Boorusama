@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 
 class DanbooruInformationSection extends StatelessWidget {
   const DanbooruInformationSection({

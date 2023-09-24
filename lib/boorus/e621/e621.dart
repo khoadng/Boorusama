@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
+import 'package:boorusama/boorus/e621/pages/artists/e621_artist_page.dart';
 import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
@@ -104,4 +105,8 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context, config) => const E621FavoritesPage();
+
+  @override
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => E621ArtistPage(artistName: artistName);
 }

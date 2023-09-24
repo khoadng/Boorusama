@@ -7,22 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/boorus/core/scaffolds/tag_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class GelbooruArtistPage extends ConsumerStatefulWidget {
   const GelbooruArtistPage({
     super.key,
-    required this.tagName,
-    this.includeHeaders = true,
+    required this.artistName,
   });
 
-  final String tagName;
-  final bool includeHeaders;
+  final String artistName;
 
   @override
   ConsumerState<GelbooruArtistPage> createState() => _GelbooruArtistPageState();
@@ -35,61 +32,36 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) =>
-          ref.watch(gelbooruArtistCharacterPostRepoProvider).getPostsFromTags(
+          ref.read(gelbooruArtistCharacterPostRepoProvider).getPostsFromTags(
                 queryFromTagFilterCategory(
                   category: selectedCategory.value,
-                  tag: widget.tagName,
+                  tag: widget.artistName,
                   builder: (category) => category == TagFilterCategory.popular
                       ? some('sort:score:desc')
                       : none(),
                 ),
                 page,
               ),
-      builder: (context, controller, errors) => GelbooruInfinitePostList(
-        errors: errors,
-        controller: controller,
-        sliverHeaderBuilder: (context) => [
-          if (widget.includeHeaders)
-            SliverAppBar(
-              floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    goToBulkDownloadPage(
-                      context,
-                      [widget.tagName],
-                      ref: ref,
-                    );
-                  },
-                  icon: const Icon(Icons.download),
-                ),
-              ],
-            ),
-          if (widget.includeHeaders)
-            SliverToBoxAdapter(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TagTitleName(tagName: widget.tagName),
-                ],
-              ),
-            ),
-          if (widget.includeHeaders) const SliverSizedBox(height: 50),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 10),
-            sliver: SliverToBoxAdapter(
-              child: CategoryToggleSwitch(
-                onToggle: (category) {
-                  selectedCategory.value = category;
-                  controller.refresh();
-                },
-              ),
-            ),
+      builder: (context, controller, errors) => TagDetailsPageScaffold(
+        onCategoryToggle: (category) {
+          selectedCategory.value = category;
+          controller.refresh();
+        },
+        tagName: widget.artistName,
+        otherNamesBuilder: (_) => const SizedBox(height: 40, width: 40),
+        gridBuilder: (context, slivers) => InfinitePostListScaffold(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => slivers,
+          onPostTap: (context, posts, post, scrollController, settings,
+                  initialIndex) =>
+              goToPostDetailsPage(
+            context: context,
+            posts: posts,
+            initialIndex: initialIndex,
+            scrollController: scrollController,
           ),
-        ],
+        ),
       ),
     );
   }

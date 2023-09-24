@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
@@ -110,4 +111,8 @@ class DanbooruBuilder implements BooruBuilder {
                 child: Text('You must be logged in to view your favorites'),
               ),
             );
+
+  @override
+  ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
+      DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
 }

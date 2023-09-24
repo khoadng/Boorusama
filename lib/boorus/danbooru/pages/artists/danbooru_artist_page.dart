@@ -22,15 +22,6 @@ class DanbooruArtistPage extends ConsumerStatefulWidget {
   final String artistName;
   final String backgroundImageUrl;
 
-  static Widget of(BuildContext context, String tag) {
-    return CustomContextMenuOverlay(
-      child: DanbooruArtistPage(
-        artistName: tag,
-        backgroundImageUrl: '',
-      ),
-    );
-  }
-
   @override
   ConsumerState<DanbooruArtistPage> createState() => _DanbooruArtistPageState();
 }
@@ -40,52 +31,54 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
   Widget build(BuildContext context) {
     final artist = ref.watch(danbooruArtistProvider(widget.artistName));
 
-    return DanbooruTagDetailsPage(
-      tagName: widget.artistName,
-      otherNamesBuilder: (_) => artist.when(
-        data: (data) => data.otherNames.isNotEmpty
-            ? TagOtherNames(otherNames: data.otherNames)
-            : const SizedBox.shrink(),
-        error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
-        loading: () => const TagOtherNames(otherNames: null),
-      ),
-      extraBuilder: (context) => [
-        const SizedBox(height: 8),
-        artist.maybeWhen(
-          data: (artist) {
-            final urls = artist.urls
-                .filterActive()
-                .filterPixivStaccAndTwitterIntent()
-                .toList();
+    return CustomContextMenuOverlay(
+      child: DanbooruTagDetailsPage(
+        tagName: widget.artistName,
+        otherNamesBuilder: (_) => artist.when(
+          data: (data) => data.otherNames.isNotEmpty
+              ? TagOtherNames(otherNames: data.otherNames)
+              : const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
+          loading: () => const TagOtherNames(otherNames: null),
+        ),
+        extraBuilder: (context) => [
+          const SizedBox(height: 8),
+          artist.maybeWhen(
+            data: (artist) {
+              final urls = artist.urls
+                  .filterActive()
+                  .filterPixivStaccAndTwitterIntent()
+                  .toList();
 
-            urls.sort((a, b) => b.url.compareTo(a.url));
+              urls.sort((a, b) => b.url.compareTo(a.url));
 
-            return Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                for (final url in urls)
-                  PostSource.from(url.url).whenWeb(
-                    (source) => Tooltip(
-                      message: source.url,
-                      child: InkWell(
-                        onTap: () => launchExternalUrlString(source.url),
-                        child: WebsiteLogo(
-                          url: source.faviconUrl,
-                          size: 24,
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  for (final url in urls)
+                    PostSource.from(url.url).whenWeb(
+                      (source) => Tooltip(
+                        message: source.url,
+                        child: InkWell(
+                          onTap: () => launchExternalUrlString(source.url),
+                          child: WebsiteLogo(
+                            url: source.faviconUrl,
+                            size: 24,
+                          ),
                         ),
                       ),
+                      () => const SizedBox.shrink(),
                     ),
-                    () => const SizedBox.shrink(),
-                  ),
-              ],
-            );
-          },
-          orElse: () => const SizedBox.shrink(),
-        ),
-      ],
-      backgroundImageUrl: widget.backgroundImageUrl,
+                ],
+              );
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
+        ],
+        backgroundImageUrl: widget.backgroundImageUrl,
+      ),
     );
   }
 }

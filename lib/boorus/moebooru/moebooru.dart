@@ -10,7 +10,10 @@ import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart
 import 'create_moebooru_config_page.dart';
 
 class MoebooruBuilder
-    with FavoriteNotSupportedMixin, PostCountNotSupportedMixin
+    with
+        FavoriteNotSupportedMixin,
+        PostCountNotSupportedMixin,
+        ArtistNotSupportedMixin
     implements BooruBuilder {
   MoebooruBuilder({
     required this.postRepo,

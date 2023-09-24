@@ -218,6 +218,7 @@ class SettingsRoutes {
 }
 
 const kInitialQueryKey = 'query';
+const kArtistNameKey = 'name';
 
 typedef DetailsPayload = ({
   int initialIndex,
@@ -247,6 +248,7 @@ class Routes {
           search(ref),
           postDetails(ref),
           favorites(ref),
+          artists(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
@@ -321,6 +323,28 @@ class Routes {
                 ? builder(context, config)
                 : const Scaffold(body: Center(child: Text('Not implemented'))),
             transitionsBuilder: leftToRightTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute artists(Ref ref) => GoRoute(
+        path: 'artists',
+        name: '/artists',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.artistPageBuilder;
+          final artistName = state.uri.queryParameters[kArtistNameKey];
+
+          return MaterialPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? artistName != null
+                    ? builder(context, artistName)
+                    : const Scaffold(
+                        body: Center(child: Text('Invalid artist name')))
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
           );
         },
       );

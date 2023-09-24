@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/posts/recommend_posts.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 
@@ -40,7 +39,7 @@ class E621RecommendedArtistList extends ConsumerWidget {
               posts: posts,
               initialIndex: index,
             ),
-            onHeaderTap: () => goToE621ArtistPage(context, artist ?? ''),
+            onHeaderTap: () => goToArtistPage(context, artist),
             imageUrl: (item) => item.thumbnailFromSettings(
               ref.read(settingsProvider),
             ),

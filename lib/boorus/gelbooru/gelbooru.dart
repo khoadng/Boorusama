@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
+import 'package:boorusama/boorus/gelbooru/pages/artists/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/posts/gelbooru_post_details_page.dart';
 import 'package:boorusama/boorus/gelbooru/pages/search/gelbooru_search_page.dart';
@@ -81,4 +82,8 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               hasDetailsTagList: booruConfig.booruType.supportTagDetails,
             );
+
+  @override
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => GelbooruArtistPage(artistName: artistName);
 }

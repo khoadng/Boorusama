@@ -21,7 +21,7 @@ void goToGelbooruArtistPage(
       ref,
       artist: artist,
       page: GelbooruArtistPage(
-        tagName: artist,
+        artistName: artist,
       ),
     ),
   ));

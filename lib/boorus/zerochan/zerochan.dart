@@ -34,7 +34,8 @@ class ZerochanBuilder
     with
         SettingsRepositoryMixin,
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin
+        PostCountNotSupportedMixin,
+        ArtistNotSupportedMixin
     implements BooruBuilder {
   const ZerochanBuilder({
     required this.client,
