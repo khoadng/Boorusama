@@ -62,14 +62,6 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
               automaticallyImplyLeading: false,
             ),
           ],
-          onPostTap: (context, posts, post, scrollController, settings,
-                  initialIndex) =>
-              goToPostDetailsPage(
-            context: context,
-            posts: posts,
-            initialIndex: initialIndex,
-            scrollController: scrollController,
-          ),
         ),
       ),
       mobileMenuBuilder: (context, controller) => [

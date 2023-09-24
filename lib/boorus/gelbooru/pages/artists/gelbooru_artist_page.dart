@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
-import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/scaffolds/tag_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -53,14 +52,6 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
           errors: errors,
           controller: controller,
           sliverHeaderBuilder: (context) => slivers,
-          onPostTap: (context, posts, post, scrollController, settings,
-                  initialIndex) =>
-              goToPostDetailsPage(
-            context: context,
-            posts: posts,
-            initialIndex: initialIndex,
-            scrollController: scrollController,
-          ),
         ),
       ),
     );

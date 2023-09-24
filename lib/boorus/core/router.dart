@@ -79,13 +79,13 @@ void goToArtistPage(
   context.push('/artists?$kArtistNameKey=$artistName');
 }
 
-void goToPostDetailsPage({
+void goToPostDetailsPage<T extends Post>({
   required BuildContext context,
-  required List<Post> posts,
+  required List<T> posts,
   required int initialIndex,
   AutoScrollController? scrollController,
 }) {
-  context.go(
+  context.push(
     '/details',
     extra: (
       initialIndex: initialIndex,

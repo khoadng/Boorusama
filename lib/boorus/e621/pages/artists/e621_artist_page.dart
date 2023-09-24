@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/functional.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/scaffolds/tag_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/functional.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {
   const E621ArtistPage({
@@ -57,14 +56,6 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
           errors: errors,
           controller: controller,
           sliverHeaderBuilder: (context) => slivers,
-          onPostTap: (context, posts, post, scrollController, settings,
-                  initialIndex) =>
-              goToPostDetailsPage(
-            context: context,
-            posts: posts,
-            initialIndex: initialIndex,
-            scrollController: scrollController,
-          ),
         ),
       ),
     );

@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
@@ -32,7 +33,6 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.refreshAtStart = true,
     this.errors,
-    required this.onPostTap,
   });
 
   final VoidCallback? onLoadMore;
@@ -53,15 +53,6 @@ class InfinitePostListScaffold<T extends Post> extends ConsumerStatefulWidget {
     List<T> selectedPosts,
     void Function() endMultiSelect,
   )? multiSelectActions;
-
-  final void Function(
-    BuildContext context,
-    List<T> posts,
-    T post,
-    AutoScrollController scrollController,
-    Settings settings,
-    int initialIndex,
-  ) onPostTap;
 
   @override
   ConsumerState<InfinitePostListScaffold<T>> createState() =>
@@ -158,13 +149,10 @@ class _InfinitePostListScaffoldState<T extends Post>
                 isAI: post.isAI,
                 onTap: !multiSelect
                     ? () {
-                        widget.onPostTap(
-                          context,
-                          items,
-                          post,
-                          _autoScrollController,
-                          settings,
-                          index,
+                        goToPostDetailsPage(
+                          context: context,
+                          posts: items,
+                          initialIndex: index,
                         );
                       }
                     : null,

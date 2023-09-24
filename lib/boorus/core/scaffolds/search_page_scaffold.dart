@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -11,7 +10,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar.dart';
 import 'package:boorusama/boorus/core/pages/search/search_app_bar_result_view.dart';
 import 'package:boorusama/boorus/core/pages/search/search_button.dart';
@@ -27,20 +25,11 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
     super.key,
     this.initialQuery,
-    this.onPostTap,
     required this.fetcher,
     this.gridBuilder,
-  }) : assert(onPostTap != null || gridBuilder != null);
+  });
 
   final String? initialQuery;
-  final void Function(
-    BuildContext context,
-    List<T> posts,
-    T post,
-    AutoScrollController scrollController,
-    Settings settings,
-    int initialIndex,
-  )? onPostTap;
 
   final PostsOrErrorCore<T> Function(int page, String tags) fetcher;
 
@@ -190,10 +179,6 @@ class _SearchPageScaffoldState<T extends Post>
                         errors: errors,
                         controller: controller,
                         sliverHeaderBuilder: (context) => slivers,
-                        onPostTap: widget.onPostTap ??
-                            (context, posts, post, scrollController, settings,
-                                    initialIndex) =>
-                                throw UnimplementedError(),
                       );
               },
             ),

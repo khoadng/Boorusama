@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -56,14 +55,6 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             child: InfinitePostListScaffold(
               controller: controller,
               errors: errors,
-              onPostTap: (context, posts, post, scrollController, settings,
-                      initialIndex) =>
-                  goToPostDetailsPage(
-                context: context,
-                posts: posts,
-                initialIndex: initialIndex,
-                scrollController: scrollController,
-              ),
             ),
           ),
         ],

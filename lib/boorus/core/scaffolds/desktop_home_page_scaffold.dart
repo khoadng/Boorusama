@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
@@ -21,17 +19,7 @@ import 'package:boorusama/functional.dart';
 class DesktopHomePageScaffold extends ConsumerStatefulWidget {
   const DesktopHomePageScaffold({
     super.key,
-    required this.onPostTap,
   });
-
-  final void Function(
-    BuildContext context,
-    List<Post> posts,
-    Post post,
-    AutoScrollController scrollController,
-    Settings settings,
-    int initialIndex,
-  ) onPostTap;
 
   @override
   ConsumerState<DesktopHomePageScaffold> createState() =>
@@ -92,7 +80,6 @@ class _DesktopHomePageScaffoldState
                   ),
                 ),
               ],
-              onPostTap: widget.onPostTap,
             ),
           ),
         ],

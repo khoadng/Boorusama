@@ -48,7 +48,6 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
       config: config,
       mobileView: (controller) => MobileHomePageScaffold(
         controller: controller,
-        onPostTap: widget.onPostTap,
         onSearchTap: widget.onSearchTap,
       ),
       mobileMenuBuilder: (context, controller) => [],
@@ -97,12 +96,10 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           onTap: () => context.go('/settings'),
         ),
       ],
-      desktopViews: [
-        DesktopHomePageScaffold(
-          onPostTap: widget.onPostTap,
-        ),
-        const BookmarkPage(),
-        const BlacklistedTagPage(),
+      desktopViews: const [
+        DesktopHomePageScaffold(),
+        BookmarkPage(),
+        BlacklistedTagPage(),
       ],
     );
   }

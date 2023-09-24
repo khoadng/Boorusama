@@ -94,6 +94,12 @@ class _PostDetailPageScaffoldState<T extends Post>
   int get initialPage => widget.initialIndex;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DetailsPage(
       controller: controller,

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/types.dart';
-import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
@@ -73,14 +72,6 @@ class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
                   errors: errors,
                   controller: controller,
                   sliverHeaderBuilder: (context) => [],
-                  onPostTap: (context, posts, post, scrollController, settings,
-                          initialIndex) =>
-                      goToPostDetailsPage(
-                    context: context,
-                    posts: posts,
-                    initialIndex: initialIndex,
-                    scrollController: scrollController,
-                  ),
                 ),
               ),
             ],
