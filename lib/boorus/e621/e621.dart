@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'e621_scope.dart';
 
-class E621Builder implements BooruBuilder {
+class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   E621Builder({
     required this.postRepo,
     required this.client,

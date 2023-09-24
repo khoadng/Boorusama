@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/core/pages/search/search_button.dart';
 import 'package:boorusama/boorus/core/pages/search/search_landing_view.dart';
 import 'package:boorusama/boorus/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/result_header.dart';
 import 'package:boorusama/boorus/core/widgets/search_scope.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -29,6 +28,7 @@ class SearchPageScaffold extends ConsumerStatefulWidget {
     super.key,
     this.initialQuery,
     required this.onPostTap,
+    this.resultHeaderBuilder,
   });
 
   final String? initialQuery;
@@ -40,6 +40,9 @@ class SearchPageScaffold extends ConsumerStatefulWidget {
     Settings settings,
     int initialIndex,
   ) onPostTap;
+
+  final Widget Function(BuildContext context, List<String> tags)?
+      resultHeaderBuilder;
 
   @override
   ConsumerState<SearchPageScaffold> createState() => _SearchPageScaffoldState();
@@ -141,12 +144,13 @@ class _SearchPageScaffoldState extends ConsumerState<SearchPageScaffold> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (ref.watch(currentBooruConfigProvider).booruType ==
-                            BooruType.gelbooru)
-                          ResultHeaderWithProvider(
-                            selectedTags: selectedTagController.rawTags,
+                        if (widget.resultHeaderBuilder != null) ...[
+                          widget.resultHeaderBuilder!(
+                            context,
+                            selectedTagController.rawTags,
                           ),
-                        const Spacer(),
+                          const Spacer(),
+                        ]
                       ],
                     ),
                   ),

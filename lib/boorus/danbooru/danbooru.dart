@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
@@ -13,11 +14,13 @@ class DanbooruBuilder implements BooruBuilder {
     required this.autocompleteRepo,
     required this.favoriteRepo,
     required this.favoriteChecker,
+    required this.postCountRepo,
   });
 
   final DanbooruPostRepository postRepo;
   final AutocompleteRepositoryApi autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
+  final PostCountRepository postCountRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -66,4 +69,7 @@ class DanbooruBuilder implements BooruBuilder {
 
   @override
   final FavoriteChecker? favoriteChecker;
+
+  @override
+  PostCountFetcher? get postCountFetcher => (tags) => postCountRepo.count(tags);
 }

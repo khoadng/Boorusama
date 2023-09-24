@@ -31,10 +31,3 @@ final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
     );
   },
 );
-
-final gelbooruPostCountRepoProvider = Provider<PostCountRepository>((ref) {
-  return GelbooruPostCountRepositoryApi(
-    client: ref.watch(gelbooruClientProvider),
-    booruConfig: ref.watch(currentBooruConfigProvider),
-  );
-});

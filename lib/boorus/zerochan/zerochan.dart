@@ -27,7 +27,10 @@ final zerochanClientProvider = Provider<ZerochanClient>((ref) {
 });
 
 class ZerochanBuilder
-    with SettingsRepositoryMixin, FavoriteNotSupportedMixin
+    with
+        SettingsRepositoryMixin,
+        FavoriteNotSupportedMixin,
+        PostCountNotSupportedMixin
     implements BooruBuilder {
   const ZerochanBuilder({
     required this.client,

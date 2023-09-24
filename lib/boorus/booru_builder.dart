@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
@@ -56,6 +57,8 @@ typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
 typedef FavoriteChecker = bool Function(int postId);
 
+typedef PostCountFetcher = Future<int?> Function(List<String> tags);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -70,6 +73,8 @@ abstract class BooruBuilder {
   FavoriteAdder? get favoriteAdder;
   FavoriteRemover? get favoriteRemover;
   FavoriteChecker? get favoriteChecker;
+
+  PostCountFetcher? get postCountFetcher;
 }
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {
@@ -79,6 +84,11 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
   FavoriteRemover? get favoriteRemover => null;
   @override
   FavoriteChecker? get favoriteChecker => null;
+}
+
+mixin PostCountNotSupportedMixin implements BooruBuilder {
+  @override
+  PostCountFetcher? get postCountFetcher => null;
 }
 
 final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
@@ -105,10 +115,12 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       BooruType.gelbooru: GelbooruBuilder(
         postRepo: ref.watch(gelbooruPostRepoProvider),
         autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
+        client: ref.watch(gelbooruClientProvider),
       ),
       BooruType.rule34xxx: GelbooruBuilder(
         postRepo: ref.watch(gelbooruPostRepoProvider),
         autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
+        client: ref.watch(gelbooruClientProvider),
       ),
       BooruType.e621: E621Builder(
         postRepo: ref.watch(e621PostRepoProvider),
@@ -125,23 +137,27 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
         favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
+        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
       BooruType.danbooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
         favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
+        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
       BooruType.safebooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
         favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
+        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
       BooruType.testbooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
         favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
+        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
     });

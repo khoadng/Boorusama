@@ -5,15 +5,18 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 
 class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   GelbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
+    required this.client,
   });
 
   final GelbooruPostRepositoryApi postRepo;
   final AutocompleteRepository autocompleteRepo;
+  final GelbooruClient client;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -51,4 +54,8 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   @override
   AutocompleteFetcher get autocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query);
+
+  @override
+  PostCountFetcher? get postCountFetcher =>
+      (tags) => client.countPosts(tags: tags);
 }
