@@ -16,8 +16,8 @@ enum CommentVoteState {
   upvoted,
 }
 
-class Comment extends Equatable {
-  const Comment({
+class DanbooruComment extends Equatable {
+  const DanbooruComment({
     required this.id,
     required this.score,
     required this.body,
@@ -28,7 +28,7 @@ class Comment extends Equatable {
     required this.creator,
   });
 
-  factory Comment.emty() => Comment(
+  factory DanbooruComment.emty() => DanbooruComment(
         id: -1,
         score: 0,
         body: '',
@@ -60,16 +60,16 @@ class Comment extends Equatable {
       ];
 }
 
-extension CommentX on Comment {
+extension CommentX on DanbooruComment {
   bool get isEdited => createdAt != updatedAt;
 
-  Comment copyWith({
+  DanbooruComment copyWith({
     CommentId? id,
     bool? isDeleted,
     String? body,
     int? score,
   }) =>
-      Comment(
+      DanbooruComment(
         id: id ?? this.id,
         score: score ?? this.score,
         body: body ?? this.body,
@@ -81,5 +81,6 @@ extension CommentX on Comment {
       );
 }
 
-List<Comment> Function(List<Comment> comments) filterDeleted() =>
-    (comments) => comments.where((e) => !e.isDeleted).toList();
+List<DanbooruComment> Function(List<DanbooruComment> comments)
+    filterDeleted() =>
+        (comments) => comments.where((e) => !e.isDeleted).toList();

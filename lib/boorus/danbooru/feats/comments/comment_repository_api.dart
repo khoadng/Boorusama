@@ -16,7 +16,7 @@ class CommentRepositoryApi implements CommentRepository {
   final DanbooruClient _client;
 
   @override
-  Future<List<Comment>> getCommentsFromPostId(
+  Future<List<DanbooruComment>> getCommentsFromPostId(
     int postId, {
     CancelToken? cancelToken,
   }) =>
@@ -55,8 +55,8 @@ class CommentRepositoryApi implements CommentRepository {
       .catchError((Object obj) => false);
 }
 
-Comment commentDtoToComment(CommentDto d) {
-  return Comment(
+DanbooruComment commentDtoToComment(CommentDto d) {
+  return DanbooruComment(
     id: d.id ?? 0,
     score: d.score ?? 0,
     body: d.body ?? '',
