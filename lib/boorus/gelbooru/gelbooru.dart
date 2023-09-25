@@ -9,8 +9,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
+import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
@@ -126,6 +128,24 @@ class GelbooruSearchPage extends ConsumerWidget {
       ),
       fetcher: (page, tags) =>
           ref.watch(gelbooruPostRepoProvider).getPostsFromTags(tags, page),
+    );
+  }
+}
+
+class GelbooruCommentPage extends ConsumerWidget {
+  const GelbooruCommentPage({
+    super.key,
+    required this.postId,
+  });
+
+  final int postId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CommentPageScaffold(
+      postId: postId,
+      fetcher: (postId) =>
+          ref.watch(gelbooruCommentRepoProvider).getComments(postId),
     );
   }
 }
