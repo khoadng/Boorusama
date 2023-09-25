@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -39,7 +38,6 @@ class E621PostTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authenticationProvider);
     final booru = ref.watch(currentBooruConfigProvider);
     final tags = <E621TagGroup>[
       if (post.artistTags.isNotEmpty)
@@ -91,7 +89,6 @@ class E621PostTagList extends ConsumerWidget {
           context,
           ref,
           booru,
-          authState,
           g,
           // onAddToBlacklisted: (tag) =>
           //     ref.read(danbooruBlacklistedTagsProvider.notifier).add(
@@ -120,8 +117,7 @@ class E621PostTagList extends ConsumerWidget {
   Widget _buildTags(
     BuildContext context,
     WidgetRef ref,
-    BooruConfig booru,
-    AuthenticationState authenticationState,
+    BooruConfig config,
     E621TagGroup group,
     // {
     // required void Function(Tag tag) onAddToBlacklisted,
@@ -155,7 +151,7 @@ class E621PostTagList extends ConsumerWidget {
             //   onAddToBlacklisted(tag);
             // } else
             if (value == 'wiki') {
-              launchWikiPage(booru.url, tag);
+              launchWikiPage(config.url, tag);
             } else if (value == 'add_to_favorites') {
               ref.read(favoriteTagsProvider.notifier).add(tag);
             }
