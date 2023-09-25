@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
@@ -17,6 +18,18 @@ import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'gelbooru_post_details_desktop_page.dart';
 import 'gelbooru_post_details_page.dart';
 import 'widgets/gelbooru_infinite_post_list.dart';
+
+final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
+
+  return GelbooruClient.custom(
+    baseUrl: booruConfig.url,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
+    dio: dio,
+  );
+});
 
 class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   GelbooruBuilder({
