@@ -131,8 +131,6 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
-
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => LatestView(
@@ -142,7 +140,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         ),
       ),
       mobileMenuBuilder: (context, controller) => [
-        if (config.hasLoginDetails() && userId != null)
+        if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: const Icon(Icons.account_box),
             title: const Text('Profile'),
@@ -182,7 +180,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             goToForumPage(context);
           },
         ),
-        if (config.hasLoginDetails()) ...[
+        if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
@@ -248,7 +246,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           icon: const Icon(Icons.forum_outlined),
           title: 'forum.forum'.tr(),
         ),
-        if (config.hasLoginDetails()) ...[
+        if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             HomeNavigationTile(
               value: 4,
@@ -334,7 +332,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         const ExplorePage(),
         const PoolPage(),
         const DanbooruForumPage(),
-        if (config.hasLoginDetails()) ...[
+        if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             UserDetailsPage(
               uid: userId!,
