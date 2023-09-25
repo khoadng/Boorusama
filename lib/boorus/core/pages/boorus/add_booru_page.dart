@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/boorus/add_unknown_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/create_booru_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -42,6 +42,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+
     return switch (phase) {
       AddBooruPhase.url => AddBooruPageInternal(
           backgroundColor: widget.backgroundColor,
@@ -60,11 +62,19 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
-      AddBooruPhase.newKnownBooru => CreateBooruPage(
-          url: url,
-          booruType: booru!,
-          backgroundColor: widget.backgroundColor,
-        ),
+      AddBooruPhase.newKnownBooru => booruBuilders[booru!] != null
+          ? booruBuilders[booru!]!.createConfigPageBuilder(
+              context,
+              url,
+              booru!,
+              backgroundColor: widget.backgroundColor,
+            )
+          : Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: Text('Not implemented'),
+              ),
+            ),
     };
   }
 }

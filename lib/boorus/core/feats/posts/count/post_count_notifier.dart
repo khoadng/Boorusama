@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'post_count_state.dart';
 
 String generatePostCountKey(List<String> tags) =>
@@ -39,7 +39,10 @@ class PostCountNotifier extends FamilyNotifier<PostCountState, BooruConfig> {
         return;
       }
 
-      final postCount = await ref.read(postCountRepoProvider(arg)).count(tags);
+      final booruBuilders = ref.read(booruBuildersProvider);
+      final fetcher = booruBuilders[arg.booruType]?.postCountFetcher;
+
+      final postCount = await fetcher?.call(tags);
       state = PostCountState({
         ...state.postCounts,
         cacheKey: postCount,

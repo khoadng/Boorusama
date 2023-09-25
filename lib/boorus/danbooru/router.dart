@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
@@ -13,60 +12,43 @@ import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dar
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
+import 'package:boorusama/boorus/danbooru/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/pages/artists/danbooru_artist_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/characters/danbooru_character_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/comment/comment_create_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/comment/comment_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/comment/comment_update_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/explore/explore_hot_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/explore/explore_most_viewed_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/explore/explore_popular_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/add_to_favorite_group_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/create_favorite_group_dialog.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_group_details_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/post_details/danbooru_post_details_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/saved_search/widgets/edit_saved_search_sheet.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/danbooru_search_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/search/result/related_tag_action_sheet.dart';
-import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
+import 'package:boorusama/boorus/danbooru/user_details_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'add_to_favorite_group_page.dart';
+import 'comment_create_page.dart';
+import 'comment_page.dart';
+import 'comment_update_page.dart';
+import 'danbooru_forum_page.dart';
+import 'explore_hot_page.dart';
+import 'explore_most_viewed_page.dart';
+import 'explore_popular_page.dart';
+import 'favorite_group_details_page.dart';
+import 'favorite_groups_page.dart';
+import 'pool_detail_page.dart';
+import 'pool_page.dart';
+import 'pool_search_page.dart';
 import 'router_page_constant.dart';
-
-void goToArtistPage(BuildContext context, String artist) {
-  context.navigator.push(MaterialPageRoute(
-    builder: (_) => DanbooruArtistPage.of(context, artist),
-  ));
-}
+import 'saved_search_feed_page.dart';
+import 'saved_search_page.dart';
+import 'widgets/favorites/create_favorite_group_dialog.dart';
+import 'widgets/saved_searches/edit_saved_search_sheet.dart';
+import 'widgets/search/related_tag_action_sheet.dart';
 
 void goToCharacterPage(BuildContext context, String tag) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => DanbooruCharacterPage.of(context, tag),
-  ));
-}
-
-void goToFavoritesPage(BuildContext context, String? username) {
-  context.navigator.push(MaterialPageRoute(
-    builder: (_) => FavoritesPage.of(context, username: username!),
   ));
 }
 
@@ -75,41 +57,6 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
-
-Future<void> goToDetailPage({
-  required BuildContext context,
-  required List<DanbooruPost> posts,
-  required int initialIndex,
-  AutoScrollController? scrollController,
-  bool hero = false,
-}) {
-  if (isMobilePlatform() && context.orientation.isPortrait) {
-    return context.navigator.push(DanbooruPostDetailsPage.routeOf(
-      context,
-      posts: posts,
-      scrollController: scrollController,
-      initialIndex: initialIndex,
-      hero: hero,
-    ));
-  } else {
-    return showDesktopFullScreenWindow(
-      context,
-      builder: (_) => DanbooruPostDetailsDesktopPage(
-        initialIndex: initialIndex,
-        posts: posts,
-        onExit: (index) {
-          scrollController?.scrollToIndex(index);
-        },
-      ),
-    );
-  }
-}
-
-void goToSearchPage(
-  BuildContext context, {
-  String? tag,
-}) =>
-    context.navigator.push(DanbooruSearchPage.routeOf(context, tag: tag));
 
 void goToExplorePopularPage(BuildContext context) =>
     context.navigator.push(ExplorePopularPage.routeOf(context));

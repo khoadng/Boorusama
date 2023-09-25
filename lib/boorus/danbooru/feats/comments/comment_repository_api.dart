@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'comment.dart';
 import 'comment_repository.dart';
+import 'danbooru_comment.dart';
 
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
@@ -16,7 +16,7 @@ class CommentRepositoryApi implements CommentRepository {
   final DanbooruClient _client;
 
   @override
-  Future<List<Comment>> getCommentsFromPostId(
+  Future<List<DanbooruComment>> getCommentsFromPostId(
     int postId, {
     CancelToken? cancelToken,
   }) =>
@@ -55,8 +55,8 @@ class CommentRepositoryApi implements CommentRepository {
       .catchError((Object obj) => false);
 }
 
-Comment commentDtoToComment(CommentDto d) {
-  return Comment(
+DanbooruComment commentDtoToComment(CommentDto d) {
+  return DanbooruComment(
     id: d.id ?? 0,
     score: d.score ?? 0,
     body: d.body ?? '',

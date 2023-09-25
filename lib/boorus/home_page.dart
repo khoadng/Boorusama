@@ -5,16 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_selector.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_scope.dart';
-import 'package:boorusama/boorus/e621/e621_scope.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
-import 'package:boorusama/boorus/zerochan/zerochan_scope.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -108,7 +104,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 }
 
-class _Boorus extends StatelessWidget {
+class _Boorus extends ConsumerWidget {
   const _Boorus({
     super.key,
     required this.ref,
@@ -119,35 +115,19 @@ class _Boorus extends StatelessWidget {
   final BooruConfig config;
 
   @override
-  Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        switch (config.booruType) {
-          case BooruType.unknown:
-            return const Center(
-              child: Text('Unknown booru'),
-            );
-          case BooruType.e621:
-          case BooruType.e926:
-            return E621Scope(config: config);
-          case BooruType.aibooru:
-          case BooruType.danbooru:
-          case BooruType.safebooru:
-          case BooruType.testbooru:
-            return DanbooruScope(config: config);
-          case BooruType.gelbooru:
-          case BooruType.rule34xxx:
-            return GelbooruScope(config: config);
-          case BooruType.konachan:
-          case BooruType.yandere:
-          case BooruType.sakugabooru:
-          case BooruType.lolibooru:
-            return MoebooruScope(config: config);
-          case BooruType.zerochan:
-            return ZerochanScope(config: config);
-        }
-      },
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+
+    if (booruBuilders.containsKey(config.booruType)) {
+      return booruBuilders[config.booruType]!.homePageBuilder(context, config);
+    } else {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(
+          child: Text('Not implemented'),
+        ),
+      );
+    }
   }
 }
 

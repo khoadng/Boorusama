@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -35,7 +37,7 @@ import 'router.dart';
 class BoorusRoutes {
   BoorusRoutes._();
 
-  static GoRoute add() => GoRoute(
+  static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
@@ -47,6 +49,7 @@ class BoorusRoutes {
       );
 
   //FIXME: create custom page builder, also can't tap outside to dismiss
+  //FIXME: doesn't work on desktop with new implementation
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
@@ -77,9 +80,21 @@ class BoorusRoutes {
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
+          final booruBuilders = ref.read(booruBuildersProvider);
+
           return MaterialPage(
             key: state.pageKey,
-            child: UpdateBooruPage(booruConfig: config),
+            child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+                  context,
+                  config,
+                  backgroundColor: context.theme.scaffoldBackgroundColor,
+                ) ??
+                Scaffold(
+                  appBar: AppBar(),
+                  body: const Center(
+                    child: Text('Not implemented'),
+                  ),
+                ),
           );
         },
       );
@@ -93,6 +108,8 @@ class BoorusRoutes {
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
+          final booruBuilders = ref.read(booruBuildersProvider);
+
           return DialogPage(
             key: state.pageKey,
             name: state.name,
@@ -101,9 +118,17 @@ class BoorusRoutes {
               color: context.theme.canvasColor,
               width: 400,
               child: IntrinsicHeight(
-                child: UpdateBooruPage(
-                  booruConfig: config,
-                ),
+                child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+                      context,
+                      config,
+                      backgroundColor: context.theme.canvasColor,
+                    ) ??
+                    Scaffold(
+                      appBar: AppBar(),
+                      body: const Center(
+                        child: Text('Not implemented'),
+                      ),
+                    ),
               ),
             ),
           );
@@ -192,6 +217,16 @@ class SettingsRoutes {
       );
 }
 
+const kInitialQueryKey = 'query';
+const kArtistNameKey = 'name';
+
+typedef DetailsPayload = ({
+  int initialIndex,
+  List<Post> posts,
+  AutoScrollController? scrollController,
+  bool isDesktop,
+});
+
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -208,14 +243,110 @@ class Routes {
         routes: [
           BoorusRoutes.update(ref),
           BoorusRoutes.updateDesktop(ref),
-          BoorusRoutes.add(),
+          BoorusRoutes.add(ref),
           BoorusRoutes.addDesktop(),
+          search(ref),
+          postDetails(ref),
+          favorites(ref),
+          artists(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
           globalBlacklistedTags(),
           bulkDownloads(ref),
         ],
+      );
+
+  static GoRoute postDetails(Ref ref) => GoRoute(
+        path: 'details',
+        name: '/details',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder =
+              booruBuilders[config.booruType]?.postDetailsPageBuilder;
+          final payload = state.extra as DetailsPayload;
+
+          if (!payload.isDesktop) {
+            return MaterialPage(
+              key: state.pageKey,
+              name: state.name,
+              child: builder != null
+                  ? builder(context, config, payload)
+                  : const Scaffold(
+                      body: Center(child: Text('Not implemented'))),
+            );
+          } else {
+            return builder != null
+                ? DialogPage(
+                    builder: (context) => builder(context, config, payload))
+                : DialogPage(
+                    builder: (_) => const Scaffold(
+                          body: Center(child: Text('Not implemented')),
+                        ));
+          }
+        },
+      );
+
+  static GoRoute search(Ref ref) => GoRoute(
+        path: 'search',
+        name: '/search',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.searchPageBuilder;
+          final query = state.uri.queryParameters[kInitialQueryKey];
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(context, query)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: fadeTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute favorites(Ref ref) => GoRoute(
+        path: 'favorites',
+        name: '/favorites',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.favoritesPageBuilder;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(context, config)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: leftToRightTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute artists(Ref ref) => GoRoute(
+        path: 'artists',
+        name: '/artists',
+        pageBuilder: (context, state) {
+          final booruBuilders = ref.read(booruBuildersProvider);
+          final config = ref.read(currentBooruConfigProvider);
+          final builder = booruBuilders[config.booruType]?.artistPageBuilder;
+          final artistName = state.uri.queryParameters[kArtistNameKey];
+
+          return MaterialPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? artistName != null
+                    ? builder(context, artistName)
+                    : const Scaffold(
+                        body: Center(child: Text('Invalid artist name')))
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+          );
+        },
       );
 
   static GoRoute bookmarks() => GoRoute(

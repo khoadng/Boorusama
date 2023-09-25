@@ -10,32 +10,32 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/pages/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/explore/explore_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorite_groups_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/forums/danbooru_forum_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/danbooru_home_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/home/latest_posts_view.dart';
-import 'package:boorusama/boorus/danbooru/pages/pool/pool_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/saved_search/saved_search_feed_page.dart';
-import 'package:boorusama/boorus/danbooru/pages/users/user_details_page.dart';
+import 'package:boorusama/boorus/danbooru/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/user_details_page.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
+import 'danbooru_forum_page.dart';
+import 'danbooru_home_page.dart';
+import 'explore_page.dart';
+import 'favorite_groups_page.dart';
+import 'favorites_page.dart';
+import 'latest_posts_view.dart';
+import 'pool_page.dart';
+import 'saved_search_feed_page.dart';
 
 class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
@@ -131,8 +131,6 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = ref.read(authenticationProvider);
-
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => LatestView(
@@ -142,7 +140,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         ),
       ),
       mobileMenuBuilder: (context, controller) => [
-        if (auth.isAuthenticated && userId != null)
+        if (widget.config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: const Icon(Icons.account_box),
             title: const Text('Profile'),
@@ -182,12 +180,12 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             goToForumPage(context);
           },
         ),
-        if (auth.isAuthenticated) ...[
+        if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context, widget.config.login);
+              goToFavoritesPage(context);
             },
           ),
           SideMenuTile(
@@ -248,7 +246,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           icon: const Icon(Icons.forum_outlined),
           title: 'forum.forum'.tr(),
         ),
-        if (auth.isAuthenticated) ...[
+        if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             HomeNavigationTile(
               value: 4,
@@ -334,7 +332,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         const ExplorePage(),
         const PoolPage(),
         const DanbooruForumPage(),
-        if (auth.isAuthenticated) ...[
+        if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             UserDetailsPage(
               uid: userId!,

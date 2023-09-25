@@ -5,25 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
-import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
-import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
-import 'package:boorusama/boorus/e621/router.dart';
-import 'package:boorusama/boorus/e621/widgets/e621_infinite_post_list.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
+import 'e621_favorites_page.dart';
+import 'e621_home_page.dart';
+import 'e621_popular_page.dart';
 
 class E621Scope extends ConsumerStatefulWidget {
   const E621Scope({
@@ -40,13 +39,13 @@ class E621Scope extends ConsumerStatefulWidget {
 class _E621ScopeState extends ConsumerState<E621Scope> {
   @override
   Widget build(BuildContext context) {
-    final auth = ref.read(authenticationProvider);
+    final config = ref.read(currentBooruConfigProvider);
 
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => PostScope(
         fetcher: (page) => ref.read(e621PostRepoProvider).getPosts('', page),
-        builder: (context, postController, errors) => E621InfinitePostList(
+        builder: (context, postController, errors) => InfinitePostListScaffold(
           errors: errors,
           controller: postController,
           sliverHeaderBuilder: (context) => [
@@ -55,7 +54,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
               toolbarHeight: kToolbarHeight * 1.2,
               title: HomeSearchBar(
                 onMenuTap: controller.openMenu,
-                onTap: () => goToE621SearchPage(context),
+                onTap: () => goToSearchPage(context),
               ),
               floating: true,
               snap: true,
@@ -77,13 +76,11 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
                     body: const E621PopularPage(),
                   ))),
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
-            onTap: () {
-              goToE621FavoritesPage(context);
-            },
+            onTap: () => goToFavoritesPage(context),
           ),
         ]
       ],
@@ -104,7 +101,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
           icon: const Icon(Icons.explore_outlined),
           title: 'Popular',
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           HomeNavigationTile(
             value: 2,
             controller: controller,
@@ -153,7 +150,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
       desktopViews: [
         const E621HomePage(),
         const E621PopularPage(),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           const E621FavoritesPage(),
         ] else ...[
           //TODO: hacky way to prevent accessing wrong index... Will need better solution

@@ -13,10 +13,6 @@ Option<String> tagFilterCategoryToString(TagFilterCategory category) =>
 
 extension PostDetailsPostX on DanbooruPost {
   void loadDetailsFrom(WidgetRef ref) {
-    ref.read(danbooruPostDetailsChildrenProvider(id).notifier).load(this);
-    ref.read(danbooruPostDetailsArtistProvider(id).notifier).load(this);
-    ref.read(danbooruPostDetailsCharacterProvider(id).notifier).load(this);
-    ref.read(danbooruPostDetailsPoolsProvider(id).notifier).load();
     ref.read(danbooruCommentsProvider.notifier).load(id);
     ref.read(danbooruArtistCommentariesProvider.notifier).load(id);
   }

@@ -71,6 +71,7 @@ final booruPostDetailsArtistProvider = NotifierProvider.autoDispose
   BooruPostDetailsArtistNotifier.new,
   dependencies: [
     postArtistCharacterRepoProvider,
+    currentBooruConfigProvider,
   ],
 );
 

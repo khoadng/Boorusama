@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
@@ -16,21 +15,16 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/e621/feats/autocomplete/e621_autocomplete_provider.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
-import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete_providers.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
-import 'package:boorusama/boorus/zerochan/zerochan_provider.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -62,31 +56,6 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
   (ref) => throw UnimplementedError(),
 );
 
-final autocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
-        (ref, config) => switch (config.booruType) {
-              BooruType.danbooru ||
-              BooruType.aibooru ||
-              BooruType.safebooru ||
-              BooruType.testbooru =>
-                ref.watch(danbooruAutocompleteRepoProvider),
-              BooruType.gelbooru ||
-              BooruType.rule34xxx =>
-                ref.watch(gelbooruAutocompleteRepoProvider),
-              BooruType.konachan ||
-              BooruType.yandere ||
-              BooruType.sakugabooru ||
-              BooruType.lolibooru =>
-                ref.watch(moebooruAutocompleteRepoProvider),
-              BooruType.e621 ||
-              BooruType.e926 =>
-                ref.watch(e621AutocompleteRepoProvider),
-              BooruType.zerochan => ref.watch(zerochanAutocompleteRepoProvider),
-              BooruType.unknown => AutocompleteRepositoryBuilder(
-                  autocomplete: (_) async => [],
-                ),
-            });
-
 final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
           BooruType.danbooru ||
@@ -103,8 +72,9 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.lolibooru =>
             ref.watch(moebooruPostRepoProvider),
           BooruType.e621 || BooruType.e926 => ref.watch(e621PostRepoProvider),
-          BooruType.zerochan => ref.watch(zerochanPostRepoProvider),
-          BooruType.unknown => ref.watch(emptyPostRepoProvider),
+          BooruType.zerochan ||
+          BooruType.unknown =>
+            ref.watch(emptyPostRepoProvider),
         });
 
 final postArtistCharacterRepoProvider =
@@ -254,27 +224,6 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
-        });
-
-final postCountRepoProvider = Provider.family<PostCountRepository, BooruConfig>(
-    (ref, config) => switch (config.booruType) {
-          BooruType.danbooru ||
-          BooruType.aibooru ||
-          BooruType.safebooru ||
-          BooruType.testbooru =>
-            ref.watch(danbooruPostCountRepoProvider),
-          BooruType.gelbooru ||
-          BooruType.rule34xxx =>
-            ref.watch(gelbooruPostCountRepoProvider),
-          BooruType.konachan ||
-          BooruType.yandere ||
-          BooruType.sakugabooru ||
-          BooruType.lolibooru ||
-          BooruType.e621 ||
-          BooruType.e926 ||
-          BooruType.zerochan ||
-          BooruType.unknown =>
-            ref.watch(emptyPostCountRepoProvider),
         });
 
 final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(

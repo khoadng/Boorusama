@@ -7,7 +7,12 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class GelbooruPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        VideoInfoMixin,
+        NoTagDetailsMixin
     implements Post {
   const GelbooruPost({
     required this.format,

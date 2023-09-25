@@ -16,6 +16,9 @@ abstract class Post extends Equatable
   String get sampleImageUrl;
   String get originalImageUrl;
   List<String> get tags;
+  List<String>? get artistTags;
+  List<String>? get characterTags;
+  List<String>? get copyrightTags;
   Rating get rating;
   bool get hasComment;
   bool get isTranslated;
@@ -30,7 +33,12 @@ abstract class Post extends Equatable
 }
 
 class SimplePost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        VideoInfoMixin,
+        NoTagDetailsMixin
     implements Post {
   SimplePost({
     required this.id,
@@ -116,6 +124,15 @@ class SimplePost extends Equatable
 
   @override
   List<Object?> get props => [id];
+}
+
+mixin NoTagDetailsMixin implements Post {
+  @override
+  List<String>? get artistTags => null;
+  @override
+  List<String>? get characterTags => null;
+  @override
+  List<String>? get copyrightTags => null;
 }
 
 extension PostImageX on Post {

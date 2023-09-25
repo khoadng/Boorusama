@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/add_bookmarks_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -24,7 +24,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authenticationState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -49,7 +49,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           posts: selectedPosts,
           onPressed: endMultiSelect,
         ),
-        if (authenticationState.isAuthenticated)
+        if (config.hasLoginDetails())
           IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () async {

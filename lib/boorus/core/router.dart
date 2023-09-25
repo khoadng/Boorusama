@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
@@ -22,10 +23,12 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/routes.dart';
 import '../../widgets/image_grid_item.dart';
 import '../../widgets/info_container.dart';
 import 'pages/search/full_history_view.dart';
@@ -50,6 +53,47 @@ void goToOriginalImagePage(BuildContext context, Post post) {
       initialOrientation: MediaQuery.of(context).orientation,
     ),
   ));
+}
+
+void goToSearchPage(
+  BuildContext context, {
+  String? tag,
+}) {
+  if (tag == null) {
+    context.push('/search');
+  } else {
+    context.push('/search?$kInitialQueryKey=$tag');
+  }
+}
+
+void goToFavoritesPage(BuildContext context) {
+  context.go('/favorites');
+}
+
+void goToArtistPage(
+  BuildContext context,
+  String? artistName,
+) {
+  if (artistName == null) return;
+
+  context.push('/artists?$kArtistNameKey=$artistName');
+}
+
+void goToPostDetailsPage<T extends Post>({
+  required BuildContext context,
+  required List<T> posts,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+}) {
+  context.push(
+    '/details',
+    extra: (
+      initialIndex: initialIndex,
+      posts: posts,
+      scrollController: scrollController,
+      isDesktop: !(isMobilePlatform() && context.orientation.isPortrait)
+    ),
+  );
 }
 
 void goToBlacklistedTagsSearchPage(

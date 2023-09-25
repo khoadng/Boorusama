@@ -1,9 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
@@ -15,11 +21,11 @@ class InformationSection extends StatelessWidget {
   const InformationSection({
     super.key,
     this.padding,
-    required this.characterTags,
-    required this.artistTags,
-    required this.copyrightTags,
-    required this.createdAt,
-    required this.source,
+    this.characterTags = const [],
+    this.artistTags = const [],
+    this.copyrightTags = const [],
+    this.createdAt,
+    this.source,
     this.onArtistTagTap,
     this.showSource = false,
   });
@@ -29,8 +35,8 @@ class InformationSection extends StatelessWidget {
   final List<String> characterTags;
   final List<String> artistTags;
   final List<String> copyrightTags;
-  final DateTime createdAt;
-  final PostSource source;
+  final DateTime? createdAt;
+  final PostSource? source;
 
   final void Function(BuildContext context, String artist)? onArtistTagTap;
 
@@ -87,18 +93,19 @@ class InformationSection extends StatelessWidget {
                         ),
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),
-                    Text(
-                      createdAt.fuzzify(
-                          locale: Localizations.localeOf(context)),
-                      style: context.textTheme.bodySmall,
-                    ),
+                    if (createdAt != null)
+                      Text(
+                        createdAt!
+                            .fuzzify(locale: Localizations.localeOf(context)),
+                        style: context.textTheme.bodySmall,
+                      ),
                   ],
                 )
               ],
             ),
           ),
-          if (showSource)
-            source.whenWeb(
+          if (source != null && showSource)
+            source!.whenWeb(
               (source) => GestureDetector(
                 onTap: () => launchExternalUrl(source.uri),
                 child: WebsiteLogo(
@@ -109,6 +116,37 @@ class InformationSection extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class SimpleInformationSection extends ConsumerWidget {
+  const SimpleInformationSection({
+    super.key,
+    required this.post,
+    this.padding,
+    this.showSource = false,
+  });
+
+  final EdgeInsetsGeometry? padding;
+  final bool showSource;
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final booruBuilder = booruBuilders[ref.watch(currentBooruConfigProvider)];
+    final supportArtist = booruBuilder?.isArtistSupported ?? false;
+
+    return InformationSection(
+      characterTags: post.characterTags ?? [],
+      artistTags: post.artistTags ?? [],
+      copyrightTags: post.copyrightTags ?? [],
+      createdAt: post.createdAt,
+      source: post.source,
+      onArtistTagTap: supportArtist
+          ? (context, artist) => goToArtistPage(context, artist)
+          : null,
     );
   }
 }

@@ -17,20 +17,21 @@ class PostRepositoryCacher implements PostRepository {
     String tags,
     int page, {
     int? limit,
-  }) {
-    final name = "$tags-$page-$limit";
+  }) =>
+      TaskEither.Do(($) async {
+        final name = "$tags-$page-$limit";
 
-    // Check if the data exists in the cache
-    if (cache.exist(name)) {
-      return TaskEither.of(cache.get(name)!);
-    }
+        // Check if the data exists in the cache
+        if (cache.exist(name)) {
+          return cache.get(name)!;
+        }
 
-    // If data is not in the cache, retrieve it from the repository and update the cache
-    return repository
-        .getPostsFromTags(tags, page)
-        .flatMap((r) => TaskEither(() async {
-              await cache.put(name, r);
-              return Either.of(r);
-            }));
-  }
+        // If data is not in the cache, retrieve it from the repository and update the cache
+        final data =
+            await $(repository.getPostsFromTags(tags, page, limit: limit));
+
+        await cache.put(name, data);
+
+        return data;
+      });
 }
