@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'moebooru_post_repository_api.dart';
 
 final moebooruPostRepoProvider = Provider<MoebooruPostRepositoryApi>(

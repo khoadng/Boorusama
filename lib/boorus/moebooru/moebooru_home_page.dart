@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
+import 'widgets/moebooru_infinite_post_list.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({

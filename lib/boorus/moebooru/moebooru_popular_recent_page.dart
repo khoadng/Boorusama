@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/functional.dart';
-import 'period_toggle_switch.dart';
+import 'widgets/moebooru_infinite_post_list.dart';
+import 'widgets/period_toggle_switch.dart';
 
 class MoebooruPopularRecentPage extends ConsumerStatefulWidget {
   const MoebooruPopularRecentPage({

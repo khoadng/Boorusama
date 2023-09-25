@@ -19,9 +19,10 @@ import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/core/widgets/posts/source_section.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'moebooru_information_section.dart';
+import 'widgets/moebooru_comment_section.dart';
+import 'widgets/moebooru_information_section.dart';
+import 'widgets/moebooru_post_action_toolbar.dart';
 
 class MoebooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsDesktopPage({

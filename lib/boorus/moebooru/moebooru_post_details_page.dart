@@ -12,13 +12,10 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
-import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/moebooru/pages/comments/moebooru_comment_item.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
-import 'moebooru_information_section.dart';
-import 'moebooru_related_post_section.dart';
+import 'widgets/moebooru_comment_section.dart';
+import 'widgets/moebooru_information_section.dart';
+import 'widgets/moebooru_post_action_toolbar.dart';
+import 'widgets/moebooru_related_post_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPage({
@@ -78,60 +75,6 @@ class _MoebooruPostDetailsPageState
       onPageChanged: (post) {
         ref.read(tagsProvider(booruConfig).notifier).load(post.tags);
       },
-    );
-  }
-}
-
-class MoebooruCommentSection extends ConsumerWidget {
-  const MoebooruCommentSection({
-    super.key,
-    required this.post,
-    this.allowFetch = true,
-  });
-
-  final Post post;
-  final bool allowFetch;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (!allowFetch) {
-      return const SizedBox.shrink();
-    }
-
-    final asyncData = ref.watch(moebooruCommentsProvider(post.id));
-
-    return asyncData.when(
-      data: (comments) => comments.isEmpty
-          ? const SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 12,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Divider(
-                    thickness: 1.5,
-                  ),
-                  Text(
-                    'comment.comments'.tr(),
-                    style: context.textTheme.titleLarge!.copyWith(
-                      color: context.theme.hintColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                  ...comments
-                      .map((comment) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: MoebooruCommentItem(comment: comment),
-                          ))
-                      .toList()
-                ],
-              ),
-            ),
-      loading: () => const SizedBox.shrink(),
-      error: (e, __) => const SizedBox.shrink(),
     );
   }
 }

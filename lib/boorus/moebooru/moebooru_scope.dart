@@ -17,14 +17,14 @@ import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/boorus/home_page.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/pages/home.dart';
-import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_page.dart';
-import 'package:boorusama/boorus/moebooru/pages/popular/moebooru_popular_recent_page.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_popular_page.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_popular_recent_page.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'moebooru_home_page.dart';
+import 'widgets/moebooru_infinite_post_list.dart';
 
 class MoebooruScope extends ConsumerStatefulWidget {
   const MoebooruScope({

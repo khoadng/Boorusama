@@ -11,10 +11,16 @@ import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
 import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/pages/popular/types.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
+import 'widgets/moebooru_infinite_post_list.dart';
+
+enum MoebooruPopularType {
+  recent,
+  day,
+  week,
+  month,
+}
 
 class MoebooruPopularPage extends ConsumerStatefulWidget {
   const MoebooruPopularPage({

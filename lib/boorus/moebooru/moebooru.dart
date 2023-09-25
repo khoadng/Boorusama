@@ -1,13 +1,30 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts.dart';
-import 'package:boorusama/boorus/moebooru/pages/posts/moebooru_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/moebooru/pages/search/moebooru_search_page.dart';
+import 'package:boorusama/boorus/moebooru/moebooru_search_page.dart';
+import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'create_moebooru_config_page.dart';
+import 'moebooru_post_details_desktop_page.dart';
+import 'moebooru_post_details_page.dart';
+
+final moebooruClientProvider = Provider<MoebooruClient>((ref) {
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
+
+  return MoebooruClient.custom(
+    baseUrl: booruConfig.url,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
+    dio: dio,
+  );
+});
 
 class MoebooruBuilder
     with
