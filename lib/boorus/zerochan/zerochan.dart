@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/scaffolds/home_page_scaffold.dart';
@@ -19,9 +18,9 @@ import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart'
 import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/functional.dart';
+import 'create_zerochan_config_page.dart';
 
 final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
@@ -192,58 +191,5 @@ class ZerochanSearchPage extends ConsumerWidget {
       fetcher: (page, tags) =>
           fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
     );
-  }
-}
-
-class ZerochanCreateConfigPage extends ConsumerStatefulWidget {
-  const ZerochanCreateConfigPage({
-    super.key,
-    required this.url,
-    required this.booruType,
-    this.backgroundColor,
-  });
-
-  final String url;
-  final BooruType booruType;
-  final Color? backgroundColor;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ZerochanCreateConfigPageState();
-}
-
-class _ZerochanCreateConfigPageState
-    extends ConsumerState<ZerochanCreateConfigPage> {
-  var configName = '';
-
-  @override
-  Widget build(BuildContext context) {
-    return CreateAnonConfigPage(
-      backgroundColor: widget.backgroundColor,
-      onConfigNameChanged: (value) => setState(() => configName = value),
-      onSubmit: allowSubmit() ? submit : null,
-      booruType: widget.booruType,
-      url: widget.url,
-    );
-  }
-
-  bool allowSubmit() {
-    return configName.isNotEmpty;
-  }
-
-  void submit() {
-    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-          newConfig: AddNewBooruConfig(
-            login: '',
-            apiKey: '',
-            booru: widget.booruType,
-            booruHint: widget.booruType,
-            configName: configName,
-            hideDeleted: false,
-            ratingFilter: BooruConfigRatingFilter.none,
-            url: widget.url,
-          ),
-        );
-    context.navigator.pop();
   }
 }
