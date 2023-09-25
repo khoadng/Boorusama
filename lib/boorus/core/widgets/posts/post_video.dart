@@ -22,7 +22,7 @@ class BooruVideo extends StatefulWidget {
   });
 
   final String url;
-  final double aspectRatio;
+  final double? aspectRatio;
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
   final void Function(bool value)? onVisibilityChanged;

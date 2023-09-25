@@ -41,11 +41,11 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
                   fileSize: 0,
                   format: extension(e.fileUrl ?? ''),
                   hasSound: null,
-                  height: 1,
+                  height: 0,
                   md5: e.md5 ?? '',
                   videoThumbnailUrl: e.previewUrl ?? '',
                   videoUrl: e.fileUrl ?? '',
-                  width: 1,
+                  width: 0,
                   getLink: (baseUrl) =>
                       '$baseUrl/index.php?page=post&s=view&id=${e.id}',
                 ))

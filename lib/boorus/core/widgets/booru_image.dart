@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 
 class BooruImage extends ConsumerWidget {
   const BooruImage({
@@ -27,7 +28,7 @@ class BooruImage extends ConsumerWidget {
   final String? placeholderUrl;
   final BorderRadiusGeometry? borderRadius;
   final BoxFit? fit;
-  final double aspectRatio;
+  final double? aspectRatio;
   final CacheManager? previewCacheManager;
   final int? cacheWidth;
   final int? cacheHeight;
@@ -35,7 +36,7 @@ class BooruImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (imageUrl.isEmpty) {
-      return AspectRatio(
+      return NullableAspectRatio(
         aspectRatio: aspectRatio,
         child: _Empty(borderRadius: borderRadius),
       );
@@ -53,7 +54,7 @@ class BooruImage extends ConsumerWidget {
       child: ClipRRect(
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-        child: AspectRatio(
+        child: NullableAspectRatio(
           aspectRatio: aspectRatio,
           child: CachedNetworkImage(
             httpHeaders: {
@@ -138,12 +139,7 @@ class ImagePlaceHolder extends StatelessWidget {
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       ),
       child: LayoutBuilder(
-        builder: (context, constraints) => Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: constraints.maxWidth * 0.25,
-            vertical: constraints.maxHeight * 0.25,
-          ),
-        ),
+        builder: (context, constraints) => Container(),
       ),
     );
   }

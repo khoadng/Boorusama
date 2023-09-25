@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/embedded_webview_webm.dart';
+import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 
 class BookmarkMediaItem extends ConsumerStatefulWidget {
   const BookmarkMediaItem({
@@ -76,7 +77,7 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
             transformationController: transformationController,
             image: Hero(
               tag: '${widget.bookmark.id}_hero',
-              child: AspectRatio(
+              child: NullableAspectRatio(
                 aspectRatio: widget.bookmark.aspectRatio,
                 child: LayoutBuilder(
                   builder: (context, constraints) => CachedNetworkImage(

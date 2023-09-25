@@ -2,5 +2,5 @@ mixin ImageInfoMixin {
   double get width;
   double get height;
 
-  double get aspectRatio => height != 0 ? width / height : 0;
+  double? get aspectRatio => width <= 0 || height <= 0 ? null : width / height;
 }

@@ -68,5 +68,5 @@ final danbooruPoolCoverProvider =
 typedef PoolCover = ({
   PoolId id,
   String? url,
-  double aspectRatio,
+  double? aspectRatio,
 });

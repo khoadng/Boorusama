@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/string.dart';
+import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final VoidCallback? onTap;
   final bool useHero;
   final String heroTag;
-  final double aspectRatio;
+  final double? aspectRatio;
   final String imageUrl;
   final String? placeholderImageUrl;
   final CacheManager? previewCacheManager;
@@ -76,7 +77,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
   @override
   Widget build(BuildContext context) {
     if (widget.imageUrl.isEmpty) {
-      return AspectRatio(
+      return NullableAspectRatio(
         aspectRatio: widget.aspectRatio,
         child: const ImagePlaceHolder(),
       );
@@ -92,63 +93,82 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
           tag: widget.heroTag,
           child: child,
         ),
-        child: AspectRatio(
-          aspectRatio: widget.aspectRatio,
-          child: LayoutBuilder(
-            builder: (context, constraints) => CachedNetworkImage(
-              httpHeaders: {
-                'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
-              },
-              imageUrl: widget.imageUrl,
-              imageBuilder: (context, imageProvider) {
-                DefaultCacheManager()
-                    .getFileFromCache(widget.imageUrl)
-                    .then((file) {
-                  if (!mounted) return;
-                  widget.onCached?.call(file?.file.path);
-                });
+        child: widget.aspectRatio != null
+            ? AspectRatio(
+                aspectRatio: widget.aspectRatio!,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => CachedNetworkImage(
+                    httpHeaders: {
+                      'User-Agent':
+                          ref.watch(userAgentGeneratorProvider).generate(),
+                    },
+                    imageUrl: widget.imageUrl,
+                    imageBuilder: (context, imageProvider) {
+                      DefaultCacheManager()
+                          .getFileFromCache(widget.imageUrl)
+                          .then((file) {
+                        if (!mounted) return;
+                        widget.onCached?.call(file?.file.path);
+                      });
 
-                final w = math.max(
-                  constraints.maxWidth,
-                  MediaQuery.of(context).size.width,
-                );
+                      final w = math.max(
+                        constraints.maxWidth,
+                        MediaQuery.of(context).size.width,
+                      );
 
-                final h = math.max(
-                  constraints.maxHeight,
-                  MediaQuery.of(context).size.height,
-                );
+                      final h = math.max(
+                        constraints.maxHeight,
+                        MediaQuery.of(context).size.height,
+                      );
 
-                return Stack(
-                  children: [
-                    Image(
-                      width: w,
-                      height: h,
-                      fit: BoxFit.contain,
-                      image: imageProvider,
-                    ),
-                    ...widget.imageOverlayBuilder?.call(constraints) ?? [],
-                  ],
-                );
-              },
-              placeholderFadeInDuration: Duration.zero,
-              fadeOutDuration: Duration.zero,
-              fadeInDuration: Duration.zero,
-              placeholder: widget.placeholderImageUrl.isNotBlank()
-                  ? (context, url) => CachedNetworkImage(
-                        httpHeaders: {
-                          'User-Agent':
-                              ref.watch(userAgentGeneratorProvider).generate(),
-                        },
-                        fit: BoxFit.fill,
-                        imageUrl: widget.placeholderImageUrl!,
-                        cacheManager: widget.previewCacheManager,
-                        fadeInDuration: Duration.zero,
-                        fadeOutDuration: Duration.zero,
-                      )
-                  : null,
-            ),
-          ),
-        ),
+                      return Stack(
+                        children: [
+                          Image(
+                            width: w,
+                            height: h,
+                            fit: BoxFit.contain,
+                            image: imageProvider,
+                          ),
+                          ...widget.imageOverlayBuilder?.call(constraints) ??
+                              [],
+                        ],
+                      );
+                    },
+                    placeholderFadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    fadeInDuration: Duration.zero,
+                    placeholder: widget.placeholderImageUrl.isNotBlank()
+                        ? (context, url) => CachedNetworkImage(
+                              httpHeaders: {
+                                'User-Agent': ref
+                                    .watch(userAgentGeneratorProvider)
+                                    .generate(),
+                              },
+                              fit: BoxFit.fill,
+                              imageUrl: widget.placeholderImageUrl!,
+                              cacheManager: widget.previewCacheManager,
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+                            )
+                        : null,
+                  ),
+                ),
+              )
+            : CachedNetworkImage(
+                httpHeaders: {
+                  'User-Agent':
+                      ref.watch(userAgentGeneratorProvider).generate(),
+                },
+                imageUrl: widget.imageUrl,
+                placeholderFadeInDuration: Duration.zero,
+                fadeOutDuration: Duration.zero,
+                fadeInDuration: Duration.zero,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                  child: CircularProgressIndicator.adaptive(
+                    value: progress.progress,
+                  ),
+                ),
+              ),
       ),
     );
   }

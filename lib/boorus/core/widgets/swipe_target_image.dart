@@ -11,7 +11,7 @@ class SwipeTargetImage extends StatelessWidget {
     required this.imageUrl,
   });
 
-  final double aspectRatio;
+  final double? aspectRatio;
   final String imageUrl;
 
   @override
