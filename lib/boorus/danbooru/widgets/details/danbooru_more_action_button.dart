@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -29,7 +28,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
-    final authenticationState = ref.watch(authenticationProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -74,12 +72,12 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
-              if (authenticationState.isAuthenticated)
+              if (booruConfig.hasLoginDetails())
                 PopupMenuItem(
                   value: 'add_to_favgroup',
                   child: const Text('post.action.add_to_favorite_group').tr(),
                 ),
-              if (authenticationState.isAuthenticated)
+              if (booruConfig.hasLoginDetails())
                 PopupMenuItem(
                   value: 'add_to_blacklist',
                   child: const Text('post.detail.add_to_blacklist').tr(),

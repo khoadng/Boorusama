@@ -8,7 +8,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -32,7 +31,6 @@ class PostTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authenticationProvider);
     final booru = ref.watch(currentBooruConfigProvider);
     final tags = ref.watch(tagsProvider(booru));
 
@@ -54,7 +52,6 @@ class PostTagList extends ConsumerWidget {
           context,
           ref,
           booru,
-          authState,
           g.tags,
           onAddToBlacklisted: (tag) => ref
               .read(danbooruBlacklistedTagsProvider.notifier)
@@ -73,8 +70,7 @@ class PostTagList extends ConsumerWidget {
   Widget _buildTags(
     BuildContext context,
     WidgetRef ref,
-    BooruConfig booru,
-    AuthenticationState authenticationState,
+    BooruConfig config,
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
@@ -95,12 +91,12 @@ class PostTagList extends ConsumerWidget {
               value: 'add_to_favorites',
               child: const Text('post.detail.add_to_favorites').tr(),
             ),
-            if (authenticationState.isAuthenticated)
+            if (config.hasLoginDetails())
               PopupMenuItem(
                 value: 'blacklist',
                 child: const Text('post.detail.add_to_blacklist').tr(),
               ),
-            if (authenticationState.isAuthenticated)
+            if (config.hasLoginDetails())
               PopupMenuItem(
                 value: 'copy_and_move_to_saved_search',
                 child: const Text(
@@ -112,7 +108,7 @@ class PostTagList extends ConsumerWidget {
             if (value == 'blacklist') {
               onAddToBlacklisted(tag);
             } else if (value == 'wiki') {
-              launchWikiPage(booru.url, tag.rawName);
+              launchWikiPage(config.url, tag.rawName);
             } else if (value == 'copy_and_move_to_saved_search') {
               Clipboard.setData(
                 ClipboardData(text: tag.rawName),

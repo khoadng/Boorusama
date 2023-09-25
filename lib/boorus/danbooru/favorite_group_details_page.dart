@@ -11,7 +11,7 @@ import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -113,7 +113,7 @@ class _FavoriteGroupDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
@@ -252,7 +252,7 @@ class _FavoriteGroupDetailsPageState
                                     ContextMenuRegion(
                                   contextMenu: DanbooruPostContextMenu(
                                     post: post,
-                                    hasAccount: authState.isAuthenticated,
+                                    hasAccount: config.hasLoginDetails(),
                                   ),
                                   child: child,
                                 ),
@@ -263,7 +263,7 @@ class _FavoriteGroupDetailsPageState
                                         post.thumbnailFromSettings(settings),
                                     placeholderUrl: post.thumbnailImageUrl,
                                   ),
-                                  enableFav: authState.isAuthenticated,
+                                  enableFav: config.hasLoginDetails(),
                                   hideOverlay: editing,
                                   autoScrollOptions: AutoScrollOptions(
                                     controller: scrollController,

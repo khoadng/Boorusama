@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
@@ -68,8 +68,8 @@ class _CommentPageState extends ConsumerState<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watch(currentBooruConfigProvider);
     final comments = ref.watch(danbooruCommentsProvider)[widget.postId];
-    final auth = ref.watch(authenticationProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -99,7 +99,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                     Expanded(
                       child: CommentList(
                         comments: comments,
-                        authenticated: auth.isAuthenticated,
+                        authenticated: config.hasLoginDetails(),
                         onEdit: (comment) {
                           goToCommentUpdatePage(
                             context,
@@ -127,7 +127,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                             .unvote(commentVote),
                       ),
                     ),
-                    if (auth.isAuthenticated)
+                    if (config.hasLoginDetails())
                       CommentBox(
                         focus: _focus,
                         commentReply: _commentReply,

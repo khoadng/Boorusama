@@ -8,7 +8,6 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
@@ -113,7 +112,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -129,7 +128,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
               download(post);
             },
           ),
-          if (authState.isAuthenticated)
+          if (config.hasLoginDetails())
             ContextMenuButtonConfig(
               'Remove from favorite group',
               onPressed: () {

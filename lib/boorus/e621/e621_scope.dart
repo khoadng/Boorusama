@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
@@ -40,7 +39,7 @@ class E621Scope extends ConsumerStatefulWidget {
 class _E621ScopeState extends ConsumerState<E621Scope> {
   @override
   Widget build(BuildContext context) {
-    final auth = ref.read(authenticationProvider);
+    final config = ref.read(currentBooruConfigProvider);
 
     return BooruScope(
       config: widget.config,
@@ -77,7 +76,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
                     body: const E621PopularPage(),
                   ))),
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
@@ -102,7 +101,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
           icon: const Icon(Icons.explore_outlined),
           title: 'Popular',
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           HomeNavigationTile(
             value: 2,
             controller: controller,
@@ -151,7 +150,7 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
       desktopViews: [
         const E621HomePage(),
         const E621PopularPage(),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           const E621FavoritesPage(),
         ] else ...[
           //TODO: hacky way to prevent accessing wrong index... Will need better solution

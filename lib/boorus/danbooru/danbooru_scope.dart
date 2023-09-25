@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
@@ -132,7 +131,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = ref.read(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
 
     return BooruScope(
       config: widget.config,
@@ -143,7 +142,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         ),
       ),
       mobileMenuBuilder: (context, controller) => [
-        if (auth.isAuthenticated && userId != null)
+        if (config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: const Icon(Icons.account_box),
             title: const Text('Profile'),
@@ -183,7 +182,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
             goToForumPage(context);
           },
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
             title: Text('profile.favorites'.tr()),
@@ -249,7 +248,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
           icon: const Icon(Icons.forum_outlined),
           title: 'forum.forum'.tr(),
         ),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           if (userId != null)
             HomeNavigationTile(
               value: 4,
@@ -335,7 +334,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
         const ExplorePage(),
         const PoolPage(),
         const DanbooruForumPage(),
-        if (auth.isAuthenticated) ...[
+        if (config.hasLoginDetails()) ...[
           if (userId != null)
             UserDetailsPage(
               uid: userId!,

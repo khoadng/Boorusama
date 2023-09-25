@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/posts/favorite_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -23,7 +23,7 @@ class E621PostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
     final isFaved = ref.watch(e621FavoriteProvider(post.id));
 
     return Material(
@@ -34,7 +34,7 @@ class E621PostActionToolbar extends ConsumerWidget {
         children: [
           FavoritePostButton(
             isFaved: isFaved,
-            isAuthorized: authState.isAuthenticated,
+            isAuthorized: config.hasLoginDetails(),
             addFavorite: () =>
                 ref.read(e621FavoritesProvider.notifier).add(post.id),
             removeFavorite: () =>

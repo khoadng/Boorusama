@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/utils.dart';
@@ -57,12 +57,12 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
-    final auth = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
     final isFav = ref.watch(e621FavoriteProvider(post.id));
 
     return CallbackShortcuts(
       bindings: {
-        if (auth.isAuthenticated)
+        if (config.hasLoginDetails())
           const SingleActivator(LogicalKeyboardKey.keyF): () => !isFav
               ? ref.read(e621FavoritesProvider.notifier).add(post.id)
               : ref.read(e621FavoritesProvider.notifier).remove(post.id),

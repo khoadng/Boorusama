@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/notes/notes.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
@@ -68,13 +67,12 @@ class _DanbooruPostDetailsDesktopPageState
     final artists = ref.watch(danbooruPostDetailsArtistProvider(post));
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
-    final auth = ref.watch(authenticationProvider);
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return CallbackShortcuts(
       bindings: {
-        if (auth.isAuthenticated)
+        if (booruConfig.hasLoginDetails())
           const SingleActivator(LogicalKeyboardKey.keyF): () => !isFav
               ? ref.danbooruFavorites.add(post.id)
               : ref.danbooruFavorites.remove(post.id),

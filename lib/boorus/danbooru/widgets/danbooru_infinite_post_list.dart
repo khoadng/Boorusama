@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
@@ -90,8 +89,6 @@ class _DanbooruInfinitePostListState
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authenticationProvider);
-
     final settings = ref.watch(settingsProvider);
 
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
@@ -135,7 +132,7 @@ class _DanbooruInfinitePostListState
           return ContextMenuRegion(
             isEnabled: !post.isBanned && !multiSelect,
             contextMenu: DanbooruPostContextMenu(
-              hasAccount: authState.isAuthenticated,
+              hasAccount: booruConfig.hasLoginDetails(),
               onMultiSelect: () {
                 _multiSelectController.enableMultiSelect();
               },
@@ -159,7 +156,7 @@ class _DanbooruInfinitePostListState
                         );
                       }
                     : null,
-                enableFav: !multiSelect && authState.isAuthenticated,
+                enableFav: !multiSelect && booruConfig.hasLoginDetails(),
                 image: settings.imageListType == ImageListType.masonry
                     ? BooruImage(
                         aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
@@ -216,7 +213,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authenticationState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -237,7 +234,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
             icon: const Icon(Icons.download),
           ),
         ),
-        if (authenticationState.isAuthenticated)
+        if (config.hasLoginDetails())
           IconButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () {

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/widgets/comment_post_button.dart';
 import 'package:boorusama/boorus/core/widgets/posts/favorite_post_button.dart';
@@ -25,7 +25,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authenticationProvider);
+    final config = ref.watch(currentBooruConfigProvider);
     final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
     final postVote = ref.watch(danbooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
@@ -38,11 +38,11 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         children: [
           FavoritePostButton(
             isFaved: isFaved,
-            isAuthorized: authState.isAuthenticated,
+            isAuthorized: config.hasLoginDetails(),
             addFavorite: () => ref.danbooruFavorites.add(post.id),
             removeFavorite: () => ref.danbooruFavorites.remove(post.id),
           ),
-          if (authState.isAuthenticated)
+          if (config.hasLoginDetails())
             IconButton(
               icon: Icon(
                 Icons.arrow_upward,
@@ -53,7 +53,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ref.read(danbooruPostVotesProvider.notifier).upvote(post.id);
               },
             ),
-          if (authState.isAuthenticated)
+          if (config.hasLoginDetails())
             IconButton(
               icon: Icon(
                 Icons.arrow_downward,
