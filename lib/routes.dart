@@ -409,6 +409,7 @@ class Routes {
                 case BooruType.aibooru:
                 case BooruType.gelbooru:
                 case BooruType.rule34xxx:
+                case BooruType.gelbooruV1Alike:
                   return const BulkDownloadPage();
                 case BooruType.zerochan:
                   return Scaffold(

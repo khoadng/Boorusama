@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/simple_post_action_toolbar.dart';
@@ -207,7 +206,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       post: post,
       imageUrl: widget.swipeImageUrlBuilder != null
           ? widget.swipeImageUrlBuilder!(post)
-          : post.thumbnailFromSettings(ref.read(settingsProvider)),
+          : post.sampleImageUrl,
       placeholderImageUrl: widget.placeholderImageUrlBuilder != null
           ? widget.placeholderImageUrlBuilder!(post, currentPage)
           : post.thumbnailImageUrl,

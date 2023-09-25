@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
 import 'package:boorusama/dart.dart';
@@ -66,6 +67,7 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.gelbooru ||
           BooruType.rule34xxx =>
             ref.watch(gelbooruPostRepoProvider),
+          BooruType.gelbooruV1Alike => ref.watch(gelbooruV1PostRepoProvider),
           BooruType.konachan ||
           BooruType.yandere ||
           BooruType.sakugabooru ||
@@ -88,6 +90,8 @@ final postArtistCharacterRepoProvider =
               BooruType.gelbooru ||
               BooruType.rule34xxx =>
                 ref.watch(gelbooruArtistCharacterPostRepoProvider),
+              BooruType.gelbooruV1Alike =>
+                ref.watch(gelbooruV1PostRepoProvider),
               BooruType.konachan ||
               BooruType.yandere ||
               BooruType.sakugabooru ||
@@ -188,7 +192,7 @@ final downloadFileNameGeneratorProvider =
           BooruType.safebooru ||
           BooruType.testbooru:
       return BoorusamaStyledFileNameGenerator();
-    case BooruType.gelbooru || BooruType.rule34xxx:
+    case BooruType.gelbooru || BooruType.rule34xxx || BooruType.gelbooruV1Alike:
       return DownloadUrlBaseNameFileNameGenerator();
     case BooruType.konachan ||
           BooruType.yandere ||
@@ -221,6 +225,7 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
             ref.watch(moebooruTagRepoProvider),
           BooruType.e621 ||
           BooruType.e926 ||
+          BooruType.gelbooruV1Alike ||
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
@@ -241,6 +246,7 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           BooruType.sakugabooru ||
           BooruType.lolibooru ||
           BooruType.zerochan ||
+          BooruType.gelbooruV1Alike ||
           BooruType.unknown =>
             const EmptyNoteRepository(),
         });

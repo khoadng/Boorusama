@@ -48,8 +48,6 @@ class BooruUserIdentityProviderImpl
       case BooruType.rule34xxx:
         accountId = int.tryParse(login);
         break;
-      case BooruType.unknown:
-        throw UnimplementedError();
       case BooruType.danbooru:
       case BooruType.safebooru:
       case BooruType.testbooru:
@@ -63,6 +61,7 @@ class BooruUserIdentityProviderImpl
               .catchError((_) => null),
         );
         break;
+      case BooruType.unknown:
       case BooruType.konachan:
       case BooruType.yandere:
       case BooruType.sakugabooru:
@@ -70,6 +69,7 @@ class BooruUserIdentityProviderImpl
       case BooruType.e621:
       case BooruType.e926:
       case BooruType.zerochan:
+      case BooruType.gelbooruV1Alike:
         accountId = null;
         break;
     }

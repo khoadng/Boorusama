@@ -338,6 +338,8 @@ void goToQuickSearchPage(
                   );
           case BooruType.gelbooru:
           case BooruType.rule34xxx:
+          //FIXME: shouldn't be used with other gelbooru
+          case BooruType.gelbooruV1Alike:
             return isMobile
                 ? SimpleTagSearchView(
                     onSubmitted: (_, text) => onSubmitted?.call(context, text),

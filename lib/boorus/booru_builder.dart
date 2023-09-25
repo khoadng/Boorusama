@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
+import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
@@ -195,6 +196,9 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
         postCountRepo: ref.watch(danbooruPostCountRepoProvider),
+      ),
+      BooruType.gelbooruV1Alike: GelbooruV1Builder(
+        postRepo: ref.watch(gelbooruV1PostRepoProvider),
       ),
     });
 

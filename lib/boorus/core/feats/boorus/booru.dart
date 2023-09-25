@@ -47,11 +47,13 @@ enum BooruType {
   e621,
   e926,
   zerochan,
+  gelbooruV1Alike,
 }
 
 enum BooruEngine {
   danbooru,
   gelbooru,
+  gelbooruV0Dot1,
   gelbooruV0Dot2,
   moebooru,
 }
@@ -66,6 +68,7 @@ extension BooruEngineX on BooruEngine {
   String stringify() => switch (this) {
         BooruEngine.danbooru => 'Danbooru',
         BooruEngine.gelbooru => 'Gelbooru',
+        BooruEngine.gelbooruV0Dot1 => 'Gelbooru v0.1',
         BooruEngine.gelbooruV0Dot2 => 'Gelbooru v0.2',
         BooruEngine.moebooru => 'Moebooru',
       };
@@ -77,6 +80,7 @@ extension BooruTypeX on BooruType {
         BooruType.danbooru => 'Danbooru',
         BooruType.safebooru => 'Danbooru (Safebooru)',
         BooruType.testbooru => 'Testbooru',
+        BooruType.gelbooruV1Alike => 'Gelbooru v0.1',
         BooruType.gelbooru => 'Gelbooru',
         BooruType.rule34xxx => 'Rule34',
         BooruType.aibooru => 'AIBooru',
@@ -142,6 +146,7 @@ extension BooruTypeX on BooruType {
         BooruType.e621 => 11,
         BooruType.e926 => 12,
         BooruType.zerochan => 13,
+        BooruType.gelbooruV1Alike => 14,
         BooruType.unknown => 0,
       };
 }
@@ -167,6 +172,7 @@ BooruType intToBooruType(int value) => switch (value) {
       11 => BooruType.e621,
       12 => BooruType.e926,
       13 => BooruType.zerochan,
+      14 => BooruType.gelbooruV1Alike,
       _ => BooruType.unknown
     };
 
@@ -194,6 +200,7 @@ BooruType getBooruType(String url, List<BooruData> booruDataList) =>
 BooruType booruEngineToBooruType(BooruEngine engine) => switch (engine) {
       BooruEngine.danbooru => BooruType.danbooru,
       BooruEngine.gelbooru => BooruType.gelbooru,
+      BooruEngine.gelbooruV0Dot1 => BooruType.gelbooruV1Alike,
       BooruEngine.gelbooruV0Dot2 => BooruType.rule34xxx,
       BooruEngine.moebooru => BooruType.yandere
     };
