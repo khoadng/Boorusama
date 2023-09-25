@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/e621/e621_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/e621/e621_post_details_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
-import 'package:boorusama/boorus/e621/pages/e621_favorites_page.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'e621_artist_page.dart';
+import 'e621_favorites_page.dart';
 import 'e621_scope.dart';
 import 'e621_search_page.dart';
 
