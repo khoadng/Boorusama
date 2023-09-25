@@ -1,17 +1,33 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
+import 'package:boorusama/boorus/e621/e621_post_details_desktop_page.dart';
+import 'package:boorusama/boorus/e621/e621_post_details_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
-import 'package:boorusama/boorus/e621/pages/artists/e621_artist_page.dart';
-import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
-import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/e621/pages/post_details/e621_post_details_page.dart';
-import 'package:boorusama/boorus/e621/pages/search/e621_search_page.dart';
+import 'package:boorusama/boorus/e621/pages/e621_favorites_page.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
+import 'e621_artist_page.dart';
 import 'e621_scope.dart';
+import 'e621_search_page.dart';
+
+final e621ClientProvider = Provider<E621Client>((ref) {
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final dio = ref.watch(dioProvider(booruConfig.url));
+
+  return E621Client(
+    baseUrl: booruConfig.url,
+    dio: dio,
+    login: booruConfig.login,
+    apiKey: booruConfig.apiKey,
+  );
+});
 
 class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   E621Builder({

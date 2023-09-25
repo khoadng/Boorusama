@@ -17,13 +17,13 @@ import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/e621/pages/favorites/e621_favorites_page.dart';
-import 'package:boorusama/boorus/e621/pages/home/e621_home_page.dart';
-import 'package:boorusama/boorus/e621/pages/popular/e621_popular_page.dart';
+import 'package:boorusama/boorus/e621/pages/e621_favorites_page.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
+import 'e621_home_page.dart';
+import 'e621_popular_page.dart';
 
 class E621Scope extends ConsumerStatefulWidget {
   const E621Scope({
