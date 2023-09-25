@@ -58,8 +58,9 @@ class SuggestionsNotifier
     if (state.containsKey(sanitized)) return;
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
-    final booruBuilder = ref.read(booruBuilderProvider);
-    final autocompleteFetcher = booruBuilder?.autocompleteFetcher;
+    final booruBuilders = ref.read(booruBuildersProvider);
+    final autocompleteFetcher =
+        booruBuilders[arg.booruType]?.autocompleteFetcher;
 
     debounce(
       'suggestions',

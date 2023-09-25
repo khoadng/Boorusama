@@ -51,8 +51,10 @@ class _SearchPageScaffoldState<T extends Post>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final booruBuilder = ref.read(booruBuilderProvider);
-      final postCountFetcher = booruBuilder?.postCountFetcher;
+      final config = ref.read(currentBooruConfigProvider);
+      final booruBuilders = ref.read(booruBuildersProvider);
+      final postCountFetcher =
+          booruBuilders[config.booruType]?.postCountFetcher;
 
       if (postCountFetcher != null && widget.initialQuery != null) {
         ref
@@ -65,8 +67,9 @@ class _SearchPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-    final postCountFetcher = booruBuilder?.postCountFetcher;
+    final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final postCountFetcher = booruBuilders[config.booruType]?.postCountFetcher;
 
     return CustomContextMenuOverlay(
       child: SearchScope(

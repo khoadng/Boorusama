@@ -42,7 +42,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
 
     return switch (phase) {
       AddBooruPhase.url => AddBooruPageInternal(
@@ -62,8 +62,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
-      AddBooruPhase.newKnownBooru => booruBuilder != null
-          ? booruBuilder.createConfigPageBuilder(
+      AddBooruPhase.newKnownBooru => booruBuilders[booru!] != null
+          ? booruBuilders[booru!]!.createConfigPageBuilder(
               context,
               url,
               booru!,
