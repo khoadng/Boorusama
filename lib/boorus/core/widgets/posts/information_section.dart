@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/router.dart';
@@ -133,7 +134,8 @@ class SimpleInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilders = ref.watch(booruBuildersProvider);
+    final booruBuilder = booruBuilders[ref.watch(currentBooruConfigProvider)];
     final supportArtist = booruBuilder?.isArtistSupported ?? false;
 
     return InformationSection(
