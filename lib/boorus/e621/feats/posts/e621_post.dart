@@ -59,8 +59,11 @@ class E621Post extends Equatable
         ...invalidTags,
         ...loreTags,
       ];
+  @override
   final List<String> copyrightTags;
+  @override
   final List<String> characterTags;
+  @override
   final List<String> artistTags;
   final List<String> generalTags;
   final List<String> metaTags;

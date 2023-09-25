@@ -20,20 +20,24 @@ class MoebooruInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final tags = ref.watch(tagsProvider(booruConfig));
-    final characterTags =
-        tags?.map((e) => e.extractCharacterTags()).expand((e) => e).toList();
-    final artistTags =
-        tags?.map((e) => e.extractArtistTags()).expand((e) => e).toList();
-    final copyRightTags =
-        tags?.map((e) => e.extractCopyRightTags()).expand((e) => e).toList();
+    final config = ref.watch(currentBooruConfigProvider);
+    final tags = ref.watch(tagsProvider(config));
 
     return InformationSection(
-      characterTags: characterTags ?? [],
-      artistTags: artistTags ?? [],
-      copyrightTags: copyRightTags ?? [],
-      createdAt: post.createdAt ?? DateTime.now(),
+      characterTags: tags
+              ?.map((e) => e.extractCharacterTags())
+              .expand((e) => e)
+              .toList() ??
+          [],
+      artistTags:
+          tags?.map((e) => e.extractArtistTags()).expand((e) => e).toList() ??
+              [],
+      copyrightTags: tags
+              ?.map((e) => e.extractCopyRightTags())
+              .expand((e) => e)
+              .toList() ??
+          [],
+      createdAt: post.createdAt,
       source: post.source,
     );
   }

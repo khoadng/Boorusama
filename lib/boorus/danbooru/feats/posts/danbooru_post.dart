@@ -91,8 +91,11 @@ class DanbooruPost extends Equatable
   final String sampleImageUrl;
   @override
   final String originalImageUrl;
+  @override
   final List<String> copyrightTags;
+  @override
   final List<String> characterTags;
+  @override
   final List<String> artistTags;
   final List<String> generalTags;
   final List<String> metaTags;

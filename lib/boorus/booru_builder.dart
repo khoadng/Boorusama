@@ -122,6 +122,16 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
+final booruBuilderProvider = Provider<BooruBuilder?>(
+  (ref) {
+    final config = ref.watch(currentBooruConfigProvider);
+    return ref.watch(booruBuildersProvider)[config];
+  },
+  dependencies: [
+    currentBooruConfigProvider,
+  ],
+);
+
 final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       BooruType.zerochan: ZerochanBuilder(
         client: ref.watch(zerochanClientProvider),
@@ -192,3 +202,7 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
     });
+
+extension BooruBuilderFeatureCheck on BooruBuilder {
+  bool get isArtistSupported => artistPageBuilder != null;
+}

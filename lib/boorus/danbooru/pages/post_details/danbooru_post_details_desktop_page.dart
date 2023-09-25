@@ -18,11 +18,11 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
+import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/post_details/pool_tiles.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_post_details_page.dart';
@@ -122,7 +122,7 @@ class _DanbooruPostDetailsDesktopPageState
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    DanbooruInformationSection(
+                    SimpleInformationSection(
                       post: post,
                       showSource: true,
                     ),

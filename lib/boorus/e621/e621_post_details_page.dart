@@ -14,11 +14,11 @@ import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'widgets/e621_post_tag_list.dart';
-import 'widgets/e621_information_section.dart';
 import 'widgets/e621_post_action_toolbar.dart';
+import 'widgets/e621_post_tag_list.dart';
 import 'widgets/e621_recommended_artist_list.dart';
 
 class E621PostDetailsPage extends ConsumerStatefulWidget {
@@ -54,7 +54,7 @@ class _E621PostDetailsPageState extends ConsumerState<E621PostDetailsPage> {
       sliverArtistPostsBuilder: (context, post) =>
           E621RecommendedArtistList(post: post),
       tagListBuilder: (context, post) => E621TagsTile(post: post),
-      infoBuilder: (context, post) => E621InformationSection(
+      infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
       ),

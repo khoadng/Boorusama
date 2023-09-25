@@ -17,11 +17,11 @@ import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
+import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'e621_post_details_page.dart';
-import 'widgets/e621_information_section.dart';
 import 'widgets/e621_post_action_toolbar.dart';
 import 'widgets/e621_recommended_artist_list.dart';
 
@@ -109,7 +109,7 @@ class _DanbooruPostDetailsDesktopPageState
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    E621InformationSection(
+                    SimpleInformationSection(
                       post: post,
                     ),
                     const Divider(height: 8, thickness: 1),

@@ -14,13 +14,13 @@ import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart'
 import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/core/widgets/artist_section.dart';
 import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
+import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/core/widgets/related_posts_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
-import 'danbooru_information_section.dart';
 import 'danbooru_more_action_button.dart';
 import 'danbooru_post_action_toolbar.dart';
 import 'danbooru_recommend_artist_list.dart';
@@ -97,7 +97,7 @@ class _DanbooruPostDetailsPageState
               .where((e) => e.postId == post.id)
               .map((e) => e.name)
               .toList()),
-      infoBuilder: (context, post) => DanbooruInformationSection(
+      infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
       ),
