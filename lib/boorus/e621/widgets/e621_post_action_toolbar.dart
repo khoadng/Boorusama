@@ -33,12 +33,13 @@ class E621PostActionToolbar extends ConsumerWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           FavoritePostButton(
-              isFaved: isFaved,
-              isAuthorized: authState.isAuthenticated,
-              addFavorite: () =>
-                  ref.read(e621FavoritesProvider.notifier).add(post.id),
-              removeFavorite: () =>
-                  ref.read(e621FavoritesProvider.notifier).remove(post.id)),
+            isFaved: isFaved,
+            isAuthorized: authState.isAuthenticated,
+            addFavorite: () =>
+                ref.read(e621FavoritesProvider.notifier).add(post.id),
+            removeFavorite: () =>
+                ref.read(e621FavoritesProvider.notifier).remove(post.id),
+          ),
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),
           SharePostButton(post: post),
