@@ -15,6 +15,9 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
   List<String>? build() {
     final config = ref.watch(currentBooruConfigProvider);
 
+    //FIXME: should handle this in a better way
+    if (!config.booruType.isDanbooruBased) return null;
+
     fetch(config);
 
     return null;

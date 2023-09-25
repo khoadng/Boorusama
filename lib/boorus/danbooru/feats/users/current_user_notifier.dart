@@ -11,6 +11,9 @@ class CurrentUserNotifier extends Notifier<UserSelf?> {
   UserSelf? build() {
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
+    //FIXME: should handle this in a better way
+    if (!booruConfig.booruType.isDanbooruBased) return null;
+
     fetch(booruConfig);
     return null;
   }
