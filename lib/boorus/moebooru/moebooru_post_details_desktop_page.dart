@@ -18,11 +18,11 @@ import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/boorus/core/widgets/posts/source_section.dart';
+import 'package:boorusama/boorus/core/widgets/simple_post_action_toolbar.dart';
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
-import 'widgets/moebooru_post_action_toolbar.dart';
 
 class MoebooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const MoebooruPostDetailsDesktopPage({
@@ -106,7 +106,7 @@ class _MoebooruPostDetailsDesktopPageState
                     const Divider(
                       thickness: 1.5,
                     ),
-                    MoebooruPostActionToolbar(post: post),
+                    SimplePostActionToolbar(post: post),
                     const Divider(
                       thickness: 1.5,
                       height: 4,

@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart'
 import 'package:boorusama/boorus/core/widgets/tags/post_tag_list.dart';
 import 'widgets/moebooru_comment_section.dart';
 import 'widgets/moebooru_information_section.dart';
-import 'widgets/moebooru_post_action_toolbar.dart';
 import 'widgets/moebooru_related_post_section.dart';
 
 class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -59,7 +58,6 @@ class _MoebooruPostDetailsPageState
         context,
         tag: tag,
       ),
-      toolbarBuilder: (context, post) => MoebooruPostActionToolbar(post: post),
       sliverRelatedPostsBuilder: (context, post) =>
           MoebooruRelatedPostsSection(post: post),
       tagListBuilder: (context, post) => PostTagList(

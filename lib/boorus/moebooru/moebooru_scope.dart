@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/boorus/core/router.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
@@ -24,7 +25,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'moebooru_home_page.dart';
-import 'widgets/moebooru_infinite_post_list.dart';
 
 class MoebooruScope extends ConsumerStatefulWidget {
   const MoebooruScope({
@@ -146,7 +146,7 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
     return PostScope(
       fetcher: (page) =>
           ref.read(moebooruPostRepoProvider).getPostsFromTags('', page),
-      builder: (context, postController, errors) => MoebooruInfinitePostList(
+      builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
         sliverHeaderBuilder: (context) => [

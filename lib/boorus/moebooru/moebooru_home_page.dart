@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'widgets/moebooru_infinite_post_list.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
@@ -52,7 +52,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             selectedTagController: selectedTagController,
           ),
           Expanded(
-            child: MoebooruInfinitePostList(
+            child: InfinitePostListScaffold(
               errors: errors,
               controller: controller,
             ),

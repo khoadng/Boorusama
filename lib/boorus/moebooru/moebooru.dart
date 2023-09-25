@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_search_page.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'create_moebooru_config_page.dart';
 import 'moebooru_post_details_desktop_page.dart';
@@ -68,10 +68,8 @@ class MoebooruBuilder
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
-        tags,
-        page,
-      );
+  PostFetcher get postFetcher =>
+      (page, tags) => postRepo.getPostsFromTags(tags, page);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>
@@ -79,8 +77,8 @@ class MoebooruBuilder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => MoebooruSearchPage(
-            initialQuery: initialQuery,
+      (context, initialQuery) => SearchPageScaffold(
+            fetcher: (page, tags) => postFetcher(page, tags),
           );
 
   @override
