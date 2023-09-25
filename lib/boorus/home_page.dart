@@ -116,10 +116,10 @@ class _Boorus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilders = ref.watch(booruBuildersProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider);
 
-    if (booruBuilders.containsKey(config.booruType)) {
-      return booruBuilders[config.booruType]!.homePageBuilder(context, config);
+    if (booruBuilder != null) {
+      return booruBuilder.homePageBuilder(context, config);
     } else {
       return Scaffold(
         appBar: AppBar(),

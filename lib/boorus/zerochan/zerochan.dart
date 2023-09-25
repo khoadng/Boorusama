@@ -184,12 +184,11 @@ class ZerochanSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[BooruType.zerochan]?.postFetcher;
+    final booruBuilder = ref.watch(booruBuilderProvider);
 
     return SearchPageScaffold(
       fetcher: (page, tags) =>
-          fetcher?.call(page, tags) ?? TaskEither.of(<Post>[]),
+          booruBuilder?.postFetcher.call(page, tags) ?? TaskEither.of(<Post>[]),
     );
   }
 }
