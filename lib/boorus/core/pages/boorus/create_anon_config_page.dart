@@ -1,42 +1,42 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_submit_button.dart';
-import 'widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/router.dart';
 
-class CreateAnonConfigPage extends StatelessWidget {
+class CreateAnonConfigPage extends ConsumerStatefulWidget {
   const CreateAnonConfigPage({
     super.key,
-    required this.onConfigNameChanged,
-    required this.onSubmit,
-    required this.booruType,
     required this.url,
-    this.initialConfigName,
+    required this.booruType,
     this.backgroundColor,
-    this.isUnkown = false,
   });
 
-  final String? initialConfigName;
-
-  final void Function(String value) onConfigNameChanged;
-  final void Function()? onSubmit;
-
+  final String url;
+  final BooruType booruType;
   final Color? backgroundColor;
 
-  final BooruType booruType;
-  final String url;
-  final bool isUnkown;
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CreateAnonConfigPageState();
+}
+
+class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
+  var configName = '';
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
-      backgroundColor: backgroundColor,
-      booruType: booruType,
-      url: url,
-      isUnknown: isUnkown,
+      backgroundColor: widget.backgroundColor,
+      booruType: widget.booruType,
+      url: widget.url,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -47,14 +47,36 @@ class CreateAnonConfigPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CreateBooruConfigNameField(
-                text: initialConfigName,
-                onChanged: onConfigNameChanged,
+                text: configName,
+                onChanged: (value) => setState(() => configName = value),
               ),
-              CreateBooruSubmitButton(onSubmit: onSubmit),
+              CreateBooruSubmitButton(
+                onSubmit: allowSubmit() ? submit : null,
+              ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  bool allowSubmit() {
+    return configName.isNotEmpty;
+  }
+
+  void submit() {
+    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+          newConfig: AddNewBooruConfig(
+            login: '',
+            apiKey: '',
+            booru: widget.booruType,
+            booruHint: widget.booruType,
+            configName: configName,
+            hideDeleted: false,
+            ratingFilter: BooruConfigRatingFilter.none,
+            url: widget.url,
+          ),
+        );
+    context.pop();
   }
 }

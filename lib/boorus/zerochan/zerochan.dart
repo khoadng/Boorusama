@@ -7,12 +7,12 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'package:boorusama/functional.dart';
-import 'create_zerochan_config_page.dart';
 
 final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
@@ -45,7 +45,7 @@ class ZerochanBuilder
         booruType, {
         backgroundColor,
       }) =>
-          ZerochanCreateConfigPage(
+          CreateAnonConfigPage(
             url: url,
             booruType: booruType,
             backgroundColor: backgroundColor,
