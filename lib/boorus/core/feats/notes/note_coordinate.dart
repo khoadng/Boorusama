@@ -43,6 +43,10 @@ extension NoteCoordX on Note {
     required double widthConstraint,
     required double heightConstraint,
   }) {
+    if (post.width == 0 || post.height == 0) {
+      return this;
+    }
+
     final widthPercent = widthConstraint / post.width;
     final heightPercent = heightConstraint / post.height;
 
