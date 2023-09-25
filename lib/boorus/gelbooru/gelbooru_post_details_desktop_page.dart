@@ -17,10 +17,11 @@ import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
 import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
 import 'package:boorusama/boorus/core/widgets/post_media.dart';
 import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/basic_tag_list.dart';
-import 'gelbooru_recommend_artist_list.dart';
+import 'widgets/gelbooru_post_action_toolbar.dart';
+import 'widgets/gelbooru_recommend_artist_list.dart';
+import 'widgets/tags_tile.dart';
 
 class GelbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const GelbooruPostDetailsDesktopPage({

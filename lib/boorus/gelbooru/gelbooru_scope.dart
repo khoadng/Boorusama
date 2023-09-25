@@ -15,12 +15,12 @@ import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
 import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
 import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/boorus/gelbooru/pages/home/gelbooru_home_page.dart';
-import 'package:boorusama/boorus/gelbooru/pages/posts.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru_home_page.dart';
 import 'package:boorusama/boorus/home_page.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
+import 'widgets/gelbooru_infinite_post_list.dart';
 
 class GelbooruScope extends ConsumerStatefulWidget {
   const GelbooruScope({

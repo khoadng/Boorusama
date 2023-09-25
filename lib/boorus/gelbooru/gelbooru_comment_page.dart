@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru/pages/comments/gelbooru_comment_item.dart';
+import 'package:boorusama/boorus/gelbooru/widgets/gelbooru_comment_item.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class GelbooruCommentPage extends ConsumerWidget {
