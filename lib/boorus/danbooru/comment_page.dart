@@ -6,14 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/comments/comment_section.dart';
+import 'router.dart';
+import 'widgets/comments/comment_box.dart';
+import 'widgets/comments/comment_list.dart';
 
 class CommentPage extends ConsumerStatefulWidget {
   const CommentPage({
@@ -65,6 +69,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
   @override
   Widget build(BuildContext context) {
     final comments = ref.watch(danbooruCommentsProvider)[widget.postId];
+    final auth = ref.watch(authenticationProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -89,12 +94,47 @@ class _CommentPageState extends ConsumerState<CommentPage> {
               () => const SizedBox.shrink(),
               (comments) => GestureDetector(
                 onTap: () => isEditing.value = false,
-                child: CommentSection(
-                  comments: comments,
-                  commentReply: _commentReply,
-                  focus: _focus,
-                  isEditing: isEditing,
-                  postId: widget.postId,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CommentList(
+                        comments: comments,
+                        authenticated: auth.isAuthenticated,
+                        onEdit: (comment) {
+                          goToCommentUpdatePage(
+                            context,
+                            postId: widget.postId,
+                            commentId: comment.id,
+                            commentBody: comment.body,
+                          );
+                        },
+                        onReply: (comment) async {
+                          _commentReply.value = comment;
+                          await const Duration(milliseconds: 100).future;
+                          _focus.requestFocus();
+                        },
+                        onDelete: (comment) => ref
+                            .read(danbooruCommentsProvider.notifier)
+                            .delete(postId: widget.postId, comment: comment),
+                        onUpvote: (comment) => ref
+                            .read(danbooruCommentVotesProvider.notifier)
+                            .upvote(comment.id),
+                        onDownvote: (comment) => ref
+                            .read(danbooruCommentVotesProvider.notifier)
+                            .downvote(comment.id),
+                        onClearVote: (comment, commentVote) => ref
+                            .read(danbooruCommentVotesProvider.notifier)
+                            .unvote(commentVote),
+                      ),
+                    ),
+                    if (auth.isAuthenticated)
+                      CommentBox(
+                        focus: _focus,
+                        commentReply: _commentReply,
+                        postId: widget.postId,
+                        isEditing: isEditing,
+                      ),
+                  ],
                 ),
               ),
             ),
