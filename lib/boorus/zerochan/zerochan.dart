@@ -1,9 +1,5 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -12,10 +8,6 @@ import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/scaffolds/home_page_scaffold.dart';
-import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/foundation/path.dart' as path;
@@ -34,7 +26,8 @@ class ZerochanBuilder
         SettingsRepositoryMixin,
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
-        ArtistNotSupportedMixin
+        ArtistNotSupportedMixin,
+        DefaultBooruUIMixin
     implements BooruBuilder {
   const ZerochanBuilder({
     required this.client,
@@ -55,32 +48,6 @@ class ZerochanBuilder
           ZerochanCreateConfigPage(
             url: url,
             booruType: booruType,
-            backgroundColor: backgroundColor,
-          );
-
-  @override
-  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
-        onPostTap:
-            (context, posts, post, scrollController, settings, initialIndex) =>
-                goToPostDetailsPage(
-          context: context,
-          posts: posts,
-          initialIndex: initialIndex,
-        ),
-        onSearchTap: () => goToSearchPage(context),
-      );
-
-  //FIXME: this is a hack, we should have a proper update page
-  @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
-        context,
-        config, {
-        backgroundColor,
-      }) =>
-          createConfigPageBuilder(
-            context,
-            config.url,
-            config.booruType,
             backgroundColor: backgroundColor,
           );
 
@@ -135,60 +102,4 @@ class ZerochanBuilder
                 ))
             .toList();
       };
-
-  @override
-  SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => ZerochanSearchPage(
-            initialQuery: initialQuery,
-          );
-
-  @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => ZerochanPostDetailsPage(
-            posts: payload.posts,
-            initialIndex: payload.initialIndex,
-            scrollController: payload.scrollController,
-          );
-}
-
-class ZerochanPostDetailsPage extends ConsumerWidget {
-  const ZerochanPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.scrollController,
-  });
-
-  final List<Post> posts;
-  final int initialIndex;
-  final AutoScrollController? scrollController;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialIndex,
-      onExit: (page) => scrollController?.scrollToIndex(page),
-      onTagTap: (tag) => goToSearchPage(context),
-    );
-  }
-}
-
-class ZerochanSearchPage extends ConsumerWidget {
-  const ZerochanSearchPage({
-    super.key,
-    this.initialQuery,
-  });
-
-  final String? initialQuery;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-
-    return SearchPageScaffold(
-      fetcher: (page, tags) =>
-          booruBuilder?.postFetcher.call(page, tags) ?? TaskEither.of(<Post>[]),
-    );
-  }
 }

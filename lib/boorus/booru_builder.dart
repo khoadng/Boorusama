@@ -22,7 +22,12 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomple
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
+import 'core/router.dart';
+import 'core/scaffolds/home_page_scaffold.dart';
+import 'core/scaffolds/post_details_page_scaffold.dart';
+import 'core/scaffolds/search_page_scaffold.dart';
 import 'danbooru/feats/posts/posts.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
@@ -205,4 +210,69 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
+}
+
+class BooruProvider extends ConsumerWidget {
+  const BooruProvider({
+    super.key,
+    required this.builder,
+  });
+
+  final Widget Function(BooruBuilder? booruBuilder) builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(booruBuilderProvider);
+
+    return builder(booruBuilder);
+  }
+}
+
+mixin DefaultBooruUIMixin implements BooruBuilder {
+  @override
+  HomePageBuilder get homePageBuilder => (context, config) => HomePageScaffold(
+        onPostTap:
+            (context, posts, post, scrollController, settings, initialIndex) =>
+                goToPostDetailsPage(
+          context: context,
+          posts: posts,
+          initialIndex: initialIndex,
+        ),
+        onSearchTap: () => goToSearchPage(context),
+      );
+
+  @override
+  SearchPageBuilder get searchPageBuilder =>
+      (context, initialQuery) => BooruProvider(
+            builder: (booruBuilder) => SearchPageScaffold(
+              fetcher: (page, tags) =>
+                  booruBuilder?.postFetcher.call(page, tags) ??
+                  TaskEither.of(<Post>[]),
+            ),
+          );
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) => BooruProvider(
+            builder: (booruBuilder) => PostDetailsPageScaffold(
+              posts: payload.posts,
+              initialIndex: payload.initialIndex,
+              onExit: (page) => payload.scrollController?.scrollToIndex(page),
+              onTagTap: (tag) => goToSearchPage(context),
+            ),
+          );
+
+  //FIXME: this is a hack, we should have a proper update page
+  @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+        context,
+        config, {
+        backgroundColor,
+      }) =>
+          createConfigPageBuilder(
+            context,
+            config.url,
+            config.booruType,
+            backgroundColor: backgroundColor,
+          );
 }
