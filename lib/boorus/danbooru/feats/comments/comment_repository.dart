@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'comment.dart';
+import 'danbooru_comment.dart';
 
 abstract class CommentRepository {
   Future<List<DanbooruComment>> getCommentsFromPostId(

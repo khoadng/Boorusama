@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'comment.dart';
 import 'comment_repository.dart';
+import 'danbooru_comment.dart';
 
 class CommentRepositoryApi implements CommentRepository {
   CommentRepositoryApi(
