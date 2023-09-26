@@ -97,7 +97,7 @@ class TagRepositoryBuilder
     _debugPrint(
         'Returning ${cachedTags.length + persistentTags.length} cached tags and ${freshTags.length} fresh tags');
 
-    return [...cachedTags, ...freshTags];
+    return [...cachedTags, ...persistentTags, ...freshTags];
   }
 
   Future<void> _storeInPersistentStorage(Tag tag) async {
