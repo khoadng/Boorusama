@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -67,7 +68,9 @@ void main() async {
   final appInfo = await getAppInfo();
 
   final booruFactory = BooruFactory.from(
-    await loadBoorusFromGithub(appInfo.booruDefUrl, logger),
+    await (kReleaseMode
+        ? loadBoorusFromGithub(appInfo.booruDefUrl, logger)
+        : loadBoorusFromAssets()),
   );
 
   final settingRepository = SettingsRepositoryLoggerInterceptor(
