@@ -127,6 +127,14 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
+final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
+  final config = ref.watch(currentBooruConfigProvider);
+  final booruBuilders = ref.watch(booruBuildersProvider);
+  final booruBuilderFunc = booruBuilders[config.booruType];
+
+  return booruBuilderFunc != null ? booruBuilderFunc() : null;
+});
+
 final booruBuildersProvider =
     Provider<Map<BooruType, BooruBuilder Function()>>((ref) => {
           BooruType.zerochan: () => ZerochanBuilder(
@@ -183,10 +191,9 @@ class BooruProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final config = ref.watch(currentBooruConfigProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider);
 
-    return builder(booruBuilders[config.booruType]?.call());
+    return builder(booruBuilder);
   }
 }
 

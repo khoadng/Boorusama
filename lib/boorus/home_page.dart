@@ -117,7 +117,8 @@ class _Boorus extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilders = ref.watch(booruBuildersProvider);
-    final booruBuilder = booruBuilders[config.booruType]?.call();
+    final booruBuilderFunc = booruBuilders[config.booruType];
+    final booruBuilder = booruBuilderFunc != null ? booruBuilderFunc() : null;
 
     if (booruBuilder != null) {
       return booruBuilder.homePageBuilder(context, config);

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
 import 'package:boorusama/boorus/core/provider.dart';
@@ -45,9 +44,8 @@ class _DesktopHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[config.booruType]?.call().postFetcher;
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final fetcher = booruBuilder?.postFetcher;
 
     return PostScope(
       fetcher: (page) =>

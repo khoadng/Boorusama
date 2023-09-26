@@ -88,12 +88,10 @@ class _InfinitePostListScaffoldState<T extends Post>
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
     final config = ref.watch(currentBooruConfigProvider);
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final favoriteAdder = booruBuilders[config.booruType]?.call().favoriteAdder;
-    final favoriteRemover =
-        booruBuilders[config.booruType]?.call().favoriteRemover;
-    final favoriteChecker =
-        booruBuilders[config.booruType]?.call().favoriteChecker;
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final favoriteAdder = booruBuilder?.favoriteAdder;
+    final favoriteRemover = booruBuilder?.favoriteRemover;
+    final favoriteChecker = booruBuilder?.favoriteChecker;
     final isAuthenticated = config.hasLoginDetails();
 
     final canFavorite = favoriteAdder != null &&

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
@@ -27,9 +26,8 @@ class MobileHomePageScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
-    final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[config.booruType]?.call().postFetcher;
+    final booruBuilder = ref.watch(booruBuilderProvider);
+    final fetcher = booruBuilder?.postFetcher;
 
     return PostScope(
       fetcher: (page) => fetcher?.call(page, '') ?? TaskEither.of(<Post>[]),
