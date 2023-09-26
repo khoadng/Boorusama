@@ -64,8 +64,10 @@ void main() async {
     });
   }
 
+  final appInfo = await getAppInfo();
+
   final booruFactory = BooruFactory.from(
-    await loadBoorusFromAssets(),
+    await loadBoorusFromGithub(appInfo.booruDefUrl, logger),
   );
 
   final settingRepository = SettingsRepositoryLoggerInterceptor(
@@ -138,7 +140,6 @@ void main() async {
   final danbooruCreatorBox = await Hive.openBox('danbooru_creators_v1');
 
   final packageInfo = await PackageInfo.fromPlatform();
-  final appInfo = await getAppInfo();
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
   final deviceInfo =

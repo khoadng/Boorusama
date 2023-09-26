@@ -1,12 +1,6 @@
-// Flutter imports:
-import 'package:flutter/services.dart';
-
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:yaml/yaml.dart';
-
-const String _assetUrl = 'assets/boorus.yaml';
 
 const int kDanbooruId = 20;
 const int kGelbooruId = 21;
@@ -15,13 +9,6 @@ const int kGelbooruV2Id = 23;
 const int kMoebooruId = 24;
 const int kE621Id = 25;
 const int kZerochanId = 26;
-
-Future<List<Booru>> loadBoorusFromAssets() async {
-  final yaml = await rootBundle.loadString(_assetUrl);
-  final data = loadYaml(yaml);
-
-  return loadBoorus(data);
-}
 
 Future<List<Booru>> loadBoorus(dynamic yaml) async {
   final boorus = <Booru>[];
