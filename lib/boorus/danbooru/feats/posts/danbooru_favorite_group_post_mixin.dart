@@ -5,12 +5,13 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'danbooru_post.dart';
 import 'danbooru_post_repository.dart';
 
 mixin DanbooruFavoriteGroupPostMixin {
-  DanbooruPostRepository get postRepository;
+  PostRepository<DanbooruPost> get postRepository;
 
   Future<List<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
     final ids = queue.dequeue(20);

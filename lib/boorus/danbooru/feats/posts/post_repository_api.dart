@@ -2,15 +2,14 @@
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
-import 'common.dart';
-import 'danbooru_post_repository.dart';
 
 class PostRepositoryApi
     with SettingsRepositoryMixin
-    implements DanbooruPostRepository {
+    implements PostRepository<DanbooruPost> {
   PostRepositoryApi(
     this.client,
     this.booruConfig,
@@ -23,7 +22,7 @@ class PostRepositoryApi
   final SettingsRepository settingsRepository;
 
   @override
-  DanbooruPostsOrError getPosts(
+  PostsOrError<DanbooruPost> getPostsFromTags(
     String tags,
     int page, {
     int? limit,
@@ -43,19 +42,4 @@ class PostRepositoryApi
 
         return data;
       });
-
-  @override
-  DanbooruPostsOrError getPostsFromIds(List<int> ids) => getPosts(
-        'id:${ids.join(',')}',
-        1,
-        limit: ids.length,
-      );
-
-  @override
-  PostsOrError getPostsFromTags(
-    String tags,
-    int page, {
-    int? limit,
-  }) =>
-      getPosts(tags, page, limit: limit);
 }

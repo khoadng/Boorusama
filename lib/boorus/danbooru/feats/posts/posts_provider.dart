@@ -12,7 +12,7 @@ import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 part 'posts_count_provider.dart';
 
-final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
+final danbooruPostRepoProvider = Provider<PostRepository<DanbooruPost>>((ref) {
   return PostRepositoryApi(
     ref.watch(danbooruClientProvider),
     ref.watch(currentBooruConfigProvider),
@@ -21,7 +21,7 @@ final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
 });
 
 final danbooruArtistCharacterPostRepoProvider =
-    Provider<DanbooruPostRepository>((ref) {
+    Provider<PostRepository<DanbooruPost>>((ref) {
   final postRepo = ref.watch(danbooruPostRepoProvider);
 
   return DanbooruArtistCharacterPostRepository(

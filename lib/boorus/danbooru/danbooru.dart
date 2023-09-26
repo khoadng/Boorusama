@@ -27,7 +27,7 @@ class DanbooruBuilder implements BooruBuilder {
     required this.postCountRepo,
   });
 
-  final DanbooruPostRepository postRepo;
+  final PostRepository<DanbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;

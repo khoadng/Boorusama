@@ -40,7 +40,7 @@ class SavedSearchFeedPage extends ConsumerWidget {
         SavedSearchState.feed => DanbooruPostScope(
             fetcher: (page) => ref
                 .read(danbooruPostRepoProvider)
-                .getPosts(selectedSearch.toQuery(), page),
+                .getPostsFromTags(selectedSearch.toQuery(), page),
             builder: (context, controller, errors) => _PostList(
               controller: controller,
               errors: errors,

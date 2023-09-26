@@ -8,37 +8,37 @@ import 'post.dart';
 
 typedef PostsOrErrorCore<T extends Post> = TaskEither<BooruError, List<T>>;
 
-typedef PostsOrError = PostsOrErrorCore<Post>;
+typedef PostsOrError<T extends Post> = PostsOrErrorCore<T>;
 
-typedef PostFutureFetcher = Future<List<Post>> Function(
+typedef PostFutureFetcher<T extends Post> = Future<List<T>> Function(
   String tags,
   int page, {
   int? limit,
 });
 
-abstract class PostRepository {
-  PostsOrError getPostsFromTags(
+abstract class PostRepository<T extends Post> {
+  PostsOrError<T> getPostsFromTags(
     String tags,
     int page, {
     int? limit,
   });
 }
 
-class PostRepositoryBuilder
+class PostRepositoryBuilder<T extends Post>
     with SettingsRepositoryMixin, DebounceMixin
-    implements PostRepository {
+    implements PostRepository<T> {
   PostRepositoryBuilder({
     required this.settingsRepository,
     required this.getPosts,
   });
 
-  final PostFutureFetcher getPosts;
+  final PostFutureFetcher<T> getPosts;
 
   @override
   final SettingsRepository settingsRepository;
 
   @override
-  PostsOrError getPostsFromTags(String tags, int page, {int? limit}) =>
+  PostsOrError<T> getPostsFromTags(String tags, int page, {int? limit}) =>
       TaskEither.Do(($) async {
         var lim = limit;
 

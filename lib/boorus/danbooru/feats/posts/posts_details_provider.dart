@@ -22,7 +22,7 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
     List<DanbooruPost> posts;
 
     posts = await repo
-        .getPosts(tag, 1)
+        .getPostsFromTags(tag, 1)
         .run()
         .then((value) => value.fold((l) => [], (r) => r));
 
@@ -59,7 +59,7 @@ final danbooruPostDetailsCharacterProvider = FutureProvider.family
     List<DanbooruPost> posts;
 
     posts = await repo
-        .getPosts(tag, 1)
+        .getPostsFromTags(tag, 1)
         .run()
         .then((value) => value.fold((l) => [], (r) => r));
 
@@ -89,7 +89,7 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
   final repo = ref.watch(danbooruPostRepoProvider);
 
   final posts = await repo
-      .getPosts(
+      .getPostsFromTags(
         post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}',
         1,
       )

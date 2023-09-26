@@ -43,7 +43,7 @@ final danbooruUserUploadsProvider = FutureProvider.autoDispose
 
   final repo = ref.watch(danbooruPostRepoProvider);
   final uploads = await repo
-      .getPosts(
+      .getPostsFromTags(
         'user:${user.name}',
         1,
         limit: 50,
@@ -62,7 +62,7 @@ final danbooruUserFavoritesProvider = FutureProvider.autoDispose
   final user = await ref.watch(danbooruUserProvider(uid).future);
   final repo = ref.watch(danbooruPostRepoProvider);
   final favs = await repo
-      .getPosts(
+      .getPostsFromTags(
         buildFavoriteQuery(user.name),
         1,
         limit: 50,

@@ -4,21 +4,23 @@ import 'danbooru_post.dart';
 
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
-abstract class DanbooruPostRepository implements PostRepository {
-  DanbooruPostsOrError getPosts(
-    String tags,
-    int page, {
-    int? limit,
-  });
-  DanbooruPostsOrError getPostsFromIds(List<int> ids);
-}
-
 mixin DanbooruPostRepositoryMixin {
-  DanbooruPostRepository get postRepository;
+  PostRepository<DanbooruPost> get postRepository;
 
   Future<List<DanbooruPost>> getPostsOrEmpty(String tags, int page) =>
-      postRepository.getPosts(tags, page).run().then((value) => value.fold(
-            (l) => <DanbooruPost>[],
-            (r) => r,
-          ));
+      postRepository
+          .getPostsFromTags(tags, page)
+          .run()
+          .then((value) => value.fold(
+                (l) => <DanbooruPost>[],
+                (r) => r,
+              ));
+}
+
+extension DanbooruRepoX on PostRepository<DanbooruPost> {
+  PostsOrError<DanbooruPost> getPostsFromIds(List<int> ids) => getPostsFromTags(
+        'id:${ids.join(',')}',
+        1,
+        limit: ids.length,
+      );
 }

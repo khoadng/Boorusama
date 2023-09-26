@@ -49,7 +49,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   @override
   Widget build(BuildContext context) {
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPostsFromTags(
             selectedTagController.rawTagsString,
             page,
           ),

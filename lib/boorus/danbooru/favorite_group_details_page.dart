@@ -12,6 +12,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/router.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -62,7 +63,7 @@ class _FavoriteGroupDetailsPageState
   bool hasMore = false;
 
   @override
-  DanbooruPostRepository get postRepository =>
+  PostRepository<DanbooruPost> get postRepository =>
       ref.read(danbooruPostRepoProvider);
 
   @override

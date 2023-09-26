@@ -52,7 +52,7 @@ class _ResultViewState extends ConsumerState<ResultView> {
   @override
   Widget build(BuildContext context) {
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPostsFromTags(
             widget.selectedTagController.rawTagsString,
             page,
           ),

@@ -42,7 +42,7 @@ class PoolDetailPage extends ConsumerWidget {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
 
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPostsFromTags(
             'pool:${pool.id}',
             page,
           ),

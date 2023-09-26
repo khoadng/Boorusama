@@ -27,7 +27,7 @@ class FavoritesPage extends ConsumerWidget {
       child: DanbooruPostScope(
         fetcher: (page) => ref
             .read(danbooruPostRepoProvider)
-            .getPosts(buildFavoriteQuery(username), page),
+            .getPostsFromTags(buildFavoriteQuery(username), page),
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,
           controller: controller,
