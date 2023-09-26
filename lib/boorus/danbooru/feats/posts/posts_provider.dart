@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
 
 part 'posts_count_provider.dart';
 
@@ -21,7 +17,6 @@ final danbooruPostRepoProvider = Provider<DanbooruPostRepository>((ref) {
     ref.watch(danbooruClientProvider),
     ref.watch(currentBooruConfigProvider),
     ref.watch(settingsRepoProvider),
-    !kReleaseMode ? ref.watch(loggerProvider) : EmptyLogger(),
   );
 });
 

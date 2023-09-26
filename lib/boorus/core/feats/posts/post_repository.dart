@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
@@ -24,14 +25,14 @@ abstract class PostRepository {
 }
 
 class PostRepositoryBuilder
-    with SettingsRepositoryMixin
+    with SettingsRepositoryMixin, DebounceMixin
     implements PostRepository {
-  const PostRepositoryBuilder({
+  PostRepositoryBuilder({
     required this.settingsRepository,
-    required PostFutureFetcher getPosts,
-  }) : _getPostsFromTags = getPosts;
+    required this.getPosts,
+  });
 
-  final PostFutureFetcher _getPostsFromTags;
+  final PostFutureFetcher getPosts;
 
   @override
   final SettingsRepository settingsRepository;
@@ -44,7 +45,8 @@ class PostRepositoryBuilder
         lim ??= await getPostsPerPage();
 
         return $(tryFetchRemoteData(
-            fetcher: () => _getPostsFromTags(tags, page, limit: lim)));
+          fetcher: () => getPosts(tags, page, limit: lim),
+        ));
       });
 }
 
