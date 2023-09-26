@@ -8,14 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
@@ -131,8 +129,8 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
 
 final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       BooruType.zerochan: ZerochanBuilder(
-        client: ref.watch(zerochanClientProvider),
-        settingsRepository: ref.watch(settingsRepoProvider),
+        postRepo: ref.watch(zerochanPostRepoProvider),
+        autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider),
       ),
       BooruType.moebooru: MoebooruBuilder(
         postRepo: ref.watch(moebooruPostRepoProvider),
@@ -149,6 +147,7 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         client: ref.watch(gelbooruClientProvider),
       ),
       BooruType.e621: E621Builder(
+        autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
         postRepo: ref.watch(e621PostRepoProvider),
         client: ref.watch(e621ClientProvider),
         favoriteChecker: ref.watch(e621FavoriteCheckerProvider),

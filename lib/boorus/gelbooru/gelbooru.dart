@@ -58,6 +58,35 @@ final gelbooruTagRepoProvider = Provider<TagRepository>(
   },
 );
 
+final gelbooruAutocompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) {
+  final client = ref.watch(gelbooruClientProvider);
+
+  return AutocompleteRepositoryBuilder(
+    autocomplete: (query) async {
+      final dtos = await client.autocomplete(term: query, limit: 20);
+
+      return dtos
+          .map((e) {
+            try {
+              return AutocompleteData(
+                type: e.type,
+                label: e.label?.replaceAll('_', ' ') ?? '<empty>',
+                value: e.value!,
+                category: e.category?.toString(),
+                postCount: e.postCount,
+              );
+            } catch (err) {
+              return AutocompleteData.empty;
+            }
+          })
+          .where((e) => e != AutocompleteData.empty)
+          .toList();
+    },
+    persistentStorageKey: 'gelbooru_autocomplete_cache_v1',
+  );
+});
+
 class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   GelbooruBuilder({
     required this.postRepo,

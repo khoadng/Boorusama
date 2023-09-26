@@ -29,15 +29,40 @@ final e621ClientProvider = Provider<E621Client>((ref) {
   );
 });
 
+final e621AutocompleteRepoProvider = Provider<AutocompleteRepository>((ref) {
+  final client = ref.watch(e621ClientProvider);
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey: 'e621_autocomplete_cache_v1',
+    persistentStaleDuration: const Duration(days: 1),
+    autocomplete: (query) async {
+      final dtos = await client.getAutocomplete(query: query);
+
+      return dtos
+          .map((e) => AutocompleteData(
+                type: AutocompleteData.tag,
+                label: e.name?.replaceAll('_', ' ') ?? '',
+                value: e.name ?? '',
+                category: intToE621TagCategory(e.category).name,
+                postCount: e.postCount,
+                antecedent: e.antecedentName,
+              ))
+          .toList();
+    },
+  );
+});
+
 class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   E621Builder({
     required this.postRepo,
     required this.client,
     required this.favoriteChecker,
+    required this.autocompleteRepo,
   });
 
   final E621PostRepository postRepo;
   final E621Client client;
+  final AutocompleteRepository autocompleteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -67,23 +92,11 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
-        tags,
-        page,
-      );
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>
-      (query) => client.getAutocomplete(query: query).then((value) => value
-          .map((dto) => AutocompleteData(
-                type: AutocompleteData.tag,
-                label: dto.name?.replaceAll('_', ' ') ?? '',
-                value: dto.name ?? '',
-                category: intToE621TagCategory(dto.category).name,
-                postCount: dto.postCount,
-                antecedent: dto.antecedentName,
-              ))
-          .toList());
+      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   FavoriteAdder? get favoriteAdder => (postId) => client

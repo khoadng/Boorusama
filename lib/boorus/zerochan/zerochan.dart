@@ -6,7 +6,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
@@ -21,43 +20,17 @@ final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   return ZerochanClient(dio: dio);
 });
 
-class ZerochanBuilder
-    with
-        SettingsRepositoryMixin,
-        FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
-        ArtistNotSupportedMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
-  const ZerochanBuilder({
-    required this.client,
-    required this.settingsRepository,
-  });
+final zerochanPostRepoProvider = Provider<PostRepository>(
+  (ref) {
+    final settingsRepository = ref.watch(settingsRepoProvider);
+    final client = ref.watch(zerochanClientProvider);
 
-  final ZerochanClient client;
-  @override
-  final SettingsRepository settingsRepository;
-
-  @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
-        context,
-        url,
-        booruType, {
-        backgroundColor,
-      }) =>
-          CreateAnonConfigPage(
-            url: url,
-            booruType: booruType,
-            backgroundColor: backgroundColor,
-          );
-
-  @override
-  PostFetcher get postFetcher => (page, tags) => TaskEither.Do(($) async {
-        final limit = await getPostsPerPage();
+    return PostRepositoryBuilder(
+      settingsRepository: settingsRepository,
+      getPosts: (tags, page, {limit}) => TaskEither.Do(($) async {
         final posts = await client.getPosts(
           tags: tags.split(' ').toList(),
           page: page,
-          limit: limit,
         );
 
         return posts
@@ -87,19 +60,66 @@ class ZerochanBuilder
                       : '$baseUrl/${e.id}',
                 ))
             .toList();
-      });
+      }),
+    );
+  },
+);
+
+final zerochanAutoCompleteRepoProvider =
+    Provider<AutocompleteRepository>((ref) {
+  final client = ref.watch(zerochanClientProvider);
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey: 'zerochan_autocomplete_cache_v1',
+    persistentStaleDuration: const Duration(days: 1),
+    autocomplete: (query) async {
+      final tags = await client.getAutocomplete(query: query);
+
+      return tags
+          .map((e) => AutocompleteData(
+                label: e.value?.toLowerCase() ?? '',
+                value: e.value?.toLowerCase() ?? '',
+                postCount: e.total,
+                category: e.type?.toLowerCase() ?? '',
+              ))
+          .toList();
+    },
+  );
+});
+
+class ZerochanBuilder
+    with
+        FavoriteNotSupportedMixin,
+        PostCountNotSupportedMixin,
+        ArtistNotSupportedMixin,
+        DefaultBooruUIMixin
+    implements BooruBuilder {
+  const ZerochanBuilder({
+    required this.postRepo,
+    required this.autocompleteRepo,
+  });
+
+  final AutocompleteRepository autocompleteRepo;
+  final PostRepository postRepo;
 
   @override
-  AutocompleteFetcher get autocompleteFetcher => (query) async {
-        final tags = await client.getAutocomplete(query: query);
+  CreateConfigPageBuilder get createConfigPageBuilder => (
+        context,
+        url,
+        booruType, {
+        backgroundColor,
+      }) =>
+          CreateAnonConfigPage(
+            url: url,
+            booruType: booruType,
+            backgroundColor: backgroundColor,
+          );
 
-        return tags
-            .map((e) => AutocompleteData(
-                  label: e.value?.toLowerCase() ?? '',
-                  value: e.value?.toLowerCase() ?? '',
-                  postCount: e.total,
-                  category: e.type?.toLowerCase() ?? '',
-                ))
-            .toList();
-      };
+  @override
+  PostFetcher get postFetcher =>
+      (page, tags) => postRepo.getPostsFromTags(tags, page);
+
+  @override
+  AutocompleteFetcher get autocompleteFetcher =>
+      (query) => autocompleteRepo.getAutocomplete(query.toLowerCase());
 }
