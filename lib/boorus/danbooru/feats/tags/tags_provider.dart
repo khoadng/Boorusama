@@ -7,7 +7,6 @@ import 'package:boorusama/boorus/core/feats/metatags/user_metatag_repository.dar
 import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
 import 'package:boorusama/functional.dart';
 
 final popularSearchProvider = Provider<PopularSearchRepository>(
@@ -20,11 +19,26 @@ final popularSearchProvider = Provider<PopularSearchRepository>(
 
 final danbooruTagRepoProvider = Provider<TagRepository>(
   (ref) {
-    return TagCacher(
-      cache: LruCacher(capacity: 2000),
-      repo: TagRepositoryApi(
-        ref.watch(danbooruClientProvider),
-      ),
+    final client = ref.watch(danbooruClientProvider);
+
+    return TagRepositoryBuilder(
+      maxCapacity: 2000,
+      getTags: (tags, page, {cancelToken}) async {
+        final data = await client.getTagsByName(
+          page: page,
+          hideEmpty: true,
+          tags: tags,
+          cancelToken: cancelToken,
+        );
+
+        return data
+            .map((d) => Tag(
+                  name: d.name ?? '',
+                  category: intToTagCategory(d.category ?? 0),
+                  postCount: d.postCount ?? 0,
+                ))
+            .toList();
+      },
     );
   },
 );

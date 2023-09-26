@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
@@ -32,6 +33,29 @@ final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
     dio: dio,
   );
 });
+
+final gelbooruTagRepoProvider = Provider<TagRepository>(
+  (ref) {
+    final client = ref.watch(gelbooruClientProvider);
+
+    return TagRepositoryBuilder(
+      getTags: (tags, page, {cancelToken}) async {
+        final data = await client.getTags(
+          page: page,
+          tags: tags,
+        );
+
+        return data
+            .map((e) => Tag(
+                  name: e.name ?? '',
+                  category: intToTagCategory(e.type ?? 0),
+                  postCount: e.count ?? 0,
+                ))
+            .toList();
+      },
+    );
+  },
+);
 
 class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
   GelbooruBuilder({

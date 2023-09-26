@@ -22,7 +22,7 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';

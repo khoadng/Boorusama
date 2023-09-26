@@ -8,7 +8,6 @@ export 'favorite_tags_notifier.dart';
 export 'favorite_tags_provider.dart';
 export 'metatag.dart';
 export 'tag.dart';
-export 'tag_cacher.dart';
 export 'tag_category.dart';
 export 'tag_colors.dart';
 export 'tag_filter_category.dart';

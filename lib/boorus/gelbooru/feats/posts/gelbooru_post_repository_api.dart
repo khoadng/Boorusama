@@ -2,7 +2,6 @@
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/gelbooru/feats/tags/utils.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
@@ -52,3 +51,10 @@ class GelbooruPostRepositoryApi
         return data;
       });
 }
+
+String? booruFilterConfigToGelbooruTag(BooruConfigRatingFilter? filter) =>
+    switch (filter) {
+      BooruConfigRatingFilter.none || null => null,
+      BooruConfigRatingFilter.hideExplicit => '-rating:explicit',
+      BooruConfigRatingFilter.hideNSFW => 'rating:general',
+    };
