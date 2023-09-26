@@ -1,0 +1,73 @@
+// Package imports:
+import 'package:hive/hive.dart';
+
+mixin PersistentCacheMixin {
+  Box<String>? _box;
+
+  String get persistentStorageKey;
+
+  Duration get persistentStaleDuration;
+
+  bool _isStale(DateTime timestamp, Duration staleDuration) =>
+      DateTime.now().difference(timestamp) > staleDuration;
+
+  Future<Box<String>?> openBox() async {
+    if (_box != null) return _box!;
+
+    _box = await Hive.openBox(persistentStorageKey);
+
+    return _box;
+  }
+
+  Future<String?> load(String key) async {
+    final box = await openBox();
+    if (box == null) return null;
+
+    var cachedValue = box.get(key);
+
+    if (cachedValue == null) return null;
+
+    // Use Hive timestamps to store the last access time
+    var timestamp = box.get('${key}_timestamp');
+
+    if (timestamp == null) {
+      box.delete(key);
+      return null;
+    }
+
+    final parsedTimestamp = DateTime.tryParse(timestamp);
+
+    if (parsedTimestamp == null) {
+      box.delete(key);
+      return null;
+    }
+
+    if (_isStale(parsedTimestamp, persistentStaleDuration)) {
+      box.delete(key);
+      box.delete('${key}_timestamp');
+      return null;
+    }
+
+    // Refresh the timestamp of the accessed key
+    box.put('${key}_timestamp', DateTime.now().toIso8601String());
+
+    return cachedValue;
+  }
+
+  Future<void> save(String key, String value) async {
+    final box = await openBox();
+
+    if (box == null) return;
+
+    box.put(key, value);
+    box.put('${key}_timestamp', DateTime.now().toIso8601String());
+  }
+
+  Future<void> flush() async {
+    final box = await openBox();
+
+    if (box == null) return;
+
+    box.clear();
+  }
+}

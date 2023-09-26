@@ -22,7 +22,7 @@ final danbooruTagRepoProvider = Provider<TagRepository>(
     final client = ref.watch(danbooruClientProvider);
 
     return TagRepositoryBuilder(
-      maxCapacity: 2000,
+      persistentStorageKey: 'danbooru_tags_cache_v1',
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTagsByName(
           page: page,

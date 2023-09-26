@@ -39,6 +39,7 @@ final gelbooruTagRepoProvider = Provider<TagRepository>(
     final client = ref.watch(gelbooruClientProvider);
 
     return TagRepositoryBuilder(
+      persistentStorageKey: 'gelbooru_tags_cache_v1',
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTags(
           page: page,

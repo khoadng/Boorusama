@@ -30,6 +30,18 @@ class Tag extends Equatable {
         postCount: postCount ?? this.postCount,
       );
 
+  factory Tag.fromJson(Map<String, dynamic> json) => Tag(
+        name: json['name'],
+        category: intToTagCategory(json['category'] as int),
+        postCount: json['postCount'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'category': category.index,
+        'postCount': postCount,
+      };
+
   final String name;
   final TagCategory category;
   final PostCount postCount;
