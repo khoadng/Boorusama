@@ -40,6 +40,7 @@ class BooruFactory {
       BooruType.e621 => kE621Id,
       BooruType.zerochan => kZerochanId,
       BooruType.gelbooruV1 => kGelbooruV1Id,
+      BooruType.sankaku => kSankaku,
       BooruType.unknown => 0,
     };
 

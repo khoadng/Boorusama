@@ -26,6 +26,7 @@ import 'package:boorusama/boorus/gelbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart';
+import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
@@ -66,6 +67,7 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
           BooruType.moebooru => ref.watch(moebooruPostRepoProvider),
           BooruType.e621 => ref.watch(e621PostRepoProvider),
+          BooruType.sankaku => ref.watch(sankakuPostRepoProvider),
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyPostRepoProvider),
@@ -82,6 +84,7 @@ final postArtistCharacterRepoProvider =
               BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
               BooruType.moebooru ||
               BooruType.e621 ||
+              BooruType.sankaku ||
               BooruType.zerochan ||
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
@@ -183,6 +186,8 @@ final downloadFileNameGeneratorProvider =
       return DownloadUrlBaseNameFileNameGenerator();
     case BooruType.unknown:
       return DownloadUrlBaseNameFileNameGenerator();
+    case BooruType.sankaku:
+      return Md5OnlyFileNameGenerator();
   }
 });
 
@@ -196,6 +201,8 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.e621 ||
           BooruType.gelbooruV1 ||
           BooruType.zerochan ||
+          //FIXME: should implement sankaku tag repo
+          BooruType.sankaku ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
         });
@@ -209,6 +216,7 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           BooruType.moebooru ||
           BooruType.zerochan ||
           BooruType.gelbooruV1 ||
+          BooruType.sankaku ||
           BooruType.unknown =>
             const EmptyNoteRepository(),
         });

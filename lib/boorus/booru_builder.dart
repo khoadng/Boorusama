@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomplete_provider.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
+import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
@@ -162,6 +163,10 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
       BooruType.gelbooruV1: GelbooruV1Builder(
         postRepo: ref.watch(gelbooruV1PostRepoProvider),
       ),
+      BooruType.sankaku: SankakuBuilder(
+        postRepository: ref.watch(sankakuPostRepoProvider),
+        client: ref.watch(sankakuClientProvider),
+      ),
     });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
@@ -202,6 +207,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => BooruProvider(
             builder: (booruBuilder) => SearchPageScaffold(
+              initialQuery: initialQuery,
               fetcher: (page, tags) =>
                   booruBuilder?.postFetcher.call(page, tags) ??
                   TaskEither.of(<Post>[]),
@@ -215,7 +221,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               posts: payload.posts,
               initialIndex: payload.initialIndex,
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              onTagTap: (tag) => goToSearchPage(context),
+              onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
 

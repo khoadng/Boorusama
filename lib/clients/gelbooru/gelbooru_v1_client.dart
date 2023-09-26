@@ -33,7 +33,7 @@ class GelbooruV1Client {
         'page': 'post',
         's': 'list',
         'tags': tagString,
-        if (page != null) 'pid': page * 20,
+        if (page != null) 'pid': (page - 1) * 20,
       },
     );
 

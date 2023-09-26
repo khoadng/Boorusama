@@ -11,3 +11,27 @@ abstract class TagRepository {
     CancelToken? cancelToken,
   });
 }
+
+class TagRepositoryBuilder implements TagRepository {
+  TagRepositoryBuilder({
+    required this.getTags,
+  });
+
+  final Future<List<Tag>> Function(
+    List<String> tags,
+    int page, {
+    CancelToken? cancelToken,
+  }) getTags;
+
+  @override
+  Future<List<Tag>> getTagsByName(
+    List<String> tags,
+    int page, {
+    CancelToken? cancelToken,
+  }) =>
+      getTagsByName(
+        tags,
+        page,
+        cancelToken: cancelToken,
+      );
+}

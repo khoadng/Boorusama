@@ -9,6 +9,7 @@ const int kGelbooruV2Id = 23;
 const int kMoebooruId = 24;
 const int kE621Id = 25;
 const int kZerochanId = 26;
+const int kSankaku = 27;
 
 Future<List<Booru>> loadBoorus(dynamic yaml) async {
   final boorus = <Booru>[];
@@ -36,6 +37,7 @@ sealed class Booru extends Equatable {
         'gelbooru_v2' => GelbooruV2.from(name, data),
         'e621' => E621.from(name, data),
         'zerochan' => Zerochan.from(name, data),
+        'sankaku' => Sankaku.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
 
@@ -59,6 +61,7 @@ extension BooruX on Booru {
         Moebooru _ => kMoebooruId,
         E621 _ => kE621Id,
         Zerochan _ => kZerochanId,
+        Sankaku _ => kSankaku,
       };
 
   bool hasSite(String url) => switch (this) {
@@ -69,6 +72,7 @@ extension BooruX on Booru {
         Moebooru m => m.sites.any((e) => e.url == url),
         E621 e => e.sites.contains(url),
         Zerochan z => z.sites.contains(url),
+        Sankaku s => s.sites.contains(url),
       };
 
   String? getSalt(String url) => switch (this) {
@@ -207,6 +211,22 @@ final class Moebooru extends Booru {
   final List<MoebooruSite> sites;
 }
 
+class Sankaku extends Booru {
+  const Sankaku({
+    required super.name,
+    required this.sites,
+  });
+
+  factory Sankaku.from(String name, dynamic data) {
+    return Sankaku(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -216,6 +236,7 @@ enum BooruType {
   e621,
   zerochan,
   gelbooruV1,
+  sankaku,
 }
 
 extension BooruTypeX on BooruType {
@@ -228,6 +249,7 @@ extension BooruTypeX on BooruType {
         BooruType.moebooru => 'Moebooru',
         BooruType.e621 => 'e621',
         BooruType.zerochan => 'Zerochan',
+        BooruType.sankaku => 'Sankaku',
       };
 
   bool get isGelbooruBased =>
@@ -267,6 +289,7 @@ extension BooruTypeX on BooruType {
         BooruType.e621 => kE621Id,
         BooruType.zerochan => kZerochanId,
         BooruType.gelbooruV1 => kGelbooruV1Id,
+        BooruType.sankaku => kSankaku,
         BooruType.unknown => 0,
       };
 }
@@ -279,5 +302,6 @@ BooruType intToBooruType(int? value) => switch (value) {
       11 || 12 || kE621Id => BooruType.e621,
       13 || kZerochanId => BooruType.zerochan,
       14 || kGelbooruV1Id => BooruType.gelbooruV1,
+      kSankaku => BooruType.sankaku,
       _ => BooruType.unknown
     };

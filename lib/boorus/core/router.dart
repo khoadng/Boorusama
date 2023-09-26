@@ -262,6 +262,7 @@ Future<bool?> goToAddToGlobalBlacklistPage(
   );
 }
 
+//FIXME: a lot of duplicated code here, we should refactor this
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
@@ -384,6 +385,34 @@ void goToQuickSearchPage(
                         generateAutocompleteTagColor(tag, context.themeMode),
                   );
           case BooruType.zerochan:
+            return Builder(
+              builder: (context) => isMobile
+                  ? SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      ensureValidTag: ensureValidTag,
+                      floatingActionButton: floatingActionButton != null
+                          ? (text) => floatingActionButton.call(text)
+                          : null,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    )
+                  : SimpleTagSearchView(
+                      onSubmitted: (_, text) =>
+                          onSubmitted?.call(context, text),
+                      backButton: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => context.navigator.pop(),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      ensureValidTag: ensureValidTag,
+                      onSelected: (tag) => onSelected(tag),
+                      textColorBuilder: (tag) =>
+                          generateAutocompleteTagColor(tag, context.themeMode),
+                    ),
+            );
+          case BooruType.sankaku:
             return Builder(
               builder: (context) => isMobile
                   ? SimpleTagSearchView(

@@ -30,7 +30,7 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
                   thumbnailImageUrl: e.previewUrl ?? '',
                   sampleImageUrl: e.sampleUrl ?? '',
                   originalImageUrl: e.fileUrl ?? '',
-                  tags: tags.split(' ').toList(),
+                  tags: e.tags?.split(' ').toList() ?? [],
                   rating: mapStringToRating(e.rating),
                   hasComment: false,
                   isTranslated: false,

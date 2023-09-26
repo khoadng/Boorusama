@@ -36,3 +36,8 @@
 - zerochan:
     sites:
       - https://zerochan.net/
+
+- sankaku:
+    sites:
+      - https://chan.sankakucomplex.com/
+      - https://beta.sankakucomplex.com/
