@@ -59,21 +59,13 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
 
 final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru ||
-          BooruType.aibooru ||
-          BooruType.safebooru ||
-          BooruType.testbooru =>
-            ref.watch(danbooruPostRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruPostRepoProvider),
           BooruType.gelbooru ||
-          BooruType.rule34xxx =>
+          BooruType.gelbooruV2 =>
             ref.watch(gelbooruPostRepoProvider),
-          BooruType.gelbooruV1Alike => ref.watch(gelbooruV1PostRepoProvider),
-          BooruType.konachan ||
-          BooruType.yandere ||
-          BooruType.sakugabooru ||
-          BooruType.lolibooru =>
-            ref.watch(moebooruPostRepoProvider),
-          BooruType.e621 || BooruType.e926 => ref.watch(e621PostRepoProvider),
+          BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
+          BooruType.moebooru => ref.watch(moebooruPostRepoProvider),
+          BooruType.e621 => ref.watch(e621PostRepoProvider),
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyPostRepoProvider),
@@ -82,22 +74,14 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
 final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(
         (ref, config) => switch (config.booruType) {
-              BooruType.danbooru ||
-              BooruType.aibooru ||
-              BooruType.safebooru ||
-              BooruType.testbooru =>
+              BooruType.danbooru =>
                 ref.watch(danbooruArtistCharacterPostRepoProvider),
               BooruType.gelbooru ||
-              BooruType.rule34xxx =>
+              BooruType.gelbooruV2 =>
                 ref.watch(gelbooruArtistCharacterPostRepoProvider),
-              BooruType.gelbooruV1Alike =>
-                ref.watch(gelbooruV1PostRepoProvider),
-              BooruType.konachan ||
-              BooruType.yandere ||
-              BooruType.sakugabooru ||
-              BooruType.lolibooru ||
+              BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
+              BooruType.moebooru ||
               BooruType.e621 ||
-              BooruType.e926 ||
               BooruType.zerochan ||
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
@@ -187,19 +171,13 @@ final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
 final downloadFileNameGeneratorProvider =
     Provider.family<FileNameGenerator, BooruConfig>((ref, config) {
   switch (config.booruType) {
-    case BooruType.danbooru ||
-          BooruType.aibooru ||
-          BooruType.safebooru ||
-          BooruType.testbooru:
+    case BooruType.danbooru:
       return BoorusamaStyledFileNameGenerator();
-    case BooruType.gelbooru || BooruType.rule34xxx || BooruType.gelbooruV1Alike:
+    case BooruType.gelbooru || BooruType.gelbooruV2 || BooruType.gelbooruV1:
       return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.konachan ||
-          BooruType.yandere ||
-          BooruType.sakugabooru ||
-          BooruType.lolibooru:
+    case BooruType.moebooru:
       return DownloadUrlBaseNameFileNameGenerator();
-    case BooruType.e621 || BooruType.e926:
+    case BooruType.e621:
       return Md5OnlyFileNameGenerator();
     case BooruType.zerochan:
       return DownloadUrlBaseNameFileNameGenerator();
@@ -210,22 +188,13 @@ final downloadFileNameGeneratorProvider =
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru ||
-          BooruType.aibooru ||
-          BooruType.safebooru ||
-          BooruType.testbooru =>
-            ref.watch(danbooruTagRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruTagRepoProvider),
           BooruType.gelbooru ||
-          BooruType.rule34xxx =>
+          BooruType.gelbooruV2 =>
             ref.watch(gelbooruTagRepoProvider),
-          BooruType.konachan ||
-          BooruType.yandere ||
-          BooruType.sakugabooru ||
-          BooruType.lolibooru =>
-            ref.watch(moebooruTagRepoProvider),
+          BooruType.moebooru => ref.watch(moebooruTagRepoProvider),
           BooruType.e621 ||
-          BooruType.e926 ||
-          BooruType.gelbooruV1Alike ||
+          BooruType.gelbooruV1 ||
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
@@ -233,20 +202,13 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
 
 final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru ||
-          BooruType.aibooru ||
-          BooruType.safebooru ||
-          BooruType.testbooru =>
-            ref.watch(danbooruNoteRepoProvider),
-          BooruType.e621 || BooruType.e926 => ref.watch(e621NoteRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider),
+          BooruType.e621 => ref.watch(e621NoteRepoProvider),
           BooruType.gelbooru ||
-          BooruType.rule34xxx ||
-          BooruType.konachan ||
-          BooruType.yandere ||
-          BooruType.sakugabooru ||
-          BooruType.lolibooru ||
+          BooruType.gelbooruV2 ||
+          BooruType.moebooru ||
           BooruType.zerochan ||
-          BooruType.gelbooruV1Alike ||
+          BooruType.gelbooruV1 ||
           BooruType.unknown =>
             const EmptyNoteRepository(),
         });

@@ -1,116 +1,260 @@
+// Flutter imports:
+import 'package:flutter/services.dart';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:yaml/yaml.dart';
 
-// Project imports:
-import 'booru_data.dart';
+const String _assetUrl = 'assets/boorus.yaml';
 
-class Booru extends Equatable {
+const int kDanbooruId = 20;
+const int kGelbooruId = 21;
+const int kGelbooruV1Id = 22;
+const int kGelbooruV2Id = 23;
+const int kMoebooruId = 24;
+const int kE621Id = 25;
+const int kZerochanId = 26;
+
+Future<List<Booru>> loadBoorusFromAssets() async {
+  final yaml = await rootBundle.loadString(_assetUrl);
+  final data = loadYaml(yaml);
+
+  return loadBoorus(data);
+}
+
+Future<List<Booru>> loadBoorus(dynamic yaml) async {
+  final boorus = <Booru>[];
+
+  for (final item in yaml) {
+    final name = item.keys.first as String;
+    final values = item[name];
+
+    boorus.add(Booru.from(name, values));
+  }
+
+  return boorus;
+}
+
+sealed class Booru extends Equatable {
   const Booru({
-    required this.url,
-    required this.booruType,
     required this.name,
-    required this.cheatsheet,
-    required this.loginType,
   });
 
-  final String url;
-  final BooruType booruType;
-  final String name;
-  final String cheatsheet;
-  final LoginType loginType;
+  factory Booru.from(String name, dynamic data) => switch (name.toLowerCase()) {
+        'danbooru' => Danbooru.from(name, data),
+        'gelbooru' => Gelbooru.from(name, data),
+        'moebooru' => Moebooru.from(name, data),
+        'gelbooru_v1' => GelbooruV1.from(name, data),
+        'gelbooru_v2' => GelbooruV2.from(name, data),
+        'e621' => E621.from(name, data),
+        'zerochan' => Zerochan.from(name, data),
+        _ => throw Exception('Unknown booru: $name'),
+      };
 
-  static const Booru empty = Booru(
-    url: '',
-    booruType: BooruType.unknown,
-    name: '',
-    cheatsheet: '',
-    loginType: LoginType.loginAndApiKey,
-  );
+  final String name;
 
   @override
-  List<Object?> get props => [url, booruType, name, cheatsheet, loginType];
+  List<Object?> get props => [name];
+}
+
+extension BooruX on Booru {
+  String? cheetsheet(String url) => switch (this) {
+        Danbooru _ => '$url/wiki_pages/help:cheatsheet',
+        _ => null,
+      };
+
+  int get id => switch (this) {
+        Danbooru _ => kDanbooruId,
+        Gelbooru _ => kGelbooruId,
+        GelbooruV1 _ => kGelbooruV1Id,
+        GelbooruV2 _ => kGelbooruV2Id,
+        Moebooru _ => kMoebooruId,
+        E621 _ => kE621Id,
+        Zerochan _ => kZerochanId,
+      };
+
+  bool hasSite(String url) => switch (this) {
+        Danbooru d => d.sites.contains(url),
+        Gelbooru g => g.sites.contains(url),
+        GelbooruV1 g => g.sites.contains(url),
+        GelbooruV2 g => g.sites.contains(url),
+        Moebooru m => m.sites.any((e) => e.url == url),
+        E621 e => e.sites.contains(url),
+        Zerochan z => z.sites.contains(url),
+      };
+
+  String? getSalt(String url) => switch (this) {
+        Moebooru m =>
+          m.sites.firstWhereOrNull((e) => url.contains(e.url))?.salt,
+        _ => null,
+      };
+}
+
+final class Danbooru extends Booru {
+  const Danbooru({
+    required super.name,
+    required this.sites,
+  });
+
+  factory Danbooru.from(String name, dynamic data) {
+    return Danbooru(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+final class Gelbooru extends Booru {
+  const Gelbooru({
+    required super.name,
+    required this.sites,
+  });
+
+  factory Gelbooru.from(String name, dynamic data) {
+    return Gelbooru(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+final class GelbooruV1 extends Booru {
+  const GelbooruV1({
+    required super.name,
+    required this.sites,
+  });
+
+  factory GelbooruV1.from(String name, dynamic data) {
+    return GelbooruV1(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+class GelbooruV2 extends Booru {
+  const GelbooruV2({
+    required super.name,
+    required this.sites,
+  });
+
+  factory GelbooruV2.from(String name, dynamic data) {
+    return GelbooruV2(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+class E621 extends Booru {
+  const E621({
+    required super.name,
+    required this.sites,
+  });
+
+  factory E621.from(String name, dynamic data) {
+    return E621(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+class Zerochan extends Booru {
+  const Zerochan({
+    required super.name,
+    required this.sites,
+  });
+
+  factory Zerochan.from(String name, dynamic data) {
+    return Zerochan(
+      name: name,
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
+typedef MoebooruSite = ({
+  String url,
+  String salt,
+});
+
+final class Moebooru extends Booru {
+  const Moebooru({
+    required super.name,
+    required this.sites,
+  });
+
+  factory Moebooru.from(String name, dynamic data) {
+    final sites = <MoebooruSite>[];
+
+    for (final item in data['sites']) {
+      final url = item['url'] as String;
+      final salt = item['salt'] as String;
+
+      sites.add((
+        url: url,
+        salt: salt,
+      ));
+    }
+
+    return Moebooru(
+      name: name,
+      sites: sites,
+    );
+  }
+
+  final List<MoebooruSite> sites;
 }
 
 enum BooruType {
   unknown,
   danbooru,
-  safebooru,
-  testbooru,
   gelbooru,
-  aibooru,
-  konachan,
-  yandere,
-  sakugabooru,
-  rule34xxx,
-  lolibooru,
-  e621,
-  e926,
-  zerochan,
-  gelbooruV1Alike,
-}
-
-enum BooruEngine {
-  danbooru,
-  gelbooru,
-  gelbooruV0Dot1,
-  gelbooruV0Dot2,
   moebooru,
-}
-
-enum LoginType {
-  notSupported,
-  loginAndApiKey,
-  loginAndPasswordHashed,
-}
-
-extension BooruEngineX on BooruEngine {
-  String stringify() => switch (this) {
-        BooruEngine.danbooru => 'Danbooru',
-        BooruEngine.gelbooru => 'Gelbooru',
-        BooruEngine.gelbooruV0Dot1 => 'Gelbooru v0.1',
-        BooruEngine.gelbooruV0Dot2 => 'Gelbooru v0.2',
-        BooruEngine.moebooru => 'Moebooru',
-      };
+  gelbooruV2,
+  e621,
+  zerochan,
+  gelbooruV1,
 }
 
 extension BooruTypeX on BooruType {
   String stringify() => switch (this) {
         BooruType.unknown => '<UNKNOWN>',
         BooruType.danbooru => 'Danbooru',
-        BooruType.safebooru => 'Danbooru (Safebooru)',
-        BooruType.testbooru => 'Testbooru',
-        BooruType.gelbooruV1Alike => 'Gelbooru v0.1',
+        BooruType.gelbooruV1 => 'Gelbooru v1',
         BooruType.gelbooru => 'Gelbooru',
-        BooruType.rule34xxx => 'Rule34',
-        BooruType.aibooru => 'AIBooru',
-        BooruType.konachan => 'Konachan',
-        BooruType.yandere => 'Yandere',
-        BooruType.sakugabooru => 'Sakugabooru',
-        BooruType.lolibooru => 'Lolibooru',
+        BooruType.gelbooruV2 => 'Gelbooru v2',
+        BooruType.moebooru => 'Moebooru',
         BooruType.e621 => 'e621',
-        BooruType.e926 => 'e926',
         BooruType.zerochan => 'Zerochan',
       };
 
   bool get isGelbooruBased =>
-      this == BooruType.gelbooru || this == BooruType.rule34xxx;
+      this == BooruType.gelbooru || this == BooruType.gelbooruV2;
 
   bool get isMoeBooruBased => [
-        BooruType.sakugabooru,
-        BooruType.yandere,
-        BooruType.konachan,
-        BooruType.lolibooru,
+        BooruType.moebooru,
       ].contains(this);
 
   bool get isDanbooruBased => [
-        BooruType.aibooru,
         BooruType.danbooru,
-        BooruType.testbooru,
-        BooruType.safebooru,
       ].contains(this);
 
-  bool get isE621Based => this == BooruType.e621 || this == BooruType.e926;
+  bool get isE621Based => this == BooruType.e621;
 
   bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
 
@@ -121,86 +265,32 @@ extension BooruTypeX on BooruType {
   bool get supportHttp2 =>
       isDanbooruBased ||
       [
-        BooruType.sakugabooru,
-        BooruType.yandere,
-        BooruType.konachan,
+        BooruType.moebooru,
         BooruType.e621,
-        BooruType.e926,
         BooruType.zerochan,
       ].contains(this);
 
-  bool get hasCensoredTagsBanned =>
-      this == BooruType.danbooru || this == BooruType.testbooru;
+  bool get hasCensoredTagsBanned => this == BooruType.danbooru;
 
   int toBooruId() => switch (this) {
-        BooruType.danbooru => 1,
-        BooruType.safebooru => 2,
-        BooruType.testbooru => 3,
-        BooruType.gelbooru => 4,
-        BooruType.aibooru => 5,
-        BooruType.konachan => 6,
-        BooruType.yandere => 7,
-        BooruType.sakugabooru => 8,
-        BooruType.rule34xxx => 9,
-        BooruType.lolibooru => 10,
-        BooruType.e621 => 11,
-        BooruType.e926 => 12,
-        BooruType.zerochan => 13,
-        BooruType.gelbooruV1Alike => 14,
+        BooruType.danbooru => kDanbooruId,
+        BooruType.gelbooru => kGelbooruId,
+        BooruType.moebooru => kMoebooruId,
+        BooruType.gelbooruV2 => kGelbooruV2Id,
+        BooruType.e621 => kE621Id,
+        BooruType.zerochan => kZerochanId,
+        BooruType.gelbooruV1 => kGelbooruV1Id,
         BooruType.unknown => 0,
       };
 }
 
-LoginType stringToLoginType(String value) => switch (value) {
-      'login_api_key' => LoginType.loginAndApiKey,
-      'login_password_hashed' => LoginType.loginAndPasswordHashed,
-      'not_supported' => LoginType.notSupported,
-      _ => throw ArgumentError('Invalid login type: $value')
-    };
-
-BooruType intToBooruType(int value) => switch (value) {
-      1 => BooruType.danbooru,
-      2 => BooruType.safebooru,
-      3 => BooruType.testbooru,
-      4 => BooruType.gelbooru,
-      5 => BooruType.aibooru,
-      6 => BooruType.konachan,
-      7 => BooruType.yandere,
-      8 => BooruType.sakugabooru,
-      9 => BooruType.rule34xxx,
-      10 => BooruType.lolibooru,
-      11 => BooruType.e621,
-      12 => BooruType.e926,
-      13 => BooruType.zerochan,
-      14 => BooruType.gelbooruV1Alike,
+BooruType intToBooruType(int? value) => switch (value) {
+      1 || 2 || 3 || 5 || kDanbooruId => BooruType.danbooru,
+      4 || kGelbooruId => BooruType.gelbooru,
+      6 || 7 || 8 || 10 || kMoebooruId => BooruType.moebooru,
+      9 || kGelbooruV2Id => BooruType.gelbooruV2,
+      11 || 12 || kE621Id => BooruType.e621,
+      13 || kZerochanId => BooruType.zerochan,
+      14 || kGelbooruV1Id => BooruType.gelbooruV1,
       _ => BooruType.unknown
-    };
-
-BooruType stringToBooruType(String value) => switch (value) {
-      'danbooru' => BooruType.danbooru,
-      'safebooru' => BooruType.safebooru,
-      'testbooru' => BooruType.testbooru,
-      'gelbooru' => BooruType.gelbooru,
-      'rule34xxx' => BooruType.rule34xxx,
-      'aibooru' => BooruType.aibooru,
-      'konachan' => BooruType.konachan,
-      'yandere' => BooruType.yandere,
-      'sakugabooru' => BooruType.sakugabooru,
-      'lolibooru' => BooruType.lolibooru,
-      'e621' => BooruType.e621,
-      'e926' => BooruType.e926,
-      'zerochan' => BooruType.zerochan,
-      _ => BooruType.unknown
-    };
-
-BooruType getBooruType(String url, List<BooruData> booruDataList) =>
-    stringToBooruType(
-        booruDataList.firstWhereOrNull((e) => e.url == url)?.name ?? '');
-
-BooruType booruEngineToBooruType(BooruEngine engine) => switch (engine) {
-      BooruEngine.danbooru => BooruType.danbooru,
-      BooruEngine.gelbooru => BooruType.gelbooru,
-      BooruEngine.gelbooruV0Dot1 => BooruType.gelbooruV1Alike,
-      BooruEngine.gelbooruV0Dot2 => BooruType.rule34xxx,
-      BooruEngine.moebooru => BooruType.yandere
     };

@@ -12,38 +12,31 @@ class SelectedBooruChip extends StatelessWidget {
     super.key,
     required this.booruType,
     required this.url,
-    this.isUnknown = false,
   });
 
   final String url;
   final BooruType booruType;
-  final bool isUnknown;
 
   @override
   Widget build(BuildContext context) {
     final source = PostSource.from(url);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          source.whenWeb(
-            (source) => BooruLogo(source: source),
-            () => const SizedBox.shrink(),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            isUnknown
-                ? source.whenWeb(
-                    (source) => source.uri.host,
-                    () => url,
-                  )
-                : booruType.stringify(),
-            style: context.textTheme.titleLarge,
-          ),
-        ],
+    return ListTile(
+      minVerticalPadding: 0,
+      horizontalTitleGap: 4,
+      visualDensity: VisualDensity.compact,
+      leading: source.whenWeb(
+        (source) => BooruLogo(source: source),
+        () => const SizedBox.shrink(),
       ),
+      title: Text(
+        source.whenWeb(
+          (source) => source.uri.host,
+          () => url,
+        ),
+        style: context.textTheme.titleLarge,
+      ),
+      subtitle: Text('using ${booruType.stringify()}'),
     );
   }
 }

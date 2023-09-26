@@ -31,12 +31,12 @@ class CreateBooruScaffold extends StatelessWidget {
           children: [
             Row(
               children: [
-                SelectedBooruChip(
-                  booruType: booruType,
-                  url: url,
-                  isUnknown: isUnknown,
+                Expanded(
+                  child: SelectedBooruChip(
+                    booruType: booruType,
+                    url: url,
+                  ),
                 ),
-                const Spacer(),
                 IconButton(
                   splashRadius: 20,
                   onPressed: context.navigator.pop,

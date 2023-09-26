@@ -85,8 +85,8 @@ class _CreateMoebooruConfigPageState
 
                   password = value;
                   hashedPassword = hashBooruPasswordSHA1(
-                    booru: booruFactory.from(type: widget.config.booruType),
-                    booruFactory: booruFactory,
+                    url: widget.config.url,
+                    booru: widget.config.createBooruFrom(booruFactory),
                     password: value,
                   );
                   setState(() => apiKey = hashedPassword);

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -72,13 +73,6 @@ class AddUnknownBooruPage extends ConsumerWidget {
                   .copyWith(fontWeight: FontWeight.w900),
             ).tr(),
           ),
-          WarningContainer(
-              contentBuilder: (context) => const Text(
-                    'booru.add_random_booru_warning',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ).tr()),
           const SizedBox(height: 8),
           const Divider(
             thickness: 2,
@@ -92,13 +86,15 @@ class AddUnknownBooruPage extends ConsumerWidget {
             ),
             child: ListTile(
               title: const Text('booru.booru_engine_input_label').tr(),
-              trailing: OptionDropDownButton<BooruEngine?>(
+              trailing: OptionDropDownButton(
                 value: engine,
                 onChanged: (value) {
                   ref.read(booruEngineProvider.notifier).state = value;
                 },
-                items: BooruEngine.values
-                    .map((value) => DropdownMenuItem<BooruEngine>(
+                items: BooruType.values
+                    .where((e) => e != BooruType.unknown)
+                    .sorted((a, b) => a.stringify().compareTo(b.stringify()))
+                    .map((value) => DropdownMenuItem(
                           value: value,
                           child: Text(value.stringify()),
                         ))
@@ -122,6 +118,19 @@ class AddUnknownBooruPage extends ConsumerWidget {
                 const SizedBox(height: 16),
                 CreateBooruSiteUrlField(
                   text: url,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Advanced options (optional)',
+                  style: context.textTheme.titleMedium,
+                ),
+                Text(
+                  '*These options only be used if the site allows it.',
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.theme.hintColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 CreateBooruLoginField(

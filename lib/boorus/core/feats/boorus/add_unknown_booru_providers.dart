@@ -16,7 +16,7 @@ final booruConfigNameProvider = StateProvider.autoDispose<String>((ref) {
   return '';
 });
 
-final booruEngineProvider = StateProvider.autoDispose<BooruEngine?>((ref) {
+final booruEngineProvider = StateProvider.autoDispose<BooruType?>((ref) {
   return null;
 });
 
@@ -51,7 +51,7 @@ final newbooruConfigProvider =
     login: ref.watch(booruLoginProvider),
     apiKey: ref.watch(booruApiKeyProvider),
     booru: BooruType.unknown,
-    booruHint: booruEngineToBooruType(engine ?? BooruEngine.danbooru),
+    booruHint: engine ?? BooruType.danbooru,
     configName: ref.watch(booruConfigNameProvider),
     hideDeleted: ref.watch(booruDeletedItemBehaviorProvider) ==
         BooruConfigDeletedItemBehavior.hide,

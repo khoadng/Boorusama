@@ -16,6 +16,8 @@ import 'danbooru_post_details_page.dart';
 import 'danbooru_scope.dart';
 import 'favorites_page.dart';
 
+const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
+
 class DanbooruBuilder implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,

@@ -65,8 +65,7 @@ void main() async {
   }
 
   final booruFactory = BooruFactory.from(
-    await loadBooruList(),
-    await loadBooruSaltList(),
+    await loadBoorusFromAssets(),
   );
 
   final settingRepository = SettingsRepositoryLoggerInterceptor(

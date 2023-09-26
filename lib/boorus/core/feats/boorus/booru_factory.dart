@@ -1,82 +1,48 @@
-// Dart imports:
-import 'dart:convert';
-
-// Flutter imports:
-import 'package:flutter/services.dart';
-
 // Package imports:
 import 'package:collection/collection.dart';
 
 // Project imports:
 import 'booru.dart';
-import 'booru_data.dart';
 
 class BooruFactory {
   const BooruFactory._({
-    required Map<BooruType, Booru> boorus,
-    required this.booruData,
-    required this.booruSaltData,
-  }) : _boorus = boorus;
+    required this.boorus,
+  });
 
   factory BooruFactory.from(
-    List<BooruData> booruData,
-    List<BooruSaltData> booruSaltData,
+    List<Booru> boorus,
   ) {
-    final boorus = booruData.map(booruDataToBooru).toList();
-    final boorusMap = {for (final b in boorus) b.booruType: b};
-
     return BooruFactory._(
-      booruSaltData: booruSaltData,
-      boorus: boorusMap,
-      booruData: booruData,
+      boorus: boorus,
     );
   }
 
-  final List<BooruData> booruData;
-  final List<BooruSaltData> booruSaltData;
-  final Map<BooruType, Booru> _boorus;
+  final List<Booru> boorus;
 
-  String getSalt(Booru booru) =>
-      booruSaltData
-          .firstWhereOrNull(
-              (e) => stringToBooruType(e.booru) == booru.booruType)
-          ?.salt ??
-      '';
+  Booru? getBooruFromUrl(String url) {
+    for (final booru in boorus) {
+      if (booru.hasSite(url)) {
+        return booru;
+      }
+    }
 
-  Booru from({
+    return null;
+  }
+
+  Booru? from2({
     required BooruType type,
   }) {
-    try {
-      return _boorus[type]!;
-    } catch (e) {
-      return unknownBooru();
-    }
-  }
-}
+    final id = switch (type) {
+      BooruType.danbooru => kDanbooruId,
+      BooruType.gelbooru => kGelbooruId,
+      BooruType.gelbooruV2 => kGelbooruV2Id,
+      BooruType.moebooru => kMoebooruId,
+      BooruType.e621 => kE621Id,
+      BooruType.zerochan => kZerochanId,
+      BooruType.gelbooruV1 => kGelbooruV1Id,
+      BooruType.unknown => 0,
+    };
 
-const String _assetUrl = 'assets/boorus.json';
-const String _saltUrl = 'assets/booru_salts.json';
-
-Future<List<BooruData>> loadBooruList() async {
-  try {
-    final data = await rootBundle.loadString(_assetUrl);
-
-    return (jsonDecode(data) as List)
-        .map((e) => BooruData.fromJson(e))
-        .toList();
-  } catch (e) {
-    return [];
-  }
-}
-
-Future<List<BooruSaltData>> loadBooruSaltList() async {
-  try {
-    final data = await rootBundle.loadString(_saltUrl);
-
-    return (jsonDecode(data) as List)
-        .map((e) => BooruSaltData.fromJson(e))
-        .toList();
-  } catch (e) {
-    return [];
+    return boorus.firstWhereOrNull((e) => e.id == id);
   }
 }

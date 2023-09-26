@@ -50,7 +50,7 @@ final shouldFetchTrendingProvider = Provider<bool>((ref) {
   final config = ref.watch(currentBooruConfigProvider);
   final booruType = intToBooruType(config.booruId);
 
-  return booruType == BooruType.danbooru || booruType == BooruType.safebooru;
+  return booruType == BooruType.danbooru;
 });
 
 final danbooruTagCategoryRepoProvider = Provider<DanbooruTagCategoryRepository>(

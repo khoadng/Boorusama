@@ -5,15 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 
 class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
   //TODO: remove duplicated codes
   @override
   PostShareState build(Post arg) {
     final config = ref.read(currentBooruConfigProvider);
-    final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
-    final booruLink = '${booru.url}posts/${arg.id}';
+    final booruLink = '${config.url}posts/${arg.id}';
 
     return PostShareState(
       booruLink: booruLink,
@@ -31,8 +29,7 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
 
   void updateInformation(Post post) {
     final config = ref.read(currentBooruConfigProvider);
-    final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
-    final booruLink = '${booru.url}posts/${post.id}';
+    final booruLink = '${config.url}posts/${post.id}';
 
     state = state.copyWith(
       booruLink: booruLink,

@@ -7,7 +7,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/bookmarks/bookmark_notifier.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/core/widgets/widgets.dart';
@@ -28,7 +27,6 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final booruFactory = ref.watch(booruFactoryProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -105,9 +103,7 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                   childCount: state.bookmarks.length,
                   itemBuilder: (context, index) {
                     final bookmark = state.bookmarks[index];
-                    final source = PostSource.from(booruFactory
-                        .from(type: intToBooruType(bookmark.booruId))
-                        .url);
+                    final source = PostSource.from(bookmark.sourceUrl);
 
                     return GestureDetector(
                       onTap: () =>

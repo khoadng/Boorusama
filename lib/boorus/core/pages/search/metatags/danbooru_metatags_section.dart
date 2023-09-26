@@ -26,17 +26,20 @@ class DanbooruMetatagsSection extends ConsumerWidget {
     final booru = booruConfig.createBooruFrom(ref.watch(booruFactoryProvider));
     final userMetatags = ref.watch(danbooruUserMetatagsProvider);
     final metatags = ref.watch(metatagsProvider);
+    final cheatSheet = booru?.cheetsheet(booruConfig.url);
 
     return MetatagsSection(
       onOptionTap: onOptionTap,
       metatags: metatags,
       userMetatags: () => userMetatags,
-      onHelpRequest: () {
-        launchExternalUrl(
-          Uri.parse(booru.cheatsheet),
-          mode: LaunchMode.platformDefault,
-        );
-      },
+      onHelpRequest: cheatSheet != null
+          ? () {
+              launchExternalUrl(
+                Uri.parse(cheatSheet),
+                mode: LaunchMode.platformDefault,
+              );
+            }
+          : null,
       onUserMetatagDeleted: (tag) =>
           ref.read(danbooruUserMetatagsProvider.notifier).delete(tag),
       onUserMetatagAdded: (tag) =>

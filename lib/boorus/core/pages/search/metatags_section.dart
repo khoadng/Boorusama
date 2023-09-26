@@ -19,7 +19,7 @@ class MetatagsSection extends ConsumerStatefulWidget {
     required this.onOptionTap,
     required this.metatags,
     required this.userMetatags,
-    required this.onHelpRequest,
+    this.onHelpRequest,
     required this.onUserMetatagDeleted,
     required this.onUserMetatagAdded,
   });
@@ -27,7 +27,7 @@ class MetatagsSection extends ConsumerStatefulWidget {
   final ValueChanged<String>? onOptionTap;
   final List<Metatag> metatags;
   final List<String> Function() userMetatags;
-  final void Function() onHelpRequest;
+  final void Function()? onHelpRequest;
   final Future<void> Function(String tag) onUserMetatagDeleted;
   final Future<void> Function(Metatag tag) onUserMetatagAdded;
 
@@ -40,13 +40,15 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   Widget build(BuildContext context) {
     return OptionTagsArena(
       title: 'Metatags',
-      titleTrailing: (editMode) => IconButton(
-        onPressed: widget.onHelpRequest,
-        icon: const FaIcon(
-          FontAwesomeIcons.circleQuestion,
-          size: 18,
-        ),
-      ),
+      titleTrailing: (editMode) => widget.onHelpRequest != null
+          ? IconButton(
+              onPressed: widget.onHelpRequest,
+              icon: const FaIcon(
+                FontAwesomeIcons.circleQuestion,
+                size: 18,
+              ),
+            )
+          : const SizedBox.shrink(),
       childrenBuilder: (editMode) =>
           _buildMetatags(context, editMode, widget.metatags),
     );

@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/functional.dart';
 
 String hashPasswordSHA1({
   required String salt,
@@ -21,12 +22,17 @@ String hashPasswordSHA1({
 }
 
 String hashBooruPasswordSHA1({
-  required Booru booru,
-  required BooruFactory booruFactory,
+  required String url,
+  required Booru? booru,
   required String password,
 }) =>
-    hashPasswordSHA1(
-      salt: booruFactory.getSalt(booru),
-      password: password,
-      hashStringBuilder: (salt, password) => salt.replaceAll('{0}', password),
-    );
+    booru?.getSalt(url).toOption().fold(
+          () => '',
+          (salt) => hashPasswordSHA1(
+            salt: salt,
+            password: password,
+            hashStringBuilder: (salt, password) =>
+                salt.replaceAll('{0}', password),
+          ),
+        ) ??
+    '';

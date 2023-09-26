@@ -133,19 +133,7 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         client: ref.watch(zerochanClientProvider),
         settingsRepository: ref.watch(settingsRepoProvider),
       ),
-      BooruType.konachan: MoebooruBuilder(
-        postRepo: ref.watch(moebooruPostRepoProvider),
-        autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
-      ),
-      BooruType.yandere: MoebooruBuilder(
-        postRepo: ref.watch(moebooruPostRepoProvider),
-        autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
-      ),
-      BooruType.sakugabooru: MoebooruBuilder(
-        postRepo: ref.watch(moebooruPostRepoProvider),
-        autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
-      ),
-      BooruType.lolibooru: MoebooruBuilder(
+      BooruType.moebooru: MoebooruBuilder(
         postRepo: ref.watch(moebooruPostRepoProvider),
         autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
       ),
@@ -154,7 +142,7 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
         client: ref.watch(gelbooruClientProvider),
       ),
-      BooruType.rule34xxx: GelbooruBuilder(
+      BooruType.gelbooruV2: GelbooruBuilder(
         postRepo: ref.watch(gelbooruPostRepoProvider),
         autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
         client: ref.watch(gelbooruClientProvider),
@@ -164,18 +152,6 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         client: ref.watch(e621ClientProvider),
         favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
       ),
-      BooruType.e926: E621Builder(
-        postRepo: ref.watch(e621PostRepoProvider),
-        client: ref.watch(e621ClientProvider),
-        favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
-      ),
-      BooruType.aibooru: DanbooruBuilder(
-        postRepo: ref.watch(danbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
-        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
-        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
-        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
-      ),
       BooruType.danbooru: DanbooruBuilder(
         postRepo: ref.watch(danbooruPostRepoProvider),
         autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
@@ -183,21 +159,7 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
         favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
         postCountRepo: ref.watch(danbooruPostCountRepoProvider),
       ),
-      BooruType.safebooru: DanbooruBuilder(
-        postRepo: ref.watch(danbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
-        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
-        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
-        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
-      ),
-      BooruType.testbooru: DanbooruBuilder(
-        postRepo: ref.watch(danbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
-        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
-        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
-        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
-      ),
-      BooruType.gelbooruV1Alike: GelbooruV1Builder(
+      BooruType.gelbooruV1: GelbooruV1Builder(
         postRepo: ref.watch(gelbooruV1PostRepoProvider),
       ),
     });

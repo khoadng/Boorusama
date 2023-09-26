@@ -285,7 +285,6 @@ void goToQuickSearchPage(
           case BooruType.unknown:
             throw UnimplementedError();
           case BooruType.e621:
-          case BooruType.e926:
             return isMobile
                 ? SimpleTagSearchView(
                     onSubmitted: onSubmitted,
@@ -310,9 +309,6 @@ void goToQuickSearchPage(
                         generateAutocompleteTagColor(tag, context.themeMode),
                   );
           case BooruType.danbooru:
-          case BooruType.safebooru:
-          case BooruType.testbooru:
-          case BooruType.aibooru:
             return isMobile
                 ? SimpleTagSearchView(
                     onSubmitted: onSubmitted,
@@ -337,9 +333,9 @@ void goToQuickSearchPage(
                         generateAutocompleteTagColor(tag, context.themeMode),
                   );
           case BooruType.gelbooru:
-          case BooruType.rule34xxx:
+          case BooruType.gelbooruV2:
           //FIXME: shouldn't be used with other gelbooru
-          case BooruType.gelbooruV1Alike:
+          case BooruType.gelbooruV1:
             return isMobile
                 ? SimpleTagSearchView(
                     onSubmitted: (_, text) => onSubmitted?.call(context, text),
@@ -363,10 +359,7 @@ void goToQuickSearchPage(
                     textColorBuilder: (tag) =>
                         generateAutocompleteTagColor(tag, context.themeMode),
                   );
-          case BooruType.konachan:
-          case BooruType.yandere:
-          case BooruType.sakugabooru:
-          case BooruType.lolibooru:
+          case BooruType.moebooru:
             return isMobile
                 ? SimpleTagSearchView(
                     onSubmitted: (_, text) => onSubmitted?.call(context, text),

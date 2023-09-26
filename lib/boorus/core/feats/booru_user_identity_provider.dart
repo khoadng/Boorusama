@@ -10,7 +10,7 @@ abstract class BooruUserIdentityProvider {
   Future<int?> getAccountIdFromConfig(BooruConfig? config);
 
   Future<int?> getAccountId({
-    required Booru booru,
+    required BooruConfig booru,
     required String login,
     required String apiKey,
   });
@@ -31,7 +31,7 @@ class BooruUserIdentityProviderImpl
 
   @override
   Future<int?> getAccountId({
-    required Booru booru,
+    required BooruConfig booru,
     required String login,
     required String apiKey,
   }) async {
@@ -45,13 +45,10 @@ class BooruUserIdentityProviderImpl
 
     switch (booru.booruType) {
       case BooruType.gelbooru:
-      case BooruType.rule34xxx:
+      case BooruType.gelbooruV2:
         accountId = int.tryParse(login);
         break;
       case BooruType.danbooru:
-      case BooruType.safebooru:
-      case BooruType.testbooru:
-      case BooruType.aibooru:
         accountId = await deduplicate(
           cacheKey,
           () => DanbooruClient(baseUrl: booru.url, login: login, apiKey: apiKey)
@@ -62,14 +59,10 @@ class BooruUserIdentityProviderImpl
         );
         break;
       case BooruType.unknown:
-      case BooruType.konachan:
-      case BooruType.yandere:
-      case BooruType.sakugabooru:
-      case BooruType.lolibooru:
+      case BooruType.moebooru:
       case BooruType.e621:
-      case BooruType.e926:
       case BooruType.zerochan:
-      case BooruType.gelbooruV1Alike:
+      case BooruType.gelbooruV1:
         accountId = null;
         break;
     }
@@ -83,7 +76,7 @@ class BooruUserIdentityProviderImpl
       (!config.hasLoginDetails() || config == null)
           ? Future.value(null)
           : getAccountId(
-              booru: config.createBooruFrom(booruFactory),
+              booru: config,
               login: config.login!,
               apiKey: config.apiKey!,
             );

@@ -50,7 +50,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           onBooruSubmit: (url) => setState(() {
             final booruFactory = ref.read(booruFactoryProvider);
-            booru = getBooruType(url, booruFactory.booruData);
+            booru = intToBooruType(booruFactory.getBooruFromUrl(url)?.id);
             phase = booru == BooruType.unknown
                 ? AddBooruPhase.newUnknownBooru
                 : AddBooruPhase.newKnownBooru;
@@ -193,24 +193,25 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
         ),
         // warning container for when the URL is not a supported booru
-        ValueListenableBuilder(
-          valueListenable: booruUrlError,
-          builder: (_, error, __) => error.fold(
-            (e) => const SizedBox.shrink(),
-            (uri) => getBooruType(uri.toString(),
-                        ref.watch(booruFactoryProvider).booruData) ==
-                    BooruType.unknown
-                ? WarningContainer(
-                    contentBuilder: (context) => const Text(
-                      'booru.unsupported_warning',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ).tr(),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ),
+        //FIXME: should reconsider unsupported booru warning
+        // ValueListenableBuilder(
+        //   valueListenable: booruUrlError,
+        //   builder: (_, error, __) => error.fold(
+        //     (e) => const SizedBox.shrink(),
+        //     (uri) => getBooruType(uri.toString(),
+        //                 ref.watch(booruFactoryProvider).booruData) ==
+        //             BooruType.unknown
+        //         ? WarningContainer(
+        //             contentBuilder: (context) => const Text(
+        //               'booru.unsupported_warning',
+        //               style: TextStyle(
+        //                 color: Colors.white,
+        //               ),
+        //             ).tr(),
+        //           )
+        //         : const SizedBox.shrink(),
+        //   ),
+        // ),
         ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => Padding(
