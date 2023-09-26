@@ -176,6 +176,7 @@ extension PostX on Post {
   bool get isAI =>
       tags.contains('ai-generated') ||
       tags.contains('ai_generated') ||
+      tags.contains('ai-created') ||
       tags.contains('AI Art');
 }
 

@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/search/search.dart';
@@ -262,7 +261,6 @@ Future<bool?> goToAddToGlobalBlacklistPage(
   );
 }
 
-//FIXME: a lot of duplicated code here, we should refactor this
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
@@ -278,171 +276,29 @@ void goToQuickSearchPage(
     ),
     ensureValidTag: ensureValidTag,
     floatingActionButton: floatingActionButton,
-    builder: (_, isMobile) => Builder(
-      builder: (context) {
-        final booru = ref.watch(currentBooruConfigProvider);
-
-        switch (booru.booruType) {
-          case BooruType.unknown:
-            throw UnimplementedError();
-          case BooruType.e621:
-            return isMobile
-                ? SimpleTagSearchView(
-                    onSubmitted: onSubmitted,
-                    ensureValidTag: ensureValidTag,
-                    floatingActionButton: floatingActionButton != null
-                        ? (text) => floatingActionButton.call(text)
-                        : null,
-                    onSelected: onSelected,
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  )
-                : SimpleTagSearchView(
-                    onSubmitted: onSubmitted,
-                    backButton: IconButton(
-                      splashRadius: 16,
-                      onPressed: () => context.navigator.pop(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    ensureValidTag: ensureValidTag,
-                    onSelected: onSelected,
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  );
-          case BooruType.danbooru:
-            return isMobile
-                ? SimpleTagSearchView(
-                    onSubmitted: onSubmitted,
-                    ensureValidTag: ensureValidTag,
-                    floatingActionButton: floatingActionButton != null
-                        ? (text) => floatingActionButton.call(text)
-                        : null,
-                    onSelected: onSelected,
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  )
-                : SimpleTagSearchView(
-                    onSubmitted: onSubmitted,
-                    backButton: IconButton(
-                      splashRadius: 16,
-                      onPressed: () => context.navigator.pop(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    ensureValidTag: ensureValidTag,
-                    onSelected: onSelected,
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  );
-          case BooruType.gelbooru:
-          case BooruType.gelbooruV2:
-          //FIXME: shouldn't be used with other gelbooru
-          case BooruType.gelbooruV1:
-            return isMobile
-                ? SimpleTagSearchView(
-                    onSubmitted: (_, text) => onSubmitted?.call(context, text),
-                    ensureValidTag: ensureValidTag,
-                    floatingActionButton: floatingActionButton != null
-                        ? (text) => floatingActionButton.call(text)
-                        : null,
-                    onSelected: (tag) => onSelected(tag),
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  )
-                : SimpleTagSearchView(
-                    onSubmitted: (_, text) => onSubmitted?.call(context, text),
-                    backButton: IconButton(
-                      splashRadius: 16,
-                      onPressed: () => context.navigator.pop(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    ensureValidTag: ensureValidTag,
-                    onSelected: (tag) => onSelected(tag),
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  );
-          case BooruType.moebooru:
-            return isMobile
-                ? SimpleTagSearchView(
-                    onSubmitted: (_, text) => onSubmitted?.call(context, text),
-                    ensureValidTag: ensureValidTag,
-                    floatingActionButton: floatingActionButton != null
-                        ? (text) => floatingActionButton.call(text)
-                        : null,
-                    onSelected: (tag) => onSelected(tag),
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  )
-                : SimpleTagSearchView(
-                    onSubmitted: (_, text) => onSubmitted?.call(context, text),
-                    backButton: IconButton(
-                      splashRadius: 16,
-                      onPressed: () => context.navigator.pop(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    ensureValidTag: ensureValidTag,
-                    onSelected: (tag) => onSelected(tag),
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
-                  );
-          case BooruType.zerochan:
-            return Builder(
-              builder: (context) => isMobile
-                  ? SimpleTagSearchView(
-                      onSubmitted: (_, text) =>
-                          onSubmitted?.call(context, text),
-                      ensureValidTag: ensureValidTag,
-                      floatingActionButton: floatingActionButton != null
-                          ? (text) => floatingActionButton.call(text)
-                          : null,
-                      onSelected: (tag) => onSelected(tag),
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, context.themeMode),
-                    )
-                  : SimpleTagSearchView(
-                      onSubmitted: (_, text) =>
-                          onSubmitted?.call(context, text),
-                      backButton: IconButton(
-                        splashRadius: 16,
-                        onPressed: () => context.navigator.pop(),
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-                      ensureValidTag: ensureValidTag,
-                      onSelected: (tag) => onSelected(tag),
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, context.themeMode),
-                    ),
-            );
-          case BooruType.sankaku:
-            return Builder(
-              builder: (context) => isMobile
-                  ? SimpleTagSearchView(
-                      onSubmitted: (_, text) =>
-                          onSubmitted?.call(context, text),
-                      ensureValidTag: ensureValidTag,
-                      floatingActionButton: floatingActionButton != null
-                          ? (text) => floatingActionButton.call(text)
-                          : null,
-                      onSelected: (tag) => onSelected(tag),
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, context.themeMode),
-                    )
-                  : SimpleTagSearchView(
-                      onSubmitted: (_, text) =>
-                          onSubmitted?.call(context, text),
-                      backButton: IconButton(
-                        splashRadius: 16,
-                        onPressed: () => context.navigator.pop(),
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-                      ensureValidTag: ensureValidTag,
-                      onSelected: (tag) => onSelected(tag),
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(tag, context.themeMode),
-                    ),
-            );
-        }
-      },
-    ),
+    builder: (_, isMobile) => isMobile
+        ? SimpleTagSearchView(
+            onSubmitted: onSubmitted,
+            ensureValidTag: ensureValidTag,
+            floatingActionButton: floatingActionButton != null
+                ? (text) => floatingActionButton.call(text)
+                : null,
+            onSelected: onSelected,
+            textColorBuilder: (tag) =>
+                generateAutocompleteTagColor(tag, context.themeMode),
+          )
+        : SimpleTagSearchView(
+            onSubmitted: onSubmitted,
+            backButton: IconButton(
+              splashRadius: 16,
+              onPressed: () => context.navigator.pop(),
+              icon: const Icon(Icons.arrow_back),
+            ),
+            ensureValidTag: ensureValidTag,
+            onSelected: onSelected,
+            textColorBuilder: (tag) =>
+                generateAutocompleteTagColor(tag, context.themeMode),
+          ),
   );
 }
 
