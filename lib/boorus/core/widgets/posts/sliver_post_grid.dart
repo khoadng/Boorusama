@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -68,7 +69,11 @@ class SliverPostGrid extends ConsumerWidget {
                             style: context.textTheme.headlineMedium,
                           ),
                         ),
-                        Text(message).tr(),
+                        MarkdownBody(
+                          shrinkWrap: true,
+                          data: wrapIntoJsonToCodeBlock(
+                              prettyPrintJson(e.message)),
+                        ),
                         const SizedBox(height: 16),
                         if (e.isServerError)
                           ElevatedButton(

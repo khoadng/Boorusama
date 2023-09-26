@@ -38,9 +38,11 @@ class AppError extends BooruError with EquatableMixin {
 class ServerError extends BooruError with EquatableMixin {
   ServerError({
     required this.httpStatusCode,
+    required this.message,
   });
 
   final int? httpStatusCode;
+  final dynamic message;
 
   @override
   String toString() => 'HTTP error with status code $httpStatusCode';

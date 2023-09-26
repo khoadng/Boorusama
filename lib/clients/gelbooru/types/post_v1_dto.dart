@@ -53,7 +53,11 @@ class PostV1Dto {
       fileUrl: fileUrl,
       sampleUrl: fileUrl,
       previewUrl: thumbUrl,
-      tags: tags,
+      tags: tagList
+          .where((e) => e.isNotEmpty)
+          .where((e) => !e.startsWith('rating:'))
+          .where((e) => !e.startsWith('score:'))
+          .join(' '),
       md5: md5,
       rating: rating,
       score: score,

@@ -19,12 +19,27 @@ final downloadUrlProvider =
 
   if (post.isVideo) return post.sampleImageUrl;
 
-  return switch (settings.downloadQuality) {
+  final url = switch (settings.downloadQuality) {
     DownloadQuality.original => post.originalImageUrl,
     DownloadQuality.sample => post.sampleImageUrl,
     DownloadQuality.preview => post.thumbnailImageUrl,
   };
+
+  return sanitizedUrl(url);
 });
+
+String sanitizedUrl(String url) {
+  final ext = extension(url);
+  final indexOfQuestionMark = ext.indexOf('?');
+
+  if (indexOfQuestionMark != -1) {
+    final trimmedExt = ext.substring(0, indexOfQuestionMark);
+
+    return url.replaceFirst(ext, trimmedExt);
+  } else {
+    return url;
+  }
+}
 
 final downloadServiceProvider = Provider<DownloadService>(
   (ref) {

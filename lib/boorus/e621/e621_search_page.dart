@@ -18,6 +18,7 @@ class E621SearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SearchPageScaffold(
+      initialQuery: initialQuery,
       fetcher: (page, tags) =>
           ref.watch(e621PostRepoProvider).getPosts(tags, page),
     );

@@ -63,6 +63,7 @@ class BooruUserIdentityProviderImpl
       case BooruType.e621:
       case BooruType.zerochan:
       case BooruType.gelbooruV1:
+      case BooruType.sankaku:
         accountId = null;
         break;
     }
