@@ -89,9 +89,11 @@ class _InfinitePostListScaffoldState<T extends Post>
 
     final config = ref.watch(currentBooruConfigProvider);
     final booruBuilders = ref.watch(booruBuildersProvider);
-    final favoriteAdder = booruBuilders[config.booruType]?.favoriteAdder;
-    final favoriteRemover = booruBuilders[config.booruType]?.favoriteRemover;
-    final favoriteChecker = booruBuilders[config.booruType]?.favoriteChecker;
+    final favoriteAdder = booruBuilders[config.booruType]?.call().favoriteAdder;
+    final favoriteRemover =
+        booruBuilders[config.booruType]?.call().favoriteRemover;
+    final favoriteChecker =
+        booruBuilders[config.booruType]?.call().favoriteChecker;
     final isAuthenticated = config.hasLoginDetails();
 
     final canFavorite = favoriteAdder != null &&

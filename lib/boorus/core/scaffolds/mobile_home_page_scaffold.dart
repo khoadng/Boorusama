@@ -29,7 +29,7 @@ class MobileHomePageScaffold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(currentBooruConfigProvider);
     final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[config.booruType]?.postFetcher;
+    final fetcher = booruBuilders[config.booruType]?.call().postFetcher;
 
     return PostScope(
       fetcher: (page) => fetcher?.call(page, '') ?? TaskEither.of(<Post>[]),

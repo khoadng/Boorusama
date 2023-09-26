@@ -40,7 +40,7 @@ class PostCountNotifier extends FamilyNotifier<PostCountState, BooruConfig> {
       }
 
       final booruBuilders = ref.read(booruBuildersProvider);
-      final fetcher = booruBuilders[arg.booruType]?.postCountFetcher;
+      final fetcher = booruBuilders[arg.booruType]?.call().postCountFetcher;
 
       final postCount = await fetcher?.call(tags);
       state = PostCountState({

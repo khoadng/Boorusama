@@ -47,7 +47,7 @@ class _DesktopHomePageScaffoldState
   Widget build(BuildContext context) {
     final config = ref.watch(currentBooruConfigProvider);
     final booruBuilders = ref.watch(booruBuildersProvider);
-    final fetcher = booruBuilders[config.booruType]?.postFetcher;
+    final fetcher = booruBuilders[config.booruType]?.call().postFetcher;
 
     return PostScope(
       fetcher: (page) =>

@@ -127,46 +127,47 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
   PostCountFetcher? get postCountFetcher => null;
 }
 
-final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder>>((ref) => {
-      BooruType.zerochan: ZerochanBuilder(
-        postRepo: ref.watch(zerochanPostRepoProvider),
-        autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider),
-      ),
-      BooruType.moebooru: MoebooruBuilder(
-        postRepo: ref.watch(moebooruPostRepoProvider),
-        autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
-      ),
-      BooruType.gelbooru: GelbooruBuilder(
-        postRepo: ref.watch(gelbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
-        client: ref.watch(gelbooruClientProvider),
-      ),
-      BooruType.gelbooruV2: GelbooruBuilder(
-        postRepo: ref.watch(gelbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
-        client: ref.watch(gelbooruClientProvider),
-      ),
-      BooruType.e621: E621Builder(
-        autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
-        postRepo: ref.watch(e621PostRepoProvider),
-        client: ref.watch(e621ClientProvider),
-        favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
-      ),
-      BooruType.danbooru: DanbooruBuilder(
-        postRepo: ref.watch(danbooruPostRepoProvider),
-        autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
-        favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
-        favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
-        postCountRepo: ref.watch(danbooruPostCountRepoProvider),
-      ),
-      BooruType.gelbooruV1: GelbooruV1Builder(
-        postRepo: ref.watch(gelbooruV1PostRepoProvider),
-      ),
-      BooruType.sankaku: SankakuBuilder(
-        postRepository: ref.watch(sankakuPostRepoProvider),
-        client: ref.watch(sankakuClientProvider),
-      ),
-    });
+final booruBuildersProvider =
+    Provider<Map<BooruType, BooruBuilder Function()>>((ref) => {
+          BooruType.zerochan: () => ZerochanBuilder(
+                postRepo: ref.watch(zerochanPostRepoProvider),
+                autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider),
+              ),
+          BooruType.moebooru: () => MoebooruBuilder(
+                postRepo: ref.watch(moebooruPostRepoProvider),
+                autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
+              ),
+          BooruType.gelbooru: () => GelbooruBuilder(
+                postRepo: ref.watch(gelbooruPostRepoProvider),
+                autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
+                client: ref.watch(gelbooruClientProvider),
+              ),
+          BooruType.gelbooruV2: () => GelbooruBuilder(
+                postRepo: ref.watch(gelbooruPostRepoProvider),
+                autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
+                client: ref.watch(gelbooruClientProvider),
+              ),
+          BooruType.e621: () => E621Builder(
+                autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
+                postRepo: ref.watch(e621PostRepoProvider),
+                client: ref.watch(e621ClientProvider),
+                favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
+              ),
+          BooruType.danbooru: () => DanbooruBuilder(
+                postRepo: ref.watch(danbooruPostRepoProvider),
+                autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
+                favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
+                favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
+                postCountRepo: ref.watch(danbooruPostCountRepoProvider),
+              ),
+          BooruType.gelbooruV1: () => GelbooruV1Builder(
+                postRepo: ref.watch(gelbooruV1PostRepoProvider),
+              ),
+          BooruType.sankaku: () => SankakuBuilder(
+                postRepository: ref.watch(sankakuPostRepoProvider),
+                client: ref.watch(sankakuClientProvider),
+              ),
+        });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
@@ -185,7 +186,7 @@ class BooruProvider extends ConsumerWidget {
     final booruBuilders = ref.watch(booruBuildersProvider);
     final config = ref.watch(currentBooruConfigProvider);
 
-    return builder(booruBuilders[config.booruType]);
+    return builder(booruBuilders[config.booruType]?.call());
   }
 }
 

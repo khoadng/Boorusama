@@ -60,7 +60,7 @@ class SuggestionsNotifier
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
     final booruBuilders = ref.read(booruBuildersProvider);
     final autocompleteFetcher =
-        booruBuilders[arg.booruType]?.autocompleteFetcher;
+        booruBuilders[arg.booruType]?.call().autocompleteFetcher;
 
     debounce(
       'suggestions',

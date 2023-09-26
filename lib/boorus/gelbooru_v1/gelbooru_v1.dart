@@ -13,11 +13,10 @@ import 'package:boorusama/functional.dart';
 
 final gelbooruV1PostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final settingsRepository = ref.watch(settingsRepoProvider);
     final client = ref.watch(gelbooruV1ClientProvider);
 
     return PostRepositoryBuilder(
-      settingsRepository: settingsRepository,
+      getSettings: () async => ref.read(settingsProvider),
       getPosts: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,

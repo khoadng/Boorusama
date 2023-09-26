@@ -136,7 +136,7 @@ class SimpleInformationSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilders = ref.watch(booruBuildersProvider);
     final booruBuilder = booruBuilders[ref.watch(currentBooruConfigProvider)];
-    final supportArtist = booruBuilder?.isArtistSupported ?? false;
+    final supportArtist = booruBuilder?.call().isArtistSupported ?? false;
 
     return InformationSection(
       characterTags: post.characterTags ?? [],

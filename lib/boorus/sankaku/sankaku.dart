@@ -25,11 +25,10 @@ final sankakuClientProvider = Provider<SankakuClient>((ref) {
 
 final sankakuPostRepoProvider = Provider<PostRepository>(
   (ref) {
-    final settingsRepository = ref.watch(settingsRepoProvider);
     final client = ref.watch(sankakuClientProvider);
 
     return PostRepositoryBuilder(
-      settingsRepository: settingsRepository,
+      getSettings: () async => ref.read(settingsProvider),
       getPosts: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags.split(' '),

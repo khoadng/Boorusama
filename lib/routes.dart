@@ -81,10 +81,11 @@ class BoorusRoutes {
               .firstWhere((element) => element.id == id);
 
           final booruBuilders = ref.read(booruBuildersProvider);
+          final booruBuilder = booruBuilders[config.booruType]?.call();
 
           return MaterialPage(
             key: state.pageKey,
-            child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+            child: booruBuilder?.updateConfigPageBuilder(
                   context,
                   config,
                   backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -109,6 +110,7 @@ class BoorusRoutes {
               .firstWhere((element) => element.id == id);
 
           final booruBuilders = ref.read(booruBuildersProvider);
+          final booruBuilder = booruBuilders[config.booruType]?.call();
 
           return DialogPage(
             key: state.pageKey,
@@ -118,7 +120,7 @@ class BoorusRoutes {
               color: context.theme.canvasColor,
               width: 400,
               child: IntrinsicHeight(
-                child: booruBuilders[config.booruType]?.updateConfigPageBuilder(
+                child: booruBuilder?.updateConfigPageBuilder(
                       context,
                       config,
                       backgroundColor: context.theme.canvasColor,
@@ -264,7 +266,8 @@ class Routes {
           final booruBuilders = ref.read(booruBuildersProvider);
           final config = ref.read(currentBooruConfigProvider);
           final builder =
-              booruBuilders[config.booruType]?.postDetailsPageBuilder;
+              booruBuilders[config.booruType]?.call().postDetailsPageBuilder;
+
           final payload = state.extra as DetailsPayload;
 
           if (!payload.isDesktop) {
@@ -294,7 +297,8 @@ class Routes {
         pageBuilder: (context, state) {
           final booruBuilders = ref.read(booruBuildersProvider);
           final config = ref.read(currentBooruConfigProvider);
-          final builder = booruBuilders[config.booruType]?.searchPageBuilder;
+          final builder =
+              booruBuilders[config.booruType]?.call().searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
           return CustomTransitionPage(
@@ -314,7 +318,8 @@ class Routes {
         pageBuilder: (context, state) {
           final booruBuilders = ref.read(booruBuildersProvider);
           final config = ref.read(currentBooruConfigProvider);
-          final builder = booruBuilders[config.booruType]?.favoritesPageBuilder;
+          final builder =
+              booruBuilders[config.booruType]?.call().favoritesPageBuilder;
 
           return CustomTransitionPage(
             key: state.pageKey,
@@ -333,7 +338,8 @@ class Routes {
         pageBuilder: (context, state) {
           final booruBuilders = ref.read(booruBuildersProvider);
           final config = ref.read(currentBooruConfigProvider);
-          final builder = booruBuilders[config.booruType]?.artistPageBuilder;
+          final builder =
+              booruBuilders[config.booruType]?.call().artistPageBuilder;
           final artistName = state.uri.queryParameters[kArtistNameKey];
 
           return MaterialPage(
