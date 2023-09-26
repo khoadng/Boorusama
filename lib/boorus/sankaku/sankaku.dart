@@ -10,8 +10,6 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
-import 'package:boorusama/foundation/http/http.dart';
-import 'package:boorusama/functional.dart';
 
 final sankakuClientProvider = Provider<SankakuClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
@@ -32,47 +30,43 @@ final sankakuPostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       settingsRepository: settingsRepository,
-      getPosts: (tags, page, {limit}) => TaskEither.Do(
-        ($) async {
-          final posts = await $(tryFetchRemoteData(
-            fetcher: () => client.getPosts(
-              tags: tags.split(' '),
-              page: page,
-              limit: limit,
-            ),
-          ));
+      getPosts: (tags, page, {limit}) async {
+        final posts = await client.getPosts(
+          tags: tags.split(' '),
+          page: page,
+          limit: limit,
+        );
 
-          return posts.map((e) {
-            final hasParent = e.parentId != null;
-            final hasChilren = e.hasChildren ?? false;
-            final hasParentOrChildren = hasParent || hasChilren;
+        return posts.map((e) {
+          final hasParent = e.parentId != null;
+          final hasChilren = e.hasChildren ?? false;
+          final hasParentOrChildren = hasParent || hasChilren;
 
-            return SimplePost(
-              id: e.id ?? 0,
-              thumbnailImageUrl: e.previewUrl ?? '',
-              sampleImageUrl: e.sampleUrl ?? '',
-              originalImageUrl: e.fileUrl ?? '',
-              tags: e.tags?.map((e) => e.name).whereNotNull().toList() ?? [],
-              rating: mapStringToRating(e.rating),
-              hasComment: e.hasComments ?? false,
-              isTranslated: false,
-              hasParentOrChildren: hasParentOrChildren,
-              source: PostSource.from(e.source),
-              score: e.totalScore ?? 0,
-              duration: e.videoDuration ?? 0,
-              fileSize: e.fileSize ?? 0,
-              format: extractFileExtension(e.fileType) ?? '',
-              hasSound: null,
-              height: e.height?.toDouble() ?? 0,
-              md5: e.md5 ?? '',
-              videoThumbnailUrl: e.previewUrl ?? '',
-              videoUrl: e.fileUrl ?? '',
-              width: e.width?.toDouble() ?? 0,
-              getLink: (_) => '${client.originalUrl}/post/show/${e.md5}',
-            );
-          }).toList();
-        },
-      ),
+          return SimplePost(
+            id: e.id ?? 0,
+            thumbnailImageUrl: e.previewUrl ?? '',
+            sampleImageUrl: e.sampleUrl ?? '',
+            originalImageUrl: e.fileUrl ?? '',
+            tags: e.tags?.map((e) => e.name).whereNotNull().toList() ?? [],
+            rating: mapStringToRating(e.rating),
+            hasComment: e.hasComments ?? false,
+            isTranslated: false,
+            hasParentOrChildren: hasParentOrChildren,
+            source: PostSource.from(e.source),
+            score: e.totalScore ?? 0,
+            duration: e.videoDuration ?? 0,
+            fileSize: e.fileSize ?? 0,
+            format: extractFileExtension(e.fileType) ?? '',
+            hasSound: null,
+            height: e.height?.toDouble() ?? 0,
+            md5: e.md5 ?? '',
+            videoThumbnailUrl: e.previewUrl ?? '',
+            videoUrl: e.fileUrl ?? '',
+            width: e.width?.toDouble() ?? 0,
+            getLink: (_) => '${client.originalUrl}/post/show/${e.md5}',
+          );
+        }).toList();
+      },
     );
   },
 );

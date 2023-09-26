@@ -18,7 +18,7 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       settingsRepository: settingsRepository,
-      getPosts: (tags, page, {limit}) => TaskEither.Do(($) async {
+      getPosts: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
           page: page,
@@ -50,7 +50,7 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
                       '$baseUrl/index.php?page=post&s=view&id=${e.id}',
                 ))
             .toList();
-      }),
+      },
     );
   },
 );

@@ -11,13 +11,16 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/foundation/path.dart' as path;
-import 'package:boorusama/functional.dart';
 
 final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
   final dio = ref.watch(dioProvider(booruConfig.url));
+  final logger = ref.watch(loggerProvider);
 
-  return ZerochanClient(dio: dio);
+  return ZerochanClient(
+    dio: dio,
+    logger: (message) => logger.logE('ZerochanClient', message),
+  );
 });
 
 final zerochanPostRepoProvider = Provider<PostRepository>(
@@ -27,7 +30,7 @@ final zerochanPostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       settingsRepository: settingsRepository,
-      getPosts: (tags, page, {limit}) => TaskEither.Do(($) async {
+      getPosts: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags.split(' ').toList(),
           page: page,
@@ -60,7 +63,7 @@ final zerochanPostRepoProvider = Provider<PostRepository>(
                       : '$baseUrl/${e.id}',
                 ))
             .toList();
-      }),
+      },
     );
   },
 );

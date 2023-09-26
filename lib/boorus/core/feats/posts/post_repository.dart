@@ -1,12 +1,19 @@
 // Project imports:
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 import 'post.dart';
 
 typedef PostsOrErrorCore<T extends Post> = TaskEither<BooruError, List<T>>;
 
 typedef PostsOrError = PostsOrErrorCore<Post>;
+
+typedef PostFutureFetcher = Future<List<Post>> Function(
+  String tags,
+  int page, {
+  int? limit,
+});
 
 abstract class PostRepository {
   PostsOrError getPostsFromTags(
@@ -21,18 +28,10 @@ class PostRepositoryBuilder
     implements PostRepository {
   const PostRepositoryBuilder({
     required this.settingsRepository,
-    required PostsOrError Function(
-      String tags,
-      int page, {
-      int? limit,
-    }) getPosts,
+    required PostFutureFetcher getPosts,
   }) : _getPostsFromTags = getPosts;
 
-  final PostsOrError Function(
-    String tags,
-    int page, {
-    int? limit,
-  }) _getPostsFromTags;
+  final PostFutureFetcher _getPostsFromTags;
 
   @override
   final SettingsRepository settingsRepository;
@@ -44,7 +43,8 @@ class PostRepositoryBuilder
 
         lim ??= await getPostsPerPage();
 
-        return $(_getPostsFromTags(tags, page, limit: lim));
+        return $(tryFetchRemoteData(
+            fetcher: () => _getPostsFromTags(tags, page, limit: lim)));
       });
 }
 
