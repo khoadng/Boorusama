@@ -71,3 +71,16 @@ mixin PersistentCacheMixin {
     box.clear();
   }
 }
+
+class PersistentCache with PersistentCacheMixin {
+  PersistentCache({
+    required this.persistentStorageKey,
+    required this.persistentStaleDuration,
+  });
+
+  @override
+  final String persistentStorageKey;
+
+  @override
+  final Duration persistentStaleDuration;
+}
