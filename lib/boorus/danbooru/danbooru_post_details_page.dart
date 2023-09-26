@@ -188,15 +188,14 @@ class TagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watch(currentBooruConfigProvider);
+    final tagNotifier = ref.watch(tagsProvider(booruConfig).notifier);
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) => value
-            ? ref.read(tagsProvider(booruConfig).notifier).load(tags)
-            : null,
+        onExpansionChanged: (value) => value ? tagNotifier.load(tags) : null,
         children: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),

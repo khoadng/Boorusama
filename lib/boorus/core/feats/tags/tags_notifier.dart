@@ -14,7 +14,6 @@ final invalidTags = [
 class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
   @override
   List<TagGroupItem>? build(BooruConfig arg) {
-    ref.watch(currentBooruConfigProvider);
     return null;
   }
 
@@ -24,6 +23,8 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
     List<String> tagList, {
     void Function(List<TagGroupItem> tags)? onSuccess,
   }) async {
+    state = null;
+
     // filter tagList to remove invalid tags
     final filtered = tagList.where((e) => !invalidTags.contains(e)).toList();
 
