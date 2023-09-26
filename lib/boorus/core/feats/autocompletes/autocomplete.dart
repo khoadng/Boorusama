@@ -62,6 +62,30 @@ class AutocompleteData extends Equatable {
 
   static bool isTagType(String? type) => tagTypes.contains(type);
 
+  factory AutocompleteData.fromJson(Map<String, dynamic> json) {
+    return AutocompleteData(
+      type: json['type'],
+      label: json['label'],
+      value: json['value'],
+      category: json['category'],
+      postCount: json['post_count'],
+      level: json['level'],
+      antecedent: json['antecedent'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'label': label,
+      'value': value,
+      'category': category,
+      'post_count': postCount,
+      'level': level,
+      'antecedent': antecedent,
+    };
+  }
+
   @override
   List<Object?> get props =>
       [label, value, type, category, postCount, level, antecedent];
