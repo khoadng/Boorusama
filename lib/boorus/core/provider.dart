@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -43,7 +42,7 @@ final booruFactoryProvider =
 final booruUserIdentityProviderProvider =
     Provider<BooruUserIdentityProvider>((ref) {
   final booruFactory = ref.watch(booruFactoryProvider);
-  final dio = ref.watch(dioProvider(''));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return BooruUserIdentityProviderImpl(dio, booruFactory);
 });
@@ -100,22 +99,53 @@ final settingsProvider = NotifierProvider<SettingsNotifier, Settings>(
 final settingsRepoProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
 
-final dioProvider = Provider.family<Dio, String>(
-  (ref, baseUrl) {
-    final dir = ref.watch(httpCacheDirProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
-    final generator = ref.watch(userAgentGeneratorProvider);
-    final loggerService = ref.watch(loggerProvider);
+class DioArgs {
+  final Directory cacheDir;
+  final String baseUrl;
+  final UserAgentGenerator userAgentGenerator;
+  final BooruConfig booruConfig;
+  final LoggerService loggerService;
 
-    return dio(dir, baseUrl, generator, booruConfig, loggerService);
-  },
-  dependencies: [
-    httpCacheDirProvider,
-    userAgentGeneratorProvider,
-    loggerProvider,
-    currentBooruConfigProvider,
-  ],
-);
+  DioArgs({
+    required this.cacheDir,
+    required this.baseUrl,
+    required this.userAgentGenerator,
+    required this.booruConfig,
+    required this.loggerService,
+  });
+}
+
+final dioArgsProvider = Provider<DioArgs>((ref) {
+  final cacheDir = ref.watch(httpCacheDirProvider);
+  final userAgentGenerator = ref.watch(userAgentGeneratorProvider);
+  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final loggerService = ref.watch(loggerProvider);
+
+  return DioArgs(
+    cacheDir: cacheDir,
+    baseUrl: booruConfig.url,
+    userAgentGenerator: userAgentGenerator,
+    booruConfig: booruConfig,
+    loggerService: loggerService,
+  );
+});
+
+// final dioProvider = Provider.family<Dio, String>(
+//   (ref, baseUrl) {
+//     final dir = ref.watch(httpCacheDirProvider);
+//     final booruConfig = ref.watch(currentBooruConfigProvider);
+//     final generator = ref.watch(userAgentGeneratorProvider);
+//     final loggerService = ref.watch(loggerProvider);
+
+//     return dio(dir, baseUrl, generator, booruConfig, loggerService);
+//   },
+//   dependencies: [
+//     httpCacheDirProvider,
+//     userAgentGeneratorProvider,
+//     loggerProvider,
+//     currentBooruConfigProvider,
+//   ],
+// );
 
 final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),

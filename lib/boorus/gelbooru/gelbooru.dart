@@ -18,13 +18,14 @@ import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'gelbooru_post_details_desktop_page.dart';
 import 'gelbooru_post_details_page.dart';
 import 'widgets/gelbooru_infinite_post_list.dart';
 
 final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return GelbooruClient.custom(
     baseUrl: booruConfig.url,

@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/e621/e621_post_details_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'e621_artist_page.dart';
 import 'e621_favorites_page.dart';
 import 'e621_scope.dart';
@@ -19,7 +20,7 @@ import 'e621_search_page.dart';
 
 final e621ClientProvider = Provider<E621Client>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return E621Client(
     baseUrl: booruConfig.url,

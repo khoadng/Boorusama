@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final gelbooruV1PostRepoProvider = Provider<PostRepository>(
@@ -56,7 +57,7 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
 
 final gelbooruV1ClientProvider = Provider<GelbooruV1Client>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return GelbooruV1Client(
     baseUrl: booruConfig.url,

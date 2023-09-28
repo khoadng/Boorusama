@@ -76,6 +76,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       },
     );
 
+    final config = ref.watch(currentBooruConfigProvider);
+
     return OrientationBuilder(
       builder: (context, orientation) => ConditionalParentWidget(
         condition: isDesktopPlatform() || orientation.isLandscape,
@@ -92,14 +94,18 @@ class _HomePageState extends ConsumerState<HomePage> {
             )
           ],
         ),
-        child: const _Boorus(),
+        child: _Boorus(
+          key: ValueKey(config),
+        ),
       ),
     );
   }
 }
 
 class _Boorus extends ConsumerWidget {
-  const _Boorus();
+  const _Boorus({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

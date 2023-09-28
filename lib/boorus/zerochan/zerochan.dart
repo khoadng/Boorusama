@@ -4,17 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 
 final zerochanClientProvider = Provider<ZerochanClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(

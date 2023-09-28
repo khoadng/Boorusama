@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/feats/settings/settings.dart';
 import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 
 final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
@@ -43,7 +44,7 @@ String sanitizedUrl(String url) {
 
 final downloadServiceProvider = Provider<DownloadService>(
   (ref) {
-    final dio = ref.watch(dioProvider(''));
+    final dio = newDio(ref.watch(dioArgsProvider));
     final notifications = ref.watch(downloadNotificationProvider);
     final booruConfig = ref.watch(currentBooruConfigProvider);
 
@@ -54,7 +55,7 @@ final downloadServiceProvider = Provider<DownloadService>(
     );
   },
   dependencies: [
-    dioProvider,
+    dioArgsProvider,
     downloadNotificationProvider,
     currentBooruConfigProvider,
   ],

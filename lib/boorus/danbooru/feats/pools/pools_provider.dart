@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 
 part 'pools_search_provider.dart';
 
@@ -21,7 +22,7 @@ final danbooruPoolRepoProvider = Provider<PoolRepository>((ref) {
 
 final poolDescriptionRepoProvider = Provider<PoolDescriptionRepository>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return PoolDescriptionCacher(
       cache: LruCacher(),

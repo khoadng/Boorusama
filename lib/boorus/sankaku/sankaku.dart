@@ -10,10 +10,11 @@ import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 
 final sankakuClientProvider = Provider<SankakuClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return SankakuClient(
     dio: dio,

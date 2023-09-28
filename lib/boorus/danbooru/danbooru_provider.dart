@@ -6,10 +6,11 @@ import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 
 final danbooruClientProvider = Provider<DanbooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return DanbooruClient(
     dio: dio,

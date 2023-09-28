@@ -10,13 +10,14 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'create_moebooru_config_page.dart';
 import 'moebooru_post_details_desktop_page.dart';
 import 'moebooru_post_details_page.dart';
 
 final moebooruClientProvider = Provider<MoebooruClient>((ref) {
   final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+  final dio = newDio(ref.watch(dioArgsProvider));
 
   return MoebooruClient.custom(
     baseUrl: booruConfig.url,
