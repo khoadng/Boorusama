@@ -15,9 +15,9 @@ mixin DanbooruClientPosts {
     final response = await dio.get(
       '/posts.json',
       queryParameters: {
+        if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
         if (page != null) 'page': page,
         if (limit != null) 'limit': limit,
-        if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
       },
     );
 

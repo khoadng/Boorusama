@@ -1,10 +1,11 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 
 abstract interface class E621FavoritesRepository {
-  E621PostsOrError getFavorites(int page);
+  PostsOrError<E621Post> getFavorites(int page);
   Future<bool> addToFavorites(int postId);
   Future<bool> removeFromFavorites(int postId);
 }
@@ -18,7 +19,7 @@ class E621FavoritesRepositoryApi implements E621FavoritesRepository {
 
   final E621Client client;
   final BooruConfig booruConfig;
-  final E621PostRepository postRepository;
+  final PostRepository<E621Post> postRepository;
 
   @override
   Future<bool> addToFavorites(int postId) => client
@@ -33,6 +34,6 @@ class E621FavoritesRepositoryApi implements E621FavoritesRepository {
       .catchError((obj) => false);
 
   @override
-  E621PostsOrError getFavorites(int page) => postRepository.getPosts(
-      'fav:${booruConfig.login?.replaceAll(' ', '_')}', page);
+  PostsOrError<E621Post> getFavorites(int page) => postRepository
+      .getPosts(['fav:${booruConfig.login?.replaceAll(' ', '_')}'], page);
 }

@@ -10,20 +10,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
-import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/user_details_page.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/booru_scope.dart';
+import 'package:boorusama/core/widgets/home_navigation_tile.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
@@ -60,6 +60,8 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final config = widget.config;
+
+      if (!mounted) return;
 
       final id = await ref
           .read(booruUserIdentityProviderProvider)

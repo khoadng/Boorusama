@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 
 //#region Previews
 final danbooruFavoriteGroupPreviewProvider = Provider.autoDispose

@@ -2,12 +2,12 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 
@@ -32,8 +32,8 @@ class ExploreRepositoryApi
     int page, {
     int? limit,
   }) =>
-      postRepository.getPostsFromTags(
-        'order:rank',
+      postRepository.getPosts(
+        ['order:rank'],
         page,
         limit: limit,
       );

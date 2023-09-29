@@ -5,9 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -22,12 +19,15 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/home_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
-import 'core/router.dart';
-import 'core/scaffolds/home_page_scaffold.dart';
-import 'core/scaffolds/post_details_page_scaffold.dart';
-import 'core/scaffolds/search_page_scaffold.dart';
 import 'danbooru/feats/posts/posts.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
@@ -71,7 +71,7 @@ typedef ArtistPageBuilder = Widget Function(
 
 typedef PostFetcher = PostsOrError Function(
   int page,
-  String tags,
+  List<String> tags,
 );
 
 typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(

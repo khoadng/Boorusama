@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 bool isFirebaseCrashlyticsSupportedPlatforms() =>

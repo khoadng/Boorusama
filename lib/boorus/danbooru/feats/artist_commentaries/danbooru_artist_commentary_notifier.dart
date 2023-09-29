@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'danbooru_artist_commentaries_provider.dart';
 

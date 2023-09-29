@@ -5,12 +5,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/widgets/desktop_search_bar.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
@@ -40,8 +40,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
     return PostScope(
-      fetcher: (page) => ref.watch(moebooruPostRepoProvider).getPostsFromTags(
-            selectedTagController.rawTagsString,
+      fetcher: (page) => ref.watch(moebooruPostRepoProvider).getPosts(
+            selectedTagController.rawTags,
             page,
           ),
       builder: (context, controller, errors) => Column(

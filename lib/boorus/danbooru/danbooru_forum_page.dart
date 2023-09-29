@@ -7,9 +7,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

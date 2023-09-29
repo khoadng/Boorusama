@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 import 'tags_provider.dart';
 

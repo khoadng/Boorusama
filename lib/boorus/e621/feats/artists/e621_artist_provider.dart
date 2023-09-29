@@ -25,6 +25,6 @@ final e621ArtistPostsProvider =
   if (name == null) return [];
 
   final repo = ref.read(e621PostRepoProvider);
-  final posts = await repo.getPosts(name, 1).run();
+  final posts = await repo.getPosts([name], 1).run();
   return posts.getOrElse((l) => []);
 });

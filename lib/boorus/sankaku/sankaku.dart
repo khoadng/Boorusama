@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/autocompletes/autocomplete.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
+import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 
 final sankakuClientProvider = Provider<SankakuClient>((ref) {
@@ -30,9 +30,9 @@ final sankakuPostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),
-      getPosts: (tags, page, {limit}) async {
+      fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
-          tags: tags.split(' '),
+          tags: tags,
           page: page,
           limit: limit,
         );
@@ -117,5 +117,5 @@ class SankakuBuilder
 
   @override
   PostFetcher get postFetcher =>
-      (tags, page, {limit}) => postRepository.getPostsFromTags(page, tags);
+      (tags, page, {limit}) => postRepository.getPosts(page, tags);
 }

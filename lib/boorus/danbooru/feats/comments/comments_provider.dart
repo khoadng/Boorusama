@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 
 final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
   return CommentRepositoryApi(

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/widgets/desktop_search_bar.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -41,7 +41,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) => ref.read(e621PostRepoProvider).getPosts(
-            selectedTagController.rawTagsString,
+            selectedTagController.rawTags,
             page,
           ),
       builder: (context, controller, errors) => Column(

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/scaffolds/tag_details_page_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/scaffolds/tag_details_page_scaffold.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {

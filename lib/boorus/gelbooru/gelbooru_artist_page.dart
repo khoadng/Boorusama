@@ -5,11 +5,11 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tag_filter_category.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/scaffolds/tag_details_page_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tag_filter_category.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/scaffolds/tag_details_page_scaffold.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/functional.dart';
 
 class GelbooruArtistPage extends ConsumerStatefulWidget {
@@ -31,7 +31,7 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) =>
-          ref.read(gelbooruArtistCharacterPostRepoProvider).getPostsFromTags(
+          ref.read(gelbooruArtistCharacterPostRepoProvider).getPosts(
                 queryFromTagFilterCategory(
                   category: selectedCategory.value,
                   tag: widget.artistName,

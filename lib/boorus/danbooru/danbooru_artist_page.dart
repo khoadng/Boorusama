@@ -5,11 +5,11 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/widgets/danbooru_tag_details_page.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruArtistPage extends ConsumerStatefulWidget {

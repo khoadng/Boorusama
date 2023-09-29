@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 void main() {
   group('[tag category order test]', () {

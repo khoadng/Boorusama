@@ -5,10 +5,10 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'danbooru_post.dart';
-import 'danbooru_post_repository.dart';
+import 'utils.dart';
 
 mixin DanbooruFavoriteGroupPostMixin {
   PostRepository<DanbooruPost> get postRepository;
@@ -17,9 +17,7 @@ mixin DanbooruFavoriteGroupPostMixin {
     final ids = queue.dequeue(20);
 
     final posts = await postRepository
-        .getPostsFromIds(
-          ids,
-        )
+        .getPostsFromIds(ids)
         .run()
         .then((value) => value.fold(
               (l) => [],

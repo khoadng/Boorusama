@@ -1,7 +1,7 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 class BlacklistedTagsRepositoryImpl implements BlacklistedTagsRepository {
   BlacklistedTagsRepositoryImpl(

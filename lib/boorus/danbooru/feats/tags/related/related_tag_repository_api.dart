@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 const _kTagLimit = 300;
 

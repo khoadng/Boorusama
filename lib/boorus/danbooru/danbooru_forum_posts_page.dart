@@ -9,13 +9,13 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/dtext/html_converter.dart';
-import 'package:boorusama/boorus/core/feats/user_level_colors.dart';
-import 'package:boorusama/boorus/core/utils.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/dtext/html_converter.dart';
+import 'package:boorusama/core/feats/user_level_colors.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/string.dart';
 import 'widgets/forums/danbooru_forum_vote_chip.dart';
 import 'widgets/forums/forum_post_header.dart';

@@ -8,10 +8,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/add_to_blacklist_page.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_character_page.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
@@ -20,6 +16,10 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/user_details_page.dart';
+import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';

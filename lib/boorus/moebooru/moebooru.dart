@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/moebooru_post_repository_api.dart';
+import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'create_moebooru_config_page.dart';
 import 'moebooru_post_details_desktop_page.dart';
@@ -38,7 +39,7 @@ class MoebooruBuilder
     required this.autocompleteRepo,
   });
 
-  final MoebooruPostRepositoryApi postRepo;
+  final PostRepository<MoebooruPost> postRepo;
   final MoebooruAutocompleteRepository autocompleteRepo;
 
   @override
@@ -69,8 +70,7 @@ class MoebooruBuilder
           );
 
   @override
-  PostFetcher get postFetcher =>
-      (page, tags) => postRepo.getPostsFromTags(tags, page);
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>

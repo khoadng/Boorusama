@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/types.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/datetime_selector.dart';
-import 'package:boorusama/boorus/core/widgets/time_scale_toggle_switch.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/types.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/widgets/datetime_selector.dart';
+import 'package:boorusama/core/widgets/time_scale_toggle_switch.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 

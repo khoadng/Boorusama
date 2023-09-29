@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/feats/comments/comments.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 
 const youtubeUrl = 'www.youtube.com';
 

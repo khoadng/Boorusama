@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/foundation/path.dart';
 
 class BoorusamaStyledFileNameGenerator

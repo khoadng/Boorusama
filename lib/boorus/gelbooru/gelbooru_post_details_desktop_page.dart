@@ -9,14 +9,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/post_media.dart';
-import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/details_page_desktop.dart';
+import 'package:boorusama/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/core/widgets/post_media.dart';
+import 'package:boorusama/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/widgets/basic_tag_list.dart';
 import 'widgets/gelbooru_post_action_toolbar.dart';

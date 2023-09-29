@@ -2,16 +2,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/preloaders/preloaders.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
     on ConsumerState<T> {

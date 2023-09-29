@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_artist_page.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 
 void goToGelbooruArtistPage(

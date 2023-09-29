@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 

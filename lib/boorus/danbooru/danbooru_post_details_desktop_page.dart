@@ -9,17 +9,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/details_page_desktop.dart';
-import 'package:boorusama/boorus/core/widgets/post_media.dart';
-import 'package:boorusama/boorus/core/widgets/posts/file_details_section.dart';
-import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/details_page_desktop.dart';
+import 'package:boorusama/core/widgets/post_media.dart';
+import 'package:boorusama/core/widgets/posts/file_details_section.dart';
+import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_post_details_page.dart';
 import 'widgets/details/danbooru_more_action_button.dart';

@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/pages/home/side_menu_tile.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/boorus/core/widgets/booru_scope.dart';
-import 'package:boorusama/boorus/core/widgets/home_navigation_tile.dart';
-import 'package:boorusama/boorus/core/widgets/home_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/boorus/home_page.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_popular_page.dart';
 import 'package:boorusama/boorus/moebooru/moebooru_popular_recent_page.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/pages/home/side_menu_tile.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/widgets/booru_scope.dart';
+import 'package:boorusama/core/widgets/home_navigation_tile.dart';
+import 'package:boorusama/core/widgets/home_search_bar.dart';
+import 'package:boorusama/core/widgets/posts/post_scope.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -144,8 +144,7 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
 
   Widget _buildMobileHomeView(HomePageController controller) {
     return PostScope(
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider).getPostsFromTags('', page),
+      fetcher: (page) => ref.read(moebooruPostRepoProvider).getPosts([], page),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

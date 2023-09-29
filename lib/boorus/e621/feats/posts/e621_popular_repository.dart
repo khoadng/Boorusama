@@ -1,16 +1,17 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/e621/types/types.dart' as e;
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
 
 abstract interface class E621PopularRepository {
-  E621PostsOrError getPopularPosts(DateTime date, TimeScale timeScale);
+  PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale);
 }
 
 class E621PopularRepositoryApi
@@ -35,7 +36,7 @@ class E621PopularRepositoryApi
   String _buildKey(String date, String scale) => '$date-$scale';
 
   @override
-  E621PostsOrError getPopularPosts(DateTime date, TimeScale timeScale) =>
+  PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale) =>
       TaskEither.Do(($) async {
         final dateString = dateToE621Date(date);
         final timeScaleString = timeScaleToE621TimeScale(timeScale);

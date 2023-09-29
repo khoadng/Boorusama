@@ -6,18 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/scaffolds/comment_page_scaffold.dart';
-import 'package:boorusama/boorus/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_artist_page.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'gelbooru_post_details_desktop_page.dart';
 import 'gelbooru_post_details_page.dart';
@@ -95,7 +96,7 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
     required this.client,
   });
 
-  final GelbooruPostRepositoryApi postRepo;
+  final PostRepository<GelbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final GelbooruClient client;
 
@@ -127,7 +128,7 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
         tags,
         page,
       );
@@ -182,7 +183,7 @@ class GelbooruSearchPage extends ConsumerWidget {
         sliverHeaderBuilder: (context) => slivers,
       ),
       fetcher: (page, tags) =>
-          ref.watch(gelbooruPostRepoProvider).getPostsFromTags(tags, page),
+          ref.watch(gelbooruPostRepoProvider).getPosts(tags, page),
     );
   }
 }

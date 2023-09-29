@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/blacklists/blacklists.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<Recommend<DanbooruPost>>, DanbooruPost>(
@@ -22,7 +22,7 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
     List<DanbooruPost> posts;
 
     posts = await repo
-        .getPostsFromTags(tag, 1)
+        .getPosts([tag], 1)
         .run()
         .then((value) => value.fold((l) => [], (r) => r));
 
@@ -59,7 +59,7 @@ final danbooruPostDetailsCharacterProvider = FutureProvider.family
     List<DanbooruPost> posts;
 
     posts = await repo
-        .getPostsFromTags(tag, 1)
+        .getPosts([tag], 1)
         .run()
         .then((value) => value.fold((l) => [], (r) => r));
 
@@ -89,8 +89,8 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
   final repo = ref.watch(danbooruPostRepoProvider);
 
   final posts = await repo
-      .getPostsFromTags(
-        post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}',
+      .getPosts(
+        [post.hasParent ? 'parent:${post.parentId}' : 'parent:${post.id}'],
         1,
       )
       .run()

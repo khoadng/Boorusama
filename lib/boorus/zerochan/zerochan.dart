@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 
@@ -28,9 +28,9 @@ final zerochanPostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),
-      getPosts: (tags, page, {limit}) async {
+      fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
-          tags: tags.split(' ').toList(),
+          tags: tags,
           page: page,
         );
 
@@ -117,8 +117,7 @@ class ZerochanBuilder
           );
 
   @override
-  PostFetcher get postFetcher =>
-      (page, tags) => postRepo.getPostsFromTags(tags, page);
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(tags, page);
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>

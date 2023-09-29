@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -40,7 +40,7 @@ class SavedSearchFeedPage extends ConsumerWidget {
         SavedSearchState.feed => DanbooruPostScope(
             fetcher: (page) => ref
                 .read(danbooruPostRepoProvider)
-                .getPostsFromTags(selectedSearch.toQuery(), page),
+                .getPosts(selectedSearch.toQuery(), page),
             builder: (context, controller, errors) => _PostList(
               controller: controller,
               errors: errors,

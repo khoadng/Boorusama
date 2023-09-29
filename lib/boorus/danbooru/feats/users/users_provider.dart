@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/creator_repository.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/creators_notifier.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruUserRepoProvider = Provider<UserRepository>((ref) {
@@ -43,8 +43,8 @@ final danbooruUserUploadsProvider = FutureProvider.autoDispose
 
   final repo = ref.watch(danbooruPostRepoProvider);
   final uploads = await repo
-      .getPostsFromTags(
-        'user:${user.name}',
+      .getPosts(
+        ['user:${user.name}'],
         1,
         limit: 50,
       )
@@ -62,8 +62,8 @@ final danbooruUserFavoritesProvider = FutureProvider.autoDispose
   final user = await ref.watch(danbooruUserProvider(uid).future);
   final repo = ref.watch(danbooruPostRepoProvider);
   final favs = await repo
-      .getPostsFromTags(
-        buildFavoriteQuery(user.name),
+      .getPosts(
+        [buildFavoriteQuery(user.name)],
         1,
         limit: 50,
       )

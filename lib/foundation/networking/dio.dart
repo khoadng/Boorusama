@@ -5,8 +5,8 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/http/dio_logger_interceptor.dart';
 
 Dio newDio(

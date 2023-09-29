@@ -2,11 +2,11 @@
 import 'dart:async';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/preloaders/preloaders.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/preloaders/preloaders.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'danbooru_post.dart';
 
 mixin DanbooruPostTransformMixin<T, E> {

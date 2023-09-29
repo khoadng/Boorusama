@@ -1,12 +1,11 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/functional.dart';
-import 'moebooru_post_repository_api.dart';
 
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_artist_page.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'create_danbooru_config_page.dart';
 import 'danbooru_post_details_desktop_page.dart';
 import 'danbooru_post_details_page.dart';
@@ -60,7 +60,7 @@ class DanbooruBuilder implements BooruBuilder {
           );
 
   @override
-  PostFetcher get postFetcher => (page, tags) => postRepo.getPostsFromTags(
+  PostFetcher get postFetcher => (page, tags) => postRepo.getPosts(
         tags,
         page,
       );

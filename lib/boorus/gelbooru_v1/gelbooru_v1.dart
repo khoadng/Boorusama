@@ -4,11 +4,11 @@ import 'package:path/path.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/pages/boorus/create_anon_config_page.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
@@ -18,7 +18,7 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),
-      getPosts: (tags, page, {limit}) async {
+      fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
           page: page,
@@ -96,7 +96,7 @@ class GelbooruV1Builder
 
   @override
   PostFetcher get postFetcher => (page, tags) => TaskEither.Do(($) async {
-        final posts = await $(postRepo.getPostsFromTags(tags, page));
+        final posts = await $(postRepo.getPosts(tags, page));
 
         return posts;
       });

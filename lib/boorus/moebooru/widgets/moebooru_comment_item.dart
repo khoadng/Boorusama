@@ -6,10 +6,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/dtext/html_converter.dart';
-import 'package:boorusama/boorus/core/widgets/comment_header.dart';
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/dtext/html_converter.dart';
+import 'package:boorusama/core/widgets/comment_header.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {

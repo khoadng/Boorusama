@@ -2,8 +2,8 @@
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/time.dart';
 import 'gelbooru_post.dart';
 

@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 class DanbooruTagCategoryRepository {
   Box<String>? _box;

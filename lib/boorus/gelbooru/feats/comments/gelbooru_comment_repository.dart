@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/comments/comments.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 import 'package:boorusama/time.dart';
 
 abstract interface class GelbooruCommentRepository {

@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
+import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
 

@@ -23,9 +23,9 @@ class GelbooruV1Client {
 
   Future<List<PostV1Dto>> getPosts({
     int? page,
-    String? tags,
+    List<String>? tags,
   }) async {
-    final tagString = tags == null || tags.isEmpty ? 'all' : tags;
+    final tagString = tags == null || tags.isEmpty ? 'all' : tags.join('+');
 
     final response = await _dio.get(
       '/index.php',

@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/artist_commentaries/artist_commentaries.dart';
-import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/artist_section.dart';
-import 'package:boorusama/boorus/core/widgets/general_more_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/note_action_button.dart';
-import 'package:boorusama/boorus/core/widgets/posts/information_section.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/artist_section.dart';
+import 'package:boorusama/core/widgets/general_more_action_button.dart';
+import 'package:boorusama/core/widgets/note_action_button.dart';
+import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/e621_post_action_toolbar.dart';
 import 'widgets/e621_post_tag_list.dart';

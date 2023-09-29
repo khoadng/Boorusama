@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 
 enum ScreenSize {
   small,

@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/dart.dart';
 
 class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {

@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/toast.dart';
 import 'blacklisted_tags_provider.dart';

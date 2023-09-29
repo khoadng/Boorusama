@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/search/search.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/core/widgets/desktop_search_bar.dart';
-import 'package:boorusama/boorus/core/widgets/result_header.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/widgets/desktop_search_bar.dart';
+import 'package:boorusama/core/widgets/result_header.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/search/related_tag_section.dart';
 
@@ -49,8 +49,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   @override
   Widget build(BuildContext context) {
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPostsFromTags(
-            selectedTagController.rawTagsString,
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+            selectedTagController.rawTags,
             page,
           ),
       builder: (context, controller, errors) => Column(

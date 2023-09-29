@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_passworld_field.dart';
-import 'package:boorusama/boorus/core/pages/boorus/widgets/create_booru_scaffold.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
-import '../core/pages/boorus/widgets/create_booru_config_name_field.dart';
-import '../core/pages/boorus/widgets/create_booru_login_field.dart';
-import '../core/pages/boorus/widgets/create_booru_submit_button.dart';
 
 class CreateSankakuConfigPage extends ConsumerStatefulWidget {
   const CreateSankakuConfigPage({

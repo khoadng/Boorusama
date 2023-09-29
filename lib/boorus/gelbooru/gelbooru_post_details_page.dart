@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/gelbooru_post_action_toolbar.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';

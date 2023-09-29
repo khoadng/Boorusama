@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_scatter/flutter_scatter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/widgets/tag_detail_region.dart';
-import 'package:boorusama/boorus/core/widgets/tag_details_sliver_app_bar.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/tag_detail_region.dart';
+import 'package:boorusama/core/widgets/tag_details_sliver_app_bar.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -73,7 +73,7 @@ class _DanbooruTagDetailsPageState
         ],
       ),
       builder: (_) => DanbooruPostScope(
-        fetcher: (page) => postRepo.getPostsFromTags(
+        fetcher: (page) => postRepo.getPosts(
           queryFromTagFilterCategory(
             category: selectedCategory.value,
             tag: widget.tagName,

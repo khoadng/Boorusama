@@ -4,9 +4,6 @@ import 'package:flutter/cupertino.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-// Project imports:
-import 'pool_category.dart';
-
 @immutable
 class Pool extends Equatable {
   const Pool({
@@ -79,3 +76,15 @@ typedef PoolName = String;
 typedef PoolDescription = String;
 typedef PoolPostCount = int;
 typedef PoolId = int;
+
+enum PoolCategory {
+  unknown,
+  collection,
+  series;
+}
+
+typedef PoolCover = ({
+  PoolId id,
+  String? url,
+  double? aspectRatio,
+});

@@ -3,12 +3,14 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 import 'post_variant.dart';
+
+typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
 class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin

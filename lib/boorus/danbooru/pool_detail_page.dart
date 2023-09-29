@@ -7,17 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/router.dart';
-import 'package:boorusama/boorus/core/utils.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/utils/html_utils.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
@@ -42,10 +43,10 @@ class PoolDetailPage extends ConsumerWidget {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
 
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPostsFromTags(
-            'pool:${pool.id}',
-            page,
-          ),
+      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+        ['pool:${pool.id}'],
+        page,
+      ),
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
         controller: controller,
@@ -80,19 +81,23 @@ class PoolDetailPage extends ConsumerWidget {
               ),
             ),
           ),
-          if (poolDesc.description.isNotEmpty &&
-              hasTextBetweenDiv(poolDesc.description))
-            SliverToBoxAdapter(
-              child: Html(
-                onLinkTap: (url, context, attributes, element) =>
-                    _onHtmlLinkTapped(
-                  attributes,
-                  url,
-                  poolDesc.descriptionEndpointRefUrl,
-                ),
-                data: poolDesc.description,
-              ),
-            ),
+          poolDesc.maybeWhen(
+            data: (data) => data.description.isNotEmpty &&
+                    hasTextBetweenDiv(data.description)
+                ? SliverToBoxAdapter(
+                    child: Html(
+                      onLinkTap: (url, context, attributes, element) =>
+                          _onHtmlLinkTapped(
+                        attributes,
+                        url,
+                        data.descriptionEndpointRefUrl,
+                      ),
+                      data: data.description,
+                    ),
+                  )
+                : const SliverSizedBox.shrink(),
+            orElse: () => const SliverSizedBox.shrink(),
+          ),
         ],
       ),
     );

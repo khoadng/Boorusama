@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';
@@ -15,13 +15,14 @@ class DanbooruArtistCharacterPostRepository
   final Cacher<String, List<DanbooruPost>> cache;
 
   @override
-  PostsOrError<DanbooruPost> getPostsFromTags(String tags, int page,
+  PostsOrError<DanbooruPost> getPosts(List<String> tags, int page,
       {int? limit}) {
-    final name = "$tags-$page-$limit";
+    final tagString = tags.join(' ');
+    final name = "$tagString-$page-$limit";
 
     return cache.get(name).toOption().fold(
           () => repository
-              .getPostsFromTags(
+              .getPosts(
                 tags,
                 page,
                 limit: limit,
