@@ -112,6 +112,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.blacklistedTags != widget.blacklistedTags) {
       _updateFilter();
+      _updateData();
     }
   }
 
