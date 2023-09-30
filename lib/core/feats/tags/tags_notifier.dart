@@ -31,24 +31,28 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
     if (filtered.isEmpty) return;
 
     final tags = await repo.getTagsByName(filtered, 1);
-
-    tags.sort((a, b) => a.rawName.compareTo(b.rawName));
-    final group = tags
-        .groupBy((e) => e.category)
-        .entries
-        .map((e) => TagGroupItem(
-              category: e.key.index,
-              groupName: tagCategoryToString(e.key),
-              tags: e.value,
-              order: tagCategoryToOrder(e.key),
-            ))
-        .toList()
-      ..sort((a, b) => a.order.compareTo(b.order));
+    final group = createTagGroupItems(tags);
 
     onSuccess?.call(group);
 
     state = group;
   }
+}
+
+List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
+  tags.sort((a, b) => a.rawName.compareTo(b.rawName));
+  final group = tags
+      .groupBy((e) => e.category)
+      .entries
+      .map((e) => TagGroupItem(
+            category: e.key.index,
+            groupName: tagCategoryToString(e.key),
+            tags: e.value,
+            order: tagCategoryToOrder(e.key),
+          ))
+      .toList()
+    ..sort((a, b) => a.order.compareTo(b.order));
+  return group;
 }
 
 String tagCategoryToString(TagCategory category) => switch (category) {

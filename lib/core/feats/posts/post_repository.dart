@@ -45,8 +45,8 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
       });
 }
 
-Future<List<Post>> getPostsFromTagsOrEmptyFrom(
-  PostRepository repository,
+Future<List<T>> getPostsFromTagsOrEmptyFrom<T extends Post>(
+  PostRepository<T> repository,
   List<String> tags,
   int page, {
   int? limit,
@@ -59,12 +59,12 @@ Future<List<Post>> getPostsFromTagsOrEmptyFrom(
         )
         .run()
         .then((value) => value.fold(
-              (l) => <Post>[],
+              (l) => <T>[],
               (r) => r,
             ));
 
-extension PostRepositoryX on PostRepository {
-  Future<List<Post>> getPostsFromTagsOrEmpty(
+extension PostRepositoryX<T extends Post> on PostRepository<T> {
+  Future<List<T>> getPostsFromTagsOrEmpty(
     List<String> tags,
     int page, {
     int? limit,
@@ -72,10 +72,10 @@ extension PostRepositoryX on PostRepository {
       getPostsFromTagsOrEmptyFrom(this, tags, page, limit: limit);
 }
 
-mixin PostRepositoryMixin {
-  PostRepository get postRepository;
+mixin PostRepositoryMixin<T extends Post> {
+  PostRepository<T> get postRepository;
 
-  Future<List<Post>> getPostsFromTagsOrEmpty(
+  Future<List<T>> getPostsFromTagsOrEmpty(
     List<String> tags,
     int page, {
     int? limit,

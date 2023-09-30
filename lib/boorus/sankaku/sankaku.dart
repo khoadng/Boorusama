@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,80 +11,26 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
+import 'package:boorusama/core/widgets/post_tag_list.dart';
+import 'package:boorusama/core/widgets/posts/recommend_artist_list.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/widgets/sliver_sized_box.dart';
+import 'sankaku_post.dart';
 
-final sankakuClientProvider =
-    Provider.family<SankakuClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
-
-  return SankakuClient(
-    dio: dio,
-    baseUrl: booruConfig.url,
-    username: booruConfig.login,
-    password: booruConfig.apiKey,
-  );
-});
-
-final sankakuPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
-  (ref, config) {
-    final client = ref.watch(sankakuClientProvider(config));
-
-    return PostRepositoryBuilder(
-      getSettings: () async => ref.read(settingsProvider),
-      fetch: (tags, page, {limit}) async {
-        final posts = await client.getPosts(
-          tags: tags,
-          page: page,
-          limit: limit,
-        );
-
-        return posts.map((e) {
-          final hasParent = e.parentId != null;
-          final hasChilren = e.hasChildren ?? false;
-          final hasParentOrChildren = hasParent || hasChilren;
-
-          return SimplePost(
-            id: e.id ?? 0,
-            thumbnailImageUrl: e.previewUrl ?? '',
-            sampleImageUrl: e.sampleUrl ?? '',
-            originalImageUrl: e.fileUrl ?? '',
-            tags: e.tags?.map((e) => e.name).whereNotNull().toList() ?? [],
-            rating: mapStringToRating(e.rating),
-            hasComment: e.hasComments ?? false,
-            isTranslated: false,
-            hasParentOrChildren: hasParentOrChildren,
-            source: PostSource.from(e.source),
-            score: e.totalScore ?? 0,
-            duration: e.videoDuration ?? 0,
-            fileSize: e.fileSize ?? 0,
-            format: extractFileExtension(e.fileType) ?? '',
-            hasSound: null,
-            height: e.height?.toDouble() ?? 0,
-            md5: e.md5 ?? '',
-            videoThumbnailUrl: e.previewUrl ?? '',
-            videoUrl: e.fileUrl ?? '',
-            width: e.width?.toDouble() ?? 0,
-            getLink: (_) => '${client.originalUrl}/post/show/${e.md5}',
-          );
-        }).toList();
-      },
-    );
-  },
-);
-
-String? extractFileExtension(String? mimeType) {
-  if (mimeType == null) return null;
-  final parts = mimeType.split('/');
-  return parts.length >= 2 ? '.${parts[1]}' : null;
-}
+part 'sankaku_provider.dart';
 
 class SankakuBuilder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
-        ArtistNotSupportedMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   SankakuBuilder({
@@ -89,7 +38,7 @@ class SankakuBuilder
     required this.client,
   });
 
-  final PostRepository postRepository;
+  final PostRepository<SankakuPost> postRepository;
   final SankakuClient client;
 
   @override
@@ -118,4 +67,102 @@ class SankakuBuilder
   @override
   PostFetcher get postFetcher =>
       (tags, page, {limit}) => postRepository.getPosts(page, tags);
+
+  @override
+  PostDetailsPageBuilder get postDetailsPageBuilder =>
+      (context, config, payload) {
+        final posts = payload.posts.map((e) => e as SankakuPost).toList();
+        final initialIndex = payload.initialIndex;
+        final scrollController = payload.scrollController;
+
+        return BooruProvider(
+          builder: (booruBuilder) => PostDetailsPageScaffold(
+            posts: posts,
+            initialIndex: initialIndex,
+            sliverArtistPostsBuilder: (context, post) =>
+                SankakuRecommendArtists(post: post),
+            tagListBuilder: (context, post) => PostTagList(
+              tags: createTagGroupItems([
+                ...post.artistDetailsTags,
+                ...post.characterDetailsTags,
+                ...post.copyrightDetailsTags,
+              ]),
+              itemBuilder: (context, tag) => GestureDetector(
+                onTap: () => goToSearchPage(context, tag: tag.rawName),
+                child: PostTagListChip(
+                  tag: tag,
+                ),
+              ),
+            ),
+            onExit: (page) => scrollController?.scrollToIndex(page),
+            onTagTap: (tag) => goToSearchPage(context, tag: tag),
+          ),
+        );
+      };
+
+  @override
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => SankakuArtistPage(
+            artistName: artistName,
+          );
+}
+
+class SankakuArtistPage extends ConsumerWidget {
+  const SankakuArtistPage({
+    super.key,
+    required this.artistName,
+  });
+
+  final String artistName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return ArtistPageScaffold(
+      artistName: artistName,
+      fetcher: (page, selectedCategory) =>
+          ref.read(sankakuArtistPostRepo(config)).getPosts([
+        artistName,
+        if (selectedCategory == TagFilterCategory.popular) 'order:score',
+      ], page),
+    );
+  }
+}
+
+class SankakuRecommendArtists extends ConsumerWidget {
+  const SankakuRecommendArtists({
+    super.key,
+    required this.post,
+  });
+
+  final SankakuPost post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final artistName = post.artistTags.firstOrNull;
+
+    return ref
+        .watch(sankakuArtistPostsProvider(post.artistTags.firstOrNull))
+        .maybeWhen(
+          data: (posts) => RecommendArtistList(
+            onTap: (recommendIndex, postIndex) => goToPostDetailsPage(
+              context: context,
+              posts: posts,
+              initialIndex: postIndex,
+            ),
+            onHeaderTap: (index) => goToArtistPage(context, artistName),
+            recommends: [
+              Recommend(
+                title: artistName?.replaceAll('_', ' ') ?? '????',
+                posts: posts,
+                type: RecommendType.artist,
+                tag: artistName ?? '????',
+              ),
+            ],
+            imageUrl: (item) => item.sampleImageUrl,
+          ),
+          orElse: () => const SliverSizedBox.shrink(),
+        );
+  }
 }

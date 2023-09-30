@@ -18,7 +18,7 @@ extension TagCategoryX on TagCategory {
       };
 }
 
-TagCategory intToTagCategory(int value) => switch (value) {
+TagCategory intToTagCategory(int? value) => switch (value) {
       0 => TagCategory.general,
       1 => TagCategory.artist,
       3 => TagCategory.copyright,

@@ -228,9 +228,9 @@ class SettingsRoutes {
 const kInitialQueryKey = 'query';
 const kArtistNameKey = 'name';
 
-typedef DetailsPayload = ({
+typedef DetailsPayload<T extends Post> = ({
   int initialIndex,
-  List<Post> posts,
+  List<T> posts,
   AutoScrollController? scrollController,
   bool isDesktop,
 });

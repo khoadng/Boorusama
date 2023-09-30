@@ -3,24 +3,29 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 
-class PostRepositoryCacher implements PostRepository {
+class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
   PostRepositoryCacher({
     required this.repository,
     required this.cache,
+    this.keyBuilder,
   });
 
-  final PostRepository repository;
-  final Cacher<String, List<Post>> cache;
+  final PostRepository<T> repository;
+  final Cacher<String, List<T>> cache;
+  final String Function(List<String> tags, int page, {int? limit})? keyBuilder;
 
   @override
-  PostsOrError getPosts(
+  PostsOrError<T> getPosts(
     List<String> tags,
     int page, {
     int? limit,
   }) =>
       TaskEither.Do(($) async {
         final tagString = tags.join(' ');
-        final name = "$tagString-$page-$limit";
+        final defaultKey = "$tagString-$page-$limit";
+        final name = keyBuilder != null
+            ? keyBuilder!(tags, page, limit: limit)
+            : defaultKey;
 
         // Check if the data exists in the cache
         if (cache.exist(name)) {
