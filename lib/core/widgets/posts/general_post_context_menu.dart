@@ -11,6 +11,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
@@ -70,6 +71,11 @@ class GeneralPostContextMenu extends ConsumerWidget {
                   bookmarkState.getBookmark(post, booruConfig.booruType)!,
                 ),
             ),
+          ContextMenuButtonConfig(
+            'Open in browser',
+            onPressed: () =>
+                launchExternalUrlString(post.getLink(booruConfig.url)),
+          ),
           if (onMultiSelect != null)
             ContextMenuButtonConfig(
               'post.action.select'.tr(),
