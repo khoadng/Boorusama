@@ -12,7 +12,7 @@ class PostCountRepositoryBuilder implements PostCountRepository {
   final Future<int?> Function(List<String> tags) countTags;
 
   @override
-  Future<int?> count(List<String> tags) => count(
+  Future<int?> count(List<String> tags) => countTags(
         [...tags, ...extraTags ?? []],
       );
 }
