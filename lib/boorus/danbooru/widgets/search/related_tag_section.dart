@@ -25,6 +25,8 @@ class RelatedTagSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(danbooruRelatedTagProvider(query));
 
+    if (query.isEmpty) return const SizedBox();
+
     return tag == null
         ? TagChipsPlaceholder(
             backgroundColor: backgroundColor,

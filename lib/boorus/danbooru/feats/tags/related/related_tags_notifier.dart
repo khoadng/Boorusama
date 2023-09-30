@@ -16,6 +16,7 @@ class RelatedTagsNotifier
   RelatedTagRepository get repo => ref.read(danbooruRelatedTagRepProvider(arg));
 
   Future<void> fetch(String tag) async {
+    if (tag.isEmpty) return;
     if (state.containsKey(tag)) return;
 
     final result = await repo.getRelatedTag(tag);
