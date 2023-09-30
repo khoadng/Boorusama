@@ -40,9 +40,12 @@ class _MoebooruPostDetailsPageState
   @override
   void initState() {
     super.initState();
-    ref
-        .read(tagsProvider(ref.readConfig).notifier)
-        .load(posts[widget.initialPage].tags);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(tagsProvider(ref.readConfig).notifier)
+          .load(posts[widget.initialPage].tags);
+    });
   }
 
   @override
