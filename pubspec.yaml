@@ -156,5 +156,5 @@ flutter:
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json
-    - assets/boorus.yaml
+    - boorus.yaml
     - CHANGELOG.md

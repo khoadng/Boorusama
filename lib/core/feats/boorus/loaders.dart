@@ -9,7 +9,7 @@ import 'package:yaml/yaml.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'booru.dart';
 
-const String _assetUrl = 'assets/boorus.yaml';
+const String _assetUrl = 'boorus.yaml';
 
 Future<List<Booru>> loadBoorusFromAssets() async {
   final yaml = await rootBundle.loadString(_assetUrl);
