@@ -23,6 +23,9 @@ class SavedSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final searchesAsync =
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('saved_search.saved_search').tr(),
@@ -33,27 +36,30 @@ class SavedSearchPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: const SafeArea(
-        child: _SuccessView(),
+      body: SafeArea(
+        child: searchesAsync.when(
+          data: (data) => _SuccessView(savedSearches: data),
+          error: (error, stackTrace) => Center(
+            child: Text(error.toString()),
+          ),
+          loading: () => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _SuccessView extends ConsumerWidget {
-  const _SuccessView();
+  const _SuccessView({
+    required this.savedSearches,
+  });
+
+  final List<SavedSearch> savedSearches;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final savedSearches = ref.watch(danbooruSavedSearchesProvider(config));
-
-    if (savedSearches == null) {
-      return const Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-    }
-
     return savedSearches.isEmpty
         ? GenericNoDataBox(
             text: 'saved_search.empty_saved_search'.tr(),

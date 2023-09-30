@@ -303,22 +303,21 @@ void goToSavedSearchPatchPage(
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
-      onSubmit: (query, label) => ref
-          .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
-          .update(
-            id: savedSearch.id,
-            label: label,
-            query: query,
-            onUpdated: (data) => showSimpleSnackBar(
-              context: context,
-              duration: const Duration(
-                seconds: 1,
+      onSubmit: (query, label) =>
+          ref.read(danbooruSavedSearchesProvider(ref.readConfig).notifier).edit(
+                id: savedSearch.id,
+                label: label,
+                query: query,
+                onUpdated: (data) => showSimpleSnackBar(
+                  context: context,
+                  duration: const Duration(
+                    seconds: 1,
+                  ),
+                  content: const Text(
+                    'saved_search.saved_search_updated',
+                  ).tr(),
+                ),
               ),
-              content: const Text(
-                'saved_search.saved_search_updated',
-              ).tr(),
-            ),
-          ),
     ),
   );
 }

@@ -11,15 +11,13 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
 import 'widgets/saved_searches/saved_search_landing_view.dart';
 
-class SavedSearchFeedPage extends ConsumerWidget {
+class SavedSearchFeedPage extends ConsumerStatefulWidget {
   const SavedSearchFeedPage({
     super.key,
   });
@@ -31,96 +29,87 @@ class SavedSearchFeedPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final state = ref.watch(danbooruSavedSearchStateProvider(config));
-    final selectedSearch =
-        ref.watch(danbooruSavedSearchSelectedProvider(config));
+  ConsumerState<SavedSearchFeedPage> createState() =>
+      _SavedSearchFeedPageState();
+}
 
-    return state.when(
-      data: (state) => switch (state) {
-        SavedSearchState.landing => const SavedSearchLandingView(),
-        SavedSearchState.feed => DanbooruPostScope(
-            fetcher: (page) => ref
-                .read(danbooruPostRepoProvider(config))
-                .getPosts(selectedSearch.toQuery(), page),
-            builder: (context, controller, errors) => _PostList(
-              controller: controller,
-              errors: errors,
-            ),
-          ),
-      },
+class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
+  var _selectedSearch = SavedSearch.all();
+
+  @override
+  Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+    final savedSearcheAsync = ref.watch(danbooruSavedSearchesProvider(config));
+
+    return savedSearcheAsync.when(
+      data: (searches) => searches.isNotEmpty
+          ? DanbooruPostScope(
+              fetcher: (page) => ref
+                  .read(danbooruPostRepoProvider(config))
+                  .getPosts(_selectedSearch.toQuery(), page),
+              builder: (context, controller, errors) =>
+                  DanbooruInfinitePostList(
+                errors: errors,
+                controller: controller,
+                sliverHeaderBuilder: (context) => [
+                  SliverAppBar(
+                    title: const Text('saved_search.saved_search_feed').tr(),
+                    floating: true,
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    backgroundColor: context.theme.scaffoldBackgroundColor,
+                    actions: [
+                      IconButton(
+                        onPressed: () => goToSavedSearchEditPage(context),
+                        icon: const Icon(Icons.settings),
+                      ),
+                    ],
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
+                      height: 50,
+                      child: _SavedSearchList(
+                        searches: [
+                          SavedSearch.all(),
+                          ...searches,
+                        ],
+                        selectedSearch: _selectedSearch,
+                        onSearchChanged: (search) {
+                          setState(() {
+                            _selectedSearch = search;
+                            controller.refresh();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : const SavedSearchLandingView(),
       error: (error, stackTrace) => const ErrorBox(),
       loading: () => const Center(child: CircularProgressIndicator.adaptive()),
     );
   }
 }
 
-class _PostList extends ConsumerWidget {
-  const _PostList({
-    required this.controller,
-    required this.errors,
+class _SavedSearchList extends ConsumerWidget {
+  const _SavedSearchList({
+    required this.searches,
+    required this.selectedSearch,
+    required this.onSearchChanged,
   });
 
-  final PostGridController<DanbooruPost> controller;
-  final BooruError? errors;
+  final List<SavedSearch> searches;
+  final SavedSearch selectedSearch;
+  final void Function(SavedSearch search) onSearchChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    ref.listen(
-      danbooruSavedSearchSelectedProvider(config),
-      (previous, next) async {
-        if (previous != next) {
-          await const Duration(milliseconds: 100).future;
-          controller.refresh();
-        }
-      },
-    );
-
-    return DanbooruInfinitePostList(
-      errors: errors,
-      controller: controller,
-      sliverHeaderBuilder: (context) => [
-        SliverAppBar(
-          title: const Text('saved_search.saved_search_feed').tr(),
-          floating: true,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          backgroundColor: context.theme.scaffoldBackgroundColor,
-          actions: [
-            IconButton(
-              onPressed: () => goToSavedSearchEditPage(context),
-              icon: const Icon(Icons.settings),
-            ),
-          ],
-        ),
-        SliverToBoxAdapter(
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 16,
-            ),
-            height: 50,
-            child: const _SavedSearchList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SavedSearchList extends ConsumerWidget {
-  const _SavedSearchList();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final searches = ref.watch(danbooruSavedSearchAvailableProvider(config));
-    final selectedSearch =
-        ref.watch(danbooruSavedSearchSelectedProvider(config));
-
     return ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -139,9 +128,7 @@ class _SavedSearchList extends ConsumerWidget {
             selected: isSelected,
             onSelected: (selected) {
               if (!isSelected) {
-                ref
-                    .read(danbooruSavedSearchSelectedProvider(config).notifier)
-                    .state = searches[index];
+                onSearchChanged(searches[index]);
               }
             },
             padding: EdgeInsets.symmetric(
