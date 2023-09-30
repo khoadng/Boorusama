@@ -12,12 +12,13 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
-import 'package:boorusama/core/pages/blacklists/add_to_global_blacklist_page.dart';
+import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tags_search_page.dart';
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -250,14 +251,20 @@ void goToSearchHistoryPage(
 }
 
 Future<bool?> goToAddToGlobalBlacklistPage(
+  WidgetRef ref,
   BuildContext context,
   List<Tag> tags,
 ) {
+  final notifier = ref.read(globalBlacklistedTagsProvider.notifier);
+
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (dialogContext) => AddToGlobalBlacklistPage(tags: tags),
+    builder: (dialogContext) => AddToBlacklistPage(
+      tags: tags,
+      onSelected: (tag) => notifier.addTagWithToast(tag.rawName),
+    ),
   );
 }
 

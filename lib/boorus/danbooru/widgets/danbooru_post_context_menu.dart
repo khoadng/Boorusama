@@ -85,6 +85,19 @@ class DanbooruPostContextMenu extends ConsumerWidget {
                 );
               },
             ),
+          if (hasAccount)
+            ContextMenuButtonConfig(
+              'Add to blacklist',
+              onPressed: () {
+                goToAddToBlacklistPage(ref, context, post.extractTags());
+              },
+            ),
+          ContextMenuButtonConfig(
+            'Add to global blacklist',
+            onPressed: () {
+              goToAddToGlobalBlacklistPage(ref, context, post.extractTags());
+            },
+          ),
           ContextMenuButtonConfig(
             'Open in browser',
             onPressed: () =>

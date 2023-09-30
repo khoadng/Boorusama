@@ -45,7 +45,8 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   );
                   break;
                 case 'add_to_global_blacklist':
-                  goToAddToGlobalBlacklistPage(context, post.extractTags());
+                  goToAddToGlobalBlacklistPage(
+                      ref, context, post.extractTags());
                   break;
                 case 'view_original':
                   goToOriginalImagePage(context, post);

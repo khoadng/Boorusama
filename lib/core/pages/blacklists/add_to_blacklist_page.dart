@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -15,14 +13,14 @@ class AddToBlacklistPage extends ConsumerWidget {
   const AddToBlacklistPage({
     super.key,
     required this.tags,
+    required this.onSelected,
   });
 
   final List<Tag> tags;
+  final void Function(Tag tag) onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -46,11 +44,7 @@ class AddToBlacklistPage extends ConsumerWidget {
             onTap: () {
               final tag = tags[index];
               context.navigator.pop();
-              ref
-                  .read(danbooruBlacklistedTagsProvider(config).notifier)
-                  .addWithToast(
-                    tag: tag.rawName,
-                  );
+              onSelected(tag);
             }),
         itemCount: tags.length,
       ),

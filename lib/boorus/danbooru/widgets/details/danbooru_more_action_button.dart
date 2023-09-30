@@ -47,10 +47,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   goToAddToFavoriteGroupSelectionPage(context, [post]);
                   break;
                 case 'add_to_blacklist':
-                  goToAddToBlacklistPage(context, post);
+                  goToAddToBlacklistPage(ref, context, post.extractTags());
                   break;
                 case 'add_to_global_blacklist':
-                  goToAddToGlobalBlacklistPage(context, post.extractTags());
+                  goToAddToGlobalBlacklistPage(
+                      ref, context, post.extractTags());
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(

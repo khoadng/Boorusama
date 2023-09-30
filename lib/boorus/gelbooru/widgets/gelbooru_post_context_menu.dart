@@ -73,6 +73,12 @@ class GelbooruPostContextMenu extends ConsumerWidget {
                 ),
             ),
           ContextMenuButtonConfig(
+            'Add to global blacklist',
+            onPressed: () {
+              goToAddToGlobalBlacklistPage(ref, context, post.extractTags());
+            },
+          ),
+          ContextMenuButtonConfig(
             'Open in browser',
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),

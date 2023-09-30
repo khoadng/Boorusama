@@ -39,12 +39,12 @@ class BlacklistedTagsNotifier
   Future<void> add({
     required String tag,
     void Function(List<String> tags)? onSuccess,
-    void Function()? onFailure,
+    void Function(Object e)? onFailure,
   }) async {
     final id = await identityProvider.getAccountIdFromConfig(arg);
 
     if (state == null || id == null) {
-      onFailure?.call();
+      onFailure?.call('Not logged in or no blacklisted tags found');
 
       return;
     }
@@ -56,7 +56,7 @@ class BlacklistedTagsNotifier
       await repo.setBlacklistedTags(id, tags);
       state = tags;
     } catch (e) {
-      onFailure?.call();
+      onFailure?.call(e);
     }
   }
 
@@ -120,7 +120,8 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
       add(
         tag: tag,
         onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
-        onFailure: () => showErrorToast('blacklisted_tags.failed_to_add'.tr()),
+        onFailure: (e) =>
+            showErrorToast('${'blacklisted_tags.failed_to_add'.tr()}\n$e'),
       );
 
   Future<void> removeWithToast({

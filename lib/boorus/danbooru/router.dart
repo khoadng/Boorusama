@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/user_details_page.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -385,15 +386,24 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
 }
 
 Future<bool?> goToAddToBlacklistPage(
+  WidgetRef ref,
   BuildContext context,
-  DanbooruPost post,
+  List<Tag> tags,
 ) {
+  final notifier =
+      ref.read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier);
+
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
     builder: (dialogContext) => AddToBlacklistPage(
-      tags: post.extractTags(),
+      tags: tags,
+      onSelected: (tag) {
+        notifier.addWithToast(
+          tag: tag.rawName,
+        );
+      },
     ),
   );
 }
