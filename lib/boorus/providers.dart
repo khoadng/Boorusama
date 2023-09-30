@@ -106,6 +106,7 @@ class DioArgs {
   final UserAgentGenerator userAgentGenerator;
   final BooruConfig booruConfig;
   final LoggerService loggerService;
+  final BooruFactory booruFactory;
 
   DioArgs({
     required this.cacheDir,
@@ -113,6 +114,7 @@ class DioArgs {
     required this.userAgentGenerator,
     required this.booruConfig,
     required this.loggerService,
+    required this.booruFactory,
   });
 }
 
@@ -120,6 +122,7 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
   final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
   final loggerService = ref.watch(loggerProvider);
+  final booruFactory = ref.watch(booruFactoryProvider);
 
   return DioArgs(
     cacheDir: cacheDir,
@@ -127,6 +130,7 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
     userAgentGenerator: userAgentGenerator,
     booruConfig: config,
     loggerService: loggerService,
+    booruFactory: booruFactory,
   );
 });
 

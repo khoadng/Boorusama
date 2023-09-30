@@ -1,4 +1,5 @@
 - danbooru:
+    protocol: https_2
     sites:
       - https://danbooru.donmai.us/
       - https://testbooru.donmai.us/
@@ -9,35 +10,44 @@
     sites:
       - url: https://konachan.com/
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        protocol: https_2
       - url: https://yande.re/
         salt: choujin-steiner--{0}--
+        protocol: https_2
       - url: https://sakugabooru.com/
         salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
+        protocol: https_2
       - url: https://lolibooru.moe/
         salt: --{0}--
 
 - gelbooru:
+    protocol: https_2
     sites:
       - https://gelbooru.com/
 
 - gelbooru_v2:
+    protocol: https_2
     sites:
       - https://rule34.xxx/
 
 - gelbooru_v1: 
+    protocol: https_2
     sites:
       - https://safebooru.org/
 
 - e621:
+    protocol: https_2
     sites:
       - https://e621.net/
       - https://e926.net/
 
 - zerochan:
+    protocol: https_2
     sites:
       - https://zerochan.net/
 
 - sankaku:
+    protocol: https_2
     sites:
       - https://chan.sankakucomplex.com/
       - https://beta.sankakucomplex.com/

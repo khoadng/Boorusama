@@ -17,6 +17,11 @@ Dio newDio(
   final logger = args.loggerService;
   final generator = args.userAgentGenerator;
   final baseUrl = args.baseUrl;
+  final booruFactory = args.booruFactory;
+
+  final booru = booruFactory.getBooruFromUrl(baseUrl);
+  final supportsHttp2 =
+      booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
 
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,
@@ -25,7 +30,7 @@ Dio newDio(
     },
   ));
 
-  if (booruConfig.booruType.supportHttp2) {
+  if (supportsHttp2) {
     dio.httpClientAdapter = Http2Adapter(
       ConnectionManager(
         idleTimeout: const Duration(seconds: 30),

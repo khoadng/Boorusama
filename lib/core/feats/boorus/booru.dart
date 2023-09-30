@@ -11,6 +11,22 @@ const int kE621Id = 25;
 const int kZerochanId = 26;
 const int kSankaku = 27;
 
+enum NetworkProtocol {
+  https_1_1,
+  https_2_0,
+}
+
+NetworkProtocol? stringToNetworkProtocol(String value) => switch (value) {
+      'https_1_1' || 'https_1' => NetworkProtocol.https_1_1,
+      'https_2_0' || 'https_2' => NetworkProtocol.https_2_0,
+      _ => null,
+    };
+
+NetworkProtocol _parseProtocol(dynamic value) => switch (value) {
+      String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
+      _ => NetworkProtocol.https_1_1,
+    };
+
 Future<List<Booru>> loadBoorus(dynamic yaml) async {
   final boorus = <Booru>[];
 
@@ -27,6 +43,7 @@ Future<List<Booru>> loadBoorus(dynamic yaml) async {
 sealed class Booru extends Equatable {
   const Booru({
     required this.name,
+    required this.protocol,
   });
 
   factory Booru.from(String name, dynamic data) => switch (name.toLowerCase()) {
@@ -42,6 +59,7 @@ sealed class Booru extends Equatable {
       };
 
   final String name;
+  final NetworkProtocol protocol;
 
   @override
   List<Object?> get props => [name];
@@ -75,6 +93,14 @@ extension BooruX on Booru {
         Sankaku s => s.sites.contains(url),
       };
 
+  NetworkProtocol? getSiteProtocol(String url) => switch (this) {
+        Moebooru m => m.sites
+                .firstWhereOrNull((e) => url.contains(e.url))
+                ?.overrideProtocol ??
+            protocol,
+        _ => protocol,
+      };
+
   String? getSalt(String url) => switch (this) {
         Moebooru m =>
           m.sites.firstWhereOrNull((e) => url.contains(e.url))?.salt,
@@ -85,12 +111,14 @@ extension BooruX on Booru {
 final class Danbooru extends Booru {
   const Danbooru({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory Danbooru.from(String name, dynamic data) {
     return Danbooru(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -101,12 +129,14 @@ final class Danbooru extends Booru {
 final class Gelbooru extends Booru {
   const Gelbooru({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory Gelbooru.from(String name, dynamic data) {
     return Gelbooru(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -117,12 +147,14 @@ final class Gelbooru extends Booru {
 final class GelbooruV1 extends Booru {
   const GelbooruV1({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory GelbooruV1.from(String name, dynamic data) {
     return GelbooruV1(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -133,12 +165,14 @@ final class GelbooruV1 extends Booru {
 class GelbooruV2 extends Booru {
   const GelbooruV2({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory GelbooruV2.from(String name, dynamic data) {
     return GelbooruV2(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -149,12 +183,14 @@ class GelbooruV2 extends Booru {
 class E621 extends Booru {
   const E621({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory E621.from(String name, dynamic data) {
     return E621(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -165,12 +201,14 @@ class E621 extends Booru {
 class Zerochan extends Booru {
   const Zerochan({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory Zerochan.from(String name, dynamic data) {
     return Zerochan(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -181,11 +219,13 @@ class Zerochan extends Booru {
 typedef MoebooruSite = ({
   String url,
   String salt,
+  NetworkProtocol? overrideProtocol,
 });
 
 final class Moebooru extends Booru {
   const Moebooru({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
@@ -195,15 +235,19 @@ final class Moebooru extends Booru {
     for (final item in data['sites']) {
       final url = item['url'] as String;
       final salt = item['salt'] as String;
+      final overrideProtocol = item['protocol'];
 
       sites.add((
         url: url,
         salt: salt,
+        overrideProtocol:
+            overrideProtocol != null ? _parseProtocol(overrideProtocol) : null,
       ));
     }
 
     return Moebooru(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: sites,
     );
   }
@@ -214,12 +258,14 @@ final class Moebooru extends Booru {
 class Sankaku extends Booru {
   const Sankaku({
     required super.name,
+    required super.protocol,
     required this.sites,
   });
 
   factory Sankaku.from(String name, dynamic data) {
     return Sankaku(
       name: name,
+      protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -270,14 +316,6 @@ extension BooruTypeX on BooruType {
   bool get supportBlacklistedTags => isDanbooruBased;
 
   bool get hasUnknownFullImageUrl => this == BooruType.zerochan;
-
-  bool get supportHttp2 =>
-      isDanbooruBased ||
-      [
-        BooruType.moebooru,
-        BooruType.e621,
-        BooruType.zerochan,
-      ].contains(this);
 
   bool get hasCensoredTagsBanned => this == BooruType.danbooru;
 
