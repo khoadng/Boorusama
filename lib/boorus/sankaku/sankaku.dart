@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
+import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
@@ -29,10 +30,7 @@ import 'sankaku_post.dart';
 part 'sankaku_provider.dart';
 
 class SankakuBuilder
-    with
-        FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
-        DefaultBooruUIMixin
+    with PostCountNotSupportedMixin, DefaultBooruUIMixin
     implements BooruBuilder {
   SankakuBuilder({
     required this.postRepository,
@@ -64,6 +62,10 @@ class SankakuBuilder
             config: BooruConfig.defaultConfig(booruType: booruType, url: url),
             backgroundColor: backgroundColor,
           );
+
+  @override
+  HomePageBuilder get homePageBuilder =>
+      (context, config) => const SankakuHomePage();
 
   @override
   PostFetcher get postFetcher =>
@@ -111,6 +113,26 @@ class SankakuBuilder
       (context, artistName) => SankakuArtistPage(
             artistName: artistName,
           );
+
+  @override
+  FavoriteAdder? get favoriteAdder => null;
+
+  @override
+  FavoriteChecker? get favoriteChecker => null;
+
+  @override
+  FavoriteRemover? get favoriteRemover => null;
+
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context, config) => config.hasLoginDetails()
+          ? SankakuFavoritesPage(username: config.login!)
+          : const Scaffold(
+              body: Center(
+                child: Text(
+                    'You need to provide login details to use this feature.'),
+              ),
+            );
 }
 
 class SankakuArtistPage extends ConsumerWidget {

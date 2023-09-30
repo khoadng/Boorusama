@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/e621_post_details_desktop_page.dart';
 import 'package:boorusama/boorus/e621/e621_post_details_page.dart';
+import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -13,9 +17,9 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/favorite_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'e621_artist_page.dart';
-import 'e621_favorites_page.dart';
 import 'e621_scope.dart';
 import 'e621_search_page.dart';
 
@@ -136,9 +140,36 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const E621FavoritesPage();
+      (context, config) => config.hasLoginDetails()
+          ? E621FavoritesPage(username: config.login!)
+          : const Scaffold(
+              body: Center(
+                child: Text(
+                    'You need to provide login details to use this feature.'),
+              ),
+            );
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => E621ArtistPage(artistName: artistName);
+}
+
+class E621FavoritesPage extends ConsumerWidget {
+  const E621FavoritesPage({
+    super.key,
+    required this.username,
+  });
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return FavoritesPageScaffold(
+      username: username,
+      fetcher: (page) =>
+          ref.read(e621FavoritesRepoProvider(config)).getFavorites(page),
+    );
+  }
 }

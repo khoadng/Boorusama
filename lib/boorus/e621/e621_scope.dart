@@ -20,7 +20,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
-import 'e621_favorites_page.dart';
+import 'e621.dart';
 import 'e621_home_page.dart';
 import 'e621_popular_page.dart';
 
@@ -152,7 +152,9 @@ class _E621ScopeState extends ConsumerState<E621Scope> {
         const E621HomePage(),
         const E621PopularPage(),
         if (config.hasLoginDetails()) ...[
-          const E621FavoritesPage(),
+          E621FavoritesPage(
+            username: config.login!,
+          ),
         ] else ...[
           //TODO: hacky way to prevent accessing wrong index... Will need better solution
           const SizedBox(),

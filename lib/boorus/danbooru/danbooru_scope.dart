@@ -37,6 +37,7 @@ import 'latest_posts_view.dart';
 import 'pool_page.dart';
 import 'saved_search_feed_page.dart';
 
+@Deprecated('Will be removed in the future')
 class DanbooruScope extends ConsumerStatefulWidget {
   const DanbooruScope({
     super.key,
