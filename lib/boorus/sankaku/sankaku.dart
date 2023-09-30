@@ -19,6 +19,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/widgets/post_tag_list.dart';
+import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/core/widgets/posts/recommend_artist_list.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -79,6 +80,11 @@ class SankakuBuilder
           builder: (booruBuilder) => PostDetailsPageScaffold(
             posts: posts,
             initialIndex: initialIndex,
+            infoBuilder: (context, post) => SimpleInformationSection(
+              post: post,
+              showSource: true,
+            ),
+            showSourceTile: false,
             sliverArtistPostsBuilder: (context, post) =>
                 SankakuRecommendArtists(post: post),
             tagListBuilder: (context, post) => PostTagList(

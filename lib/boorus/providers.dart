@@ -215,7 +215,6 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.e621 ||
           BooruType.gelbooruV1 ||
           BooruType.zerochan ||
-          //FIXME: should implement sankaku tag repo
           BooruType.sankaku ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),

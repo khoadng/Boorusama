@@ -58,6 +58,7 @@ final sankakuPostRepoProvider =
                       postCount: e.postCount ?? 0))
                   .toList() ??
               [];
+          final timestamp = e.createdAt?.s;
 
           return SankakuPost(
             id: e.id ?? 0,
@@ -84,6 +85,9 @@ final sankakuPostRepoProvider =
             artistDetailsTags: artistTags,
             characterDetailsTags: characterTags,
             copyrightDetailsTags: copyrightTags,
+            createdAt: timestamp != null
+                ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
+                : null,
           );
         }).toList();
       },
