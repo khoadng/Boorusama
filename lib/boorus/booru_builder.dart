@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -198,6 +199,7 @@ final booruBuildersProvider =
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
                 postRepo: ref.watch(gelbooruV1PostRepoProvider(config)),
+                client: GelbooruClient.gelbooru(),
               ),
           BooruType.sankaku: (config) => SankakuBuilder(
                 postRepository: ref.watch(sankakuPostRepoProvider(config)),

@@ -27,9 +27,12 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.initialQuery,
     required this.fetcher,
     this.gridBuilder,
+    this.noticeBuilder,
   });
 
   final String? initialQuery;
+
+  final Widget Function(BuildContext context)? noticeBuilder;
 
   final PostsOrErrorCore<T> Function(int page, List<String> tags) fetcher;
 
@@ -107,6 +110,7 @@ class _SearchPageScaffoldState<T extends Post>
                   ),
                   SliverToBoxAdapter(
                     child: SearchLandingView(
+                      noticeBuilder: widget.noticeBuilder,
                       onHistoryCleared: () => ref
                           .read(searchHistoryProvider.notifier)
                           .clearHistories(),

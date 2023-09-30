@@ -21,6 +21,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.trendingBuilder,
     required this.onHistoryRemoved,
     required this.onHistoryCleared,
+    this.noticeBuilder,
   });
 
   final ValueChanged<String>? onHistoryTap;
@@ -29,6 +30,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final VoidCallback onHistoryCleared;
   final Widget Function(BuildContext context)? metatagsBuilder;
   final Widget Function(BuildContext context)? trendingBuilder;
+  final Widget Function(BuildContext context)? noticeBuilder;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -74,6 +76,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (widget.noticeBuilder != null) ...[
+                widget.noticeBuilder!.call(context),
+              ],
               if (widget.metatagsBuilder != null) ...[
                 widget.metatagsBuilder!(context),
                 const SizedBox(
