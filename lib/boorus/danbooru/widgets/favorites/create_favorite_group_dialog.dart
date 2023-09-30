@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -59,6 +60,8 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.readConfig;
+
     return Dialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -182,8 +185,8 @@ class _EditFavoriteGroupDialogState
                               context.navigator.pop();
                               if (widget.initialData == null) {
                                 ref
-                                    .read(
-                                        danbooruFavoriteGroupsProvider.notifier)
+                                    .read(danbooruFavoriteGroupsProvider(config)
+                                        .notifier)
                                     .create(
                                       initialIds: textController.text,
                                       name: value.text,
@@ -198,8 +201,8 @@ class _EditFavoriteGroupDialogState
                                     );
                               } else {
                                 ref
-                                    .read(
-                                        danbooruFavoriteGroupsProvider.notifier)
+                                    .read(danbooruFavoriteGroupsProvider(config)
+                                        .notifier)
                                     .edit(
                                       group: widget.initialData!,
                                       name: value.text,
@@ -230,15 +233,19 @@ class _EditFavoriteGroupDialogState
 }
 
 class PrivacyToggle extends ConsumerWidget {
-  const PrivacyToggle(
-      {super.key, required this.isPrivate, required this.onChanged});
+  const PrivacyToggle({
+    super.key,
+    required this.isPrivate,
+    required this.onChanged,
+  });
 
   final bool isPrivate;
   final void Function(bool value) onChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = ref.watch(danbooruCurrentUserProvider);
+    final config = ref.readConfig;
+    final currentUser = ref.watch(danbooruCurrentUserProvider(config));
 
     return AnimatedCrossFade(
       firstChild: const SizedBox.shrink(),

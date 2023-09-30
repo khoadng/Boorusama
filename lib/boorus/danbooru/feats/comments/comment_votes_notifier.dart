@@ -2,24 +2,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'comment_vote.dart';
 import 'comment_vote_repository.dart';
 import 'comment_votes_provider.dart';
 import 'danbooru_comment.dart';
 
-class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
+class CommentVotesNotifier
+    extends FamilyNotifier<Map<CommentId, CommentVote>, BooruConfig> {
   @override
-  Map<int, CommentVote> build() {
-    ref.listen(
-      currentBooruConfigProvider,
-      (previous, next) => ref.invalidateSelf(),
-    );
-
+  Map<int, CommentVote> build(BooruConfig arg) {
     return {};
   }
 
-  CommentVoteRepository get repo => ref.read(danbooruCommentVoteRepoProvider);
+  CommentVoteRepository get repo =>
+      ref.read(danbooruCommentVoteRepoProvider(arg));
 
   Future<void> fetch(List<int> commentIds) async {
     // filter out already fetched ids

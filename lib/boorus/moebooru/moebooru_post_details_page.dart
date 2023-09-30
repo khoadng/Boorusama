@@ -41,13 +41,13 @@ class _MoebooruPostDetailsPageState
   void initState() {
     super.initState();
     ref
-        .read(tagsProvider(ref.read(currentBooruConfigProvider)).notifier)
+        .read(tagsProvider(ref.readConfig).notifier)
         .load(posts[widget.initialPage].tags);
   }
 
   @override
   Widget build(BuildContext context) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
     final settings = ref.watch(settingsProvider);
 
     return PostDetailsPageScaffold(

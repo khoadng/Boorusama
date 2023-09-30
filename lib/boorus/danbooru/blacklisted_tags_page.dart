@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
@@ -24,7 +25,8 @@ class BlacklistedTagsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(danbooruBlacklistedTagsProvider);
+    final config = ref.watchConfig;
+    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
 
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +47,7 @@ class BlacklistedTagsPage extends ConsumerWidget {
                 //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
                 for (final tag in tags) {
                   ref
-                      .read(danbooruBlacklistedTagsProvider.notifier)
+                      .read(danbooruBlacklistedTagsProvider(config).notifier)
                       .add(tag: tag);
                 }
               },
@@ -68,7 +70,7 @@ class BlacklistedTagsPage extends ConsumerWidget {
             ].join(' ');
 
             ref
-                .read(danbooruBlacklistedTagsProvider.notifier)
+                .read(danbooruBlacklistedTagsProvider(ref.readConfig).notifier)
                 .addWithToast(tag: tagString);
             context.navigator.pop();
           },
@@ -87,7 +89,8 @@ class BlacklistedTagsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(danbooruBlacklistedTagsProvider);
+    final config = ref.watchConfig;
+    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
 
     return tags.toOption().fold(
           () => const Center(child: CircularProgressIndicator()),
@@ -107,7 +110,8 @@ class BlacklistedTagsList extends ConsumerWidget {
                     return BlacklistedTagTile(
                       tag: tag,
                       onRemoveTag: (tag) => ref
-                          .read(danbooruBlacklistedTagsProvider.notifier)
+                          .read(danbooruBlacklistedTagsProvider(ref.readConfig)
+                              .notifier)
                           .removeWithToast(tag: tag),
                       onEditTap: () {
                         goToBlacklistedTagsSearchPage(
@@ -120,7 +124,9 @@ class BlacklistedTagsList extends ConsumerWidget {
                             ].join(' ');
 
                             ref
-                                .read(danbooruBlacklistedTagsProvider.notifier)
+                                .read(danbooruBlacklistedTagsProvider(
+                                        ref.readConfig)
+                                    .notifier)
                                 .replace(
                                   oldTag: tag,
                                   newTag: tagString,

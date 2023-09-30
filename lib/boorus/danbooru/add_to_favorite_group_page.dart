@@ -11,6 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -30,6 +31,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -86,7 +89,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: BooruSearchBar(
               onChanged: (value) => ref
-                  .read(danbooruFavoriteGroupFilterableProvider.notifier)
+                  .read(
+                      danbooruFavoriteGroupFilterableProvider(config).notifier)
                   .filter(value),
             ),
           ),
@@ -107,7 +111,9 @@ class _FavoriteGroupList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filteredGroups = ref.watch(danbooruFavoriteGroupFilterableProvider);
+    final config = ref.watchConfig;
+    final filteredGroups =
+        ref.watch(danbooruFavoriteGroupFilterableProvider(config));
 
     return filteredGroups.toOption().fold(
           () => const Padding(
@@ -118,7 +124,7 @@ class _FavoriteGroupList extends ConsumerWidget {
           ),
           (groups) => groups.isEmpty
               ? const Center(child: Text('Empty'))
-              : _buildList(groups, context, ref),
+              : _buildList(groups, context, ref, config),
         );
   }
 
@@ -126,6 +132,7 @@ class _FavoriteGroupList extends ConsumerWidget {
     List<FavoriteGroup> groups,
     BuildContext context,
     WidgetRef ref,
+    BooruConfig config,
   ) {
     return ImplicitlyAnimatedList<FavoriteGroup>(
       items: groups,
@@ -148,7 +155,9 @@ class _FavoriteGroupList extends ConsumerWidget {
               group.postIds.length,
             )),
             onTap: () {
-              ref.read(danbooruFavoriteGroupsProvider.notifier).addToGroup(
+              ref
+                  .read(danbooruFavoriteGroupsProvider(config).notifier)
+                  .addToGroup(
                     group: group,
                     postIds: posts.map((e) => e.id).toList(),
                     onFailure: (message, translatable) {

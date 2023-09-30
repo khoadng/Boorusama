@@ -7,13 +7,16 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'moebooru_comment.dart';
 import 'moebooru_comment_repository.dart';
 
-final moebooruCommentRepoProvider = Provider<MoebooruCommentRepository>((ref) {
+final moebooruCommentRepoProvider =
+    Provider.family<MoebooruCommentRepository, BooruConfig>((ref, config) {
   return MoebooruCommentRepositoryApi(
-    client: ref.watch(moebooruClientProvider),
-    booruConfig: ref.watch(currentBooruConfigProvider),
+    client: ref.watch(moebooruClientProvider(config)),
+    booruConfig: ref.watchConfig,
   );
 });
 
-final moebooruCommentsProvider =
-    FutureProvider.family<List<MoebooruComment>, int>((ref, postId) =>
-        ref.watch(moebooruCommentRepoProvider).getComments(postId));
+final moebooruCommentsProvider = FutureProvider.autoDispose
+    .family<List<MoebooruComment>, int>((ref, postId) {
+  final config = ref.watchConfig;
+  return ref.watch(moebooruCommentRepoProvider(config)).getComments(postId);
+});

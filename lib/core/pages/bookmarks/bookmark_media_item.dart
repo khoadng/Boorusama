@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/embedded_webview_webm.dart';
@@ -61,6 +62,8 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return widget.bookmark.isVideo
         ? p.extension(widget.bookmark.sampleUrl) == '.webm'
             ? EmbeddedWebViewWebm(
@@ -82,8 +85,9 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
                 child: LayoutBuilder(
                   builder: (context, constraints) => CachedNetworkImage(
                     httpHeaders: {
-                      'User-Agent':
-                          ref.watch(userAgentGeneratorProvider).generate(),
+                      'User-Agent': ref
+                          .watch(userAgentGeneratorProvider(config))
+                          .generate(),
                     },
                     imageUrl: widget.bookmark.sampleUrl,
                     imageBuilder: (context, imageProvider) {
@@ -109,8 +113,9 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
                     fadeInDuration: Duration.zero,
                     placeholder: (context, url) => CachedNetworkImage(
                       httpHeaders: {
-                        'User-Agent':
-                            ref.watch(userAgentGeneratorProvider).generate(),
+                        'User-Agent': ref
+                            .watch(userAgentGeneratorProvider(config))
+                            .generate(),
                       },
                       fit: BoxFit.fill,
                       imageUrl: widget.bookmark.thumbnailUrl,

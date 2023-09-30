@@ -40,7 +40,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return PostDetailsPageScaffold(
       posts: posts,

@@ -8,6 +8,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/pools/pool_grid_item.dart';
@@ -43,6 +44,8 @@ class _PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return CustomScrollView(
       slivers: [
         const SliverToBoxAdapter(
@@ -55,7 +58,7 @@ class _PostList extends ConsumerWidget {
           ),
           pullToRefresh: false,
           firstPageKey: const PoolKey(page: 1),
-          provider: danbooruPoolsProvider,
+          provider: danbooruPoolsProvider(config),
           itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
           pagedBuilder: (controller, builder) => PagedSliverGrid(
             pagingController: controller,

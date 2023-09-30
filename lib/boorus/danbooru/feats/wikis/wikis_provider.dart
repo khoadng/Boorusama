@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/wikis/wikis.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
-final danbooruWikiRepoProvider = Provider<WikiRepository>((ref) {
-  return WikiRepositoryApi(ref.watch(danbooruClientProvider));
+final danbooruWikiRepoProvider =
+    Provider.family<WikiRepository, BooruConfig>((ref, config) {
+  return WikiRepositoryApi(ref.watch(danbooruClientProvider(config)));
 });
 
 final danbooruWikisProvider =
-    NotifierProvider<WikisNotifier, Map<String, Wiki?>>(
+    NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfig>(
   WikisNotifier.new,
   dependencies: [
     danbooruWikiRepoProvider,
@@ -20,13 +21,14 @@ final danbooruWikisProvider =
 );
 
 final danbooruWikiProvider = Provider.family<WikiState, String>((ref, tag) {
-  final wikis = ref.watch(danbooruWikisProvider);
+  final config = ref.watchConfig;
+  final wikis = ref.watch(danbooruWikisProvider(config));
   if (wikis.containsKey(tag)) {
     return wikis[tag] == null
         ? const WikiStateNotFound()
         : WikiStateLoaded(wikis[tag]!);
   } else {
-    ref.read(danbooruWikisProvider.notifier).fetchWikiFor(tag);
+    ref.read(danbooruWikisProvider(config).notifier).fetchWikiFor(tag);
     return const WikiStateLoading();
   }
 });

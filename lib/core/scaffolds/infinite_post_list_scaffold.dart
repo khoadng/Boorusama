@@ -87,7 +87,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final settings = ref.watch(settingsProvider);
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
 
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final booruBuilder = ref.watch(booruBuilderProvider);
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;

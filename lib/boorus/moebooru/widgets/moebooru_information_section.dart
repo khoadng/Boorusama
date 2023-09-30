@@ -20,7 +20,7 @@ class MoebooruInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final tags = ref.watch(tagsProvider(config));
 
     return InformationSection(

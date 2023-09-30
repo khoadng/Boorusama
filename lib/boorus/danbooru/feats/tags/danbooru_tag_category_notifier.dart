@@ -2,19 +2,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 import 'tags_provider.dart';
 
-class DanbooruTagCategoryNotifier extends Notifier<IMap<String, TagCategory>> {
+class DanbooruTagCategoryNotifier
+    extends FamilyNotifier<IMap<String, TagCategory>, BooruConfig> {
   @override
-  IMap<String, TagCategory> build() {
+  IMap<String, TagCategory> build(BooruConfig arg) {
     return <String, TagCategory>{}.lock;
   }
 
   Future<void> save(List<String> tags) async {
     final categoryRepo = ref.read(danbooruTagCategoryRepoProvider);
-    final tagRepo = ref.read(danbooruTagRepoProvider);
+    final tagRepo = ref.read(danbooruTagRepoProvider(arg));
 
     final unknownCategories = <String>[];
     final knownCategories = <String, TagCategory>{};

@@ -128,52 +128,80 @@ mixin PostCountNotSupportedMixin implements BooruBuilder {
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
-  final config = ref.watch(currentBooruConfigProvider);
+  final config = ref.watchConfig;
   final booruBuilders = ref.watch(booruBuildersProvider);
   final booruBuilderFunc = booruBuilders[config.booruType];
 
-  return booruBuilderFunc != null ? booruBuilderFunc() : null;
+  return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
 });
 
+/// A provider that provides a map of [BooruType] to [BooruBuilder] functions
+/// that can be used to build a Booru instances with the given [BooruConfig].
+///
+/// The [BooruType] enum represents different types of boorus that can be built.
+/// The [BooruConfig] class represents the configuration for a booru instance.
+///
+/// Example usage:
+/// ```
+/// final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
+///   {
+///     BooruType.zerochan: (config) => ZerochanBuilder(
+///       postRepo: ref.watch(zerochanPostRepoProvider(config)),
+///       autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider(config)),
+///     ),
+///     // ...
+///   }
+/// );
+/// ```
+/// Note that the [BooruBuilder] functions are not called until they are used and they won't be called again
+/// Each local instance of [BooruBuilder] will be cached and reused until the app is restarted.
 final booruBuildersProvider =
-    Provider<Map<BooruType, BooruBuilder Function()>>((ref) => {
-          BooruType.zerochan: () => ZerochanBuilder(
-                postRepo: ref.watch(zerochanPostRepoProvider),
-                autocompleteRepo: ref.watch(zerochanAutoCompleteRepoProvider),
+    Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
+        {
+          BooruType.zerochan: (config) => ZerochanBuilder(
+                postRepo: ref.watch(zerochanPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(zerochanAutoCompleteRepoProvider(config)),
               ),
-          BooruType.moebooru: () => MoebooruBuilder(
-                postRepo: ref.watch(moebooruPostRepoProvider),
-                autocompleteRepo: ref.watch(moebooruAutocompleteRepoProvider),
+          BooruType.moebooru: (config) => MoebooruBuilder(
+                postRepo: ref.watch(moebooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(moebooruAutocompleteRepoProvider(config)),
               ),
-          BooruType.gelbooru: () => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider),
-                autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
-                client: ref.watch(gelbooruClientProvider),
+          BooruType.gelbooru: (config) => GelbooruBuilder(
+                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.watch(gelbooruClientProvider(config)),
               ),
-          BooruType.gelbooruV2: () => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider),
-                autocompleteRepo: ref.watch(gelbooruAutocompleteRepoProvider),
-                client: ref.watch(gelbooruClientProvider),
+          BooruType.gelbooruV2: (config) => GelbooruBuilder(
+                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.watch(gelbooruClientProvider(config)),
               ),
-          BooruType.e621: () => E621Builder(
-                autocompleteRepo: ref.watch(e621AutocompleteRepoProvider),
-                postRepo: ref.watch(e621PostRepoProvider),
-                client: ref.watch(e621ClientProvider),
-                favoriteChecker: ref.watch(e621FavoriteCheckerProvider),
+          BooruType.e621: (config) => E621Builder(
+                autocompleteRepo:
+                    ref.watch(e621AutocompleteRepoProvider(config)),
+                postRepo: ref.watch(e621PostRepoProvider(config)),
+                client: ref.watch(e621ClientProvider(config)),
+                favoriteChecker: ref.watch(e621FavoriteCheckerProvider(config)),
               ),
-          BooruType.danbooru: () => DanbooruBuilder(
-                postRepo: ref.watch(danbooruPostRepoProvider),
-                autocompleteRepo: ref.watch(danbooruAutocompleteRepoProvider),
-                favoriteRepo: ref.watch(danbooruFavoriteRepoProvider),
-                favoriteChecker: ref.watch(danbooruFavoriteCheckerProvider),
-                postCountRepo: ref.watch(danbooruPostCountRepoProvider),
+          BooruType.danbooru: (config) => DanbooruBuilder(
+                postRepo: ref.watch(danbooruPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(danbooruAutocompleteRepoProvider(config)),
+                favoriteRepo: ref.watch(danbooruFavoriteRepoProvider(config)),
+                favoriteChecker:
+                    ref.watch(danbooruFavoriteCheckerProvider(config)),
+                postCountRepo: ref.watch(danbooruPostCountRepoProvider(config)),
               ),
-          BooruType.gelbooruV1: () => GelbooruV1Builder(
-                postRepo: ref.watch(gelbooruV1PostRepoProvider),
+          BooruType.gelbooruV1: (config) => GelbooruV1Builder(
+                postRepo: ref.watch(gelbooruV1PostRepoProvider(config)),
               ),
-          BooruType.sankaku: () => SankakuBuilder(
-                postRepository: ref.watch(sankakuPostRepoProvider),
-                client: ref.watch(sankakuClientProvider),
+          BooruType.sankaku: (config) => SankakuBuilder(
+                postRepository: ref.watch(sankakuPostRepoProvider(config)),
+                client: ref.watch(sankakuClientProvider(config)),
               ),
         });
 
@@ -245,4 +273,18 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
             config.booruType,
             backgroundColor: backgroundColor,
           );
+}
+
+extension BooruRef on Ref {
+  BooruBuilder? readBooruBuilder(BooruConfig config) {
+    final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+  }
+
+  BooruBuilder? readCurrentBooruBuilder() {
+    final config = read(currentBooruConfigProvider);
+    return readBooruBuilder(config);
+  }
 }

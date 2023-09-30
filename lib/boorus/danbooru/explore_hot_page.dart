@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'widgets/explores/explore_sliver_app_bar.dart';
@@ -28,12 +29,14 @@ class ExploreHotPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return Column(
       children: [
         Expanded(
           child: DanbooruPostScope(
             fetcher: (page) =>
-                ref.watch(danbooruExploreRepoProvider).getHotPosts(page),
+                ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
             builder: (context, controller, errors) => DanbooruInfinitePostList(
               errors: errors,
               controller: controller,

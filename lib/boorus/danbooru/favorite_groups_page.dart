@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -23,7 +24,8 @@ class FavoriteGroupsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider);
+    final config = ref.watchConfig;
+    final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider(config));
 
     return Scaffold(
       appBar: AppBar(
@@ -79,6 +81,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
                           context,
                           ref,
                           group,
+                          config,
                         ),
                         icon: const Icon(Icons.more_vert),
                       ),
@@ -94,7 +97,11 @@ class FavoriteGroupsPage extends ConsumerWidget {
   }
 
   void _showEditSheet(
-      BuildContext context, WidgetRef ref, FavoriteGroup favGroup) {
+    BuildContext context,
+    WidgetRef ref,
+    FavoriteGroup favGroup,
+    BooruConfig config,
+  ) {
     showMaterialModalBottomSheet(
       context: context,
       builder: (_) => ModalFavoriteGroupAction(
@@ -114,7 +121,7 @@ class FavoriteGroupsPage extends ConsumerWidget {
                 onPressed: () {
                   context.navigator.pop();
                   ref
-                      .read(danbooruFavoriteGroupsProvider.notifier)
+                      .read(danbooruFavoriteGroupsProvider(config).notifier)
                       .delete(group: favGroup);
                 },
                 child: const Text('generic.action.ok').tr(),

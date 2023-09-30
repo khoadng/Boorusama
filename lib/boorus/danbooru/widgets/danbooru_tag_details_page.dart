@@ -9,6 +9,7 @@ import 'package:flutter_scatter/flutter_scatter.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/tag_detail_region.dart';
@@ -48,7 +49,9 @@ class _DanbooruTagDetailsPageState
   @override
   void initState() {
     super.initState();
-    ref.read(danbooruRelatedTagsProvider.notifier).fetch(widget.tagName);
+    ref
+        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
+        .fetch(widget.tagName);
   }
 
   @override
@@ -56,7 +59,8 @@ class _DanbooruTagDetailsPageState
     final related =
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
     final tags = related?.tags.take(_kTagCloudTotal).toList() ?? [];
-    final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider);
+    final config = ref.watchConfig;
+    final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
 
     return TagDetailsRegion(
       detailsBuilder: (context) => Column(

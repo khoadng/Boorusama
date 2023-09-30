@@ -1,8 +1,8 @@
 part of 'gelbooru_v1.dart';
 
-final gelbooruV1PostRepoProvider = Provider<PostRepository>(
-  (ref) {
-    final client = ref.watch(gelbooruV1ClientProvider);
+final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(gelbooruV1ClientProvider(config));
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),
@@ -43,9 +43,9 @@ final gelbooruV1PostRepoProvider = Provider<PostRepository>(
   },
 );
 
-final gelbooruV1ClientProvider = Provider<GelbooruV1Client>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final gelbooruV1ClientProvider =
+    Provider.family<GelbooruV1Client, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return GelbooruV1Client(
     baseUrl: booruConfig.url,

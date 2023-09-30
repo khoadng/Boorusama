@@ -46,7 +46,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return Scaffold(
       appBar: AppBar(

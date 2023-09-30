@@ -7,13 +7,15 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 
-final zerochanClientProvider = Provider<ZerochanClient>((ref) {
-  final dio = newDio(ref.watch(dioArgsProvider));
+final zerochanClientProvider =
+    Provider.family<ZerochanClient, BooruConfig>((ref, config) {
+  final dio = newDio(ref.watch(dioArgsProvider(config)));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(
@@ -22,9 +24,9 @@ final zerochanClientProvider = Provider<ZerochanClient>((ref) {
   );
 });
 
-final zerochanPostRepoProvider = Provider<PostRepository>(
-  (ref) {
-    final client = ref.watch(zerochanClientProvider);
+final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(zerochanClientProvider(config));
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),
@@ -67,8 +69,8 @@ final zerochanPostRepoProvider = Provider<PostRepository>(
 );
 
 final zerochanAutoCompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) {
-  final client = ref.watch(zerochanClientProvider);
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(zerochanClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey: 'zerochan_autocomplete_cache_v1',

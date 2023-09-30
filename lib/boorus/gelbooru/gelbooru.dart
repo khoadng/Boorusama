@@ -24,9 +24,9 @@ import 'gelbooru_post_details_desktop_page.dart';
 import 'gelbooru_post_details_page.dart';
 import 'widgets/gelbooru_infinite_post_list.dart';
 
-final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final gelbooruClientProvider =
+    Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return GelbooruClient.custom(
     baseUrl: booruConfig.url,
@@ -36,9 +36,9 @@ final gelbooruClientProvider = Provider<GelbooruClient>((ref) {
   );
 });
 
-final gelbooruTagRepoProvider = Provider<TagRepository>(
-  (ref) {
-    final client = ref.watch(gelbooruClientProvider);
+final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(gelbooruClientProvider(config));
 
     return TagRepositoryBuilder(
       persistentStorageKey: 'gelbooru_tags_cache_v1',
@@ -61,8 +61,8 @@ final gelbooruTagRepoProvider = Provider<TagRepository>(
 );
 
 final gelbooruAutocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) {
-  final client = ref.watch(gelbooruClientProvider);
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(gelbooruClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
     autocomplete: (query) async {
@@ -176,6 +176,7 @@ class GelbooruSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
     return SearchPageScaffold(
       initialQuery: initialQuery,
       gridBuilder: (context, controller, slivers) => GelbooruInfinitePostList(
@@ -183,7 +184,7 @@ class GelbooruSearchPage extends ConsumerWidget {
         sliverHeaderBuilder: (context) => slivers,
       ),
       fetcher: (page, tags) =>
-          ref.watch(gelbooruPostRepoProvider).getPosts(tags, page),
+          ref.watch(gelbooruPostRepoProvider(config)).getPosts(tags, page),
     );
   }
 }
@@ -198,10 +199,11 @@ class GelbooruCommentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
     return CommentPageScaffold(
       postId: postId,
       fetcher: (postId) =>
-          ref.watch(gelbooruCommentRepoProvider).getComments(postId),
+          ref.watch(gelbooruCommentRepoProvider(config)).getComments(postId),
     );
   }
 }

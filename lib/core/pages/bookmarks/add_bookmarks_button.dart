@@ -21,7 +21,7 @@ class AddBookmarksButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return IconButton(
       onPressed: posts.isNotEmpty

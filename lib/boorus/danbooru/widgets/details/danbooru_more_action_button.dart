@@ -27,7 +27,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(

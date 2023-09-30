@@ -7,13 +7,13 @@ import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
-final moebooruPostRepoProvider = Provider<PostRepository<MoebooruPost>>(
-  (ref) {
-    final client = ref.watch(moebooruClientProvider);
-    final config = ref.watch(currentBooruConfigProvider);
+final moebooruPostRepoProvider =
+    Provider.family<PostRepository<MoebooruPost>, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(moebooruClientProvider(config));
 
     getTags(List<String> tags) {
       final tag = booruFilterConfigToMoebooruTag(config.ratingFilter);
@@ -37,14 +37,14 @@ final moebooruPostRepoProvider = Provider<PostRepository<MoebooruPost>>(
   },
 );
 
-final moebooruPopularRepoProvider = Provider<MoebooruPopularRepository>(
-  (ref) {
-    final client = ref.watch(moebooruClientProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+final moebooruPopularRepoProvider =
+    Provider.family<MoebooruPopularRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(moebooruClientProvider(config));
 
     return MoebooruPopularRepositoryApi(
       client,
-      booruConfig,
+      config,
     );
   },
 );
@@ -53,8 +53,8 @@ final moebooruPostDetailsChildrenProvider =
     FutureProvider.family.autoDispose<List<Post>?, Post>(
   (ref, post) async {
     if (!post.hasParentOrChildren) return null;
-
-    final repo = ref.watch(moebooruPostRepoProvider);
+    final config = ref.watchConfig;
+    final repo = ref.watch(moebooruPostRepoProvider(config));
 
     final query =
         post.parentId != null ? 'parent:${post.parentId}' : 'parent:${post.id}';

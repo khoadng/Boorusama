@@ -3,14 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 import 'e621_favorites_provider.dart';
 
-class E621FavoritesNotifier extends Notifier<IMap<int, bool>> {
+class E621FavoritesNotifier
+    extends FamilyNotifier<IMap<int, bool>, BooruConfig> {
   @override
-  IMap<int, bool> build() {
-    ref.watch(currentBooruConfigProvider);
+  IMap<int, bool> build(BooruConfig arg) {
+    ref.watchConfig;
 
     return <int, bool>{}.lock;
   }
@@ -27,7 +28,7 @@ class E621FavoritesNotifier extends Notifier<IMap<int, bool>> {
     if (state[postId] == true) return;
 
     final success =
-        await ref.read(e621FavoritesRepoProvider).addToFavorites(postId);
+        await ref.read(e621FavoritesRepoProvider(arg)).addToFavorites(postId);
     if (success) {
       state = state.add(postId, true);
     }
@@ -36,8 +37,9 @@ class E621FavoritesNotifier extends Notifier<IMap<int, bool>> {
   Future<void> remove(int postId) async {
     if (state[postId] == false) return;
 
-    final success =
-        await ref.read(e621FavoritesRepoProvider).removeFromFavorites(postId);
+    final success = await ref
+        .read(e621FavoritesRepoProvider(arg))
+        .removeFromFavorites(postId);
     if (success) {
       state = state.add(postId, false);
     }

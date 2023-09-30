@@ -31,7 +31,7 @@ class PostTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruConfigProvider);
+    final booru = ref.watchConfig;
     final tags = ref.watch(tagsProvider(booru));
 
     if (tags == null) {
@@ -54,7 +54,7 @@ class PostTagList extends ConsumerWidget {
           booru,
           g.tags,
           onAddToBlacklisted: (tag) => ref
-              .read(danbooruBlacklistedTagsProvider.notifier)
+              .read(danbooruBlacklistedTagsProvider(booru).notifier)
               .addWithToast(tag: tag.rawName),
         ));
     }

@@ -64,7 +64,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
       if (!mounted) return;
 
       final id = await ref
-          .read(booruUserIdentityProviderProvider)
+          .read(booruUserIdentityProviderProvider(config))
           .getAccountIdFromConfig(config);
 
       if (id != null) {
@@ -90,7 +90,7 @@ class _DanbooruScopeState extends ConsumerState<DanbooruScope> {
     if (text != null) {
       context.navigator.push(MaterialPageRoute(
         builder: (context) {
-          final config = ref.read(currentBooruConfigProvider);
+          final config = ref.readConfig;
           final booruName = config.booruType.stringify();
           final booruUrl = config.url;
 

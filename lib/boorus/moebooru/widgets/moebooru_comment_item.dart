@@ -22,7 +22,7 @@ class MoebooruCommentItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

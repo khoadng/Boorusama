@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -19,10 +20,12 @@ class E621FavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return CustomContextMenuOverlay(
       child: PostScope(
         fetcher: (page) =>
-            ref.read(e621FavoritesRepoProvider).getFavorites(page),
+            ref.read(e621FavoritesRepoProvider(config)).getFavorites(page),
         builder: (context, controller, errors) => InfinitePostListScaffold(
           errors: errors,
           controller: controller,

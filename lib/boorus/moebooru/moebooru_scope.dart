@@ -43,7 +43,8 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
   Widget build(BuildContext context) {
     return BooruScope(
       config: widget.config,
-      mobileView: (controller) => _buildMobileHomeView(controller),
+      mobileView: (controller) =>
+          _buildMobileHomeView(controller, widget.config),
       mobileMenuBuilder: (context, controller) => [
         SideMenuTile(
           icon: const Icon(Icons.explore),
@@ -142,9 +143,11 @@ class _DanbooruScopeState extends ConsumerState<MoebooruScope> {
     );
   }
 
-  Widget _buildMobileHomeView(HomePageController controller) {
+  Widget _buildMobileHomeView(
+      HomePageController controller, BooruConfig config) {
     return PostScope(
-      fetcher: (page) => ref.read(moebooruPostRepoProvider).getPosts([], page),
+      fetcher: (page) =>
+          ref.read(moebooruPostRepoProvider(config)).getPosts([], page),
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,

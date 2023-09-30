@@ -187,7 +187,7 @@ class TagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
     final tagNotifier = ref.watch(tagsProvider(booruConfig).notifier);
 
     return Theme(

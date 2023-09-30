@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'danbooru_artist_commentaries_provider.dart';
 
 class DanbooruArtistCommentariesNotifier
-    extends Notifier<Map<int, ArtistCommentary>> {
+    extends FamilyNotifier<Map<int, ArtistCommentary>, BooruConfig> {
   @override
-  Map<int, ArtistCommentary> build() {
+  Map<int, ArtistCommentary> build(BooruConfig arg) {
     return {};
   }
 
@@ -23,7 +24,7 @@ class DanbooruArtistCommentariesNotifier
     if (cached != null) return;
 
     final commentary = await ref
-        .read(danbooruArtistCommentaryRepoProvider)
+        .read(danbooruArtistCommentaryRepoProvider(arg))
         .getCommentary(postId);
 
     _cache.set(postId.toString(), commentary);

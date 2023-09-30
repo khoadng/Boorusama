@@ -42,7 +42,7 @@ class HomePageScaffold extends ConsumerStatefulWidget {
 class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return BooruScope(
       config: config,

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
@@ -36,7 +37,8 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
   final selectedDateNotifier = ValueNotifier(DateTime.now());
   final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
-  MoebooruPopularRepository get repo => ref.read(moebooruPopularRepoProvider);
+  MoebooruPopularRepository get repo =>
+      ref.read(moebooruPopularRepoProvider(ref.readConfig));
 
   DateTime get selectedDate => selectedDateNotifier.value;
 

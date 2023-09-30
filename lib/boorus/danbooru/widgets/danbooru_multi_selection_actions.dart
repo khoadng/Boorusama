@@ -24,7 +24,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,

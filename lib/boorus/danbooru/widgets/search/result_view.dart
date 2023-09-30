@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/widgets/result_header.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -51,8 +52,10 @@ class _ResultViewState extends ConsumerState<ResultView> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
             widget.selectedTagController.rawTags,
             page,
           ),

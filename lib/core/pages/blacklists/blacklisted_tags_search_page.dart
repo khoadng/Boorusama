@@ -53,7 +53,7 @@ class _BlacklistedTagsSearchPageState
   }
 
   void _onTextChanged() {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.readConfig;
 
     ref
         .read(suggestionsProvider(config).notifier)

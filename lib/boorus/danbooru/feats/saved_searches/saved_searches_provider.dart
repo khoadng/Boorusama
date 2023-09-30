@@ -5,29 +5,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
-final danbooruSavedSearchRepoProvider = Provider<SavedSearchRepository>((ref) {
+final danbooruSavedSearchRepoProvider =
+    Provider.family<SavedSearchRepository, BooruConfig>((ref, config) {
   return SavedSearchRepositoryApi(
-    ref.watch(danbooruClientProvider),
+    ref.watch(danbooruClientProvider(config)),
   );
 });
 
-final danbooruSavedSearchesProvider =
-    NotifierProvider<SavedSearchesNotifier, List<SavedSearch>?>(
+final danbooruSavedSearchesProvider = NotifierProvider.family<
+    SavedSearchesNotifier, List<SavedSearch>?, BooruConfig>(
   SavedSearchesNotifier.new,
 );
 
-final danbooruSavedSearchAvailableProvider = Provider<List<SavedSearch>>((ref) {
+final danbooruSavedSearchAvailableProvider =
+    Provider.family<List<SavedSearch>, BooruConfig>((ref, config) {
   return [
     SavedSearch.all(),
-    ...ref.watch(danbooruSavedSearchesProvider) ?? [],
+    ...ref.watch(danbooruSavedSearchesProvider(config)) ?? [],
   ];
 });
 
 final danbooruSavedSearchSelectedProvider =
-    StateProvider.autoDispose<SavedSearch>((ref) {
+    StateProvider.autoDispose.family<SavedSearch, BooruConfig>((ref, config) {
   ref.listen(
-    danbooruSavedSearchesProvider,
+    danbooruSavedSearchesProvider(config),
     (previous, next) {
       if (next == null) return;
       final state = ref.controller.state;
@@ -41,10 +44,10 @@ final danbooruSavedSearchSelectedProvider =
   return SavedSearch.all();
 });
 
-final danbooruSavedSearchStateProvider =
-    FutureProvider.autoDispose<SavedSearchState>((ref) async {
+final danbooruSavedSearchStateProvider = FutureProvider.autoDispose
+    .family<SavedSearchState, BooruConfig>((ref, config) async {
   final savedSearches =
-      await ref.watch(danbooruSavedSearchesProvider.notifier).fetch();
+      await ref.watch(danbooruSavedSearchesProvider(config).notifier).fetch();
 
   return savedSearches.isEmpty
       ? SavedSearchState.landing

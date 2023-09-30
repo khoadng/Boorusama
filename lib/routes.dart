@@ -26,6 +26,22 @@ import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
 
+///
+/// When navigate to a page, must query the booru builders first to get the correct builder.
+/// There is case when you want navigate to a different boorus than the current one.
+///
+///```
+/// final config = ref.read(currentBooruConfigProvider);
+/// final booruBuilderFunc =
+///     ref.read(booruBuildersProvider)[config.booruType];
+/// final booruBuilder =
+///     booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+///
+/// // Or you can use this
+/// final booruBuilder = ref.readBooruBuilder(config);
+///```
+///
+
 class BoorusRoutes {
   BoorusRoutes._();
 
@@ -72,7 +88,7 @@ class BoorusRoutes {
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
-          final booruBuilder = ref.read(booruBuilderProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
 
           return MaterialPage(
             key: state.pageKey,
@@ -100,7 +116,7 @@ class BoorusRoutes {
               .read(booruConfigProvider)
               .firstWhere((element) => element.id == id);
 
-          final booruBuilder = ref.read(booruBuilderProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
 
           return DialogPage(
             key: state.pageKey,
@@ -253,8 +269,8 @@ class Routes {
         path: 'details',
         name: '/details',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.read(booruBuilderProvider);
           final config = ref.read(currentBooruConfigProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.postDetailsPageBuilder;
 
           final payload = state.extra as DetailsPayload;
@@ -284,7 +300,7 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.read(booruBuilderProvider);
+          final booruBuilder = ref.readCurrentBooruBuilder();
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
@@ -303,8 +319,8 @@ class Routes {
         path: 'favorites',
         name: '/favorites',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.read(booruBuilderProvider);
           final config = ref.read(currentBooruConfigProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
           final builder = booruBuilder?.favoritesPageBuilder;
 
           return CustomTransitionPage(
@@ -322,7 +338,7 @@ class Routes {
         path: 'artists',
         name: '/artists',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.read(booruBuilderProvider);
+          final booruBuilder = ref.readCurrentBooruBuilder();
           final builder = booruBuilder?.artistPageBuilder;
           final artistName = state.uri.queryParameters[kArtistNameKey];
 

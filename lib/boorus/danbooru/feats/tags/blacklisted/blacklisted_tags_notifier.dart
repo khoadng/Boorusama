@@ -10,31 +10,27 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/toast.dart';
 import 'blacklisted_tags_provider.dart';
 
-class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
+class BlacklistedTagsNotifier
+    extends AutoDisposeFamilyNotifier<List<String>?, BooruConfig> {
   @override
-  List<String>? build() {
-    final config = ref.watch(currentBooruConfigProvider);
-
-    //FIXME: should handle this in a better way
-    if (!config.booruType.isDanbooruBased) return null;
-
-    fetch(config);
+  List<String>? build(BooruConfig arg) {
+    fetch();
 
     return null;
   }
 
   BlacklistedTagsRepository get repo =>
-      ref.read(danbooruBlacklistedTagRepoProvider);
+      ref.read(danbooruBlacklistedTagRepoProvider(arg));
   BooruUserIdentityProvider get identityProvider =>
-      ref.read(booruUserIdentityProviderProvider);
+      ref.read(booruUserIdentityProviderProvider(arg));
 
-  Future<void> fetch(BooruConfig config) async {
-    final id = await identityProvider.getAccountIdFromConfig(config);
+  Future<void> fetch() async {
+    final id = await identityProvider.getAccountIdFromConfig(arg);
 
     if (id == null) return;
 
     final blacklistedTags = await ref
-        .read(danbooruBlacklistedTagRepoProvider)
+        .read(danbooruBlacklistedTagRepoProvider(arg))
         .getBlacklistedTags(id);
 
     state = blacklistedTags;
@@ -45,8 +41,7 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     void Function(List<String> tags)? onSuccess,
     void Function()? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final id = await identityProvider.getAccountIdFromConfig(arg);
 
     if (state == null || id == null) {
       onFailure?.call();
@@ -71,8 +66,7 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     void Function(List<String> tags)? onSuccess,
     void Function()? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final id = await identityProvider.getAccountIdFromConfig(arg);
 
     if (state == null || id == null) {
       onFailure?.call();
@@ -97,8 +91,7 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     void Function(List<String> tags)? onSuccess,
     void Function(String message)? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final id = await identityProvider.getAccountIdFromConfig(arg);
 
     if (state == null || id == null) {
       onFailure?.call('Fail to replace tag');

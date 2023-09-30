@@ -80,6 +80,7 @@ class BooruPostDetailsArtistNotifier
     with PostRepositoryMixin, PostDetailsTagsX<Post> {
   @override
   PostRepository get postRepository => ref.read(
+      //FIXME: this is a potential bug
       postArtistCharacterRepoProvider(ref.read(currentBooruConfigProvider)));
 
   @override

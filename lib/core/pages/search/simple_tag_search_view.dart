@@ -92,7 +92,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return ValueListenableBuilder(
       valueListenable: textEditingController,

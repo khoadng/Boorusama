@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -26,6 +27,7 @@ class BulkDownloadTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
     final thumbnails = ref.watch(bulkDownloadThumbnailsProvider);
     final fileSizes = ref.watch(bulkDownloadFileSizeProvider);
 
@@ -100,7 +102,8 @@ class BulkDownloadTile extends ConsumerWidget {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
                           onPressed: () => ref
-                              .read(bulkDownloaderManagerProvider.notifier)
+                              .read(bulkDownloaderManagerProvider(config)
+                                  .notifier)
                               .pause(d.url),
                           icon: const Icon(Icons.pause)),
                       title: _Title(data: data),
@@ -123,7 +126,8 @@ class BulkDownloadTile extends ConsumerWidget {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       trailing: IconButton(
                           onPressed: () => ref
-                              .read(bulkDownloaderManagerProvider.notifier)
+                              .read(bulkDownloaderManagerProvider(config)
+                                  .notifier)
                               .resume(d.url),
                           icon: const Icon(Icons.play_arrow)),
                       title: _Title(data: data),
@@ -214,10 +218,13 @@ class _RetryButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return IconButton(
       visualDensity: const ShrinkVisualDensity(),
-      onPressed: () =>
-          ref.read(bulkDownloaderManagerProvider.notifier).retry(url, fileName),
+      onPressed: () => ref
+          .read(bulkDownloaderManagerProvider(config).notifier)
+          .retry(url, fileName),
       icon: const Icon(Icons.refresh),
     );
   }

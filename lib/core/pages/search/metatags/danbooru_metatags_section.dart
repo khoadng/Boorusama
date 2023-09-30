@@ -22,7 +22,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
     final booru = booruConfig.createBooruFrom(ref.watch(booruFactoryProvider));
     final userMetatags = ref.watch(danbooruUserMetatagsProvider);
     final metatags = ref.watch(metatagsProvider);

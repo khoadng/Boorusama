@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -24,7 +25,8 @@ class MostSearchTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncData = ref.watch(trendingTagsProvider);
+    final config = ref.watchConfig;
+    final asyncData = ref.watch(trendingTagsProvider(config));
 
     return asyncData.when(
       data: (searches) => searches.isNotEmpty

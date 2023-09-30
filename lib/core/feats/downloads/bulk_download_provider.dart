@@ -49,18 +49,20 @@ final bulkDownloadOptionsProvider = StateProvider<DownloadOptions>((ref) {
   );
 });
 
-final bulkDownloadProvider = Provider<BulkDownloader>((ref) {
+final bulkDownloadProvider =
+    Provider.family<BulkDownloader, BooruConfig>((ref, config) {
   return CrossplatformBulkDownloader(
-    userAgentGenerator: ref.watch(userAgentGeneratorProvider),
+    userAgentGenerator: ref.watch(userAgentGeneratorProvider(config)),
     logger: ref.watch(loggerProvider),
   );
 });
 
-final bulkDownloadDataProvider = StreamProvider<BulkDownloadStatus>(
-    (ref) => ref.watch(bulkDownloadProvider).stream);
+final bulkDownloadDataProvider =
+    StreamProvider.family<BulkDownloadStatus, BooruConfig>(
+        (ref, config) => ref.watch(bulkDownloadProvider(config)).stream);
 
 final bulkDownloaderManagerProvider =
-    NotifierProvider<BulkDownloadManagerNotifier, void>(
+    NotifierProvider.family<BulkDownloadManagerNotifier, void, BooruConfig>(
   BulkDownloadManagerNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -95,7 +97,7 @@ final bulkDownloadFileNameProvider =
   return DownloadUrlBaseNameFileNameGenerator();
 });
 
-final bulkDownloadStateProvider =
-    NotifierProvider<BulkDownloadStateNotifier, BulkDownloadState>(
+final bulkDownloadStateProvider = NotifierProvider.family<
+    BulkDownloadStateNotifier, BulkDownloadState, BooruConfig>(
   BulkDownloadStateNotifier.new,
 );

@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -41,9 +42,10 @@ class PoolDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
+    final config = ref.watchConfig;
 
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
         ['pool:${pool.id}'],
         page,
       ),

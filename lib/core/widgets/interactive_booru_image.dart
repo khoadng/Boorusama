@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
@@ -76,6 +77,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     if (widget.imageUrl.isEmpty) {
       return NullableAspectRatio(
         aspectRatio: widget.aspectRatio,
@@ -99,8 +102,9 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                 child: LayoutBuilder(
                   builder: (context, constraints) => CachedNetworkImage(
                     httpHeaders: {
-                      'User-Agent':
-                          ref.watch(userAgentGeneratorProvider).generate(),
+                      'User-Agent': ref
+                          .watch(userAgentGeneratorProvider(config))
+                          .generate(),
                     },
                     imageUrl: widget.imageUrl,
                     imageBuilder: (context, imageProvider) {
@@ -141,7 +145,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                         ? (context, url) => CachedNetworkImage(
                               httpHeaders: {
                                 'User-Agent': ref
-                                    .watch(userAgentGeneratorProvider)
+                                    .watch(userAgentGeneratorProvider(config))
                                     .generate(),
                               },
                               fit: BoxFit.fill,
@@ -157,7 +161,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
             : CachedNetworkImage(
                 httpHeaders: {
                   'User-Agent':
-                      ref.watch(userAgentGeneratorProvider).generate(),
+                      ref.watch(userAgentGeneratorProvider(config)).generate(),
                 },
                 imageUrl: widget.imageUrl,
                 placeholderFadeInDuration: Duration.zero,

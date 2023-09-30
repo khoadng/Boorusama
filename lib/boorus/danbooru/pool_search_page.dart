@@ -8,6 +8,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -58,6 +59,7 @@ class _ResultView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final query = ref.watch(danbooruPoolQueryProvider);
+    final config = ref.watchConfig;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -68,7 +70,7 @@ class _ResultView extends ConsumerWidget {
                 const CircularProgressIndicator.adaptive(),
             pullToRefresh: false,
             firstPageKey: PoolKey(page: 1, name: query),
-            provider: danbooruPoolsSearchResultProvider,
+            provider: danbooruPoolsSearchResultProvider(config),
             itemBuilder: (context, pool, index) => PoolGridItem(pool: pool),
             pagedBuilder: (controller, builder) => PagedSliverGrid(
               pagingController: controller,
@@ -94,11 +96,13 @@ class _SuggestionView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     ref.listen(
       danbooruPoolQueryProvider,
       (previous, next) {
         if (next.isNotEmpty) {
-          ref.read(danbooruPoolsSearchProvider.notifier).load(
+          ref.read(danbooruPoolsSearchProvider(config).notifier).load(
                 PoolKey(page: 1, name: next),
                 50,
               );
@@ -107,7 +111,7 @@ class _SuggestionView extends ConsumerWidget {
     );
 
     return RiverPagedBuilder.autoDispose(
-      provider: danbooruPoolsSearchProvider,
+      provider: danbooruPoolsSearchProvider(config),
       pagedBuilder: (controller, builder) => PagedListView(
         pagingController: controller,
         builderDelegate: builder,

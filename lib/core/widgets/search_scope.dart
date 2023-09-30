@@ -53,8 +53,7 @@ class _SearchScopeState extends ConsumerState<SearchScope> {
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
     searchStateController: displayState,
-    suggestions: ref.read(
-        suggestionsProvider(ref.read(currentBooruConfigProvider)).notifier),
+    suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
   );
 
   final displayState = ValueNotifier(DisplayState.options);

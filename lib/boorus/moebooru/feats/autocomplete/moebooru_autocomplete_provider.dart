@@ -8,17 +8,18 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'autocomplete.dart';
 
 final moebooruAutocompleteRepoProvider =
-    Provider<MoebooruAutocompleteRepository>((ref) {
-  final tagSummaryRepository = ref.watch(moebooruTagSummaryRepoProvider);
+    Provider.family<MoebooruAutocompleteRepository, BooruConfig>((ref, config) {
+  final tagSummaryRepository =
+      ref.watch(moebooruTagSummaryRepoProvider(config));
 
   return MoebooruAutocompleteRepository(
       tagSummaryRepository: tagSummaryRepository);
 });
 
-final moebooruTagSummaryRepoProvider = Provider<TagSummaryRepository>((ref) {
-  final api = ref.watch(moebooruClientProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final path = '${Uri.encodeComponent(booruConfig.url)}_tag_summary';
+final moebooruTagSummaryRepoProvider =
+    Provider.family<TagSummaryRepository, BooruConfig>((ref, config) {
+  final api = ref.watch(moebooruClientProvider(config));
+  final path = '${Uri.encodeComponent(config.url)}_tag_summary';
 
   return MoebooruTagSummaryRepository(
     api,

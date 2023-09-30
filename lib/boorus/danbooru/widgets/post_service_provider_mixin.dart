@@ -16,25 +16,27 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
     on ConsumerState<T> {
   BlacklistedTagsRepository get blacklistedTagsRepository =>
-      ref.read(danbooruBlacklistedTagRepoProvider);
+      ref.read(danbooruBlacklistedTagRepoProvider(booruConfig));
 
   BooruUserIdentityProvider get booruUserIdentityProvider =>
-      ref.read(booruUserIdentityProviderProvider);
+      ref.read(booruUserIdentityProviderProvider(booruConfig));
 
-  BooruConfig get booruConfig => ref.read(currentBooruConfigProvider);
+  BooruConfig get booruConfig => ref.readConfig;
 
   void Function(List<int> ids) get checkFavorites =>
       (ids) => ref.danbooruFavorites.checkFavorites(ids);
 
-  void Function(List<int> ids) get checkVotes =>
-      (ids) => ref.read(danbooruPostVotesProvider.notifier).getVotes(ids);
+  void Function(List<int> ids) get checkVotes => (ids) =>
+      ref.read(danbooruPostVotesProvider(booruConfig).notifier).getVotes(ids);
 
-  PoolRepository get poolRepository => ref.read(danbooruPoolRepoProvider);
+  PoolRepository get poolRepository =>
+      ref.read(danbooruPoolRepoProvider(booruConfig));
 
-  PostPreviewPreloader? get previewPreloader => ref.read(previewLoaderProvider);
+  PostPreviewPreloader? get previewPreloader =>
+      ref.read(previewLoaderProvider(booruConfig));
 
   Set<String> get blacklistedTags => {
         ...ref.read(globalBlacklistedTagsProvider).map((e) => e.name),
-        ...ref.read(danbooruBlacklistedTagsProvider) ?? [],
+        ...ref.read(danbooruBlacklistedTagsProvider(booruConfig)) ?? [],
       };
 }

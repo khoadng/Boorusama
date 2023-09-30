@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/user_details_page.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/pages/blacklists/add_to_blacklist_page.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -227,16 +228,17 @@ void goToSavedSearchCreatePage(
       backgroundColor: context.colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
-        onSubmit: (query, label) =>
-            ref.read(danbooruSavedSearchesProvider.notifier).create(
-                  query: query,
-                  label: label,
-                  onCreated: (data) => showSimpleSnackBar(
-                    context: context,
-                    duration: const Duration(seconds: 1),
-                    content: const Text('saved_search.saved_search_added').tr(),
-                  ),
-                ),
+        onSubmit: (query, label) => ref
+            .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
+            .create(
+              query: query,
+              label: label,
+              onCreated: (data) => showSimpleSnackBar(
+                context: context,
+                duration: const Duration(seconds: 1),
+                content: const Text('saved_search.saved_search_added').tr(),
+              ),
+            ),
       ),
     );
   } else {
@@ -267,17 +269,18 @@ void goToSavedSearchCreatePage(
               ),
             ),
             child: EditSavedSearchSheet(
-              onSubmit: (query, label) =>
-                  ref.read(danbooruSavedSearchesProvider.notifier).create(
-                        query: query,
-                        label: label,
-                        onCreated: (data) => showSimpleSnackBar(
-                          context: context,
-                          duration: const Duration(seconds: 1),
-                          content: const Text('saved_search.saved_search_added')
-                              .tr(),
-                        ),
-                      ),
+              onSubmit: (query, label) => ref
+                  .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
+                  .create(
+                    query: query,
+                    label: label,
+                    onCreated: (data) => showSimpleSnackBar(
+                      context: context,
+                      duration: const Duration(seconds: 1),
+                      content:
+                          const Text('saved_search.saved_search_added').tr(),
+                    ),
+                  ),
             ),
           ),
         );
@@ -300,21 +303,22 @@ void goToSavedSearchPatchPage(
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
-      onSubmit: (query, label) =>
-          ref.read(danbooruSavedSearchesProvider.notifier).update(
-                id: savedSearch.id,
-                label: label,
-                query: query,
-                onUpdated: (data) => showSimpleSnackBar(
-                  context: context,
-                  duration: const Duration(
-                    seconds: 1,
-                  ),
-                  content: const Text(
-                    'saved_search.saved_search_updated',
-                  ).tr(),
-                ),
+      onSubmit: (query, label) => ref
+          .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
+          .update(
+            id: savedSearch.id,
+            label: label,
+            query: query,
+            onUpdated: (data) => showSimpleSnackBar(
+              context: context,
+              duration: const Duration(
+                seconds: 1,
               ),
+              content: const Text(
+                'saved_search.saved_search_updated',
+              ).tr(),
+            ),
+          ),
     ),
   );
 }

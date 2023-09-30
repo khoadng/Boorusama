@@ -9,10 +9,10 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
-final gelbooruPostRepoProvider = Provider<PostRepository<GelbooruPost>>(
-  (ref) {
-    final client = ref.watch(gelbooruClientProvider);
-    final config = ref.watch(currentBooruConfigProvider);
+final gelbooruPostRepoProvider =
+    Provider.family<PostRepository<GelbooruPost>, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(gelbooruClientProvider(config));
 
     getTags(List<String> tags) {
       final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);
@@ -36,10 +36,11 @@ final gelbooruPostRepoProvider = Provider<PostRepository<GelbooruPost>>(
   },
 );
 
-final gelbooruArtistCharacterPostRepoProvider = Provider<PostRepository>(
-  (ref) {
+final gelbooruArtistCharacterPostRepoProvider =
+    Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
     return PostRepositoryCacher(
-      repository: ref.watch(gelbooruPostRepoProvider),
+      repository: ref.watch(gelbooruPostRepoProvider(config)),
       cache: LruCacher<String, List<Post>>(capacity: 100),
     );
   },

@@ -20,8 +20,8 @@ Future<void> _download(
   PermissionStatus? permission,
   required Settings settings,
 }) async {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final service = ref.read(downloadServiceProvider);
+  final booruConfig = ref.watchConfig;
+  final service = ref.read(downloadServiceProvider(booruConfig));
   final fileNameGenerator =
       ref.read(downloadFileNameGeneratorProvider(booruConfig));
   final downloadUrl = ref.read(downloadUrlProvider(downloadable));

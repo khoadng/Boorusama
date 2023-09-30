@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/datetime_selector.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -39,11 +40,14 @@ class ExploreMostViewedPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final date = ref.watch(dateProvider);
+    final config = ref.watchConfig;
 
     return DanbooruPostScope(
       fetcher: (page) => page > 1
           ? TaskEither.fromEither(Either.of([]))
-          : ref.watch(danbooruExploreRepoProvider).getMostViewedPosts(date),
+          : ref
+              .read(danbooruExploreRepoProvider(config))
+              .getMostViewedPosts(date),
       builder: (context, controller, errors) => _MostViewedContent(
         controller: controller,
         errors: errors,

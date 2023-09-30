@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -23,10 +24,12 @@ class FavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return CustomContextMenuOverlay(
       child: DanbooruPostScope(
         fetcher: (page) => ref
-            .read(danbooruPostRepoProvider)
+            .read(danbooruPostRepoProvider(config))
             .getPosts([buildFavoriteQuery(username)], page),
         builder: (context, controller, errors) => DanbooruInfinitePostList(
           errors: errors,

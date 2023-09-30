@@ -40,9 +40,9 @@ final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
 
 final booruUserIdentityProviderProvider =
-    Provider<BooruUserIdentityProvider>((ref) {
+    Provider.family<BooruUserIdentityProvider, BooruConfig>((ref, config) {
   final booruFactory = ref.watch(booruFactoryProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+  final dio = newDio(ref.watch(dioArgsProvider(config)));
 
   return BooruUserIdentityProviderImpl(dio, booruFactory);
 });
@@ -59,14 +59,14 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
 
 final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru => ref.watch(danbooruPostRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruPostRepoProvider(config)),
           BooruType.gelbooru ||
           BooruType.gelbooruV2 =>
-            ref.watch(gelbooruPostRepoProvider),
-          BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
-          BooruType.moebooru => ref.watch(moebooruPostRepoProvider),
-          BooruType.e621 => ref.watch(e621PostRepoProvider),
-          BooruType.sankaku => ref.watch(sankakuPostRepoProvider),
+            ref.watch(gelbooruPostRepoProvider(config)),
+          BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider(config)),
+          BooruType.moebooru => ref.watch(moebooruPostRepoProvider(config)),
+          BooruType.e621 => ref.watch(e621PostRepoProvider(config)),
+          BooruType.sankaku => ref.watch(sankakuPostRepoProvider(config)),
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyPostRepoProvider),
@@ -76,11 +76,12 @@ final postArtistCharacterRepoProvider =
     Provider.family<PostRepository, BooruConfig>(
         (ref, config) => switch (config.booruType) {
               BooruType.danbooru =>
-                ref.watch(danbooruArtistCharacterPostRepoProvider),
+                ref.watch(danbooruArtistCharacterPostRepoProvider(config)),
               BooruType.gelbooru ||
               BooruType.gelbooruV2 =>
-                ref.watch(gelbooruArtistCharacterPostRepoProvider),
-              BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider),
+                ref.watch(gelbooruArtistCharacterPostRepoProvider(config)),
+              BooruType.gelbooruV1 =>
+                ref.watch(gelbooruV1PostRepoProvider(config)),
               BooruType.moebooru ||
               BooruType.e621 ||
               BooruType.sankaku ||
@@ -115,17 +116,16 @@ class DioArgs {
   });
 }
 
-final dioArgsProvider = Provider<DioArgs>((ref) {
+final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
+  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
   final loggerService = ref.watch(loggerProvider);
 
   return DioArgs(
     cacheDir: cacheDir,
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     userAgentGenerator: userAgentGenerator,
-    booruConfig: booruConfig,
+    booruConfig: config,
     loggerService: loggerService,
   );
 });
@@ -134,16 +134,16 @@ final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
 );
 
-final userAgentGeneratorProvider = Provider<UserAgentGenerator>(
-  (ref) {
+final userAgentGeneratorProvider =
+    Provider.family<UserAgentGenerator, BooruConfig>(
+  (ref, config) {
     final appVersion = ref.watch(packageInfoProvider).version;
     final appName = ref.watch(appInfoProvider).appName;
-    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return UserAgentGeneratorImpl(
       appVersion: appVersion,
       appName: appName,
-      config: booruConfig,
+      config: config,
     );
   },
 );
@@ -172,8 +172,9 @@ final previewImageCacheManagerProvider =
   return PreviewImageCacheManager();
 });
 
-final previewLoaderProvider = Provider<PostPreviewPreloader>((ref) {
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider);
+final previewLoaderProvider =
+    Provider.family<PostPreviewPreloader, BooruConfig>((ref, config) {
+  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
   final previewImageCacheManager = ref.watch(previewImageCacheManagerProvider);
 
   return PostPreviewPreloaderImp(
@@ -206,11 +207,11 @@ final downloadFileNameGeneratorProvider =
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru => ref.watch(danbooruTagRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruTagRepoProvider(config)),
           BooruType.gelbooru ||
           BooruType.gelbooruV2 =>
-            ref.watch(gelbooruTagRepoProvider),
-          BooruType.moebooru => ref.watch(moebooruTagRepoProvider),
+            ref.watch(gelbooruTagRepoProvider(config)),
+          BooruType.moebooru => ref.watch(moebooruTagRepoProvider(config)),
           BooruType.e621 ||
           BooruType.gelbooruV1 ||
           BooruType.zerochan ||
@@ -222,8 +223,8 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
 
 final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
     (ref, config) => switch (config.booruType) {
-          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider),
-          BooruType.e621 => ref.watch(e621NoteRepoProvider),
+          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider(config)),
+          BooruType.e621 => ref.watch(e621NoteRepoProvider(config)),
           BooruType.gelbooru ||
           BooruType.gelbooruV2 ||
           BooruType.moebooru ||

@@ -34,7 +34,7 @@ class DanbooruForumPostsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return Scaffold(
       appBar: AppBar(

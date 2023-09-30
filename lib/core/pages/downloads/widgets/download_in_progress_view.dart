@@ -6,6 +6,7 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/pages/downloads/widgets/bulk_download_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -27,11 +28,11 @@ final bulkDownloadFilterProvider =
   return BulkDownloadFilter.all;
 });
 
-final bulkDownloadFilteredProvider =
-    Provider.autoDispose<List<BulkDownloadStatus>>((ref) {
+final bulkDownloadFilteredProvider = Provider.autoDispose
+    .family<List<BulkDownloadStatus>, BooruConfig>((ref, config) {
   final filter = ref.watch(bulkDownloadFilterProvider);
-  final state = ref.watch(
-      bulkDownloadStateProvider.select((value) => value.downloadStatuses));
+  final state = ref.watch(bulkDownloadStateProvider(config)
+      .select((value) => value.downloadStatuses));
 
   return switch (filter) {
     BulkDownloadFilter.all => state.values.toList(),
@@ -53,9 +54,10 @@ class DownloadInProgressView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(bulkDownloadStateProvider);
+    final config = ref.watchConfig;
+    final state = ref.watch(bulkDownloadStateProvider(config));
     final status = ref.watch(bulkDownloadManagerStatusProvider);
-    final data = ref.watch(bulkDownloadFilteredProvider);
+    final data = ref.watch(bulkDownloadFilteredProvider(config));
     final selectedTags = ref.watch(bulkDownloadSelectedTagsProvider);
 
     return Column(
@@ -143,8 +145,9 @@ class DownloadInProgressView extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
-              onPressed: () =>
-                  ref.read(bulkDownloaderManagerProvider.notifier).done(),
+              onPressed: () => ref
+                  .read(bulkDownloaderManagerProvider(config).notifier)
+                  .done(),
               child: const Text('download.bulk_download_done_confirm').tr(),
             ),
           )
@@ -152,8 +155,9 @@ class DownloadInProgressView extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
-              onPressed: () =>
-                  ref.read(bulkDownloaderManagerProvider.notifier).cancelAll(),
+              onPressed: () => ref
+                  .read(bulkDownloaderManagerProvider(config).notifier)
+                  .cancelAll(),
               child: const Text('download.bulk_download_cancel').tr(),
             ),
           ),

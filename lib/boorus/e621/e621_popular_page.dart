@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/datetime_selector.dart';
@@ -27,7 +28,8 @@ class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
   final selectedDateNotifier = ValueNotifier(DateTime.now());
   final selectedTimescale = ValueNotifier(TimeScale.day);
 
-  E621PopularRepository get repo => ref.read(e621PopularPostRepoProvider);
+  E621PopularRepository get repo =>
+      ref.read(e621PopularPostRepoProvider(ref.readConfig));
 
   DateTime get selectedDate => selectedDateNotifier.value;
   TimeScale get scale => selectedTimescale.value;

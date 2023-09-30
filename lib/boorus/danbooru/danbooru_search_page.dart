@@ -48,12 +48,11 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialQuery != null) {
         ref
-            .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-                .notifier)
+            .read(postCountStateProvider(ref.readConfig).notifier)
             .getPostCount([widget.initialQuery!]);
 
         ref
-            .read(danbooruRelatedTagsProvider.notifier)
+            .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
             .fetch(widget.initialQuery!);
       }
     });
@@ -176,11 +175,10 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     SelectedTagController selectedTagController,
   ) {
     ref
-        .read(danbooruRelatedTagsProvider.notifier)
+        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
         .fetch(selectedTagController.rawTagsString);
     ref
-        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-            .notifier)
+        .read(postCountStateProvider(ref.readConfig).notifier)
         .getPostCount(selectedTagController.rawTags);
     searchController.search();
   }

@@ -68,7 +68,7 @@ class _DanbooruPostDetailsDesktopPageState
     final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return CallbackShortcuts(
       bindings: {

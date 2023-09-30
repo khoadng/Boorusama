@@ -9,6 +9,7 @@ import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/mobile.dart';
@@ -56,6 +57,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -112,8 +115,9 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 Positioned.fill(
                   child: CachedNetworkImage(
                     httpHeaders: {
-                      'User-Agent':
-                          ref.watch(userAgentGeneratorProvider).generate(),
+                      'User-Agent': ref
+                          .watch(userAgentGeneratorProvider(config))
+                          .generate(),
                     },
                     imageUrl: widget.post.originalImageUrl,
                     imageBuilder: (context, imageProvider) => Hero(

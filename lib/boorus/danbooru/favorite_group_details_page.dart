@@ -64,7 +64,7 @@ class _FavoriteGroupDetailsPageState
 
   @override
   PostRepository<DanbooruPost> get postRepository =>
-      ref.read(danbooruPostRepoProvider);
+      ref.read(danbooruPostRepoProvider(ref.readConfig));
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _FavoriteGroupDetailsPageState
     });
   }
 
-  void _aggregate() {
+  void _aggregate(BooruConfig config) {
     final ids = widget.group.postIds;
     for (final cmd in commands) {
       final toIndex = cmd[2] as int;
@@ -98,7 +98,7 @@ class _FavoriteGroupDetailsPageState
       }
     }
 
-    ref.read(danbooruFavoriteGroupsProvider.notifier).edit(
+    ref.read(danbooruFavoriteGroupsProvider(config).notifier).edit(
           group: widget.group,
           initialIds: ids.join(' '),
         );
@@ -114,14 +114,14 @@ class _FavoriteGroupDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       floatingActionButton: editing
           ? FloatingActionButton(
               onPressed: () {
-                _aggregate();
+                _aggregate(config);
                 setState(() => editing = false);
               },
               child: const Icon(Icons.save),

@@ -9,26 +9,30 @@ import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
-final e621FavoritesRepoProvider = Provider<E621FavoritesRepository>((ref) {
+final e621FavoritesRepoProvider =
+    Provider.family<E621FavoritesRepository, BooruConfig>((ref, config) {
   return E621FavoritesRepositoryApi(
-    ref.read(e621ClientProvider),
-    ref.read(currentBooruConfigProvider),
-    ref.read(e621PostRepoProvider),
+    ref.read(e621ClientProvider(config)),
+    config,
+    ref.read(e621PostRepoProvider(config)),
   );
 });
 
-final e621FavoritesProvider =
-    NotifierProvider<E621FavoritesNotifier, IMap<int, bool>>(
+final e621FavoritesProvider = NotifierProvider.family<E621FavoritesNotifier,
+    IMap<int, bool>, BooruConfig>(
   E621FavoritesNotifier.new,
 );
 
-final e621FavoriteProvider = Provider.family<bool, int>((ref, postId) {
-  final favorites = ref.watch(e621FavoritesProvider);
+final e621FavoriteProvider =
+    Provider.autoDispose.family<bool, int>((ref, postId) {
+  final config = ref.watchConfig;
+  final favorites = ref.watch(e621FavoritesProvider(config));
   return favorites[postId] ?? false;
 });
 
-final e621FavoriteCheckerProvider = Provider<FavoriteChecker>((ref) {
-  final favorites = ref.watch(e621FavoritesProvider);
+final e621FavoriteCheckerProvider =
+    Provider.family<FavoriteChecker, BooruConfig>((ref, config) {
+  final favorites = ref.watch(e621FavoritesProvider(config));
 
   return (postId) => favorites[postId] ?? false;
 });

@@ -6,34 +6,41 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 final danbooruForumTopicRepoProvider =
-    Provider<DanbooruForumTopicRepository>((ref) {
+    Provider.family<DanbooruForumTopicRepository, BooruConfig>((ref, config) {
   return DanbooruForumTopicRepositoryApi(
-    client: ref.watch(danbooruClientProvider),
+    client: ref.watch(danbooruClientProvider(config)),
   );
 });
 
-final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose<
-    DanbooruForumTopicsNotifier, PagedState<int, DanbooruForumTopic>>((ref) {
+final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose.family<
+    DanbooruForumTopicsNotifier,
+    PagedState<int, DanbooruForumTopic>,
+    BooruConfig>((ref, config) {
   return DanbooruForumTopicsNotifier(
-    repo: ref.watch(danbooruForumTopicRepoProvider),
+    repo: ref.watch(danbooruForumTopicRepoProvider(config)),
   );
 });
 
 final danbooruForumPostRepoProvider =
-    Provider<DanbooruForumPostRepository>((ref) {
+    Provider.family<DanbooruForumPostRepository, BooruConfig>((ref, config) {
   return DanbooruForumPostRepositoryApi(
-    client: ref.watch(danbooruClientProvider),
+    client: ref.watch(danbooruClientProvider(config)),
     onFetched: (posts) => ref
-        .read(danbooruCreatorsProvider.notifier)
+        .read(danbooruCreatorsProvider(config).notifier)
         .load(posts.expand((e) => e.votes).map((e) => e.creatorId).toList()),
   );
 });
 
 final danbooruForumPostsProvider = StateNotifierProvider.autoDispose.family<
-        DanbooruForumPostsNotifier, PagedState<int, DanbooruForumPost>, int>(
-    (ref, topicId) => DanbooruForumPostsNotifier(
-          topicId: topicId,
-          repo: ref.watch(danbooruForumPostRepoProvider),
-        ));
+    DanbooruForumPostsNotifier,
+    PagedState<int, DanbooruForumPost>,
+    int>((ref, topicId) {
+  final config = ref.watch(currentBooruConfigProvider);
+  return DanbooruForumPostsNotifier(
+    topicId: topicId,
+    repo: ref.watch(danbooruForumPostRepoProvider(config)),
+  );
+});

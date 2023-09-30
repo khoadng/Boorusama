@@ -6,13 +6,15 @@ import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<Recommend<DanbooruPost>>, DanbooruPost>(
         (ref, post) async {
-  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider);
-  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider);
+  final config = ref.watchConfig;
+  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
+  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider(config));
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
   final tags = post.artistTags;
@@ -48,8 +50,9 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
 final danbooruPostDetailsCharacterProvider = FutureProvider.family
     .autoDispose<List<Recommend<DanbooruPost>>, DanbooruPost>(
         (ref, post) async {
-  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider);
-  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider);
+  final config = ref.watchConfig;
+  final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
+  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider(config));
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
   final tags = post.characterTags.take(3);
@@ -85,8 +88,8 @@ final danbooruPostDetailsCharacterProvider = FutureProvider.family
 final danbooruPostDetailsChildrenProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, DanbooruPost>((ref, post) async {
   if (!post.hasParentOrChildren) return [];
-
-  final repo = ref.watch(danbooruPostRepoProvider);
+  final config = ref.watchConfig;
+  final repo = ref.watch(danbooruPostRepoProvider(config));
 
   final posts = await repo
       .getPosts(
@@ -101,7 +104,8 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
 
 final danbooruPostDetailsPoolsProvider =
     FutureProvider.family.autoDispose<List<Pool>, int>((ref, postId) async {
-  final repo = ref.watch(danbooruPoolRepoProvider);
+  final config = ref.watchConfig;
+  final repo = ref.watch(danbooruPoolRepoProvider(config));
 
   return repo.getPoolsByPostId(postId);
 });

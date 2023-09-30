@@ -5,23 +5,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
-final danbooruRelatedTagRepProvider = Provider<RelatedTagRepository>((ref) {
-  return RelatedTagRepositoryApi(ref.watch(danbooruClientProvider));
+final danbooruRelatedTagRepProvider =
+    Provider.family<RelatedTagRepository, BooruConfig>((ref, config) {
+  return RelatedTagRepositoryApi(ref.watch(danbooruClientProvider(config)));
 });
 
-final danbooruRelatedTagsProvider =
-    NotifierProvider<RelatedTagsNotifier, IMap<String, RelatedTag>>(
+final danbooruRelatedTagsProvider = NotifierProvider.family<RelatedTagsNotifier,
+    IMap<String, RelatedTag>, BooruConfig>(
   RelatedTagsNotifier.new,
 );
 
-final danbooruRelatedTagProvider = Provider.family<RelatedTag?, String>(
-  (ref, tag) => ref.watch(danbooruRelatedTagsProvider)[tag],
+final danbooruRelatedTagProvider =
+    Provider.autoDispose.family<RelatedTag?, String>(
+  (ref, tag) {
+    final config = ref.watchConfig;
+    return ref.watch(danbooruRelatedTagsProvider(config))[tag];
+  },
 );
 
 final danbooruRelatedTagCosineSimilarityProvider =
-    Provider.family<RelatedTag?, String>(
+    Provider.autoDispose.family<RelatedTag?, String>(
   (ref, tag) {
     final relatedTag = ref.watch(danbooruRelatedTagProvider(tag));
 

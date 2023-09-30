@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/artists/artists.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/scaffolds/tag_details_page_scaffold.dart';
@@ -31,9 +32,10 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
   @override
   Widget build(BuildContext context) {
     final artist = ref.watch(e621ArtistProvider(widget.artistName));
+    final config = ref.watchConfig;
 
     return PostScope(
-      fetcher: (page) => ref.read(e621PostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
             queryFromTagFilterCategory(
               category: selectedCategory.value,
               tag: widget.artistName,

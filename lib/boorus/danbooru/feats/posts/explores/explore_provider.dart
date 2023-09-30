@@ -30,15 +30,15 @@ final timeAndDateProvider = Provider<ScaleAndTime>((ref) {
   dateProvider,
 ]);
 
-final danbooruExploreRepoProvider = Provider<ExploreRepository>(
-  (ref) {
+final danbooruExploreRepoProvider =
+    Provider.family<ExploreRepository, BooruConfig>(
+  (ref, config) {
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
-        client: ref.watch(danbooruClientProvider),
-        postRepository: ref.watch(danbooruPostRepoProvider),
+        client: ref.watch(danbooruClientProvider(config)),
+        postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settingsRepository: ref.watch(settingsRepoProvider),
-        shouldFilter: switch (
-            ref.watch(currentBooruConfigProvider).ratingFilter) {
+        shouldFilter: switch (ref.watchConfig.ratingFilter) {
           BooruConfigRatingFilter.hideNSFW => (post) =>
               post.rating != Rating.general || !post.viewable,
           BooruConfigRatingFilter.hideExplicit => (post) =>

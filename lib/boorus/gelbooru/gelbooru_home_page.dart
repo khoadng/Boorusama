@@ -31,10 +31,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
   void initState() {
     super.initState();
     ref.read(searchHistoryProvider.notifier).fetchHistories();
-    ref
-        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-            .notifier)
-        .getPostCount([]);
+    ref.read(postCountStateProvider(ref.readConfig).notifier).getPostCount([]);
   }
 
   @override
@@ -45,7 +42,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.readConfig;
 
     return PostScope(
       fetcher: (page) => ref.watch(postRepoProvider(config)).getPosts(
@@ -92,8 +89,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
     PostGridController postController,
   ) {
     ref
-        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-            .notifier)
+        .read(postCountStateProvider(ref.readConfig).notifier)
         .getPostCount(selectedTagController.rawTags);
     ref
         .read(searchHistoryProvider.notifier)

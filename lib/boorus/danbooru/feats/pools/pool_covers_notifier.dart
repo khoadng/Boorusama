@@ -4,19 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
-class PoolCoversNotifier extends Notifier<Map<PoolId, PoolCover?>> {
+class PoolCoversNotifier
+    extends FamilyNotifier<Map<PoolId, PoolCover?>, BooruConfig> {
   @override
-  Map<PoolId, PoolCover?> build() {
-    ref.watch(currentBooruConfigProvider);
-
+  Map<PoolId, PoolCover?> build(BooruConfig arg) {
     return {};
   }
 
   PostRepository<DanbooruPost> get postRepo =>
-      ref.watch(danbooruPostRepoProvider);
+      ref.watch(danbooruPostRepoProvider(arg));
 
   Future<void> load(List<Pool>? pools) async {
     if (pools == null) return;

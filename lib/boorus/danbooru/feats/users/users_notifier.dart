@@ -6,12 +6,11 @@ import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 
 class UserNotifier extends FamilyAsyncNotifier<User, int> {
-  UserRepository get repo => ref.watch(danbooruUserRepoProvider);
-
   @override
   Future<User> build(int arg) async {
-    ref.watch(currentBooruConfigProvider);
-    final user = await repo.getUserById(arg);
+    final config = ref.watchConfig;
+    final user =
+        await ref.watch(danbooruUserRepoProvider(config)).getUserById(arg);
     return user;
   }
 }

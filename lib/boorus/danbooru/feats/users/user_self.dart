@@ -1,8 +1,8 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:boorusama/core/feats/users/user.dart' as core;
 
 // Project imports:
+import 'package:boorusama/core/feats/users/user.dart' as core;
 import 'user.dart';
 import 'user_level.dart';
 

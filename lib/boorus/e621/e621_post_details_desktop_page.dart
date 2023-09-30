@@ -57,15 +57,17 @@ class _DanbooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final isFav = ref.watch(e621FavoriteProvider(post.id));
 
     return CallbackShortcuts(
       bindings: {
         if (config.hasLoginDetails())
           const SingleActivator(LogicalKeyboardKey.keyF): () => !isFav
-              ? ref.read(e621FavoritesProvider.notifier).add(post.id)
-              : ref.read(e621FavoritesProvider.notifier).remove(post.id),
+              ? ref.read(e621FavoritesProvider(config).notifier).add(post.id)
+              : ref
+                  .read(e621FavoritesProvider(config).notifier)
+                  .remove(post.id),
         const SingleActivator(
           LogicalKeyboardKey.keyF,
           control: true,

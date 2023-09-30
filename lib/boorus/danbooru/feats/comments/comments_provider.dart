@@ -5,16 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
-final danbooruCommentRepoProvider = Provider<CommentRepository>((ref) {
+final danbooruCommentRepoProvider =
+    Provider.family<CommentRepository, BooruConfig>((ref, config) {
   return CommentRepositoryApi(
-    ref.watch(danbooruClientProvider),
+    ref.watch(danbooruClientProvider(config)),
   );
 });
 
-final danbooruCommentsProvider =
-    NotifierProvider<CommentsNotifier, Map<int, List<CommentData>?>>(
+final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
+    Map<int, List<CommentData>?>, BooruConfig>(
   CommentsNotifier.new,
   dependencies: [
     booruUserIdentityProviderProvider,
@@ -22,5 +23,8 @@ final danbooruCommentsProvider =
   ],
 );
 
-final danbooruCommentProvider = Provider.family<List<CommentData>?, int>(
-    (ref, postId) => ref.watch(danbooruCommentsProvider)[postId]);
+final danbooruCommentProvider =
+    Provider.autoDispose.family<List<CommentData>?, int>((ref, postId) {
+  final config = ref.watchConfig;
+  return ref.watch(danbooruCommentsProvider(config))[postId];
+});

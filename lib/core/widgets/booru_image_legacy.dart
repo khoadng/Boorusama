@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -30,6 +31,8 @@ class BooruImageLegacy extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     if (imageUrl.isEmpty) {
       return ImagePlaceHolder(
         width: cacheWidth,
@@ -50,34 +53,35 @@ class BooruImageLegacy extends ConsumerWidget {
       ),
       child: CachedNetworkImage(
         httpHeaders: {
-          'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
+          'User-Agent':
+              ref.watch(userAgentGeneratorProvider(config)).generate(),
         },
         width: cacheWidth?.toDouble(),
         height: cacheHeight?.toDouble(),
         imageUrl: imageUrl,
         errorListener: (e) => {},
         fit: fit ?? BoxFit.cover,
-        placeholder: (context, url) =>
-            placeholderUrl != null && placeholderUrl!.isNotEmpty
-                ? CachedNetworkImage(
-                    httpHeaders: {
-                      'User-Agent':
-                          ref.watch(userAgentGeneratorProvider).generate(),
-                    },
-                    errorListener: (e) => {},
-                    fadeInDuration: Duration.zero,
-                    fadeOutDuration: Duration.zero,
-                    imageUrl: placeholderUrl!,
-                    fit: fit ?? BoxFit.cover,
-                    placeholder: (context, url) => ImagePlaceHolder(
-                      borderRadius: borderRadius ??
-                          const BorderRadius.all(Radius.circular(8)),
-                    ),
-                  )
-                : ImagePlaceHolder(
-                    borderRadius: borderRadius ??
-                        const BorderRadius.all(Radius.circular(8)),
-                  ),
+        placeholder: (context, url) => placeholderUrl != null &&
+                placeholderUrl!.isNotEmpty
+            ? CachedNetworkImage(
+                httpHeaders: {
+                  'User-Agent':
+                      ref.watch(userAgentGeneratorProvider(config)).generate(),
+                },
+                errorListener: (e) => {},
+                fadeInDuration: Duration.zero,
+                fadeOutDuration: Duration.zero,
+                imageUrl: placeholderUrl!,
+                fit: fit ?? BoxFit.cover,
+                placeholder: (context, url) => ImagePlaceHolder(
+                  borderRadius: borderRadius ??
+                      const BorderRadius.all(Radius.circular(8)),
+                ),
+              )
+            : ImagePlaceHolder(
+                borderRadius:
+                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+              ),
         errorWidget: (context, url, error) => ErrorPlaceholder(
           borderRadius:
               borderRadius ?? const BorderRadius.all(Radius.circular(8)),

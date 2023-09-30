@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/widgets/datetime_selector.dart';
 import 'package:boorusama/core/widgets/time_scale_toggle_switch.dart';
@@ -41,10 +42,11 @@ class ExplorePopularPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timeAndDate = ref.watch(timeAndDateProvider);
+    final config = ref.watchConfig;
 
     return DanbooruPostScope(
       fetcher: (page) => ref
-          .watch(danbooruExploreRepoProvider)
+          .read(danbooruExploreRepoProvider(config))
           .getPopularPosts(timeAndDate.date, page, timeAndDate.scale),
       builder: (context, controller, errors) => _PopularContent(
         controller: controller,

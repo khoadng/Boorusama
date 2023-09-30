@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmark_notifier.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -81,7 +82,8 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
         ),
         body: Builder(
           builder: (context) {
-            final state = ref.watch(bookmarkProvider);
+            final config = ref.watchConfig;
+            final state = ref.watch(bookmarkProvider(config));
 
             if (state.bookmarks.isEmpty) {
               return const Center(

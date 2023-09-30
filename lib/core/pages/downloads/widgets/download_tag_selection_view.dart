@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/flutter.dart';
@@ -40,6 +41,8 @@ class _DownloadTagSelectionViewState
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -204,7 +207,7 @@ class _DownloadTagSelectionViewState
                 return ElevatedButton(
                   onPressed: allowDownloadd
                       ? () => ref
-                          .read(bulkDownloaderManagerProvider.notifier)
+                          .read(bulkDownloaderManagerProvider(config).notifier)
                           .download(tags: selectedTags)
                       : null,
                   child: const Text('download.download').tr(),

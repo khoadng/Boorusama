@@ -25,7 +25,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
     final postVote = ref.watch(danbooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
@@ -50,7 +50,9 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
               ),
               splashRadius: 16,
               onPressed: () {
-                ref.read(danbooruPostVotesProvider.notifier).upvote(post.id);
+                ref
+                    .read(danbooruPostVotesProvider(config).notifier)
+                    .upvote(post.id);
               },
             ),
           if (config.hasLoginDetails())
@@ -61,7 +63,9 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
               ),
               splashRadius: 16,
               onPressed: () {
-                ref.read(danbooruPostVotesProvider.notifier).downvote(post.id);
+                ref
+                    .read(danbooruPostVotesProvider(config).notifier)
+                    .downvote(post.id);
               },
             ),
           BookmarkPostButton(post: post),

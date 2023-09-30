@@ -9,17 +9,18 @@ import 'package:boorusama/core/feats/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
-final popularSearchProvider = Provider<PopularSearchRepository>(
-  (ref) {
+final popularSearchProvider =
+    Provider.family<PopularSearchRepository, BooruConfig>(
+  (ref, config) {
     return PopularSearchRepositoryApi(
-      client: ref.watch(danbooruClientProvider),
+      client: ref.watch(danbooruClientProvider(config)),
     );
   },
 );
 
-final danbooruTagRepoProvider = Provider<TagRepository>(
-  (ref) {
-    final client = ref.watch(danbooruClientProvider);
+final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(danbooruClientProvider(config));
 
     return TagRepositoryBuilder(
       persistentStorageKey: 'danbooru_tags_cache_v1',
@@ -55,13 +56,13 @@ final danbooruUserMetatagsProvider =
   ],
 );
 
-final trendingTagsProvider =
-    AsyncNotifierProvider<TrendingTagNotifier, List<Search>>(
+final trendingTagsProvider = AsyncNotifierProvider.family<TrendingTagNotifier,
+    List<Search>, BooruConfig>(
   TrendingTagNotifier.new,
 );
 
 final shouldFetchTrendingProvider = Provider<bool>((ref) {
-  final config = ref.watch(currentBooruConfigProvider);
+  final config = ref.watchConfig;
   final booruType = intToBooruType(config.booruId);
 
   return booruType == BooruType.danbooru;
@@ -73,8 +74,8 @@ final danbooruTagCategoryRepoProvider = Provider<DanbooruTagCategoryRepository>(
   },
 );
 
-final danbooruTagCategoriesProviderProvider =
-    NotifierProvider<DanbooruTagCategoryNotifier, IMap<String, TagCategory>>(
+final danbooruTagCategoriesProviderProvider = NotifierProvider.family<
+    DanbooruTagCategoryNotifier, IMap<String, TagCategory>, BooruConfig>(
   DanbooruTagCategoryNotifier.new,
   dependencies: [
     danbooruTagCategoryRepoProvider,
@@ -82,5 +83,8 @@ final danbooruTagCategoriesProviderProvider =
   ],
 );
 
-final danbooruTagCategoryProvider = Provider.family<TagCategory?, String>(
-    (ref, tag) => ref.watch(danbooruTagCategoriesProviderProvider)[tag]);
+final danbooruTagCategoryProvider =
+    Provider.family<TagCategory?, String>((ref, tag) {
+  final config = ref.watchConfig;
+  return ref.watch(danbooruTagCategoriesProviderProvider(config))[tag];
+});

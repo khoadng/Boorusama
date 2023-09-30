@@ -3,15 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
-class RelatedTagsNotifier extends Notifier<IMap<String, RelatedTag>> {
+class RelatedTagsNotifier
+    extends FamilyNotifier<IMap<String, RelatedTag>, BooruConfig> {
   @override
-  IMap<String, RelatedTag> build() {
+  IMap<String, RelatedTag> build(BooruConfig arg) {
     return <String, RelatedTag>{}.lock;
   }
 
-  RelatedTagRepository get repo => ref.read(danbooruRelatedTagRepProvider);
+  RelatedTagRepository get repo => ref.read(danbooruRelatedTagRepProvider(arg));
 
   Future<void> fetch(String tag) async {
     if (state.containsKey(tag)) return;

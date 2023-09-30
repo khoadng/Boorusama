@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 
@@ -35,6 +36,8 @@ class BooruImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     if (imageUrl.isEmpty) {
       return NullableAspectRatio(
         aspectRatio: aspectRatio,
@@ -58,7 +61,8 @@ class BooruImage extends ConsumerWidget {
           aspectRatio: aspectRatio,
           child: CachedNetworkImage(
             httpHeaders: {
-              'User-Agent': ref.watch(userAgentGeneratorProvider).generate(),
+              'User-Agent':
+                  ref.watch(userAgentGeneratorProvider(config)).generate(),
             },
             errorListener: (e) {},
             memCacheWidth: cacheWidth,
@@ -69,8 +73,9 @@ class BooruImage extends ConsumerWidget {
                 placeholderUrl != null && placeholderUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         httpHeaders: {
-                          'User-Agent':
-                              ref.watch(userAgentGeneratorProvider).generate(),
+                          'User-Agent': ref
+                              .watch(userAgentGeneratorProvider(config))
+                              .generate(),
                         },
                         errorListener: (e) {},
                         fit: fit ?? BoxFit.fill,

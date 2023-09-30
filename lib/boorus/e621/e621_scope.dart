@@ -39,12 +39,13 @@ class E621Scope extends ConsumerStatefulWidget {
 class _E621ScopeState extends ConsumerState<E621Scope> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => PostScope(
-        fetcher: (page) => ref.read(e621PostRepoProvider).getPosts([], page),
+        fetcher: (page) =>
+            ref.read(e621PostRepoProvider(config)).getPosts([], page),
         builder: (context, postController, errors) => InfinitePostListScaffold(
           errors: errors,
           controller: postController,

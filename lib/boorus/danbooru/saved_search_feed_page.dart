@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/widgets/widgets.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
@@ -31,15 +32,17 @@ class SavedSearchFeedPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(danbooruSavedSearchStateProvider);
-    final selectedSearch = ref.watch(danbooruSavedSearchSelectedProvider);
+    final config = ref.watchConfig;
+    final state = ref.watch(danbooruSavedSearchStateProvider(config));
+    final selectedSearch =
+        ref.watch(danbooruSavedSearchSelectedProvider(config));
 
     return state.when(
       data: (state) => switch (state) {
         SavedSearchState.landing => const SavedSearchLandingView(),
         SavedSearchState.feed => DanbooruPostScope(
             fetcher: (page) => ref
-                .read(danbooruPostRepoProvider)
+                .read(danbooruPostRepoProvider(config))
                 .getPosts(selectedSearch.toQuery(), page),
             builder: (context, controller, errors) => _PostList(
               controller: controller,
@@ -64,8 +67,10 @@ class _PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     ref.listen(
-      danbooruSavedSearchSelectedProvider,
+      danbooruSavedSearchSelectedProvider(config),
       (previous, next) async {
         if (previous != next) {
           await const Duration(milliseconds: 100).future;
@@ -111,8 +116,10 @@ class _SavedSearchList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searches = ref.watch(danbooruSavedSearchAvailableProvider);
-    final selectedSearch = ref.watch(danbooruSavedSearchSelectedProvider);
+    final config = ref.watchConfig;
+    final searches = ref.watch(danbooruSavedSearchAvailableProvider(config));
+    final selectedSearch =
+        ref.watch(danbooruSavedSearchSelectedProvider(config));
 
     return ListView.builder(
       shrinkWrap: true,
@@ -132,8 +139,9 @@ class _SavedSearchList extends ConsumerWidget {
             selected: isSelected,
             onSelected: (selected) {
               if (!isSelected) {
-                ref.read(danbooruSavedSearchSelectedProvider.notifier).state =
-                    searches[index];
+                ref
+                    .read(danbooruSavedSearchSelectedProvider(config).notifier)
+                    .state = searches[index];
               }
             },
             padding: EdgeInsets.symmetric(

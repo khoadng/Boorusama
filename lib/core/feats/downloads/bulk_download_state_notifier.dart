@@ -2,11 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 
-class BulkDownloadStateNotifier extends Notifier<BulkDownloadState> {
+class BulkDownloadStateNotifier
+    extends FamilyNotifier<BulkDownloadState, BooruConfig> {
   @override
-  BulkDownloadState build() {
+  BulkDownloadState build(BooruConfig arg) {
     ref.listen(
       bulkDownloadManagerStatusProvider,
       (previous, next) {
@@ -17,7 +19,7 @@ class BulkDownloadStateNotifier extends Notifier<BulkDownloadState> {
     );
 
     ref.listen(
-      bulkDownloadDataProvider,
+      bulkDownloadDataProvider(arg),
       (previous, next) {
         next.whenData((value) {
           updateDownloadStatus(url: value.url, status: value);

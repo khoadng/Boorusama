@@ -40,7 +40,7 @@ class NotesControllerNotifier
     extends AutoDisposeFamilyNotifier<NotesControllerState, Post> {
   @override
   NotesControllerState build(Post arg) {
-    ref.watch(currentBooruConfigProvider);
+    ref.watchConfig;
 
     return NotesControllerState.initial();
   }
@@ -53,6 +53,7 @@ class NotesControllerNotifier
 
   Future<void> load() async {
     if (state.notes.isEmpty && arg.isTranslated) {
+      //FIXME: this looks like a potential bug
       final notes = await ref
           .read(noteRepoProvider(ref.read(currentBooruConfigProvider)))
           .getNotes(arg.id);

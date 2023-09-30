@@ -41,7 +41,9 @@ class _CommentPageState extends ConsumerState<CommentPage> {
   @override
   void initState() {
     super.initState();
-    ref.read(danbooruCommentsProvider.notifier).load(widget.postId);
+    ref
+        .read(danbooruCommentsProvider(ref.readConfig).notifier)
+        .load(widget.postId);
 
     isEditing.addListener(_onEditing);
 
@@ -68,8 +70,8 @@ class _CommentPageState extends ConsumerState<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(currentBooruConfigProvider);
-    final comments = ref.watch(danbooruCommentsProvider)[widget.postId];
+    final config = ref.watchConfig;
+    final comments = ref.watch(danbooruCommentsProvider(config))[widget.postId];
 
     return WillPopScope(
       onWillPop: () async {
@@ -114,16 +116,16 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                           _focus.requestFocus();
                         },
                         onDelete: (comment) => ref
-                            .read(danbooruCommentsProvider.notifier)
+                            .read(danbooruCommentsProvider(config).notifier)
                             .delete(postId: widget.postId, comment: comment),
                         onUpvote: (comment) => ref
-                            .read(danbooruCommentVotesProvider.notifier)
+                            .read(danbooruCommentVotesProvider(config).notifier)
                             .upvote(comment.id),
                         onDownvote: (comment) => ref
-                            .read(danbooruCommentVotesProvider.notifier)
+                            .read(danbooruCommentVotesProvider(config).notifier)
                             .downvote(comment.id),
                         onClearVote: (comment, commentVote) => ref
-                            .read(danbooruCommentVotesProvider.notifier)
+                            .read(danbooruCommentVotesProvider(config).notifier)
                             .unvote(commentVote),
                       ),
                     ),

@@ -29,7 +29,7 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
   @override
   Widget build(BuildContext context) {
     final configs = ref.watch(configsProvider);
-    final currentConfig = ref.watch(currentBooruConfigProvider);
+    final currentConfig = ref.watchConfig;
 
     void show(BooruConfig config) {
       context.contextMenuOverlay.show(

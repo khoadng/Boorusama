@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/desktop_search_bar.dart';
@@ -39,8 +40,10 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return PostScope(
-      fetcher: (page) => ref.read(e621PostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
             selectedTagController.rawTags,
             page,
           ),

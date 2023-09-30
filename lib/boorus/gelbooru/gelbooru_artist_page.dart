@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tag_filter_category.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/scaffolds/tag_details_page_scaffold.dart';
@@ -29,9 +30,10 @@ class _GelbooruArtistPageState extends ConsumerState<GelbooruArtistPage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
     return PostScope(
       fetcher: (page) =>
-          ref.read(gelbooruArtistCharacterPostRepoProvider).getPosts(
+          ref.read(gelbooruArtistCharacterPostRepoProvider(config)).getPosts(
                 queryFromTagFilterCategory(
                   category: selectedCategory.value,
                   tag: widget.artistName,

@@ -10,8 +10,9 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
-final danbooruPostRepoProvider = Provider<PostRepository<DanbooruPost>>((ref) {
-  final client = ref.watch(danbooruClientProvider);
+final danbooruPostRepoProvider =
+    Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
+  final client = ref.watch(danbooruClientProvider(config));
 
   return PostRepositoryBuilder(
     fetch: (tags, page, {limit}) => client
@@ -26,8 +27,8 @@ final danbooruPostRepoProvider = Provider<PostRepository<DanbooruPost>>((ref) {
 });
 
 final danbooruArtistCharacterPostRepoProvider =
-    Provider<PostRepository<DanbooruPost>>((ref) {
-  final postRepo = ref.watch(danbooruPostRepoProvider);
+    Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
+  final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
   return DanbooruArtistCharacterPostRepository(
     repository: postRepo,
@@ -35,13 +36,12 @@ final danbooruArtistCharacterPostRepoProvider =
   );
 });
 
-final danbooruPostCountRepoProvider = Provider<PostCountRepository>((ref) {
+final danbooruPostCountRepoProvider =
+    Provider.family<PostCountRepository, BooruConfig>((ref, config) {
   return PostCountRepositoryBuilder(
     countTags: (tags) =>
-        ref.watch(danbooruClientProvider).countPosts(tags: tags),
+        ref.read(danbooruClientProvider(config)).countPosts(tags: tags),
     //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags: ref.watch(currentBooruConfigProvider).url == kDanbooruSafeUrl
-        ? ['rating:general']
-        : [],
+    extraTags: config.url == kDanbooruSafeUrl ? ['rating:general'] : [],
   );
 });

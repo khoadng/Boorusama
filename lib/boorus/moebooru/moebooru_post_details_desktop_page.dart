@@ -56,7 +56,7 @@ class _MoebooruPostDetailsDesktopPageState
   @override
   Widget build(BuildContext context) {
     final post = widget.posts[page];
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
 
     return CallbackShortcuts(
       bindings: {

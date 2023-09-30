@@ -7,10 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
-class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
+class TrendingTagNotifier
+    extends FamilyAsyncNotifier<List<Search>, BooruConfig> {
   @override
-  FutureOr<List<Search>> build() {
+  FutureOr<List<Search>> build(BooruConfig arg) {
     ref.listen(
       shouldFetchTrendingProvider,
       (previous, next) {
@@ -24,7 +26,7 @@ class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
   }
 
   PopularSearchRepository get popularSearchRepository =>
-      ref.read(popularSearchProvider);
+      ref.read(popularSearchProvider(arg));
 
   Future<List<Search>> fetch() async {
     final excludedTags = ref.read(tagInfoProvider).r18Tags;
@@ -40,7 +42,7 @@ class TrendingTagNotifier extends AsyncNotifier<List<Search>> {
         searches.where((s) => !excludedTags.contains(s.keyword)).toList();
 
     ref
-        .read(danbooruTagCategoriesProviderProvider.notifier)
+        .read(danbooruTagCategoriesProviderProvider(arg).notifier)
         .save(filtered.map((e) => e.keyword).toList());
 
     return filtered;

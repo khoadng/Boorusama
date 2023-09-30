@@ -12,9 +12,9 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 
-final sankakuClientProvider = Provider<SankakuClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final sankakuClientProvider =
+    Provider.family<SankakuClient, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return SankakuClient(
     dio: dio,
@@ -24,9 +24,9 @@ final sankakuClientProvider = Provider<SankakuClient>((ref) {
   );
 });
 
-final sankakuPostRepoProvider = Provider<PostRepository>(
-  (ref) {
-    final client = ref.watch(sankakuClientProvider);
+final sankakuPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(sankakuClientProvider(config));
 
     return PostRepositoryBuilder(
       getSettings: () async => ref.read(settingsProvider),

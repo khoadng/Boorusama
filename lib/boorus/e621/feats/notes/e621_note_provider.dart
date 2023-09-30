@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'e621_note.dart';
 
-final e621NoteRepoProvider = Provider<NoteRepository>((ref) {
-  final client = ref.watch(e621ClientProvider);
+final e621NoteRepoProvider =
+    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(e621ClientProvider(config));
 
   return NoteRepositoryBuilder(
     fetch: (postId) => client

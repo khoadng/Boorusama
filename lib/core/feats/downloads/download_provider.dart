@@ -42,16 +42,15 @@ String sanitizedUrl(String url) {
   }
 }
 
-final downloadServiceProvider = Provider<DownloadService>(
-  (ref) {
-    final dio = newDio(ref.watch(dioArgsProvider));
+final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
+  (ref, config) {
+    final dio = newDio(ref.watch(dioArgsProvider(config)));
     final notifications = ref.watch(downloadNotificationProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
 
     return DioDownloadService(
       dio,
       notifications,
-      retryOn404: booruConfig.booruType.hasUnknownFullImageUrl,
+      retryOn404: config.booruType.hasUnknownFullImageUrl,
     );
   },
   dependencies: [

@@ -12,18 +12,16 @@ import 'package:boorusama/utils/duration_utils.dart';
 
 const _serviceName = 'Bulk Download Manager';
 
-class BulkDownloadManagerNotifier extends Notifier<void> {
+class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   BulkDownloadStateNotifier get bulkDownloadState =>
-      ref.read(bulkDownloadStateProvider.notifier);
+      ref.read(bulkDownloadStateProvider(arg).notifier);
 
-  BulkDownloader get downloader => ref.read(bulkDownloadProvider);
+  BulkDownloader get downloader => ref.read(bulkDownloadProvider(arg));
 
   StateController<BulkDownloadManagerStatus> get bulkDownloadStatus =>
       ref.read(bulkDownloadManagerStatusProvider.notifier);
 
-  PostRepository get postRepo => ref.read(postRepoProvider(booruConfig));
-
-  BooruConfig get booruConfig => ref.read(currentBooruConfigProvider);
+  PostRepository get postRepo => ref.read(postRepoProvider(arg));
 
   LoggerService get logger => ref.read(loggerProvider);
 
@@ -37,7 +35,7 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
   }
 
   @override
-  void build() {
+  void build(BooruConfig arg) {
     return;
   }
 
@@ -69,8 +67,7 @@ class BulkDownloadManagerNotifier extends Notifier<void> {
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
-    final fileNameGenerator =
-        ref.read(bulkDownloadFileNameProvider(booruConfig));
+    final fileNameGenerator = ref.read(bulkDownloadFileNameProvider(arg));
 
     try {
       var page = 1;

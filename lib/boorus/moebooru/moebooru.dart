@@ -16,9 +16,9 @@ import 'create_moebooru_config_page.dart';
 import 'moebooru_post_details_desktop_page.dart';
 import 'moebooru_post_details_page.dart';
 
-final moebooruClientProvider = Provider<MoebooruClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final moebooruClientProvider =
+    Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return MoebooruClient.custom(
     baseUrl: booruConfig.url,

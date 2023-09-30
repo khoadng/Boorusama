@@ -14,7 +14,8 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/toast.dart';
 
-final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
+final bookmarkProvider =
+    NotifierProvider.family<BookmarkNotifier, BookmarkState, BooruConfig>(
   BookmarkNotifier.new,
   dependencies: [
     bookmarkRepoProvider,
@@ -23,9 +24,9 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   ],
 );
 
-class BookmarkNotifier extends Notifier<BookmarkState> {
+class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
   @override
-  BookmarkState build() {
+  BookmarkState build(BooruConfig arg) {
     getAllBookmarks();
     return BookmarkState(bookmarks: <Bookmark>[].lock);
   }
@@ -122,7 +123,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     final settings = ref.read(settingsProvider);
     final tasks = state.bookmarks
         .map((bookmark) => ref
-            .read(downloadServiceProvider)
+            .read(downloadServiceProvider(arg))
             .downloadWithSettings(
               settings,
               url: bookmark.originalUrl,
@@ -137,7 +138,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 }
 
 extension BookmarkNotifierX on WidgetRef {
-  BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
+  BookmarkNotifier get bookmarks =>
+      read(bookmarkProvider(read(currentBooruConfigProvider)).notifier);
 }
 
 extension BookmarkCubitToastX on BookmarkNotifier {

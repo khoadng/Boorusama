@@ -38,7 +38,7 @@ class E621PostTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watch(currentBooruConfigProvider);
+    final booru = ref.watchConfig;
     final tags = <E621TagGroup>[
       if (post.artistTags.isNotEmpty)
         (

@@ -13,8 +13,7 @@ final postCountStateProvider =
 );
 
 final postCountProvider = Provider<PostCountState>(
-  (ref) =>
-      ref.watch(postCountStateProvider(ref.watch(currentBooruConfigProvider))),
+  (ref) => ref.watch(postCountStateProvider(ref.watchConfig)),
   dependencies: [
     postCountStateProvider,
     currentBooruConfigProvider,

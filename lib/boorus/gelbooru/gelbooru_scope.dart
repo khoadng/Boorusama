@@ -107,7 +107,7 @@ class _GelbooruMobileHomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.readConfig;
 
     return PostScope(
       // Need to use generic repo here because this is used not only for Gelbooru

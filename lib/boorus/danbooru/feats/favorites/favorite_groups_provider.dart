@@ -6,15 +6,17 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 //#region Previews
-final danbooruFavoriteGroupPreviewProvider = Provider.autoDispose
-    .family<String, int?>((ref, postId) =>
-        ref.watch(danbooruFavoriteGroupPreviewsProvider)[postId] ?? '');
+final danbooruFavoriteGroupPreviewProvider =
+    Provider.autoDispose.family<String, int?>((ref, postId) {
+  final config = ref.watchConfig;
+  return ref.watch(danbooruFavoriteGroupPreviewsProvider(config))[postId] ?? '';
+});
 
-final danbooruFavoriteGroupPreviewsProvider =
-    NotifierProvider<FavoriteGroupPreviewsNotifier, Map<int, String>>(
+final danbooruFavoriteGroupPreviewsProvider = NotifierProvider.family<
+    FavoriteGroupPreviewsNotifier, Map<int, String>, BooruConfig>(
   FavoriteGroupPreviewsNotifier.new,
   dependencies: [
     danbooruPostRepoProvider,
@@ -24,14 +26,14 @@ final danbooruFavoriteGroupPreviewsProvider =
 
 //#region Favorite Groups
 final danbooruFavoriteGroupRepoProvider =
-    Provider<FavoriteGroupRepository>((ref) {
+    Provider.family<FavoriteGroupRepository, BooruConfig>((ref, config) {
   return FavoriteGroupRepositoryApi(
-    client: ref.watch(danbooruClientProvider),
+    client: ref.watch(danbooruClientProvider(config)),
   );
 });
 
-final danbooruFavoriteGroupsProvider =
-    NotifierProvider<FavoriteGroupsNotifier, List<FavoriteGroup>?>(
+final danbooruFavoriteGroupsProvider = NotifierProvider.family<
+    FavoriteGroupsNotifier, List<FavoriteGroup>?, BooruConfig>(
   FavoriteGroupsNotifier.new,
   dependencies: [
     danbooruFavoriteGroupRepoProvider,
@@ -40,8 +42,8 @@ final danbooruFavoriteGroupsProvider =
   ],
 );
 
-final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose<
-    FavoriteGroupFilterableNotifier, List<FavoriteGroup>?>(
+final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose
+    .family<FavoriteGroupFilterableNotifier, List<FavoriteGroup>?, BooruConfig>(
   FavoriteGroupFilterableNotifier.new,
   dependencies: [
     danbooruFavoriteGroupsProvider,

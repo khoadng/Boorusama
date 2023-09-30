@@ -32,12 +32,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   @override
   void initState() {
     super.initState();
+    final config = ref.readConfig;
     ref.read(searchHistoryProvider.notifier).fetchHistories();
-    ref
-        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-            .notifier)
-        .getPostCount([]);
-    ref.read(danbooruRelatedTagsProvider.notifier).fetch('');
+    ref.read(postCountStateProvider(config).notifier).getPostCount([]);
+    ref.read(danbooruRelatedTagsProvider(config).notifier).fetch('');
   }
 
   @override
@@ -48,8 +46,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return DanbooruPostScope(
-      fetcher: (page) => ref.read(danbooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
             selectedTagController.rawTags,
             page,
           ),
@@ -104,11 +104,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     PostGridController postController,
   ) {
     ref
-        .read(danbooruRelatedTagsProvider.notifier)
+        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
         .fetch(selectedTagController.rawTagsString);
     ref
-        .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-            .notifier)
+        .read(postCountStateProvider(ref.readConfig).notifier)
         .getPostCount(selectedTagController.rawTags);
     ref
         .read(searchHistoryProvider.notifier)

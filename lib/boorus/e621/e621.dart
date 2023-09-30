@@ -19,9 +19,9 @@ import 'e621_favorites_page.dart';
 import 'e621_scope.dart';
 import 'e621_search_page.dart';
 
-final e621ClientProvider = Provider<E621Client>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final e621ClientProvider =
+    Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return E621Client(
     baseUrl: booruConfig.url,
@@ -31,8 +31,9 @@ final e621ClientProvider = Provider<E621Client>((ref) {
   );
 });
 
-final e621AutocompleteRepoProvider = Provider<AutocompleteRepository>((ref) {
-  final client = ref.watch(e621ClientProvider);
+final e621AutocompleteRepoProvider =
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(e621ClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey: 'e621_autocomplete_cache_v1',

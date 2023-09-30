@@ -17,7 +17,7 @@ class CurrentBooruTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
     final source = PostSource.from(booruConfig.url);
 
     final logo = switch (source) {

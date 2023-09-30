@@ -8,9 +8,9 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 
-final danbooruClientProvider = Provider<DanbooruClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = newDio(ref.watch(dioArgsProvider));
+final danbooruClientProvider =
+    Provider.family<DanbooruClient, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return DanbooruClient(
     dio: dio,
@@ -21,8 +21,8 @@ final danbooruClientProvider = Provider<DanbooruClient>((ref) {
 });
 
 final danbooruAutocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) {
-  final client = ref.watch(danbooruClientProvider);
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(danbooruClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
       persistentStorageKey: 'danbooru_autocomplete_cache_v1',

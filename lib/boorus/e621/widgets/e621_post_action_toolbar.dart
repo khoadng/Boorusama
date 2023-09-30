@@ -23,7 +23,7 @@ class E621PostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final isFaved = ref.watch(e621FavoriteProvider(post.id));
 
     return Material(
@@ -36,9 +36,10 @@ class E621PostActionToolbar extends ConsumerWidget {
             isFaved: isFaved,
             isAuthorized: config.hasLoginDetails(),
             addFavorite: () =>
-                ref.read(e621FavoritesProvider.notifier).add(post.id),
-            removeFavorite: () =>
-                ref.read(e621FavoritesProvider.notifier).remove(post.id),
+                ref.read(e621FavoritesProvider(config).notifier).add(post.id),
+            removeFavorite: () => ref
+                .read(e621FavoritesProvider(config).notifier)
+                .remove(post.id),
           ),
           BookmarkPostButton(post: post),
           DownloadPostButton(post: post),

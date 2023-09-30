@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/reports/reports.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -26,7 +27,9 @@ import 'widgets/users/user_stats_group.dart';
 
 final userDataProvider = FutureProvider.family
     .autoDispose<List<DanbooruReportDataPoint>, String>((ref, tag) async {
-  final data = await ref.watch(danbooruPostReportProvider).getPostReports(
+  final config = ref.watchConfig;
+  final data =
+      await ref.watch(danbooruPostReportProvider(config)).getPostReports(
     tags: [
       tag,
     ],
@@ -42,7 +45,8 @@ final userDataProvider = FutureProvider.family
 
 final userCopyrightDataProvider =
     FutureProvider.family<RelatedTag, String>((ref, username) async {
-  return ref.watch(danbooruRelatedTagRepProvider).getRelatedTag(
+  final config = ref.watchConfig;
+  return ref.watch(danbooruRelatedTagRepProvider(config)).getRelatedTag(
         'user:$username',
         order: RelatedType.frequency,
         category: TagCategory.copyright,

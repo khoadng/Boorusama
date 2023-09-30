@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'reply_header.dart';
 
@@ -52,6 +53,8 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return ValueListenableBuilder<CommentData?>(
       valueListenable: widget.commentReply,
       builder: (_, comment, __) => Container(
@@ -115,7 +118,8 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                             : () {
                                 widget.isEditing.value = false;
                                 ref
-                                    .read(danbooruCommentsProvider.notifier)
+                                    .read(danbooruCommentsProvider(config)
+                                        .notifier)
                                     .send(
                                       postId: widget.postId,
                                       content: value.text,

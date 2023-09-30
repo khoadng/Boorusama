@@ -56,8 +56,7 @@ class _SearchPageScaffoldState<T extends Post>
 
       if (postCountFetcher != null && widget.initialQuery != null) {
         ref
-            .read(postCountStateProvider(ref.read(currentBooruConfigProvider))
-                .notifier)
+            .read(postCountStateProvider(ref.readConfig).notifier)
             .getPostCount([widget.initialQuery!]);
       }
     });
@@ -80,9 +79,7 @@ class _SearchPageScaffoldState<T extends Post>
                 onSearch: () {
                   if (postCountFetcher != null) {
                     ref
-                        .read(postCountStateProvider(
-                                ref.read(currentBooruConfigProvider))
-                            .notifier)
+                        .read(postCountStateProvider(ref.readConfig).notifier)
                         .getPostCount(selectedTagController.rawTags);
                   }
 

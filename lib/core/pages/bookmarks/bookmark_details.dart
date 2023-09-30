@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/functional.dart';
@@ -33,7 +34,8 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bookmarks = ref.watch(bookmarkProvider).bookmarks;
+    final config = ref.watchConfig;
+    final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
 
     return Scaffold(
       extendBodyBehindAppBar: true,

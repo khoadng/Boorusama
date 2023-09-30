@@ -13,21 +13,21 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/path.dart';
 
-final e621PostRepoProvider = Provider<PostRepository<E621Post>>((ref) {
-  final client = ref.watch(e621ClientProvider);
-  final booruConfig = ref.watch(currentBooruConfigProvider);
+final e621PostRepoProvider =
+    Provider.family<PostRepository<E621Post>, BooruConfig>((ref, config) {
+  final client = ref.watch(e621ClientProvider(config));
 
   return PostRepositoryBuilder(
     fetch: (tags, page, {limit}) async {
       final data = await client
           .getPosts(
             page: page,
-            tags: getTags(booruConfig, tags),
+            tags: getTags(config, tags),
             limit: limit,
           )
           .then((value) => value.map(postDtoToPost).toList());
 
-      ref.read(e621FavoritesProvider.notifier).preload(data);
+      ref.read(e621FavoritesProvider(config).notifier).preload(data);
 
       return data;
     },
@@ -36,10 +36,11 @@ final e621PostRepoProvider = Provider<PostRepository<E621Post>>((ref) {
   // );
 });
 
-final e621PopularPostRepoProvider = Provider<E621PopularRepository>((ref) {
+final e621PopularPostRepoProvider =
+    Provider.family<E621PopularRepository, BooruConfig>((ref, config) {
   return E621PopularRepositoryApi(
-    ref.watch(e621ClientProvider),
-    ref.watch(currentBooruConfigProvider),
+    ref.watch(e621ClientProvider(config)),
+    ref.watchConfig,
     ref.watch(settingsRepoProvider),
   );
 });

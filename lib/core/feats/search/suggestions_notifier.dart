@@ -25,7 +25,7 @@ final fallbackSuggestionsProvider =
 final suggestionProvider =
     Provider.autoDispose.family<IList<AutocompleteData>, String>(
   (ref, tag) {
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final booruConfig = ref.watchConfig;
     final suggestions = ref.watch(suggestionsProvider(booruConfig));
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);

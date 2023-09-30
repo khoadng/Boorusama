@@ -91,10 +91,11 @@ class _DanbooruInfinitePostListState
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
+    final booruConfig = ref.watchConfig;
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
-    final danbooruBlacklist = ref.watch(danbooruBlacklistedTagsProvider);
-    final currentUser = ref.watch(danbooruCurrentUserProvider);
-    final booruConfig = ref.watch(currentBooruConfigProvider);
+    final danbooruBlacklist =
+        ref.watch(danbooruBlacklistedTagsProvider(booruConfig));
+    final currentUser = ref.watch(danbooruCurrentUserProvider(booruConfig));
     final isUnverified = booruConfig.isUnverified();
 
     return LayoutBuilder(
@@ -213,7 +214,7 @@ class FavoriteGroupMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
 
     return ButtonBar(
       alignment: MainAxisAlignment.center,

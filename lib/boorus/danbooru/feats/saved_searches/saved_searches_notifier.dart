@@ -6,18 +6,16 @@ import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.da
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/dart.dart';
 
-class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
+class SavedSearchesNotifier
+    extends FamilyNotifier<List<SavedSearch>?, BooruConfig> {
   @override
-  List<SavedSearch>? build() {
-    final config = ref.watch(currentBooruConfigProvider);
-    if (config.booruType.isDanbooruBased && config.hasLoginDetails()) {
-      fetch();
-    }
-
+  List<SavedSearch>? build(BooruConfig arg) {
+    //FIME: check me if this is correct
     return null;
   }
 
-  SavedSearchRepository get repo => ref.read(danbooruSavedSearchRepoProvider);
+  SavedSearchRepository get repo =>
+      ref.read(danbooruSavedSearchRepoProvider(arg));
 
   Future<List<SavedSearch>> fetch() async {
     final savedSearches = await repo.getSavedSearches(page: 1);

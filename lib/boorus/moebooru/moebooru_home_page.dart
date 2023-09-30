@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/desktop_search_bar.dart';
@@ -39,8 +40,10 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfig;
+
     return PostScope(
-      fetcher: (page) => ref.watch(moebooruPostRepoProvider).getPosts(
+      fetcher: (page) => ref.watch(moebooruPostRepoProvider(config)).getPosts(
             selectedTagController.rawTags,
             page,
           ),

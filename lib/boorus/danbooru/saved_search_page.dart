@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -44,7 +45,8 @@ class _SuccessView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final savedSearches = ref.watch(danbooruSavedSearchesProvider);
+    final config = ref.watchConfig;
+    final savedSearches = ref.watch(danbooruSavedSearchesProvider(config));
 
     if (savedSearches == null) {
       return const Center(
@@ -121,7 +123,7 @@ class _SuccessView extends ConsumerWidget {
       context: context,
       builder: (_) => ModalSavedSearchAction(
         onDelete: () => ref
-            .read(danbooruSavedSearchesProvider.notifier)
+            .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
             .delete(savedSearch: savedSearch),
         onEdit: () => goToSavedSearchPatchPage(ref, context, savedSearch),
       ),

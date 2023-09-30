@@ -6,19 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
 
 const youtubeUrl = 'www.youtube.com';
 
-class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
+class CommentsNotifier
+    extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfig> {
   @override
-  Map<int, List<CommentData>?> build() {
-    ref.watch(currentBooruConfigProvider);
+  Map<int, List<CommentData>?> build(BooruConfig arg) {
     return {};
   }
 
-  CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
+  CommentRepository get repo => ref.read(danbooruCommentRepoProvider(arg));
 
   Future<void> load(
     int postId, {
@@ -26,10 +26,9 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
   }) async {
     if (state.containsKey(postId) && !force) return;
 
-    final config = ref.watch(currentBooruConfigProvider);
     final accountId = await ref
-        .watch(booruUserIdentityProviderProvider)
-        .getAccountIdFromConfig(config);
+        .watch(booruUserIdentityProviderProvider(arg))
+        .getAccountIdFromConfig(arg);
 
     final comments = await repo
         .getCommentsFromPostId(postId)
@@ -64,7 +63,7 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
 
     // fetch comment votes
     ref
-        .read(danbooruCommentVotesProvider.notifier)
+        .read(danbooruCommentVotesProvider(arg).notifier)
         .fetch(comments.map((e) => e.id).toList());
   }
 

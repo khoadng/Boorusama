@@ -50,7 +50,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.read(currentBooruConfigProvider);
+    final config = ref.readConfig;
 
     return ValueListenableBuilder(
       valueListenable: showSuggestions,

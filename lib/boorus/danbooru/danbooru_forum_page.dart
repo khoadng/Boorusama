@@ -9,6 +9,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -23,6 +24,8 @@ class DanbooruForumPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('forum.forum').tr(),
@@ -36,7 +39,7 @@ class DanbooruForumPage extends ConsumerWidget {
         ),
         pullToRefresh: false,
         firstPageKey: 1,
-        provider: danbooruForumTopicsProvider,
+        provider: danbooruForumTopicsProvider(config),
         itemBuilder: (context, topic, index) => ForumCard(
           title: topic.title,
           responseCount: topic.responseCount,

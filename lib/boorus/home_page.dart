@@ -54,8 +54,11 @@ class _HomePageState extends ConsumerState<HomePage> {
       );
     }
 
+    final config = ref.watchConfig;
+
     ref.listen(
-      bulkDownloadStateProvider.select((value) => value.downloadStatuses),
+      bulkDownloadStateProvider(config)
+          .select((value) => value.downloadStatuses),
       (previous, next) {
         if (previous == null) return;
         if (previous.values.any((e) => e is! BulkDownloadDone) &&
@@ -75,8 +78,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         }
       },
     );
-
-    final config = ref.watch(currentBooruConfigProvider);
 
     return OrientationBuilder(
       builder: (context, orientation) => ConditionalParentWidget(
@@ -109,7 +110,7 @@ class _Boorus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(currentBooruConfigProvider);
+    final config = ref.watchConfig;
     final booruBuilder = ref.watch(booruBuilderProvider);
 
     if (booruBuilder != null) {
