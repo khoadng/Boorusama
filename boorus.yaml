@@ -21,17 +21,14 @@
         salt: --{0}--
 
 - gelbooru:
-    protocol: https_2
     sites:
       - https://gelbooru.com/
 
 - gelbooru_v2:
-    protocol: https_2
     sites:
       - https://rule34.xxx/
 
 - gelbooru_v1: 
-    protocol: https_2
     sites:
       - https://safebooru.org/
 
