@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -50,10 +49,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
         ref
             .read(postCountStateProvider(ref.readConfig).notifier)
             .getPostCount([widget.initialQuery!]);
-
-        ref
-            .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
-            .fetch(widget.initialQuery!);
       }
     });
   }
@@ -174,9 +169,6 @@ class _SearchPageState extends ConsumerState<DanbooruSearchPage> {
     SearchPageController searchController,
     SelectedTagController selectedTagController,
   ) {
-    ref
-        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
-        .fetch(selectedTagController.rawTagsString);
     ref
         .read(postCountStateProvider(ref.readConfig).notifier)
         .getPostCount(selectedTagController.rawTags);

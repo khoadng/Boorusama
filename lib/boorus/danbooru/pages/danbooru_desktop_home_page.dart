@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/search/related_tag_section.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -34,7 +33,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
     final config = ref.readConfig;
     ref.read(searchHistoryProvider.notifier).fetchHistories();
     ref.read(postCountStateProvider(config).notifier).getPostCount([]);
-    ref.read(danbooruRelatedTagsProvider(config).notifier).fetch('');
   }
 
   @override
@@ -102,9 +100,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   void _onSearch(
     PostGridController postController,
   ) {
-    ref
-        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
-        .fetch(selectedTagController.rawTagsString);
     ref
         .read(postCountStateProvider(ref.readConfig).notifier)
         .getPostCount(selectedTagController.rawTags);

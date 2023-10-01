@@ -45,18 +45,9 @@ class _DanbooruTagDetailsPageState
   final selectedCategory = ValueNotifier(TagFilterCategory.newest);
 
   @override
-  void initState() {
-    super.initState();
-    ref
-        .read(danbooruRelatedTagsProvider(ref.readConfig).notifier)
-        .fetch(widget.tagName);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final related =
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
-    final tags = related?.tags.take(_kTagCloudTotal).toList() ?? [];
     final config = ref.watchConfig;
     final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
 
@@ -70,7 +61,14 @@ class _DanbooruTagDetailsPageState
           const SizedBox(height: 36),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: _buildTagCloud(related, context, tags),
+            child: related.maybeWhen(
+              data: (data) => _buildTagCloud(
+                data,
+                context,
+                data.tags.take(_kTagCloudTotal).toList(),
+              ),
+              orElse: () => null,
+            ),
           ),
         ],
       ),
@@ -102,7 +100,16 @@ class _DanbooruTagDetailsPageState
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
-              SliverToBoxAdapter(child: _buildTagCloud(related, context, tags)),
+              SliverToBoxAdapter(
+                child: related.maybeWhen(
+                  data: (data) => _buildTagCloud(
+                    data,
+                    context,
+                    data.tags.take(_kTagCloudTotal).toList(),
+                  ),
+                  orElse: () => null,
+                ),
+              ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
             ],
             SliverPadding(
