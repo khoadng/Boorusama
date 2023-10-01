@@ -61,6 +61,7 @@ export 'related_posts_section.dart';
 export 'result_header.dart';
 export 'search_scope.dart';
 export 'simple_post_action_toolbar.dart';
+export 'simple_post_stats_tile.dart';
 export 'source_link.dart';
 export 'swipe_target_image.dart';
 export 'tag_detail_region.dart';

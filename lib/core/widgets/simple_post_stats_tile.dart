@@ -2,23 +2,29 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class PostStatsTile extends StatelessWidget {
-  const PostStatsTile({
+class SimplePostStatsTile extends StatelessWidget {
+  const SimplePostStatsTile({
     super.key,
-    required this.post,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
     required this.totalComments,
+    required this.favCount,
+    required this.score,
+    this.onFavCountTap,
+    this.onScoreTap,
+    this.votePercentText,
   });
 
-  final DanbooruPost post;
   final int totalComments;
+  final int favCount;
+  final int score;
   final EdgeInsets padding;
+  final void Function(BuildContext context)? onFavCountTap;
+  final void Function(BuildContext context)? onScoreTap;
+  final String? votePercentText;
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +33,18 @@ class PostStatsTile extends StatelessWidget {
       child: Wrap(
         children: [
           _StatButton(
-            enable: post.hasFavorite,
-            onTap: () => goToPostFavoritesDetails(context, post),
+            enable: onFavCountTap != null,
+            onTap: () => onFavCountTap?.call(context),
             child: RichText(
               text: TextSpan(
-                text: '${post.favCount} ',
+                text: '$favCount ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.primary,
                 ),
                 children: [
                   TextSpan(
-                    text: 'favorites.counter'.plural(post.favCount),
+                    text: 'favorites.counter'.plural(favCount),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -50,11 +56,11 @@ class PostStatsTile extends StatelessWidget {
             ),
           ),
           _StatButton(
-            enable: post.hasVoter,
-            onTap: () => goToPostVotesDetails(context, post),
+            enable: onScoreTap != null,
+            onTap: () => onScoreTap?.call(context),
             child: RichText(
               text: TextSpan(
-                text: '${post.score} ',
+                text: '$score ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.primary,
@@ -62,7 +68,7 @@ class PostStatsTile extends StatelessWidget {
                 children: [
                   TextSpan(
                     text:
-                        '${'post.detail.score'.plural(post.score)} ${_generatePercentText(post)}',
+                        '${'post.detail.score'.plural(score)} ${votePercentText ?? ''}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -74,7 +80,7 @@ class PostStatsTile extends StatelessWidget {
             ),
           ),
           _StatButton(
-            enable: post.hasComment,
+            enable: true,
             child: RichText(
               text: TextSpan(
                 text: '$totalComments ',
@@ -126,10 +132,4 @@ class _StatButton extends StatelessWidget {
       ),
     );
   }
-}
-
-String _generatePercentText(DanbooruPost post) {
-  return post.totalVote > 0
-      ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
-      : '';
 }

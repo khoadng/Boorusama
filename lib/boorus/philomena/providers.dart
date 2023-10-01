@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/philomena/philomena_post.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/philomena/types/image_dto.dart';
@@ -41,7 +42,7 @@ final philomenaPostRepoProvider =
       return posts.map((e) {
         final isVideo = e.mimeType?.contains('video') ?? false;
 
-        return SimplePost(
+        return PhilomenaPost(
           id: e.id ?? 0,
           thumbnailImageUrl: isVideo
               ? _parseVideoThumbnail(e) ?? ''
@@ -50,10 +51,7 @@ final philomenaPostRepoProvider =
           originalImageUrl: e.representations?.full ?? '',
           tags: e.tags?.map((e) => e.replaceAll('+', '_')).toList() ?? [],
           rating: Rating.general,
-          hasComment: e.commentCount.toOption().fold(
-                () => false,
-                (count) => count > 0,
-              ),
+          commentCount: e.commentCount ?? 0,
           isTranslated: false,
           hasParentOrChildren: false,
           source: PostSource.from(e.sourceUrl),
@@ -70,6 +68,11 @@ final philomenaPostRepoProvider =
           getLink: (baseUrl) => baseUrl.endsWith('/')
               ? '${baseUrl}images/${e.id}'
               : '$baseUrl/images/${e.id}',
+          description: e.description ?? '',
+          createdAt: e.createdAt,
+          favCount: e.faves ?? 0,
+          upvotes: e.upvotes ?? 0,
+          downvotes: e.downvotes ?? 0,
         );
       }).toList();
     },
