@@ -51,6 +51,8 @@ mixin CacheMixin<T> {
   bool exist(String key) => _cache.exist(key);
 
   void clear() => _cache.clear();
+
+  void remove(String key) => _cache.remove(key);
 }
 
 mixin SimpleCacheMixin<T> {

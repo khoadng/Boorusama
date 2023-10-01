@@ -18,7 +18,8 @@ class CommentsNotifier
     return {};
   }
 
-  CommentRepository get repo => ref.read(danbooruCommentRepoProvider(arg));
+  CommentRepository<DanbooruComment> get repo =>
+      ref.read(danbooruCommentRepoProvider(arg));
 
   Future<void> load(
     int postId, {
@@ -31,7 +32,7 @@ class CommentsNotifier
         .getAccountIdFromConfig(arg);
 
     final comments = await repo
-        .getCommentsFromPostId(postId)
+        .getComments(postId)
         .then(filterDeleted())
         .then((comments) => comments
             .map((comment) => CommentData(
@@ -72,7 +73,7 @@ class CommentsNotifier
     required String content,
     CommentData? replyTo,
   }) async {
-    await repo.postComment(
+    await repo.createComment(
       postId,
       buildCommentContent(content: content, replyTo: replyTo),
     );

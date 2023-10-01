@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'comment_vote.dart';
-import 'comment_vote_repository.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 import 'comment_votes_provider.dart';
 import 'danbooru_comment.dart';
+import 'danbooru_comment_vote.dart';
 
 class CommentVotesNotifier
-    extends FamilyNotifier<Map<CommentId, CommentVote>, BooruConfig> {
+    extends FamilyNotifier<Map<CommentId, DanbooruCommentVote>, BooruConfig> {
   @override
-  Map<int, CommentVote> build(BooruConfig arg) {
+  Map<int, DanbooruCommentVote> build(BooruConfig arg) {
     return {};
   }
 
-  CommentVoteRepository get repo =>
+  CommentVoteRepository<DanbooruCommentVote> get repo =>
       ref.read(danbooruCommentVoteRepoProvider(arg));
 
   Future<void> fetch(List<int> commentIds) async {
@@ -33,7 +33,7 @@ class CommentVotesNotifier
 
   // upvote
   Future<void> upvote(int commentId) async {
-    final vote = await repo.upvote(commentId);
+    final vote = await repo.upvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -42,7 +42,7 @@ class CommentVotesNotifier
 
   // downvote
   Future<void> downvote(int commentId) async {
-    final vote = await repo.downvote(commentId);
+    final vote = await repo.downvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -50,13 +50,13 @@ class CommentVotesNotifier
   }
 
   // unvote
-  Future<void> unvote(CommentVote? commentVote) async {
+  Future<void> unvote(DanbooruCommentVote? commentVote) async {
     if (commentVote == null) return;
     final currentVote = state[commentVote.commentId];
 
     if (currentVote == null) return;
 
-    final success = await repo.removeVote(commentVote.id);
+    final success = await repo.unvoteComment(commentVote.id);
 
     if (!success) return;
 

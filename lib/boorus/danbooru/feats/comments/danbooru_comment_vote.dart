@@ -3,12 +3,13 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 import 'danbooru_comment.dart';
 
 typedef CommentVoteId = int;
 
-class CommentVote extends Equatable {
-  const CommentVote({
+class DanbooruCommentVote extends Equatable implements CommentVote {
+  const DanbooruCommentVote({
     required this.id,
     required this.commentId,
     required this.userId,
@@ -18,7 +19,7 @@ class CommentVote extends Equatable {
     required this.isDeleted,
   });
 
-  factory CommentVote.empty() => CommentVote(
+  factory DanbooruCommentVote.empty() => DanbooruCommentVote(
         id: -1,
         commentId: -1,
         userId: -1,
@@ -29,8 +30,10 @@ class CommentVote extends Equatable {
       );
 
   final CommentVoteId id;
+  @override
   final CommentId commentId;
   final UserId userId;
+  @override
   final CommentScore score;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -48,20 +51,20 @@ class CommentVote extends Equatable {
       ];
 }
 
-extension CommentVoteX on CommentVote {
+extension CommentVoteX on DanbooruCommentVote {
   CommentVoteState get voteState => switch (score) {
         -1 => CommentVoteState.downvoted,
         1 => CommentVoteState.upvoted,
         _ => CommentVoteState.unvote,
       };
 
-  CommentVote copyWith({
+  DanbooruCommentVote copyWith({
     CommentVoteId? id,
     CommentId? commentId,
     UserId? userId,
     CommentScore? score,
   }) =>
-      CommentVote(
+      DanbooruCommentVote(
         id: id ?? this.id,
         commentId: commentId ?? this.commentId,
         userId: userId ?? this.userId,

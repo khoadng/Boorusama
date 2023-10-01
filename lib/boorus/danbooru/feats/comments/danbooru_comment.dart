@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 
 typedef CommentId = int;
 typedef CommentScore = int;
@@ -16,7 +17,7 @@ enum CommentVoteState {
   upvoted,
 }
 
-class DanbooruComment extends Equatable {
+class DanbooruComment extends Equatable implements Comment {
   const DanbooruComment({
     required this.id,
     required this.score,
@@ -39,14 +40,23 @@ class DanbooruComment extends Equatable {
         creator: null,
       );
 
+  @override
   final CommentId id;
   final CommentScore score;
+  @override
   final CommentBody body;
   final CommentPostId postId;
+  @override
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
   final User? creator;
+
+  @override
+  int? get creatorId => creator?.id;
+
+  @override
+  String? get creatorName => creator?.name;
 
   @override
   List<Object?> get props => [
