@@ -80,57 +80,62 @@ class ImageDto {
   });
 
   factory ImageDto.fromJson(Map<String, dynamic> json) {
-    return ImageDto(
-      tagCount: json['tag_count'],
-      deletionReason: json['deletion_reason'],
-      sourceUrls:
-          (json['source_urls'] as List?)?.map((e) => e as String).toList(),
-      mimeType: json['mime_type'],
-      downvotes: json['downvotes'],
-      intensities: IntensitiesDto.fromJson(json['intensities']),
-      duration: json['duration'],
-      duplicateOf: json['duplicate_of'],
-      id: json['id'],
-      name: json['name'],
-      representations: RepresentationsDto.fromJson(json['representations']),
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
-      origSha512Hash: json['orig_sha512_hash'],
-      commentCount: json['comment_count'],
-      wilsonScore: switch (json['wilson_score']) {
-        int n => n.toDouble(),
-        double n => n,
-        _ => null,
-      },
-      firstSeenAt: json['first_seen_at'] != null
-          ? DateTime.tryParse(json['first_seen_at'])
-          : null,
-      tagIds: (json['tag_ids'] as List?)?.map((e) => e as int).toList(),
-      thumbnailsGenerated: json['thumbnails_generated'],
-      description: json['description'],
-      viewUrl: json['view_url'],
-      updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'])
-          : null,
-      uploader: json['uploader'],
-      width: json['width'],
-      uploaderId: json['uploader_id'],
-      tags: (json['tags'] as List?)?.map((e) => e as String).toList(),
-      height: json['height'],
-      sha512Hash: json['sha512_hash'],
-      size: json['size'],
-      score: json['score'],
-      faves: json['faves'],
-      animated: json['animated'],
-      spoilered: json['spoilered'],
-      sourceUrl: json['source_url'],
-      hiddenFromUsers: json['hidden_from_users'],
-      aspectRatio: json['aspect_ratio'],
-      upvotes: json['upvotes'],
-      format: json['format'],
-      processed: json['processed'],
-    );
+    try {
+      return ImageDto(
+        tagCount: json['tag_count'],
+        deletionReason: json['deletion_reason'],
+        sourceUrls:
+            (json['source_urls'] as List?)?.map((e) => e as String).toList(),
+        mimeType: json['mime_type'],
+        downvotes: json['downvotes'],
+        intensities: IntensitiesDto.fromJson(json['intensities']),
+        duration: json['duration'],
+        duplicateOf: json['duplicate_of'],
+        id: json['id'],
+        name: json['name'],
+        representations: RepresentationsDto.fromJson(json['representations']),
+        createdAt: json['created_at'] != null
+            ? DateTime.tryParse(json['created_at'])
+            : null,
+        origSha512Hash: json['orig_sha512_hash'],
+        commentCount: json['comment_count'],
+        wilsonScore: switch (json['wilson_score']) {
+          int n => n.toDouble(),
+          double n => n,
+          _ => null,
+        },
+        firstSeenAt: json['first_seen_at'] != null
+            ? DateTime.tryParse(json['first_seen_at'])
+            : null,
+        tagIds: (json['tag_ids'] as List?)?.map((e) => e as int).toList(),
+        thumbnailsGenerated: json['thumbnails_generated'],
+        description: json['description'],
+        viewUrl: json['view_url'],
+        updatedAt: json['updated_at'] != null
+            ? DateTime.tryParse(json['updated_at'])
+            : null,
+        uploader: json['uploader'],
+        width: json['width'],
+        uploaderId: json['uploader_id'],
+        tags: (json['tags'] as List?)?.map((e) => e as String).toList(),
+        height: json['height'],
+        sha512Hash: json['sha512_hash'],
+        size: json['size'],
+        score: json['score'],
+        faves: json['faves'],
+        animated: json['animated'],
+        spoilered: json['spoilered'],
+        sourceUrl: json['source_url'],
+        hiddenFromUsers: json['hidden_from_users'],
+        aspectRatio: json['aspect_ratio'],
+        upvotes: json['upvotes'],
+        format: json['format'],
+        processed: json['processed'],
+      );
+    } catch (e) {
+      // Silently ignore error and return empty object
+      return ImageDto();
+    }
   }
 
   @override
