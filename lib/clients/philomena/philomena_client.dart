@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:dio/dio.dart';
 
+// Project imports:
 import 'types/types.dart';
 
 class PhilomenaClient {
@@ -25,7 +27,7 @@ class PhilomenaClient {
       queryParameters: {
         if (tags != null)
           'q': tags.map((e) => e.replaceAll('_', '+')).join(','),
-        if (page != null) 'page': page,
+        if (page != null && page > 1) 'page': page,
         if (perPage != null) 'per_page': perPage,
         if (apiKey != null) 'key': apiKey,
       },

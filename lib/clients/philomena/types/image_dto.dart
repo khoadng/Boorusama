@@ -98,7 +98,11 @@ class ImageDto {
           : null,
       origSha512Hash: json['orig_sha512_hash'],
       commentCount: json['comment_count'],
-      wilsonScore: json['wilson_score'],
+      wilsonScore: switch (json['wilson_score']) {
+        int n => n.toDouble(),
+        double n => n,
+        _ => null,
+      },
       firstSeenAt: json['first_seen_at'] != null
           ? DateTime.tryParse(json['first_seen_at'])
           : null,

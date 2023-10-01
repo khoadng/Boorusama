@@ -10,6 +10,7 @@ const int kMoebooruId = 24;
 const int kE621Id = 25;
 const int kZerochanId = 26;
 const int kSankaku = 27;
+const int kPhilomenaId = 28;
 
 enum NetworkProtocol {
   https_1_1,
@@ -55,6 +56,7 @@ sealed class Booru extends Equatable {
         'e621' => E621.from(name, data),
         'zerochan' => Zerochan.from(name, data),
         'sankaku' => Sankaku.from(name, data),
+        'philomena' => Philomena.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
 
@@ -80,6 +82,7 @@ extension BooruX on Booru {
         E621 _ => kE621Id,
         Zerochan _ => kZerochanId,
         Sankaku _ => kSankaku,
+        Philomena _ => kPhilomenaId,
       };
 
   bool hasSite(String url) => switch (this) {
@@ -91,6 +94,7 @@ extension BooruX on Booru {
         E621 e => e.sites.contains(url),
         Zerochan z => z.sites.contains(url),
         Sankaku s => s.sites.contains(url),
+        Philomena p => p.sites.contains(url),
       };
 
   NetworkProtocol? getSiteProtocol(String url) => switch (this) {
@@ -273,6 +277,24 @@ class Sankaku extends Booru {
   final List<String> sites;
 }
 
+class Philomena extends Booru {
+  const Philomena({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  factory Philomena.from(String name, dynamic data) {
+    return Philomena(
+      name: name,
+      protocol: _parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+    );
+  }
+
+  final List<String> sites;
+}
+
 enum BooruType {
   unknown,
   danbooru,
@@ -283,6 +305,7 @@ enum BooruType {
   zerochan,
   gelbooruV1,
   sankaku,
+  philomena,
 }
 
 extension BooruTypeX on BooruType {
@@ -296,6 +319,7 @@ extension BooruTypeX on BooruType {
         BooruType.e621 => 'e621',
         BooruType.zerochan => 'Zerochan',
         BooruType.sankaku => 'Sankaku',
+        BooruType.philomena => 'Philomena',
       };
 
   bool get isGelbooruBased =>
@@ -328,6 +352,7 @@ extension BooruTypeX on BooruType {
         BooruType.zerochan => kZerochanId,
         BooruType.gelbooruV1 => kGelbooruV1Id,
         BooruType.sankaku => kSankaku,
+        BooruType.philomena => kPhilomenaId,
         BooruType.unknown => 0,
       };
 }
@@ -341,5 +366,6 @@ BooruType intToBooruType(int? value) => switch (value) {
       13 || kZerochanId => BooruType.zerochan,
       14 || kGelbooruV1Id => BooruType.gelbooruV1,
       kSankaku => BooruType.sankaku,
+      kPhilomenaId => BooruType.philomena,
       _ => BooruType.unknown
     };

@@ -41,6 +41,7 @@ class BooruFactory {
       BooruType.zerochan => kZerochanId,
       BooruType.gelbooruV1 => kGelbooruV1Id,
       BooruType.sankaku => kSankaku,
+      BooruType.philomena => kPhilomenaId,
       BooruType.unknown => 0,
     };
 

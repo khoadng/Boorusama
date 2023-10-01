@@ -42,8 +42,6 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-
     return switch (phase) {
       AddBooruPhase.url => AddBooruPageInternal(
           backgroundColor: widget.backgroundColor,
@@ -62,20 +60,29 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
-      AddBooruPhase.newKnownBooru => booruBuilder != null
-          ? booruBuilder.createConfigPageBuilder(
-              context,
-              url,
-              booru!,
-              backgroundColor: widget.backgroundColor,
-            )
-          : Scaffold(
-              appBar: AppBar(),
-              body: const Center(
-                child: Text('Not implemented'),
-              ),
-            ),
+      AddBooruPhase.newKnownBooru => _buildNewKnownBooru(booru!, url),
     };
+  }
+
+  Widget _buildNewKnownBooru(BooruType booruType, String booruUrl) {
+    final defaultConfig =
+        BooruConfig.defaultConfig(booruType: booruType, url: booruUrl);
+    final booruBuilder =
+        ref.readBooruBuilder(defaultConfig)?.createConfigPageBuilder;
+
+    return booruBuilder != null
+        ? booruBuilder(
+            context,
+            booruUrl,
+            booruType,
+            backgroundColor: widget.backgroundColor,
+          )
+        : Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: Text('Not implemented'),
+            ),
+          );
   }
 }
 
