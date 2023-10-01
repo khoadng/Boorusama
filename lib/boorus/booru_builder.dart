@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomple
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
+import 'package:boorusama/boorus/shimmie2/providers.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
@@ -30,6 +31,7 @@ import 'package:boorusama/routes.dart';
 import 'danbooru/feats/posts/posts.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
+import 'shimmie2/shimmie2.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
@@ -209,6 +211,11 @@ final booruBuildersProvider =
                 postRepo: ref.watch(philomenaPostRepoProvider(config)),
                 autocompleteRepo:
                     ref.watch(philomenaAutoCompleteRepoProvider(config)),
+              ),
+          BooruType.shimmie2: (config) => Shimmie2Builder(
+                postRepo: ref.watch(shimmie2PostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(shimmie2AutocompleteRepoProvider(config)),
               ),
         });
 

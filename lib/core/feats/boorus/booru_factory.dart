@@ -42,6 +42,7 @@ class BooruFactory {
       BooruType.gelbooruV1 => kGelbooruV1Id,
       BooruType.sankaku => kSankaku,
       BooruType.philomena => kPhilomenaId,
+      BooruType.shimmie2 => kShimmie2Id,
       BooruType.unknown => 0,
     };
 

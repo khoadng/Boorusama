@@ -433,6 +433,7 @@ class Routes {
                 case BooruType.gelbooruV1:
                 case BooruType.philomena:
                 case BooruType.sankaku:
+                case BooruType.shimmie2:
                   return const BulkDownloadPage();
                 case BooruType.zerochan:
                   return Scaffold(

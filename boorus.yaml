@@ -53,3 +53,8 @@
     protocol: https_2
     sites:
       - https://derpibooru.org/
+
+- shimmie2:
+    protocol: https_2
+    sites:
+      - https://rule34.paheal.net/
