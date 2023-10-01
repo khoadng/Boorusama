@@ -3,9 +3,10 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/forums/forums.dart';
 import 'danbooru_forum_post_vote.dart';
 
-class DanbooruForumPost extends Equatable {
+class DanbooruForumPost extends Equatable implements ForumPost {
   const DanbooruForumPost({
     required this.id,
     required this.createdAt,
@@ -30,15 +31,22 @@ class DanbooruForumPost extends Equatable {
         votes: const [],
       );
 
+  @override
   final int id;
+  @override
   final DateTime createdAt;
+  @override
   final DateTime updatedAt;
+  @override
   final String body;
   final bool isDeleted;
   final int topicId;
   final Creator creator;
   final Creator updater;
   final List<DanbooruForumPostVote> votes;
+
+  @override
+  int get creatorId => creator.id;
 
   @override
   List<Object?> get props => [
