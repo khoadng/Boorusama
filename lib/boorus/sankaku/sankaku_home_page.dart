@@ -12,11 +12,8 @@ import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
-import 'package:boorusama/core/scaffolds/desktop_home_page_scaffold.dart';
-import 'package:boorusama/core/scaffolds/favorite_page_scaffold.dart';
-import 'package:boorusama/core/scaffolds/mobile_home_page_scaffold.dart';
-import 'package:boorusama/core/widgets/booru_scope.dart';
-import 'package:boorusama/core/widgets/home_navigation_tile.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 

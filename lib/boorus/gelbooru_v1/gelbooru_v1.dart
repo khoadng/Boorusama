@@ -12,7 +12,7 @@ import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
-import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/info_container.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/home_page.dart';
+import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
 
 class HomeNavigationTile extends StatelessWidget {

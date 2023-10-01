@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_artist_page.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_search_page.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'create_danbooru_config_page.dart';
-import 'danbooru_post_details_desktop_page.dart';
-import 'danbooru_post_details_page.dart';
-import 'danbooru_scope.dart';
-import 'favorites_page.dart';
+import 'pages/create_danbooru_config_page.dart';
+import 'pages/danbooru_artist_page.dart';
+import 'pages/danbooru_home_page.dart';
+import 'pages/danbooru_post_details_desktop_page.dart';
+import 'pages/danbooru_post_details_page.dart';
+import 'pages/danbooru_search_page.dart';
+import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
@@ -46,7 +46,7 @@ class DanbooruBuilder implements BooruBuilder {
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => DanbooruScope(config: config);
+      (context, config) => DanbooruHomePage(config: config);
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (

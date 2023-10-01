@@ -10,7 +10,8 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 
-typedef PostFetcher<T extends Post> = PostsOrErrorCore<T> Function(int page);
+typedef PostScopeFetcher<T extends Post> = PostsOrErrorCore<T> Function(
+    int page);
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {
   const PostScope({
@@ -19,7 +20,7 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     required this.builder,
   });
 
-  final PostFetcher<T> fetcher;
+  final PostScopeFetcher<T> fetcher;
   final Widget Function(
     BuildContext context,
     PostGridController<T> controller,

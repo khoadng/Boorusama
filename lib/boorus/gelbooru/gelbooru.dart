@@ -6,23 +6,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/create_gelbooru_config_page.dart';
 import 'package:boorusama/boorus/gelbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_scope.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
-import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'gelbooru_artist_page.dart';
-import 'gelbooru_post_details_desktop_page.dart';
-import 'gelbooru_post_details_page.dart';
-import 'widgets/gelbooru_infinite_post_list.dart';
+import 'pages/create_gelbooru_config_page.dart';
+import 'pages/gelbooru_artist_page.dart';
+import 'pages/gelbooru_home_page.dart';
+import 'pages/gelbooru_post_details_desktop_page.dart';
+import 'pages/gelbooru_post_details_page.dart';
+import 'pages/widgets/gelbooru_infinite_post_list.dart';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
@@ -114,7 +113,7 @@ class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => GelbooruScope(config: config);
+      (context, config) => GelbooruHomePage(config: config);
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (

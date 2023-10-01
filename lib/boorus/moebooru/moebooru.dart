@@ -3,18 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/moebooru/feats/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_scope.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/search_page_scaffold.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'create_moebooru_config_page.dart';
-import 'moebooru_post_details_desktop_page.dart';
-import 'moebooru_post_details_page.dart';
+import 'feats/autocomplete/autocomplete.dart';
+import 'feats/posts/posts.dart';
+import 'pages/create_moebooru_config_page.dart';
+import 'pages/moebooru_home_page.dart';
+import 'pages/moebooru_post_details_desktop_page.dart';
+import 'pages/moebooru_post_details_page.dart';
 
 final moebooruClientProvider =
     Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
@@ -56,7 +56,7 @@ class MoebooruBuilder
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => MoebooruScope(config: config);
+      (context, config) => MoebooruHomePage(config: config);
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (

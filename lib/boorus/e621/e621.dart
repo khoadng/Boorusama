@@ -6,10 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/create_danbooru_config_page.dart';
-import 'package:boorusama/boorus/e621/e621_post_details_desktop_page.dart';
-import 'package:boorusama/boorus/e621/e621_post_details_page.dart';
-import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/pages/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -17,11 +14,13 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/favorite_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
-import 'e621_artist_page.dart';
-import 'e621_scope.dart';
-import 'e621_search_page.dart';
+import 'pages/e621_artist_page.dart';
+import 'pages/e621_favorites_page.dart';
+import 'pages/e621_home_page.dart';
+import 'pages/e621_post_details_desktop_page.dart';
+import 'pages/e621_post_details_page.dart';
+import 'pages/e621_search_page.dart';
 
 final e621ClientProvider =
     Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
@@ -85,7 +84,7 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => E621Scope(config: config);
+      (context, config) => E621HomePage(config: config);
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -152,24 +151,4 @@ class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => E621ArtistPage(artistName: artistName);
-}
-
-class E621FavoritesPage extends ConsumerWidget {
-  const E621FavoritesPage({
-    super.key,
-    required this.username,
-  });
-
-  final String username;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
-    return FavoritesPageScaffold(
-      username: username,
-      fetcher: (page) =>
-          ref.read(e621FavoritesRepoProvider(config)).getFavorites(page),
-    );
-  }
 }
