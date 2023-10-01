@@ -113,8 +113,18 @@ class ZerochanBuilder
         backgroundColor,
       }) =>
           CreateAnonConfigPage(
-            url: url,
-            booruType: booruType,
+            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            backgroundColor: backgroundColor,
+          );
+
+  @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+        context,
+        config, {
+        backgroundColor,
+      }) =>
+          CreateAnonConfigPage(
+            config: config,
             backgroundColor: backgroundColor,
           );
 

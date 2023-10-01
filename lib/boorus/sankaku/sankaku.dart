@@ -62,6 +62,17 @@ class SankakuBuilder
           );
 
   @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+        context,
+        config, {
+        backgroundColor,
+      }) =>
+          CreateSankakuConfigPage(
+            config: config,
+            backgroundColor: backgroundColor,
+          );
+
+  @override
   HomePageBuilder get homePageBuilder =>
       (context, config) => const SankakuHomePage();
 

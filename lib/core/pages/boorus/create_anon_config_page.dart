@@ -14,13 +14,11 @@ import 'package:boorusama/router.dart';
 class CreateAnonConfigPage extends ConsumerStatefulWidget {
   const CreateAnonConfigPage({
     super.key,
-    required this.url,
-    required this.booruType,
+    required this.config,
     this.backgroundColor,
   });
 
-  final String url;
-  final BooruType booruType;
+  final BooruConfig config;
   final Color? backgroundColor;
 
   @override
@@ -29,14 +27,14 @@ class CreateAnonConfigPage extends ConsumerStatefulWidget {
 }
 
 class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
-  var configName = '';
+  late String configName = widget.config.name;
 
   @override
   Widget build(BuildContext context) {
     return CreateBooruScaffold(
       backgroundColor: widget.backgroundColor,
-      booruType: widget.booruType,
-      url: widget.url,
+      booruType: widget.config.booruType,
+      url: widget.config.url,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -69,12 +67,12 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
           newConfig: AddNewBooruConfig(
             login: '',
             apiKey: '',
-            booru: widget.booruType,
-            booruHint: widget.booruType,
+            booru: widget.config.booruType,
+            booruHint: widget.config.booruType,
             configName: configName,
             hideDeleted: false,
             ratingFilter: BooruConfigRatingFilter.none,
-            url: widget.url,
+            url: widget.config.url,
           ),
         );
     context.pop();

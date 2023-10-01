@@ -266,20 +266,6 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
-
-  //FIXME: this is a hack, we should have a proper update page
-  @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
-        context,
-        config, {
-        backgroundColor,
-      }) =>
-          createConfigPageBuilder(
-            context,
-            config.url,
-            config.booruType,
-            backgroundColor: backgroundColor,
-          );
 }
 
 extension BooruRef on Ref {
