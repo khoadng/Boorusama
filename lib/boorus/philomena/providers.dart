@@ -99,7 +99,7 @@ final philomenaAutoCompleteRepoProvider =
     persistentStorageKey: 'philomena_autocomplete_cache_v1',
     autocomplete: (query) => switch (query.length) {
       0 || 1 => Future.value([]),
-      _ => client.getTags(query: query).then((value) => value
+      _ => client.getTags(query: '$query*').then((value) => value
           .map((e) => AutocompleteData(
                 label: e.name ?? '???',
                 value: e.slug.toOption().fold(
@@ -110,6 +110,8 @@ final philomenaAutoCompleteRepoProvider =
                       ),
                     ),
                 antecedent: e.aliasedTag,
+                category: e.category,
+                postCount: e.images,
               ))
           .toList()),
     },

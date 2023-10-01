@@ -1,7 +1,7 @@
 class TagDto {
-  final dynamic aliasedTag;
+  final String? aliasedTag;
   final List<String>? aliases;
-  final dynamic category;
+  final String? category;
   final String? description;
   // final List<dynamic> dnpEntries;
   final int? id;
