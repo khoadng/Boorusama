@@ -1,4 +1,5 @@
 enum Rating {
+  unknown,
   sensitive,
   questionable,
   explicit,
@@ -10,7 +11,7 @@ Rating mapStringToRating(String? str) => switch (str?.toLowerCase()) {
       'e' || 'explicit' => Rating.explicit,
       'g' || 'general' => Rating.general,
       'q' || 'questionable' => Rating.questionable,
-      _ => Rating.sensitive,
+      _ => Rating.unknown,
     };
 
 extension RatingX on Rating {

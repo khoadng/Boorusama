@@ -173,12 +173,15 @@ extension PostX on Post {
       ),
       pattern);
 
-  bool get isAI =>
-      tags.contains('ai-generated') ||
-      tags.contains('ai_generated') ||
-      tags.contains('ai-created') ||
-      tags.contains('AI Art');
+  bool get isAI => tags.any((e) => _kAiTags.contains(e.toLowerCase()));
 }
+
+const _kAiTags = {
+  'ai-generated',
+  'ai_generated',
+  'ai-created',
+  'ai art',
+};
 
 extension PostsX on List<Post> {
   Map<String, int> extractTagsWithoutCount() {

@@ -65,6 +65,7 @@ class BooruUserIdentityProviderImpl
       case BooruType.gelbooruV1:
       case BooruType.sankaku:
       case BooruType.philomena:
+      case BooruType.shimmie2:
         accountId = null;
         break;
     }
