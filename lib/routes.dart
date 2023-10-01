@@ -409,6 +409,7 @@ class Routes {
                 case BooruType.gelbooru:
                 case BooruType.gelbooruV2:
                 case BooruType.gelbooruV1:
+                case BooruType.philomena:
                 case BooruType.sankaku:
                   return const BulkDownloadPage();
                 case BooruType.zerochan:

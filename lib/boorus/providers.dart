@@ -35,6 +35,7 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
+import 'philomena/providers.dart';
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
@@ -67,6 +68,7 @@ final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
           BooruType.moebooru => ref.watch(moebooruPostRepoProvider(config)),
           BooruType.e621 => ref.watch(e621PostRepoProvider(config)),
           BooruType.sankaku => ref.watch(sankakuPostRepoProvider(config)),
+          BooruType.philomena => ref.watch(philomenaPostRepoProvider(config)),
           BooruType.zerochan ||
           BooruType.unknown =>
             ref.watch(emptyPostRepoProvider),
@@ -84,6 +86,7 @@ final postArtistCharacterRepoProvider =
                 ref.watch(gelbooruV1PostRepoProvider(config)),
               BooruType.moebooru ||
               BooruType.e621 ||
+              BooruType.philomena ||
               BooruType.sankaku ||
               BooruType.zerochan ||
               BooruType.unknown =>
@@ -206,6 +209,8 @@ final downloadFileNameGeneratorProvider =
       return DownloadUrlBaseNameFileNameGenerator();
     case BooruType.sankaku:
       return Md5OnlyFileNameGenerator();
+    case BooruType.philomena:
+      return Md5OnlyFileNameGenerator();
   }
 });
 
@@ -220,6 +225,7 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.gelbooruV1 ||
           BooruType.zerochan ||
           BooruType.sankaku ||
+          BooruType.philomena ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
         });
@@ -234,6 +240,7 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           BooruType.zerochan ||
           BooruType.gelbooruV1 ||
           BooruType.sankaku ||
+          BooruType.philomena ||
           BooruType.unknown =>
             const EmptyNoteRepository(),
         });

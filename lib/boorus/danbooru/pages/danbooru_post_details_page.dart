@@ -18,11 +18,7 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/utils.dart';
-import 'package:boorusama/core/widgets/artist_section.dart';
-import 'package:boorusama/core/widgets/note_action_button.dart';
-import 'package:boorusama/core/widgets/post_tag_list.dart';
-import 'package:boorusama/core/widgets/posts/information_section.dart';
-import 'package:boorusama/core/widgets/related_posts_section.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/context_menu.dart';
@@ -32,7 +28,6 @@ import 'widgets/details/danbooru_post_action_toolbar.dart';
 import 'widgets/details/danbooru_recommend_artist_list.dart';
 import 'widgets/details/danbooru_recommend_character_list.dart';
 import 'widgets/details/pool_tiles.dart';
-import 'widgets/details/post_stats_tile.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsPage({
@@ -153,11 +148,19 @@ class DanbooruPostStatsTile extends ConsumerWidget {
     final comments = ref.watch(danbooruCommentProvider(post.id));
 
     return RepaintBoundary(
-      child: PostStatsTile(
-        post: post,
+      child: SimplePostStatsTile(
+        score: post.score,
+        favCount: post.favCount,
         totalComments: comments?.length ?? 0,
+        votePercentText: _generatePercentText(post),
       ),
     );
+  }
+
+  String _generatePercentText(DanbooruPost post) {
+    return post.totalVote > 0
+        ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
+        : '';
   }
 }
 

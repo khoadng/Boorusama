@@ -48,3 +48,8 @@
     sites:
       - https://chan.sankakucomplex.com/
       - https://beta.sankakucomplex.com/
+
+- philomena:
+    protocol: https_2
+    sites:
+      - https://derpibooru.org/

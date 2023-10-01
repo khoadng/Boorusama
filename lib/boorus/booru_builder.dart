@@ -28,6 +28,8 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
 import 'danbooru/feats/posts/posts.dart';
+import 'philomena/philomena.dart';
+import 'philomena/providers.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
@@ -203,6 +205,11 @@ final booruBuildersProvider =
                 postRepository: ref.watch(sankakuPostRepoProvider(config)),
                 client: ref.watch(sankakuClientProvider(config)),
               ),
+          BooruType.philomena: (config) => PhilomenaBuilder(
+                postRepo: ref.watch(philomenaPostRepoProvider(config)),
+                autocompleteRepo:
+                    ref.watch(philomenaAutoCompleteRepoProvider(config)),
+              ),
         });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
@@ -259,24 +266,12 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
               onTagTap: (tag) => goToSearchPage(context, tag: tag),
             ),
           );
-
-  //FIXME: this is a hack, we should have a proper update page
-  @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
-        context,
-        config, {
-        backgroundColor,
-      }) =>
-          createConfigPageBuilder(
-            context,
-            config.url,
-            config.booruType,
-            backgroundColor: backgroundColor,
-          );
 }
 
 extension BooruRef on Ref {
-  BooruBuilder? readBooruBuilder(BooruConfig config) {
+  BooruBuilder? readBooruBuilder(BooruConfig? config) {
+    if (config == null) return null;
+
     final booruBuilders = read(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
@@ -286,5 +281,16 @@ extension BooruRef on Ref {
   BooruBuilder? readCurrentBooruBuilder() {
     final config = read(currentBooruConfigProvider);
     return readBooruBuilder(config);
+  }
+}
+
+extension BooruWidgetRef on WidgetRef {
+  BooruBuilder? readBooruBuilder(BooruConfig? config) {
+    if (config == null) return null;
+
+    final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
   }
 }

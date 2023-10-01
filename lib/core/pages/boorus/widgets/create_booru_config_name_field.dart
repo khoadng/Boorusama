@@ -37,6 +37,7 @@ class _CreateBooruConfigNameFieldState
       validator: (p0) => null,
       labelText: 'booru.config_name_label'.tr(),
       onChanged: widget.onChanged,
+      hintText: 'A label to identify this profile',
     );
   }
 }

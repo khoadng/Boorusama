@@ -82,6 +82,7 @@ class _CreateDanbooruConfigPageState
                 text: password,
                 onChanged: (value) => setState(() => password = value),
               ),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(onSubmit: allowSubmit() ? submit : null),
             ],
           ),
