@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 
-class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
+class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
   @override
-  List<BooruConfig> build() {
+  List<BooruConfig>? build() {
     fetch();
-    return [];
+    return null;
   }
 
   Future<void> fetch() async {
@@ -20,7 +21,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   }
 
   Future<void> add(BooruConfig booruConfig) async {
-    state = [...state, booruConfig];
+    if (state == null) return;
+    state = [...state!, booruConfig];
   }
 
   Future<void> delete(
@@ -28,9 +30,15 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
+    if (state == null) return;
     try {
       await ref.read(booruConfigRepoProvider).remove(config);
-      final tmp = [...state];
+      final orders = ref.read(configIdOrdersProvider);
+      final newOrders = [...orders..remove(config.id)];
+
+      ref.setBooruConfigOrder(newOrders);
+
+      final tmp = [...state!];
       tmp.remove(config);
       state = tmp;
       onSuccess?.call(config);
@@ -46,6 +54,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
+    if (state == null) return;
     final booruConfigData = oldConfig.hasLoginDetails()
         ? BooruConfigData(
             login: config.login,
@@ -81,7 +90,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     }
 
     final newConfigs =
-        state.replaceFirst(updatedConfig, (item) => item.id == id);
+        state!.replaceFirst(updatedConfig, (item) => item.id == id);
 
     onSuccess?.call(updatedConfig);
 
@@ -94,6 +103,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     void Function(BooruConfig booruConfig)? onSuccess,
     bool setAsCurrent = false,
   }) async {
+    if (state == null) return;
     try {
       if (newConfig.login.isEmpty && newConfig.apiKey.isEmpty) {
         final booruConfigData = BooruConfigData.anonymous(
@@ -147,7 +157,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
         sendBooruAddedEvent(
           url: config.url,
           hintSite: config.booruType.name,
-          totalSites: state.length,
+          totalSites: state!.length,
           hasLogin: config.hasLoginDetails(),
         );
 

@@ -4,13 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
-    NotifierProvider<BooruConfigNotifier, List<BooruConfig>>(
+    NotifierProvider<BooruConfigNotifier, List<BooruConfig>?>(
   BooruConfigNotifier.new,
   dependencies: [
     booruConfigRepoProvider,
+    settingsProvider,
   ],
 );
 
@@ -26,25 +28,35 @@ final currentBooruConfigProvider =
 final configIdOrdersProvider = Provider<List<int>>((ref) {
   final orderString =
       ref.watch(settingsProvider.select((value) => value.booruConfigIdOrders));
+
   try {
-    return orderString.split(' ').map((e) => int.parse(e)).toList();
+    final orders = orderString.split(' ').map((e) => int.parse(e)).toList();
+
+    return orders;
   } catch (e) {
     return [];
   }
 });
 
 final configsProvider = Provider<IList<BooruConfig>>((ref) {
-  final configs = {
-    for (final config in ref.watch(booruConfigProvider)) config.id: config
-  };
+  final configs = ref.watch(booruConfigProvider);
+  if (configs == null) return <BooruConfig>[].lock;
+
+  final configMap = {for (final config in configs) config.id: config};
   final orders = ref.watch(configIdOrdersProvider);
 
-  if (configs.length != orders.length) return configs.values.toIList();
+  if (configMap.length != orders.length) {
+    // Something is wrong, reset the order
+    if (orders.isNotEmpty) {
+      ref.setBooruConfigOrder([]);
+    }
+    return configMap.values.toIList();
+  }
 
   try {
-    return orders.map((e) => configs[e]!).toIList();
+    return orders.map((e) => configMap[e]!).toIList();
   } catch (e) {
-    return configs.values.toIList();
+    return configMap.values.toIList();
   }
 });
 

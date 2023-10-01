@@ -79,3 +79,25 @@ extension SettingsNotifierX on WidgetRef {
         ),
       );
 }
+
+extension SettingsNotifierProviderRef on NotifierProviderRef {
+  Future<void> updateSettings(Settings settings) =>
+      read(settingsProvider.notifier).updateSettings(settings);
+
+  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
+        read(settingsProvider).copyWith(
+          booruConfigIdOrders: configIds.join(' '),
+        ),
+      );
+}
+
+extension SettingsProviderRef on ProviderRef {
+  Future<void> updateSettings(Settings settings) =>
+      read(settingsProvider.notifier).updateSettings(settings);
+
+  Future<void> setBooruConfigOrder(List<int> configIds) => updateSettings(
+        read(settingsProvider).copyWith(
+          booruConfigIdOrders: configIds.join(' '),
+        ),
+      );
+}

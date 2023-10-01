@@ -86,7 +86,17 @@ class BoorusRoutes {
           final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
-              .firstWhere((element) => element.id == id);
+              ?.firstWhere((element) => element.id == id);
+
+          if (config == null) {
+            return const MaterialPage(
+              child: Scaffold(
+                body: Center(
+                  child: Text('Booru not found or not loaded yet'),
+                ),
+              ),
+            );
+          }
 
           final booruBuilder = ref.readBooruBuilder(config);
 
@@ -114,7 +124,19 @@ class BoorusRoutes {
           final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
-              .firstWhere((element) => element.id == id);
+              ?.firstWhere((element) => element.id == id);
+
+          if (config == null) {
+            return DialogPage(
+              builder: (context) => const BooruDialog(
+                child: Scaffold(
+                  body: Center(
+                    child: Text('Booru not found or not loaded yet'),
+                  ),
+                ),
+              ),
+            );
+          }
 
           final booruBuilder = ref.readBooruBuilder(config);
 
