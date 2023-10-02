@@ -13,7 +13,6 @@ import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
-import 'package:boorusama/widgets/compact_chip.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InformationSection extends StatelessWidget {

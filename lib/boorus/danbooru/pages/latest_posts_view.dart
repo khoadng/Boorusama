@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/most_search_tag_list.dart';
 
@@ -56,6 +57,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
             snap: true,
             automaticallyImplyLeading: false,
           ),
+          const SliverAppAnnouncementBanner(),
           SliverToBoxAdapter(
             child: ValueListenableBuilder<String>(
               valueListenable: _selectedTag,

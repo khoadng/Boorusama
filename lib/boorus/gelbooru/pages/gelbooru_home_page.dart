@@ -124,6 +124,7 @@ class _GelbooruMobileHomeView extends ConsumerWidget {
             snap: true,
             automaticallyImplyLeading: false,
           ),
+          const SliverAppAnnouncementBanner(),
         ],
       ),
     );

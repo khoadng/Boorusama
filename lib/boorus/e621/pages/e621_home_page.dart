@@ -59,6 +59,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
               snap: true,
               automaticallyImplyLeading: false,
             ),
+            const SliverAppAnnouncementBanner(),
           ],
         ),
       ),

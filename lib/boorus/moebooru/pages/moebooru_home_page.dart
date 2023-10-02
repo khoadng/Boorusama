@@ -13,6 +13,7 @@ import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/pages/home/side_menu_tile.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/widgets/announcement_banner.dart';
 import 'package:boorusama/core/widgets/booru_scope.dart';
 import 'package:boorusama/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/core/widgets/home_search_bar.dart';
@@ -163,6 +164,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             snap: true,
             automaticallyImplyLeading: false,
           ),
+          const SliverAppAnnouncementBanner(),
         ],
       ),
     );

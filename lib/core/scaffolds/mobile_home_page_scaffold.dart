@@ -9,8 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/core/widgets/home_search_bar.dart';
-import 'package:boorusama/core/widgets/posts/post_scope.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
@@ -46,6 +45,7 @@ class MobileHomePageScaffold extends ConsumerWidget {
             snap: true,
             automaticallyImplyLeading: false,
           ),
+          const SliverAppAnnouncementBanner(),
         ],
       ),
     );
