@@ -22,6 +22,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
 
   Future<void> add(BooruConfig booruConfig) async {
     if (state == null) return;
+    final orders = ref.read(configIdOrdersProvider);
+    final newOrders = [...orders, booruConfig.id];
+
+    ref.setBooruConfigOrder(newOrders);
+
     state = [...state!, booruConfig];
   }
 

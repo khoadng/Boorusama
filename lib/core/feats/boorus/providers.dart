@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
@@ -40,19 +39,12 @@ final configIdOrdersProvider = Provider<List<int>>((ref) {
 
 final configsProvider = Provider<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
-  final logger = ref.watch(loggerProvider);
   if (configs == null) return <BooruConfig>[].lock;
 
   final configMap = {for (final config in configs) config.id: config};
   final orders = ref.watch(configIdOrdersProvider);
 
   if (configMap.length != orders.length) {
-    // Something is wrong, reset the order
-    if (orders.isNotEmpty) {
-      logger.logW('Configs Provider',
-          'Config map length is not equal to order length, resetting order: ${configMap.length} != ${orders.length}');
-      ref.setBooruConfigOrder([]);
-    }
     return configMap.values.toIList();
   }
 
