@@ -164,8 +164,8 @@ class _DanbooruInfinitePostListState
                     settings.imageBorderRadius,
                   ),
                   forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl:
-                      null, // Will cause error sometimes, disabled for now
+                  placeholderUrl: post.thumbnailImageUrl,
+                  // null, // Will cause error sometimes, disabled for now
                 ),
               ),
             ),

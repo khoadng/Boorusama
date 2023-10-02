@@ -194,8 +194,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                     settings.imageBorderRadius,
                   ),
                   forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl:
-                      null, // Will cause error sometimes, disabled for now
+                  placeholderUrl: post.thumbnailImageUrl,
                 ),
               ),
             ),
