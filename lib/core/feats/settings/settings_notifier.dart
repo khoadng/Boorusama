@@ -34,9 +34,19 @@ class SettingsNotifier extends Notifier<Settings> {
   }
 
   Future<void> updateSettings(Settings settings) async {
+    final currentSettings = state;
     final success = await ref.read(settingsRepoProvider).save(settings);
+
     if (success) {
-      ref.read(loggerProvider).logI('Settings', 'Settings updated');
+      for (var i = 0; i < currentSettings.props.length; i++) {
+        final cs = currentSettings.props[i];
+        final ns = settings.props[i];
+
+        if (cs != ns) {
+          ref.read(loggerProvider).logI(
+              'Settings', 'Settings updated: ${cs.runtimeType} $cs -> $ns');
+        }
+      }
       state = settings;
     }
   }
