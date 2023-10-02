@@ -16,7 +16,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/booru_dialog.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'boorus/entry_page.dart';
 import 'core/pages/bookmarks/bookmark_details.dart';

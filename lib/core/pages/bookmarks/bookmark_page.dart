@@ -62,6 +62,9 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                     case 'download_all':
                       ref.bookmarks.downloadAllBookmarks();
                       break;
+                    case 'export':
+                      ref.bookmarks.exportAllBookmarks();
+                      break;
                     default:
                   }
                 },
@@ -74,6 +77,10 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                     const PopupMenuItem(
                       value: 'download_all',
                       child: Text('Download All'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'export',
+                      child: Text('Export'),
                     ),
                   ];
                 },

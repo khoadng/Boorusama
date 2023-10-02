@@ -1,3 +1,7 @@
+// Dart imports:
+import 'dart:convert';
+import 'dart:io';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -118,6 +122,23 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
       onError?.call();
     }
   }
+
+  Future<void> exportAllBookmarks() async =>
+      tryGetDownloadDirectory().run().then((value) => value.fold(
+            (error) => showErrorToast(error.name),
+            (directory) async {
+              final file = File('${directory.path}/boorusama_bookmarks.json');
+              final json =
+                  state.bookmarks.map((bookmark) => bookmark.toJson()).toList();
+              final jsonString = jsonEncode(json);
+              await file.writeAsString(jsonString);
+
+              showSuccessToast(
+                '${state.bookmarks.length} bookmarks exported to ${file.path}',
+                duration: const Duration(seconds: 4),
+              );
+            },
+          ));
 
   Future<void> downloadAllBookmarks() async {
     final settings = ref.read(settingsProvider);

@@ -100,4 +100,21 @@ class Bookmark extends Equatable with ImageInfoMixin {
       tags: tags ?? this.tags,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'booruId': booruId,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'thumbnailUrl': thumbnailUrl,
+      'sampleUrl': sampleUrl,
+      'originalUrl': originalUrl,
+      'sourceUrl': sourceUrl,
+      'width': width,
+      'height': height,
+      'md5': md5,
+      'tags': tags,
+    };
+  }
 }
