@@ -106,7 +106,7 @@ extension BooruConfigNullX on BooruConfig? {
 
 extension BooruConfigX on BooruConfig {
   Booru? createBooruFrom(BooruFactory factory) =>
-      factory.from2(type: intToBooruType(booruId));
+      factory.create(type: intToBooruType(booruId));
 
   BooruType get booruType => intToBooruType(booruIdHint);
 

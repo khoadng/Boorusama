@@ -29,7 +29,7 @@ class BooruFactory {
     return null;
   }
 
-  Booru? from2({
+  Booru? create({
     required BooruType type,
   }) {
     final id = switch (type) {

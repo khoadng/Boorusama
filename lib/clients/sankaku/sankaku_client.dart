@@ -16,6 +16,7 @@ const _kSankakuHeader = {
 class SankakuClient {
   SankakuClient({
     required String baseUrl,
+    Map<String, dynamic>? headers,
     Dio? dio,
     AuthStore? authStore,
     this.username,
@@ -34,7 +35,7 @@ class SankakuClient {
 
     _dio.options = BaseOptions(
       baseUrl: url,
-      headers: _kSankakuHeader,
+      headers: headers ?? _kSankakuHeader,
     );
 
     _authStore = authStore ?? InMemoryAuthStore();

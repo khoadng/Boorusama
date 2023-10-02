@@ -1,16 +1,23 @@
 part of 'sankaku.dart';
 
-final sankakuClientProvider =
-    Provider.family<SankakuClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
+  (ref, config) {
+    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final booruFactory = ref.watch(booruFactoryProvider);
+    final booru = booruFactory.create(type: config.booruType);
 
-  return SankakuClient(
-    dio: dio,
-    baseUrl: booruConfig.url,
-    username: booruConfig.login,
-    password: booruConfig.apiKey,
-  );
-});
+    return SankakuClient(
+      dio: dio,
+      baseUrl: config.url,
+      username: config.login,
+      password: config.apiKey,
+      headers: switch (booru) {
+        Sankaku s => s.headers,
+        _ => null,
+      },
+    );
+  },
+);
 
 final sankakuPostRepoProvider =
     Provider.family<PostRepository<SankakuPost>, BooruConfig>(

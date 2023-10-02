@@ -268,17 +268,31 @@ class Sankaku extends Booru {
     required super.name,
     required super.protocol,
     required this.sites,
+    required this.headers,
   });
 
   factory Sankaku.from(String name, dynamic data) {
+    final headers = data['headers'];
+
+    final map = <String, dynamic>{};
+
+    for (final item in headers) {
+      final key = item.keys.first;
+      final value = item[item.keys.first];
+
+      map[key] = value;
+    }
+
     return Sankaku(
       name: name,
       protocol: _parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
+      headers: map,
     );
   }
 
   final List<String> sites;
+  final Map<String, dynamic> headers;
 }
 
 class Philomena extends Booru {

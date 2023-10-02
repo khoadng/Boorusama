@@ -35,7 +35,6 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
-
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 
