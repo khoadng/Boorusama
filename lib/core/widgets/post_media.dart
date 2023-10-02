@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -73,8 +72,6 @@ class PostMedia extends ConsumerWidget {
                               aspectRatio: post.aspectRatio,
                               imageUrl: post.thumbnailImageUrl,
                               placeholderUrl: post.thumbnailImageUrl,
-                              previewCacheManager:
-                                  ref.watch(previewImageCacheManagerProvider),
                             ),
                           ),
                           const Center(
@@ -103,7 +100,6 @@ class PostMedia extends ConsumerWidget {
             onCached: (path) => ref
                 .read(postShareProvider(post).notifier)
                 .setImagePath(path ?? ''),
-            previewCacheManager: ref.watch(previewImageCacheManagerProvider),
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,

@@ -36,7 +36,6 @@ export 'option_dropdown_button.dart';
 export 'pagination.dart';
 export 'parallax_slide_in_page_route.dart';
 export 'platforms/windows/material_desktop_controls.dart';
-export 'platforms/windows/window_buttons.dart';
 export 'platforms/windows/windows.dart';
 export 'result_counter.dart';
 export 'route_transition_builder.dart';

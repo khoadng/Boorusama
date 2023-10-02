@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 
 mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
@@ -31,9 +30,6 @@ mixin DanbooruPostServiceProviderMixin<T extends ConsumerStatefulWidget>
 
   PoolRepository get poolRepository =>
       ref.read(danbooruPoolRepoProvider(booruConfig));
-
-  PostPreviewPreloader? get previewPreloader =>
-      ref.read(previewLoaderProvider(booruConfig));
 
   Set<String> get blacklistedTags => {
         ...ref.read(globalBlacklistedTagsProvider).map((e) => e.name),

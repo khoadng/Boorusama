@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
 import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'danbooru_post.dart';
 
@@ -13,7 +12,6 @@ mixin DanbooruPostTransformMixin<T, E> {
   BlacklistedTagsRepository get blacklistedTagsRepository;
   BooruConfig get booruConfig;
   PoolRepository get poolRepository;
-  PostPreviewPreloader? get previewPreloader;
   BooruUserIdentityProvider get booruUserIdentityProvider;
   void Function(List<int> ids) get checkFavorites;
   void Function(List<int> ids) get checkVotes;
@@ -27,25 +25,9 @@ mixin DanbooruPostTransformMixin<T, E> {
       checkVotes(ids);
     }
 
-    return Future.value(posts)
-        .then(filterFlashFiles())
-        .then(preloadPreviewImagesWith(previewPreloader));
+    return Future.value(posts).then(filterFlashFiles());
   }
 }
-
-Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
-    preloadPreviewImagesWith(
-  PostPreviewPreloader? preloader,
-) =>
-        (posts) async {
-          if (preloader != null) {
-            for (final post in posts) {
-              unawaited(preloader.preload(post));
-            }
-          }
-
-          return posts;
-        };
 
 Future<List<DanbooruPost>> Function(List<DanbooruPost> posts)
     filterFlashFiles() => filterUnsupportedFormat({'swf'});

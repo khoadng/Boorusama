@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
@@ -55,21 +54,7 @@ class _AppState extends ConsumerState<App> {
         child: MaterialApp.router(
           builder: (context, child) => ConditionalParentWidget(
             condition: isDesktopPlatform(),
-            conditionalBuilder: (child) => Column(
-              children: [
-                WindowTitleBarBox(
-                  child: Row(
-                    children: [
-                      Expanded(child: MoveWindow()),
-                      const WindowButtons(),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: child,
-                ),
-              ],
-            ),
+            conditionalBuilder: (child) => child,
             child: ScrollConfiguration(
               behavior:
                   const MaterialScrollBehavior().copyWith(overscroll: false),

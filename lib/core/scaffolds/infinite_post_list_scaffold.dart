@@ -15,7 +15,6 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -188,28 +187,16 @@ class _InfinitePostListScaffoldState<T extends Post>
                 hasComments: post.hasComment,
                 hasParentOrChildren: post.hasParentOrChildren,
                 score: settings.showScoresInGrid ? post.score : null,
-                image: settings.imageListType == ImageListType.masonry
-                    ? BooruImage(
-                        aspectRatio: post.aspectRatio,
-                        imageUrl: post.thumbnailFromSettings(settings),
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
-                        ),
-                        placeholderUrl: post.thumbnailImageUrl,
-                        previewCacheManager:
-                            ref.watch(previewImageCacheManagerProvider),
-                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                      )
-                    : BooruImageLegacy(
-                        imageUrl: post.thumbnailFromSettings(settings),
-                        placeholderUrl: post.thumbnailImageUrl,
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
-                        ),
-                        cacheHeight: (constraints.maxHeight * 2).toIntOrNull(),
-                        cacheWidth: (constraints.maxWidth * 2).toIntOrNull(),
-                      ),
+                image: BooruImage(
+                  aspectRatio: post.aspectRatio,
+                  imageUrl: post.thumbnailFromSettings(settings),
+                  borderRadius: BorderRadius.circular(
+                    settings.imageBorderRadius,
+                  ),
+                  forceFill: settings.imageListType == ImageListType.standard,
+                  placeholderUrl:
+                      null, // Will cause error sometimes, disabled for now
+                ),
               ),
             ),
           );

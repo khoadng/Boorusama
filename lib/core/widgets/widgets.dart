@@ -3,7 +3,6 @@ export 'artist_section.dart';
 export 'bookmark_post_button.dart';
 export 'booru_bottom_bar.dart';
 export 'booru_image.dart';
-export 'booru_image_legacy.dart';
 export 'booru_logo.dart';
 export 'booru_scope.dart';
 export 'booru_search_bar.dart';

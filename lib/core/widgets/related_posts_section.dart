@@ -6,7 +6,6 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -45,7 +44,6 @@ class RelatedPostsSection<T extends Post> extends ConsumerWidget {
               ),
             ),
             PreviewPostList(
-              cacheManager: ref.watch(previewImageCacheManagerProvider),
               posts: posts,
               imageUrl: imageUrl,
               imageBuilder: (post) => Stack(

@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
@@ -58,9 +58,9 @@ class YoutubePreviewBox extends StatelessWidget {
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(8)),
-                              child: CachedNetworkImage(
+                              child: ExtendedImage.network(
+                                data.previewImage!,
                                 fit: BoxFit.contain,
-                                imageUrl: data.previewImage!,
                               ),
                             ),
                             if (data.isVideo)
