@@ -211,6 +211,13 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 const SizedBox(height: 16),
                 if (allowSubmit)
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isValidSite == null
+                          ? context.colorScheme.primary
+                          : isValidSite!
+                              ? Colors.green
+                              : Colors.red,
+                    ),
                     onPressed: !allowSubmit || verifying
                         ? null
                         : () async {
