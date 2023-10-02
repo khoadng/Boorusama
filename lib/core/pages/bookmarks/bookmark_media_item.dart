@@ -1,12 +1,8 @@
-// Dart imports:
-import 'dart:math' as math;
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
@@ -25,13 +21,11 @@ class BookmarkMediaItem extends ConsumerStatefulWidget {
     required this.bookmark,
     this.onTap,
     this.onZoomUpdated,
-    this.previewCacheManager,
   });
 
   final Bookmark bookmark;
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
-  final CacheManager? previewCacheManager;
 
   @override
   ConsumerState<BookmarkMediaItem> createState() => _PostMediaItemState();
@@ -83,62 +77,13 @@ class _PostMediaItemState extends ConsumerState<BookmarkMediaItem> {
               child: NullableAspectRatio(
                 aspectRatio: widget.bookmark.aspectRatio,
                 child: LayoutBuilder(
-                  builder: (context, constraints) => CachedNetworkImage(
-                    httpHeaders: {
+                  builder: (context, constraints) => ExtendedImage.network(
+                    widget.bookmark.sampleUrl,
+                    headers: {
                       'User-Agent': ref
                           .watch(userAgentGeneratorProvider(config))
                           .generate(),
                     },
-                    imageUrl: widget.bookmark.sampleUrl,
-                    imageBuilder: (context, imageProvider) {
-                      final w = math.max(
-                        constraints.maxWidth,
-                        MediaQuery.of(context).size.width,
-                      );
-
-                      final h = math.max(
-                        constraints.maxHeight,
-                        MediaQuery.of(context).size.height,
-                      );
-
-                      return Image(
-                        width: w,
-                        height: h,
-                        fit: BoxFit.contain,
-                        image: imageProvider,
-                      );
-                    },
-                    placeholderFadeInDuration: Duration.zero,
-                    fadeOutDuration: Duration.zero,
-                    fadeInDuration: Duration.zero,
-                    placeholder: (context, url) => CachedNetworkImage(
-                      httpHeaders: {
-                        'User-Agent': ref
-                            .watch(userAgentGeneratorProvider(config))
-                            .generate(),
-                      },
-                      fit: BoxFit.fill,
-                      imageUrl: widget.bookmark.thumbnailUrl,
-                      cacheManager: widget.previewCacheManager,
-                      fadeInDuration: Duration.zero,
-                      fadeOutDuration: Duration.zero,
-                      progressIndicatorBuilder: (context, url, progress) =>
-                          FittedBox(
-                        fit: BoxFit.cover,
-                        child: SizedBox(
-                          height: widget.bookmark.height,
-                          width: widget.bookmark.width,
-                          child: Stack(children: [
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: LinearProgressIndicator(
-                                value: progress.progress,
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),

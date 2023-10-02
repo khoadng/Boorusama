@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class BooruImage extends ConsumerWidget {
   const BooruImage({
@@ -20,104 +22,156 @@ class BooruImage extends ConsumerWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
-    this.previewCacheManager,
     this.cacheHeight,
     this.cacheWidth,
+    this.forceFill = false,
+    this.width,
+    this.height,
   });
 
   final String imageUrl;
   final String? placeholderUrl;
-  final BorderRadiusGeometry? borderRadius;
+  final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
-  final CacheManager? previewCacheManager;
   final int? cacheWidth;
   final int? cacheHeight;
+  final bool forceFill;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
     if (imageUrl.isEmpty) {
-      return NullableAspectRatio(
-        aspectRatio: aspectRatio,
-        child: _Empty(borderRadius: borderRadius),
-      );
+      return forceFill
+          ? Column(
+              children: [
+                Expanded(
+                  child: ImagePlaceHolder(
+                    borderRadius: borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                  ),
+                )
+              ],
+            )
+          : NullableAspectRatio(
+              aspectRatio: aspectRatio,
+              child: ImagePlaceHolder(
+                borderRadius:
+                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+              ),
+            );
     }
 
-    return Container(
-      decoration: BoxDecoration(
+    return forceFill
+        ? _builForceFillImage(ref, config)
+        : _builderNormalImage(ref, config);
+  }
+
+  Widget _builderNormalImage(WidgetRef ref, BooruConfig config) {
+    if (aspectRatio == null) {
+      return ExtendedImage.network(
+        imageUrl,
+        width: width,
+        height: height,
+        headers: {
+          'User-Agent':
+              ref.watch(userAgentGeneratorProvider(config)).generate(),
+        },
+        shape: BoxShape.rectangle,
         borderRadius:
             borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(
-          color: context.theme.dividerColor,
-          width: 1,
+        fit: fit ?? BoxFit.fill,
+        loadStateChanged: (state) =>
+            state.extendedImageLoadState == LoadState.loading
+                ? ImagePlaceHolder(
+                    borderRadius: borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                  )
+                : null,
+      );
+    } else {
+      return NullableAspectRatio(
+        aspectRatio: aspectRatio,
+        child: ExtendedImage.network(
+          imageUrl,
+          width: width,
+          height: height,
+          headers: {
+            'User-Agent':
+                ref.watch(userAgentGeneratorProvider(config)).generate(),
+          },
+          shape: BoxShape.rectangle,
+          borderRadius:
+              borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+          fit: fit ?? BoxFit.fill,
+          loadStateChanged: _buildImageState,
         ),
-      ),
-      child: ClipRRect(
-        borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-        child: NullableAspectRatio(
-          aspectRatio: aspectRatio,
-          child: CachedNetworkImage(
-            httpHeaders: {
+      );
+    }
+  }
+
+  Widget _builForceFillImage(WidgetRef ref, BooruConfig config) {
+    return Column(
+      children: [
+        Expanded(
+          child: ExtendedImage.network(
+            imageUrl,
+            headers: {
               'User-Agent':
                   ref.watch(userAgentGeneratorProvider(config)).generate(),
             },
-            errorListener: (e) {},
-            memCacheWidth: cacheWidth,
-            memCacheHeight: cacheHeight,
-            fit: fit ?? BoxFit.fill,
-            imageUrl: imageUrl,
-            placeholder: (context, url) =>
-                placeholderUrl != null && placeholderUrl!.isNotEmpty
-                    ? CachedNetworkImage(
-                        httpHeaders: {
-                          'User-Agent': ref
-                              .watch(userAgentGeneratorProvider(config))
-                              .generate(),
-                        },
-                        errorListener: (e) {},
-                        fit: fit ?? BoxFit.fill,
-                        imageUrl: placeholderUrl!,
-                        cacheManager: previewCacheManager,
-                        fadeInDuration: Duration.zero,
-                        fadeOutDuration: Duration.zero,
-                        placeholder: (context, url) => ImagePlaceHolder(
-                          borderRadius: borderRadius ??
-                              const BorderRadius.all(Radius.circular(8)),
-                        ),
-                      )
-                    : ImagePlaceHolder(
-                        borderRadius: borderRadius ??
-                            const BorderRadius.all(Radius.circular(8)),
-                      ),
-            errorWidget: (context, url, error) => ErrorPlaceholder(
-              borderRadius:
-                  borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-            ),
-            fadeInDuration: const Duration(microseconds: 200),
-            fadeOutDuration: const Duration(microseconds: 500),
+            width: width ?? double.infinity,
+            height: height ?? double.infinity,
+            shape: BoxShape.rectangle,
+            fit: BoxFit.cover,
+            borderRadius:
+                borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+            loadStateChanged: _buildImageState,
           ),
         ),
-      ),
+      ],
     );
   }
-}
 
-class _Empty extends StatelessWidget {
-  const _Empty({
-    required this.borderRadius,
-  });
-
-  final BorderRadiusGeometry? borderRadius;
-
-  @override
-  Widget build(BuildContext context) {
-    return ImagePlaceHolder(
-      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-    );
-  }
+  Widget? _buildImageState(ExtendedImageState state) =>
+      switch (state.extendedImageLoadState) {
+        LoadState.loading => placeholderUrl.toOption().fold(
+              () => ImagePlaceHolder(
+                borderRadius:
+                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+              ),
+              (url) => url.isNotBlank()
+                  ? ExtendedImage.network(
+                      url,
+                      width: width ?? double.infinity,
+                      height: height ?? double.infinity,
+                      shape: BoxShape.rectangle,
+                      fit: BoxFit.cover,
+                      borderRadius: borderRadius ??
+                          const BorderRadius.all(Radius.circular(4)),
+                      loadStateChanged: (state) => state
+                                  .extendedImageLoadState ==
+                              LoadState.loading
+                          ? ImagePlaceHolder(
+                              borderRadius: borderRadius ??
+                                  const BorderRadius.all(Radius.circular(8)),
+                            )
+                          : null,
+                    )
+                  : ImagePlaceHolder(
+                      borderRadius: borderRadius ??
+                          const BorderRadius.all(Radius.circular(8)),
+                    ),
+            ),
+        LoadState.failed => ErrorPlaceholder(
+            borderRadius:
+                borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+          ),
+        LoadState.completed => null,
+      };
 }
 
 // ignore: prefer-single-widget-per-file

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:context_menus/context_menus.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -89,20 +89,12 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                               children: [
                                 switch (PostSource.from(config.url)) {
                                   WebSource source => FittedBox(
-                                      child: CachedNetworkImage(
+                                      child: ExtendedImage.network(
+                                        source.faviconUrl,
                                         width: 24,
                                         height: 24,
                                         fit: BoxFit.cover,
-                                        fadeInDuration:
-                                            const Duration(milliseconds: 100),
-                                        fadeOutDuration:
-                                            const Duration(milliseconds: 200),
-                                        imageUrl: source.faviconUrl,
-                                        errorWidget: (context, url, error) =>
-                                            const SizedBox.shrink(),
-                                        errorListener: (e) {
-                                          // Ignore error
-                                        },
+                                        enableLoadState: false,
                                       ),
                                     ),
                                   _ => const Card(

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -51,7 +50,6 @@ class _MoebooruPostDetailsPageState
   @override
   Widget build(BuildContext context) {
     final booruConfig = ref.watchConfig;
-    final settings = ref.watch(settingsProvider);
 
     return PostDetailsPageScaffold(
       posts: posts,
@@ -72,7 +70,7 @@ class _MoebooruPostDetailsPageState
       ),
       commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
       infoBuilder: (context, post) => MoebooruInformationSection(post: post),
-      swipeImageUrlBuilder: (post) => post.thumbnailFromSettings(settings),
+      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       onPageChanged: (post) {
         ref.read(tagsProvider(booruConfig).notifier).load(post.tags);
       },

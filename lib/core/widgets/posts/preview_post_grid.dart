@@ -59,6 +59,7 @@ class PreviewPostGrid<T extends Post> extends StatelessWidget {
                 isAnimated: post.isAnimated,
                 isTranslated: post.isTranslated,
                 image: BooruImage(
+                  forceFill: true,
                   imageUrl: imageUrl(post),
                   placeholderUrl: post.thumbnailImageUrl,
                   fit: BoxFit.cover,
@@ -78,7 +79,6 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     required this.posts,
     required this.onTap,
     this.physics,
-    this.cacheManager,
     this.imageBuilder,
     required this.imageUrl,
   });
@@ -86,42 +86,45 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   final List<T> posts;
   final ScrollPhysics? physics;
   final void Function(int index) onTap;
-  final CacheManager? cacheManager;
   final Widget Function(T item)? imageBuilder;
   final String Function(T item) imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.screenHeight * 0.22,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
+    return LayoutBuilder(
+      builder: (context, constraints) => SizedBox(
+        height: context.screenHeight * 0.22,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: ImageGridItem(
-                    isAI: post.isAI,
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    onTap: () => onTap(index),
-                    image: imageBuilder != null
-                        ? imageBuilder!(post)
-                        : BooruImage(
-                            aspectRatio: 0.6,
-                            imageUrl: imageUrl(post),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            fit: BoxFit.cover,
-                          )),
-              );
-            },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: ImageGridItem(
+                      isAI: post.isAI,
+                      isAnimated: post.isAnimated,
+                      isTranslated: post.isTranslated,
+                      onTap: () => onTap(index),
+                      image: imageBuilder != null
+                          ? imageBuilder!(post)
+                          : BooruImage(
+                              width: constraints.maxWidth * 0.3,
+                              forceFill: true,
+                              aspectRatio: 0.6,
+                              imageUrl: imageUrl(post),
+                              placeholderUrl: post.thumbnailImageUrl,
+                              fit: BoxFit.cover,
+                            )),
+                );
+              },
+            ),
           ),
         ),
       ),

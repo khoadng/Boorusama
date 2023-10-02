@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 
 class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
@@ -23,15 +23,13 @@ class WebsiteLogo extends StatelessWidget {
         minWidth: size,
         minHeight: size,
       ),
-      child: CachedNetworkImage(
+      child: ExtendedImage.network(
+        url,
         fit: BoxFit.cover,
-        fadeInDuration: const Duration(milliseconds: 50),
-        fadeOutDuration: const Duration(milliseconds: 50),
-        imageUrl: url,
-        errorWidget: (context, url, error) => const Icon(Icons.arrow_outward),
-        errorListener: (e) {
-          // Ignore error
-        },
+        loadStateChanged: (state) =>
+            state.extendedImageLoadState == LoadState.failed
+                ? const Icon(Icons.arrow_outward)
+                : null,
       ),
     );
   }

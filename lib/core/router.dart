@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/downloads/bulk_download_provider.dart';
@@ -177,8 +176,6 @@ Future<Object?> goToFavoriteTagImportPage(
 }
 
 void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
-  final previewCacheManager = ref.read(previewImageCacheManagerProvider);
-
   showGeneralDialog(
     context: context,
     routeSettings: const RouteSettings(
@@ -189,7 +186,6 @@ void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
         placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
-        previewCacheManager: previewCacheManager,
       ),
     ),
   );

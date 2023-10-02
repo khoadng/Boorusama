@@ -7,7 +7,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_media_item.dart';
@@ -113,7 +112,6 @@ class _PostSliderState extends ConsumerState<BookmarkSlider> {
       itemBuilder: (context, index, realIndex) {
         final media = BookmarkMediaItem(
           bookmark: widget.bookmarks[index],
-          previewCacheManager: ref.watch(previewImageCacheManagerProvider),
           onTap: widget.onTap,
           onZoomUpdated: (zoom) {
             final swipe = !zoom;

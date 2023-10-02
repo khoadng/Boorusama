@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -28,15 +28,10 @@ class BooruLogo extends StatelessWidget {
         maxWidth: width ?? 25,
         maxHeight: height ?? 25,
       ),
-      child: CachedNetworkImage(
+      child: ExtendedImage.network(
+        source.faviconUrl,
         fit: BoxFit.cover,
-        fadeInDuration: const Duration(milliseconds: 100),
-        fadeOutDuration: const Duration(milliseconds: 200),
-        imageUrl: source.faviconUrl,
-        errorWidget: (context, url, error) => const SizedBox.shrink(),
-        errorListener: (e) {
-          // Ignore error
-        },
+        enableLoadState: false,
       ),
     );
   }

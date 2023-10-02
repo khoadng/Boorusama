@@ -34,7 +34,6 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/preloaders/preloaders.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
@@ -191,24 +190,6 @@ final cacheSizeProvider =
 
 final appInfoProvider = Provider<AppInfo>((ref) {
   throw UnimplementedError();
-});
-
-final previewImageCacheManagerProvider =
-    Provider<PreviewImageCacheManager>((ref) {
-  return PreviewImageCacheManager();
-});
-
-final previewLoaderProvider =
-    Provider.family<PostPreviewPreloader, BooruConfig>((ref, config) {
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
-  final previewImageCacheManager = ref.watch(previewImageCacheManagerProvider);
-
-  return PostPreviewPreloaderImp(
-    previewImageCacheManager,
-    httpHeaders: {
-      'User-Agent': userAgentGenerator.generate(),
-    },
-  );
 });
 
 final downloadFileNameGeneratorProvider =

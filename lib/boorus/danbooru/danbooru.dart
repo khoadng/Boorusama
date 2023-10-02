@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'pages/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';
@@ -85,7 +86,9 @@ class DanbooruBuilder implements BooruBuilder {
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
+      (context, initialQuery) => CustomContextMenuOverlay(
+            child: DanbooruSearchPage(initialQuery: initialQuery),
+          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder =>
