@@ -2,11 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
-import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/platform.dart';
 
@@ -82,19 +80,6 @@ final bulkDownloadManagerStatusProvider =
   );
 
   return BulkDownloadManagerStatus.initial;
-});
-
-final bulkDownloadFileNameProvider =
-    Provider.family<FileNameGenerator<Post>, BooruConfig>((ref, config) {
-  if (config.booruType.isDanbooruBased) {
-    return BoorusamaStyledFileNameGenerator();
-  }
-
-  if (config.booruType.isE621Based || config.booruType.isGelbooruBased) {
-    return Md5OnlyFileNameGenerator();
-  }
-
-  return DownloadUrlBaseNameFileNameGenerator();
 });
 
 final bulkDownloadStateProvider = NotifierProvider.family<

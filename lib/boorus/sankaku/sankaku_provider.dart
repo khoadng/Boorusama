@@ -102,6 +102,24 @@ final sankakuPostRepoProvider =
   },
 );
 
+final sankakuAutocompleteRepoProvider =
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(sankakuClientProvider(config));
+
+  return AutocompleteRepositoryBuilder(
+    persistentStorageKey: 'sankaku_autocomplete_cache_v1',
+    autocomplete: (query) =>
+        client.getAutocomplete(query: query).then((value) => value
+            .map((e) => AutocompleteData(
+                  label: e.name?.replaceAll('_', ' ') ?? '???',
+                  value: e.name ?? '???',
+                  postCount: e.count,
+                  category: e.type?.toString(),
+                ))
+            .toList()),
+  );
+});
+
 final sankakuArtistPostRepo =
     Provider.family<PostRepository<SankakuPost>, BooruConfig>((ref, config) {
   return PostRepositoryCacher(

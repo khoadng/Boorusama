@@ -205,7 +205,8 @@ final booruBuildersProvider =
               ),
           BooruType.sankaku: (config) => SankakuBuilder(
                 postRepository: ref.watch(sankakuPostRepoProvider(config)),
-                client: ref.watch(sankakuClientProvider(config)),
+                autocompleteRepo:
+                    ref.watch(sankakuAutocompleteRepoProvider(config)),
               ),
           BooruType.philomena: (config) => PhilomenaBuilder(
                 postRepo: ref.watch(philomenaPostRepoProvider(config)),

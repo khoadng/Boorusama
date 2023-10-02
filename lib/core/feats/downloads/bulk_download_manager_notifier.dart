@@ -67,7 +67,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
-    final fileNameGenerator = ref.read(bulkDownloadFileNameProvider(arg));
+    final fileNameGenerator = ref.read(downloadFileNameGeneratorProvider(arg));
 
     try {
       var page = 1;

@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
-import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -32,22 +32,15 @@ class SankakuBuilder
     implements BooruBuilder {
   SankakuBuilder({
     required this.postRepository,
-    required this.client,
+    required this.autocompleteRepo,
   });
 
   final PostRepository<SankakuPost> postRepository;
-  final SankakuClient client;
+  final AutocompleteRepository autocompleteRepo;
 
   @override
   AutocompleteFetcher get autocompleteFetcher =>
-      (query) => client.getAutocomplete(query: query).then((value) => value
-          .map((e) => AutocompleteData(
-                label: e.name?.replaceAll('_', ' ') ?? '???',
-                value: e.name ?? '???',
-                postCount: e.count,
-                category: e.type?.toString(),
-              ))
-          .toList());
+      (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
