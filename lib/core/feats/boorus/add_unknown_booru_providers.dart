@@ -20,6 +20,11 @@ final booruEngineProvider = StateProvider.autoDispose<BooruType?>((ref) {
   return null;
 });
 
+final booruUrlProvider =
+    StateProvider.autoDispose.family<String, String>((ref, initial) {
+  return initial;
+});
+
 final booruRatingFilterProvider =
     StateProvider.autoDispose<BooruConfigRatingFilter>((ref) {
   return BooruConfigRatingFilter.none;

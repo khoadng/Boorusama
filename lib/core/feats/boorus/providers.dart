@@ -40,6 +40,7 @@ final configIdOrdersProvider = Provider<List<int>>((ref) {
 
 final configsProvider = Provider<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
+  final logger = ref.watch(loggerProvider);
   if (configs == null) return <BooruConfig>[].lock;
 
   final configMap = {for (final config in configs) config.id: config};
@@ -48,6 +49,8 @@ final configsProvider = Provider<IList<BooruConfig>>((ref) {
   if (configMap.length != orders.length) {
     // Something is wrong, reset the order
     if (orders.isNotEmpty) {
+      logger.logW('Configs Provider',
+          'Config map length is not equal to order length, resetting order: ${configMap.length} != ${orders.length}');
       ref.setBooruConfigOrder([]);
     }
     return configMap.values.toIList();

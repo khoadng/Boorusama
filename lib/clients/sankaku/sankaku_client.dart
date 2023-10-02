@@ -70,7 +70,7 @@ class SankakuClient {
   }
 
   Future<List<PostDto>> getPosts({
-    required List<String> tags,
+    List<String>? tags,
     int? page = 1,
     int? limit = 60,
   }) async {
@@ -89,7 +89,7 @@ class SankakuClient {
         'lang': 'english',
         'page': page,
         'limit': limit,
-        if (tags.isNotEmpty) 'tags': tags.join(' '),
+        if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
       },
       options: Options(
         headers: {

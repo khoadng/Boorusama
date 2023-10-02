@@ -12,10 +12,11 @@ const _kZerochanUrl = 'https://www.zerochan.net';
 class ZerochanClient {
   ZerochanClient({
     Dio? dio,
+    String? baseUrl,
     this.logger,
   }) : _dio = dio ??
             Dio(BaseOptions(
-              baseUrl: _kZerochanUrl,
+              baseUrl: baseUrl ?? _kZerochanUrl,
               headers: {
                 'User-Agent': 'My test client - anon',
               },

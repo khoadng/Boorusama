@@ -55,6 +55,25 @@ class BooruConfig extends Equatable {
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
 
+  BooruConfig copyWith({
+    String? url,
+    String? apiKey,
+    String? login,
+    String? name,
+  }) {
+    return BooruConfig(
+      id: id,
+      booruId: booruId,
+      booruIdHint: booruIdHint,
+      url: url ?? this.url,
+      apiKey: apiKey ?? this.apiKey,
+      login: login ?? this.login,
+      name: name ?? this.name,
+      deletedItemBehavior: deletedItemBehavior,
+      ratingFilter: ratingFilter,
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,

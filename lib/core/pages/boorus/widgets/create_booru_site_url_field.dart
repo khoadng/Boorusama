@@ -9,9 +9,11 @@ class CreateBooruSiteUrlField extends StatefulWidget {
   const CreateBooruSiteUrlField({
     super.key,
     this.text,
+    this.onChanged,
   });
 
   final String? text;
+  final void Function(String value)? onChanged;
 
   @override
   State<CreateBooruSiteUrlField> createState() =>
@@ -30,10 +32,11 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
   @override
   Widget build(BuildContext context) {
     return LoginField(
-      readOnly: true,
+      readOnly: widget.onChanged == null,
       validator: (p0) => null,
       controller: urlController,
       labelText: 'booru.site_url_label'.tr(),
+      onChanged: widget.onChanged,
     );
   }
 }
