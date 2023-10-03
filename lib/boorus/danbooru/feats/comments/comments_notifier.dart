@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comments.dart';
 
@@ -27,9 +26,7 @@ class CommentsNotifier
   }) async {
     if (state.containsKey(postId) && !force) return;
 
-    final accountId = await ref
-        .watch(booruUserIdentityProviderProvider(arg))
-        .getAccountIdFromConfig(arg);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
     final comments = await repo
         .getComments(postId)
@@ -44,7 +41,7 @@ class CommentsNotifier
                   body: comment.body,
                   createdAt: comment.createdAt,
                   updatedAt: comment.updatedAt,
-                  isSelf: comment.creator?.id == accountId,
+                  isSelf: comment.creator?.id == user?.id,
                   isEdited: comment.isEdited,
                   uris: RegExp(urlPattern)
                       .allMatches(comment.body)

@@ -43,7 +43,7 @@ class FavoriteGroupsNotifier
     required bool isPrivate,
     void Function(String message, bool translatable)? onFailure,
   }) async {
-    final currentUser = ref.read(danbooruCurrentUserProvider(arg));
+    final currentUser = await ref.read(danbooruCurrentUserProvider(arg).future);
 
     if (currentUser == null) return;
 

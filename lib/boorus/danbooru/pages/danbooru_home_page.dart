@@ -11,7 +11,6 @@ import 'package:share_handler/share_handler.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
@@ -25,6 +24,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import '../feats/dmails/dmails.dart';
+import '../feats/users/users.dart';
 import 'blacklisted_tags_page.dart';
 import 'danbooru_desktop_home_page.dart';
 import 'danbooru_dmail_page.dart';
@@ -51,28 +51,11 @@ class DanbooruHomePage extends ConsumerStatefulWidget {
 
 class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   StreamSubscription? _sharedMediaSubscription;
-  int? userId;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final config = widget.config;
-
-      if (!mounted) return;
-
-      final id = await ref
-          .read(booruUserIdentityProviderProvider(config))
-          .getAccountIdFromConfig(config);
-
-      if (id != null) {
-        setState(() {
-          userId = id;
-        });
-      }
-    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -133,6 +116,12 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userId =
+        ref.watch(danbooruCurrentUserProvider(widget.config)).maybeWhen(
+              data: (user) => user?.id,
+              orElse: () => null,
+            );
+
     return BooruScope(
       config: widget.config,
       mobileView: (controller) => LatestView(
@@ -150,7 +139,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               goToUserDetailsPage(
                 ref,
                 context,
-                uid: userId!,
+                uid: userId,
                 username: widget.config.login!,
               );
             },
@@ -365,7 +354,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             UserDetailsPage(
-              uid: userId!,
+              uid: userId,
               username: widget.config.login!,
             )
           else

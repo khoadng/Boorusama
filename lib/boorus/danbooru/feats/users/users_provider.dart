@@ -10,7 +10,9 @@ import 'package:boorusama/boorus/danbooru/feats/users/creator_repository.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/creators_notifier.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruUserRepoProvider =
@@ -21,15 +23,46 @@ final danbooruUserRepoProvider =
   );
 });
 
-final danbooruCurrentUserProvider =
-    NotifierProvider.family<CurrentUserNotifier, UserSelf?, BooruConfig>(
-  CurrentUserNotifier.new,
-  dependencies: [
-    danbooruUserRepoProvider,
-    currentBooruConfigProvider,
-    booruUserIdentityProviderProvider
-  ],
-);
+const _kCurrentUserIdKey = '_danbooru_current_user_id';
+
+final danbooruCurrentUserProvider = FutureProvider.autoDispose
+    .family<UserSelf?, BooruConfig>((ref, config) async {
+  if (!config.hasLoginDetails()) return null;
+
+  // First, we try to get the user id from the cache
+  final miscData = await ref.watch(miscDataBoxProvider.future);
+  final key = '${_kCurrentUserIdKey}_${config.login}';
+  final cached = miscData.get(key);
+  var id = cached != null ? int.tryParse(cached) : null;
+
+  // If the cached id is null, we need to fetch it from the api
+  if (id == null) {
+    final dio = newDio(ref.watch(dioArgsProvider(config)));
+
+    final data = await DanbooruClient(
+            dio: dio,
+            baseUrl: config.url,
+            apiKey: config.apiKey,
+            login: config.login)
+        .getProfile()
+        .then((value) => value.data['id']);
+
+    id = switch (data) {
+      int i => i,
+      _ => null,
+    };
+
+    // If the id is not null, we cache it
+    if (id != null) {
+      miscData.put(key, id.toString());
+    }
+  }
+
+  // If the id is still null, we can't do anything else here
+  if (id == null) return null;
+
+  return ref.watch(danbooruUserRepoProvider(config)).getUserSelfById(id);
+});
 
 final danbooruUserProvider =
     AsyncNotifierProvider.family<UserNotifier, User, int>(

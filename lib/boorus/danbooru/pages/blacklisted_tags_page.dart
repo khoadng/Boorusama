@@ -14,7 +14,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: This is a copy of lib/boorus/core/pages/blacklists/blacklisted_tag_page.dart
@@ -26,32 +25,37 @@ class BlacklistedTagsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
+    final tagsAsync = ref.watch(danbooruBlacklistedTagsProvider(config));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(context, ref),
-          if (tags != null)
-            ImportExportTagButton(
-              tags: tags,
-              onImport: (tagString) {
-                final tags = sanitizeBlacklistTagString(tagString);
+          tagsAsync.maybeWhen(
+            data: (tags) => tags != null
+                ? ImportExportTagButton(
+                    tags: tags,
+                    onImport: (tagString) {
+                      final tags = sanitizeBlacklistTagString(tagString);
 
-                if (tags == null) {
-                  showErrorToast('Invalid tag format');
-                  return;
-                }
+                      if (tags == null) {
+                        showErrorToast('Invalid tag format');
+                        return;
+                      }
 
-                //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
-                for (final tag in tags) {
-                  ref
-                      .read(danbooruBlacklistedTagsProvider(config).notifier)
-                      .add(tag: tag);
-                }
-              },
-            ),
+                      //FIXME: should be handled inside the provider, not here. I'm just lazy. Also missing error handling
+                      for (final tag in tags) {
+                        ref
+                            .read(danbooruBlacklistedTagsProvider(config)
+                                .notifier)
+                            .add(tag: tag);
+                      }
+                    },
+                  )
+                : const SizedBox.shrink(),
+            orElse: () => const SizedBox.shrink(),
+          ),
         ],
       ),
       body: const SafeArea(child: BlacklistedTagsList()),
@@ -90,59 +94,62 @@ class BlacklistedTagsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tags = ref.watch(danbooruBlacklistedTagsProvider(config));
+    final tagsAsync = ref.watch(danbooruBlacklistedTagsProvider(config));
 
-    return tags.toOption().fold(
-          () => const Center(child: CircularProgressIndicator()),
-          (tags) => CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: WarningContainer(
-                    contentBuilder: (context) => Html(
-                          data: 'blacklisted_tags.limitation_notice'.tr(),
-                        )),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final tag = tags[index];
-
-                    return BlacklistedTagTile(
-                      tag: tag,
-                      onRemoveTag: (tag) => ref
-                          .read(danbooruBlacklistedTagsProvider(ref.readConfig)
-                              .notifier)
-                          .removeWithToast(tag: tag),
-                      onEditTap: () {
-                        goToBlacklistedTagsSearchPage(
-                          context,
-                          initialTags: tag.split(' '),
-                          onSelectDone: (tagItems, currentQuery) {
-                            final tagString = [
-                              ...tagItems.map((e) => e.toString()),
-                              if (currentQuery.isNotEmpty) currentQuery,
-                            ].join(' ');
-
-                            ref
-                                .read(danbooruBlacklistedTagsProvider(
-                                        ref.readConfig)
-                                    .notifier)
-                                .replace(
-                                  oldTag: tag,
-                                  newTag: tagString,
-                                );
-                            context.navigator.pop();
-                          },
-                        );
-                      },
-                    );
-                  },
-                  childCount: tags.length,
+    return tagsAsync.maybeWhen(
+      orElse: () => const Center(child: CircularProgressIndicator()),
+      data: (tags) => tags != null
+          ? CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: WarningContainer(
+                      contentBuilder: (context) => Html(
+                            data: 'blacklisted_tags.limitation_notice'.tr(),
+                          )),
                 ),
-              ),
-            ],
-          ),
-        );
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final tag = tags[index];
+
+                      return BlacklistedTagTile(
+                        tag: tag,
+                        onRemoveTag: (tag) => ref
+                            .read(
+                                danbooruBlacklistedTagsProvider(ref.readConfig)
+                                    .notifier)
+                            .removeWithToast(tag: tag),
+                        onEditTap: () {
+                          goToBlacklistedTagsSearchPage(
+                            context,
+                            initialTags: tag.split(' '),
+                            onSelectDone: (tagItems, currentQuery) {
+                              final tagString = [
+                                ...tagItems.map((e) => e.toString()),
+                                if (currentQuery.isNotEmpty) currentQuery,
+                              ].join(' ');
+
+                              ref
+                                  .read(danbooruBlacklistedTagsProvider(
+                                          ref.readConfig)
+                                      .notifier)
+                                  .replace(
+                                    oldTag: tag,
+                                    newTag: tagString,
+                                  );
+                              context.navigator.pop();
+                            },
+                          );
+                        },
+                      );
+                    },
+                    childCount: tags.length,
+                  ),
+                ),
+              ],
+            )
+          : const SizedBox.shrink(),
+    );
   }
 }
 

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 final danbooruFavoriteRepoProvider =
@@ -21,7 +20,6 @@ final danbooruFavoritesProvider =
   FavoritesNotifier.new,
   dependencies: [
     danbooruFavoriteRepoProvider,
-    booruUserIdentityProviderProvider,
     currentBooruConfigProvider,
   ],
 );

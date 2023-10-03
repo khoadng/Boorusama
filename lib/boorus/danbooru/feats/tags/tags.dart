@@ -1,6 +1,5 @@
 export 'blacklisted/blacklisted_tags_notifier.dart';
 export 'blacklisted/blacklisted_tags_provider.dart';
-export 'blacklisted/blacklisted_tags_repository.dart';
 export 'danbooru_tag_category_notifier.dart';
 export 'danbooru_tag_category_repository.dart';
 export 'popular_search_repository.dart';

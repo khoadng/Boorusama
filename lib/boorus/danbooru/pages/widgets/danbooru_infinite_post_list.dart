@@ -93,7 +93,10 @@ class _DanbooruInfinitePostListState
     final booruConfig = ref.watchConfig;
     final globalBlacklist = ref.watch(globalBlacklistedTagsProvider);
     final danbooruBlacklist =
-        ref.watch(danbooruBlacklistedTagsProvider(booruConfig));
+        ref.watch(danbooruBlacklistedTagsProvider(booruConfig)).maybeWhen(
+              data: (data) => data,
+              orElse: () => null,
+            );
     final currentUser = ref.watch(danbooruCurrentUserProvider(booruConfig));
     final isUnverified = booruConfig.isUnverified();
 
@@ -113,19 +116,25 @@ class _DanbooruInfinitePostListState
         multiSelectController: _multiSelectController,
         onLoadMore: widget.onLoadMore,
         onRefresh: widget.onRefresh,
-        blacklistedTags: {
-          ...globalBlacklist.map((e) => e.name),
-          if (danbooruBlacklist != null) ...danbooruBlacklist,
-          if (!isUnverified &&
-              booruConfig.booruType.hasCensoredTagsBanned &&
-              currentUser == null)
-            ...kCensoredTags,
-          if (!isUnverified &&
-              booruConfig.booruType.hasCensoredTagsBanned &&
-              currentUser != null &&
-              !isBooruGoldPlusAccount(currentUser.level))
-            ...kCensoredTags,
-        },
+        blacklistedTags: currentUser.maybeWhen(
+          data: (user) => {
+            ...globalBlacklist.map((e) => e.name),
+            if (danbooruBlacklist != null) ...danbooruBlacklist,
+            if (!isUnverified &&
+                booruConfig.booruType.hasCensoredTagsBanned &&
+                user == null)
+              ...kCensoredTags,
+            if (!isUnverified &&
+                booruConfig.booruType.hasCensoredTagsBanned &&
+                user != null &&
+                !isBooruGoldPlusAccount(user.level))
+              ...kCensoredTags,
+          },
+          orElse: () => {
+            ...globalBlacklist.map((e) => e.name),
+            if (danbooruBlacklist != null) ...danbooruBlacklist,
+          },
+        ),
         itemBuilder: (context, items, index) {
           final post = items[index];
 

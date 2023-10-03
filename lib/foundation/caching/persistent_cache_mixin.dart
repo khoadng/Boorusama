@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:hive/hive.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/path.dart';
+
 mixin PersistentCacheMixin {
   Box<String>? _box;
 
@@ -13,8 +16,9 @@ mixin PersistentCacheMixin {
 
   Future<Box<String>?> openBox() async {
     if (_box != null) return _box!;
+    final dir = await getTemporaryDirectory();
 
-    _box = await Hive.openBox(persistentStorageKey);
+    _box = await Hive.openBox(persistentStorageKey, path: dir.path);
 
     return _box;
   }

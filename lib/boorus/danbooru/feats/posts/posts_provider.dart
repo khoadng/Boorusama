@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import '../users/users.dart';
 
 final danbooruPostRepoProvider =
     Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
@@ -36,12 +37,10 @@ typedef PostFetchTransformer = Future<List<DanbooruPost>> Function(
 
 final danbooruPostFetchTransformerProvider =
     Provider.family<PostFetchTransformer, BooruConfig>((ref, config) {
-  final booruUserIdentityProvider =
-      ref.watch(booruUserIdentityProviderProvider(config));
-
   return (posts) async {
-    final id = await booruUserIdentityProvider.getAccountIdFromConfig(config);
-    if (id != null) {
+    final user = await ref.read(danbooruCurrentUserProvider(config).future);
+
+    if (user != null) {
       final ids = posts.map((e) => e.id).toList();
 
       ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);

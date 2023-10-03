@@ -14,7 +14,8 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
         (ref, post) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider(config));
+  final blacklistedTags =
+      await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
   final tags = post.artistTags;
@@ -52,7 +53,8 @@ final danbooruPostDetailsCharacterProvider = FutureProvider.family
         (ref, post) async {
   final config = ref.watchConfig;
   final repo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = ref.watch(danbooruBlacklistedTagsProvider(config));
+  final blacklistedTags =
+      await ref.watch(danbooruBlacklistedTagsProvider(config).future);
   final globalBlacklistedTags = ref.watch(globalBlacklistedTagsProvider);
 
   final tags = post.characterTags.take(3);

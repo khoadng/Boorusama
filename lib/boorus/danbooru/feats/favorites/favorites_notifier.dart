@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'favorites_provider.dart';
 
@@ -44,11 +44,9 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
   }
 
   Future<void> checkFavorites(List<int> postIds) async {
-    final userId = await ref
-        .read(booruUserIdentityProviderProvider(arg))
-        .getAccountIdFromConfig(arg);
-    if (userId == null) {
-      throw Exception('User ID not found');
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    if (user == null) {
+      throw Exception('Current User not found');
     }
 
     // Filter postIds that are not in the cache
@@ -60,7 +58,7 @@ class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
     if (postIdsToCheck.isNotEmpty) {
       final favorites = await ref
           .read(danbooruFavoriteRepoProvider(arg))
-          .filterFavoritesFromUserId(postIdsToCheck, userId, _limit);
+          .filterFavoritesFromUserId(postIdsToCheck, user.id, _limit);
 
       for (final favorite in favorites) {
         cache[favorite.postId] = true;

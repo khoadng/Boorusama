@@ -33,6 +33,7 @@ final danbooruDmailsProvider = FutureProvider.autoDispose
 
 final danbooruUnreadDmailsProvider = FutureProvider.autoDispose
     .family<List<Dmail>, BooruConfig>((ref, config) async {
+  if (!config.hasLoginDetails()) return [];
   final client = ref.watch(danbooruClientProvider(config));
 
   final dmails = await client.getDmails(

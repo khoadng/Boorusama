@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
@@ -29,7 +30,6 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -45,20 +45,13 @@ import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final booruUserIdentityProviderProvider =
-    Provider.family<BooruUserIdentityProvider, BooruConfig>((ref, config) {
-  final booruFactory = ref.watch(booruFactoryProvider);
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
-
-  return BooruUserIdentityProviderImpl(dio, booruFactory);
-});
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 final metatagsProvider = Provider<List<Metatag>>(
@@ -158,6 +151,11 @@ final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
 final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
 );
+
+final miscDataBoxProvider = FutureProvider<Box<String>>((ref) async {
+  final path = await getTemporaryDirectory();
+  return Hive.openBox<String>('misc_data_v1', path: path.path);
+});
 
 final userAgentGeneratorProvider =
     Provider.family<UserAgentGenerator, BooruConfig>(

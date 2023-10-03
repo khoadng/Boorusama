@@ -2,38 +2,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/toast.dart';
-import 'blacklisted_tags_provider.dart';
 
 class BlacklistedTagsNotifier
-    extends AutoDisposeFamilyNotifier<List<String>?, BooruConfig> {
+    extends AutoDisposeFamilyAsyncNotifier<List<String>?, BooruConfig> {
   @override
-  List<String>? build(BooruConfig arg) {
-    fetch();
+  Future<List<String>?> build(BooruConfig arg) async {
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    return null;
-  }
+    if (user == null) return null;
 
-  BlacklistedTagsRepository get repo =>
-      ref.read(danbooruBlacklistedTagRepoProvider(arg));
-  BooruUserIdentityProvider get identityProvider =>
-      ref.read(booruUserIdentityProviderProvider(arg));
-
-  Future<void> fetch() async {
-    final id = await identityProvider.getAccountIdFromConfig(arg);
-
-    if (id == null) return;
-
-    final blacklistedTags = await ref
-        .read(danbooruBlacklistedTagRepoProvider(arg))
-        .getBlacklistedTags(id);
-
-    state = blacklistedTags;
+    return user.blacklistedTags;
   }
 
   Future<void> add({
@@ -41,20 +24,24 @@ class BlacklistedTagsNotifier
     void Function(List<String> tags)? onSuccess,
     void Function(Object e)? onFailure,
   }) async {
-    final id = await identityProvider.getAccountIdFromConfig(arg);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
+    if (state.value == null || user == null) {
       onFailure?.call('Not logged in or no blacklisted tags found');
 
       return;
     }
 
     // Duplicate tags are not allowed
-    final tags = {...state!, tag}.toList();
+    final tags = {...state.value!, tag}.toList();
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref.read(danbooruClientProvider(arg)).setBlacklistedTags(
+            id: user.id,
+            blacklistedTags: tags,
+          );
+
+      state = AsyncData(tags);
     } catch (e) {
       onFailure?.call(e);
     }
@@ -66,19 +53,22 @@ class BlacklistedTagsNotifier
     void Function(List<String> tags)? onSuccess,
     void Function()? onFailure,
   }) async {
-    final id = await identityProvider.getAccountIdFromConfig(arg);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
+    if (state.value == null || user == null) {
       onFailure?.call();
 
       return;
     }
 
-    final tags = [...state!]..remove(tag);
+    final tags = [...state.value!]..remove(tag);
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref
+          .read(danbooruClientProvider(arg))
+          .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      state = AsyncData(tags);
     } catch (e) {
       onFailure?.call();
     }
@@ -91,22 +81,25 @@ class BlacklistedTagsNotifier
     void Function(List<String> tags)? onSuccess,
     void Function(String message)? onFailure,
   }) async {
-    final id = await identityProvider.getAccountIdFromConfig(arg);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
+    if (state.value == null || user == null) {
       onFailure?.call('Fail to replace tag');
 
       return;
     }
 
     final tags = [
-      ...[...state!]..remove(oldTag),
+      ...[...state.value!]..remove(oldTag),
       newTag,
     ];
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref
+          .read(danbooruClientProvider(arg))
+          .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      state = AsyncData(tags);
     } catch (e) {
       onFailure?.call('Fail to replace tag');
     }

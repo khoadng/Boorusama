@@ -257,10 +257,12 @@ class PrivacyToggle extends ConsumerWidget {
           onChanged: onChanged,
         ),
       ),
-      crossFadeState:
-          currentUser != null && isBooruGoldPlusAccount(currentUser.level)
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
+      crossFadeState: currentUser.maybeWhen(
+        data: (user) => user != null && isBooruGoldPlusAccount(user.level)
+            ? CrossFadeState.showSecond
+            : CrossFadeState.showFirst,
+        orElse: () => CrossFadeState.showFirst,
+      ),
       duration: const Duration(milliseconds: 150),
     );
   }

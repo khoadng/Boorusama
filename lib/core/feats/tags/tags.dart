@@ -1,4 +1,3 @@
-export 'blacklisted_tags_repository.dart';
 export 'empty_tag_repository.dart';
 export 'favorite_tag.dart';
 export 'favorite_tag_hive_object.dart';

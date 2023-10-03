@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
+import '../../users/users.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
@@ -62,8 +63,10 @@ class PostVotesNotifier
       return postVote.isOptimisticUpdateVote;
     }).toList();
 
-    if (postIdsToFetch.isNotEmpty) {
-      final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+
+    if (postIdsToFetch.isNotEmpty && user != null) {
+      final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch, user.id);
       final voteMap = {
         for (var postVote in fetchedPostVotes) postVote.postId: postVote,
       };

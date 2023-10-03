@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 import 'post_vote.dart';
@@ -17,14 +16,11 @@ final danbooruPostVoteRepoProvider =
     return PostVoteApiRepositoryApi(
       client: ref.watch(danbooruClientProvider(config)),
       booruConfig: config,
-      booruUserIdentityProvider:
-          ref.watch(booruUserIdentityProviderProvider(config)),
     );
   },
   dependencies: [
     danbooruClientProvider,
     currentBooruConfigProvider,
-    booruUserIdentityProviderProvider,
   ],
 );
 

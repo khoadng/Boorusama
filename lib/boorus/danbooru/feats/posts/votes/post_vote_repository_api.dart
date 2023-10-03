@@ -1,7 +1,6 @@
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/feats/booru_user_identity_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
@@ -10,24 +9,17 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required this.client,
     required this.booruConfig,
-    required this.booruUserIdentityProvider,
   });
 
   final BooruConfig booruConfig;
   final DanbooruClient client;
-  final BooruUserIdentityProvider booruUserIdentityProvider;
 
   @override
-  Future<List<PostVote>> getPostVotes(List<int> postIds) async {
-    if (postIds.isEmpty) return Future.value([]);
-    final id =
-        await booruUserIdentityProvider.getAccountIdFromConfig(booruConfig);
-    if (id == null) return [];
-
+  Future<List<PostVote>> getPostVotes(List<int> postIds, int userId) async {
     return client
         .getPostVotes(
           postIds: postIds,
-          userId: id,
+          userId: userId,
           isDeleted: false,
           limit: 100,
         )
