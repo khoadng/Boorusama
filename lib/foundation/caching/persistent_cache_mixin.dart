@@ -52,9 +52,6 @@ mixin PersistentCacheMixin {
       return null;
     }
 
-    // Refresh the timestamp of the accessed key
-    box.put('${key}_timestamp', DateTime.now().toIso8601String());
-
     return cachedValue;
   }
 
