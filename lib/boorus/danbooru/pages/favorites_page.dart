@@ -8,7 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/scaffolds/favorite_page_scaffold.dart';
+import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/danbooru_infinite_post_list.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
   const DanbooruFavoritesPage({
@@ -23,11 +28,36 @@ class DanbooruFavoritesPage extends ConsumerWidget {
     final config = ref.watchConfig;
     final query = buildFavoriteQuery(username);
 
-    return FavoritesPageScaffold(
-      fetcher: (page) =>
-          ref.read(danbooruPostRepoProvider(config)).getPosts([query], page),
-      username: username,
-      favQueryBuilder: () => query,
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) =>
+            ref.read(danbooruPostRepoProvider(config)).getPosts([query], page),
+        builder: (context, controller, errors) => DanbooruInfinitePostList(
+          errors: errors,
+          controller: controller,
+          sliverHeaderBuilder: (context) => [
+            SliverAppBar(
+              title: const Text('profile.favorites').tr(),
+              floating: true,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    goToSearchPage(
+                      context,
+                      tag: query,
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SliverSizedBox(height: 5),
+          ],
+        ),
+      ),
     );
   }
 }
