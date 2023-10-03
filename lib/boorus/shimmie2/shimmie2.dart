@@ -9,6 +9,7 @@ class Shimmie2Builder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

@@ -24,6 +24,7 @@ class GelbooruV1Builder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   const GelbooruV1Builder({

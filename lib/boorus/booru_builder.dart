@@ -24,6 +24,7 @@ import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/functional.dart';
@@ -87,6 +88,11 @@ typedef FavoriteChecker = bool Function(int postId);
 
 typedef PostCountFetcher = Future<int?> Function(List<String> tags);
 
+typedef GridThumbnailUrlBuilder = String Function(
+  Settings settings,
+  Post post,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -96,6 +102,8 @@ abstract class BooruBuilder {
   PostDetailsPageBuilder get postDetailsPageBuilder;
   FavoritesPageBuilder? get favoritesPageBuilder;
   ArtistPageBuilder? get artistPageBuilder;
+
+  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -128,6 +136,21 @@ mixin ArtistNotSupportedMixin implements BooruBuilder {
 mixin PostCountNotSupportedMixin implements BooruBuilder {
   @override
   PostCountFetcher? get postCountFetcher => null;
+}
+
+mixin DefaultThumbnailUrlMixin implements BooruBuilder {
+  @override
+  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
+      (settings, post) => switch (settings.imageQuality) {
+            ImageQuality.automatic => post.thumbnailImageUrl,
+            ImageQuality.low => post.thumbnailImageUrl,
+            ImageQuality.high =>
+              post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
+            ImageQuality.highest =>
+              post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
+            ImageQuality.original =>
+              post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
+          };
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {

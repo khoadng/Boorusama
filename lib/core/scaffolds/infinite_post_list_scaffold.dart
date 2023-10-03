@@ -91,6 +91,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final favoriteAdder = booruBuilder?.favoriteAdder;
     final favoriteRemover = booruBuilder?.favoriteRemover;
     final favoriteChecker = booruBuilder?.favoriteChecker;
+    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
     final isAuthenticated = config.hasLoginDetails();
 
     final canFavorite = favoriteAdder != null &&
@@ -189,7 +190,9 @@ class _InfinitePostListScaffoldState<T extends Post>
                 score: settings.showScoresInGrid ? post.score : null,
                 image: BooruImage(
                   aspectRatio: post.aspectRatio,
-                  imageUrl: post.thumbnailFromSettings(settings),
+                  imageUrl: gridThumbnailUrlBuilder != null
+                      ? gridThumbnailUrlBuilder(settings, post)
+                      : post.thumbnailImageUrl,
                   borderRadius: BorderRadius.circular(
                     settings.imageBorderRadius,
                   ),

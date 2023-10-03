@@ -120,4 +120,8 @@ class DanbooruBuilder implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
       DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
+
+  @override
+  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
+      (post as DanbooruPost).thumbnailFromSettings(settings);
 }

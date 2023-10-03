@@ -28,7 +28,10 @@ import 'sankaku_post.dart';
 part 'sankaku_provider.dart';
 
 class SankakuBuilder
-    with PostCountNotSupportedMixin, DefaultBooruUIMixin
+    with
+        PostCountNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
+        DefaultBooruUIMixin
     implements BooruBuilder {
   SankakuBuilder({
     required this.postRepository,

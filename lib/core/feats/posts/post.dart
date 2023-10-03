@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
@@ -137,15 +136,6 @@ mixin NoTagDetailsMixin implements Post {
 
 extension PostImageX on Post {
   bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
-
-  String thumbnailFromSettings(Settings settings) =>
-      switch (settings.imageQuality) {
-        ImageQuality.automatic => thumbnailImageUrl,
-        ImageQuality.low => thumbnailImageUrl,
-        ImageQuality.high => isVideo ? thumbnailImageUrl : sampleImageUrl,
-        ImageQuality.highest => isVideo ? thumbnailImageUrl : sampleImageUrl,
-        ImageQuality.original => isVideo ? thumbnailImageUrl : originalImageUrl
-      };
 
   bool get hasNoImage =>
       thumbnailImageUrl.isEmpty &&

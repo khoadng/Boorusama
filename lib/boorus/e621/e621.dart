@@ -58,7 +58,9 @@ final e621AutocompleteRepoProvider =
   );
 });
 
-class E621Builder with PostCountNotSupportedMixin implements BooruBuilder {
+class E621Builder
+    with PostCountNotSupportedMixin, DefaultThumbnailUrlMixin
+    implements BooruBuilder {
   E621Builder({
     required this.postRepo,
     required this.client,

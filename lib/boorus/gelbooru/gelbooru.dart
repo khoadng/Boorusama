@@ -88,7 +88,9 @@ final gelbooruAutocompleteRepoProvider =
   );
 });
 
-class GelbooruBuilder with FavoriteNotSupportedMixin implements BooruBuilder {
+class GelbooruBuilder
+    with FavoriteNotSupportedMixin, DefaultThumbnailUrlMixin
+    implements BooruBuilder {
   GelbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,

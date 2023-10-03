@@ -32,6 +32,7 @@ class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin
     implements BooruBuilder {
   MoebooruBuilder({
