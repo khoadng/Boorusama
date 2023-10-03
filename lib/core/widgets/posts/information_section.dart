@@ -141,6 +141,7 @@ class SimpleInformationSection extends ConsumerWidget {
       copyrightTags: post.copyrightTags ?? [],
       createdAt: post.createdAt,
       source: post.source,
+      showSource: showSource,
       onArtistTagTap: supportArtist
           ? (context, artist) => goToArtistPage(context, artist)
           : null,

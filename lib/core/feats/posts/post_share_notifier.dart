@@ -12,7 +12,7 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
   PostShareState build(Post arg) {
     //FIXME: this looks like a potential bug
     final config = ref.read(currentBooruConfigProvider);
-    final booruLink = '${config.url}posts/${arg.id}';
+    final booruLink = arg.getLink(config.url);
 
     return PostShareState(
       booruLink: booruLink,
@@ -31,7 +31,7 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
   void updateInformation(Post post) {
     // FIXME: this looks like a potential bug
     final config = ref.read(currentBooruConfigProvider);
-    final booruLink = '${config.url}posts/${post.id}';
+    final booruLink = arg.getLink(config.url);
 
     state = state.copyWith(
       booruLink: booruLink,
