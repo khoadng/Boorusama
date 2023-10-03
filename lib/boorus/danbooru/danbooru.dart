@@ -107,7 +107,7 @@ class DanbooruBuilder implements BooruBuilder {
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context, config) => config.login != null
-          ? FavoritesPage(username: config.login!)
+          ? DanbooruFavoritesPage(username: config.login!)
           : Scaffold(
               appBar: AppBar(
                 title: const Text('Favorites'),

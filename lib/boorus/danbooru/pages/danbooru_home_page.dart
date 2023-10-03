@@ -340,7 +340,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             )
           else
             const SizedBox(),
-          FavoritesPage(username: widget.config.login!),
+          DanbooruFavoritesPage(username: widget.config.login!),
           const FavoriteGroupsPage(),
           const SavedSearchFeedPage(),
           const BlacklistedTagsPage(),
