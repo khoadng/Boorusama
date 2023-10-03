@@ -14,11 +14,13 @@ class DismissableInfoContainer extends StatefulWidget {
     required this.content,
     this.forceShow = false,
     this.mainColor,
+    this.actions = const [],
   });
 
   final String content;
   final bool forceShow;
   final Color? mainColor;
+  final List<Widget> actions;
 
   @override
   State<DismissableInfoContainer> createState() =>
@@ -57,14 +59,23 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
             child: Row(
               children: [
                 Expanded(
-                    child: Html(
-                  style: {
-                    'body': Style(
-                      color: Colors.white,
-                    ),
-                  },
-                  data: widget.content,
-                )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Html(
+                        style: {
+                          'body': Style(
+                            color: Colors.white,
+                          ),
+                        },
+                        data: widget.content,
+                      ),
+                      OverflowBar(
+                        children: widget.actions,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

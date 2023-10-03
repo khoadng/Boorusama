@@ -31,6 +31,7 @@ import 'pages/comment_create_page.dart';
 import 'pages/comment_page.dart';
 import 'pages/comment_update_page.dart';
 import 'pages/danbooru_character_page.dart';
+import 'pages/danbooru_dmail_page.dart';
 import 'pages/danbooru_forum_page.dart';
 import 'pages/explore_hot_page.dart';
 import 'pages/explore_most_viewed_page.dart';
@@ -99,6 +100,12 @@ void goToPoolPage(BuildContext context, WidgetRef ref) {
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => const BlacklistedTagsPage(),
+  ));
+}
+
+void goToDmailPage(BuildContext context) {
+  context.navigator.push(MaterialPageRoute(
+    builder: (_) => const DanbooruDmailPage(),
   ));
 }
 

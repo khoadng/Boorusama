@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'widgets/most_search_tag_list.dart';
+import 'widgets/sliver_unread_mails_banner.dart';
 
 class LatestView extends ConsumerStatefulWidget {
   const LatestView({
@@ -58,6 +59,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
             automaticallyImplyLeading: false,
           ),
           const SliverAppAnnouncementBanner(),
+          const SliverUnreadMailsBanner(),
           SliverToBoxAdapter(
             child: ValueListenableBuilder<String>(
               valueListenable: _selectedTag,
