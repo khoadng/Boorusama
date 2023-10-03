@@ -94,13 +94,22 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                                         width: 24,
                                         height: 24,
                                         fit: BoxFit.cover,
-                                        enableLoadState: false,
+                                        loadStateChanged: (state) => switch (
+                                            state.extendedImageLoadState) {
+                                          LoadState.failed => const Card(
+                                              child: SizedBox(
+                                                width: 32,
+                                                height: 32,
+                                              ),
+                                            ),
+                                          _ => state.completedWidget,
+                                        },
                                       ),
                                     ),
                                   _ => const Card(
                                       child: SizedBox(
-                                        width: 24,
-                                        height: 24,
+                                        width: 32,
+                                        height: 32,
                                       ),
                                     ),
                                 },
