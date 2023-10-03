@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
@@ -13,8 +12,6 @@ final e621FavoritesRepoProvider =
     Provider.family<E621FavoritesRepository, BooruConfig>((ref, config) {
   return E621FavoritesRepositoryApi(
     ref.read(e621ClientProvider(config)),
-    config,
-    ref.read(e621PostRepoProvider(config)),
   );
 });
 

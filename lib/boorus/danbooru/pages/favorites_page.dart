@@ -21,12 +21,13 @@ class DanbooruFavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final query = buildFavoriteQuery(username);
 
     return FavoritesPageScaffold(
-      fetcher: (page) => ref
-          .read(danbooruPostRepoProvider(config))
-          .getPosts([buildFavoriteQuery(username)], page),
+      fetcher: (page) =>
+          ref.read(danbooruPostRepoProvider(config)).getPosts([query], page),
       username: username,
+      favQueryBuilder: () => query,
     );
   }
 }

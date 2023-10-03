@@ -116,12 +116,13 @@ class SankakuFavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final query = 'fav:$username';
 
     return FavoritesPageScaffold(
       username: username,
-      fetcher: (page) => ref
-          .read(sankakuPostRepoProvider(config))
-          .getPosts(['fav:$username'], page),
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(sankakuPostRepoProvider(config)).getPosts([query], page),
     );
   }
 }
