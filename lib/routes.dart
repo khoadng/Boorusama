@@ -416,35 +416,10 @@ class Routes {
         path: 'bulk_downloads',
         name: '/bulk_downloads',
         pageBuilder: (context, state) {
-          final booru = ref.read(currentBooruConfigProvider);
-
           return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
-            child: Builder(builder: (_) {
-              switch (booru.booruType) {
-                case BooruType.unknown:
-                case BooruType.moebooru:
-                case BooruType.e621:
-                case BooruType.danbooru:
-                case BooruType.gelbooru:
-                case BooruType.gelbooruV2:
-                case BooruType.gelbooruV1:
-                case BooruType.philomena:
-                case BooruType.sankaku:
-                case BooruType.shimmie2:
-                  return const BulkDownloadPage();
-                case BooruType.zerochan:
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Bulk download'),
-                    ),
-                    body: const Center(
-                      child: Text('Sorry, not supported yet :('),
-                    ),
-                  );
-              }
-            }),
+            child: const BulkDownloadPage(),
             transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -77,14 +78,14 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           icon: const Icon(Icons.list_alt_outlined),
           title: 'sideMenu.your_blacklist'.tr(),
         ),
-        // HomeNavigationTile(
-        //   value: 3,
-        //   controller: controller,
-        //   constraints: constraints,
-        //   selectedIcon: const Icon(Icons.download),
-        //   icon: const Icon(Icons.download_outlined),
-        //   title: 'sideMenu.bulk_download'.tr(),
-        // ),
+        HomeNavigationTile(
+          value: 3,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.download),
+          icon: const Icon(Icons.download_outlined),
+          title: 'sideMenu.bulk_download'.tr(),
+        ),
         const Divider(),
         HomeNavigationTile(
           value: 999,
@@ -100,6 +101,7 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
         DesktopHomePageScaffold(),
         BookmarkPage(),
         BlacklistedTagPage(),
+        BulkDownloadPage(),
       ],
     );
   }
