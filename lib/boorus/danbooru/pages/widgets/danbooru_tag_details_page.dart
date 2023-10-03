@@ -72,7 +72,7 @@ class _DanbooruTagDetailsPageState
           ),
         ],
       ),
-      builder: (_) => DanbooruPostScope(
+      builder: (_) => PostScope(
         fetcher: (page) => postRepo.getPosts(
           queryFromTagFilterCategory(
             category: selectedCategory.value,

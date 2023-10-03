@@ -40,7 +40,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
-    return DanbooruPostScope(
+    return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
           _selectedTag.value.isNotEmpty ? [_selectedTag.value] : [], page),
       builder: (context, controller, errors) => DanbooruInfinitePostList(

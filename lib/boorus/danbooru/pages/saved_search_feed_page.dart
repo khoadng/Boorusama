@@ -43,7 +43,7 @@ class _SavedSearchFeedPageState extends ConsumerState<SavedSearchFeedPage> {
 
     return savedSearcheAsync.when(
       data: (searches) => searches.isNotEmpty
-          ? DanbooruPostScope(
+          ? PostScope(
               fetcher: (page) => ref
                   .read(danbooruPostRepoProvider(config))
                   .getPosts(_selectedSearch.toQuery(), page),

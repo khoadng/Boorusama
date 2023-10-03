@@ -11,7 +11,6 @@ export 'explores/explore_utils.dart';
 export 'post_variant.dart';
 export 'posts_provider.dart';
 export 'slide_show_configuration.dart';
-export 'transformer.dart';
 export 'utils.dart';
 export 'votes/post_vote.dart';
 export 'votes/post_vote_repository.dart';

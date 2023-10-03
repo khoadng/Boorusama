@@ -6,10 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/pages/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -17,7 +14,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/explores/explore_mixins.dart';
 import 'widgets/explores/explore_section.dart';
 
 class ExplorePage extends ConsumerWidget {
@@ -58,43 +54,20 @@ class _MostViewedExplore extends ConsumerStatefulWidget {
   ConsumerState<_MostViewedExplore> createState() => _MostViewedExploreState();
 }
 
-class _MostViewedExploreState extends ConsumerState<_MostViewedExplore>
-    with
-        DanbooruPostTransformMixin,
-        PostExplorerMixin<_MostViewedExplore, DanbooruPost>,
-        DanbooruPostServiceProviderMixin {
-  late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (_) => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getMostViewedPosts(DateTime.now())
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-    refresher: () => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getMostViewedPosts(DateTime.now())
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-  );
-
+class _MostViewedExploreState extends ConsumerState<_MostViewedExplore> {
   @override
   Widget build(BuildContext context) {
+    final postAsync = ref.watch(danbooruMostViewedTodayProvider);
+
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => ExploreList(posts: posts),
+      builder: (_) => postAsync.maybeWhen(
+        data: (posts) => ExploreList(posts: posts),
+        orElse: () => const ExploreList(posts: []),
+      ),
       onPressed: () => goToExploreMostViewedPage(context),
     );
   }
-
-  @override
-  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _HotExplore extends ConsumerStatefulWidget {
@@ -104,43 +77,20 @@ class _HotExplore extends ConsumerStatefulWidget {
   ConsumerState<_HotExplore> createState() => _HotExploreState();
 }
 
-class _HotExploreState extends ConsumerState<_HotExplore>
-    with
-        DanbooruPostTransformMixin,
-        PostExplorerMixin<_HotExplore, DanbooruPost>,
-        DanbooruPostServiceProviderMixin {
-  late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getHotPosts(page)
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-    refresher: () => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getHotPosts(1)
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-  );
-
+class _HotExploreState extends ConsumerState<_HotExplore> {
   @override
   Widget build(BuildContext context) {
+    final posts = ref.watch(danbooruHotTodayProvider);
+
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => ExploreList(posts: posts),
+      builder: (_) => posts.maybeWhen(
+        data: (posts) => ExploreList(posts: posts),
+        orElse: () => const ExploreList(posts: []),
+      ),
       onPressed: () => goToExploreHotPage(context),
     );
   }
-
-  @override
-  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class _PopularExplore extends ConsumerStatefulWidget {
@@ -150,43 +100,20 @@ class _PopularExplore extends ConsumerStatefulWidget {
   ConsumerState<_PopularExplore> createState() => _PopularExploreState();
 }
 
-class _PopularExploreState extends ConsumerState<_PopularExplore>
-    with
-        DanbooruPostTransformMixin,
-        PostExplorerMixin<_PopularExplore, DanbooruPost>,
-        DanbooruPostServiceProviderMixin {
-  late final _controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getPopularPosts(DateTime.now(), page, TimeScale.day)
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-    refresher: () => ref
-        .read(danbooruExploreRepoProvider(ref.readConfig))
-        .getPopularPosts(DateTime.now(), 1, TimeScale.day)
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[],
-              (r) => r,
-            ))
-        .then((transform)),
-  );
-
+class _PopularExploreState extends ConsumerState<_PopularExplore> {
   @override
   Widget build(BuildContext context) {
+    final postAsync = ref.watch(danbooruPopularTodayProvider);
+
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => ExploreList(posts: posts),
+      builder: (_) => postAsync.maybeWhen(
+        data: (posts) => ExploreList(posts: posts),
+        orElse: () => const ExploreList(posts: []),
+      ),
       onPressed: () => goToExplorePopularPage(context),
     );
   }
-
-  @override
-  PostGridController<DanbooruPost> get controller => _controller;
 }
 
 class ExploreList extends ConsumerWidget {

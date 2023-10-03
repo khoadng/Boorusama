@@ -34,7 +34,7 @@ class ExploreHotPage extends ConsumerWidget {
     return Column(
       children: [
         Expanded(
-          child: DanbooruPostScope(
+          child: PostScope(
             fetcher: (page) =>
                 ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
             builder: (context, controller, errors) => DanbooruInfinitePostList(

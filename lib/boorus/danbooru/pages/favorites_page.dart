@@ -27,7 +27,7 @@ class FavoritesPage extends ConsumerWidget {
     final config = ref.watchConfig;
 
     return CustomContextMenuOverlay(
-      child: DanbooruPostScope(
+      child: PostScope(
         fetcher: (page) => ref
             .read(danbooruPostRepoProvider(config))
             .getPosts([buildFavoriteQuery(username)], page),

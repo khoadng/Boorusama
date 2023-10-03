@@ -19,6 +19,7 @@ class ExploreRepositoryApi
     required this.postRepository,
     required this.settingsRepository,
     this.shouldFilter,
+    required this.transformer,
   });
 
   final PostRepository<DanbooruPost> postRepository;
@@ -26,6 +27,7 @@ class ExploreRepositoryApi
   @override
   final SettingsRepository settingsRepository;
   final bool Function(DanbooruPost post)? shouldFilter;
+  final PostFetchTransformer transformer;
 
   @override
   DanbooruPostsOrError getHotPosts(
@@ -49,9 +51,10 @@ class ExploreRepositoryApi
 
         final data = dtos.map(postDtoToPost).toList();
 
-        return shouldFilter != null
-            ? data.whereNot(shouldFilter!).toList()
-            : data;
+        final filtered =
+            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+
+        return transformer(filtered);
       });
 
   @override
@@ -77,8 +80,9 @@ class ExploreRepositoryApi
 
         final data = dtos.map(postDtoToPost).toList();
 
-        return shouldFilter != null
-            ? data.whereNot(shouldFilter!).toList()
-            : data;
+        final filtered =
+            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+
+        return transformer(filtered);
       });
 }

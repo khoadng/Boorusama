@@ -42,7 +42,7 @@ class ExplorePopularPage extends ConsumerWidget {
     final timeAndDate = ref.watch(timeAndDateProvider);
     final config = ref.watchConfig;
 
-    return DanbooruPostScope(
+    return PostScope(
       fetcher: (page) => ref
           .read(danbooruExploreRepoProvider(config))
           .getPopularPosts(timeAndDate.date, page, timeAndDate.scale),

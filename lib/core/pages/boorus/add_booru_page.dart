@@ -199,26 +199,6 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             (uri) => const SizedBox.shrink(),
           ),
         ),
-        // warning container for when the URL is not a supported booru
-        //FIXME: should reconsider unsupported booru warning
-        // ValueListenableBuilder(
-        //   valueListenable: booruUrlError,
-        //   builder: (_, error, __) => error.fold(
-        //     (e) => const SizedBox.shrink(),
-        //     (uri) => getBooruType(uri.toString(),
-        //                 ref.watch(booruFactoryProvider).booruData) ==
-        //             BooruType.unknown
-        //         ? WarningContainer(
-        //             contentBuilder: (context) => const Text(
-        //               'booru.unsupported_warning',
-        //               style: TextStyle(
-        //                 color: Colors.white,
-        //               ),
-        //             ).tr(),
-        //           )
-        //         : const SizedBox.shrink(),
-        //   ),
-        // ),
         ValueListenableBuilder(
           valueListenable: booruUrlError,
           builder: (_, error, __) => Padding(

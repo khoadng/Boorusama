@@ -44,16 +44,13 @@ class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
 
 class _FavoriteGroupDetailsPageState
     extends ConsumerState<FavoriteGroupDetailsPage>
-    with
-        DanbooruPostTransformMixin,
-        DanbooruPostServiceProviderMixin,
-        DanbooruFavoriteGroupPostMixin {
+    with DanbooruFavoriteGroupPostMixin {
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
   late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => getPostsFromIdQueue(widget.postIds).then(transform),
-    refresher: () => getPostsFromIdQueue(widget.postIds).then(transform),
+    fetcher: (page) => getPostsFromIdQueue(widget.postIds),
+    refresher: () => getPostsFromIdQueue(widget.postIds),
   );
   int rowCountEditMode = 2;
 

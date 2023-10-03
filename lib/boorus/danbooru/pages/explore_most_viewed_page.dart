@@ -41,9 +41,9 @@ class ExploreMostViewedPage extends ConsumerWidget {
     final date = ref.watch(dateProvider);
     final config = ref.watchConfig;
 
-    return DanbooruPostScope(
+    return PostScope(
       fetcher: (page) => page > 1
-          ? TaskEither.fromEither(Either.of([]))
+          ? TaskEither.fromEither(Either.of(<DanbooruPost>[]))
           : ref
               .read(danbooruExploreRepoProvider(config))
               .getMostViewedPosts(date),

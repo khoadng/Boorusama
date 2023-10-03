@@ -35,6 +35,8 @@ final danbooruExploreRepoProvider =
   (ref, config) {
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
+        transformer: (posts) =>
+            ref.read(danbooruPostFetchTransformerProvider(config))(posts),
         client: ref.watch(danbooruClientProvider(config)),
         postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settingsRepository: ref.watch(settingsRepoProvider),
@@ -59,3 +61,38 @@ final danbooruExploreRepoProvider =
     currentBooruConfigProvider,
   ],
 );
+
+final danbooruMostViewedTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo = ref
+      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .getMostViewedPosts(DateTime.now());
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});
+
+final danbooruPopularTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo = ref
+      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .getPopularPosts(DateTime.now(), 1, TimeScale.day);
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});
+
+final danbooruHotTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo =
+      ref.watch(danbooruExploreRepoProvider(ref.watchConfig)).getHotPosts(1);
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});

@@ -45,7 +45,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
 
-    return DanbooruPostScope(
+    return PostScope(
       fetcher: (page) => ref.read(danbooruPostRepoProvider(config)).getPosts(
             selectedTagController.rawTags,
             page,

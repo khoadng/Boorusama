@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/widgets/booru_scope.dart';
 import 'package:boorusama/core/widgets/home_navigation_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
