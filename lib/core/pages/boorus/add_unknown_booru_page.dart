@@ -146,7 +146,8 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                   ref.read(booruEngineProvider.notifier).state = value;
                 },
                 items: BooruType.values
-                    .where((e) => e != BooruType.unknown)
+                    .where((e) =>
+                        e != BooruType.unknown && e != BooruType.gelbooru)
                     .sorted((a, b) => a.stringify().compareTo(b.stringify()))
                     .map((value) => DropdownMenuItem(
                           value: value,
