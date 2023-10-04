@@ -1,3 +1,14 @@
+# 3.5.0
+- Add support for Gelbooru V1, Sankaku, Philomena, Shimmie2
+- Support export bookmarks as file (Will add import feature in the future)
+- [Zerochan] Allow bulk download
+- [Danbooru] Add basic Dmail support
+- Add a button to move to search page from favorites page
+- Fix bulk download not working on some devices
+- Fix image failing to load on some sites
+- Fix reordering profiles not working properly
+- Various bug fixes and UI adjustments
+
 # 3.4.1
 - Fix an issue where some buttons are not tappable
 - Fix a bug that causes images to not load properly when switching between tabs

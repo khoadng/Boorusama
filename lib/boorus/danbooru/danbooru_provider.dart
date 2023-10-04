@@ -1,60 +1,16 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/downloads/bulk_download_provider.dart';
-import 'package:boorusama/boorus/core/feats/downloads/download_provider.dart';
-import 'package:boorusama/boorus/core/feats/notes/notes.dart';
-import 'package:boorusama/boorus/core/feats/posts/count/post_count_provider.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags_providers.dart';
-import 'package:boorusama/boorus/core/provider.dart';
-import 'package:boorusama/boorus/danbooru/feats/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
-import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/foundation/networking/networking.dart';
 
-class DanbooruProvider extends ConsumerWidget {
-  const DanbooruProvider({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        postRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruPostRepoProvider)),
-        bulkDownloadFileNameProvider
-            .overrideWithValue(BoorusamaStyledFileNameGenerator()),
-        tagRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruTagRepoProvider)),
-        downloadFileNameGeneratorProvider.overrideWith(
-            (ref) => ref.watch(danbooruDownloadFileNameGeneratorProvider)),
-        autocompleteRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruAutocompleteRepoProvider)),
-        noteRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruNoteRepoProvider)),
-        postCountRepoProvider
-            .overrideWith((ref) => ref.watch(danbooruPostCountRepoProvider)),
-      ],
-      child: Builder(builder: builder),
-    );
-  }
-}
-
-final danbooruClientProvider = Provider<DanbooruClient>((ref) {
-  final booruConfig = ref.watch(currentBooruConfigProvider);
-  final dio = ref.watch(dioProvider(booruConfig.url));
+final danbooruClientProvider =
+    Provider.family<DanbooruClient, BooruConfig>((ref, booruConfig) {
+  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
 
   return DanbooruClient(
     dio: dio,
@@ -65,8 +21,50 @@ final danbooruClientProvider = Provider<DanbooruClient>((ref) {
 });
 
 final danbooruAutocompleteRepoProvider =
-    Provider<AutocompleteRepository>((ref) {
-  final client = ref.watch(danbooruClientProvider);
+    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+  final client = ref.watch(danbooruClientProvider(config));
 
-  return AutocompleteRepositoryApi(client: client);
+  return AutocompleteRepositoryBuilder(
+      persistentStorageKey: 'danbooru_autocomplete_cache_v1',
+      persistentStaleDuration: const Duration(days: 1),
+      autocomplete: (query) async {
+        final dtos = await client.autocomplete(query: query);
+
+        return dtos
+            .map((e) {
+              try {
+                if (AutocompleteData.isTagType(e.type)) {
+                  return AutocompleteData(
+                    type: e.type,
+                    label: e.label!,
+                    value: e.value!,
+                    category: e.category?.toString(),
+                    postCount: e.postCount,
+                    antecedent: e.antecedent,
+                  );
+                } else if (e.type == AutocompleteData.pool) {
+                  return AutocompleteData(
+                    type: e.type,
+                    label: e.label!,
+                    value: e.value!,
+                    category: e.category,
+                    postCount: e.postCount,
+                  );
+                } else if (e.type == AutocompleteData.user) {
+                  return AutocompleteData(
+                    type: e.type,
+                    label: e.label!,
+                    value: e.value!,
+                    level: e.level,
+                  );
+                } else {
+                  return AutocompleteData(label: e.label!, value: e.value!);
+                }
+              } catch (err) {
+                return AutocompleteData.empty;
+              }
+            })
+            .where((e) => e != AutocompleteData.empty)
+            .toList();
+      });
 });

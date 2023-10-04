@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 String? booruFilterConfigToMoebooruTag(BooruConfigRatingFilter? filter) =>
     switch (filter) {

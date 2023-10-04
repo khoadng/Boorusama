@@ -3,22 +3,22 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/feats/comments/comments.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 
 const youtubeUrl = 'www.youtube.com';
 
-class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
+class CommentsNotifier
+    extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfig> {
   @override
-  Map<int, List<CommentData>?> build() {
-    ref.watch(currentBooruConfigProvider);
+  Map<int, List<CommentData>?> build(BooruConfig arg) {
     return {};
   }
 
-  CommentRepository get repo => ref.read(danbooruCommentRepoProvider);
+  CommentRepository<DanbooruComment> get repo =>
+      ref.read(danbooruCommentRepoProvider(arg));
 
   Future<void> load(
     int postId, {
@@ -26,13 +26,10 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
   }) async {
     if (state.containsKey(postId) && !force) return;
 
-    final config = ref.watch(currentBooruConfigProvider);
-    final accountId = await ref
-        .watch(booruUserIdentityProviderProvider)
-        .getAccountIdFromConfig(config);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
     final comments = await repo
-        .getCommentsFromPostId(postId)
+        .getComments(postId)
         .then(filterDeleted())
         .then((comments) => comments
             .map((comment) => CommentData(
@@ -44,7 +41,7 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
                   body: comment.body,
                   createdAt: comment.createdAt,
                   updatedAt: comment.updatedAt,
-                  isSelf: comment.creator?.id == accountId,
+                  isSelf: comment.creator?.id == user?.id,
                   isEdited: comment.isEdited,
                   uris: RegExp(urlPattern)
                       .allMatches(comment.body)
@@ -64,7 +61,7 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
 
     // fetch comment votes
     ref
-        .read(danbooruCommentVotesProvider.notifier)
+        .read(danbooruCommentVotesProvider(arg).notifier)
         .fetch(comments.map((e) => e.id).toList());
   }
 
@@ -73,7 +70,7 @@ class CommentsNotifier extends Notifier<Map<int, List<CommentData>?>> {
     required String content,
     CommentData? replyTo,
   }) async {
-    await repo.postComment(
+    await repo.createComment(
       postId,
       buildCommentContent(content: content, replyTo: replyTo),
     );

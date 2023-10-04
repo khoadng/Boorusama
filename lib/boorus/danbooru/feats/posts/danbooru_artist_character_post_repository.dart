@@ -1,26 +1,24 @@
 // Project imports:
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post.dart';
-import 'danbooru_post_repository.dart';
 
-class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
+class DanbooruArtistCharacterPostRepository
+    implements PostRepository<DanbooruPost> {
   DanbooruArtistCharacterPostRepository({
     required this.repository,
     required this.cache,
   });
 
-  final DanbooruPostRepository repository;
+  final PostRepository<DanbooruPost> repository;
   final Cacher<String, List<DanbooruPost>> cache;
 
   @override
-  DanbooruPostsOrError getPosts(
-    String tags,
-    int page, {
-    int? limit,
-  }) {
-    final name = "$tags-$page-$limit";
+  PostsOrError<DanbooruPost> getPosts(List<String> tags, int page,
+      {int? limit}) {
+    final tagString = tags.join(' ');
+    final name = "$tagString-$page-$limit";
 
     return cache.get(name).toOption().fold(
           () => repository
@@ -36,12 +34,4 @@ class DanbooruArtistCharacterPostRepository implements DanbooruPostRepository {
           (data) => TaskEither.right(data),
         );
   }
-
-  @override
-  DanbooruPostsOrError getPostsFromIds(List<int> ids) =>
-      repository.getPostsFromIds(ids);
-
-  @override
-  PostsOrError getPostsFromTags(String tags, int page, {int? limit}) =>
-      getPosts(tags, page, limit: limit);
 }

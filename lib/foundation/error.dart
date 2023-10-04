@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'firebase/firebase.dart';
 
 enum AppErrorType {
@@ -38,9 +38,11 @@ class AppError extends BooruError with EquatableMixin {
 class ServerError extends BooruError with EquatableMixin {
   ServerError({
     required this.httpStatusCode,
+    required this.message,
   });
 
   final int? httpStatusCode;
+  final dynamic message;
 
   @override
   String toString() => 'HTTP error with status code $httpStatusCode';

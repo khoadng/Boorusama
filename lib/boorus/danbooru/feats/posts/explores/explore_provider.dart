@@ -4,13 +4,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/blacklists/global_blacklisted_tags_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/posts/posts.dart';
-import 'package:boorusama/boorus/core/feats/types.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/blacklists/global_blacklisted_tags_provider.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/types.dart';
 
 typedef ScaleAndTime = ({
   TimeScale scale,
@@ -30,15 +30,17 @@ final timeAndDateProvider = Provider<ScaleAndTime>((ref) {
   dateProvider,
 ]);
 
-final danbooruExploreRepoProvider = Provider<ExploreRepository>(
-  (ref) {
+final danbooruExploreRepoProvider =
+    Provider.family<ExploreRepository, BooruConfig>(
+  (ref, config) {
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
-        client: ref.watch(danbooruClientProvider),
-        postRepository: ref.watch(danbooruPostRepoProvider),
+        transformer: (posts) =>
+            ref.read(danbooruPostFetchTransformerProvider(config))(posts),
+        client: ref.watch(danbooruClientProvider(config)),
+        postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settingsRepository: ref.watch(settingsRepoProvider),
-        shouldFilter: switch (
-            ref.watch(currentBooruConfigProvider).ratingFilter) {
+        shouldFilter: switch (ref.watchConfig.ratingFilter) {
           BooruConfigRatingFilter.hideNSFW => (post) =>
               post.rating != Rating.general || !post.viewable,
           BooruConfigRatingFilter.hideExplicit => (post) =>
@@ -59,3 +61,38 @@ final danbooruExploreRepoProvider = Provider<ExploreRepository>(
     currentBooruConfigProvider,
   ],
 );
+
+final danbooruMostViewedTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo = ref
+      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .getMostViewedPosts(DateTime.now());
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});
+
+final danbooruPopularTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo = ref
+      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .getPopularPosts(DateTime.now(), 1, TimeScale.day);
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});
+
+final danbooruHotTodayProvider =
+    FutureProvider<List<DanbooruPost>>((ref) async {
+  final repo =
+      ref.watch(danbooruExploreRepoProvider(ref.watchConfig)).getHotPosts(1);
+
+  return repo.run().then((value) => value.fold(
+        (l) => <DanbooruPost>[],
+        (r) => r,
+      ));
+});

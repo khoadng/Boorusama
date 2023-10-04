@@ -2,29 +2,44 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/metatags/user_metatag_repository.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
-final popularSearchProvider = Provider<PopularSearchRepository>(
-  (ref) {
+final popularSearchProvider =
+    Provider.family<PopularSearchRepository, BooruConfig>(
+  (ref, config) {
     return PopularSearchRepositoryApi(
-      client: ref.watch(danbooruClientProvider),
+      client: ref.watch(danbooruClientProvider(config)),
     );
   },
 );
 
-final danbooruTagRepoProvider = Provider<TagRepository>(
-  (ref) {
-    return TagCacher(
-      cache: LruCacher(capacity: 2000),
-      repo: TagRepositoryApi(
-        ref.watch(danbooruClientProvider),
-      ),
+final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+  (ref, config) {
+    final client = ref.watch(danbooruClientProvider(config));
+
+    return TagRepositoryBuilder(
+      persistentStorageKey: 'danbooru_tags_cache_v1',
+      getTags: (tags, page, {cancelToken}) async {
+        final data = await client.getTagsByName(
+          page: page,
+          hideEmpty: true,
+          tags: tags,
+          cancelToken: cancelToken,
+        );
+
+        return data
+            .map((d) => Tag(
+                  name: d.name ?? '',
+                  category: intToTagCategory(d.category ?? 0),
+                  postCount: d.postCount ?? 0,
+                ))
+            .toList();
+      },
     );
   },
 );
@@ -41,16 +56,16 @@ final danbooruUserMetatagsProvider =
   ],
 );
 
-final trendingTagsProvider =
-    AsyncNotifierProvider<TrendingTagNotifier, List<Search>>(
+final trendingTagsProvider = AsyncNotifierProvider.family<TrendingTagNotifier,
+    List<Search>, BooruConfig>(
   TrendingTagNotifier.new,
 );
 
 final shouldFetchTrendingProvider = Provider<bool>((ref) {
-  final config = ref.watch(currentBooruConfigProvider);
+  final config = ref.watchConfig;
   final booruType = intToBooruType(config.booruId);
 
-  return booruType == BooruType.danbooru || booruType == BooruType.safebooru;
+  return booruType == BooruType.danbooru;
 });
 
 final danbooruTagCategoryRepoProvider = Provider<DanbooruTagCategoryRepository>(
@@ -59,8 +74,8 @@ final danbooruTagCategoryRepoProvider = Provider<DanbooruTagCategoryRepository>(
   },
 );
 
-final danbooruTagCategoriesProviderProvider =
-    NotifierProvider<DanbooruTagCategoryNotifier, IMap<String, TagCategory>>(
+final danbooruTagCategoriesProviderProvider = NotifierProvider.family<
+    DanbooruTagCategoryNotifier, IMap<String, TagCategory>, BooruConfig>(
   DanbooruTagCategoryNotifier.new,
   dependencies: [
     danbooruTagCategoryRepoProvider,
@@ -68,5 +83,8 @@ final danbooruTagCategoriesProviderProvider =
   ],
 );
 
-final danbooruTagCategoryProvider = Provider.family<TagCategory?, String>(
-    (ref, tag) => ref.watch(danbooruTagCategoriesProviderProvider)[tag]);
+final danbooruTagCategoryProvider =
+    Provider.family<TagCategory?, String>((ref, tag) {
+  final config = ref.watchConfig;
+  return ref.watch(danbooruTagCategoriesProviderProvider(config))[tag];
+});

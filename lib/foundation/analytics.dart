@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'firebase/firebase.dart';
 
 export 'firebase/firebase.dart';

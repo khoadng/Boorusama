@@ -17,6 +17,7 @@ class AppInfo {
     required this.githubUrl,
     required this.appName,
     required this.translationProjectUrl,
+    required this.booruDefUrl,
   })  : copyrightYearRange = (
           start: 2020,
           end: DateTime.now().toUtc().year,
@@ -28,6 +29,7 @@ class AppInfo {
         githubUrl: json['githubUrl'],
         appName: json['appName'],
         translationProjectUrl: json['translationProjectUrl'],
+        booruDefUrl: json['booruDefUrl'],
       );
 
   static final empty = AppInfo(
@@ -35,12 +37,15 @@ class AppInfo {
     githubUrl: '',
     appName: '',
     translationProjectUrl: '',
+    booruDefUrl: '',
   );
 
   final String discordUrl;
   final String githubUrl;
   final String appName;
   final String translationProjectUrl;
+  final String booruDefUrl;
+
   final YearRange copyrightYearRange;
   final String author;
 }

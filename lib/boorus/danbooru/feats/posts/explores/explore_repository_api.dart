@@ -2,11 +2,12 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/feats/types.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';
 
@@ -18,13 +19,15 @@ class ExploreRepositoryApi
     required this.postRepository,
     required this.settingsRepository,
     this.shouldFilter,
+    required this.transformer,
   });
 
-  final DanbooruPostRepository postRepository;
+  final PostRepository<DanbooruPost> postRepository;
   final DanbooruClient client;
   @override
   final SettingsRepository settingsRepository;
   final bool Function(DanbooruPost post)? shouldFilter;
+  final PostFetchTransformer transformer;
 
   @override
   DanbooruPostsOrError getHotPosts(
@@ -32,7 +35,7 @@ class ExploreRepositoryApi
     int? limit,
   }) =>
       postRepository.getPosts(
-        'order:rank',
+        ['order:rank'],
         page,
         limit: limit,
       );
@@ -48,9 +51,10 @@ class ExploreRepositoryApi
 
         final data = dtos.map(postDtoToPost).toList();
 
-        return shouldFilter != null
-            ? data.whereNot(shouldFilter!).toList()
-            : data;
+        final filtered =
+            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+
+        return transformer(filtered);
       });
 
   @override
@@ -76,8 +80,9 @@ class ExploreRepositoryApi
 
         final data = dtos.map(postDtoToPost).toList();
 
-        return shouldFilter != null
-            ? data.whereNot(shouldFilter!).toList()
-            : data;
+        final filtered =
+            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+
+        return transformer(filtered);
       });
 }

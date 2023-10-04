@@ -2,63 +2,48 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/booru_user_identity_provider.dart';
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/toast.dart';
-import 'blacklisted_tags_provider.dart';
 
-class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
+class BlacklistedTagsNotifier
+    extends AutoDisposeFamilyAsyncNotifier<List<String>?, BooruConfig> {
   @override
-  List<String>? build() {
-    final config = ref.watch(currentBooruConfigProvider);
+  Future<List<String>?> build(BooruConfig arg) async {
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    fetch(config);
+    if (user == null) return null;
 
-    return null;
-  }
-
-  BlacklistedTagsRepository get repo =>
-      ref.read(danbooruBlacklistedTagRepoProvider);
-  BooruUserIdentityProvider get identityProvider =>
-      ref.read(booruUserIdentityProviderProvider);
-
-  Future<void> fetch(BooruConfig config) async {
-    final id = await identityProvider.getAccountIdFromConfig(config);
-
-    if (id == null) return;
-
-    final blacklistedTags = await ref
-        .read(danbooruBlacklistedTagRepoProvider)
-        .getBlacklistedTags(id);
-
-    state = blacklistedTags;
+    return user.blacklistedTags;
   }
 
   Future<void> add({
     required String tag,
     void Function(List<String> tags)? onSuccess,
-    void Function()? onFailure,
+    void Function(Object e)? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
-      onFailure?.call();
+    if (state.value == null || user == null) {
+      onFailure?.call('Not logged in or no blacklisted tags found');
 
       return;
     }
 
     // Duplicate tags are not allowed
-    final tags = {...state!, tag}.toList();
+    final tags = {...state.value!, tag}.toList();
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref.read(danbooruClientProvider(arg)).setBlacklistedTags(
+            id: user.id,
+            blacklistedTags: tags,
+          );
+
+      state = AsyncData(tags);
     } catch (e) {
-      onFailure?.call();
+      onFailure?.call(e);
     }
   }
 
@@ -68,20 +53,22 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     void Function(List<String> tags)? onSuccess,
     void Function()? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
+    if (state.value == null || user == null) {
       onFailure?.call();
 
       return;
     }
 
-    final tags = [...state!]..remove(tag);
+    final tags = [...state.value!]..remove(tag);
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref
+          .read(danbooruClientProvider(arg))
+          .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      state = AsyncData(tags);
     } catch (e) {
       onFailure?.call();
     }
@@ -94,23 +81,25 @@ class BlacklistedTagsNotifier extends AutoDisposeNotifier<List<String>?> {
     void Function(List<String> tags)? onSuccess,
     void Function(String message)? onFailure,
   }) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final id = await identityProvider.getAccountIdFromConfig(config);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    if (state == null || id == null) {
+    if (state.value == null || user == null) {
       onFailure?.call('Fail to replace tag');
 
       return;
     }
 
     final tags = [
-      ...[...state!]..remove(oldTag),
+      ...[...state.value!]..remove(oldTag),
       newTag,
     ];
 
     try {
-      await repo.setBlacklistedTags(id, tags);
-      state = tags;
+      await ref
+          .read(danbooruClientProvider(arg))
+          .setBlacklistedTags(id: user.id, blacklistedTags: tags);
+
+      state = AsyncData(tags);
     } catch (e) {
       onFailure?.call('Fail to replace tag');
     }
@@ -124,7 +113,8 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
       add(
         tag: tag,
         onSuccess: (tags) => showSuccessToast('blacklisted_tags.updated'.tr()),
-        onFailure: () => showErrorToast('blacklisted_tags.failed_to_add'.tr()),
+        onFailure: (e) =>
+            showErrorToast('${'blacklisted_tags.failed_to_add'.tr()}\n$e'),
       );
 
   Future<void> removeWithToast({

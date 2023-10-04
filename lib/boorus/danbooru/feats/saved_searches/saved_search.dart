@@ -62,7 +62,8 @@ extension SavedSearchX on SavedSearch {
         canDelete: canDelete ?? this.canDelete,
       );
 
-  String toQuery() => labels.isEmpty ? 'search:all' : 'search:${labels.first}';
+  List<String> toQuery() =>
+      labels.isEmpty ? ['search:all'] : ['search:${labels.first}'];
 
   bool get readOnly => !canDelete;
 }

@@ -5,6 +5,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/pools/pools.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 class PoolKey extends Equatable {
   final int page;
@@ -32,6 +33,7 @@ class PoolsNotifier extends PagedNotifier<PoolKey, Pool> {
     PoolOrder? order,
     required Ref ref,
     bool loadCovers = true,
+    required BooruConfig config,
     NextPageKeyBuilder<PoolKey, Pool>? nextPageKeyBuilder,
   }) : super(
           load: (key, limit) async {
@@ -44,7 +46,7 @@ class PoolsNotifier extends PagedNotifier<PoolKey, Pool> {
             );
 
             if (loadCovers) {
-              ref.read(danbooruPoolCoversProvider.notifier).load(pools);
+              ref.read(danbooruPoolCoversProvider(config).notifier).load(pools);
             }
 
             return pools;

@@ -3,16 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
 class FavoriteGroupFilterableNotifier
-    extends AutoDisposeNotifier<List<FavoriteGroup>?> {
+    extends AutoDisposeFamilyNotifier<List<FavoriteGroup>?, BooruConfig> {
   @override
-  List<FavoriteGroup>? build() {
-    return ref.watch(danbooruFavoriteGroupsProvider);
+  List<FavoriteGroup>? build(BooruConfig arg) {
+    return ref.watch(danbooruFavoriteGroupsProvider(arg));
   }
 
   void filter(String pattern) {
-    final data = ref.read(danbooruFavoriteGroupsProvider);
+    final data = ref.read(danbooruFavoriteGroupsProvider(arg));
     if (data == null) return;
 
     if (pattern.isEmpty) {

@@ -2,21 +2,19 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/feats/settings/settings.dart';
-import 'package:boorusama/boorus/core/provider.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/platforms/windows/windows.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -56,21 +54,7 @@ class _AppState extends ConsumerState<App> {
         child: MaterialApp.router(
           builder: (context, child) => ConditionalParentWidget(
             condition: isDesktopPlatform(),
-            conditionalBuilder: (child) => Column(
-              children: [
-                WindowTitleBarBox(
-                  child: Row(
-                    children: [
-                      Expanded(child: MoveWindow()),
-                      const WindowButtons(),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: child,
-                ),
-              ],
-            ),
+            conditionalBuilder: (child) => child,
             child: ScrollConfiguration(
               behavior:
                   const MaterialScrollBehavior().copyWith(overscroll: false),

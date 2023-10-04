@@ -3,33 +3,25 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 
-class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {
+class FavoriteGroupsNotifier
+    extends FamilyNotifier<List<FavoriteGroup>?, BooruConfig> {
   @override
-  List<FavoriteGroup>? build() {
-    ref.listen(
-      currentBooruConfigProvider,
-      (prev, next) {
-        ref.invalidateSelf();
-      },
-    );
-
+  List<FavoriteGroup>? build(BooruConfig arg) {
     refresh();
     return null;
   }
 
   FavoriteGroupRepository get repo =>
-      ref.read(danbooruFavoriteGroupRepoProvider);
+      ref.read(danbooruFavoriteGroupRepoProvider(arg));
 
   Future<void> refresh() async {
-    final currentUser = ref.read(currentBooruConfigProvider);
-    if (!currentUser.hasLoginDetails()) return;
-    final groups =
-        await repo.getFavoriteGroupsByCreatorName(name: currentUser.login!);
+    if (!arg.hasLoginDetails()) return;
+    final groups = await repo.getFavoriteGroupsByCreatorName(name: arg.login!);
 
     //TODO: shouldn't load everything
     final ids = groups
@@ -40,7 +32,7 @@ class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {
         .take(200)
         .toList();
 
-    ref.read(danbooruFavoriteGroupPreviewsProvider.notifier).fetch(ids);
+    ref.read(danbooruFavoriteGroupPreviewsProvider(arg).notifier).fetch(ids);
 
     state = groups;
   }
@@ -51,7 +43,7 @@ class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {
     required bool isPrivate,
     void Function(String message, bool translatable)? onFailure,
   }) async {
-    final currentUser = ref.read(danbooruCurrentUserProvider);
+    final currentUser = await ref.read(danbooruCurrentUserProvider(arg).future);
 
     if (currentUser == null) return;
 
@@ -183,9 +175,10 @@ class FavoriteGroupsNotifier extends Notifier<List<FavoriteGroup>?> {
   }
 }
 
-class FavoriteGroupPreviewsNotifier extends Notifier<Map<int, String>> {
+class FavoriteGroupPreviewsNotifier
+    extends FamilyNotifier<Map<int, String>, BooruConfig> {
   @override
-  Map<int, String> build() {
+  Map<int, String> build(BooruConfig arg) {
     return {};
   }
 
@@ -196,7 +189,7 @@ class FavoriteGroupPreviewsNotifier extends Notifier<Map<int, String>> {
     if (postIdsToFetch.isEmpty) return;
 
     final posts = await ref
-        .watch(danbooruPostRepoProvider)
+        .watch(danbooruPostRepoProvider(arg))
         .getPostsFromIds(postIdsToFetch.toList())
         .run()
         .then((value) => value.fold(

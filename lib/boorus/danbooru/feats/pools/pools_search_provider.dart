@@ -1,19 +1,21 @@
 part of 'pools_provider.dart';
 
-final danbooruPoolsSearchProvider =
-    StateNotifierProvider.autoDispose<PoolsNotifier, PagedState<PoolKey, Pool>>(
-        (ref) => PoolsNotifier(
+final danbooruPoolsSearchProvider = StateNotifierProvider.autoDispose
+    .family<PoolsNotifier, PagedState<PoolKey, Pool>, BooruConfig>(
+        (ref, config) => PoolsNotifier(
               ref: ref,
-              repo: ref.watch(danbooruPoolRepoProvider),
+              repo: ref.watch(danbooruPoolRepoProvider(config)),
               loadCovers: false,
               nextPageKeyBuilder: (lastItems, page, limit) => null,
+              config: config,
             ));
 
-final danbooruPoolsSearchResultProvider =
-    StateNotifierProvider.autoDispose<PoolsNotifier, PagedState<PoolKey, Pool>>(
-        (ref) => PoolsNotifier(
+final danbooruPoolsSearchResultProvider = StateNotifierProvider.autoDispose
+    .family<PoolsNotifier, PagedState<PoolKey, Pool>, BooruConfig>(
+        (ref, config) => PoolsNotifier(
               ref: ref,
-              repo: ref.watch(danbooruPoolRepoProvider),
+              repo: ref.watch(danbooruPoolRepoProvider(config)),
+              config: config,
             ));
 
 final danbooruPoolQueryProvider =

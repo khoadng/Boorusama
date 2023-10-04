@@ -79,4 +79,8 @@ mixin DanbooruClientPools {
         .map((item) => PoolDto.fromJson(item))
         .toList();
   }
+
+  Future<String> getPoolDescriptionHtml(int poolId) {
+    return dio.get('/pools/$poolId').then((value) => value.data);
+  }
 }

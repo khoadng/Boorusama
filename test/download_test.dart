@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 
 void main() {
   group('[userspace internal storage test]', () {

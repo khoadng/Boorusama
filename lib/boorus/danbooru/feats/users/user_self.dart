@@ -2,10 +2,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/users/user.dart' as core;
 import 'user.dart';
 import 'user_level.dart';
 
-class UserSelf extends Equatable {
+class UserSelf extends Equatable implements core.User {
   const UserSelf({
     required this.id,
     required this.level,
@@ -20,6 +21,7 @@ class UserSelf extends Equatable {
         blacklistedTags: [],
       );
 
+  @override
   final UserId id;
   final UserLevel level;
   final Username name;

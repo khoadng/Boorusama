@@ -45,6 +45,10 @@
 
 - sankaku:
     protocol: https_2
+    headers:
+      - User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36
+      - Content-Type: application/json
+      - Accept: application/json
     sites:
       - https://chan.sankakucomplex.com/
       - https://beta.sankakucomplex.com/

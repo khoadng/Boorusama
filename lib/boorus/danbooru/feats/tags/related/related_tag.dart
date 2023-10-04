@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/tags/tags.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/string.dart';
 
 class RelatedTag extends Equatable {

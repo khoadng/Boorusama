@@ -2,32 +2,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
 import 'package:boorusama/boorus/danbooru/feats/saved_searches/saved_searches.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/dart.dart';
 
-class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
+class SavedSearchesNotifier
+    extends FamilyAsyncNotifier<List<SavedSearch>, BooruConfig> {
   @override
-  List<SavedSearch>? build() {
-    final config = ref.watch(currentBooruConfigProvider);
-    if (config.booruType.isDanbooruBased && config.hasLoginDetails()) {
-      fetch();
-    }
-
-    return null;
-  }
-
-  SavedSearchRepository get repo => ref.read(danbooruSavedSearchRepoProvider);
-
-  Future<List<SavedSearch>> fetch() async {
+  Future<List<SavedSearch>> build(BooruConfig arg) async {
     final savedSearches = await repo.getSavedSearches(page: 1);
 
     final searches = _sort(savedSearches);
 
-    state = searches;
-
     return searches;
   }
+
+  SavedSearchRepository get repo =>
+      ref.read(danbooruSavedSearchRepoProvider(arg));
 
   Future<void> create({
     required String query,
@@ -43,10 +34,10 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
     if (savedSearch == null) {
       onFailure?.call();
     } else {
-      state = _sort([
-        ...state ?? [],
+      state = AsyncData(_sort([
+        ...state.value ?? [],
         savedSearch,
-      ]);
+      ]));
 
       onCreated?.call(savedSearch);
     }
@@ -57,27 +48,31 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
     void Function(SavedSearch data)? onDeleted,
     void Function()? onFailure,
   }) async {
-    if (state == null) return;
+    final currentState = state.value;
+
+    if (currentState == null) return;
     if (!savedSearch.canDelete) return;
 
     final success = await repo.deleteSavedSearch(savedSearch.id);
 
     if (success) {
-      state = state!.where((d) => d.id != savedSearch.id).toList();
+      state =
+          AsyncData(currentState.where((d) => d.id != savedSearch.id).toList());
       onDeleted?.call(savedSearch);
     } else {
       onFailure?.call();
     }
   }
 
-  Future<void> update({
+  Future<void> edit({
     required int id,
     String? query,
     String? label,
     void Function(SavedSearch data)? onUpdated,
     void Function()? onFailure,
   }) async {
-    if (state == null) return;
+    final currentState = state.value;
+    if (currentState == null) return;
     final success = await repo.updateSavedSearch(
       id,
       query: query,
@@ -85,9 +80,9 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
     );
 
     if (success) {
-      final index = state!.indexWhere((e) => e.id == id);
-      final newSearch = state![index];
-      final newData = [...state!].replaceAt(
+      final index = currentState.indexWhere((e) => e.id == id);
+      final newSearch = currentState[index];
+      final newData = [...currentState].replaceAt(
         index,
         newSearch.copyWith(
           query: query,
@@ -95,7 +90,7 @@ class SavedSearchesNotifier extends Notifier<List<SavedSearch>?> {
         ),
       );
 
-      state = _sort(newData);
+      state = AsyncData(_sort(newData));
 
       onUpdated?.call(newSearch);
     } else {

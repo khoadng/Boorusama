@@ -3,43 +3,48 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/boorus.dart';
-import 'package:boorusama/boorus/core/pages/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/boorus/core/pages/boorus/update_booru_page.dart';
-import 'package:boorusama/boorus/core/pages/downloads/bulk_download_page.dart';
-import 'package:boorusama/boorus/core/widgets/widgets.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/e621/e621_provider.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru_provider.dart';
-import 'package:boorusama/boorus/moebooru/moebooru_provider.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
+import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/booru_dialog.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'boorus/core/pages/bookmarks/bookmark_details.dart';
-import 'boorus/core/pages/bookmarks/bookmark_page.dart';
-import 'boorus/core/pages/boorus/add_booru_page.dart';
-import 'boorus/core/pages/settings/appearance_page.dart';
-import 'boorus/core/pages/settings/changelog_page.dart';
-import 'boorus/core/pages/settings/download_page.dart';
-import 'boorus/core/pages/settings/language_page.dart';
-import 'boorus/core/pages/settings/performance_page.dart';
-import 'boorus/core/pages/settings/privacy_page.dart';
-import 'boorus/core/pages/settings/search_settings_page.dart';
-import 'boorus/core/pages/settings/settings_page.dart';
-import 'boorus/core/pages/settings/settings_page_desktop.dart';
-import 'boorus/home_page.dart';
+import 'boorus/entry_page.dart';
+import 'core/pages/bookmarks/bookmark_details.dart';
+import 'core/pages/bookmarks/bookmark_page.dart';
+import 'core/pages/boorus/add_booru_page.dart';
+import 'core/pages/settings/settings.dart';
 import 'foundation/rating/rating.dart';
 import 'router.dart';
+
+///
+/// When navigate to a page, must query the booru builders first to get the correct builder.
+/// There is case when you want navigate to a different boorus than the current one.
+///
+///```
+/// final config = ref.read(currentBooruConfigProvider);
+/// final booruBuilderFunc =
+///     ref.read(booruBuildersProvider)[config.booruType];
+/// final booruBuilder =
+///     booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+///
+/// // Or you can use this
+/// final booruBuilder = ref.readBooruBuilder(config);
+///```
+///
 
 class BoorusRoutes {
   BoorusRoutes._();
 
-  static GoRoute add() => GoRoute(
+  static GoRoute add(Ref ref) => GoRoute(
         path: 'boorus/add',
         redirect: (context, state) =>
             isMobilePlatform() ? null : '/desktop/boorus/add',
@@ -51,6 +56,7 @@ class BoorusRoutes {
       );
 
   //FIXME: create custom page builder, also can't tap outside to dismiss
+  //FIXME: doesn't work on desktop with new implementation
   static GoRoute addDesktop() => GoRoute(
       path: 'desktop/boorus/add',
       pageBuilder: (context, state) => DialogPage(
@@ -79,11 +85,33 @@ class BoorusRoutes {
           final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
-              .firstWhere((element) => element.id == id);
+              ?.firstWhere((element) => element.id == id);
+
+          if (config == null) {
+            return const MaterialPage(
+              child: Scaffold(
+                body: Center(
+                  child: Text('Booru not found or not loaded yet'),
+                ),
+              ),
+            );
+          }
+
+          final booruBuilder = ref.readBooruBuilder(config);
 
           return MaterialPage(
             key: state.pageKey,
-            child: UpdateBooruPage(booruConfig: config),
+            child: booruBuilder?.updateConfigPageBuilder(
+                  context,
+                  config,
+                  backgroundColor: context.theme.scaffoldBackgroundColor,
+                ) ??
+                Scaffold(
+                  appBar: AppBar(),
+                  body: const Center(
+                    child: Text('Not implemented'),
+                  ),
+                ),
           );
         },
       );
@@ -95,7 +123,21 @@ class BoorusRoutes {
           final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
-              .firstWhere((element) => element.id == id);
+              ?.firstWhere((element) => element.id == id);
+
+          if (config == null) {
+            return DialogPage(
+              builder: (context) => const BooruDialog(
+                child: Scaffold(
+                  body: Center(
+                    child: Text('Booru not found or not loaded yet'),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final booruBuilder = ref.readBooruBuilder(config);
 
           return DialogPage(
             key: state.pageKey,
@@ -105,9 +147,17 @@ class BoorusRoutes {
               color: context.theme.canvasColor,
               width: 400,
               child: IntrinsicHeight(
-                child: UpdateBooruPage(
-                  booruConfig: config,
-                ),
+                child: booruBuilder?.updateConfigPageBuilder(
+                      context,
+                      config,
+                      backgroundColor: context.theme.canvasColor,
+                    ) ??
+                    Scaffold(
+                      appBar: AppBar(),
+                      body: const Center(
+                        child: Text('Not implemented'),
+                      ),
+                    ),
               ),
             ),
           );
@@ -196,6 +246,16 @@ class SettingsRoutes {
       );
 }
 
+const kInitialQueryKey = 'query';
+const kArtistNameKey = 'name';
+
+typedef DetailsPayload<T extends Post> = ({
+  int initialIndex,
+  List<T> posts,
+  AutoScrollController? scrollController,
+  bool isDesktop,
+});
+
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -205,21 +265,115 @@ class Routes {
           child: const CustomContextMenuOverlay(
             child: Focus(
               autofocus: true,
-              child: HomePage(),
+              child: EntryPage(),
             ),
           ),
         ),
         routes: [
           BoorusRoutes.update(ref),
           BoorusRoutes.updateDesktop(ref),
-          BoorusRoutes.add(),
+          BoorusRoutes.add(ref),
           BoorusRoutes.addDesktop(),
+          search(ref),
+          postDetails(ref),
+          favorites(ref),
+          artists(ref),
           settings(),
           settingsDesktop(),
           bookmarks(),
           globalBlacklistedTags(),
           bulkDownloads(ref),
         ],
+      );
+
+  static GoRoute postDetails(Ref ref) => GoRoute(
+        path: 'details',
+        name: '/details',
+        pageBuilder: (context, state) {
+          final config = ref.read(currentBooruConfigProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
+          final builder = booruBuilder?.postDetailsPageBuilder;
+
+          final payload = state.extra as DetailsPayload;
+
+          if (!payload.isDesktop) {
+            return MaterialPage(
+              key: state.pageKey,
+              name: state.name,
+              child: builder != null
+                  ? builder(context, config, payload)
+                  : const Scaffold(
+                      body: Center(child: Text('Not implemented'))),
+            );
+          } else {
+            return builder != null
+                ? DialogPage(
+                    builder: (context) => builder(context, config, payload))
+                : DialogPage(
+                    builder: (_) => const Scaffold(
+                          body: Center(child: Text('Not implemented')),
+                        ));
+          }
+        },
+      );
+
+  static GoRoute search(Ref ref) => GoRoute(
+        path: 'search',
+        name: '/search',
+        pageBuilder: (context, state) {
+          final booruBuilder = ref.readCurrentBooruBuilder();
+          final builder = booruBuilder?.searchPageBuilder;
+          final query = state.uri.queryParameters[kInitialQueryKey];
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(context, query)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: fadeTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute favorites(Ref ref) => GoRoute(
+        path: 'favorites',
+        name: '/favorites',
+        pageBuilder: (context, state) {
+          final config = ref.read(currentBooruConfigProvider);
+          final booruBuilder = ref.readBooruBuilder(config);
+          final builder = booruBuilder?.favoritesPageBuilder;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? builder(context, config)
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+            transitionsBuilder: leftToRightTransitionBuilder(),
+          );
+        },
+      );
+
+  static GoRoute artists(Ref ref) => GoRoute(
+        path: 'artists',
+        name: '/artists',
+        pageBuilder: (context, state) {
+          final booruBuilder = ref.readCurrentBooruBuilder();
+          final builder = booruBuilder?.artistPageBuilder;
+          final artistName = state.uri.queryParameters[kArtistNameKey];
+
+          return MaterialPage(
+            key: state.pageKey,
+            name: state.name,
+            child: builder != null
+                ? artistName != null
+                    ? builder(context, artistName)
+                    : const Scaffold(
+                        body: Center(child: Text('Invalid artist name')))
+                : const Scaffold(body: Center(child: Text('Not implemented'))),
+          );
+        },
       );
 
   static GoRoute bookmarks() => GoRoute(
@@ -262,50 +416,10 @@ class Routes {
         path: 'bulk_downloads',
         name: '/bulk_downloads',
         pageBuilder: (context, state) {
-          final booru = ref.read(currentBooruConfigProvider);
-
           return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
-            child: Builder(builder: (_) {
-              switch (booru.booruType) {
-                case BooruType.e621:
-                case BooruType.e926:
-                  return E621Provider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
-                case BooruType.unknown:
-                  throw UnimplementedError();
-                case BooruType.konachan:
-                case BooruType.yandere:
-                case BooruType.sakugabooru:
-                case BooruType.lolibooru:
-                  return MoebooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
-                case BooruType.danbooru:
-                case BooruType.safebooru:
-                case BooruType.testbooru:
-                case BooruType.aibooru:
-                  return DanbooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
-                case BooruType.gelbooru:
-                case BooruType.rule34xxx:
-                  return GelbooruProvider(
-                    builder: (context) => const BulkDownloadPage(),
-                  );
-                case BooruType.zerochan:
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Bulk download'),
-                    ),
-                    body: const Center(
-                      child: Text('Sorry, not supported yet :('),
-                    ),
-                  );
-              }
-            }),
+            child: const BulkDownloadPage(),
             transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },

@@ -2,24 +2,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'comment.dart';
-import 'comment_vote.dart';
-import 'comment_vote_repository.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/comments/comments.dart';
 import 'comment_votes_provider.dart';
+import 'danbooru_comment.dart';
+import 'danbooru_comment_vote.dart';
 
-class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
+class CommentVotesNotifier
+    extends FamilyNotifier<Map<CommentId, DanbooruCommentVote>, BooruConfig> {
   @override
-  Map<int, CommentVote> build() {
-    ref.listen(
-      currentBooruConfigProvider,
-      (previous, next) => ref.invalidateSelf(),
-    );
-
+  Map<int, DanbooruCommentVote> build(BooruConfig arg) {
     return {};
   }
 
-  CommentVoteRepository get repo => ref.read(danbooruCommentVoteRepoProvider);
+  CommentVoteRepository<DanbooruCommentVote> get repo =>
+      ref.read(danbooruCommentVoteRepoProvider(arg));
 
   Future<void> fetch(List<int> commentIds) async {
     // filter out already fetched ids
@@ -36,7 +33,7 @@ class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
 
   // upvote
   Future<void> upvote(int commentId) async {
-    final vote = await repo.upvote(commentId);
+    final vote = await repo.upvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -45,7 +42,7 @@ class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
 
   // downvote
   Future<void> downvote(int commentId) async {
-    final vote = await repo.downvote(commentId);
+    final vote = await repo.downvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -53,13 +50,13 @@ class CommentVotesNotifier extends Notifier<Map<CommentId, CommentVote>> {
   }
 
   // unvote
-  Future<void> unvote(CommentVote? commentVote) async {
+  Future<void> unvote(DanbooruCommentVote? commentVote) async {
     if (commentVote == null) return;
     final currentVote = state[commentVote.commentId];
 
     if (currentVote == null) return;
 
-    final success = await repo.removeVote(commentVote.id);
+    final success = await repo.unvoteComment(commentVote.id);
 
     if (!success) return;
 

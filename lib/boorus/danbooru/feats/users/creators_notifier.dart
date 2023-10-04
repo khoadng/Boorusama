@@ -4,13 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/users/creator_repository.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
 
-class CreatorsNotifier extends Notifier<IMap<int, Creator>> {
-  CreatorRepository get repo => ref.watch(danbooruCreatorRepoProvider);
+class CreatorsNotifier extends FamilyNotifier<IMap<int, Creator>, BooruConfig> {
+  CreatorRepository get repo => ref.watch(danbooruCreatorRepoProvider(arg));
 
   @override
-  IMap<int, Creator> build() {
+  IMap<int, Creator> build(BooruConfig arg) {
     return <int, Creator>{}.lock;
   }
 

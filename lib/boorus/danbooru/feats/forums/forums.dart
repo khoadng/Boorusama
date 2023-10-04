@@ -1,9 +1,7 @@
+export 'converter.dart';
+export 'danbooru_forum_post.dart';
+export 'danbooru_forum_post_vote.dart';
+export 'danbooru_forum_posts_notifier.dart';
 export 'danbooru_forum_provider.dart';
-export 'posts/converter.dart';
-export 'posts/danbooru_forum_post.dart';
-export 'posts/danbooru_forum_post_repository.dart';
-export 'posts/danbooru_forum_post_vote.dart';
-export 'posts/danbooru_forum_posts_notifier.dart';
-export 'topics/danbooru_forum_topic.dart';
-export 'topics/danbooru_forum_topic_repository.dart';
-export 'topics/danbooru_forum_topics_notifier.dart';
+export 'danbooru_forum_topic.dart';
+export 'danbooru_forum_topics_notifier.dart';

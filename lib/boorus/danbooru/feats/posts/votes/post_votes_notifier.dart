@@ -2,21 +2,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/functional.dart';
+import '../../users/users.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
 
-class PostVotesNotifier extends Notifier<IMap<int, PostVote?>> {
+class PostVotesNotifier
+    extends FamilyNotifier<IMap<int, PostVote?>, BooruConfig> {
   @override
-  IMap<int, PostVote?> build() {
-    ref.watch(currentBooruConfigProvider);
-
+  IMap<int, PostVote?> build(BooruConfig arg) {
     return <int, PostVote?>{}.lock;
   }
 
-  PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider);
+  PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider(arg));
 
   void _vote(PostVote? postVote) {
     if (postVote == null) return;
@@ -63,8 +63,10 @@ class PostVotesNotifier extends Notifier<IMap<int, PostVote?>> {
       return postVote.isOptimisticUpdateVote;
     }).toList();
 
-    if (postIdsToFetch.isNotEmpty) {
-      final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch);
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+
+    if (postIdsToFetch.isNotEmpty && user != null) {
+      final fetchedPostVotes = await repo.getPostVotes(postIdsToFetch, user.id);
       final voteMap = {
         for (var postVote in fetchedPostVotes) postVote.postId: postVote,
       };

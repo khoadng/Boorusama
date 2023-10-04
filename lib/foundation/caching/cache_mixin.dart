@@ -51,4 +51,24 @@ mixin CacheMixin<T> {
   bool exist(String key) => _cache.exist(key);
 
   void clear() => _cache.clear();
+
+  void remove(String key) => _cache.remove(key);
+}
+
+mixin SimpleCacheMixin<T> {
+  Cache<T> get cache;
+
+  Future<T> tryGet(
+    String key, {
+    required Function() orElse,
+  }) async {
+    final cached = cache.get(key);
+    if (cached != null) return cached;
+
+    final fetched = await orElse();
+
+    cache.set(key, fetched);
+
+    return fetched;
+  }
 }

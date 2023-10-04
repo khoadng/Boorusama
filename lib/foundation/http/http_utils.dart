@@ -17,6 +17,7 @@ TaskEither<BooruError, T> tryFetchRemoteData<T>({
                 () => AppError(type: AppErrorType.cannotReachServer),
                 (response) => ServerError(
                   httpStatusCode: response.statusCode,
+                  message: response.data,
                 ),
               )
           : AppError(type: AppErrorType.loadDataFromServerFailed),

@@ -2,26 +2,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/core/feats/boorus/providers.dart';
-import 'package:boorusama/boorus/core/provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'favorites_provider.dart';
 
-class FavoritesNotifier extends Notifier<Map<int, bool>> {
+class FavoritesNotifier extends FamilyNotifier<Map<int, bool>, BooruConfig> {
   final _limit = 200;
 
   @override
-  Map<int, bool> build() {
-    ref.watch(currentBooruConfigProvider);
+  Map<int, bool> build(BooruConfig arg) {
     return {};
   }
 
   Future<void> add(int postId) async {
-    final success =
-        await ref.read(danbooruFavoriteRepoProvider).addToFavorites(postId);
+    final success = await ref
+        .read(danbooruFavoriteRepoProvider(arg))
+        .addToFavorites(postId);
     if (success) {
       ref
-          .read(danbooruPostVotesProvider.notifier)
+          .read(danbooruPostVotesProvider(arg).notifier)
           .upvote(postId, localOnly: true);
       state = {
         ...state,
@@ -32,10 +32,10 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
 
   Future<void> remove(int postId) async {
     final success = await ref
-        .read(danbooruFavoriteRepoProvider)
+        .read(danbooruFavoriteRepoProvider(arg))
         .removeFromFavorites(postId);
     if (success) {
-      ref.read(danbooruPostVotesProvider.notifier).removeVote(postId);
+      ref.read(danbooruPostVotesProvider(arg).notifier).removeVote(postId);
       state = {
         ...state,
         postId: false,
@@ -44,12 +44,9 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
   }
 
   Future<void> checkFavorites(List<int> postIds) async {
-    final config = ref.read(currentBooruConfigProvider);
-    final userId = await ref
-        .read(booruUserIdentityProviderProvider)
-        .getAccountIdFromConfig(config);
-    if (userId == null) {
-      throw Exception('User ID not found');
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    if (user == null) {
+      throw Exception('Current User not found');
     }
 
     // Filter postIds that are not in the cache
@@ -60,8 +57,8 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
 
     if (postIdsToCheck.isNotEmpty) {
       final favorites = await ref
-          .read(danbooruFavoriteRepoProvider)
-          .filterFavoritesFromUserId(postIdsToCheck, userId, _limit);
+          .read(danbooruFavoriteRepoProvider(arg))
+          .filterFavoritesFromUserId(postIdsToCheck, user.id, _limit);
 
       for (final favorite in favorites) {
         cache[favorite.postId] = true;
@@ -80,6 +77,6 @@ class FavoritesNotifier extends Notifier<Map<int, bool>> {
 }
 
 extension DanbooruFavoritesX on WidgetRef {
-  FavoritesNotifier get danbooruFavorites =>
-      read(danbooruFavoritesProvider.notifier);
+  FavoritesNotifier get danbooruFavorites => read(
+      danbooruFavoritesProvider(read(currentBooruConfigProvider)).notifier);
 }
