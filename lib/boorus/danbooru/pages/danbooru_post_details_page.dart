@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -102,8 +101,7 @@ class _DanbooruPostDetailsPageState
         showSource: true,
       ),
       artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
-      swipeImageUrlBuilder: (post) =>
-          post.thumbnailFromSettings(ref.watch(settingsProvider)),
+      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       placeholderImageUrlBuilder: (post, currentPage) =>
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
