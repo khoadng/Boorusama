@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/functional.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -213,11 +214,10 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 if (allowSubmit)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isValidSite == null
-                          ? context.colorScheme.primary
-                          : isValidSite!
-                              ? Colors.green
-                              : Colors.red,
+                      backgroundColor: isValidSite.toOption().fold(
+                            () => context.colorScheme.primary,
+                            (value) => value ? Colors.green : Colors.red,
+                          ),
                     ),
                     onPressed: !allowSubmit || verifying
                         ? null
