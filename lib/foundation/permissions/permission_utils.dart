@@ -21,6 +21,20 @@ Future<PermissionStatus> requestMediaPermissions(
   }
 }
 
+Future<PermissionStatus> checkMediaPermissions(
+  DeviceInfo deviceInfo,
+) async {
+  if (isAndroid()) {
+    return _checkMediaPermissionsAndroid(
+      deviceInfo.androidDeviceInfo?.version.sdkInt,
+    );
+  } else if (isIOS()) {
+    return _checkMediaPermissionsIos();
+  } else {
+    return Future.value(PermissionStatus.denied);
+  }
+}
+
 Future<PermissionStatus> _requestMediaPermissionsAndroid(
   AndroidVersion? androidVersion,
 ) async {
@@ -57,4 +71,43 @@ Future<PermissionStatus> _requestMediaPermissionsIos() async {
       statuses.values.every((e) => e == PermissionStatus.granted);
 
   return allAccepted ? PermissionStatus.granted : PermissionStatus.denied;
+}
+
+Future<PermissionStatus> _checkMediaPermissionsIos() async {
+  final statuses = await Future.wait([
+    Permission.storage.status,
+    Permission.notification.status,
+  ]);
+
+  final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
+
+  return allAccepted ? PermissionStatus.granted : PermissionStatus.denied;
+}
+
+Future<PermissionStatus> _checkMediaPermissionsAndroid(
+  AndroidVersion? androidVersion,
+) async {
+  final hasGranularPerm = hasGranularMediaPermissions(androidVersion);
+
+  if (hasGranularPerm == null) return PermissionStatus.denied;
+
+  final statuses = hasGranularPerm
+      ? await Future.wait([
+          Permission.photos.status,
+          Permission.videos.status,
+          Permission.notification.status,
+        ])
+      : await Future.wait([
+          Permission.storage.status,
+          Permission.notification.status,
+        ]);
+
+  final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
+
+  final otherStatuses =
+      statuses.where((e) => e != PermissionStatus.granted).firstOrNull;
+
+  return allAccepted
+      ? PermissionStatus.granted
+      : otherStatuses ?? PermissionStatus.denied;
 }

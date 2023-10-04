@@ -34,8 +34,12 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       ref.listen(
         deviceStoragePermissionProvider,
         (previous, state) {
-          if (state.storagePermission == PermissionStatus.permanentlyDenied &&
-              !state.isNotificationRead) {
+          final value = state.value;
+          final isPermenantlyDenied =
+              value?.storagePermission == PermissionStatus.permanentlyDenied;
+          final isNotRead = !(value?.isNotificationRead ?? false);
+
+          if (isPermenantlyDenied && isNotRead) {
             showSimpleSnackBar(
               context: context,
               action: SnackBarAction(

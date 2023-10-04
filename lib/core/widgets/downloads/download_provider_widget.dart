@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 Future<void> _download(
   BuildContext context,
@@ -77,17 +78,27 @@ class DownloadProviderWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(deviceStoragePermissionProvider);
+    final state = ref.watch(deviceStoragePermissionProvider).maybeWhen(
+          data: (value) => value,
+          orElse: () => null,
+        );
 
-    return builder(
-      context,
-      (downloadable) => _download(
-        context,
-        ref,
-        downloadable,
-        permission: isAndroid() || isIOS() ? state.storagePermission : null,
-        settings: ref.read(settingsProvider),
-      ),
-    );
+    return state != null
+        ? builder(
+            context,
+            (downloadable) => _download(
+              context,
+              ref,
+              downloadable,
+              permission:
+                  isAndroid() || isIOS() ? state.storagePermission : null,
+              settings: ref.read(settingsProvider),
+            ),
+          )
+        : builder(
+            context,
+            (downloadable) =>
+                showErrorToast('Download permission not ready yet'),
+          );
   }
 }

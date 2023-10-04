@@ -48,8 +48,8 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
   Future<void> download({
     required List<String> tags,
   }) async {
-    final permission = await Permission.storage.status;
     final deviceInfo = ref.read(deviceInfoProvider);
+    final permission = await checkMediaPermissions(deviceInfo);
     final storagePath = ref.read(bulkDownloadOptionsProvider).storagePath;
 
     logger.logI(_serviceName,

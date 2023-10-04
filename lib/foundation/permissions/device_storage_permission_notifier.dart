@@ -31,14 +31,25 @@ class DeviceStoragePermissionState extends Equatable {
 }
 
 class DeviceStoragePermissionNotifier
-    extends Notifier<DeviceStoragePermissionState> {
+    extends AsyncNotifier<DeviceStoragePermissionState> {
   @override
-  DeviceStoragePermissionState build() {
+  Future<DeviceStoragePermissionState> build() async {
     if (isMobilePlatform()) {
-      _fetch();
+      final logger = ref.watch(loggerProvider);
+      final deviceInfo = ref.watch(deviceInfoProvider);
 
-      return const DeviceStoragePermissionState(
-        storagePermission: PermissionStatus.denied,
+      logger.logI('Permission', 'Fetching storage permission');
+      final status = await checkMediaPermissions(deviceInfo);
+
+      logger.log(
+        'Permission',
+        'Storage permission status: ${status.name}',
+        level:
+            status == PermissionStatus.granted ? LogLevel.info : LogLevel.error,
+      );
+
+      return DeviceStoragePermissionState(
+        storagePermission: status,
         isNotificationRead: false,
       );
     } else {
@@ -49,39 +60,36 @@ class DeviceStoragePermissionNotifier
     }
   }
 
-  Future<void> _fetch() async {
-    final logger = ref.watch(loggerProvider);
-    logger.logI('Permission', 'Fetching storage permission');
-    final status = await Permission.storage.status;
-
-    logger.log(
-      'Permission',
-      'Storage permission status: ${status.name}',
-      level:
-          status == PermissionStatus.granted ? LogLevel.info : LogLevel.error,
-    );
-
-    state = state.copyWith(storagePermission: status);
-  }
-
   Future<void> requestPermission({
     void Function(bool isGranted)? onDone,
   }) async {
-    final deviceInfo = ref.read(deviceInfoProvider);
     final logger = ref.watch(loggerProvider);
+
+    if (state.value == null) {
+      logger.logW('Permission', 'Permission state is null');
+      return;
+    }
+
+    final deviceInfo = ref.read(deviceInfoProvider);
     logger.logI('Permission', 'Requesting storage permission');
     final status = await requestMediaPermissions(deviceInfo);
     logger.logI('Permission', 'Storage permission status: $status');
 
-    state = state.copyWith(
+    state = AsyncData(state.value!.copyWith(
       storagePermission: status,
       isNotificationRead: false,
-    );
+    ));
 
     onDone?.call(status == PermissionStatus.granted);
   }
 
   void markNotificationAsRead() {
-    state = state.copyWith(isNotificationRead: true);
+    final logger = ref.watch(loggerProvider);
+    if (state.value == null) {
+      logger.logW('Permission', 'Permission state is null');
+      return;
+    }
+
+    state = AsyncData(state.value!.copyWith(isNotificationRead: true));
   }
 }

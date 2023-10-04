@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/permissions/device_storage_permission_notifier.dart';
 
-final deviceStoragePermissionProvider = NotifierProvider<
+final deviceStoragePermissionProvider = AsyncNotifierProvider<
     DeviceStoragePermissionNotifier, DeviceStoragePermissionState>(
   DeviceStoragePermissionNotifier.new,
   dependencies: [
