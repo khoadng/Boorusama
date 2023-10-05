@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/functional.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,6 +15,7 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_site_url_field.
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AddUnknownBooruPage extends ConsumerStatefulWidget {
