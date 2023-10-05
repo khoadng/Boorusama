@@ -15,7 +15,7 @@ class DanbooruTagCategoryNotifier
   }
 
   Future<void> save(List<String> tags) async {
-    final categoryRepo = ref.read(danbooruTagCategoryRepoProvider);
+    final categoryRepo = ref.read(danbooruTagCategoryRepoProvider(arg));
     final tagRepo = ref.read(danbooruTagRepoProvider(arg));
 
     final unknownCategories = <String>[];

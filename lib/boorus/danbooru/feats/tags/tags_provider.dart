@@ -23,7 +23,7 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     final client = ref.watch(danbooruClientProvider(config));
 
     return TagRepositoryBuilder(
-      persistentStorageKey: 'danbooru_tags_cache_v1',
+      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTagsByName(
           page: page,
@@ -68,9 +68,10 @@ final shouldFetchTrendingProvider = Provider<bool>((ref) {
   return booruType == BooruType.danbooru;
 });
 
-final danbooruTagCategoryRepoProvider = Provider<DanbooruTagCategoryRepository>(
-  (ref) {
-    return DanbooruTagCategoryRepository();
+final danbooruTagCategoryRepoProvider =
+    Provider.family<DanbooruTagCategoryRepository, BooruConfig>(
+  (ref, config) {
+    return DanbooruTagCategoryRepository(config: config);
   },
 );
 

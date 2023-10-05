@@ -128,7 +128,8 @@ void main() async {
   final bookmarkBox = await Hive.openBox<BookmarkHiveObject>("favorites");
   final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
-  final danbooruCreatorBox = await Hive.openBox('danbooru_creators_v1');
+  final danbooruCreatorBox = await Hive.openBox(
+      '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1');
 
   final packageInfo = await PackageInfo.fromPlatform();
   final tagInfo =
