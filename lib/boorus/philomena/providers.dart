@@ -99,7 +99,8 @@ final philomenaAutoCompleteRepoProvider =
   final client = ref.watch(philomenaClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
-    persistentStorageKey: 'philomena_autocomplete_cache_v1',
+    persistentStorageKey:
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     autocomplete: (query) => switch (query.length) {
       0 || 1 => Future.value([]),
       _ => client.getTags(query: '$query*').then((value) => value

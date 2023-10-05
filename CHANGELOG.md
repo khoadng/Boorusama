@@ -1,3 +1,6 @@
+# 3.5.1
+- Minor bug fixes
+
 # 3.5.0
 - Add support for Gelbooru V1, Sankaku, Philomena, Shimmie2
 - Support export bookmarks as file (Will add import feature in the future)

@@ -25,7 +25,8 @@ final danbooruAutocompleteRepoProvider =
   final client = ref.watch(danbooruClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
-      persistentStorageKey: 'danbooru_autocomplete_cache_v1',
+      persistentStorageKey:
+          '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
       persistentStaleDuration: const Duration(days: 1),
       autocomplete: (query) async {
         final dtos = await client.autocomplete(query: query);

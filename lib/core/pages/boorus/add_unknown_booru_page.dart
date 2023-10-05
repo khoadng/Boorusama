@@ -15,6 +15,7 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_site_url_field.
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AddUnknownBooruPage extends ConsumerStatefulWidget {
@@ -146,7 +147,8 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                   ref.read(booruEngineProvider.notifier).state = value;
                 },
                 items: BooruType.values
-                    .where((e) => e != BooruType.unknown)
+                    .where((e) =>
+                        e != BooruType.unknown && e != BooruType.gelbooru)
                     .sorted((a, b) => a.stringify().compareTo(b.stringify()))
                     .map((value) => DropdownMenuItem(
                           value: value,
@@ -212,11 +214,10 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                 if (allowSubmit)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isValidSite == null
-                          ? context.colorScheme.primary
-                          : isValidSite!
-                              ? Colors.green
-                              : Colors.red,
+                      backgroundColor: isValidSite.toOption().fold(
+                            () => context.colorScheme.primary,
+                            (value) => value ? Colors.green : Colors.red,
+                          ),
                     ),
                     onPressed: !allowSubmit || verifying
                         ? null

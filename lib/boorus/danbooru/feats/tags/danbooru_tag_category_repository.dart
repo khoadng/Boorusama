@@ -2,10 +2,17 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/path.dart';
 
 class DanbooruTagCategoryRepository {
+  DanbooruTagCategoryRepository({
+    required this.config,
+  });
+
+  final BooruConfig config;
+
   Box<String>? _box;
 
   Future<Box<String>> getBox() async {
@@ -15,7 +22,9 @@ class DanbooruTagCategoryRepository {
 
     final dir = await getTemporaryDirectory();
 
-    _box = await Hive.openBox('danbooru_tag_categories_v1', path: dir.path);
+    _box = await Hive.openBox(
+        '${Uri.encodeComponent(config.url)}_tag_categories_v1',
+        path: dir.path);
     return _box!;
   }
 

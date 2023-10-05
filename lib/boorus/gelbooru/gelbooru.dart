@@ -40,7 +40,7 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
     final client = ref.watch(gelbooruClientProvider(config));
 
     return TagRepositoryBuilder(
-      persistentStorageKey: 'gelbooru_tags_cache_v1',
+      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTags(
           page: page,
@@ -84,7 +84,8 @@ final gelbooruAutocompleteRepoProvider =
           .where((e) => e != AutocompleteData.empty)
           .toList();
     },
-    persistentStorageKey: 'gelbooru_autocomplete_cache_v1',
+    persistentStorageKey:
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
   );
 });
 

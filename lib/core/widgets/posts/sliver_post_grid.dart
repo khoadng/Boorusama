@@ -69,10 +69,22 @@ class SliverPostGrid extends ConsumerWidget {
                             style: context.textTheme.headlineMedium,
                           ),
                         ),
-                        MarkdownBody(
-                          shrinkWrap: true,
-                          data: wrapIntoJsonToCodeBlock(
-                              prettyPrintJson(e.message)),
+                        Builder(
+                          builder: (context) {
+                            try {
+                              final data = wrapIntoJsonToCodeBlock(
+                                  prettyPrintJson(e.message));
+
+                              return MarkdownBody(
+                                shrinkWrap: true,
+                                data: data,
+                              );
+                            } catch (err) {
+                              return Text(
+                                e.message.toString(),
+                              );
+                            }
+                          },
                         ),
                         const SizedBox(height: 16),
                         if (e.isServerError)

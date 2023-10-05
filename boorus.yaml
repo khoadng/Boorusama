@@ -3,12 +3,16 @@
     sites:
       - https://danbooru.donmai.us/
       - https://testbooru.donmai.us/
+      - https://donmai.moe/
       - https://safebooru.donmai.us/
       - https://aibooru.online/
 
 - moebooru:
     sites:
       - url: https://konachan.com/
+        salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        protocol: https_2
+      - url: https://konachan.net/
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
         protocol: https_2
       - url: https://yande.re/
@@ -27,6 +31,7 @@
 - gelbooru_v2:
     sites:
       - https://rule34.xxx/
+      - https://hypnohub.net/
 
 - gelbooru_v1: 
     sites:
@@ -57,6 +62,7 @@
     protocol: https_2
     sites:
       - https://derpibooru.org/
+      - https://ponybooru.org/
 
 - shimmie2:
     protocol: https_2

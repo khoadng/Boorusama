@@ -23,7 +23,7 @@ final danbooruUserRepoProvider =
   );
 });
 
-const _kCurrentUserIdKey = '_danbooru_current_user_id';
+const _kCurrentUserIdKey = '_current_uid';
 
 final danbooruCurrentUserProvider = FutureProvider.autoDispose
     .family<UserSelf?, BooruConfig>((ref, config) async {
@@ -31,7 +31,8 @@ final danbooruCurrentUserProvider = FutureProvider.autoDispose
 
   // First, we try to get the user id from the cache
   final miscData = await ref.watch(miscDataBoxProvider.future);
-  final key = '${_kCurrentUserIdKey}_${config.login}';
+  final key =
+      '${_kCurrentUserIdKey}_${Uri.encodeComponent(config.url)}_${config.login}';
   final cached = miscData.get(key);
   var id = cached != null ? int.tryParse(cached) : null;
 

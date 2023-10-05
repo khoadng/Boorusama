@@ -141,9 +141,11 @@ class _PostDetailPageScaffoldState<T extends Post>
             : bottomSheet;
       },
       targetSwipeDownBuilder: (context, page) => SwipeTargetImage(
-        imageUrl: widget.swipeImageUrlBuilder != null
-            ? widget.swipeImageUrlBuilder!(posts[page])
-            : posts[page].thumbnailImageUrl,
+        imageUrl: posts[page].isVideo
+            ? posts[page].videoThumbnailUrl
+            : widget.swipeImageUrlBuilder != null
+                ? widget.swipeImageUrlBuilder!(posts[page])
+                : posts[page].thumbnailImageUrl,
         aspectRatio: posts[page].aspectRatio,
       ),
       expandedBuilder: (context, page, currentPage, expanded, enableSwipe) {
