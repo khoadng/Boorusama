@@ -108,7 +108,7 @@ final sankakuAutocompleteRepoProvider =
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}}_autocomplete_cache_v1',
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     autocomplete: (query) =>
         client.getAutocomplete(query: query).then((value) => value
             .map((e) => AutocompleteData(

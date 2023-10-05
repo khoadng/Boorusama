@@ -85,7 +85,7 @@ final gelbooruAutocompleteRepoProvider =
           .toList();
     },
     persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}}_autocomplete_cache_v1',
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
   );
 });
 

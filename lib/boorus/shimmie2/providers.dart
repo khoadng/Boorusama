@@ -74,7 +74,7 @@ final shimmie2AutocompleteRepoProvider =
 
     return AutocompleteRepositoryBuilder(
       persistentStorageKey:
-          '${Uri.encodeComponent(config.url)}}_autocomplete_cache_v1',
+          '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
       autocomplete: (query) async {
         final tags = await client.getAutocomplete(query: query);
 
