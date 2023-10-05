@@ -21,7 +21,7 @@ final danbooruPostRepoProvider =
       final posts = await client
           .getPosts(
             page: page,
-            tags: tags,
+            tags: getTags(config, tags),
             limit: limit,
           )
           .then((value) => value.map(postDtoToPost).toList());
