@@ -17,17 +17,18 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/create_booru_config_name_field.dart';
 
 class AddUnknownBooruPage extends ConsumerStatefulWidget {
   const AddUnknownBooruPage({
     super.key,
     this.setCurrentBooruOnSubmit = false,
     this.backgroundColor,
-    required this.url,
+    required this.config,
   });
 
   final bool setCurrentBooruOnSubmit;
-  final String url;
+  final BooruConfig config;
   final Color? backgroundColor;
 
   @override
@@ -36,10 +37,19 @@ class AddUnknownBooruPage extends ConsumerStatefulWidget {
 }
 
 class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
-  late var url = widget.url;
+  late BooruConfig config = widget.config;
   Object? error;
   bool? isValidSite;
   bool verifying = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(booruConfigNameProvider.notifier).state = config.name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,16 +176,16 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CreateBooruLoginField(
+                CreateBooruConfigNameField(
+                  text: config.name,
                   onChanged: (value) =>
                       ref.read(booruConfigNameProvider.notifier).state = value,
-                  labelText: 'booru.config_name_label'.tr(),
                 ),
                 const SizedBox(height: 16),
                 CreateBooruSiteUrlField(
-                  text: url,
+                  text: config.url,
                   onChanged: (value) => setState(() {
-                    url = value;
+                    config = config.copyWith(url: value);
                     isValidSite = null;
                   }),
                 ),
@@ -239,7 +249,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
       final asyncFuture =
           ref.read(booruSiteValidatorProvider(BooruConfig.defaultConfig(
         booruType: engine!,
-        url: url,
+        url: config.url,
       ).copyWith(
         login: ref.read(booruLoginProvider),
         apiKey: ref.read(booruApiKeyProvider),
@@ -260,7 +270,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
     } else if (isValidSite != null && isValidSite!) {
       context.navigator.pop();
       ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-            newConfig: ref.read(newbooruConfigProvider(url)),
+            newConfig: ref.read(newbooruConfigProvider(config.url)),
             setAsCurrent: widget.setCurrentBooruOnSubmit,
           );
     }
