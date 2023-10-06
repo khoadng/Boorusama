@@ -84,4 +84,22 @@ mixin DanbooruClientPosts {
         .map((item) => PostVoteDto.fromJson(item))
         .toList();
   }
+
+  Future<PostDto> putTags({
+    required int postId,
+    required List<String> tags,
+  }) async {
+    final response = await dio.put(
+      '/posts/$postId.json',
+      queryParameters: {
+        'post[tag_string]': tags.join(' '),
+        'post[old_tag_string]': '',
+      },
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+
+    return PostDto.fromJson(response.data);
+  }
 }
