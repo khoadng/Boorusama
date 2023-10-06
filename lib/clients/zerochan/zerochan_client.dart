@@ -37,26 +37,32 @@ class ZerochanClient {
             .join(',') ??
         '';
 
-    final response = await _dio.get('/$tagString?json',
-        queryParameters: {
-          if (page != null) 'p': page,
-          if (limit != null) 'l': limit,
-        },
-        options: Options(
-          responseType: ResponseType.plain,
-        ));
+    try {
+      final response = await _dio.get('/$tagString?json',
+          queryParameters: {
+            if (page != null) 'p': page,
+            if (limit != null) 'l': limit,
+          },
+          options: Options(
+            responseType: ResponseType.plain,
+          ));
 
-    // return empty if response is HTML
-    if (response.data.toString().startsWith('<!DOCTYPE html>')) {
-      logger?.call('Response is HTML, returning empty list. Input tags: $tags');
-      return [];
+      // return empty if response is HTML
+      if (response.data.toString().startsWith('<!DOCTYPE html>')) {
+        logger
+            ?.call('Response is HTML, returning empty list. Input tags: $tags');
+        return [];
+      }
+
+      final json = jsonDecode(response.data);
+
+      final data = json['items'];
+
+      return (data as List).map((e) => PostDto.fromJson(e)).toList();
+    } catch (e, stackTrace) {
+      logger?.call('Zerochan Error: $e');
+      Error.throwWithStackTrace(e, stackTrace);
     }
-
-    final json = jsonDecode(response.data);
-
-    final data = json['items'];
-
-    return (data as List).map((e) => PostDto.fromJson(e)).toList();
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({
