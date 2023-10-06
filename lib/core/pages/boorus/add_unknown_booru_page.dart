@@ -211,63 +211,58 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                if (allowSubmit)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isValidSite.toOption().fold(
-                            () => context.colorScheme.primary,
-                            (value) => value ? Colors.green : Colors.red,
-                          ),
-                    ),
-                    onPressed: !allowSubmit || verifying
-                        ? null
-                        : () async {
-                            if (isValidSite == null) {
-                              final asyncFuture = ref.read(
-                                  booruSiteValidatorProvider(
-                                      BooruConfig.defaultConfig(
-                                booruType: engine!,
-                                url: url,
-                              ).copyWith(
-                                login: ref.read(booruLoginProvider),
-                                apiKey: ref.read(booruApiKeyProvider),
-                              )).future);
-
-                              try {
-                                final value = await asyncFuture;
-                                setState(() {
-                                  isValidSite = value;
-                                  error = null;
-                                });
-                              } catch (err) {
-                                setState(() {
-                                  isValidSite = null;
-                                  error = err;
-                                });
-                              }
-                            } else if (isValidSite != null && isValidSite!) {
-                              context.navigator.pop();
-                              ref
-                                  .read(booruConfigProvider.notifier)
-                                  .addFromAddBooruConfig(
-                                    newConfig:
-                                        ref.read(newbooruConfigProvider(url)),
-                                    setAsCurrent:
-                                        widget.setCurrentBooruOnSubmit,
-                                  );
-                            }
-                          },
-                    child: verifying
-                        ? const Text('Verifying...')
-                        : isValidSite ?? false
-                            ? const Text('booru.config_booru_confirm').tr()
-                            : const Text('Verify'),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isValidSite.toOption().fold(
+                          () => context.colorScheme.primary,
+                          (value) => value ? Colors.green : Colors.red,
+                        ),
                   ),
+                  onPressed:
+                      !allowSubmit || verifying ? null : () => onSubmit(engine),
+                  child: verifying
+                      ? const Text('Verifying...')
+                      : isValidSite ?? false
+                          ? const Text('booru.config_booru_confirm').tr()
+                          : const Text('Verify'),
+                ),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void onSubmit(BooruType? engine) async {
+    if (isValidSite == null) {
+      final asyncFuture =
+          ref.read(booruSiteValidatorProvider(BooruConfig.defaultConfig(
+        booruType: engine!,
+        url: url,
+      ).copyWith(
+        login: ref.read(booruLoginProvider),
+        apiKey: ref.read(booruApiKeyProvider),
+      )).future);
+
+      try {
+        final value = await asyncFuture;
+        setState(() {
+          isValidSite = value;
+          error = null;
+        });
+      } catch (err) {
+        setState(() {
+          isValidSite = null;
+          error = err;
+        });
+      }
+    } else if (isValidSite != null && isValidSite!) {
+      context.navigator.pop();
+      ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
+            newConfig: ref.read(newbooruConfigProvider(url)),
+            setAsCurrent: widget.setCurrentBooruOnSubmit,
+          );
+    }
   }
 }
