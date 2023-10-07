@@ -34,12 +34,6 @@
     "post": {
         "detail": {
             "view": "Дивитись",
-            "slide_show": {
-                "interval": "Проміжок (секунди)",
-                "skip_anim": "Ґавити анімацію",
-                "ok": "ОК",
-                "cancel": "Відмінити"
-            },
             "view_in_browser": "Дивитись у браузері",
             "file_details": "Деталі файлу",
             "size": "Вага",
