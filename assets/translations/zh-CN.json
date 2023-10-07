@@ -34,12 +34,6 @@
     },
     "post": {
         "detail": {
-            "slide_show": {
-                "interval": "间隔（秒）",
-                "skip_anim": "跳过动画",
-                "ok": "确定",
-                "cancel": "取消"
-            },
             "view_in_browser": "在浏览器中打开",
             "file_details": "文件详情",
             "size": "大小",
@@ -273,10 +267,8 @@
         "bulk_download_cancel": "取消",
         "bulk_download_duplicate": "复制",
         "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符：␣",
-        "bulk_download_only_download_new_images": "仅下载新图片",
         "bulk_download_folder_select_warning": "在Android 11+上，此应用只能将文件保存在内部公共目录 <b>({0})</b> 中. <div>不支持SD卡。</div> <div>请选择其他路径。</div> <div>此设备的版本是 {1}。</div>",
         "bulk_download_select_a_folder": "选择文件夹",
-        "bulk_download_found_duplicate": "找到 {} 个同名的图片，这些同名图片将会跳过。",
         "bulk_download_downloaded_counter": {
             "other": "{} 张图片已下载"
         },
@@ -366,7 +358,6 @@
     },
     "sideMenu": {
         "settings": "设置",
-        "manage_boorus": "管理booru",
         "your_bookmarks": "书签",
         "your_blacklist": "黑名单",
         "bulk_download": "批量下载"
@@ -378,8 +369,6 @@
     },
     "booru": {
         "addNew": "添加新booru",
-        "add_booru_source_title": "添加一个来源，登陆信息为空的将使用匿名",
-        "add_random_booru_warning": "这个booru当前尚未支持，可能无法正常使用。",
         "booru_engine_input_label": "Booru引擎 (*)",
         "config_name_label": "配置名 (*)",
         "site_url_label": "网站地址",
