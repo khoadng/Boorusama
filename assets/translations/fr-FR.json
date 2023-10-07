@@ -35,12 +35,6 @@
     "post": {
         "detail": {
             "view": "Voir",
-            "slide_show": {
-                "interval": "Intervalle (secondes)",
-                "skip_anim": "Passer l'animation",
-                "ok": "OK",
-                "cancel": "Annuler"
-            },
             "view_in_browser": "Afficher dans le navigateur",
             "file_details": "Détails du fichier",
             "size": "Taille",
@@ -279,10 +273,8 @@
         "bulk_download_cancel": "Annuler",
         "bulk_download_duplicate": "Dupliquer",
         "bulk_download_invalid_folder_name_error": "Un fichier ne peut pas contenir les caractères suivants:␣",
-        "bulk_download_only_download_new_images": "Télécharger uniquement les nouvelles images",
         "bulk_download_folder_select_warning": "L'application peut enregistrer des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <div>La carte SD n'est pas compatible.</div> <div>Veuillez choisir un nouvel emplacement.</div> <div>Cet appareil a la version {1}.</div>",
         "bulk_download_select_a_folder": "Sélectionnez un fichier",
-        "bulk_download_found_duplicate": "{} images avec le même nom ont été trouvées. Elles seront passées.",
         "bulk_download_downloaded_counter": {
             "one": "{} image téléchargée",
             "many": "{} images téléchargées",
@@ -384,7 +376,6 @@
     },
     "sideMenu": {
         "settings": "Paramètres",
-        "manage_boorus": "Gestions des boorus",
         "your_bookmarks": "Vos marque-pages",
         "your_blacklist": "Votre blacklist",
         "bulk_download": "Téléchargement en masse"
@@ -396,8 +387,6 @@
     },
     "booru": {
         "addNew": "Ajouter un nouveau booru",
-        "add_booru_source_title": "Ajoutez une source, laisser les détails de connexion vides pour être anonyme",
-        "add_random_booru_warning": "Ce booru n'est officiellement pas supporté. Cela ne va probablement pas fonctionner.",
         "booru_engine_input_label": "Moteur booru (*)",
         "config_name_label": "Nom de la configuration (*)",
         "site_url_label": "URL du site",
