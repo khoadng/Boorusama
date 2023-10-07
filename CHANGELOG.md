@@ -1,3 +1,9 @@
+# 3.5.2
+- Fix reordering profiles not working again
+- Fix filter won't be applied properly
+- Add a default new when creating a new profile
+- Update Spanish translation
+
 # 3.5.1
 - Minor bug fixes
 
