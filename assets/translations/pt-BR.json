@@ -35,12 +35,6 @@
     "post": {
         "detail": {
             "view": "Visualizar",
-            "slide_show": {
-                "interval": "Intervalo (segundos)",
-                "skip_anim": "Animação de Skip",
-                "ok": "De acordo",
-                "cancel": "Cancelar"
-            },
             "view_in_browser": "Visualizar no navegador",
             "file_details": "Detalhes do arquivo",
             "size": "Tamanho",

@@ -31,12 +31,6 @@
     "post": {
         "detail": {
             "view": "表示",
-            "slide_show": {
-                "interval": "インターバル（秒）",
-                "skip_anim": "アニメーションをスキップする",
-                "ok": "OK",
-                "cancel": "キャンセル"
-            },
             "view_in_browser": "ブラウザで開く",
             "file_details": "ファイルの詳細",
             "size": "サイズ",
@@ -225,7 +219,6 @@
     },
     "sideMenu": {
         "settings": "設定",
-        "manage_boorus": "ボールの管理",
         "your_bookmarks": "ブックマーク",
         "your_blacklist": "ブラックリスト"
     },
@@ -235,7 +228,6 @@
         "month": "マンスリー"
     },
     "booru": {
-        "add_booru_source_title": "ソースを追加し、ログイン情報を空のまま匿名にする",
         "site_url_label": "サイトURL",
         "login_name_label": "ログイン",
         "password_api_key_label": "APIキー",
