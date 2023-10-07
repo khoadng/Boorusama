@@ -134,10 +134,11 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                 ),
                 onReorder: (oldIndex, newIndex) {
                   final orders = ref.read(configIdOrdersProvider);
-                  final newOrders = (orders.isEmpty
-                          ? [for (final config in configs) config.id]
-                          : orders)
-                      .toList();
+                  final newOrders =
+                      (orders.isEmpty || orders.length != configs.length
+                              ? [for (final config in configs) config.id]
+                              : orders)
+                          .toList();
 
                   newOrders.reorder(oldIndex, newIndex);
 

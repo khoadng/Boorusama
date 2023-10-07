@@ -35,12 +35,6 @@
     "post": {
         "detail": {
             "view": "View",
-            "slide_show": {
-                "interval": "Interval (seconds)",
-                "skip_anim": "Skip animation",
-                "ok": "OK",
-                "cancel": "Cancel"
-            },
             "view_in_browser": "View in browser",
             "file_details": "File details",
             "size": "Size",
@@ -119,7 +113,7 @@
             "rate_limited": "You're being rate limited. Please try again later",
             "pagination_limit": "You're have reached pagination limit. It means you cannot scroll more",
             "max_capacity": "Server is under heavy load and cannot handle the request be, please try again later",
-            "down": "Server is downn. please try again later",
+            "down": "Server is down. please try again later",
             "access_denied": "Access denied",
             "forbidden": "Authentication failed",
             "unknown": "Unknown server error, please report this issue to the developer"
@@ -277,10 +271,8 @@
         "bulk_download_cancel": "Cancel",
         "bulk_download_duplicate": "Duplicate",
         "bulk_download_invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
-        "bulk_download_only_download_new_images": "Only download new images",
         "bulk_download_folder_select_warning": "The app can only store files inside public directories <b>({0})</b> in Android 11+. <div>SD cards are also not supported.</div> <div>Please choose another location.</div> <div>This device's version is {1}.</div>",
         "bulk_download_select_a_folder": "Select a folder",
-        "bulk_download_found_duplicate": "Found {} images with the same name. They will be skipped.",
         "bulk_download_downloaded_counter": {
             "one": "{} image downloaded",
             "other": "{} images downloaded"
@@ -376,7 +368,6 @@
     },
     "sideMenu": {
         "settings": "Settings",
-        "manage_boorus": "Manage boorus",
         "your_bookmarks": "Your bookmarks",
         "your_blacklist": "Your blacklist",
         "bulk_download": "Bulk download"
@@ -388,10 +379,8 @@
     },
     "booru": {
         "addNew": "Add new booru",
-        "add_booru_source_title": "Add a source, leave the login details empty to be anonymous",
-        "add_random_booru_warning": "This booru is not offically supported yet. It probally won't work.",
         "booru_engine_input_label": "Booru engine (*)",
-        "config_name_label": "Config Name (*)",
+        "config_name_label": "Profile name (*)",
         "site_url_label": "Site URL",
         "login_name_label": "Login",
         "password_api_key_label": "API key",

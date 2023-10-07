@@ -19,7 +19,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
       jsonEncode(BooruConfigData.anonymous(
         booru: BooruType.danbooru,
         booruHint: BooruType.danbooru,
-        name: 'Default booru',
+        name: 'Default profile',
         filter: BooruConfigRatingFilter.none,
         url: 'https://safebooru.donmai.us/',
       ));

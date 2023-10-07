@@ -39,7 +39,7 @@ class BooruConfig extends Equatable {
         booruIdHint: booruType.toBooruId(),
         apiKey: null,
         login: null,
-        name: '',
+        name: 'new profile',
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
         ratingFilter: BooruConfigRatingFilter.none,
         url: url,

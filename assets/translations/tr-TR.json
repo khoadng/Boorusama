@@ -30,10 +30,6 @@
     "post": {
         "detail": {
             "view": "Gör(incele)",
-            "slide_show": {
-                "ok": "Tamam",
-                "cancel": "İptal"
-            },
             "file_details": "Dosya detayları",
             "size": "Ölçek",
             "rating": "Puanlama",

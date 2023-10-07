@@ -56,7 +56,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           }),
         ),
       AddBooruPhase.newUnknownBooru => AddUnknownBooruPage(
-          url: url,
+          config:
+              BooruConfig.defaultConfig(booruType: BooruType.unknown, url: url),
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),

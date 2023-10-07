@@ -35,12 +35,6 @@
     "post": {
         "detail": {
             "view": "Xem",
-            "slide_show": {
-                "interval": "Chu kỳ (giây)",
-                "skip_anim": "Bỏ animation",
-                "ok": "OK",
-                "cancel": "Hủy"
-            },
             "view_in_browser": "Xem bằng trình duyệt",
             "file_details": "Thông số ảnh",
             "size": "Kích thước",
@@ -274,10 +268,8 @@
         "bulk_download_cancel": "Hủy",
         "bulk_download_duplicate": "Trùng",
         "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
-        "bulk_download_only_download_new_images": "Chỉ tải ảnh mới",
         "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
         "bulk_download_select_a_folder": "Chọn một thư mục",
-        "bulk_download_found_duplicate": "Tìm thấy {} ảnh trùng tên, sẽ không tải những ảnh này",
         "bulk_download_downloaded_counter": {
             "other": "Đã tải {} ảnh"
         },
@@ -367,7 +359,6 @@
     },
     "sideMenu": {
         "settings": "Cài đặt",
-        "manage_boorus": "Quản lí Booru",
         "your_bookmarks": "Đánh dấu",
         "your_blacklist": "Sổ đen",
         "bulk_download": "Tải hàng loạt"
@@ -379,10 +370,8 @@
     },
     "booru": {
         "addNew": "Tạo thêm booru",
-        "add_booru_source_title": "Thêm nguồn, để trống để ẩn danh",
-        "add_random_booru_warning": "Nguồn này chưa được hỗ trợ chính thức. Khả năng cao là không chạy được.",
         "booru_engine_input_label": "Booru engine (*)",
-        "config_name_label": "Tên config (*)",
+        "config_name_label": "Tên profile  (*)",
         "site_url_label": "URL của web",
         "login_name_label": "Tên đăng nhập",
         "password_api_key_label": "API key",
