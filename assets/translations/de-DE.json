@@ -35,12 +35,6 @@
     "post": {
         "detail": {
             "view": "Anzeigen",
-            "slide_show": {
-                "interval": "Intervall (Sekunden)",
-                "skip_anim": "Animation überspringen",
-                "ok": "OK",
-                "cancel": "Abbrechen"
-            },
             "view_in_browser": "In Browser anzeigen",
             "file_details": "Datei-Infos",
             "size": "Größe",
@@ -277,10 +271,8 @@
         "bulk_download_cancel": "Abbrechen",
         "bulk_download_duplicate": "Duplikat",
         "bulk_download_invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
-        "bulk_download_only_download_new_images": "Nur neue Bilder herunterladen",
         "bulk_download_folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
         "bulk_download_select_a_folder": "Ordner auswählen",
-        "bulk_download_found_duplicate": "{} Bilder mit dem selben Namen gefunden. Diese werden übersprungen.",
         "bulk_download_downloaded_counter": {
             "one": "{} Bild heruntergeladen",
             "other": "{} Bilder heruntergeladen"
@@ -376,7 +368,6 @@
     },
     "sideMenu": {
         "settings": "Einstellungen",
-        "manage_boorus": "Boorus verwalten",
         "your_bookmarks": "Lesezeichen",
         "your_blacklist": "Ausgeblendete Tags",
         "bulk_download": "Bulk-Download"
@@ -388,8 +379,6 @@
     },
     "booru": {
         "addNew": "Neues Booru hinzufügen",
-        "add_booru_source_title": "Eine Quelle hinzufügen, Anmeldedaten leer lassen, um anonym zu bleiben",
-        "add_random_booru_warning": "Dieser Booru wird noch nicht offiziell unterstützt. Wahrscheinlich wird es nicht funktionieren.",
         "booru_engine_input_label": "Booru Engine (*)",
         "config_name_label": "Konfigurationsname (*)",
         "site_url_label": "Seiten-URL",
