@@ -100,21 +100,22 @@ final philomenaAutoCompleteRepoProvider =
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v2',
     autocomplete: (query) => switch (query.length) {
       0 || 1 => Future.value([]),
       _ => client.getTags(query: '$query*').then((value) => value
           .map((e) => AutocompleteData(
                 label: e.name ?? '???',
-                value: e.slug.toOption().fold(
-                      () => e.name ?? '???',
-                      (slug) => _kSlugReplacement.fold(
-                        slug,
-                        (s, e) => s.replaceAll(e[1], e[0]),
-                      ),
-                    ),
+                value: e.name?.replaceAll(' ', '_') ??
+                    e.slug.toOption().fold(
+                          () => '???',
+                          (slug) => _kSlugReplacement.fold(
+                            slug,
+                            (s, e) => s.replaceAll(e[1], e[0]),
+                          ),
+                        ),
                 antecedent: e.aliasedTag,
-                category: e.category,
+                category: e.category ?? '',
                 postCount: e.images,
               ))
           .toList()),

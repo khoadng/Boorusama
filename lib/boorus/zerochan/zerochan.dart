@@ -74,17 +74,21 @@ final zerochanAutoCompleteRepoProvider =
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v3',
     persistentStaleDuration: const Duration(days: 1),
     autocomplete: (query) async {
       final tags = await client.getAutocomplete(query: query);
 
       return tags
+          .where((e) =>
+              e.type !=
+              'Meta') // Can't search posts by meta tags for some reason
           .map((e) => AutocompleteData(
                 label: e.value?.toLowerCase() ?? '',
                 value: e.value?.toLowerCase() ?? '',
                 postCount: e.total,
-                category: e.type?.toLowerCase() ?? '',
+                antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
+                category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
               ))
           .toList();
     },
