@@ -152,5 +152,6 @@ flutter:
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json
+    - assets/ca/lets-encrypt-r3.pem
     - boorus.yaml
     - CHANGELOG.md
