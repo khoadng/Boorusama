@@ -36,7 +36,6 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -183,7 +182,7 @@ final deviceInfoProvider = Provider<DeviceInfo>((ref) {
 });
 
 final cacheSizeProvider =
-    NotifierProvider<CacheSizeNotifier, DirectorySizeInfo>(
+    NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
         CacheSizeNotifier.new);
 
 final appInfoProvider = Provider<AppInfo>((ref) {

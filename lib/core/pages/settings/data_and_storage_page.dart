@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'widgets/settings_header.dart';
 
 class DataAndStoragePage extends ConsumerStatefulWidget {
   const DataAndStoragePage({
@@ -38,16 +39,35 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
           shrinkWrap: true,
           primary: false,
           children: [
+            const SettingsHeader(label: 'Cache'),
             Builder(
               builder: (context) {
-                final size = ref.watch(cacheSizeProvider);
+                final sizeInfo = ref.watch(cacheSizeProvider);
+                final imageCacheSize = sizeInfo.imageCacheSize;
 
                 return ListTile(
-                  title: const Text('settings.performance.cache_size').tr(),
+                  title: const Text('Image only cache'),
                   subtitle: Text('settings.performance.cache_size_info'
                       .tr()
-                      .replaceAll('{0}', filesize(size.size))
-                      .replaceAll('{1}', size.fileCount.toString())),
+                      .replaceAll('{0}', filesize(imageCacheSize.size))
+                      .replaceAll('{1}', imageCacheSize.fileCount.toString())),
+                  trailing: ElevatedButton(
+                    onPressed: () => ref
+                        .read(cacheSizeProvider.notifier)
+                        .clearAppImageCache(),
+                    child: const Text('settings.performance.clear_cache').tr(),
+                  ),
+                );
+              },
+            ),
+            Builder(
+              builder: (context) {
+                final sizeInfo = ref.watch(cacheSizeProvider);
+                final size = sizeInfo.appCacheSize;
+
+                return ListTile(
+                  title: const Text('All cache'),
+                  subtitle: Text(filesize(size.size)),
                   trailing: ElevatedButton(
                     onPressed: () =>
                         ref.read(cacheSizeProvider.notifier).clearAppCache(),
