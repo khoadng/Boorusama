@@ -257,15 +257,20 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
 
       try {
         final value = await asyncFuture;
-        setState(() {
-          isValidSite = value;
-          error = null;
-        });
+
+        if (mounted) {
+          setState(() {
+            isValidSite = value;
+            error = null;
+          });
+        }
       } catch (err) {
-        setState(() {
-          isValidSite = null;
-          error = err;
-        });
+        if (mounted) {
+          setState(() {
+            isValidSite = null;
+            error = err;
+          });
+        }
       }
     } else if (isValidSite != null && isValidSite!) {
       context.navigator.pop();
