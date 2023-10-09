@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/pages/settings/appearance_page.dart';
+import 'package:boorusama/core/pages/settings/data_and_storage_page.dart';
 import 'package:boorusama/core/pages/settings/download_page.dart';
 import 'package:boorusama/core/pages/settings/language_page.dart';
 import 'package:boorusama/core/pages/settings/performance_page.dart';
@@ -111,20 +112,26 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   ListTile(
                     textColor: index == 4 ? Colors.white : null,
                     tileColor: index == 4 ? Colors.grey[800] : null,
-                    title: const Text('settings.search.search').tr(),
+                    title: const Text('Data and Storage'),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(
                     textColor: index == 5 ? Colors.white : null,
                     tileColor: index == 5 ? Colors.grey[800] : null,
-                    title: const Text('settings.privacy.privacy').tr(),
+                    title: const Text('settings.search.search').tr(),
                     onTap: () => currentTab.value = 5,
                   ),
                   ListTile(
                     textColor: index == 6 ? Colors.white : null,
                     tileColor: index == 6 ? Colors.grey[800] : null,
-                    title: const Text('settings.debug_logs.debug_logs').tr(),
+                    title: const Text('settings.privacy.privacy').tr(),
                     onTap: () => currentTab.value = 6,
+                  ),
+                  ListTile(
+                    textColor: index == 7 ? Colors.white : null,
+                    tileColor: index == 7 ? Colors.grey[800] : null,
+                    title: const Text('settings.debug_logs.debug_logs').tr(),
+                    onTap: () => currentTab.value = 7,
                   ),
                   const Divider(
                     thickness: 0.8,
@@ -177,6 +184,9 @@ class _LargeLayoutState extends ConsumerState<_LargeLayout> {
                   hasAppBar: false,
                 ),
                 PerformancePage(
+                  hasAppBar: false,
+                ),
+                DataAndStoragePage(
                   hasAppBar: false,
                 ),
                 SearchSettingsPage(

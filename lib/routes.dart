@@ -212,6 +212,17 @@ class SettingsRoutes {
         ),
       );
 
+  static GoRoute dataAndStorage() => GoRoute(
+        path: 'data_and_storage',
+        name: '/settings/data_and_storage',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const DataAndStoragePage(),
+          transitionsBuilder: leftToRightTransitionBuilder(),
+        ),
+      );
+
   static GoRoute privacy() => GoRoute(
         path: 'privacy',
         name: '/settings/privacy',
@@ -441,6 +452,7 @@ class Routes {
           SettingsRoutes.download(),
           SettingsRoutes.language(),
           SettingsRoutes.performance(),
+          SettingsRoutes.dataAndStorage(),
           SettingsRoutes.privacy(),
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),

@@ -83,6 +83,13 @@ class SettingsPage extends ConsumerWidget {
                       onTap: () => context.go('/settings/performance'),
                     ),
                     ListTile(
+                      title: const Text(
+                        'Data and Storage',
+                      ),
+                      leading: const FaIcon(FontAwesomeIcons.database),
+                      onTap: () => context.go('/settings/data_and_storage'),
+                    ),
+                    ListTile(
                       title: const Text('settings.search.search').tr(),
                       leading: const FaIcon(
                         FontAwesomeIcons.magnifyingGlass,

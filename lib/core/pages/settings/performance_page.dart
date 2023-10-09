@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -72,24 +71,6 @@ class _PerformancePageState extends ConsumerState<PerformancePage> {
                   }).toList(),
                 ),
               ),
-            ),
-            Builder(
-              builder: (context) {
-                final size = ref.watch(cacheSizeProvider);
-
-                return ListTile(
-                  title: const Text('settings.performance.cache_size').tr(),
-                  subtitle: Text('settings.performance.cache_size_info'
-                      .tr()
-                      .replaceAll('{0}', filesize(size.size))
-                      .replaceAll('{1}', size.fileCount.toString())),
-                  trailing: ElevatedButton(
-                    onPressed: () =>
-                        ref.read(cacheSizeProvider.notifier).clearAppCache(),
-                    child: const Text('settings.performance.clear_cache').tr(),
-                  ),
-                );
-              },
             ),
           ],
         ),
