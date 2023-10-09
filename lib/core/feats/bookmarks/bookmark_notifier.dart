@@ -15,6 +15,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/toast.dart';
 
@@ -127,6 +128,19 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
       tryGetDownloadDirectory().run().then((value) => value.fold(
             (error) => showErrorToast(error.name),
             (directory) async {
+              // request permission
+              final deviceInfo = ref.read(deviceInfoProvider);
+              final status = await checkMediaPermissions(deviceInfo);
+
+              if (status != PermissionStatus.granted) {
+                final status = await requestMediaPermissions(deviceInfo);
+
+                if (status != PermissionStatus.granted) {
+                  showErrorToast('Permission to access storage denied');
+                  return;
+                }
+              }
+
               final file = File('${directory.path}/boorusama_bookmarks.json');
               final json =
                   state.bookmarks.map((bookmark) => bookmark.toJson()).toList();
