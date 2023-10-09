@@ -4,6 +4,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
@@ -219,6 +220,38 @@ class GelbooruClient {
     );
 
     return _parseTags(response);
+  }
+
+  Future<List<TagDto>> getTagsFromPostId({required int postId}) async {
+    // I'm lazy to implement this for Gelbooru since we can just use getTags
+    if (_dio.options.baseUrl == _kGelbooruUrl) return [];
+
+    final response = await _dio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'post',
+        's': 'view',
+        'id': postId,
+      },
+    );
+
+    final html = parse(response.data);
+    final sideBar = html.getElementById('tag-sidebar');
+    final copyrightTags =
+        sideBar?.getElementsByClassName('tag-type-copyright tag');
+    final characterTags =
+        sideBar?.getElementsByClassName('tag-type-character tag');
+    final artistTags = sideBar?.getElementsByClassName('tag-type-artist tag');
+    final generalTags = sideBar?.getElementsByClassName('tag-type-general tag');
+    final metaTags = sideBar?.getElementsByClassName('tag-type-meta tag');
+
+    return [
+      for (final tag in artistTags ?? []) TagDto.fromHtml(tag, 1),
+      for (final tag in copyrightTags ?? []) TagDto.fromHtml(tag, 3),
+      for (final tag in characterTags ?? []) TagDto.fromHtml(tag, 4),
+      for (final tag in generalTags ?? []) TagDto.fromHtml(tag, 0),
+      for (final tag in metaTags ?? []) TagDto.fromHtml(tag, 5),
+    ];
   }
 }
 

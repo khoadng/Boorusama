@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/gelbooru_post_action_toolbar.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';
 import 'widgets/tags_tile.dart';
@@ -22,13 +22,11 @@ class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
     required this.posts,
     required this.initialIndex,
     required this.onExit,
-    this.hasDetailsTagList = true,
   });
 
   final int initialIndex;
   final List<GelbooruPost> posts;
   final void Function(int page) onExit;
-  final bool hasDetailsTagList;
 
   @override
   ConsumerState<GelbooruPostDetailsPage> createState() =>
@@ -53,17 +51,15 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
           GelbooruRecommendedArtistList(
         artists: ref.watch(booruPostDetailsArtistProvider(post.id)),
       ),
-      tagListBuilder: (context, post) => widget.hasDetailsTagList
-          ? TagsTile(
-              tags: ref.watch(tagsProvider(booruConfig)),
-              post: post,
-              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-            )
-          : BasicTagList(
-              tags: post.tags,
-              onTap: (tag) => goToSearchPage(context, tag: tag),
-            ),
-      onExpanded: (post) => widget.hasDetailsTagList
+      tagListBuilder: (context, post) =>
+          ref.watchConfig.booruType == BooruType.gelbooru
+              ? TagsTile(
+                  tags: ref.watch(tagsProvider(booruConfig)),
+                  post: post,
+                  onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+                )
+              : GelbooruV1TagsTile(post: post),
+      onExpanded: (post) => ref.watchConfig.booruType == BooruType.gelbooru
           ? ref.read(tagsProvider(booruConfig).notifier).load(
               post.tags,
               onSuccess: (tags) {
@@ -72,6 +68,37 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
               },
             )
           : null,
+    );
+  }
+}
+
+class GelbooruV1TagsTile extends ConsumerStatefulWidget {
+  const GelbooruV1TagsTile({
+    super.key,
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  ConsumerState<GelbooruV1TagsTile> createState() => _GelbooruV1TagsTileState();
+}
+
+class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
+  var expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TagsTile(
+      tags: expanded
+          ? ref.watch(gelbooruV2TagsFromIdProvider(widget.post.id)).maybeWhen(
+                data: (data) => createTagGroupItems(data),
+                orElse: () => null,
+              )
+          : null,
+      post: widget.post,
+      onExpand: () => setState(() => expanded = true),
+      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
     );
   }
 }
