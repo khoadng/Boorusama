@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/gelbooru_post_action_toolbar.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';
 import 'widgets/tags_tile.dart';
@@ -86,19 +87,40 @@ class GelbooruV1TagsTile extends ConsumerStatefulWidget {
 
 class _GelbooruV1TagsTileState extends ConsumerState<GelbooruV1TagsTile> {
   var expanded = false;
+  Object? error;
 
   @override
   Widget build(BuildContext context) {
-    return TagsTile(
-      tags: expanded
-          ? ref.watch(gelbooruV2TagsFromIdProvider(widget.post.id)).maybeWhen(
-                data: (data) => createTagGroupItems(data),
-                orElse: () => null,
-              )
-          : null,
-      post: widget.post,
-      onExpand: () => setState(() => expanded = true),
-      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-    );
+    if (expanded) {
+      ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
+          (previous, next) {
+        if (next is AsyncError) {
+          setState(() => error = next.error);
+        }
+      });
+    }
+
+    return error == null
+        ? TagsTile(
+            tags: expanded
+                ? ref
+                    .watch(gelbooruV2TagsFromIdProvider(widget.post.id))
+                    .maybeWhen(
+                      data: (data) => createTagGroupItems(data),
+                      orElse: () => null,
+                    )
+                : null,
+            post: widget.post,
+            onExpand: () => setState(() => expanded = true),
+            onCollapse: () {
+              // Don't set expanded to false to prevent rebuilding the tags list
+              setState(() => error = null);
+            },
+            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+          )
+        : BasicTagList(
+            tags: widget.post.tags,
+            onTap: (tag) => goToSearchPage(context, tag: tag),
+          );
   }
 }

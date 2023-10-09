@@ -12,6 +12,7 @@ class TagsTile extends StatelessWidget {
     super.key,
     required this.post,
     this.onExpand,
+    this.onCollapse,
     this.onTagTap,
     this.initialExpanded = false,
     required this.tags,
@@ -19,6 +20,7 @@ class TagsTile extends StatelessWidget {
 
   final Post post;
   final void Function()? onExpand;
+  final void Function()? onCollapse;
   final void Function(Tag tag)? onTagTap;
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
@@ -31,7 +33,8 @@ class TagsTile extends StatelessWidget {
         initiallyExpanded: initialExpanded,
         title: Text('${post.tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) => value ? onExpand?.call() : null,
+        onExpansionChanged: (value) =>
+            value ? onExpand?.call() : onCollapse?.call(),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
