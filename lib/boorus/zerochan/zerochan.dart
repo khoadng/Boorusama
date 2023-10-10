@@ -40,7 +40,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
             .map((e) => SimplePost(
                   id: e.id ?? 0,
                   thumbnailImageUrl: e.thumbnail ?? '',
-                  sampleImageUrl: e.thumbnail ?? '',
+                  sampleImageUrl: e.sampleUrl() ?? '',
                   originalImageUrl: e.fileUrl() ?? '',
                   tags: e.tags ?? [],
                   rating: Rating.general,

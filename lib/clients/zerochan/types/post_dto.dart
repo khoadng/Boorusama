@@ -40,4 +40,9 @@ extension PostDtoX on PostDto {
       .replaceAll(".600.", ".full.")
       .replaceAll("/240/", "/full/")
       .replaceAll("/600/", "/full/");
+
+  String? sampleUrl() => thumbnail
+      ?.replaceAll(RegExp(r'/s\d+\.zerochan'), '/s3.zerochan')
+      .replaceAll(".240.", ".600.")
+      .replaceAll("/240/", "/600/");
 }
