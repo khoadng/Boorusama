@@ -14,7 +14,7 @@ typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
 class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
-    implements Post {
+    implements Post, DanbooruTagDetails {
   DanbooruPost({
     required this.id,
     required this.thumbnailImageUrl,
@@ -99,7 +99,9 @@ class DanbooruPost extends Equatable
   final List<String> characterTags;
   @override
   final List<String> artistTags;
+  @override
   final List<String> generalTags;
+  @override
   final List<String> metaTags;
   @override
   final List<String> tags;
@@ -324,4 +326,9 @@ extension DanbooruPostImageX on DanbooruPost {
     if (isGif) return urlSample;
     return thumbnailFromImageQuality(settings.imageQuality);
   }
+}
+
+abstract interface class DanbooruTagDetails implements TagDetails {
+  List<String>? get generalTags;
+  List<String>? get metaTags;
 }
