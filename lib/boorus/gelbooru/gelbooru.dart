@@ -89,6 +89,24 @@ final gelbooruAutocompleteRepoProvider =
   );
 });
 
+final gelbooruV2TagsFromIdProvider =
+    FutureProvider.autoDispose.family<List<Tag>, int>(
+  (ref, id) async {
+    final config = ref.watchConfig;
+    final client = ref.watch(gelbooruClientProvider(config));
+
+    final data = await client.getTagsFromPostId(postId: id);
+
+    return data
+        .map((e) => Tag(
+              name: e.name ?? '',
+              category: intToTagCategory(e.type ?? 0),
+              postCount: e.count ?? 0,
+            ))
+        .toList();
+  },
+);
+
 class GelbooruBuilder
     with FavoriteNotSupportedMixin, DefaultThumbnailUrlMixin
     implements BooruBuilder {
@@ -160,7 +178,6 @@ class GelbooruBuilder
               posts: payload.posts.map((e) => e as GelbooruPost).toList(),
               initialIndex: payload.initialIndex,
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
-              hasDetailsTagList: booruConfig.booruType.supportTagDetails,
             );
 
   @override

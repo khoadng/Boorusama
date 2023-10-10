@@ -26,7 +26,7 @@ class PhilomenaClient {
       '/api/v1/json/search/images',
       queryParameters: {
         if (tags != null)
-          'q': tags.map((e) => e.replaceAll('_', '+')).join(','),
+          'q': tags.map((e) => e.replaceAll('_', ' ')).join(','),
         if (page != null && page > 1) 'page': page,
         if (perPage != null) 'per_page': perPage,
         if (apiKey != null) 'key': apiKey,
@@ -46,7 +46,7 @@ class PhilomenaClient {
     final response = await _dio.get(
       '/api/v1/json/search/tags',
       queryParameters: {
-        'q': query,
+        'q': query.replaceAll('_', ' '),
         if (page != null) 'page': page,
         if (perPage != null) 'per_page': perPage,
         if (apiKey != null) 'key': apiKey,

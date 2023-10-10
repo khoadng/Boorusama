@@ -1,6 +1,7 @@
 export 'about_page.dart';
 export 'appearance_page.dart';
 export 'changelog_page.dart';
+export 'data_and_storage_page.dart';
 export 'debug_logs_page.dart';
 export 'download_page.dart';
 export 'language_page.dart';

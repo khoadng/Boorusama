@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:html/dom.dart';
 import 'package:xml/xml.dart';
 
 class TagDto {
@@ -30,6 +31,16 @@ class TagDto {
     );
   }
 
+  factory TagDto.fromHtml(Element element, int type) {
+    return TagDto(
+      id: null,
+      name: _parseNameFromElement(element),
+      count: _parseCountFromElement(element),
+      type: type,
+      ambiguous: null,
+    );
+  }
+
   final int? id;
   final String? name;
   final int? count;
@@ -39,3 +50,9 @@ class TagDto {
   @override
   String toString() => name ?? '';
 }
+
+String? _parseNameFromElement(Element tag) =>
+    tag.nodes.length >= 4 ? tag.nodes[3].text?.replaceAll(' ', '_') : null;
+
+int? _parseCountFromElement(Element tag) =>
+    tag.nodes.length >= 6 ? int.tryParse(tag.nodes[5].text ?? '') : null;

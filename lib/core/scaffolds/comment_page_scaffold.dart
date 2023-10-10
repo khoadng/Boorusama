@@ -38,9 +38,11 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
   @override
   void initState() {
     super.initState();
-    widget
-        .fetcher(widget.postId)
-        .then((value) => setState(() => comments = value));
+    widget.fetcher(widget.postId).then((value) {
+      if (mounted) {
+        setState(() => comments = value);
+      }
+    });
   }
 
   @override

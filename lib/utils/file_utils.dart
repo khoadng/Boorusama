@@ -52,10 +52,25 @@ Future<DirectorySizeInfo> getCacheSize() async {
   return getDirectorySize(cacheDir);
 }
 
+Future<DirectorySizeInfo> getImageCacheSize() async {
+  final cacheDir = await getTemporaryDirectory();
+  final imageCacheDir = Directory('${cacheDir.path}/cacheimage');
+  return getDirectorySize(imageCacheDir);
+}
+
 Future<void> clearCache() async {
   final cacheDir = await getTemporaryDirectory();
 
   if (cacheDir.existsSync()) {
     cacheDir.deleteSync(recursive: true);
+  }
+}
+
+Future<void> clearImageCache() async {
+  final cacheDir = await getTemporaryDirectory();
+  final imageCacheDir = Directory('${cacheDir.path}/cacheimage');
+
+  if (imageCacheDir.existsSync()) {
+    imageCacheDir.deleteSync(recursive: true);
   }
 }

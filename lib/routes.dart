@@ -212,6 +212,17 @@ class SettingsRoutes {
         ),
       );
 
+  static GoRoute dataAndStorage() => GoRoute(
+        path: 'data_and_storage',
+        name: '/settings/data_and_storage',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: const DataAndStoragePage(),
+          transitionsBuilder: leftToRightTransitionBuilder(),
+        ),
+      );
+
   static GoRoute privacy() => GoRoute(
         path: 'privacy',
         name: '/settings/privacy',
@@ -419,7 +430,18 @@ class Routes {
           return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
-            child: const BulkDownloadPage(),
+            child: ref.read(currentBooruConfigProvider).booruType ==
+                    BooruType.zerochan
+                ? Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Bulk Download'),
+                    ),
+                    body: const Center(
+                      child: Text(
+                          'Temporarily disabled due to an issue with getting the download link'),
+                    ),
+                  )
+                : const BulkDownloadPage(),
             transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },
@@ -441,6 +463,7 @@ class Routes {
           SettingsRoutes.download(),
           SettingsRoutes.language(),
           SettingsRoutes.performance(),
+          SettingsRoutes.dataAndStorage(),
           SettingsRoutes.privacy(),
           SettingsRoutes.search(),
           SettingsRoutes.changelog(),

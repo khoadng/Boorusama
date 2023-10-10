@@ -168,6 +168,7 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
   }
 
   void _onControllerChange() {
+    if (!mounted) return;
     setState(() {
       _updateData();
       _countTags();
