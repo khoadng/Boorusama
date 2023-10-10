@@ -1,3 +1,9 @@
+# 3.5.3
+- Add Data and Storage settings
+- [Gelbooru V2] Add tag highlighting in post details
+- Resolve an issue with certain sites not functioning on Android 7 and below
+- Address several minor bug fixes
+
 # 3.5.2
 - Fix reordering profiles not working again
 - Fix filter won't be applied properly
