@@ -430,7 +430,18 @@ class Routes {
           return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
-            child: const BulkDownloadPage(),
+            child: ref.read(currentBooruConfigProvider).booruType ==
+                    BooruType.zerochan
+                ? Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Bulk Download'),
+                    ),
+                    body: const Center(
+                      child: Text(
+                          'Temporarily disabled due to an issue with getting the download link'),
+                    ),
+                  )
+                : const BulkDownloadPage(),
             transitionsBuilder: leftToRightTransitionBuilder(),
           );
         },
