@@ -73,7 +73,8 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
                       elevation: 0,
                       backgroundColor: Colors.transparent,
                     ),
-                    body: const E621PopularPage(),
+                    body: const CustomContextMenuOverlay(
+                        child: E621PopularPage()),
                   ))),
         ),
         if (config.hasLoginDetails()) ...[
