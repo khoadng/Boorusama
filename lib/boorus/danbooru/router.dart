@@ -392,6 +392,7 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   );
 }
 
+@Deprecated('Should show tag list instead')
 Future<bool?> goToAddToBlacklistPage(
   WidgetRef ref,
   BuildContext context,

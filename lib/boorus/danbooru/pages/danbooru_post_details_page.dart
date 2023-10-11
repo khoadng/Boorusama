@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -90,12 +92,9 @@ class _DanbooruPostDetailsPageState
               ),
       statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
       onExpanded: (post) => post.loadDetailsFrom(ref),
-      tagListBuilder: (context, post) => TagsTile(
-          tags: post
-              .extractTagDetails()
-              .where((e) => e.postId == post.id)
-              .map((e) => e.name)
-              .toList()),
+      tagListBuilder: (context, post) {
+        return TagsTile(post: post);
+      },
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
@@ -182,32 +181,52 @@ class DanbooruArtistSection extends ConsumerWidget {
   }
 }
 
+final danbooruTagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>, DanbooruPost>((ref, post) async {
+  final tagsNotifier = ref.watch(danbooruTagListProvider(ref.watchConfig));
+
+  final tagString = tagsNotifier.containsKey(post.id)
+      ? tagsNotifier[post.id]!.allTags
+      : post
+          .extractTagDetails()
+          .where((e) => e.postId == post.id)
+          .map((e) => e.name)
+          .toList();
+
+  final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+
+  final tags = await repo.getTagsByName(tagString, 1);
+
+  return createTagGroupItems(tags);
+});
+
 // ignore: prefer-single-widget-per-file
 class TagsTile extends ConsumerWidget {
   const TagsTile({
     super.key,
-    required this.tags,
+    required this.post,
   });
 
-  final List<String> tags;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagNotifier = ref.watch(tagsProvider(config).notifier);
-    final tagItems = ref.watch(tagsProvider(config));
+    final tagItems = ref.watch(danbooruTagGroupsProvider(post));
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text('${tags.length} tags'),
+        title: Text('${post.tags.length} tags'),
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) => value ? tagNotifier.load(tags) : null,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: PostTagList(
-              tags: tagItems,
+              tags: tagItems.maybeWhen(
+                data: (data) => data,
+                orElse: () => null,
+              ),
               itemBuilder: (context, tag) => ContextMenu<String>(
                 items: [
                   PopupMenuItem(

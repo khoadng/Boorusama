@@ -2,11 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/functional.dart';
 
 final danbooruClientProvider =
     Provider.family<DanbooruClient, BooruConfig>((ref, booruConfig) {
@@ -69,3 +71,27 @@ final danbooruAutocompleteRepoProvider =
             .toList();
       });
 });
+
+final danbooruTagListProvider = NotifierProviderFamily<DanbooruTagListNotifier,
+    IMap<int, DanbooruTagDetails>, BooruConfig>(DanbooruTagListNotifier.new);
+
+class DanbooruTagListNotifier
+    extends FamilyNotifier<IMap<int, DanbooruTagDetails>, BooruConfig> {
+  @override
+  IMap<int, DanbooruTagDetails> build(BooruConfig arg) {
+    return <int, DanbooruTagDetails>{}.lock;
+  }
+
+  void setTags(int postId, List<String> tags) async {
+    final client = ref.read(danbooruClientProvider(arg));
+
+    final post =
+        await client.putTags(postId: postId, tags: tags).then(postDtoToPost);
+
+    state = state.add(postId, post);
+  }
+
+  void removeTags(List<int> postIds) {
+    state = state.removeWhere((key, value) => postIds.contains(key));
+  }
+}

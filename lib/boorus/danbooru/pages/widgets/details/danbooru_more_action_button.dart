@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -64,6 +65,18 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                 case 'toggle_slide_show':
                   onToggleSlideShow?.call();
                   break;
+                case 'add_tags':
+                  showDialog(
+                    context: context,
+                    builder: (_) => Dialog(
+                      child: TextField(
+                        onSubmitted: (value) => ref
+                            .read(danbooruTagListProvider(ref.watchConfig)
+                                .notifier)
+                            .setTags(post.id, [value]),
+                      ),
+                    ),
+                  );
                 // ignore: no_default_cases
                 default:
               }
@@ -96,6 +109,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   value: 'view_original',
                   child: const Text('post.image_fullview.view_original').tr(),
                 ),
+
+              const PopupMenuItem(
+                value: 'add_tags',
+                child: Text('Add tags'),
+              ),
               // const PopupMenuItem(
               //   value: 'toggle_slide_show',
               //   child: Text('Toggle slide show'),
