@@ -118,13 +118,6 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 controller: scrollController,
                 slivers: [
                   SliverToBoxAdapter(
-                    child: WarningContainer(
-                      contentBuilder: (context) => const Text(
-                        'Before editing, read the how to tag guide.',
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
@@ -188,6 +181,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       (context, index) {
                         final tag = tags[index];
                         return ListTile(
+                          visualDensity: VisualDensity.compact,
                           title: Text(
                             tag.replaceAll('_', ' '),
                             style: TextStyle(

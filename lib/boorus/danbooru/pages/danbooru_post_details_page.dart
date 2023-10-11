@@ -221,25 +221,25 @@ class TagsTile extends ConsumerWidget {
       child: ExpansionTile(
         title: Text('$count tags'),
         trailing: config.hasLoginDetails()
-            ? IconButton(
-                onPressed: () => showMaterialModalBottomSheet(
-                    context: context,
-                    builder: (context) => TagEditPage(
-                          imageUrl: post.url720x720,
-                          aspectRatio: post.aspectRatio ?? 1,
-                          rating: tagDetails != null
-                              ? tagDetails.rating
-                              : post.rating,
-                          postId: post.id,
-                          tags: tagItems.maybeWhen(
-                            data: (data) => data
+            ? ElevatedButton(
+                onPressed: tagItems.maybeWhen(
+                  data: (data) => () => showMaterialModalBottomSheet(
+                      context: context,
+                      builder: (context) => TagEditPage(
+                            imageUrl: post.url720x720,
+                            aspectRatio: post.aspectRatio ?? 1,
+                            rating: tagDetails != null
+                                ? tagDetails.rating
+                                : post.rating,
+                            postId: post.id,
+                            tags: data
                                 .map((e) => e.tags.map((e) => e.rawName))
                                 .expand((e) => e)
                                 .toList(),
-                            orElse: () => [],
-                          ),
-                        )),
-                icon: const Icon(Icons.add),
+                          )),
+                  orElse: () => null,
+                ),
+                child: const Text('Edit'),
               )
             : null,
         controlAffinity: ListTileControlAffinity.leading,
