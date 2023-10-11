@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -24,6 +25,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/context_menu.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
+import 'tag_edit_page.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
 import 'widgets/details/danbooru_post_action_toolbar.dart';
 import 'widgets/details/danbooru_recommend_artist_list.dart';
@@ -218,6 +220,23 @@ class TagsTile extends ConsumerWidget {
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text('${post.tags.length} tags'),
+        trailing: config.hasLoginDetails()
+            ? IconButton(
+                onPressed: () => showMaterialModalBottomSheet(
+                    context: context,
+                    builder: (context) => TagEditPage(
+                          postId: post.id,
+                          tags: tagItems.maybeWhen(
+                            data: (data) => data
+                                .map((e) => e.tags.map((e) => e.rawName))
+                                .expand((e) => e)
+                                .toList(),
+                            orElse: () => [],
+                          ),
+                        )),
+                icon: const Icon(Icons.add),
+              )
+            : null,
         controlAffinity: ListTileControlAffinity.leading,
         children: [
           Padding(
