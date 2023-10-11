@@ -10,6 +10,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
+//FIXME: for Danbooru, the rating is editable. This class needs to be updated to reflect that.
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({
     super.key,

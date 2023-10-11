@@ -339,6 +339,7 @@ extension DanbooruPostImageX on DanbooruPost {
 abstract interface class DanbooruTagDetails implements TagDetails {
   List<String>? get generalTags;
   List<String>? get metaTags;
+  Rating get rating;
 }
 
 extension DanbooruTagDetailsX on DanbooruTagDetails {

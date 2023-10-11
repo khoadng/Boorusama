@@ -94,9 +94,7 @@ class _DanbooruPostDetailsPageState
               ),
       statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
       onExpanded: (post) => post.loadDetailsFrom(ref),
-      tagListBuilder: (context, post) {
-        return TagsTile(post: post);
-      },
+      tagListBuilder: (context, post) => TagsTile(post: post),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
@@ -225,6 +223,14 @@ class TagsTile extends ConsumerWidget {
                 onPressed: () => showMaterialModalBottomSheet(
                     context: context,
                     builder: (context) => TagEditPage(
+                          rating: ref
+                                  .watch(danbooruTagListProvider(config))
+                                  .containsKey(post.id)
+                              ? ref
+                                  .watch(
+                                      danbooruTagListProvider(config))[post.id]!
+                                  .rating
+                              : post.rating,
                           postId: post.id,
                           tags: tagItems.maybeWhen(
                             data: (data) => data
@@ -246,7 +252,7 @@ class TagsTile extends ConsumerWidget {
                 data: (data) => data,
                 orElse: () => null,
               ),
-              itemBuilder: (context, tag) => ContextMenu<String>(
+              itemBuilder: (context, tag) => ContextMenu(
                 items: [
                   PopupMenuItem(
                     value: 'wiki',
