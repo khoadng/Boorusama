@@ -45,6 +45,7 @@ final danbooruPostFetchTransformerProvider =
 
       ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);
       ref.read(danbooruPostVotesProvider(config).notifier).getVotes(ids);
+      ref.read(danbooruTagListProvider(config).notifier).removeTags(ids);
     }
 
     return Future.value(posts).then(filterFlashFiles());

@@ -4,13 +4,16 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -22,6 +25,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/context_menu.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
+import 'tag_edit_page.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
 import 'widgets/details/danbooru_post_action_toolbar.dart';
 import 'widgets/details/danbooru_recommend_artist_list.dart';
@@ -90,12 +94,7 @@ class _DanbooruPostDetailsPageState
               ),
       statsTileBuilder: (context, post) => DanbooruPostStatsTile(post: post),
       onExpanded: (post) => post.loadDetailsFrom(ref),
-      tagListBuilder: (context, post) => TagsTile(
-          tags: post
-              .extractTagDetails()
-              .where((e) => e.postId == post.id)
-              .map((e) => e.name)
-              .toList()),
+      tagListBuilder: (context, post) => TagsTile(post: post),
       infoBuilder: (context, post) => SimpleInformationSection(
         post: post,
         showSource: true,
@@ -111,6 +110,15 @@ class _DanbooruPostDetailsPageState
         post,
         ref.watch(notesControllerProvider(post)),
       ),
+      fileDetailsBuilder: (context, post) {
+        final tagDetails =
+            ref.watch(danbooruTagListProvider(ref.watchConfig))[post.id];
+
+        return FileDetailsSection(
+          post: post,
+          rating: tagDetails != null ? tagDetails.rating : post.rating,
+        );
+      },
       topRightButtonsBuilder: (page, expanded) {
         final noteState = ref.watch(notesControllerProvider(posts[page]));
         final post = posts[page];
@@ -182,33 +190,77 @@ class DanbooruArtistSection extends ConsumerWidget {
   }
 }
 
+final danbooruTagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>, DanbooruPost>((ref, post) async {
+  final tagsNotifier = ref.watch(danbooruTagListProvider(ref.watchConfig));
+
+  final tagString = tagsNotifier.containsKey(post.id)
+      ? tagsNotifier[post.id]!.allTags
+      : post
+          .extractTagDetails()
+          .where((e) => e.postId == post.id)
+          .map((e) => e.name)
+          .toList();
+
+  final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+
+  final tags = await repo.getTagsByName(tagString, 1);
+
+  return createTagGroupItems(tags);
+});
+
 // ignore: prefer-single-widget-per-file
 class TagsTile extends ConsumerWidget {
   const TagsTile({
     super.key,
-    required this.tags,
+    required this.post,
   });
 
-  final List<String> tags;
+  final DanbooruPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagNotifier = ref.watch(tagsProvider(config).notifier);
-    final tagItems = ref.watch(tagsProvider(config));
+    final tagItems = ref.watch(danbooruTagGroupsProvider(post));
+    final tagDetails = ref.watch(danbooruTagListProvider(config))[post.id];
+    final count = tagDetails?.allTags.length ?? post.tags.length;
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text('${tags.length} tags'),
+        title: Text('$count tags'),
+        trailing: config.hasLoginDetails()
+            ? ElevatedButton(
+                onPressed: tagItems.maybeWhen(
+                  data: (data) => () => showMaterialModalBottomSheet(
+                      context: context,
+                      builder: (context) => TagEditPage(
+                            imageUrl: post.url720x720,
+                            aspectRatio: post.aspectRatio ?? 1,
+                            rating: tagDetails != null
+                                ? tagDetails.rating
+                                : post.rating,
+                            postId: post.id,
+                            tags: data
+                                .map((e) => e.tags.map((e) => e.rawName))
+                                .expand((e) => e)
+                                .toList(),
+                          )),
+                  orElse: () => null,
+                ),
+                child: const Text('Edit'),
+              )
+            : null,
         controlAffinity: ListTileControlAffinity.leading,
-        onExpansionChanged: (value) => value ? tagNotifier.load(tags) : null,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: PostTagList(
-              tags: tagItems,
-              itemBuilder: (context, tag) => ContextMenu<String>(
+              tags: tagItems.maybeWhen(
+                data: (data) => data,
+                orElse: () => null,
+              ),
+              itemBuilder: (context, tag) => ContextMenu(
                 items: [
                   PopupMenuItem(
                     value: 'wiki',

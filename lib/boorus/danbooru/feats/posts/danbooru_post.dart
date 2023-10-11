@@ -176,7 +176,16 @@ class DanbooruPost extends Equatable
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [
+        id,
+        tags,
+        generalTags,
+        artistTags,
+        characterTags,
+        copyrightTags,
+        metaTags,
+        rating,
+      ];
 }
 
 const kCensoredTags = ['loli', 'shota'];
@@ -331,4 +340,15 @@ extension DanbooruPostImageX on DanbooruPost {
 abstract interface class DanbooruTagDetails implements TagDetails {
   List<String>? get generalTags;
   List<String>? get metaTags;
+  Rating get rating;
+}
+
+extension DanbooruTagDetailsX on DanbooruTagDetails {
+  List<String> get allTags => [
+        ...artistTags ?? [],
+        ...characterTags ?? [],
+        ...copyrightTags ?? [],
+        ...generalTags ?? [],
+        ...metaTags ?? [],
+      ];
 }
