@@ -1,10 +1,11 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,11 @@ import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+
+enum TagEditExpandMode {
+  search,
+  favorite,
+}
 
 class TagEditPage extends ConsumerStatefulWidget {
   const TagEditPage({
@@ -43,7 +49,8 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   late var rating = widget.rating;
   final toBeAdded = <String>{};
   final toBeRemoved = <String>{};
-  var expanded = false;
+  TagEditExpandMode? expandMode;
+  final scrollController = ScrollController();
 
   final ratingLabels = const [
     'explicit',
@@ -53,12 +60,18 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   ];
 
   @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        if (expanded) {
+        if (expandMode != null) {
           setState(() {
-            expanded = false;
+            expandMode = null;
           });
           return Future.value(false);
         }
@@ -103,6 +116,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
             Expanded(
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   SliverToBoxAdapter(
                     child: WarningContainer(
@@ -178,35 +192,15 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                           title: Text(
                             tag.replaceAll('_', ' '),
                             style: TextStyle(
-                              color: toBeRemoved.contains(tag)
-                                  ? context.theme.hintColor
-                                  : null,
-                              decoration: toBeRemoved.contains(tag)
-                                  ? TextDecoration.lineThrough
-                                  : null,
                               fontWeight: toBeAdded.contains(tag)
                                   ? FontWeight.w900
                                   : null,
                             ),
                           ),
-                          trailing: toBeRemoved.contains(tag)
-                              ? IconButton(
-                                  onPressed: () => setState(() {
-                                    toBeRemoved.remove(tag);
-                                  }),
-                                  icon: const Icon(Icons.restart_alt),
-                                )
-                              : IconButton(
-                                  onPressed: () => setState(() {
-                                    if (toBeAdded.contains(tag)) {
-                                      tags.remove(tag);
-                                      toBeAdded.remove(tag);
-                                    } else {
-                                      toBeRemoved.add(tag);
-                                    }
-                                  }),
-                                  icon: const Icon(Icons.close),
-                                ),
+                          trailing: IconButton(
+                            onPressed: () => _removeTag(tag),
+                            icon: const Icon(Icons.close),
+                          ),
                         );
                       },
                       childCount: tags.length,
@@ -215,57 +209,179 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                 ],
               ),
             ),
-            if (!expanded)
-              Container(
-                color: context.colorScheme.background,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-                child: Row(
-                  children: [
-                    ElevatedButton(
+            switch (expandMode) {
+              TagEditExpandMode.search => SizedBox(
+                  height: 300,
+                  child: SimpleTagSearchView(
+                    backButton: IconButton(
+                      splashRadius: 20,
                       onPressed: () {
                         setState(() {
-                          expanded = true;
+                          expandMode = null;
                         });
                       },
-                      child: const Text('Search'),
+                      icon: const Icon(Icons.keyboard_arrow_down),
                     ),
-                  ],
-                ),
-              )
-            else
-              SizedBox(
-                height: 300,
-                child: SimpleTagSearchView(
-                  backButton: IconButton(
-                    splashRadius: 20,
-                    onPressed: () {
+                    closeOnSelected: false,
+                    ensureValidTag: false,
+                    onSelected: (tag) {
+                      _addTag(tag.value);
                       setState(() {
-                        expanded = false;
+                        expandMode = null;
                       });
                     },
-                    icon: const Icon(Icons.keyboard_arrow_down),
+                    textColorBuilder: (tag) =>
+                        generateAutocompleteTagColor(tag, context.themeMode),
                   ),
-                  closeOnSelected: false,
-                  ensureValidTag: false,
-                  onSelected: _onTagSuggestSelected,
-                  textColorBuilder: (tag) =>
-                      generateAutocompleteTagColor(tag, context.themeMode),
                 ),
-              )
+              TagEditExpandMode.favorite => Container(
+                  height: 300,
+                  color: context.colorScheme.background,
+                  child: TagEditFavoriteView(
+                    onRemoved: (tag) {
+                      _removeTag(tag);
+                    },
+                    onAdded: (tag) {
+                      _addTag(tag);
+                    },
+                    onClosed: () {
+                      setState(() {
+                        expandMode = null;
+                      });
+                    },
+                    isSelected: (tag) => tags.contains(tag),
+                  ),
+                ),
+              _ => Container(
+                  color: context.colorScheme.background,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            expandMode = TagEditExpandMode.search;
+                          });
+                        },
+                        child: const Text('Search'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            expandMode = TagEditExpandMode.favorite;
+                          });
+                        },
+                        child: const Text('Favorites'),
+                      ),
+                    ],
+                  ),
+                ),
+            },
           ],
         ),
       ),
     );
   }
 
-  void _onTagSuggestSelected(AutocompleteData tag) {
+  void _removeTag(String tag) {
     setState(() {
-      expanded = false;
-      if (tags.contains(tag.value)) return;
-      if (toBeAdded.contains(tag.value)) return;
-      tags.add(tag.value);
-      toBeAdded.add(tag.value);
+      if (toBeAdded.contains(tag)) {
+        tags.remove(tag);
+        toBeAdded.remove(tag);
+      } else {
+        tags.remove(tag);
+        toBeRemoved.add(tag);
+      }
     });
+  }
+
+  void _addTag(String tag) {
+    setState(() {
+      if (tags.contains(tag)) return;
+      if (toBeAdded.contains(tag)) return;
+      tags.add(tag);
+      toBeAdded.add(tag);
+
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        () {
+          if (!mounted) return;
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        },
+      );
+    });
+  }
+}
+
+class TagEditFavoriteView extends ConsumerStatefulWidget {
+  const TagEditFavoriteView({
+    super.key,
+    required this.onRemoved,
+    required this.onAdded,
+    required this.onClosed,
+    required this.isSelected,
+  });
+
+  final void Function(String tag) onRemoved;
+  final void Function(String tag) onAdded;
+  final bool Function(String tag) isSelected;
+  final void Function() onClosed;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TagEditFavoriteViewState();
+}
+
+class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
+  @override
+  Widget build(BuildContext context) {
+    final tags = ref.watch(favoriteTagsProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text('Favorite tags'),
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: widget.onClosed,
+          icon: const Icon(Icons.keyboard_arrow_down),
+        ),
+      ),
+      backgroundColor: context.colorScheme.background,
+      body: Builder(
+        builder: (context) {
+          return Wrap(
+            spacing: 4,
+            children: tags.map((tag) {
+              final selected = widget.isSelected(tag.name);
+
+              return RawChip(
+                selected: selected,
+                showCheckmark: true,
+                checkmarkColor:
+                    context.themeMode.isDark ? Colors.black : Colors.white,
+                visualDensity: VisualDensity.compact,
+                onSelected: (value) => value
+                    ? widget.onAdded(tag.name)
+                    : widget.onRemoved(tag.name),
+                label: Text(
+                  tag.name.replaceUnderscoreWithSpace(),
+                  style: TextStyle(
+                    color: selected ? Colors.black : Colors.white,
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+        },
+      ),
+    );
   }
 }
