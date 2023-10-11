@@ -1,16 +1,17 @@
 // ignore: prefer-single-widget-per-file
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -20,7 +21,6 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
