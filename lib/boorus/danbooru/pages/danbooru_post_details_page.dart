@@ -223,6 +223,8 @@ class TagsTile extends ConsumerWidget {
                 onPressed: () => showMaterialModalBottomSheet(
                     context: context,
                     builder: (context) => TagEditPage(
+                          imageUrl: post.url720x720,
+                          aspectRatio: post.aspectRatio ?? 1,
                           rating: ref
                                   .watch(danbooruTagListProvider(config))
                                   .containsKey(post.id)
