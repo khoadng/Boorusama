@@ -184,6 +184,7 @@ class DanbooruPost extends Equatable
         characterTags,
         copyrightTags,
         metaTags,
+        rating,
       ];
 }
 

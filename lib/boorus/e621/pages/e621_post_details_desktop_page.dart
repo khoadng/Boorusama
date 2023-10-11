@@ -125,7 +125,10 @@ class _DanbooruPostDetailsDesktopPageState
                     // ),
                     const Divider(height: 8, thickness: 1),
                     E621TagsTile(post: post),
-                    FileDetailsSection(post: post),
+                    FileDetailsSection(
+                      post: post,
+                      rating: post.rating,
+                    ),
                     const Divider(height: 8, thickness: 1),
                   ],
                 ),

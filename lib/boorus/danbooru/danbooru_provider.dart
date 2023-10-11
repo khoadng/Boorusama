@@ -73,6 +73,7 @@ final danbooruAutocompleteRepoProvider =
       });
 });
 
+//FIXME: Desktop won't work
 final danbooruTagListProvider = NotifierProviderFamily<DanbooruTagListNotifier,
     IMap<int, DanbooruTagDetails>, BooruConfig>(DanbooruTagListNotifier.new);
 
@@ -109,7 +110,7 @@ class DanbooruTagListNotifier
           if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',
           if (removedTags != null && removedTags.isNotEmpty)
             'Removed: $removedTags',
-          if (rating != null) 'Rating: ${rating.name}',
+          if (rating != null) 'Rating changed: ${rating.name}',
         ].join(', '));
 
     state = state.add(postId, post);

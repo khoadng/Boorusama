@@ -3,6 +3,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
@@ -16,12 +17,15 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 enum TagEditExpandMode {
   search,
   favorite,
 }
+
+const _kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
 
 class TagEditPage extends ConsumerStatefulWidget {
   const TagEditPage({
@@ -118,9 +122,23 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text(
-                        'Rating',
-                        style: Theme.of(context).textTheme.titleLarge,
+                      child: Row(
+                        children: [
+                          Text(
+                            'Rating',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          IconButton(
+                            splashRadius: 20,
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () =>
+                                launchExternalUrlString(_kHowToRateUrl),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.circleQuestion,
+                              size: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

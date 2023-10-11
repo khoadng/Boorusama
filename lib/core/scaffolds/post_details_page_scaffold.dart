@@ -35,6 +35,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.commentsBuilder,
     this.poolTileBuilder,
     this.statsTileBuilder,
+    this.fileDetailsBuilder,
   });
 
   final int initialIndex;
@@ -55,6 +56,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, T post)? commentsBuilder;
   final Widget Function(BuildContext context, T post)? poolTileBuilder;
   final Widget Function(BuildContext context, T post)? statsTileBuilder;
+  final Widget Function(BuildContext context, T post)? fileDetailsBuilder;
 
   final Widget Function(BuildContext context, T post)?
       sliverRelatedPostsBuilder;
@@ -261,7 +263,13 @@ class _PostDetailPageScaffoldState<T extends Post>
             onTap: widget.onTagTap,
           ),
         const Divider(height: 8, thickness: 1),
-        FileDetailsSection(post: post),
+        if (widget.fileDetailsBuilder != null)
+          widget.fileDetailsBuilder!(context, post)
+        else
+          FileDetailsSection(
+            post: post,
+            rating: post.rating,
+          ),
         if (widget.showSourceTile)
           post.source.whenWeb(
             (source) => SourceSection(source: source),

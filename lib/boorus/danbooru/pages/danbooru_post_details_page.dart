@@ -110,6 +110,15 @@ class _DanbooruPostDetailsPageState
         post,
         ref.watch(notesControllerProvider(post)),
       ),
+      fileDetailsBuilder: (context, post) {
+        final tagDetails =
+            ref.watch(danbooruTagListProvider(ref.watchConfig))[post.id];
+
+        return FileDetailsSection(
+          post: post,
+          rating: tagDetails != null ? tagDetails.rating : post.rating,
+        );
+      },
       topRightButtonsBuilder: (page, expanded) {
         final noteState = ref.watch(notesControllerProvider(posts[page]));
         final post = posts[page];

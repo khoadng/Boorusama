@@ -111,7 +111,10 @@ class _DanbooruPostDetailsDesktopPageState
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    FileDetailsSection(post: post),
+                    FileDetailsSection(
+                      post: post,
+                      rating: post.rating,
+                    ),
                     const Divider(height: 8, thickness: 1),
                     GelbooruPostActionToolbar(post: post),
                     const Divider(height: 8, thickness: 1),
