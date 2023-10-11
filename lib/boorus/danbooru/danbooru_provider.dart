@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -82,11 +83,34 @@ class DanbooruTagListNotifier
     return <int, DanbooruTagDetails>{}.lock;
   }
 
-  void setTags(int postId, List<String> tags) async {
+  void setTags(
+    int postId, {
+    List<String>? addedTags,
+    List<String>? removedTags,
+    Rating? rating,
+  }) async {
+    if (addedTags == null && removedTags == null && rating == null) {
+      return;
+    }
+    final tags = [
+      ...addedTags ?? <String>[],
+      ...removedTags?.map((e) => '-$e') ?? <String>[],
+      if (rating != null) 'rating:${rating.name}',
+    ];
+
     final client = ref.read(danbooruClientProvider(arg));
 
     final post =
         await client.putTags(postId: postId, tags: tags).then(postDtoToPost);
+
+    ref.read(loggerProvider).logI(
+        'Tag Edit',
+        [
+          if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',
+          if (removedTags != null && removedTags.isNotEmpty)
+            'Removed: $removedTags',
+          if (rating != null) 'Rating: ${rating.name}',
+        ].join(', '));
 
     state = state.add(postId, post);
   }

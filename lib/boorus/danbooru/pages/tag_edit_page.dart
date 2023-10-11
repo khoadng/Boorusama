@@ -78,7 +78,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit tags'),
+          title: const Text('Edit'),
           actions: [
             TextButton(
               onPressed: (toBeAdded.isNotEmpty ||
@@ -89,13 +89,11 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                           .read(
                               danbooruTagListProvider(ref.readConfig).notifier)
                           .setTags(
-                        widget.postId,
-                        [
-                          ...toBeAdded,
-                          ...toBeRemoved.map((e) => '-$e'),
-                          if (rating != widget.rating) 'rating:${rating.name}',
-                        ],
-                      );
+                            widget.postId,
+                            addedTags: toBeAdded.toList(),
+                            removedTags: toBeRemoved.toList(),
+                            rating: rating != widget.rating ? rating : null,
+                          );
                       context.pop();
                     }
                   : null,
@@ -164,7 +162,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tags',
+                            '${tags.length} tag${tags.length > 1 ? 's' : ''}',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],
