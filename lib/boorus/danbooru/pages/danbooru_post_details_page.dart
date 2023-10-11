@@ -213,11 +213,13 @@ class TagsTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
     final tagItems = ref.watch(danbooruTagGroupsProvider(post));
+    final tagDetails = ref.watch(danbooruTagListProvider(config))[post.id];
+    final count = tagDetails?.allTags.length ?? post.tags.length;
 
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text('${post.tags.length} tags'),
+        title: Text('$count tags'),
         trailing: config.hasLoginDetails()
             ? IconButton(
                 onPressed: () => showMaterialModalBottomSheet(
@@ -225,13 +227,8 @@ class TagsTile extends ConsumerWidget {
                     builder: (context) => TagEditPage(
                           imageUrl: post.url720x720,
                           aspectRatio: post.aspectRatio ?? 1,
-                          rating: ref
-                                  .watch(danbooruTagListProvider(config))
-                                  .containsKey(post.id)
-                              ? ref
-                                  .watch(
-                                      danbooruTagListProvider(config))[post.id]!
-                                  .rating
+                          rating: tagDetails != null
+                              ? tagDetails.rating
                               : post.rating,
                           postId: post.id,
                           tags: tagItems.maybeWhen(

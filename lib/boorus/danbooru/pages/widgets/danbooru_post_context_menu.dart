@@ -1,6 +1,8 @@
 // ignore: prefer-single-widget-per-file
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/danbooru/pages/tag_edit_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +20,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
@@ -37,6 +40,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final bookmarkState = ref.watch(bookmarkProvider(booruConfig));
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final tags = ref.watch(danbooruTagListProvider(booruConfig));
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -103,6 +107,26 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             onPressed: () =>
                 launchExternalUrlString(post.getLink(booruConfig.url)),
           ),
+          if (hasAccount)
+            ContextMenuButtonConfig(
+              'Edit',
+              onPressed: () {
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (context) => TagEditPage(
+                    postId: post.id,
+                    tags: tags.containsKey(post.id)
+                        ? tags[post.id]!.allTags
+                        : post.tags,
+                    rating: tags.containsKey(post.id)
+                        ? tags[post.id]!.rating
+                        : post.rating,
+                    imageUrl: post.url720x720,
+                    aspectRatio: post.aspectRatio ?? 1,
+                  ),
+                );
+              },
+            ),
           if (onMultiSelect != null)
             ContextMenuButtonConfig(
               'post.action.select'.tr(),
