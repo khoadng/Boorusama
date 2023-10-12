@@ -9,9 +9,16 @@ class DanbooruForumTopicsNotifier
     extends PagedNotifier<int, DanbooruForumTopic> {
   DanbooruForumTopicsNotifier({
     required ForumTopicRepository<DanbooruForumTopic> repo,
+    required void Function(List<DanbooruForumTopic> data) onLoaded,
   }) : super(
-          load: (key, limit) =>
-              repo.getForumTopicsOrEmpty(key).then((value) => value),
+          load: (key, limit) async {
+            final topics =
+                await repo.getForumTopicsOrEmpty(key).then((value) => value);
+
+            onLoaded(topics);
+
+            return topics;
+          },
           nextPageKeyBuilder: NextPageKeyBuilderDefault.mysqlPagination,
         );
 }

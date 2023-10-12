@@ -7,7 +7,6 @@ import 'danbooru_forum_post.dart';
 
 // Project imports:
 
-
 class DanbooruForumPostsNotifier extends PagedNotifier<int, DanbooruForumPost> {
   DanbooruForumPostsNotifier({
     required int topicId,

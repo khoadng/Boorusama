@@ -2,7 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/users/creator.dart';
 import 'package:boorusama/core/feats/forums/forums.dart';
 import 'danbooru_forum_post.dart';
 
@@ -15,8 +14,8 @@ enum DanbooruTopicCategory {
 class DanbooruForumTopic extends Equatable implements ForumTopic {
   const DanbooruForumTopic({
     required this.id,
-    required this.creator,
-    required this.updater,
+    required this.creatorId,
+    required this.updaterId,
     required this.title,
     required this.responseCount,
     required this.isSticky,
@@ -30,8 +29,6 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
 
   @override
   final int id;
-  final Creator creator;
-  final Creator updater;
   @override
   final String title;
   @override
@@ -50,17 +47,17 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
   final DanbooruForumPost originalPost;
 
   @override
-  int? get creatorId => creator.id;
+  final int creatorId;
 
   @override
-  int? get updaterId => updater.id;
+  final int updaterId;
 
   @override
   List<Object?> get props => [
         id,
-        creator,
-        updater,
         title,
+        creatorId,
+        updaterId,
         responseCount,
         isSticky,
         isLocked,

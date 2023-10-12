@@ -5,10 +5,10 @@ import 'package:dio/dio.dart';
 import 'types/types.dart';
 
 const _kForumParams =
-    'id,creator,updater,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level,original_post';
+    'id,creator_id,updater_id,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level,original_post';
 
 const _kForumPostParams =
-    'id,creator,updater,topic_id,body,created_at,updated_at,is_deleted,votes';
+    'id,creator_id,updater_id,topic_id,body,created_at,updated_at,is_deleted,votes';
 
 // const _kForumPostVoteParams =
 //     'id,forum_post_id,score,created_at,updated_at,creator';
