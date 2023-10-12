@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'types/types.dart';
 
-const _kForumParams =
-    'id,creator_id,updater_id,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level,original_post';
+// const _kForumParams =
+//     'id,creator_id,updater_id,title,response_count,is_sticky,is_locked,created_at,updated_at,is_deleted,category_id,category_id,min_level';
 
 const _kForumPostParams =
     'id,creator_id,updater_id,topic_id,body,created_at,updated_at,is_deleted,votes';
@@ -31,7 +31,7 @@ mixin DanbooruClientForums {
         if (page != null) 'page': page,
         if (order != null) 'search[order]': order.name,
         if (limit != null) 'limit': limit,
-        'only': _kForumParams,
+        // 'only': _kForumParams,
       },
     );
 

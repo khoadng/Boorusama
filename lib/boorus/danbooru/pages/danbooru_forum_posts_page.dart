@@ -24,13 +24,14 @@ class DanbooruForumPostsPage extends ConsumerWidget {
   const DanbooruForumPostsPage({
     super.key,
     required this.topicId,
-    required this.originalPostId,
     required this.title,
+    required this.responseCount,
   });
 
   final int topicId;
-  final int originalPostId;
+  final int responseCount;
   final String title;
+  final int _pageSize = 20;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +49,8 @@ class DanbooruForumPostsPage extends ConsumerWidget {
           child: CircularProgressIndicator.adaptive(),
         ),
         pullToRefresh: false,
-        firstPageKey: originalPostId,
+        firstPageKey: (responseCount / _pageSize).ceil(),
+        limit: _pageSize,
         provider: danbooruForumPostsProvider(topicId),
         itemBuilder: (context, post, index) {
           final creator = ref.watch(danbooruCreatorProvider(post.creatorId));

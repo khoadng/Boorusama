@@ -1,6 +1,3 @@
-// Project imports:
-import 'forum_post_dto.dart';
-
 class ForumTopicDto {
   final int? id;
   final int? creatorId;
@@ -15,8 +12,6 @@ class ForumTopicDto {
   final int? categoryId;
   final int? minLevel;
 
-  final ForumPostDto? originalPost;
-
   ForumTopicDto({
     this.id,
     this.creatorId,
@@ -30,7 +25,6 @@ class ForumTopicDto {
     this.isDeleted,
     this.categoryId,
     this.minLevel,
-    this.originalPost,
   });
 
   factory ForumTopicDto.fromJson(Map<String, dynamic> json) {
@@ -47,9 +41,6 @@ class ForumTopicDto {
       isDeleted: json['is_deleted'],
       categoryId: json['category_id'],
       minLevel: json['min_level'],
-      originalPost: json['original_post'] != null
-          ? ForumPostDto.fromJson(json['original_post'])
-          : null,
     );
   }
 

@@ -42,10 +42,6 @@ final danbooruForumTopicRepoProvider =
                     category: dto.categoryId != null
                         ? intToDanbooruTopicCategory(dto.categoryId!)
                         : DanbooruTopicCategory.general,
-                    originalPost: dto.originalPost != null
-                        ? danbooruForumPostDtoToDanbooruForumPost(
-                            dto.originalPost!)
-                        : DanbooruForumPost.empty(),
                   ))
               .toList(),
         ),
@@ -61,7 +57,7 @@ final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose.family<
   return DanbooruForumTopicsNotifier(
     repo: ref.watch(danbooruForumTopicRepoProvider(config)),
     onLoaded: (data) {
-      notifier.load(data.map((e) => e.originalPost.creatorId).toList());
+      notifier.load(data.map((e) => e.creatorId).toList());
     },
   );
 });
@@ -76,7 +72,7 @@ final danbooruForumPostRepoProvider =
     fetch: (topicId, {required page, limit}) async {
       final value = await client.getForumPosts(
         topicId: topicId,
-        page: 'a${page - 1}', // offset by one to account for the last post
+        page: page.toString(),
         limit: limit,
       );
 

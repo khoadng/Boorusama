@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/forums/forums.dart';
-import 'danbooru_forum_post.dart';
 
 enum DanbooruTopicCategory {
   general,
@@ -24,7 +23,6 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
     required this.updatedAt,
     required this.isDeleted,
     required this.category,
-    required this.originalPost,
   });
 
   @override
@@ -43,8 +41,6 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
   final DateTime updatedAt;
   final bool isDeleted;
   final DanbooruTopicCategory category;
-
-  final DanbooruForumPost originalPost;
 
   @override
   final int creatorId;
@@ -65,7 +61,6 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
         updatedAt,
         isDeleted,
         category,
-        originalPost,
       ];
 }
 

@@ -63,8 +63,8 @@ class DanbooruForumPage extends ConsumerWidget {
             onTap: () => context.navigator.push(MaterialPageRoute(
               builder: (_) => DanbooruForumPostsPage(
                 topicId: topic.id,
-                originalPostId: topic.originalPost.id,
                 title: topic.title,
+                responseCount: topic.responseCount,
               ),
             )),
           );
