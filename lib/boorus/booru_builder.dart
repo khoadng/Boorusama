@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,8 +25,10 @@ import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
 import 'danbooru/feats/posts/posts.dart';
@@ -93,6 +95,11 @@ typedef GridThumbnailUrlBuilder = String Function(
   Post post,
 );
 
+typedef TagColorBuilder = Color Function(
+  ThemeMode themeMode,
+  String? tagType,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -104,6 +111,8 @@ abstract class BooruBuilder {
   ArtistPageBuilder? get artistPageBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
+
+  TagColorBuilder get tagColorBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
@@ -151,6 +160,34 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
             ImageQuality.original =>
               post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
           };
+}
+
+mixin DefaultTagColorMixin implements BooruBuilder {
+  @override
+  TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
+        final colors =
+            themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
+
+        return switch (tagType) {
+          '0' || 'general' => colors.general,
+          '1' || 'artist' => colors.artist,
+          '3' || 'copyright' => colors.copyright,
+          '4' || 'character' => colors.character,
+          '5' || 'meta' || 'metadata' => colors.meta,
+          _ => Colors.white,
+        };
+      };
+}
+
+extension BooruBuilderWidgetRef on WidgetRef {
+  Color getTagColor(
+    BuildContext context,
+    String tagType, {
+    ThemeMode? themeMode,
+  }) =>
+      watchBooruBuilder(watchConfig)
+          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType) ??
+      Colors.white;
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
@@ -320,6 +357,15 @@ extension BooruWidgetRef on WidgetRef {
     if (config == null) return null;
 
     final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+  }
+
+  BooruBuilder? watchBooruBuilder(BooruConfig? config) {
+    if (config == null) return null;
+
+    final booruBuilders = watch(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
     return booruBuilderFunc != null ? booruBuilderFunc(config) : null;

@@ -8,20 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 
 class TrendingTagNotifier
     extends FamilyAsyncNotifier<List<Search>, BooruConfig> {
   @override
   FutureOr<List<Search>> build(BooruConfig arg) {
-    ref.listen(
-      shouldFetchTrendingProvider,
-      (previous, next) {
-        if (previous != next && next) {
-          ref.invalidateSelf();
-        }
-      },
-    );
-
+    if (arg.booruType != BooruType.danbooru) return [];
     return fetch();
   }
 
@@ -41,9 +35,13 @@ class TrendingTagNotifier
     final filtered =
         searches.where((s) => !excludedTags.contains(s.keyword)).toList();
 
-    ref
-        .read(danbooruTagCategoriesProviderProvider(arg).notifier)
-        .save(filtered.map((e) => e.keyword).toList());
+    final tags = await ref
+        .read(tagRepoProvider(arg))
+        .getTagsByName(filtered.map((e) => e.keyword).toList(), 1);
+
+    await ref
+        .read(booruTagTypeStoreProvider)
+        .saveTagIfNotExist(arg.booruType, tags);
 
     return filtered;
   }

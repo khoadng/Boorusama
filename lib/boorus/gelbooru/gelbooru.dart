@@ -108,7 +108,10 @@ final gelbooruV2TagsFromIdProvider =
 );
 
 class GelbooruBuilder
-    with FavoriteNotSupportedMixin, DefaultThumbnailUrlMixin
+    with
+        FavoriteNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
+        DefaultTagColorMixin
     implements BooruBuilder {
   GelbooruBuilder({
     required this.postRepo,

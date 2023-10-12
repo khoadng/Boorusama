@@ -7,13 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {
@@ -57,7 +56,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           title: Text(
             tags[index].tag.replaceUnderscoreWithSpace(),
             style: TextStyle(
-              color: getTagColor(tags[index].category, context.themeMode),
+              color: ref.getTagColor(context, tags[index].category.name),
             ),
           ),
           trailing: PopupMenuButton(

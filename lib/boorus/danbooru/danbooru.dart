@@ -19,7 +19,7 @@ import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
-class DanbooruBuilder implements BooruBuilder {
+class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,

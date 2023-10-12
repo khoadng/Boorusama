@@ -7,7 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
+import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -26,6 +28,21 @@ enum TagEditExpandMode {
 }
 
 const _kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
+
+final danbooruTagEditColorProvider =
+    FutureProvider.autoDispose.family<Color, String>((ref, tag) async {
+  final config = ref.watchConfig;
+  final settings = ref.watch(settingsProvider);
+  final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
+  final tagType = await tagTypeStore.get(config.booruType, tag);
+
+  final color = ref
+          .watch(booruBuilderProvider)
+          ?.tagColorBuilder(settings.themeMode, tagType) ??
+      Colors.white;
+
+  return color;
+});
 
 class TagEditPage extends ConsumerStatefulWidget {
   const TagEditPage({
@@ -201,6 +218,12 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                           title: Text(
                             tag.replaceAll('_', ' '),
                             style: TextStyle(
+                              color: ref
+                                  .watch(danbooruTagEditColorProvider(tag))
+                                  .maybeWhen(
+                                    data: (color) => color,
+                                    orElse: () => null,
+                                  ),
                               fontWeight: toBeAdded.contains(tag)
                                   ? FontWeight.w900
                                   : null,
@@ -240,7 +263,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                       });
                     },
                     textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(tag, context.themeMode),
+                        generateAutocompleteTagColor(ref, context, tag),
                   ),
                 ),
               TagEditExpandMode.favorite => Container(

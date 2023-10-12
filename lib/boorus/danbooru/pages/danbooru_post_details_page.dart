@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
@@ -192,7 +193,8 @@ class DanbooruArtistSection extends ConsumerWidget {
 
 final danbooruTagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, DanbooruPost>((ref, post) async {
-  final tagsNotifier = ref.watch(danbooruTagListProvider(ref.watchConfig));
+  final config = ref.watchConfig;
+  final tagsNotifier = ref.watch(danbooruTagListProvider(config));
 
   final tagString = tagsNotifier.containsKey(post.id)
       ? tagsNotifier[post.id]!.allTags
@@ -202,9 +204,13 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
           .map((e) => e.name)
           .toList();
 
-  final repo = ref.watch(tagRepoProvider(ref.watchConfig));
+  final repo = ref.watch(tagRepoProvider(config));
 
   final tags = await repo.getTagsByName(tagString, 1);
+
+  await ref
+      .watch(booruTagTypeStoreProvider)
+      .saveTagIfNotExist(config.booruType, tags);
 
   return createTagGroupItems(tags);
 });

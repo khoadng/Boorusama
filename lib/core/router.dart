@@ -287,7 +287,7 @@ void goToQuickSearchPage(
                 : null,
             onSelected: onSelected,
             textColorBuilder: (tag) =>
-                generateAutocompleteTagColor(tag, context.themeMode),
+                generateAutocompleteTagColor(ref, context, tag),
           )
         : SimpleTagSearchView(
             onSubmitted: onSubmitted,
@@ -299,7 +299,7 @@ void goToQuickSearchPage(
             ensureValidTag: ensureValidTag,
             onSelected: onSelected,
             textColorBuilder: (tag) =>
-                generateAutocompleteTagColor(tag, context.themeMode),
+                generateAutocompleteTagColor(ref, context, tag),
           ),
   );
 }

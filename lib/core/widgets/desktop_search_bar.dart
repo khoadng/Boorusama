@@ -86,8 +86,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                               context.focusScope.unfocus();
                             },
                             textColorBuilder: (tag) =>
-                                generateAutocompleteTagColor(
-                                    tag, context.themeMode),
+                                generateAutocompleteTagColor(ref, context, tag),
                           )
                         : Material(
                             color: context.colorScheme.background,

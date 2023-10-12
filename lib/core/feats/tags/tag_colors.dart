@@ -1,23 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
-// Project imports:
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
-
-Color getTagColor(TagCategory category, ThemeMode themeMode) {
-  final colors =
-      themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
-  return switch (category) {
-    TagCategory.artist => colors.artist,
-    TagCategory.copyright => colors.copyright,
-    TagCategory.charater => colors.character,
-    TagCategory.general => colors.general,
-    TagCategory.meta => colors.meta,
-    TagCategory.invalid_ => colors.general
-  };
-}
-
 class TagColors {
   const TagColors({
     required this.artist,

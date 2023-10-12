@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -39,16 +39,18 @@ class MostSearchTagList extends ConsumerWidget {
                 itemCount: searches.length,
                 itemBuilder: (context, index) {
                   final isSelected = selected == searches[index].keyword;
-                  final search = searches[index];
-                  final category =
-                      ref.watch(danbooruTagCategoryProvider(search.keyword));
-
-                  final colors = category == null
-                      ? null
-                      : generateChipColors(
-                          getTagColor(category, context.themeMode),
-                          context.themeMode,
-                        );
+                  final colors = ref
+                      .watch(
+                          danbooruTagCategoryProvider(searches[index].keyword))
+                      .maybeWhen(
+                        data: (data) => data != null
+                            ? generateChipColors(
+                                ref.getTagColor(context, data.name),
+                                context.themeMode,
+                              )
+                            : null,
+                        orElse: () => null,
+                      );
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),

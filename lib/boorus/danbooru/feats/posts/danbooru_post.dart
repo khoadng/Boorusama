@@ -222,7 +222,7 @@ extension PostX on DanbooruPost {
           )),
       ...p.characterTags.map((e) => PostDetailTag(
             name: e,
-            category: TagCategory.charater.stringify(),
+            category: TagCategory.character.stringify(),
             postId: p.id,
           )),
       ...p.copyrightTags.map((e) => PostDetailTag(
@@ -255,7 +255,7 @@ extension PostX on DanbooruPost {
     }
 
     for (final t in characterTags) {
-      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
+      tags.add(Tag(name: t, category: TagCategory.character, postCount: 0));
     }
 
     for (final t in metaTags) {

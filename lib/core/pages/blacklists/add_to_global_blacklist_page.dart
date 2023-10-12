@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 
 class AddToGlobalBlacklistPage extends ConsumerWidget {
   const AddToGlobalBlacklistPage({
@@ -37,7 +37,7 @@ class AddToGlobalBlacklistPage extends ConsumerWidget {
             title: Text(
               tags[index].displayName,
               style: TextStyle(
-                color: getTagColor(tags[index].category, context.themeMode),
+                color: ref.getTagColor(context, tags[index].category.name),
               ),
             ),
             onTap: () {

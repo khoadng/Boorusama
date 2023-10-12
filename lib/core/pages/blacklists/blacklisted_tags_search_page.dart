@@ -133,8 +133,8 @@ class _BlacklistedTagsSearchPageState
                       final tags = ref.watch(suggestionProvider(query.text));
 
                       return TagSuggestionItems(
-                        textColorBuilder: (tag) => generateAutocompleteTagColor(
-                            tag, context.themeMode),
+                        textColorBuilder: (tag) =>
+                            generateAutocompleteTagColor(ref, context, tag),
                         tags: tags,
                         currentQuery: sanitizeQuery(query.text),
                         onItemTap: (tag) {

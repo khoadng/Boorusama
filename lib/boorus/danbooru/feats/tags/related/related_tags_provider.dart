@@ -21,7 +21,7 @@ final danbooruRelatedTagRepProvider =
           query: query,
           category: switch (category) {
             TagCategory.artist => danbooru.TagCategory.artist,
-            TagCategory.charater => danbooru.TagCategory.character,
+            TagCategory.character => danbooru.TagCategory.character,
             TagCategory.general => danbooru.TagCategory.general,
             TagCategory.copyright => danbooru.TagCategory.copyright,
             TagCategory.meta => danbooru.TagCategory.meta,

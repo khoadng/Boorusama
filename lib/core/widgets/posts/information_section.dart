@@ -15,7 +15,7 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class InformationSection extends StatelessWidget {
+class InformationSection extends ConsumerWidget {
   const InformationSection({
     super.key,
     this.padding,
@@ -39,7 +39,7 @@ class InformationSection extends StatelessWidget {
   final void Function(BuildContext context, String artist)? onArtistTagTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding:
           padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -84,9 +84,10 @@ class InformationSection extends StatelessWidget {
                           label: artistTags.first.replaceUnderscoreWithSpace(),
                           onTap: () =>
                               onArtistTagTap?.call(context, artistTags.first),
-                          backgroundColor: getTagColor(
-                            TagCategory.artist,
-                            ThemeMode.light,
+                          backgroundColor: ref.getTagColor(
+                            context,
+                            TagCategory.artist.name,
+                            themeMode: ThemeMode.light,
                           ),
                         ),
                       ),

@@ -9,7 +9,6 @@ import 'package:boorusama/core/feats/search/selected_tag_controller.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/pages/search/selected_tag_list_with_data.dart';
 import 'package:boorusama/core/widgets/tags/tag_suggestion_items.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'search_controller.dart';
 import 'suggestions_notifier.dart';
 
@@ -49,7 +48,7 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                     searchController.tapTag(tag.value);
                   },
                   textColorBuilder: (tag) =>
-                      generateAutocompleteTagColor(tag, context.themeMode),
+                      generateAutocompleteTagColor(ref, context, tag),
                 );
               },
             ),

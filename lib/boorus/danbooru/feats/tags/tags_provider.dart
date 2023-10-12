@@ -7,7 +7,6 @@ import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/functional.dart';
 
 final popularSearchProvider =
     Provider.family<PopularSearchRepository, BooruConfig>(
@@ -61,31 +60,11 @@ final trendingTagsProvider = AsyncNotifierProvider.family<TrendingTagNotifier,
   TrendingTagNotifier.new,
 );
 
-final shouldFetchTrendingProvider = Provider<bool>((ref) {
-  final config = ref.watchConfig;
-  final booruType = intToBooruType(config.booruId);
-
-  return booruType == BooruType.danbooru;
-});
-
-final danbooruTagCategoryRepoProvider =
-    Provider.family<DanbooruTagCategoryRepository, BooruConfig>(
-  (ref, config) {
-    return DanbooruTagCategoryRepository(config: config);
-  },
-);
-
-final danbooruTagCategoriesProviderProvider = NotifierProvider.family<
-    DanbooruTagCategoryNotifier, IMap<String, TagCategory>, BooruConfig>(
-  DanbooruTagCategoryNotifier.new,
-  dependencies: [
-    danbooruTagCategoryRepoProvider,
-    danbooruTagRepoProvider,
-  ],
-);
-
 final danbooruTagCategoryProvider =
-    Provider.family<TagCategory?, String>((ref, tag) {
+    FutureProvider.family<TagCategory?, String>((ref, tag) async {
   final config = ref.watchConfig;
-  return ref.watch(danbooruTagCategoriesProviderProvider(config))[tag];
+  final store = ref.watch(booruTagTypeStoreProvider);
+  final type = await store.get(config.booruType, tag);
+
+  return stringToTagCategory(type);
 });

@@ -9,9 +9,11 @@ import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
+import 'package:boorusama/foundation/theme/theme.dart';
 
 final zerochanClientProvider =
     Provider.family<ZerochanClient, BooruConfig>((ref, config) {
@@ -140,4 +142,18 @@ class ZerochanBuilder
   @override
   AutocompleteFetcher get autocompleteFetcher =>
       (query) => autocompleteRepo.getAutocomplete(query.toLowerCase());
+
+  @override
+  TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
+        final colors =
+            themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
+
+        return switch (tagType) {
+          'mangaka' || 'studio' => colors.artist,
+          'source' || 'game' || 'visual_novel' || 'series' => colors.copyright,
+          'character' => colors.character,
+          'meta' => colors.meta,
+          _ => colors.general,
+        };
+      };
 }

@@ -48,10 +48,10 @@ final sankakuPostRepoProvider =
 
           final characterTags = e.tags
                   ?.where(
-                      (e) => intToTagCategory(e.type) == TagCategory.charater)
+                      (e) => intToTagCategory(e.type) == TagCategory.character)
                   .map((e) => Tag(
                       name: e.name ?? '????',
-                      category: TagCategory.charater,
+                      category: TagCategory.character,
                       postCount: e.postCount ?? 0))
                   .toList() ??
               [];
