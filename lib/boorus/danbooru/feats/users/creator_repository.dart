@@ -31,7 +31,7 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
     final now = DateTime.now();
     final twoDaysAgo = now.subtract(const Duration(days: 2));
 
-    final ids = idComma.split(',');
+    final ids = idComma.split(',').toSet();
 
     // Identify IDs not in cache
     final idsNotInCached = ids.where((e) => !box.containsKey(e)).toList();
