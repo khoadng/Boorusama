@@ -30,6 +30,7 @@ part 'sankaku_provider.dart';
 class SankakuBuilder
     with
         PostCountNotSupportedMixin,
+        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultBooruUIMixin

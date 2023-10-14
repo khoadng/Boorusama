@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'pages/create_danbooru_config_page.dart';
@@ -26,12 +27,14 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
     required this.favoriteRepo,
     required this.favoriteChecker,
     required this.postCountRepo,
+    required this.noteRepo,
   });
 
   final PostRepository<DanbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
+  final NoteRepository noteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -124,4 +127,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
       (post as DanbooruPost).thumbnailFromSettings(settings);
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 }

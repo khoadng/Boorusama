@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -31,7 +32,9 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
+import 'danbooru/feats/notes/notes.dart';
 import 'danbooru/feats/posts/posts.dart';
+import 'e621/feats/notes/notes.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
@@ -84,6 +87,8 @@ typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
   String query,
 );
 
+typedef NoteFetcher = Future<List<Note>> Function(int postId);
+
 typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
 typedef FavoriteChecker = bool Function(int postId);
@@ -117,6 +122,7 @@ abstract class BooruBuilder {
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;
+  NoteFetcher? get noteFetcher;
 
   // Action Builders
   FavoriteAdder? get favoriteAdder;
@@ -145,6 +151,11 @@ mixin ArtistNotSupportedMixin implements BooruBuilder {
 mixin PostCountNotSupportedMixin implements BooruBuilder {
   @override
   PostCountFetcher? get postCountFetcher => null;
+}
+
+mixin NoteNotSupportedMixin implements BooruBuilder {
+  @override
+  NoteFetcher? get noteFetcher => null;
 }
 
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
@@ -249,6 +260,7 @@ final booruBuildersProvider =
                 postRepo: ref.read(e621PostRepoProvider(config)),
                 client: ref.read(e621ClientProvider(config)),
                 favoriteChecker: ref.read(e621FavoriteCheckerProvider(config)),
+                noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
                 postRepo: ref.read(danbooruPostRepoProvider(config)),
@@ -258,6 +270,7 @@ final booruBuildersProvider =
                 favoriteChecker:
                     ref.read(danbooruFavoriteCheckerProvider(config)),
                 postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
+                noteRepo: ref.read(danbooruNoteRepoProvider(config)),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
                 postRepo: ref.read(gelbooruV1PostRepoProvider(config)),

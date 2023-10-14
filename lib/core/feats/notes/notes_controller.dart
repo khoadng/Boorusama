@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
@@ -53,10 +53,12 @@ class NotesControllerNotifier
 
   Future<void> load() async {
     if (state.notes.isEmpty && arg.isTranslated) {
-      //FIXME: this looks like a potential bug
-      final notes = await ref
-          .read(noteRepoProvider(ref.read(currentBooruConfigProvider)))
-          .getNotes(arg.id);
+      final fetcher = ref.readCurrentBooruBuilder()?.noteFetcher;
+
+      if (fetcher == null) return;
+
+      final notes = await fetcher(arg.id);
+
       state = state.copyWith(
         notes: notes.lock,
       );

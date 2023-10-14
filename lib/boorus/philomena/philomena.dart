@@ -18,6 +18,7 @@ class PhilomenaBuilder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
+        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         DefaultBooruUIMixin

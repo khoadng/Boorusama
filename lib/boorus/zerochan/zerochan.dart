@@ -102,6 +102,7 @@ class ZerochanBuilder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

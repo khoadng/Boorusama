@@ -7,10 +7,8 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
-import 'package:boorusama/boorus/danbooru/feats/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/e621/feats/notes/notes.dart';
 import 'package:boorusama/boorus/e621/feats/posts/e621_post_provider.dart';
 import 'package:boorusama/boorus/gelbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
@@ -32,7 +30,6 @@ import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
-import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
@@ -228,22 +225,6 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
           BooruType.shimmie2 ||
           BooruType.unknown =>
             ref.watch(emptyTagRepoProvider),
-        });
-
-final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
-    (ref, config) => switch (config.booruType) {
-          BooruType.danbooru => ref.watch(danbooruNoteRepoProvider(config)),
-          BooruType.e621 => ref.watch(e621NoteRepoProvider(config)),
-          BooruType.gelbooru ||
-          BooruType.gelbooruV2 ||
-          BooruType.moebooru ||
-          BooruType.zerochan ||
-          BooruType.gelbooruV1 ||
-          BooruType.sankaku ||
-          BooruType.philomena ||
-          BooruType.shimmie2 ||
-          BooruType.unknown =>
-            const EmptyNoteRepository(),
         });
 
 final booruSiteValidatorProvider =

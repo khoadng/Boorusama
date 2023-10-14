@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'pages/e621_artist_page.dart';
@@ -67,11 +68,13 @@ class E621Builder
     required this.client,
     required this.favoriteChecker,
     required this.autocompleteRepo,
+    required this.noteRepo,
   });
 
   final PostRepository<E621Post> postRepo;
   final E621Client client;
   final AutocompleteRepository autocompleteRepo;
+  final NoteRepository noteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -168,4 +171,7 @@ class E621Builder
             'lore' => const Color(0xff218923),
             _ => const Color(0xffb4c7d8),
           };
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 }
