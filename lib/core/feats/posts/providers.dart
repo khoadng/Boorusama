@@ -6,8 +6,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
-final postShareProvider =
-    NotifierProvider.family<PostShareNotifier, PostShareState, Post>(
+final postShareProvider = NotifierProvider.autoDispose
+    .family<PostShareNotifier, PostShareState, Post>(
   PostShareNotifier.new,
   dependencies: [
     currentBooruConfigProvider,

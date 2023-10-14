@@ -79,9 +79,8 @@ class BooruPostDetailsArtistNotifier
     extends AutoDisposeFamilyNotifier<List<Recommend<Post>>, int>
     with PostRepositoryMixin, PostDetailsTagsX<Post> {
   @override
-  PostRepository get postRepository => ref.read(
-      //FIXME: this is a potential bug
-      postArtistCharacterRepoProvider(ref.read(currentBooruConfigProvider)));
+  PostRepository get postRepository =>
+      ref.read(postArtistCharacterRepoProvider(ref.readConfig));
 
   @override
   Future<List<Post>> Function(List<String> tags, int page) get fetcher =>
