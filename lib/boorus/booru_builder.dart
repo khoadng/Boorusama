@@ -222,61 +222,61 @@ final booruBuildersProvider =
     Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
         {
           BooruType.zerochan: (config) => ZerochanBuilder(
-                postRepo: ref.watch(zerochanPostRepoProvider(config)),
+                postRepo: ref.read(zerochanPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(zerochanAutoCompleteRepoProvider(config)),
+                    ref.read(zerochanAutoCompleteRepoProvider(config)),
               ),
           BooruType.moebooru: (config) => MoebooruBuilder(
-                postRepo: ref.watch(moebooruPostRepoProvider(config)),
+                postRepo: ref.read(moebooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(moebooruAutocompleteRepoProvider(config)),
+                    ref.read(moebooruAutocompleteRepoProvider(config)),
               ),
           BooruType.gelbooru: (config) => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                postRepo: ref.read(gelbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
-                client: ref.watch(gelbooruClientProvider(config)),
+                    ref.read(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                postRepo: ref.read(gelbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
-                client: ref.watch(gelbooruClientProvider(config)),
+                    ref.read(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.e621: (config) => E621Builder(
                 autocompleteRepo:
-                    ref.watch(e621AutocompleteRepoProvider(config)),
-                postRepo: ref.watch(e621PostRepoProvider(config)),
-                client: ref.watch(e621ClientProvider(config)),
-                favoriteChecker: ref.watch(e621FavoriteCheckerProvider(config)),
+                    ref.read(e621AutocompleteRepoProvider(config)),
+                postRepo: ref.read(e621PostRepoProvider(config)),
+                client: ref.read(e621ClientProvider(config)),
+                favoriteChecker: ref.read(e621FavoriteCheckerProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
-                postRepo: ref.watch(danbooruPostRepoProvider(config)),
+                postRepo: ref.read(danbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(danbooruAutocompleteRepoProvider(config)),
-                favoriteRepo: ref.watch(danbooruFavoriteRepoProvider(config)),
+                    ref.read(danbooruAutocompleteRepoProvider(config)),
+                favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 favoriteChecker:
-                    ref.watch(danbooruFavoriteCheckerProvider(config)),
-                postCountRepo: ref.watch(danbooruPostCountRepoProvider(config)),
+                    ref.read(danbooruFavoriteCheckerProvider(config)),
+                postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
-                postRepo: ref.watch(gelbooruV1PostRepoProvider(config)),
+                postRepo: ref.read(gelbooruV1PostRepoProvider(config)),
                 client: GelbooruClient.gelbooru(),
               ),
           BooruType.sankaku: (config) => SankakuBuilder(
-                postRepository: ref.watch(sankakuPostRepoProvider(config)),
+                postRepository: ref.read(sankakuPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(sankakuAutocompleteRepoProvider(config)),
+                    ref.read(sankakuAutocompleteRepoProvider(config)),
               ),
           BooruType.philomena: (config) => PhilomenaBuilder(
-                postRepo: ref.watch(philomenaPostRepoProvider(config)),
+                postRepo: ref.read(philomenaPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(philomenaAutoCompleteRepoProvider(config)),
+                    ref.read(philomenaAutoCompleteRepoProvider(config)),
               ),
           BooruType.shimmie2: (config) => Shimmie2Builder(
-                postRepo: ref.watch(shimmie2PostRepoProvider(config)),
+                postRepo: ref.read(shimmie2PostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(shimmie2AutocompleteRepoProvider(config)),
+                    ref.read(shimmie2AutocompleteRepoProvider(config)),
               ),
         });
 
