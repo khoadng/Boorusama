@@ -149,8 +149,18 @@ class ZerochanBuilder
             themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
 
         return switch (tagType) {
-          'mangaka' || 'studio' => colors.artist,
-          'source' || 'game' || 'visual_novel' || 'series' => colors.copyright,
+          'mangaka' ||
+          'studio' ||
+          // This is from a fallback in case the tag is already searched in other boorus
+          'artist' =>
+            colors.artist,
+          'source' ||
+          'game' ||
+          'visual_novel' ||
+          'series' ||
+          // This is from a fallback in case the tag is already searched in other boorus
+          'copyright' =>
+            colors.copyright,
           'character' => colors.character,
           'meta' => colors.meta,
           _ => colors.general,

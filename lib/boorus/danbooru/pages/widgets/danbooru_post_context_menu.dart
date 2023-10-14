@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -20,6 +19,7 @@ import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
@@ -111,8 +111,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             ContextMenuButtonConfig(
               'Edit',
               onPressed: () {
-                showMaterialModalBottomSheet(
-                  context: context,
+                context.navigator.push(MaterialPageRoute(
                   builder: (context) => TagEditPage(
                     postId: post.id,
                     tags: tags.containsKey(post.id)
@@ -124,7 +123,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
                     imageUrl: post.url720x720,
                     aspectRatio: post.aspectRatio ?? 1,
                   ),
-                );
+                ));
               },
             ),
           if (onMultiSelect != null)

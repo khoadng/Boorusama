@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/post_details_page_scaffold.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/context_menu.dart';
@@ -238,19 +238,20 @@ class TagsTile extends ConsumerWidget {
         trailing: config.hasLoginDetails()
             ? ElevatedButton(
                 onPressed: tagItems.maybeWhen(
-                  data: (data) => () => showMaterialModalBottomSheet(
-                      context: context,
-                      builder: (context) => TagEditPage(
-                            imageUrl: post.url720x720,
-                            aspectRatio: post.aspectRatio ?? 1,
-                            rating: tagDetails != null
-                                ? tagDetails.rating
-                                : post.rating,
-                            postId: post.id,
-                            tags: data
-                                .map((e) => e.tags.map((e) => e.rawName))
-                                .expand((e) => e)
-                                .toList(),
+                  data: (data) =>
+                      () => context.navigator.push(MaterialPageRoute(
+                            builder: (context) => TagEditPage(
+                              imageUrl: post.url720x720,
+                              aspectRatio: post.aspectRatio ?? 1,
+                              rating: tagDetails != null
+                                  ? tagDetails.rating
+                                  : post.rating,
+                              postId: post.id,
+                              tags: data
+                                  .map((e) => e.tags.map((e) => e.rawName))
+                                  .expand((e) => e)
+                                  .toList(),
+                            ),
                           )),
                   orElse: () => null,
                 ),

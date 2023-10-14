@@ -46,9 +46,9 @@ class DanbooruPost extends Equatable
     required this.duration,
     required this.variants,
   }) : tags = [
-          ...characterTags,
           ...artistTags,
           ...copyrightTags,
+          ...characterTags,
           ...generalTags,
           ...metaTags,
         ];

@@ -2,6 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/booru.dart';
 import 'package:boorusama/foundation/path.dart';
@@ -91,6 +92,17 @@ extension BooruTagTypeStoreX on BooruTagTypeStore {
         booruType,
         tags,
         (tag) => tag.rawName,
+        (tag) => tag.category.name,
+      );
+
+  Future<void> saveRelatedTagIfNotExist(
+    BooruType booruType,
+    RelatedTag related,
+  ) =>
+      saveIfNotExist(
+        booruType,
+        related.tags,
+        (tag) => tag.tag,
         (tag) => tag.category.name,
       );
 
