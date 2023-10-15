@@ -1,3 +1,4 @@
+export 'ai_tag_dto.dart';
 export 'artist_commentary_dto.dart';
 export 'artist_dto.dart';
 export 'artist_url_dto.dart';
