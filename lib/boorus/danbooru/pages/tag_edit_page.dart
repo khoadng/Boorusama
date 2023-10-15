@@ -360,8 +360,10 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         null => Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            child: Row(
+            margin: const EdgeInsets.only(left: 20, bottom: 20, top: 8),
+            height: 42,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -415,7 +417,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                     },
                     child: const Text('Suggested'),
                   ),
-                ]
+                ],
               ],
             ),
           ),
