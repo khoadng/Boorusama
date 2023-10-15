@@ -589,7 +589,7 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
                     child: ToggleSwitch(
                       dividerColor: Colors.black,
                       changeOnTap: false,
-                      initialLabelIndex: 0,
+                      initialLabelIndex: relatedTabs.indexOf(selectTab),
                       minWidth: 75,
                       minHeight: 30,
                       cornerRadius: 5,

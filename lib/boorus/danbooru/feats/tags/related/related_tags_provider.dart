@@ -79,8 +79,7 @@ final danbooruWikiTagsProvider = FutureProvider.family<List<Tag>, String>(
   },
 );
 
-final danbooruRelatedTagsProvider =
-    FutureProvider.autoDispose.family<List<Tag>, String>(
+final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
   (ref, tag) async {
     if (tag.isEmpty) return [];
 
