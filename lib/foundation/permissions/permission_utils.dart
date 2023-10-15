@@ -70,7 +70,11 @@ Future<PermissionStatus> _requestMediaPermissionsIos() async {
   final allAccepted =
       statuses.values.every((e) => e == PermissionStatus.granted);
 
-  return allAccepted ? PermissionStatus.granted : PermissionStatus.denied;
+  return allAccepted
+      ? PermissionStatus.granted
+      : statuses.values.contains(PermissionStatus.permanentlyDenied)
+          ? PermissionStatus.permanentlyDenied
+          : PermissionStatus.denied;
 }
 
 Future<PermissionStatus> _checkMediaPermissionsIos() async {
@@ -104,10 +108,9 @@ Future<PermissionStatus> _checkMediaPermissionsAndroid(
 
   final allAccepted = statuses.every((e) => e == PermissionStatus.granted);
 
-  final otherStatuses =
-      statuses.where((e) => e != PermissionStatus.granted).firstOrNull;
-
   return allAccepted
       ? PermissionStatus.granted
-      : otherStatuses ?? PermissionStatus.denied;
+      : statuses.contains(PermissionStatus.permanentlyDenied)
+          ? PermissionStatus.permanentlyDenied
+          : PermissionStatus.denied;
 }

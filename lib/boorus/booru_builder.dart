@@ -180,7 +180,7 @@ mixin DefaultTagColorMixin implements BooruBuilder {
             themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
 
         return switch (tagType) {
-          '0' || 'general' => colors.general,
+          '0' || 'general' || 'tag' => colors.general,
           '1' || 'artist' => colors.artist,
           '3' || 'copyright' => colors.copyright,
           '4' || 'character' => colors.character,
