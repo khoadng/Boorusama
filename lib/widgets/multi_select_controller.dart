@@ -44,5 +44,10 @@ class MultiSelectController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selectAll(List<T> items) {
+    _selectedItems.addAll(items);
+    notifyListeners();
+  }
+
   List<T> get selectedItems => _selectedItems.toList();
 }

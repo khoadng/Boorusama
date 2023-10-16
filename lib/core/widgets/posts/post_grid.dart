@@ -200,26 +200,30 @@ class _InfinitePostListState<T extends Post> extends ConsumerState<PostGrid<T>>
                 onMultiSelectChanged: (p0) => setState(() {
                   multiSelect = p0;
                 }),
-                headerBuilder: (context, selected, clearSelected) => widget
-                            .headerBuilder !=
-                        null
-                    ? widget.headerBuilder!(context, selected, clearSelected)
-                    : AppBar(
-                        leading: IconButton(
-                          onPressed: () =>
-                              _multiSelectController.disableMultiSelect(),
-                          icon: const Icon(Icons.close),
-                        ),
-                        actions: [
-                          IconButton(
-                            onPressed: clearSelected,
-                            icon: const Icon(Icons.clear_all),
+                headerBuilder: (context, selected, clearSelected, selectAll) =>
+                    widget.headerBuilder != null
+                        ? widget.headerBuilder!(
+                            context, selected, clearSelected, selectAll)
+                        : AppBar(
+                            leading: IconButton(
+                              onPressed: () =>
+                                  _multiSelectController.disableMultiSelect(),
+                              icon: const Icon(Icons.close),
+                            ),
+                            actions: [
+                              IconButton(
+                                onPressed: selectAll,
+                                icon: const Icon(Icons.select_all),
+                              ),
+                              IconButton(
+                                onPressed: clearSelected,
+                                icon: const Icon(Icons.clear_all),
+                              ),
+                            ],
+                            title: selected.isEmpty
+                                ? const Text('Select items')
+                                : Text('${selected.length} Items selected'),
                           ),
-                        ],
-                        title: selected.isEmpty
-                            ? const Text('Select items')
-                            : Text('${selected.length} Items selected'),
-                      ),
                 items: items,
                 itemBuilder: (context, index) =>
                     widget.itemBuilder(context, items, index),
