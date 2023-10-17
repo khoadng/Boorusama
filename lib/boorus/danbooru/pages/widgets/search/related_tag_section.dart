@@ -28,11 +28,13 @@ class RelatedTagSection extends ConsumerWidget {
     if (query.isEmpty) return const SizedBox();
 
     return tagAsync.when(
-      data: (tag) => RelatedTagHeader(
-        backgroundColor: backgroundColor,
-        relatedTag: tag,
-        onSelected: onSelected,
-      ),
+      data: (tag) => tag.tags.isNotEmpty
+          ? RelatedTagHeader(
+              backgroundColor: backgroundColor,
+              relatedTag: tag,
+              onSelected: onSelected,
+            )
+          : const SizedBox.shrink(),
       loading: () => TagChipsPlaceholder(
         backgroundColor: backgroundColor,
       ),
