@@ -32,6 +32,7 @@ class SankakuBuilder
         PostCountNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
+        CommentNotSupportedMixin,
         DefaultTagColorMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

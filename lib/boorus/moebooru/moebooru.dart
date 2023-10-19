@@ -32,6 +32,7 @@ class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
+        CommentNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,

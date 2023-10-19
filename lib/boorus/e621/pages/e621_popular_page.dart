@@ -9,9 +9,7 @@ import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/boorus/providers.dart';
 import 'package:boorusama/core/feats/types.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/widgets/datetime_selector.dart';
-import 'package:boorusama/core/widgets/posts/post_scope.dart';
-import 'package:boorusama/core/widgets/time_scale_toggle_switch.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 
@@ -21,10 +19,10 @@ class E621PopularPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<E621PopularPage> createState() => _MoebooruPopularPageState();
+  ConsumerState<E621PopularPage> createState() => _E621PopularPageState();
 }
 
-class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
+class _E621PopularPageState extends ConsumerState<E621PopularPage> {
   final selectedDateNotifier = ValueNotifier(DateTime.now());
   final selectedTimescale = ValueNotifier(TimeScale.day);
 
@@ -36,47 +34,49 @@ class _MoebooruPopularPageState extends ConsumerState<E621PopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: PostScope(
-          fetcher: (page) => page > 1
-              ? TaskEither.of(<E621Post>[])
-              : repo.getPopularPosts(selectedDate, scale),
-          builder: (context, controller, errors) => Column(
-            children: [
-              Container(
-                color: context.theme.bottomNavigationBarTheme.backgroundColor,
-                child: ValueListenableBuilder<DateTime>(
-                  valueListenable: selectedDateNotifier,
-                  builder: (context, d, __) => ValueListenableBuilder(
-                    valueListenable: selectedTimescale,
-                    builder: (_, scale, __) => DateTimeSelector(
-                      onDateChanged: (date) {
-                        selectedDateNotifier.value = date;
-                        controller.refresh();
-                      },
-                      date: d,
-                      scale: scale,
-                      backgroundColor: Colors.transparent,
+    return CustomContextMenuOverlay(
+      child: Scaffold(
+        body: SafeArea(
+          child: PostScope(
+            fetcher: (page) => page > 1
+                ? TaskEither.of(<E621Post>[])
+                : repo.getPopularPosts(selectedDate, scale),
+            builder: (context, controller, errors) => Column(
+              children: [
+                Container(
+                  color: context.theme.bottomNavigationBarTheme.backgroundColor,
+                  child: ValueListenableBuilder<DateTime>(
+                    valueListenable: selectedDateNotifier,
+                    builder: (context, d, __) => ValueListenableBuilder(
+                      valueListenable: selectedTimescale,
+                      builder: (_, scale, __) => DateTimeSelector(
+                        onDateChanged: (date) {
+                          selectedDateNotifier.value = date;
+                          controller.refresh();
+                        },
+                        date: d,
+                        scale: scale,
+                        backgroundColor: Colors.transparent,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              TimeScaleToggleSwitch(
-                onToggle: (category) {
-                  selectedTimescale.value = category;
-                  controller.refresh();
-                },
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: InfinitePostListScaffold(
-                  errors: errors,
-                  controller: controller,
-                  sliverHeaderBuilder: (context) => [],
+                TimeScaleToggleSwitch(
+                  onToggle: (category) {
+                    selectedTimescale.value = category;
+                    controller.refresh();
+                  },
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Expanded(
+                  child: InfinitePostListScaffold(
+                    errors: errors,
+                    controller: controller,
+                    sliverHeaderBuilder: (context) => [],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

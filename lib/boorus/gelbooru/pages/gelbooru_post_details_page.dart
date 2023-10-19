@@ -13,7 +13,6 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'widgets/gelbooru_post_action_toolbar.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';
 import 'widgets/tags_tile.dart';
 
@@ -46,7 +45,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
       onTagTap: (tag) => goToSearchPage(context, tag: tag),
-      toolbarBuilder: (context, post) => GelbooruPostActionToolbar(post: post),
+      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
       swipeImageUrlBuilder: (post) => post.sampleImageUrl,
       sliverArtistPostsBuilder: (context, post) =>
           GelbooruRecommendedArtistList(

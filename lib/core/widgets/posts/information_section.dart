@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -84,11 +83,7 @@ class InformationSection extends ConsumerWidget {
                           label: artistTags.first.replaceUnderscoreWithSpace(),
                           onTap: () =>
                               onArtistTagTap?.call(context, artistTags.first),
-                          backgroundColor: ref.getTagColor(
-                            context,
-                            TagCategory.artist.name,
-                            themeMode: ThemeMode.light,
-                          ),
+                          backgroundColor: Colors.red,
                         ),
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),

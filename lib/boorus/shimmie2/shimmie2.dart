@@ -10,6 +10,7 @@ class Shimmie2Builder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
+        CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         NoteNotSupportedMixin,
         DefaultTagColorMixin,

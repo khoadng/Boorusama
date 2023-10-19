@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
@@ -69,7 +69,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           BookmarkPostButton(post: post),
           CommentPostButton(
             post: post,
-            onPressed: () => goToCommentPage(context, post.id),
+            onPressed: () => goToCommentPage(context, ref, post.id),
           ),
           DownloadPostButton(post: post),
           SharePostButton(post: post),

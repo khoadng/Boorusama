@@ -21,7 +21,6 @@ import 'pages/gelbooru_artist_page.dart';
 import 'pages/gelbooru_home_page.dart';
 import 'pages/gelbooru_post_details_desktop_page.dart';
 import 'pages/gelbooru_post_details_page.dart';
-import 'pages/widgets/gelbooru_infinite_post_list.dart';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
@@ -110,6 +109,7 @@ final gelbooruV2TagsFromIdProvider =
 class GelbooruBuilder
     with
         FavoriteNotSupportedMixin,
+        DefaultThumbnailUrlMixin,
         NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin
@@ -189,6 +189,12 @@ class GelbooruBuilder
       (context, artistName) => GelbooruArtistPage(
             artistName: artistName,
           );
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, postId) => GelbooruCommentPage(
+            postId: postId,
+          );
 }
 
 class GelbooruSearchPage extends ConsumerWidget {
@@ -204,7 +210,7 @@ class GelbooruSearchPage extends ConsumerWidget {
     final config = ref.watchConfig;
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      gridBuilder: (context, controller, slivers) => GelbooruInfinitePostList(
+      gridBuilder: (context, controller, slivers) => InfinitePostListScaffold(
         controller: controller,
         sliverHeaderBuilder: (context) => slivers,
       ),

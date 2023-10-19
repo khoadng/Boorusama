@@ -6,6 +6,7 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -33,6 +34,8 @@ class GeneralPostContextMenu extends ConsumerWidget {
     final bookmarkState = ref.watch(bookmarkProvider(booruConfig));
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final commentPageBuilder =
+        ref.watchBooruBuilder(booruConfig)?.commentPageBuilder;
 
     return DownloadProviderWidget(
       builder: (context, download) => GenericContextMenu(
@@ -41,11 +44,11 @@ class GeneralPostContextMenu extends ConsumerWidget {
             'post.action.preview'.tr(),
             onPressed: () => goToImagePreviewPage(ref, context, post),
           ),
-          // if (post.hasComment)
-          //   ContextMenuButtonConfig(
-          //     'post.action.view_comments'.tr(),
-          //     onPressed: () => goToCommentPage(context, post.id),
-          //   ),
+          if (commentPageBuilder != null && post.hasComment)
+            ContextMenuButtonConfig(
+              'post.action.view_comments'.tr(),
+              onPressed: () => goToCommentPage(context, ref, post.id),
+            ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
             onPressed: () {

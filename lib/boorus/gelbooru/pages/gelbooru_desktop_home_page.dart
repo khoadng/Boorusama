@@ -9,8 +9,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'widgets/gelbooru_infinite_post_list.dart';
 
 class GelbooruDesktopHomePage extends ConsumerStatefulWidget {
   const GelbooruDesktopHomePage({
@@ -57,7 +57,7 @@ class _GelbooruDesktopHomePageState
             selectedTagController: selectedTagController,
           ),
           Expanded(
-            child: GelbooruInfinitePostList(
+            child: InfinitePostListScaffold(
               errors: errors,
               controller: controller,
               sliverHeaderBuilder: (context) => [

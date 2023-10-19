@@ -15,7 +15,6 @@ import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'widgets/gelbooru_post_action_toolbar.dart';
 import 'widgets/gelbooru_recommend_artist_list.dart';
 import 'widgets/tags_tile.dart';
 
@@ -112,7 +111,7 @@ class _DanbooruPostDetailsDesktopPageState
                       rating: post.rating,
                     ),
                     const Divider(height: 8, thickness: 1),
-                    GelbooruPostActionToolbar(post: post),
+                    SimplePostActionToolbar(post: post),
                     const Divider(height: 8, thickness: 1),
                     if (widget.hasDetailsTagList)
                       TagsTile(

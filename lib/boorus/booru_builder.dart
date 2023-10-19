@@ -78,6 +78,12 @@ typedef ArtistPageBuilder = Widget Function(
   String artistName,
 );
 
+typedef CommentPageBuilder = Widget Function(
+  BuildContext context,
+  bool useAppBar,
+  int postId,
+);
+
 typedef PostFetcher = PostsOrError Function(
   int page,
   List<String> tags,
@@ -114,6 +120,7 @@ abstract class BooruBuilder {
   PostDetailsPageBuilder get postDetailsPageBuilder;
   FavoritesPageBuilder? get favoritesPageBuilder;
   ArtistPageBuilder? get artistPageBuilder;
+  CommentPageBuilder? get commentPageBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 
@@ -146,6 +153,11 @@ mixin FavoriteNotSupportedMixin implements BooruBuilder {
 mixin ArtistNotSupportedMixin implements BooruBuilder {
   @override
   ArtistPageBuilder? get artistPageBuilder => null;
+}
+
+mixin CommentNotSupportedMixin implements BooruBuilder {
+  @override
+  CommentPageBuilder? get commentPageBuilder => null;
 }
 
 mixin PostCountNotSupportedMixin implements BooruBuilder {
@@ -295,6 +307,12 @@ final booruBuildersProvider =
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
+
+  bool canFavorite(BooruConfig config) =>
+      favoriteAdder != null &&
+      favoriteRemover != null &&
+      favoriteChecker != null &&
+      config.hasLoginDetails();
 }
 
 class BooruProvider extends ConsumerWidget {

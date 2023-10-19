@@ -9,9 +9,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/router_page_constant.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
@@ -260,6 +262,21 @@ Future<bool?> goToAddToGlobalBlacklistPage(
       tags: tags,
       onSelected: (tag) => notifier.addTagWithToast(tag.rawName),
     ),
+  );
+}
+
+void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
+  final builder = ref.readBooruBuilder(ref.readConfig)?.commentPageBuilder;
+
+  if (builder == null) return;
+
+  showCommentPage(
+    context,
+    postId: postId,
+    settings: const RouteSettings(
+      name: RouterPageConstant.comment,
+    ),
+    builder: (_, useAppBar) => builder(context, useAppBar, postId),
   );
 }
 

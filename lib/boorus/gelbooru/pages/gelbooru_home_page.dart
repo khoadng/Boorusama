@@ -12,12 +12,12 @@ import 'package:boorusama/core/pages/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/pages/downloads/bulk_download_page.dart';
 import 'package:boorusama/core/router.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 import 'gelbooru_desktop_home_page.dart';
-import 'widgets/gelbooru_infinite_post_list.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
@@ -109,7 +109,7 @@ class _GelbooruMobileHomeView extends ConsumerWidget {
     return PostScope(
       // Need to use generic repo here because this is used not only for Gelbooru
       fetcher: (page) => ref.read(postRepoProvider(config)).getPosts([], page),
-      builder: (context, postController, errors) => GelbooruInfinitePostList(
+      builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
         sliverHeaderBuilder: (context) => [

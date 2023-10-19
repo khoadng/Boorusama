@@ -52,7 +52,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           if (post.hasComment)
             ContextMenuButtonConfig(
               'post.action.view_comments'.tr(),
-              onPressed: () => goToCommentPage(context, post.id),
+              onPressed: () => goToCommentPage(context, ref, post.id),
             ),
           ContextMenuButtonConfig(
             'download.download'.tr(),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -127,6 +128,13 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
       (post as DanbooruPost).thumbnailFromSettings(settings);
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, postId) => CommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);

@@ -13,8 +13,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/comments/comment.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
@@ -159,6 +161,10 @@ class E621Builder
       (context, artistName) => E621ArtistPage(artistName: artistName);
 
   @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, postId) => E621CommentPage(postId: postId);
+
+  @override
   TagColorBuilder get tagColorBuilder =>
       (context, tagType) => switch (tagType) {
             'general' => const Color(0xffb4c7d8),
@@ -174,4 +180,33 @@ class E621Builder
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+}
+
+class E621CommentPage extends ConsumerWidget {
+  const E621CommentPage({
+    super.key,
+    required this.postId,
+  });
+
+  final int postId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final client = ref.watch(e621ClientProvider(ref.watchConfig));
+
+    return CommentPageScaffold(
+      postId: postId,
+      fetcher: (id) => client.getComments(postId: postId, page: 1).then(
+            (value) => value
+                .map((e) => SimpleComment(
+                      id: e.id ?? 0,
+                      body: e.body ?? '',
+                      createdAt: e.createdAt ?? DateTime(1),
+                      creatorName: e.creatorName ?? '',
+                      creatorId: e.creatorId ?? 0,
+                    ))
+                .toList(),
+          ),
+    );
+  }
 }
