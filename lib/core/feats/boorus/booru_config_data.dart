@@ -11,6 +11,7 @@ class BooruConfigData {
     required this.deletedItemBehavior,
     required this.ratingFilter,
     required this.url,
+    required this.customDownloadFileNameFormat,
   });
 
   factory BooruConfigData.anonymous({
@@ -19,6 +20,7 @@ class BooruConfigData {
     required String name,
     required BooruConfigRatingFilter filter,
     required String url,
+    required String? customDownloadFileNameFormat,
   }) =>
       BooruConfigData(
         booruId: booru.toBooruId(),
@@ -29,6 +31,7 @@ class BooruConfigData {
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
         ratingFilter: filter.index,
+        customDownloadFileNameFormat: customDownloadFileNameFormat,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -42,6 +45,8 @@ class BooruConfigData {
         name: json['name'] as String,
         deletedItemBehavior: json['deletedItemBehavior'] as int,
         ratingFilter: json['ratingFilter'] as int,
+        customDownloadFileNameFormat:
+            json['customDownloadFileNameFormat'] as String?,
       );
     } catch (e) {
       return null;
@@ -58,6 +63,7 @@ class BooruConfigData {
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
       'ratingFilter': ratingFilter,
+      'customDownloadFileNameFormat': customDownloadFileNameFormat,
     };
   }
 
@@ -69,6 +75,7 @@ class BooruConfigData {
   final int deletedItemBehavior;
   final int ratingFilter;
   final String url;
+  final String? customDownloadFileNameFormat;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -88,5 +95,6 @@ BooruConfig? convertToBooruConfig({
     ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
     deletedItemBehavior: BooruConfigDeletedItemBehavior
         .values[booruConfigData.deletedItemBehavior],
+    customDownloadFileNameFormat: booruConfigData.customDownloadFileNameFormat,
   );
 }

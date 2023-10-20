@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -32,6 +33,8 @@ class _CreatePhilomenaConfigPageState
     extends ConsumerState<CreatePhilomenaConfigPage> {
   late String configName = widget.config.name;
   late String key = widget.config.apiKey ?? '';
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +71,12 @@ class _CreatePhilomenaConfigPageState
                 ),
               ),
               const SizedBox(height: 16),
+              CreateBooruCustomDownloadFileNameField(
+                format: customDownloadFileNameFormat,
+                onChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+              ),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),
@@ -93,6 +102,7 @@ class _CreatePhilomenaConfigPageState
             hideDeleted: false,
             ratingFilter: BooruConfigRatingFilter.none,
             url: widget.config.url,
+            customDownloadFileNameFormat: customDownloadFileNameFormat,
           ),
         );
     context.pop();

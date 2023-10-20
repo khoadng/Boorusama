@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
@@ -41,6 +42,8 @@ class _CreateMoebooruConfigPageState
   late var apiKey = widget.config.apiKey ?? '';
   late var configName = widget.config.name;
   late var ratingFilter = widget.config.ratingFilter;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   late var hashedPassword = widget.config.apiKey ?? '';
   var password = '';
@@ -123,6 +126,12 @@ class _CreateMoebooruConfigPageState
                 ),
               ),
               const SizedBox(height: 16),
+              CreateBooruCustomDownloadFileNameField(
+                format: customDownloadFileNameFormat,
+                onChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+              ),
+              const SizedBox(height: 16),
               CreateBooruRatingOptionsTile(
                 value: ratingFilter,
                 onChanged: (value) =>
@@ -149,6 +158,7 @@ class _CreateMoebooruConfigPageState
             hideDeleted: false,
             ratingFilter: ratingFilter,
             url: widget.config.url,
+            customDownloadFileNameFormat: customDownloadFileNameFormat,
           ),
         );
     context.navigator.pop();

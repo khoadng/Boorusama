@@ -8,6 +8,7 @@ import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
@@ -168,4 +169,12 @@ class ZerochanBuilder
           _ => colors.general,
         };
       };
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          DownloadUrlBaseNameFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }

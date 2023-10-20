@@ -14,6 +14,7 @@ import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/comments/comment.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
@@ -180,6 +181,14 @@ class E621Builder
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          Md5OnlyFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }
 
 class E621CommentPage extends ConsumerWidget {

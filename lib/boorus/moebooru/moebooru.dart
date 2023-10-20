@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
@@ -100,4 +101,12 @@ class MoebooruBuilder
               onExit: (page) => payload.scrollController?.scrollToIndex(page),
               initialPage: payload.initialIndex,
             );
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          DownloadUrlBaseNameFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }

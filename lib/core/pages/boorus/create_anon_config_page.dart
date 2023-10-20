@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/router.dart';
@@ -28,6 +29,8 @@ class CreateAnonConfigPage extends ConsumerStatefulWidget {
 
 class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
   late String configName = widget.config.name;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +50,11 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
               CreateBooruConfigNameField(
                 text: configName,
                 onChanged: (value) => setState(() => configName = value),
+              ),
+              CreateBooruCustomDownloadFileNameField(
+                format: customDownloadFileNameFormat,
+                onChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
               ),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
@@ -73,6 +81,7 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
             hideDeleted: false,
             ratingFilter: BooruConfigRatingFilter.none,
             url: widget.config.url,
+            customDownloadFileNameFormat: customDownloadFileNameFormat,
           ),
         );
     context.pop();

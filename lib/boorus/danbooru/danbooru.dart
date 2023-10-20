@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -138,4 +140,14 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
 
   @override
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          BoorusamaStyledFileNameGenerator().generateFor(
+            post as DanbooruPost,
+            getDownloadFileUrl(post, settings),
+          );
 }

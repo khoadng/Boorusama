@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
@@ -35,6 +36,8 @@ class _CreateDanbooruConfigPageState
   late var login = widget.config.login ?? '';
   late var password = widget.config.apiKey ?? '';
   late var configName = widget.config.name;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +86,12 @@ class _CreateDanbooruConfigPageState
                 onChanged: (value) => setState(() => password = value),
               ),
               const SizedBox(height: 16),
+              CreateBooruCustomDownloadFileNameField(
+                format: customDownloadFileNameFormat,
+                onChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+              ),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(onSubmit: allowSubmit() ? submit : null),
             ],
           ),
@@ -101,6 +110,7 @@ class _CreateDanbooruConfigPageState
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
     );
 
     ref

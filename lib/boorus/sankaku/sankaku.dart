@@ -14,6 +14,7 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -141,6 +142,14 @@ class SankakuBuilder
                     'You need to provide login details to use this feature.'),
               ),
             );
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          Md5OnlyFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }
 
 class SankakuArtistPage extends ConsumerWidget {

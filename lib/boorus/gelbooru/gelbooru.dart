@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -195,6 +196,14 @@ class GelbooruBuilder
       (context, useAppBar, postId) => GelbooruCommentPage(
             postId: postId,
           );
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          DownloadUrlBaseNameFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

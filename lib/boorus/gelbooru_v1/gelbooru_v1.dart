@@ -10,6 +10,7 @@ import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -18,6 +19,8 @@ import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/info_container.dart';
 
 part 'providers.dart';
+
+const kGelbooruV1DowloadFileNameFormat = '{id}.{ext}';
 
 class GelbooruV1Builder
     with
@@ -91,4 +94,12 @@ class GelbooruV1Builder
 
         return posts;
       });
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          DownloadUrlBaseNameFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }

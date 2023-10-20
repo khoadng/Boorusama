@@ -111,6 +111,11 @@ typedef TagColorBuilder = Color Function(
   String? tagType,
 );
 
+typedef DownloadFileNameFormatBuilder = String Function(
+  Settings settings,
+  Post post,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -125,6 +130,8 @@ abstract class BooruBuilder {
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
 
   TagColorBuilder get tagColorBuilder;
+
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;

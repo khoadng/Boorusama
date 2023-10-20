@@ -22,6 +22,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
         name: 'Default profile',
         filter: BooruConfigRatingFilter.none,
         url: 'https://safebooru.donmai.us/',
+        customDownloadFileNameFormat: null,
       ));
 
   @override

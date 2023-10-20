@@ -14,10 +14,7 @@ final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
 });
 
-final downloadUrlProvider =
-    Provider.autoDispose.family<String, Post>((ref, post) {
-  final settings = ref.watch(settingsProvider);
-
+String getDownloadFileUrl(Post post, Settings settings) {
   if (post.isVideo) return post.videoUrl;
 
   return switch (settings.downloadQuality) {
@@ -25,7 +22,7 @@ final downloadUrlProvider =
     DownloadQuality.sample => post.sampleImageUrl,
     DownloadQuality.preview => post.thumbnailImageUrl,
   };
-});
+}
 
 final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   (ref, config) {

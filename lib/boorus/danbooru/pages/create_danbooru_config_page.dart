@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_switch.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
@@ -40,6 +41,8 @@ class _CreateDanbooruConfigPageState
   late var ratingFilter = widget.config.ratingFilter;
   late var hideDeleted =
       widget.config.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +91,13 @@ class _CreateDanbooruConfigPageState
                   fontWeight: FontWeight.w400,
                 ),
               ),
+              const SizedBox(height: 16),
+              CreateBooruCustomDownloadFileNameField(
+                format: customDownloadFileNameFormat,
+                onChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+              ),
+              const SizedBox(height: 16),
               CreateBooruRatingOptionsTile(
                 value: ratingFilter,
                 onChanged: (value) =>
@@ -123,6 +133,7 @@ class _CreateDanbooruConfigPageState
       hideDeleted: hideDeleted,
       ratingFilter: ratingFilter,
       url: widget.config.url,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
     );
 
     ref

@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 
@@ -54,4 +55,12 @@ class Shimmie2Builder
   @override
   PostFetcher get postFetcher =>
       (page, tags, {limit}) => postRepo.getPosts(tags, page, limit: limit);
+
+  @override
+  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
+        settings,
+        post,
+      ) =>
+          DownloadUrlBaseNameFileNameGenerator()
+              .generateFor(post, getDownloadFileUrl(post, settings));
 }
