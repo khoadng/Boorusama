@@ -89,7 +89,7 @@ extension BooruX on Booru {
       };
 
   bool hasSite(String url) => switch (this) {
-        Danbooru d => d.sites.contains(url),
+        Danbooru d => d.sites.any((e) => e.url == url),
         Gelbooru g => g.sites.contains(url),
         GelbooruV1 g => g.sites.contains(url),
         GelbooruV2 g => g.sites.contains(url),
