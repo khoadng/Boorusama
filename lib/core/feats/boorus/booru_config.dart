@@ -34,6 +34,7 @@ class BooruConfig extends Equatable {
   static BooruConfig defaultConfig({
     required BooruType booruType,
     required String url,
+    required String? customDownloadFileNameFormat,
   }) =>
       BooruConfig(
         id: -1,
@@ -45,7 +46,7 @@ class BooruConfig extends Equatable {
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
         ratingFilter: BooruConfigRatingFilter.none,
         url: url,
-        customDownloadFileNameFormat: null,
+        customDownloadFileNameFormat: customDownloadFileNameFormat,
       );
 
   final int id;

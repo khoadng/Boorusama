@@ -250,6 +250,7 @@ class _AddUnknownBooruPageState extends ConsumerState<AddUnknownBooruPage> {
           ref.read(booruSiteValidatorProvider(BooruConfig.defaultConfig(
         booruType: engine!,
         url: config.url,
+        customDownloadFileNameFormat: null,
       ).copyWith(
         login: ref.read(booruLoginProvider),
         apiKey: ref.read(booruApiKeyProvider),

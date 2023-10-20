@@ -22,6 +22,8 @@ import 'pages/danbooru_search_page.dart';
 import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
+const kBoorusamaCustomDownloadFileNameFormat =
+    '{character:nomod,limit=5} ({copyright:limit=2}) drawn by {artist} - {md5}.{extension}';
 
 class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
@@ -47,7 +49,12 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
         backgroundColor,
       }) =>
           CreateDanbooruConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat:
+                  kBoorusamaCustomDownloadFileNameFormat,
+            ),
             backgroundColor: backgroundColor,
           );
 

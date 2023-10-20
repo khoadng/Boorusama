@@ -45,7 +45,11 @@ class PhilomenaBuilder
         backgroundColor,
       }) =>
           CreatePhilomenaConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat: null,
+            ),
             backgroundColor: backgroundColor,
           );
 

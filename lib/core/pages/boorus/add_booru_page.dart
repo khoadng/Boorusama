@@ -56,8 +56,11 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
           }),
         ),
       AddBooruPhase.newUnknownBooru => AddUnknownBooruPage(
-          config:
-              BooruConfig.defaultConfig(booruType: BooruType.unknown, url: url),
+          config: BooruConfig.defaultConfig(
+            booruType: BooruType.unknown,
+            url: url,
+            customDownloadFileNameFormat: null,
+          ),
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           backgroundColor: widget.backgroundColor,
         ),
@@ -66,8 +69,11 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
   }
 
   Widget _buildNewKnownBooru(BooruType booruType, String booruUrl) {
-    final defaultConfig =
-        BooruConfig.defaultConfig(booruType: booruType, url: booruUrl);
+    final defaultConfig = BooruConfig.defaultConfig(
+      booruType: booruType,
+      url: booruUrl,
+      customDownloadFileNameFormat: null,
+    );
     final booruBuilder =
         ref.readBooruBuilder(defaultConfig)?.createConfigPageBuilder;
 

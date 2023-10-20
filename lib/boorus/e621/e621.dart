@@ -87,7 +87,11 @@ class E621Builder
         backgroundColor,
       }) =>
           CreateDanbooruConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat: null,
+            ),
             backgroundColor: backgroundColor,
           );
 
