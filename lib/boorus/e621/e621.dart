@@ -79,6 +79,7 @@ class E621Builder
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
 
+  //FIXME: don't use Danbooru's config page
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
@@ -189,8 +190,10 @@ class E621Builder
   @override
   DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
         settings,
-        post,
-      ) =>
+        config,
+        post, {
+        index,
+      }) =>
           Md5OnlyFileNameGenerator()
               .generateFor(post, getDownloadFileUrl(post, settings));
 }

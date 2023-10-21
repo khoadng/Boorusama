@@ -109,8 +109,10 @@ class MoebooruBuilder
   @override
   DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
         settings,
-        post,
-      ) =>
+        config,
+        post, {
+        index,
+      }) =>
           DownloadUrlBaseNameFileNameGenerator()
               .generateFor(post, getDownloadFileUrl(post, settings));
 }

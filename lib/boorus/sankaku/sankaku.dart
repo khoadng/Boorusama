@@ -150,8 +150,10 @@ class SankakuBuilder
   @override
   DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
         settings,
-        post,
-      ) =>
+        config,
+        post, {
+        index,
+      }) =>
           Md5OnlyFileNameGenerator()
               .generateFor(post, getDownloadFileUrl(post, settings));
 }

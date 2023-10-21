@@ -15,6 +15,7 @@ dependencies:
   cached_network_image: ^3.3.0
   carousel_slider: ^4.2.1
   chewie: ^1.4.0
+  clock: ^1.1.1
   collection: ^1.17.0
   connectivity_plus: ^4.0.0
   context_menus:

@@ -42,6 +42,7 @@ Future<void> _download(
         url: downloadUrl,
         fileNameBuilder: () => fileNameBuilder(
           settings,
+          booruConfig,
           downloadable,
         ),
       )

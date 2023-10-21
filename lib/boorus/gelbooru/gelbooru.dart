@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/string.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -22,6 +25,8 @@ import 'pages/gelbooru_artist_page.dart';
 import 'pages/gelbooru_home_page.dart';
 import 'pages/gelbooru_post_details_desktop_page.dart';
 import 'pages/gelbooru_post_details_page.dart';
+
+const kGelbooruCustomDownloadFileNameFormat = '{id}_{md5}.{extension}';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
@@ -136,7 +141,8 @@ class GelbooruBuilder
             config: BooruConfig.defaultConfig(
               booruType: booruType,
               url: url,
-              customDownloadFileNameFormat: null,
+              customDownloadFileNameFormat:
+                  kGelbooruCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
           );
@@ -204,10 +210,26 @@ class GelbooruBuilder
   @override
   DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
         settings,
-        post,
-      ) =>
-          DownloadUrlBaseNameFileNameGenerator()
-              .generateFor(post, getDownloadFileUrl(post, settings));
+        config,
+        post, {
+        index,
+      }) =>
+          config.customDownloadFileNameFormat.isNotBlank()
+              ? generateFileName(
+                  {
+                    'id': post.id.toString(),
+                    'tags': post.tags.join(' '),
+                    'extension': extension(getDownloadFileUrl(post, settings))
+                        .substring(1),
+                    'md5': post.md5,
+                    'source': getDownloadFileUrl(post, settings),
+                    'rating': post.rating.name,
+                    if (index != null) 'index': index.toString(),
+                  },
+                  config.customDownloadFileNameFormat!,
+                )
+              : DownloadUrlBaseNameFileNameGenerator()
+                  .generateFor(post, getDownloadFileUrl(post, settings));
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

@@ -1,9 +1,13 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+import 'package:boorusama/foundation/path.dart';
+import 'package:boorusama/functional.dart';
+import 'package:boorusama/string.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
@@ -22,8 +26,6 @@ import 'pages/danbooru_search_page.dart';
 import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
-const kBoorusamaCustomDownloadFileNameFormat =
-    '{character:nomod,limit=5} ({copyright:limit=2}) drawn by {artist} - {md5}.{extension}';
 
 class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
@@ -151,10 +153,33 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
         settings,
-        post,
-      ) =>
-          BoorusamaStyledFileNameGenerator().generateFor(
-            post as DanbooruPost,
-            getDownloadFileUrl(post, settings),
-          );
+        config,
+        post, {
+        index,
+      }) =>
+          (post as DanbooruPost).toOption().fold(
+                () => basename(getDownloadFileUrl(post, settings)),
+                (post) => config.customDownloadFileNameFormat.isNotBlank()
+                    ? generateFileName(
+                        {
+                          'id': post.id.toString(),
+                          'artist': post.artistTags.join(' '),
+                          'character': post.characterTags.join(' '),
+                          'copyright': post.copyrightTags.join(' '),
+                          'general': post.generalTags.join(' '),
+                          'meta': post.metaTags.join(' '),
+                          'tags': post.tags.join(' '),
+                          'extension':
+                              extension(getDownloadFileUrl(post, settings))
+                                  .substring(1),
+                          'md5': post.md5,
+                          'source': getDownloadFileUrl(post, settings),
+                          'rating': post.rating.name,
+                          if (index != null) 'index': index.toString(),
+                        },
+                        config.customDownloadFileNameFormat!,
+                      )
+                    : BoorusamaStyledFileNameGenerator()
+                        .generateFor(post, getDownloadFileUrl(post, settings)),
+              );
 }

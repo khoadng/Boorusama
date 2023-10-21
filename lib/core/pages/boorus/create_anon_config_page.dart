@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
 import 'package:boorusama/router.dart';
@@ -51,11 +50,11 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
                 text: configName,
                 onChanged: (value) => setState(() => configName = value),
               ),
-              CreateBooruCustomDownloadFileNameField(
-                format: customDownloadFileNameFormat,
-                onChanged: (value) =>
-                    setState(() => customDownloadFileNameFormat = value),
-              ),
+              // CreateBooruCustomDownloadFileNameField(
+              //   format: customDownloadFileNameFormat,
+              //   onChanged: (value) =>
+              //       setState(() => customDownloadFileNameFormat = value),
+              // ),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),

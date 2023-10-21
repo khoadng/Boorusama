@@ -87,14 +87,16 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
       while (itemStack.isNotEmpty) {
         final items = itemStack.removeLast();
 
-        for (var item in items) {
+        for (var index = 0; index < items.length; index++) {
+          final item = items[index];
           final downloadUrl = getDownloadFileUrl(item, settings);
           if (downloadUrl.isEmpty) continue;
 
           downloader.enqueueDownload(
             url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () => fileNameBuilder(settings, item),
+            fileNameBuilder: () =>
+                fileNameBuilder(settings, arg, item, index: index),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {

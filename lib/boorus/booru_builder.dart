@@ -113,8 +113,10 @@ typedef TagColorBuilder = Color Function(
 
 typedef DownloadFileNameFormatBuilder = String Function(
   Settings settings,
-  Post post,
-);
+  BooruConfig config,
+  Post post, {
+  int? index,
+});
 
 abstract class BooruBuilder {
   // UI Builders
