@@ -1,9 +1,6 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/feats/downloads/downloads.dart';
-import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -13,7 +10,8 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart'
+    hide DownloadFileNameBuilder;
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -151,35 +149,21 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
-        settings,
-        config,
-        post, {
-        index,
-      }) =>
-          (post as DanbooruPost).toOption().fold(
-                () => basename(getDownloadFileUrl(post, settings)),
-                (post) => config.customDownloadFileNameFormat.isNotBlank()
-                    ? generateFileName(
-                        {
-                          'id': post.id.toString(),
-                          'artist': post.artistTags.join(' '),
-                          'character': post.characterTags.join(' '),
-                          'copyright': post.copyrightTags.join(' '),
-                          'general': post.generalTags.join(' '),
-                          'meta': post.metaTags.join(' '),
-                          'tags': post.tags.join(' '),
-                          'extension':
-                              extension(getDownloadFileUrl(post, settings))
-                                  .substring(1),
-                          'md5': post.md5,
-                          'source': getDownloadFileUrl(post, settings),
-                          'rating': post.rating.name,
-                          if (index != null) 'index': index.toString(),
-                        },
-                        config.customDownloadFileNameFormat!,
-                      )
-                    : BoorusamaStyledFileNameGenerator()
-                        .generateFor(post, getDownloadFileUrl(post, settings)),
-              );
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder<DanbooruPost>(
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'artist': (post, config) => post.artistTags.join(' '),
+          'character': (post, config) => post.characterTags.join(' '),
+          'general': (post, config) => post.generalTags.join(' '),
+          'meta': (post, config) => post.metaTags.join(' '),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
+      );
 }

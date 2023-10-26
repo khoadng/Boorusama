@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -111,13 +112,6 @@ typedef TagColorBuilder = Color Function(
   String? tagType,
 );
 
-typedef DownloadFileNameFormatBuilder = String Function(
-  Settings settings,
-  BooruConfig config,
-  Post post, {
-  int? index,
-});
-
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -133,7 +127,7 @@ abstract class BooruBuilder {
 
   TagColorBuilder get tagColorBuilder;
 
-  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder;
+  DownloadFilenameGenerator get downloadFilenameBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;

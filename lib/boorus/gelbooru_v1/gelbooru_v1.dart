@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -10,7 +11,6 @@ import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocomplete.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -100,12 +100,8 @@ class GelbooruV1Builder
       });
 
   @override
-  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
-        settings,
-        config,
-        post, {
-        index,
-      }) =>
-          DownloadUrlBaseNameFileNameGenerator()
-              .generateFor(post, getDownloadFileUrl(post, settings));
+  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
+      LegacyFilenameBuilder(
+        generateFileName: (post, downloadUrl) => basename(downloadUrl),
+      );
 }

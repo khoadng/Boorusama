@@ -25,7 +25,7 @@ Future<void> _download(
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
   final fileNameBuilder =
-      ref.readBooruBuilder(booruConfig)?.downloadFileNameFormatBuilder;
+      ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
   final downloadUrl = getDownloadFileUrl(downloadable, settings);
 
   final logger = ref.read(loggerProvider);
@@ -40,7 +40,7 @@ Future<void> _download(
       .downloadWithSettings(
         settings,
         url: downloadUrl,
-        fileNameBuilder: () => fileNameBuilder(
+        fileNameBuilder: () => fileNameBuilder.generate(
           settings,
           booruConfig,
           downloadable,

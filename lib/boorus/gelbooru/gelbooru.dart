@@ -1,7 +1,6 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/string.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,7 +14,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -208,28 +206,19 @@ class GelbooruBuilder
           );
 
   @override
-  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
-        settings,
-        config,
-        post, {
-        index,
-      }) =>
-          config.customDownloadFileNameFormat.isNotBlank()
-              ? generateFileName(
-                  {
-                    'id': post.id.toString(),
-                    'tags': post.tags.join(' '),
-                    'extension': extension(getDownloadFileUrl(post, settings))
-                        .substring(1),
-                    'md5': post.md5,
-                    'source': getDownloadFileUrl(post, settings),
-                    'rating': post.rating.name,
-                    if (index != null) 'index': index.toString(),
-                  },
-                  config.customDownloadFileNameFormat!,
-                )
-              : DownloadUrlBaseNameFileNameGenerator()
-                  .generateFor(post, getDownloadFileUrl(post, settings));
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder(
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
+      );
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

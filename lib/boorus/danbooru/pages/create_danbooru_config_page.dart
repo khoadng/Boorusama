@@ -93,6 +93,7 @@ class _CreateDanbooruConfigPageState
               ),
               const SizedBox(height: 16),
               CreateBooruCustomDownloadFileNameField(
+                config: widget.config,
                 format: customDownloadFileNameFormat,
                 onChanged: (value) =>
                     setState(() => customDownloadFileNameFormat = value),

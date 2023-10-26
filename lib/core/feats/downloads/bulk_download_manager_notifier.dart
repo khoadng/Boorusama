@@ -70,8 +70,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
 
     bulkDownloadStatus.state = BulkDownloadManagerStatus.downloadInProgress;
 
-    final fileNameBuilder =
-        ref.readBooruBuilder(arg)?.downloadFileNameFormatBuilder;
+    final fileNameBuilder = ref.readBooruBuilder(arg)?.downloadFilenameBuilder;
 
     if (fileNameBuilder == null) {
       logger.logE('Bulk Download', 'No file name builder found, aborting...');
@@ -96,7 +95,7 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
             url: downloadUrl,
             path: storagePath,
             fileNameBuilder: () =>
-                fileNameBuilder(settings, arg, item, index: index),
+                fileNameBuilder.generate(settings, arg, item, index: index),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {

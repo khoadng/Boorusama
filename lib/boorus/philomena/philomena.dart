@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
@@ -131,14 +132,11 @@ class PhilomenaBuilder
           };
 
   @override
-  DownloadFileNameFormatBuilder get downloadFileNameFormatBuilder => (
-        settings,
-        config,
-        post, {
-        index,
-      }) =>
-          Md5OnlyFileNameGenerator()
-              .generateFor(post, getDownloadFileUrl(post, settings));
+  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
+      LegacyFilenameBuilder(
+        generateFileName: (post, downloadUrl) =>
+            Md5OnlyFileNameGenerator().generateFor(post, downloadUrl),
+      );
 }
 
 String _generatePercentText(PhilomenaPost? post) {

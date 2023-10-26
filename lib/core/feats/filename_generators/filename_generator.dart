@@ -5,7 +5,7 @@ import 'token.dart';
 import 'token_option.dart';
 
 String generateFileName(
-  Map<String, String> metadata,
+  Map<String, String?> metadata,
   String format, {
   Clock? clock,
   TokenizerConfigs? configs,
@@ -14,9 +14,15 @@ String generateFileName(
   final tokens = parse(cfg, format);
   final globalOptions = parseTokenOptions(cfg.globalOptionToken);
 
+  // filter null metadata
+  final meta = {
+    for (final entry in metadata.entries)
+      if (entry.value != null) entry.key: entry.value
+  };
+
   final data = tokens
       .map((e) => applyTokenOptions(
-            metadata[e.token.name] ?? '',
+            meta[e.token.name] ?? '',
             TokenContext(
               token: e.token,
               config: cfg,
