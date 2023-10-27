@@ -1,11 +1,15 @@
 // Flutter imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //FIXME: remind user that this feature is experimental
@@ -92,13 +96,65 @@ class _CreateBooruCustomDownloadFileNameFieldState
               RawChip(
                 visualDensity: VisualDensity.compact,
                 label: Text(token),
+                onPressed: () {
+                  final tokenOptions = ref
+                      .watchBooruBuilder(widget.config)
+                      ?.downloadFilenameBuilder
+                      .getTokenOptions(token);
+
+                  if (tokenOptions == null) {
+                    showErrorToast('Token $token is not available');
+                    return;
+                  }
+
+                  showAdaptiveBottomSheet(
+                    context,
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Available options'),
+                        automaticallyImplyLeading: false,
+                        actions: [
+                          IconButton(
+                            onPressed: context.navigator.pop,
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+                      body: tokenOptions.isNotEmpty
+                          ? Column(
+                              children: [
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: tokenOptions.length,
+                                    itemBuilder: (context, index) {
+                                      final option = tokenOptions[index];
+
+                                      return ListTile(
+                                        title: Text(option),
+                                        trailing: IconButton(
+                                          onPressed: () {
+                                            Clipboard.setData(
+                                                    ClipboardData(text: option))
+                                                .then((value) =>
+                                                    showSuccessToast('Copied'));
+                                          },
+                                          icon: const Icon(Icons.copy),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Center(
+                              child: Text('No options available'),
+                            ),
+                    ),
+                  );
+                },
               ),
           ],
         ),
-        // TextButton(
-        //   onPressed: () => print('object'),
-        //   child: Text('Show available tokens'),
-        // ),
       ],
     );
   }
