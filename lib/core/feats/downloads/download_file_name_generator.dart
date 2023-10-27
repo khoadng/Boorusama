@@ -21,6 +21,8 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     T post, {
     int? index,
   });
+
+  String generateSample(String format);
 }
 
 typedef DownloadFilenameTokenHandler<T extends Post> = String? Function(
@@ -69,6 +71,9 @@ class LegacyFilenameBuilder<T extends Post>
   }
 
   @override
+  String generateSample(String format) => '';
+
+  @override
   List<String> getTokenOptions(String token) => [];
 
   @override
@@ -79,7 +84,10 @@ class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
     required this.tokenHandlers,
+    required this.sampleData,
   });
+
+  final Map<String, String> sampleData;
 
   @override
   List<String> get availableTokens => {
@@ -152,4 +160,18 @@ class DownloadFileNameBuilder<T extends Post>
             },
           ),
       };
+
+  @override
+  String generateSample(String format) {
+    final downloadUrl = sampleData['source'];
+    final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
+
+    final filename = generateFileName(
+      sampleData,
+      format,
+      configs: tokenizerConfigs,
+    );
+
+    return filename.isNotEmpty ? filename : fallbackName ?? '';
+  }
 }

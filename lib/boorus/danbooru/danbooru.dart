@@ -25,6 +25,23 @@ import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
+const kDanbooruPostSample = <String, String>{
+  'id': '123456',
+  'artist': 'artist_x_(abc) artist_2',
+  'character':
+      'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
+  'copyright': 'genshin_impact original',
+  'general': '1girl solo',
+  'meta': 'highres translated',
+  'tags':
+      'genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) 1girl solo highres translated',
+  'extension': 'jpg',
+  'md5': '9cf364e77f46183e2ebd75de757488e2',
+  'source': 'https://example.com/filename.jpg',
+  'rating': 'general',
+  'index': '0',
+};
+
 class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
@@ -151,10 +168,12 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
       DownloadFileNameBuilder<DanbooruPost>(
+        sampleData: kDanbooruPostSample,
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),
           'artist': (post, config) => post.artistTags.join(' '),
           'character': (post, config) => post.characterTags.join(' '),
+          'copyright': (post, config) => post.copyrightTags.join(' '),
           'general': (post, config) => post.generalTags.join(' '),
           'meta': (post, config) => post.metaTags.join(' '),
           'tags': (post, config) => post.tags.join(' '),

@@ -14,16 +14,16 @@ part 'token_option_string.dart';
 typedef TokenOptionHandler = String Function(TokenContext context);
 
 TokenOption getTokenOptionBuilder(TokenOptionPair pair) => switch (pair.key) {
-      'maxlength' => MaxLengthOption(pair.value!),
+      'maxlength' => MaxLengthOption(pair.value),
       'delimiter' => DelimiterOption(pair.value),
       'unsafe' => UnsafeOption(pair.value),
-      'format' => DateFormatOption(pair.value!),
+      'format' => DateFormatOption(pair.value),
       'single_letter' => RatingSingleLetterOption(pair.value),
       'urlencode' => UrlEncodeOption(pair.value),
       'sort' => SortOption.parse(attribute: pair.attribute, value: pair.value),
       'case' => CaseOption.parse(value: pair.value),
       'nomod' => NoModifiersOption(pair.value),
-      'limit' => LimitOption(pair.value!),
+      'limit' => LimitOption(pair.value),
       'index' => UniqueCounterOption(pair.value),
       'pad_left' => PadLeftOption(pair.value ?? ''),
       'include_namespace' => IncludeNamesOption(pair.value),

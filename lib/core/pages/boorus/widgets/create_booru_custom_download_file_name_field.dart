@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 //FIXME: remind user that this feature is experimental
@@ -50,11 +51,9 @@ class _CreateBooruCustomDownloadFileNameFieldState
 
   @override
   Widget build(BuildContext context) {
-    final availableTokens = ref
-            .watchBooruBuilder(widget.config)
-            ?.downloadFilenameBuilder
-            .availableTokens ??
-        [];
+    final downloadFilenameBuilder =
+        ref.watchBooruBuilder(widget.config)?.downloadFilenameBuilder;
+    final availableTokens = downloadFilenameBuilder?.availableTokens ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,8 +75,8 @@ class _CreateBooruCustomDownloadFileNameFieldState
             maxLines: null,
             onChanged: widget.onChanged,
             decoration: InputDecoration(
-              hintMaxLines: 6,
-              hintText: '\n\n\n\n',
+              hintMaxLines: 4,
+              hintText: '\n\n\n',
               filled: true,
               fillColor: context.colorScheme.background,
               enabledBorder: const OutlineInputBorder(
@@ -95,6 +94,32 @@ class _CreateBooruCustomDownloadFileNameFieldState
             ),
           ),
         ),
+        if (downloadFilenameBuilder != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.hashtag,
+                  size: 16,
+                  color: context.colorScheme.primary,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: textController,
+                    builder: (context, value, child) => Text(
+                      downloadFilenameBuilder.generateSample(value.text),
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: context.theme.hintColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         Wrap(
           runSpacing: isMobilePlatform() ? -4 : 8,
           spacing: 4,

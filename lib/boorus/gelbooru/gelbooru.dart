@@ -208,6 +208,7 @@ class GelbooruBuilder
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
       DownloadFileNameBuilder(
+        sampleData: {},
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),
           'tags': (post, config) => post.tags.join(' '),

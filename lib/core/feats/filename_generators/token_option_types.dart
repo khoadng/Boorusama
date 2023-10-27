@@ -100,7 +100,7 @@ List<String?> _splitString(String input) {
     // if there is '[', split it by '[' and ']'
     final key = input.substring(0, bracketIndex);
     final rest = input.substring(bracketIndex + 1);
-    final endIndex = rest.indexOf(']');
+    final endIndex = rest.indexOf(']=');
     if (endIndex != -1) {
       final subKey = rest.substring(0, endIndex);
       final value = rest.substring(endIndex + 2); // skip ']='
