@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
@@ -73,13 +72,13 @@ class _CreateGelbooruConfigPageState
                 text: apiKey,
                 onChanged: (value) => setState(() => apiKey = value),
               ),
-              const SizedBox(height: 16),
-              CreateBooruCustomDownloadFileNameField(
-                config: widget.config,
-                format: customDownloadFileNameFormat,
-                onChanged: (value) =>
-                    setState(() => customDownloadFileNameFormat = value),
-              ),
+              // const SizedBox(height: 16),
+              // CreateBooruCustomDownloadFileNameField(
+              //   config: widget.config,
+              //   format: customDownloadFileNameFormat,
+              //   onChanged: (value) =>
+              //       setState(() => customDownloadFileNameFormat = value),
+              // ),
               const SizedBox(height: 16),
               CreateBooruRatingOptionsTile(
                 value: ratingFilter,
