@@ -5,10 +5,13 @@ import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
   List<String> get availableTokens;
+
+  Map<RegExp, TextStyle> get patternMatchMap;
 
   List<String> getTokenOptions(String token);
 
@@ -67,6 +70,9 @@ class LegacyFilenameBuilder<T extends Post>
 
   @override
   List<String> getTokenOptions(String token) => [];
+
+  @override
+  Map<RegExp, TextStyle> get patternMatchMap => {};
 }
 
 class DownloadFileNameBuilder<T extends Post>
@@ -76,7 +82,10 @@ class DownloadFileNameBuilder<T extends Post>
   });
 
   @override
-  List<String> get availableTokens => tokenHandlers.keys.toList();
+  List<String> get availableTokens => {
+        ...tokenHandlers.keys,
+        'date',
+      }.toList();
 
   final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
 
@@ -124,4 +133,23 @@ class DownloadFileNameBuilder<T extends Post>
 
     return tokenDef;
   }
+
+  @override
+  Map<RegExp, TextStyle> get patternMatchMap => {
+        for (final token in availableTokens)
+          RegExp('{($token[^{}]*?)}'): TextStyle(
+            fontWeight: FontWeight.w700,
+            color: switch (token) {
+              'artist' => const Color.fromARGB(255, 255, 138, 139),
+              'character' => const Color.fromARGB(255, 53, 198, 74),
+              'copyright' => const Color.fromARGB(255, 199, 151, 255),
+              'general' => const Color.fromARGB(255, 0, 155, 230),
+              'meta' => const Color.fromARGB(255, 217, 187, 98),
+              'extension' => const Color.fromARGB(255, 204, 143, 180),
+              'md5' => const Color.fromARGB(255, 204, 143, 180),
+              'date' => const Color.fromARGB(255, 73, 170, 190),
+              _ => const Color.fromARGB(255, 0, 155, 230),
+            },
+          ),
+      };
 }

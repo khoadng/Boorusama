@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 //FIXME: remind user that this feature is experimental
 class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
@@ -32,7 +33,14 @@ class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
 
 class _CreateBooruCustomDownloadFileNameFieldState
     extends ConsumerState<CreateBooruCustomDownloadFileNameField> {
-  late final textController = TextEditingController(text: widget.format);
+  late final textController = RichTextController(
+    text: widget.format,
+    patternMatchMap: ref
+        .readBooruBuilder(widget.config)
+        ?.downloadFilenameBuilder
+        .patternMatchMap,
+    onMatch: (match) {},
+  );
 
   @override
   void dispose() {
@@ -66,6 +74,7 @@ class _CreateBooruCustomDownloadFileNameFieldState
           child: TextField(
             controller: textController,
             maxLines: null,
+            onChanged: widget.onChanged,
             decoration: InputDecoration(
               hintMaxLines: 6,
               hintText: '\n\n\n\n',
