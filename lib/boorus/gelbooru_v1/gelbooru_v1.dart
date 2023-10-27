@@ -24,7 +24,10 @@ class GelbooruV1Builder
         FavoriteNotSupportedMixin,
         PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
+        CommentNotSupportedMixin,
+        NoteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
+        DefaultTagColorMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
   const GelbooruV1Builder({

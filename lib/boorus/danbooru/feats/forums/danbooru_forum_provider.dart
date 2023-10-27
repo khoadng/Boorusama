@@ -26,8 +26,8 @@ final danbooruForumTopicRepoProvider =
           (value) => value
               .map((dto) => DanbooruForumTopic(
                     id: dto.id ?? 0,
-                    creator: creatorDtoToCreator(dto.creator),
-                    updater: creatorDtoToCreator(dto.updater),
+                    creatorId: dto.creatorId ?? 0,
+                    updaterId: dto.updaterId ?? 0,
                     title: dto.title ?? '',
                     responseCount: dto.responseCount ?? 0,
                     isSticky: dto.isSticky ?? false,
@@ -42,10 +42,6 @@ final danbooruForumTopicRepoProvider =
                     category: dto.categoryId != null
                         ? intToDanbooruTopicCategory(dto.categoryId!)
                         : DanbooruTopicCategory.general,
-                    originalPost: dto.originalPost != null
-                        ? danbooruForumPostDtoToDanbooruForumPost(
-                            dto.originalPost!)
-                        : DanbooruForumPost.empty(),
                   ))
               .toList(),
         ),
@@ -56,8 +52,13 @@ final danbooruForumTopicsProvider = StateNotifierProvider.autoDispose.family<
     DanbooruForumTopicsNotifier,
     PagedState<int, DanbooruForumTopic>,
     BooruConfig>((ref, config) {
+  final notifier = ref.watch(danbooruCreatorsProvider(config).notifier);
+
   return DanbooruForumTopicsNotifier(
     repo: ref.watch(danbooruForumTopicRepoProvider(config)),
+    onLoaded: (data) {
+      notifier.load(data.map((e) => e.creatorId).toList());
+    },
   );
 });
 
@@ -71,7 +72,7 @@ final danbooruForumPostRepoProvider =
     fetch: (topicId, {required page, limit}) async {
       final value = await client.getForumPosts(
         topicId: topicId,
-        page: 'a${page - 1}', // offset by one to account for the last post
+        page: page.toString(),
         limit: limit,
       );
 
@@ -79,9 +80,12 @@ final danbooruForumPostRepoProvider =
 
       data.sort((a, b) => a.id.compareTo(b.id));
 
-      ref
-          .read(danbooruCreatorsProvider(config).notifier)
-          .load(data.expand((e) => e.votes).map((e) => e.creatorId).toList());
+      ref.read(danbooruCreatorsProvider(config).notifier).load(
+            {
+              ...data.map((e) => e.creatorId),
+              ...data.expand((e) => e.votes).map((e) => e.creatorId),
+            }.toList(),
+          );
 
       return data;
     },

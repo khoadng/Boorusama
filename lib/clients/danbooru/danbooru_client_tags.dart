@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'types/types.dart';
 
 const _kRelatedTagLimit = 300;
+const _kAITagParams = 'tag,score';
 
 mixin DanbooruClientTags {
   Dio get dio;
@@ -52,5 +53,27 @@ mixin DanbooruClientTags {
     );
 
     return RelatedTagDto.fromJson(response.data);
+  }
+
+  Future<List<AITagDto>> getAITags({
+    required String query,
+    int? limit,
+    CancelToken? cancelToken,
+  }) async {
+    final response = await dio.get(
+      '/ai_tags.json',
+      queryParameters: {
+        'search[post_tags_match]': query,
+        'search[order]': 'score_desc',
+        'search[is_posted]': true,
+        'only': _kAITagParams,
+        if (limit != null) 'limit': limit,
+      },
+      cancelToken: cancelToken,
+    );
+
+    return (response.data as List)
+        .map((item) => AITagDto.fromJson(item))
+        .toList();
   }
 }

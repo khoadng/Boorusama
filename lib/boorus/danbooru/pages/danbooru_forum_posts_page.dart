@@ -24,13 +24,14 @@ class DanbooruForumPostsPage extends ConsumerWidget {
   const DanbooruForumPostsPage({
     super.key,
     required this.topicId,
-    required this.originalPostId,
     required this.title,
+    required this.responseCount,
   });
 
   final int topicId;
-  final int originalPostId;
+  final int responseCount;
   final String title;
+  final int _pageSize = 20;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,48 +49,55 @@ class DanbooruForumPostsPage extends ConsumerWidget {
           child: CircularProgressIndicator.adaptive(),
         ),
         pullToRefresh: false,
-        firstPageKey: originalPostId,
+        firstPageKey: (responseCount / _pageSize).ceil(),
+        limit: _pageSize,
         provider: danbooruForumPostsProvider(topicId),
-        itemBuilder: (context, post, index) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ForumPostHeader(
-                authorName: post.creator.name,
-                createdAt: post.createdAt,
-                authorLevel: post.creator.level,
-                onTap: () => goToUserDetailsPage(
-                  ref,
-                  context,
-                  uid: post.creator.id,
-                  username: post.creator.name,
-                ),
-              ),
-              Html(
-                onLinkTap: (url, context, attributes, element) =>
-                    url != null ? launchExternalUrlString(url) : null,
-                style: {
-                  'body': Style(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
+        itemBuilder: (context, post, index) {
+          final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
+          final creatorName = creator?.name ?? '...';
+          final creatorLevel = creator?.level ?? UserLevel.member;
+
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ForumPostHeader(
+                  authorName: creatorName,
+                  createdAt: post.createdAt,
+                  authorLevel: creatorLevel,
+                  onTap: () => goToUserDetailsPage(
+                    ref,
+                    context,
+                    uid: post.creatorId,
+                    username: creatorName,
                   ),
-                  'blockquote': Style(
-                    padding: const EdgeInsets.only(left: 8),
-                    margin: const EdgeInsets.only(left: 4, bottom: 16),
-                    border: const Border(
-                        left: BorderSide(color: Colors.grey, width: 3)),
+                ),
+                Html(
+                  onLinkTap: (url, context, attributes, element) =>
+                      url != null ? launchExternalUrlString(url) : null,
+                  style: {
+                    'body': Style(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                    ),
+                    'blockquote': Style(
+                      padding: const EdgeInsets.only(left: 8),
+                      margin: const EdgeInsets.only(left: 4, bottom: 16),
+                      border: const Border(
+                          left: BorderSide(color: Colors.grey, width: 3)),
+                    )
+                  },
+                  data: dtext(post.body, booruUrl: booruConfig.url),
+                ),
+                const SizedBox(height: 8),
+                if (post.votes.isNotEmpty)
+                  _VoteChips(
+                    votes: post.votes,
                   )
-                },
-                data: dtext(post.body, booruUrl: booruConfig.url),
-              ),
-              const SizedBox(height: 8),
-              if (post.votes.isNotEmpty)
-                _VoteChips(
-                  votes: post.votes,
-                )
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
         pagedBuilder: (controller, builder) => PagedListView(
           pagingController: controller,
           builderDelegate: builder,

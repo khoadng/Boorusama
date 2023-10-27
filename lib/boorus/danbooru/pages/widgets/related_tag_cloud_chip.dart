@@ -4,14 +4,16 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
-class RelatedTagCloudChip extends StatelessWidget {
+class RelatedTagCloudChip extends ConsumerWidget {
   const RelatedTagCloudChip({
     required this.index,
     required this.tag,
@@ -26,7 +28,7 @@ class RelatedTagCloudChip extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: switch (index) {
         < 5 => const EdgeInsets.all(4),
@@ -45,7 +47,7 @@ class RelatedTagCloudChip extends StatelessWidget {
           horizontal: 8,
           vertical: 4,
         ),
-        color: getTagColor(tag.category, context.themeMode),
+        color: ref.getTagColor(context, tag.category.name),
         onPressed: onPressed,
       ),
     );

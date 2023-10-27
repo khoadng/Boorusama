@@ -2,24 +2,25 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jiffy/jiffy.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/feats/user_level_colors.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
 import 'types.dart';
 
 Color? generateAutocompleteTagColor(
+  WidgetRef ref,
+  BuildContext context,
   AutocompleteData tag,
-  ThemeMode theme,
 ) {
   if (tag.hasCategory) {
-    return getTagColor(
-      stringToTagCategory(tag.category!),
-      theme,
+    return ref.getTagColor(
+      context,
+      tag.category!,
     );
   } else if (tag.hasUserLevel) {
     return Color(getUserHexColor(stringToUserLevel(tag.level!)));

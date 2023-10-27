@@ -1,3 +1,9 @@
+# 3.6.0
+- Add tag highlighing for various sites
+- [Danbooru] Add support tag editting
+- Fix an issue where downloading a video would result in an image file for some sites.
+- Performance improvement and bug fixes
+
 # 3.5.3
 - Add Data and Storage settings
 - [Gelbooru V2] Add tag highlighting in post details

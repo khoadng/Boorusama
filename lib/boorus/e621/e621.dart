@@ -13,7 +13,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/comments/comment.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
@@ -67,11 +70,13 @@ class E621Builder
     required this.client,
     required this.favoriteChecker,
     required this.autocompleteRepo,
+    required this.noteRepo,
   });
 
   final PostRepository<E621Post> postRepo;
   final E621Client client;
   final AutocompleteRepository autocompleteRepo;
+  final NoteRepository noteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -154,4 +159,54 @@ class E621Builder
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => E621ArtistPage(artistName: artistName);
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, postId) => E621CommentPage(postId: postId);
+
+  @override
+  TagColorBuilder get tagColorBuilder =>
+      (context, tagType) => switch (tagType) {
+            'general' => const Color(0xffb4c7d8),
+            'artist' => const Color(0xfff2ad04),
+            'copyright' => const Color(0xffd60ad8),
+            'character' => const Color(0xff05a903),
+            'species' => const Color(0xffed5d1f),
+            'invalid' => const Color(0xfffe3c3d),
+            'meta' => const Color(0xfffefffe),
+            'lore' => const Color(0xff218923),
+            _ => const Color(0xffb4c7d8),
+          };
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
+}
+
+class E621CommentPage extends ConsumerWidget {
+  const E621CommentPage({
+    super.key,
+    required this.postId,
+  });
+
+  final int postId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final client = ref.watch(e621ClientProvider(ref.watchConfig));
+
+    return CommentPageScaffold(
+      postId: postId,
+      fetcher: (id) => client.getComments(postId: postId, page: 1).then(
+            (value) => value
+                .map((e) => SimpleComment(
+                      id: e.id ?? 0,
+                      body: e.body ?? '',
+                      createdAt: e.createdAt ?? DateTime(1),
+                      creatorName: e.creatorName ?? '',
+                      creatorId: e.creatorId ?? 0,
+                    ))
+                .toList(),
+          ),
+    );
+  }
 }

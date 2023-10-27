@@ -89,7 +89,7 @@ extension BooruX on Booru {
       };
 
   bool hasSite(String url) => switch (this) {
-        Danbooru d => d.sites.contains(url),
+        Danbooru d => d.sites.any((e) => e.url == url),
         Gelbooru g => g.sites.contains(url),
         GelbooruV1 g => g.sites.contains(url),
         GelbooruV2 g => g.sites.contains(url),
@@ -114,7 +114,19 @@ extension BooruX on Booru {
           m.sites.firstWhereOrNull((e) => url.contains(e.url))?.salt,
         _ => null,
       };
+
+  bool? hasAiTagSupported(String url) => switch (this) {
+        Danbooru d =>
+          d.sites.firstWhereOrNull((e) => url.contains(e.url))?.aiTagSupport ??
+              false,
+        _ => null,
+      };
 }
+
+typedef DanbooruSite = ({
+  String url,
+  bool? aiTagSupport,
+});
 
 final class Danbooru extends Booru {
   const Danbooru({
@@ -124,14 +136,26 @@ final class Danbooru extends Booru {
   });
 
   factory Danbooru.from(String name, dynamic data) {
+    final sites = <DanbooruSite>[];
+
+    for (final item in data['sites']) {
+      final url = item['url'] as String;
+      final aiTagSupport = item['ai-tag'];
+
+      sites.add((
+        url: url,
+        aiTagSupport: aiTagSupport,
+      ));
+    }
+
     return Danbooru(
       name: name,
       protocol: _parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
+      sites: sites,
     );
   }
 
-  final List<String> sites;
+  final List<DanbooruSite> sites;
 }
 
 final class Gelbooru extends Booru {

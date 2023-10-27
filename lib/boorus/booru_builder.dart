@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,13 +23,18 @@ import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/routes.dart';
+import 'danbooru/feats/notes/notes.dart';
 import 'danbooru/feats/posts/posts.dart';
+import 'e621/feats/notes/notes.dart';
 import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/shimmie2.dart';
@@ -73,6 +78,12 @@ typedef ArtistPageBuilder = Widget Function(
   String artistName,
 );
 
+typedef CommentPageBuilder = Widget Function(
+  BuildContext context,
+  bool useAppBar,
+  int postId,
+);
+
 typedef PostFetcher = PostsOrError Function(
   int page,
   List<String> tags,
@@ -81,6 +92,8 @@ typedef PostFetcher = PostsOrError Function(
 typedef AutocompleteFetcher = Future<List<AutocompleteData>> Function(
   String query,
 );
+
+typedef NoteFetcher = Future<List<Note>> Function(int postId);
 
 typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
@@ -93,6 +106,11 @@ typedef GridThumbnailUrlBuilder = String Function(
   Post post,
 );
 
+typedef TagColorBuilder = Color Function(
+  ThemeMode themeMode,
+  String? tagType,
+);
+
 abstract class BooruBuilder {
   // UI Builders
   HomePageBuilder get homePageBuilder;
@@ -102,12 +120,16 @@ abstract class BooruBuilder {
   PostDetailsPageBuilder get postDetailsPageBuilder;
   FavoritesPageBuilder? get favoritesPageBuilder;
   ArtistPageBuilder? get artistPageBuilder;
+  CommentPageBuilder? get commentPageBuilder;
 
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
+
+  TagColorBuilder get tagColorBuilder;
 
   // Data Builders
   PostFetcher get postFetcher;
   AutocompleteFetcher get autocompleteFetcher;
+  NoteFetcher? get noteFetcher;
 
   // Action Builders
   FavoriteAdder? get favoriteAdder;
@@ -133,9 +155,19 @@ mixin ArtistNotSupportedMixin implements BooruBuilder {
   ArtistPageBuilder? get artistPageBuilder => null;
 }
 
+mixin CommentNotSupportedMixin implements BooruBuilder {
+  @override
+  CommentPageBuilder? get commentPageBuilder => null;
+}
+
 mixin PostCountNotSupportedMixin implements BooruBuilder {
   @override
   PostCountFetcher? get postCountFetcher => null;
+}
+
+mixin NoteNotSupportedMixin implements BooruBuilder {
+  @override
+  NoteFetcher? get noteFetcher => null;
 }
 
 mixin DefaultThumbnailUrlMixin implements BooruBuilder {
@@ -151,6 +183,34 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
             ImageQuality.original =>
               post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
           };
+}
+
+mixin DefaultTagColorMixin implements BooruBuilder {
+  @override
+  TagColorBuilder get tagColorBuilder => (themeMode, tagType) {
+        final colors =
+            themeMode == ThemeMode.light ? TagColors.dark() : TagColors.light();
+
+        return switch (tagType) {
+          '0' || 'general' || 'tag' => colors.general,
+          '1' || 'artist' => colors.artist,
+          '3' || 'copyright' => colors.copyright,
+          '4' || 'character' => colors.character,
+          '5' || 'meta' || 'metadata' => colors.meta,
+          _ => Colors.white,
+        };
+      };
+}
+
+extension BooruBuilderWidgetRef on WidgetRef {
+  Color getTagColor(
+    BuildContext context,
+    String tagType, {
+    ThemeMode? themeMode,
+  }) =>
+      watchBooruBuilder(watchConfig)
+          ?.tagColorBuilder(themeMode ?? context.themeMode, tagType) ??
+      Colors.white;
 }
 
 final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
@@ -185,66 +245,74 @@ final booruBuildersProvider =
     Provider<Map<BooruType, BooruBuilder Function(BooruConfig config)>>((ref) =>
         {
           BooruType.zerochan: (config) => ZerochanBuilder(
-                postRepo: ref.watch(zerochanPostRepoProvider(config)),
+                postRepo: ref.read(zerochanPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(zerochanAutoCompleteRepoProvider(config)),
+                    ref.read(zerochanAutoCompleteRepoProvider(config)),
               ),
           BooruType.moebooru: (config) => MoebooruBuilder(
-                postRepo: ref.watch(moebooruPostRepoProvider(config)),
+                postRepo: ref.read(moebooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(moebooruAutocompleteRepoProvider(config)),
+                    ref.read(moebooruAutocompleteRepoProvider(config)),
               ),
           BooruType.gelbooru: (config) => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                postRepo: ref.read(gelbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
-                client: ref.watch(gelbooruClientProvider(config)),
+                    ref.read(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.gelbooruV2: (config) => GelbooruBuilder(
-                postRepo: ref.watch(gelbooruPostRepoProvider(config)),
+                postRepo: ref.read(gelbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(gelbooruAutocompleteRepoProvider(config)),
-                client: ref.watch(gelbooruClientProvider(config)),
+                    ref.read(gelbooruAutocompleteRepoProvider(config)),
+                client: ref.read(gelbooruClientProvider(config)),
               ),
           BooruType.e621: (config) => E621Builder(
                 autocompleteRepo:
-                    ref.watch(e621AutocompleteRepoProvider(config)),
-                postRepo: ref.watch(e621PostRepoProvider(config)),
-                client: ref.watch(e621ClientProvider(config)),
-                favoriteChecker: ref.watch(e621FavoriteCheckerProvider(config)),
+                    ref.read(e621AutocompleteRepoProvider(config)),
+                postRepo: ref.read(e621PostRepoProvider(config)),
+                client: ref.read(e621ClientProvider(config)),
+                favoriteChecker: ref.read(e621FavoriteCheckerProvider(config)),
+                noteRepo: ref.read(e621NoteRepoProvider(config)),
               ),
           BooruType.danbooru: (config) => DanbooruBuilder(
-                postRepo: ref.watch(danbooruPostRepoProvider(config)),
+                postRepo: ref.read(danbooruPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(danbooruAutocompleteRepoProvider(config)),
-                favoriteRepo: ref.watch(danbooruFavoriteRepoProvider(config)),
+                    ref.read(danbooruAutocompleteRepoProvider(config)),
+                favoriteRepo: ref.read(danbooruFavoriteRepoProvider(config)),
                 favoriteChecker:
-                    ref.watch(danbooruFavoriteCheckerProvider(config)),
-                postCountRepo: ref.watch(danbooruPostCountRepoProvider(config)),
+                    ref.read(danbooruFavoriteCheckerProvider(config)),
+                postCountRepo: ref.read(danbooruPostCountRepoProvider(config)),
+                noteRepo: ref.read(danbooruNoteRepoProvider(config)),
               ),
           BooruType.gelbooruV1: (config) => GelbooruV1Builder(
-                postRepo: ref.watch(gelbooruV1PostRepoProvider(config)),
+                postRepo: ref.read(gelbooruV1PostRepoProvider(config)),
                 client: GelbooruClient.gelbooru(),
               ),
           BooruType.sankaku: (config) => SankakuBuilder(
-                postRepository: ref.watch(sankakuPostRepoProvider(config)),
+                postRepository: ref.read(sankakuPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(sankakuAutocompleteRepoProvider(config)),
+                    ref.read(sankakuAutocompleteRepoProvider(config)),
               ),
           BooruType.philomena: (config) => PhilomenaBuilder(
-                postRepo: ref.watch(philomenaPostRepoProvider(config)),
+                postRepo: ref.read(philomenaPostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(philomenaAutoCompleteRepoProvider(config)),
+                    ref.read(philomenaAutoCompleteRepoProvider(config)),
               ),
           BooruType.shimmie2: (config) => Shimmie2Builder(
-                postRepo: ref.watch(shimmie2PostRepoProvider(config)),
+                postRepo: ref.read(shimmie2PostRepoProvider(config)),
                 autocompleteRepo:
-                    ref.watch(shimmie2AutocompleteRepoProvider(config)),
+                    ref.read(shimmie2AutocompleteRepoProvider(config)),
               ),
         });
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
+
+  bool canFavorite(BooruConfig config) =>
+      favoriteAdder != null &&
+      favoriteRemover != null &&
+      favoriteChecker != null &&
+      config.hasLoginDetails();
 }
 
 class BooruProvider extends ConsumerWidget {
@@ -320,6 +388,15 @@ extension BooruWidgetRef on WidgetRef {
     if (config == null) return null;
 
     final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc(config) : null;
+  }
+
+  BooruBuilder? watchBooruBuilder(BooruConfig? config) {
+    if (config == null) return null;
+
+    final booruBuilders = watch(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
     return booruBuilderFunc != null ? booruBuilderFunc(config) : null;

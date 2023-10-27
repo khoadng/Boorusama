@@ -1,5 +1,4 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'danbooru_forum_post.dart';
 import 'danbooru_forum_post_vote.dart';
@@ -27,8 +26,8 @@ DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(ForumPostDto dto) {
     body: dto.body ?? 'No Body',
     isDeleted: dto.isDeleted ?? false,
     topicId: dto.topicId ?? -1,
-    creator: creatorDtoToCreator(dto.creator),
-    updater: creatorDtoToCreator(dto.updater),
+    creatorId: dto.creatorId ?? -1,
+    updaterId: dto.updaterId ?? -1,
     votes: dto.votes != null
         ? dto.votes!
             .map(danbooruForumPostVoteDtoToDanbooruForumPostVote)

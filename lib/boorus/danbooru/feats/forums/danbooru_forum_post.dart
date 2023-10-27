@@ -2,7 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/core/feats/forums/forums.dart';
 import 'danbooru_forum_post_vote.dart';
 
@@ -14,8 +13,8 @@ class DanbooruForumPost extends Equatable implements ForumPost {
     required this.body,
     required this.isDeleted,
     required this.topicId,
-    required this.creator,
-    required this.updater,
+    required this.creatorId,
+    required this.updaterId,
     required this.votes,
   });
 
@@ -26,8 +25,8 @@ class DanbooruForumPost extends Equatable implements ForumPost {
         body: '',
         isDeleted: false,
         topicId: -1,
-        creator: Creator.empty(),
-        updater: Creator.empty(),
+        creatorId: -1,
+        updaterId: -1,
         votes: const [],
       );
 
@@ -41,12 +40,11 @@ class DanbooruForumPost extends Equatable implements ForumPost {
   final String body;
   final bool isDeleted;
   final int topicId;
-  final Creator creator;
-  final Creator updater;
   final List<DanbooruForumPostVote> votes;
 
   @override
-  int get creatorId => creator.id;
+  final int creatorId;
+  final int updaterId;
 
   @override
   List<Object?> get props => [
@@ -56,8 +54,8 @@ class DanbooruForumPost extends Equatable implements ForumPost {
         body,
         isDeleted,
         topicId,
-        creator,
-        updater,
+        creatorId,
+        updaterId,
         votes
       ];
 }

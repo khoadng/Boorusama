@@ -113,6 +113,7 @@ class _MoebooruPostDetailsDesktopPageState
                     ),
                     FileDetailsSection(
                       post: post,
+                      rating: post.rating,
                     ),
                     const Divider(
                       thickness: 1.5,

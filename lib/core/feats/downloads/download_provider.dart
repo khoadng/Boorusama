@@ -18,7 +18,7 @@ final downloadUrlProvider =
     Provider.autoDispose.family<String, Post>((ref, post) {
   final settings = ref.watch(settingsProvider);
 
-  if (post.isVideo) return post.sampleImageUrl;
+  if (post.isVideo) return post.videoUrl;
 
   return switch (settings.downloadQuality) {
     DownloadQuality.original => post.originalImageUrl,

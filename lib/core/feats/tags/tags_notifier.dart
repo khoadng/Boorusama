@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 
@@ -30,7 +31,12 @@ class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
 
     if (filtered.isEmpty) return;
 
+    final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
+
     final tags = await repo.getTagsByName(filtered, 1);
+
+    await booruTagTypeStore.saveTagIfNotExist(arg.booruType, tags);
+
     final group = createTagGroupItems(tags);
 
     onSuccess?.call(group);
@@ -57,7 +63,7 @@ List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
 
 String tagCategoryToString(TagCategory category) => switch (category) {
       TagCategory.artist => 'Artist',
-      TagCategory.charater => 'Character',
+      TagCategory.character => 'Character',
       TagCategory.copyright => 'Copyright',
       TagCategory.general => 'General',
       TagCategory.meta => 'Meta',
@@ -69,7 +75,7 @@ typedef TagCategoryOrder = int;
 TagCategoryOrder tagCategoryToOrder(TagCategory category) => switch (category) {
       TagCategory.artist => 0,
       TagCategory.copyright => 1,
-      TagCategory.charater => 2,
+      TagCategory.character => 2,
       TagCategory.general => 3,
       TagCategory.meta => 4,
       TagCategory.invalid_ => 5

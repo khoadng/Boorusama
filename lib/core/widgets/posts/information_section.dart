@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -15,7 +14,7 @@ import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class InformationSection extends StatelessWidget {
+class InformationSection extends ConsumerWidget {
   const InformationSection({
     super.key,
     this.padding,
@@ -39,7 +38,7 @@ class InformationSection extends StatelessWidget {
   final void Function(BuildContext context, String artist)? onArtistTagTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding:
           padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -84,10 +83,7 @@ class InformationSection extends StatelessWidget {
                           label: artistTags.first.replaceUnderscoreWithSpace(),
                           onTap: () =>
                               onArtistTagTap?.call(context, artistTags.first),
-                          backgroundColor: getTagColor(
-                            TagCategory.artist,
-                            ThemeMode.light,
-                          ),
+                          backgroundColor: Colors.red,
                         ),
                       ),
                     if (artistTags.isNotEmpty) const SizedBox(width: 5),

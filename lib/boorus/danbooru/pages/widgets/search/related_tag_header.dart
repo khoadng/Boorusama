@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/tags/tags.dart';
-import 'package:boorusama/core/feats/tags/tags.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
 import 'related_tag_chip.dart';
 import 'view_more_tag_button.dart';
@@ -75,10 +74,8 @@ class _RelatedTagChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.themeMode;
-
     return RelatedTagButton(
-      backgroundColor: getTagColor(relatedTag.category, theme),
+      backgroundColor: ref.getTagColor(context, relatedTag.category.name),
       onPressed: onPressed,
       label: Text(
         relatedTag.tag.replaceUnderscoreWithSpace(),

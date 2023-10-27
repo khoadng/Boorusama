@@ -7,17 +7,19 @@ import 'danbooru_forum_post.dart';
 
 // Project imports:
 
-
 class DanbooruForumPostsNotifier extends PagedNotifier<int, DanbooruForumPost> {
   DanbooruForumPostsNotifier({
     required int topicId,
     required ForumPostRepository<DanbooruForumPost> repo,
   }) : super(
-          load: (key, limit) => repo.getForumPostsOrEmpty(topicId, page: key),
-          nextPageKeyBuilder: (lastItems, page, limit) => (lastItems == null ||
-                  lastItems.isEmpty ||
-                  lastItems.length < limit)
-              ? null
-              : lastItems.last.id,
+          load: (key, limit) => repo.getForumPostsOrEmpty(
+            topicId,
+            page: key,
+            limit: limit,
+          ),
+          nextPageKeyBuilder: (lastItems, page, limit) =>
+              (lastItems == null || lastItems.isEmpty || page == 1)
+                  ? null
+                  : (page - 1),
         );
 }

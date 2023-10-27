@@ -8,6 +8,7 @@ import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/feats/forums/forums.dart';
+import 'package:boorusama/boorus/danbooru/feats/users/users.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/forums/forum_card.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -40,28 +41,34 @@ class DanbooruForumPage extends ConsumerWidget {
         pullToRefresh: false,
         firstPageKey: 1,
         provider: danbooruForumTopicsProvider(config),
-        itemBuilder: (context, topic, index) => ForumCard(
-          title: topic.title,
-          responseCount: topic.responseCount,
-          createdAt: topic.createdAt,
-          creatorName: topic.creator.name,
-          creatorColor: !context.themeMode.isDark
-              ? topic.creator.level.toColor()
-              : topic.creator.level.toOnDarkColor(),
-          onCreatorTap: () => goToUserDetailsPage(
-            ref,
-            context,
-            uid: topic.creator.id,
-            username: topic.creator.name,
-          ),
-          onTap: () => context.navigator.push(MaterialPageRoute(
-            builder: (_) => DanbooruForumPostsPage(
-              topicId: topic.id,
-              originalPostId: topic.originalPost.id,
-              title: topic.title,
+        itemBuilder: (context, topic, index) {
+          final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
+          final creatorName = creator?.name ?? '...';
+          final creatorLevel = creator?.level ?? UserLevel.member;
+
+          return ForumCard(
+            title: topic.title,
+            responseCount: topic.responseCount,
+            createdAt: topic.createdAt,
+            creatorName: creatorName,
+            creatorColor: !context.themeMode.isDark
+                ? creatorLevel.toColor()
+                : creatorLevel.toOnDarkColor(),
+            onCreatorTap: () => goToUserDetailsPage(
+              ref,
+              context,
+              uid: topic.creatorId,
+              username: creatorName,
             ),
-          )),
-        ),
+            onTap: () => context.navigator.push(MaterialPageRoute(
+              builder: (_) => DanbooruForumPostsPage(
+                topicId: topic.id,
+                title: topic.title,
+                responseCount: topic.responseCount,
+              ),
+            )),
+          );
+        },
         pagedBuilder: (controller, builder) => PagedListView(
           pagingController: controller,
           builderDelegate: builder,

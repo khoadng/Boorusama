@@ -6,11 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 
-class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
-  //TODO: remove duplicated codes
+class PostShareNotifier
+    extends AutoDisposeFamilyNotifier<PostShareState, Post> {
   @override
   PostShareState build(Post arg) {
-    //FIXME: this looks like a potential bug
     final config = ref.read(currentBooruConfigProvider);
     final booruLink = arg.getLink(config.url);
 
@@ -29,7 +28,6 @@ class PostShareNotifier extends FamilyNotifier<PostShareState, Post> {
   }
 
   void updateInformation(Post post) {
-    // FIXME: this looks like a potential bug
     final config = ref.read(currentBooruConfigProvider);
     final booruLink = arg.getLink(config.url);
 

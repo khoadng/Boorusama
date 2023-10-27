@@ -8,16 +8,14 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 abstract class Post extends Equatable
-    with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin {
+    with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin
+    implements TagDetails {
   int get id;
   DateTime? get createdAt;
   String get thumbnailImageUrl;
   String get sampleImageUrl;
   String get originalImageUrl;
   List<String> get tags;
-  List<String>? get artistTags;
-  List<String>? get characterTags;
-  List<String>? get copyrightTags;
   Rating get rating;
   bool get hasComment;
   bool get isTranslated;
@@ -29,6 +27,12 @@ abstract class Post extends Equatable
 
   String getLink(String baseUrl);
   Uri getUriLink(String baseUrl);
+}
+
+abstract interface class TagDetails {
+  List<String>? get artistTags;
+  List<String>? get characterTags;
+  List<String>? get copyrightTags;
 }
 
 class SimplePost extends Equatable

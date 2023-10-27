@@ -20,6 +20,7 @@ typedef HeaderBuilder<T> = Widget Function(
   BuildContext context,
   List<T> selectedItems,
   VoidCallback clearSelected,
+  VoidCallback selectAll,
 );
 
 class MultiSelectWidget<T> extends StatefulWidget {
@@ -82,8 +83,12 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: multiSelect && widget.headerBuilder != null
-                ? widget.headerBuilder!(context, _controller.selectedItems,
-                    _controller.clearSelected)
+                ? widget.headerBuilder!(
+                    context,
+                    _controller.selectedItems,
+                    _controller.clearSelected,
+                    () => _controller.selectAll(widget.items),
+                  )
                 : const SizedBox.shrink()),
         body: widget.scrollableWidgetBuilder(
           context,

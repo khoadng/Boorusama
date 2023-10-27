@@ -9,26 +9,31 @@ class RelatedTag extends Equatable {
   const RelatedTag({
     required this.query,
     required this.tags,
+    required this.wikiPageTags,
   });
 
   const RelatedTag.empty()
       : query = '',
+        wikiPageTags = const [],
         tags = const [];
 
   final String query;
   final List<RelatedTagItem> tags;
+  final List<Tag> wikiPageTags;
 
   RelatedTag copyWith({
     List<RelatedTagItem>? tags,
+    List<Tag>? wikiPageTags,
     String? query,
   }) =>
       RelatedTag(
         query: query ?? this.query,
+        wikiPageTags: wikiPageTags ?? this.wikiPageTags,
         tags: tags ?? this.tags,
       );
 
   @override
-  List<Object?> get props => [query, tags];
+  List<Object?> get props => [query, tags, wikiPageTags];
 }
 
 class RelatedTagItem extends Equatable {
@@ -72,7 +77,7 @@ List<RelatedTagItem> generateDummyTags(int count) => [
           postCount: 1,
           category: switch (i % 10) {
             0 => TagCategory.artist,
-            1 => TagCategory.charater,
+            1 => TagCategory.character,
             2 => TagCategory.copyright,
             3 => TagCategory.meta,
             _ => TagCategory.general,

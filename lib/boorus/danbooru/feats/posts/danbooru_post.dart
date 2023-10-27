@@ -14,7 +14,7 @@ typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
 class DanbooruPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
-    implements Post {
+    implements Post, DanbooruTagDetails {
   DanbooruPost({
     required this.id,
     required this.thumbnailImageUrl,
@@ -46,9 +46,9 @@ class DanbooruPost extends Equatable
     required this.duration,
     required this.variants,
   }) : tags = [
-          ...characterTags,
           ...artistTags,
           ...copyrightTags,
+          ...characterTags,
           ...generalTags,
           ...metaTags,
         ];
@@ -99,7 +99,9 @@ class DanbooruPost extends Equatable
   final List<String> characterTags;
   @override
   final List<String> artistTags;
+  @override
   final List<String> generalTags;
+  @override
   final List<String> metaTags;
   @override
   final List<String> tags;
@@ -174,7 +176,16 @@ class DanbooruPost extends Equatable
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [
+        id,
+        tags,
+        generalTags,
+        artistTags,
+        characterTags,
+        copyrightTags,
+        metaTags,
+        rating,
+      ];
 }
 
 const kCensoredTags = ['loli', 'shota'];
@@ -211,7 +222,7 @@ extension PostX on DanbooruPost {
           )),
       ...p.characterTags.map((e) => PostDetailTag(
             name: e,
-            category: TagCategory.charater.stringify(),
+            category: TagCategory.character.stringify(),
             postId: p.id,
           )),
       ...p.copyrightTags.map((e) => PostDetailTag(
@@ -244,7 +255,7 @@ extension PostX on DanbooruPost {
     }
 
     for (final t in characterTags) {
-      tags.add(Tag(name: t, category: TagCategory.charater, postCount: 0));
+      tags.add(Tag(name: t, category: TagCategory.character, postCount: 0));
     }
 
     for (final t in metaTags) {
@@ -324,4 +335,20 @@ extension DanbooruPostImageX on DanbooruPost {
     if (isGif) return urlSample;
     return thumbnailFromImageQuality(settings.imageQuality);
   }
+}
+
+abstract interface class DanbooruTagDetails implements TagDetails {
+  List<String>? get generalTags;
+  List<String>? get metaTags;
+  Rating get rating;
+}
+
+extension DanbooruTagDetailsX on DanbooruTagDetails {
+  List<String> get allTags => [
+        ...artistTags ?? [],
+        ...characterTags ?? [],
+        ...copyrightTags ?? [],
+        ...generalTags ?? [],
+        ...metaTags ?? [],
+      ];
 }

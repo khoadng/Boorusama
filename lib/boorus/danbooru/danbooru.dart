@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/feats/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'pages/create_danbooru_config_page.dart';
@@ -19,19 +21,21 @@ import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
-class DanbooruBuilder implements BooruBuilder {
+class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
     required this.postRepo,
     required this.autocompleteRepo,
     required this.favoriteRepo,
     required this.favoriteChecker,
     required this.postCountRepo,
+    required this.noteRepo,
   });
 
   final PostRepository<DanbooruPost> postRepo;
   final AutocompleteRepository autocompleteRepo;
   final FavoritePostRepository favoriteRepo;
   final PostCountRepository postCountRepo;
+  final NoteRepository noteRepo;
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -124,4 +128,14 @@ class DanbooruBuilder implements BooruBuilder {
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder => (settings, post) =>
       (post as DanbooruPost).thumbnailFromSettings(settings);
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, postId) => CommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
+
+  @override
+  NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 }

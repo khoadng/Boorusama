@@ -1,11 +1,15 @@
 - danbooru:
     protocol: https_2
     sites:
-      - https://danbooru.donmai.us/
-      - https://testbooru.donmai.us/
-      - https://donmai.moe/
-      - https://safebooru.donmai.us/
-      - https://aibooru.online/
+      - url: https://danbooru.donmai.us/
+        ai-tag: true
+      - url: https://donmai.moe/
+        ai-tag: true
+      - url: https://safebooru.donmai.us/
+        ai-tag: true
+      - url: https://aibooru.online/
+        ai-tag: true
+      - url: https://testbooru.donmai.us/
 
 - moebooru:
     sites:

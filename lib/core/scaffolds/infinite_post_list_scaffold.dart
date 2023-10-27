@@ -92,12 +92,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final favoriteRemover = booruBuilder?.favoriteRemover;
     final favoriteChecker = booruBuilder?.favoriteChecker;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
-    final isAuthenticated = config.hasLoginDetails();
-
-    final canFavorite = favoriteAdder != null &&
-        favoriteRemover != null &&
-        favoriteChecker != null &&
-        isAuthenticated;
+    final canFavorite = booruBuilder?.canFavorite(config) ?? false;
 
     return LayoutBuilder(
       builder: (context, constraints) => PostGrid(

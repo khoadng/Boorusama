@@ -14,9 +14,11 @@ class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({
     super.key,
     required this.post,
+    required this.rating,
   });
 
   final Post post;
+  final Rating rating;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class FileDetailsSection extends StatelessWidget {
           children: [
             _FileDetailTile(
               title: 'post.detail.rating'.tr(),
-              value: post.rating.toString().split('.').last.pascalCase,
+              value: rating.name.pascalCase,
             ),
             if (post.fileSize > 0)
               _FileDetailTile(

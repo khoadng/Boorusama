@@ -8,6 +8,7 @@ abstract class RelatedTagRepository {
     String query, {
     TagCategory? category,
     RelatedType? order,
+    int? limit,
   });
 }
 
@@ -27,6 +28,7 @@ class RelatedTagRepositoryBuilder
     String query, {
     TagCategory? category,
     RelatedType? order,
+    int? limit,
   }) fetch;
 
   @override
@@ -34,6 +36,7 @@ class RelatedTagRepositoryBuilder
     String query, {
     TagCategory? category,
     RelatedType? order,
+    int? limit,
   }) =>
       tryGet(
         query,
@@ -41,6 +44,7 @@ class RelatedTagRepositoryBuilder
           query,
           category: category,
           order: order,
+          limit: limit,
         ),
       );
 

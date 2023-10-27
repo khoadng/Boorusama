@@ -135,8 +135,11 @@ class _DanbooruPostDetailsDesktopPageState
                       child: DanbooruPostStatsTile(post: post),
                     ),
                     const Divider(height: 8, thickness: 1),
-                    TagsTile(tags: tags),
-                    FileDetailsSection(post: post),
+                    TagsTile(post: post),
+                    FileDetailsSection(
+                      post: post,
+                      rating: post.rating,
+                    ),
                   ],
                 ),
               ),

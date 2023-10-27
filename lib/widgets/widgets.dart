@@ -1,7 +1,6 @@
 export 'animated_indexed_stack.dart';
 export 'animated_spinning_icon.dart';
 export 'auto_slide_mixin.dart';
-export 'basic_tag_list.dart';
 export 'booru_chip.dart';
 export 'booru_dialog.dart';
 export 'center_play_button.dart';

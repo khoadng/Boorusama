@@ -1,5 +1,4 @@
 // Project imports:
-import 'creator_dto.dart';
 import 'forum_vote_dto.dart';
 
 class ForumPostDto {
@@ -10,8 +9,8 @@ class ForumPostDto {
     this.body,
     this.isDeleted,
     this.topicId,
-    this.creator,
-    this.updater,
+    this.creatorId,
+    this.updaterId,
     this.votes,
   });
 
@@ -22,12 +21,8 @@ class ForumPostDto {
         body: json['body'],
         isDeleted: json['is_deleted'],
         topicId: json['topic_id'],
-        creator: json['creator'] != null
-            ? CreatorDto.fromJson(json['creator'])
-            : null,
-        updater: json['updater'] != null
-            ? CreatorDto.fromJson(json['updater'])
-            : null,
+        creatorId: json['creator_id'],
+        updaterId: json['updater_id'],
         votes: json['votes'] != null
             ? List<ForumPostVoteDto>.from(
                 json['votes'].map((x) => ForumPostVoteDto.fromJson(x)))
@@ -40,8 +35,8 @@ class ForumPostDto {
   final String? body;
   final bool? isDeleted;
   final int? topicId;
-  final CreatorDto? creator;
-  final CreatorDto? updater;
+  final int? creatorId;
+  final int? updaterId;
   final List<ForumPostVoteDto>? votes;
 
   @override

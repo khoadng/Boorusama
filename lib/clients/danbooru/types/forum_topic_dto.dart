@@ -1,11 +1,7 @@
-// Project imports:
-import 'creator_dto.dart';
-import 'forum_post_dto.dart';
-
 class ForumTopicDto {
   final int? id;
-  final CreatorDto? creator;
-  final CreatorDto? updater;
+  final int? creatorId;
+  final int? updaterId;
   final String? title;
   final int? responseCount;
   final bool? isSticky;
@@ -16,12 +12,10 @@ class ForumTopicDto {
   final int? categoryId;
   final int? minLevel;
 
-  final ForumPostDto? originalPost;
-
   ForumTopicDto({
     this.id,
-    this.creator,
-    this.updater,
+    this.creatorId,
+    this.updaterId,
     this.title,
     this.responseCount,
     this.isSticky,
@@ -31,16 +25,13 @@ class ForumTopicDto {
     this.isDeleted,
     this.categoryId,
     this.minLevel,
-    this.originalPost,
   });
 
   factory ForumTopicDto.fromJson(Map<String, dynamic> json) {
     return ForumTopicDto(
       id: json['id'],
-      creator:
-          json['creator'] != null ? CreatorDto.fromJson(json['creator']) : null,
-      updater:
-          json['updater'] != null ? CreatorDto.fromJson(json['updater']) : null,
+      creatorId: json['creator_id'],
+      updaterId: json['updater_id'],
       title: json['title'],
       responseCount: json['response_count'],
       isSticky: json['is_sticky'],
@@ -50,9 +41,6 @@ class ForumTopicDto {
       isDeleted: json['is_deleted'],
       categoryId: json['category_id'],
       minLevel: json['min_level'],
-      originalPost: json['original_post'] != null
-          ? ForumPostDto.fromJson(json['original_post'])
-          : null,
     );
   }
 

@@ -28,7 +28,6 @@ import 'package:boorusama/widgets/widgets.dart';
 import 'pages/add_to_favorite_group_page.dart';
 import 'pages/blacklisted_tags_page.dart';
 import 'pages/comment_create_page.dart';
-import 'pages/comment_page.dart';
 import 'pages/comment_update_page.dart';
 import 'pages/danbooru_character_page.dart';
 import 'pages/danbooru_dmail_page.dart';
@@ -107,20 +106,6 @@ void goToDmailPage(BuildContext context) {
   context.navigator.push(MaterialPageRoute(
     builder: (_) => const DanbooruDmailPage(),
   ));
-}
-
-void goToCommentPage(BuildContext context, int postId) {
-  showCommentPage(
-    context,
-    postId: postId,
-    settings: const RouteSettings(
-      name: RouterPageConstant.comment,
-    ),
-    builder: (_, useAppBar) => CommentPage(
-      useAppBar: useAppBar,
-      postId: postId,
-    ),
-  );
 }
 
 void goToCommentCreatePage(

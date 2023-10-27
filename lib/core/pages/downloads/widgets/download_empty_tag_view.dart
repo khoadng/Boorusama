@@ -9,7 +9,6 @@ import 'package:boorusama/core/feats/downloads/bulk_download_provider.dart';
 import 'package:boorusama/core/feats/utils.dart';
 import 'package:boorusama/core/pages/search/simple_tag_search_view.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
 
 class DownloadEmptyTagView extends ConsumerWidget {
@@ -31,7 +30,7 @@ class DownloadEmptyTagView extends ConsumerWidget {
                 )
               : null,
           textColorBuilder: (tag) =>
-              generateAutocompleteTagColor(tag, context.themeMode),
+              generateAutocompleteTagColor(ref, context, tag),
           closeOnSelected: false,
           ensureValidTag: false,
           onSelected: (tag) {

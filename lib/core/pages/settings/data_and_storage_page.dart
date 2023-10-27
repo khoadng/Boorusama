@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -7,9 +10,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
+import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'widgets/settings_header.dart';
+
+final tagHighlightingCacheProvider =
+    FutureProvider.autoDispose<int>((ref) async {
+  final path = await BooruTagTypeStore.getBoxPath();
+  final file = File(path);
+
+  if (!file.existsSync()) return 0;
+
+  return file.lengthSync();
+});
 
 class DataAndStoragePage extends ConsumerStatefulWidget {
   const DataAndStoragePage({
@@ -59,6 +74,21 @@ class _PerformancePageState extends ConsumerState<DataAndStoragePage> {
                   ),
                 );
               },
+            ),
+            ListTile(
+              title: const Text('Tag highlighting cache'),
+              subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
+                    data: (data) => Text(filesize(data)),
+                    orElse: () => const Text('Loading...'),
+                  ),
+              trailing: ElevatedButton(
+                onPressed: () => ref
+                    .read(booruTagTypeStoreProvider)
+                    .clear()
+                    .then((value) =>
+                        ref.invalidate(tagHighlightingCacheProvider)),
+                child: const Text('settings.performance.clear_cache').tr(),
+              ),
             ),
             Builder(
               builder: (context) {
