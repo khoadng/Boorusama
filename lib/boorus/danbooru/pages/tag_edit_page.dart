@@ -155,8 +155,9 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       ),
       child: Split(
         axis: Axis.vertical,
-        initialFractions: const [0.2, 0.8],
-        minSizes: const [120, 120],
+        initialFractions: const [0.3, 0.7],
+        minSizes: const [120, 100],
+        ignoreFractionChange: true,
         children: [
           Column(
             children: [
@@ -304,7 +305,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   Widget _buildMode(BuildContext context, bool aiTagSupport) =>
       switch (expandMode) {
         TagEditExpandMode.favorite => Container(
-            height: 300,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditFavoriteView(
               onRemoved: (tag) {
@@ -322,7 +323,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         TagEditExpandMode.related => Container(
-            height: 350,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditWikiView(
               tag: selectedTag,
@@ -342,7 +343,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         TagEditExpandMode.aiTag => Container(
-            height: 350,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditAITagView(
               postId: widget.postId,

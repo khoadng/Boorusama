@@ -35,6 +35,7 @@ class Split extends StatefulWidget {
     required this.initialFractions,
     this.minSizes,
     this.splitters,
+    this.ignoreFractionChange = false,
   })  : assert(children.length >= 2),
         assert(initialFractions.length >= 2),
         assert(children.length == initialFractions.length),
@@ -75,6 +76,8 @@ class Split extends StatefulWidget {
   ///
   /// If this is null, a default splitter will be used to divide [children].
   final List<PreferredSizeWidget>? splitters;
+
+  final bool ignoreFractionChange;
 
   /// The key passed to the divider between children[index] and
   /// children[index + 1].
@@ -157,7 +160,7 @@ class _SplitState extends State<Split> {
         fractionDeltaAvailable += delta;
       }
     }
-    if (fractionDeltaRequired > 0) {
+    if (!widget.ignoreFractionChange && fractionDeltaRequired > 0) {
       // Likely due to a change in the available size, the current fractions for
       // the children do not obey the min size constraints.
       // The min size constraints for children are scaled so it is always
