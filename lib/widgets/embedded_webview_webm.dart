@@ -195,7 +195,7 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
         children: [
           Container(
             color: widget.backgroundColor,
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.sizeOf(context).height,
             child: WebViewWidget(
                 controller: webmVideoController._webViewController),
           ),

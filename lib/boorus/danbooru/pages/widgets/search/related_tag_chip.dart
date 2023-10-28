@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
 class RelatedTagButton extends StatelessWidget {
@@ -25,8 +26,7 @@ class RelatedTagButton extends StatelessWidget {
         onPressed: onPressed,
         label: const Icon(Icons.add),
         trailing: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.5),
+          constraints: BoxConstraints(maxWidth: context.screenWidth * 0.5),
           child: label,
         ),
       ),

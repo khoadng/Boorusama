@@ -37,8 +37,8 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final viewInsets = MediaQuery.of(context).viewInsets.bottom;
-    final safeAreaBottom = MediaQuery.of(context).padding.bottom;
+    final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
+    final safeAreaBottom = MediaQuery.paddingOf(context).bottom;
 
     return ConditionalParentWidget(
       condition: widget.isModal,

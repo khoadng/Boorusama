@@ -45,7 +45,7 @@ class Screen {
 
   final BuildContext context;
 
-  Size get _size => MediaQuery.of(context).size;
+  Size get _size => MediaQuery.sizeOf(context);
 
   ScreenSize get size => screenWidthToDisplaySize(_size.width);
 
@@ -59,7 +59,7 @@ class Screen {
 
 extension DisplayX on BuildContext {
   Screen get screen => Screen.of(this);
-  Orientation get orientation => MediaQuery.of(this).orientation;
+  Orientation get orientation => MediaQuery.orientationOf(this);
 }
 
 extension OrientationX on Orientation {

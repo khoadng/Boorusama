@@ -65,8 +65,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 offset: Offset(-32, 0),
               ),
               portalFollower: SizedBox(
-                width: min(600, MediaQuery.of(context).size.width),
-                height: MediaQuery.of(context).size.height * 0.75,
+                width: min(600, context.screenWidth),
+                height: context.screenHeight * 0.75,
                 child: ValueListenableBuilder(
                   valueListenable: textEditingController,
                   builder: (context, query, child) {

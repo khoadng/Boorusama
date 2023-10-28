@@ -18,6 +18,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -682,7 +683,8 @@ class _RelatedTagChips extends ConsumerWidget {
               value ? onAdded(tag.name) : onRemoved(tag.name),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.8),
+              maxWidth: context.screenWidth * 0.8,
+            ),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
@@ -779,7 +781,8 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                         : widget.onRemoved(tag.name),
                     label: ConstrainedBox(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.8),
+                        maxWidth: context.screenWidth * 0.8,
+                      ),
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(

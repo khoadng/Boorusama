@@ -84,7 +84,7 @@ class Split extends StatefulWidget {
   Key dividerKey(int index) => Key('$this dividerKey $index');
 
   static Axis axisFor(BuildContext context, double horizontalAspectRatio) {
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.sizeOf(context);
     final aspectRatio = screenSize.width / screenSize.height;
     if (aspectRatio >= horizontalAspectRatio) return Axis.horizontal;
     return Axis.vertical;

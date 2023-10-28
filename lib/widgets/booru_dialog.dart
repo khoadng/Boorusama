@@ -28,8 +28,8 @@ class BooruDialog extends StatelessWidget {
           onTap: () => Navigator.pop(context),
           child: Container(
             color: Colors.transparent,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.sizeOf(context).width,
+            height: MediaQuery.sizeOf(context).height,
           ),
         ),
         Material(

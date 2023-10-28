@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -228,14 +229,12 @@ class _PostDetailPageScaffoldState<T extends Post>
     return [
       if (!expandedOnCurrentPage)
         SizedBox(
-          height: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).viewPadding.top,
+          height: context.screenHeight - MediaQuery.viewPaddingOf(context).top,
           child: RepaintBoundary(child: media),
         )
       else
         RepaintBoundary(child: media),
-      if (!expandedOnCurrentPage)
-        SizedBox(height: MediaQuery.of(context).size.height),
+      if (!expandedOnCurrentPage) SizedBox(height: context.screenHeight),
       if (expandedOnCurrentPage) ...[
         if (widget.poolTileBuilder != null)
           widget.poolTileBuilder!(context, post),
