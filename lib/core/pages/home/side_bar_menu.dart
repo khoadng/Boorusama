@@ -49,7 +49,7 @@ class SideBarMenu extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).viewPadding.top,
+                    height: MediaQuery.viewPaddingOf(context).top,
                   ),
                   const CurrentBooruTile(),
                   if (initialContentBuilder != null) ...[

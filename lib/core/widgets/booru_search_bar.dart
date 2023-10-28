@@ -91,8 +91,9 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                         widget.onTapOutside?.call();
                       }
                     },
-                    onFieldSubmitted: (value) =>
-                        widget.onSubmitted?.call(value),
+                    onFieldSubmitted: (value) => value.isNotEmpty
+                        ? widget.onSubmitted?.call(value)
+                        : null,
                     onChanged: (value) => widget.onChanged?.call(value),
                     enabled: widget.enabled,
                     decoration: InputDecoration(

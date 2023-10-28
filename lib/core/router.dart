@@ -50,7 +50,7 @@ void goToOriginalImagePage(BuildContext context, Post post) {
     ),
     child: OriginalImagePage(
       post: post,
-      initialOrientation: MediaQuery.of(context).orientation,
+      initialOrientation: MediaQuery.orientationOf(context),
     ),
   ));
 }
@@ -343,8 +343,8 @@ Future<T?> showDesktopDialogWindow<T>(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: Container(
-            width: width ?? MediaQuery.of(context).size.width * 0.8,
-            height: height ?? MediaQuery.of(context).size.height * 0.8,
+            width: width ?? context.screenWidth * 0.8,
+            height: height ?? context.screenHeight * 0.8,
             margin: margin ??
                 const EdgeInsets.symmetric(
                   vertical: 12,

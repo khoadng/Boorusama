@@ -195,8 +195,8 @@ class UserDetailsPage extends ConsumerWidget {
                 tag: e.tag,
               ),
               label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.8),
+                  constraints:
+                      BoxConstraints(maxWidth: context.screenWidth * 0.8),
                   child: RichText(
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(

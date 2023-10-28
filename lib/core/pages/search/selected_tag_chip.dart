@@ -78,7 +78,7 @@ class SelectedTagChip extends StatelessWidget {
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.85,
+              maxWidth: context.screenWidth * 0.85,
             ),
             child: Text(
               tagSearchItem.tag.replaceUnderscoreWithSpace(),

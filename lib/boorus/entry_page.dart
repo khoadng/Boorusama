@@ -99,18 +99,14 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             )
           ],
         ),
-        child: _Boorus(
-          key: ValueKey(config),
-        ),
+        child: const _Boorus(),
       ),
     );
   }
 }
 
 class _Boorus extends ConsumerWidget {
-  const _Boorus({
-    super.key,
-  });
+  const _Boorus();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -118,7 +114,10 @@ class _Boorus extends ConsumerWidget {
     final booruBuilder = ref.watch(booruBuilderProvider);
 
     if (booruBuilder != null) {
-      return booruBuilder.homePageBuilder(context, config);
+      return Builder(
+        key: ValueKey(config),
+        builder: (context) => booruBuilder.homePageBuilder(context, config),
+      );
     } else {
       return Scaffold(
         appBar: AppBar(),

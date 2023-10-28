@@ -20,7 +20,7 @@ class NoDataBox extends StatelessWidget {
         const SizedBox(height: 50),
         Lottie.asset(
           'assets/animations/search-file.json',
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           height: 300,
           fit: BoxFit.contain,
         ),

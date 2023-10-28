@@ -20,7 +20,7 @@ class WarningContainer extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         color: Theme.of(context).colorScheme.error,
       ),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(

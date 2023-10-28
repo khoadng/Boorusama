@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -60,9 +59,7 @@ void main() async {
   final appInfo = await getAppInfo();
 
   final booruFactory = BooruFactory.from(
-    await (kReleaseMode
-        ? loadBoorusFromGithub(appInfo.booruDefUrl, logger)
-        : loadBoorusFromAssets()),
+    await loadBoorusFromAssets(),
   );
 
   final settingRepository = SettingsRepositoryLoggerInterceptor(

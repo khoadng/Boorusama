@@ -22,8 +22,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
       _dragDistance.value = event.position.dy - _dragStartPosition;
       _dragDistanceX.value = event.position.dx - _dragStartXPosition;
       double scaleValue = 1 -
-          (_dragDistance.value.abs() / MediaQuery.of(context).size.height) *
-              0.5;
+          (_dragDistance.value.abs() / MediaQuery.sizeOf(context).height) * 0.5;
       scaleValue = scaleValue.clamp(0.8, 1.0);
       _scale = scaleValue;
     }
@@ -31,8 +30,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
 
   void handlePointerUp(PointerUpEvent event) {
     if (_isSwipingDown.value) {
-      if (_dragDistance.value.abs() >
-          MediaQuery.of(context).size.height * 0.2) {
+      if (_dragDistance.value.abs() > MediaQuery.sizeOf(context).height * 0.2) {
         popper();
       } else {
         dragDistance.value = 0.0;
@@ -52,7 +50,7 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
       return 1.0;
     }
     double opacity =
-        1 - (_dragDistance.value.abs() / MediaQuery.of(context).size.height);
+        1 - (_dragDistance.value.abs() / MediaQuery.sizeOf(context).height);
     return opacity.clamp(0.0, 1.0);
   }
 

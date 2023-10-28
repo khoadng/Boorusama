@@ -81,7 +81,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditSavedSearchSheet> {
           left: 30,
           right: 30,
           top: 1,
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
