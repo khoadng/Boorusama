@@ -27,7 +27,7 @@ class ErrorBox extends StatelessWidget {
         const SizedBox(height: 50),
         Lottie.asset(
           'assets/animations/server-error.json',
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           height: 400,
           fit: BoxFit.contain,
         ),

@@ -18,7 +18,7 @@ class NetworkUnavailableIndicator extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(
           bottom: 8,
-          top: hasStatusBar() ? MediaQuery.of(context).viewPadding.top : 0,
+          top: hasStatusBar() ? MediaQuery.viewPaddingOf(context).top : 0,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +50,7 @@ class NetworkConnectingIndicator extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(
           bottom: 8,
-          top: hasStatusBar() ? MediaQuery.of(context).viewPadding.top : 0,
+          top: hasStatusBar() ? MediaQuery.viewPaddingOf(context).top : 0,
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,

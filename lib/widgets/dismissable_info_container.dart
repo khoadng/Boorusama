@@ -53,7 +53,7 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
               width: 1,
             ),
           ),
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(

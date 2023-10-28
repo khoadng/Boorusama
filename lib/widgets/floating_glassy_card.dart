@@ -25,7 +25,7 @@ class FloatingGlassyCard extends StatelessWidget {
           color: Theme.of(context).cardColor.withOpacity(0.7),
           type: MaterialType.card,
           child: SizedBox(
-            width: width ?? MediaQuery.of(context).size.width * 0.9,
+            width: width ?? MediaQuery.sizeOf(context).width * 0.9,
             child: child,
           ),
         ),

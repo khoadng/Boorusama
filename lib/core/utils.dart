@@ -191,7 +191,7 @@ double? _calculateSnackBarWidth(
   SnackBarBehavior behavior,
 ) {
   if (behavior == SnackBarBehavior.fixed) return null;
-  final width = MediaQuery.of(context).size.width;
+  final width = context.screenWidth;
 
   return width > 400 ? 400 : width;
 }
@@ -263,11 +263,11 @@ Future<T?> showCommentPage<T>(
           )
         : showSideSheetFromRight(
             settings: settings,
-            width: MediaQuery.of(context).size.width * 0.41,
+            width: context.screenWidth * 0.41,
             body: Container(
               color: Colors.transparent,
               padding:
-                  EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+                  EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
               child: Column(
                 children: [
                   Container(

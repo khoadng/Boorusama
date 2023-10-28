@@ -56,7 +56,7 @@ class BasicTagList extends ConsumerWidget {
                 ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    maxWidth: context.screenWidth * 0.7,
                   ),
                   child: Text(
                     _getTagStringDisplayName(tag),
@@ -76,7 +76,7 @@ class BasicTagList extends ConsumerWidget {
               ),
               label: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  maxWidth: context.screenWidth * 0.7,
                 ),
                 child: Text(
                   _getTagStringDisplayName(tag),

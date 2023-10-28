@@ -101,7 +101,7 @@ class _DanbooruPostDetailsPageState
         showSource: true,
       ),
       artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
-      swipeImageUrlBuilder: (post) => post.sampleImageUrl,
+      swipeImageUrlBuilder: (post) => post.url720x720,
       placeholderImageUrlBuilder: (post, currentPage) =>
           currentPage == widget.intitialIndex && post.isTranslated
               ? null

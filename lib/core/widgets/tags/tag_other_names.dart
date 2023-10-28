@@ -36,7 +36,7 @@ class TagOtherNames extends StatelessWidget {
                         visualDensity: VisualDensity.compact,
                         label: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.85,
+                            maxWidth: MediaQuery.sizeOf(context).width * 0.85,
                           ),
                           child: Text(
                             otherNames![index].replaceUnderscoreWithSpace(),
@@ -70,8 +70,7 @@ class TagOtherNames extends StatelessWidget {
                                 label: ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.85,
+                                        MediaQuery.sizeOf(context).width * 0.85,
                                   ),
                                   child: Text(
                                     e.replaceUnderscoreWithSpace(),

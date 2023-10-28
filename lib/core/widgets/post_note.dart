@@ -67,7 +67,7 @@ class _NoteContainer extends StatelessWidget {
         top: coordinate.y,
       ),
       child: PortalTarget(
-        anchor: coordinate.x > MediaQuery.of(context).size.width / 2
+        anchor: coordinate.x > MediaQuery.sizeOf(context).width / 2
             ? const Aligned(
                 follower: Alignment.topRight,
                 target: Alignment.bottomRight,
@@ -79,7 +79,7 @@ class _NoteContainer extends StatelessWidget {
         visible: visible,
         portalFollower: ConstrainedBox(
           constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.5),
+              BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.5),
           child: IntrinsicWidth(
             child: Material(
               child: Html(

@@ -18,6 +18,7 @@ import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -154,8 +155,9 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
       ),
       child: Split(
         axis: Axis.vertical,
-        initialFractions: const [0.2, 0.8],
-        minSizes: const [120, 120],
+        initialFractions: const [0.3, 0.7],
+        minSizes: const [120, 100],
+        ignoreFractionChange: true,
         children: [
           Column(
             children: [
@@ -235,9 +237,45 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '${tags.length} tag${tags.length > 1 ? 's' : ''}',
-                        style: Theme.of(context).textTheme.titleLarge,
+                      RichText(
+                        text: TextSpan(
+                          text:
+                              '${widget.tags.length} tag${widget.tags.length > 1 ? 's' : ''}',
+                          style: Theme.of(context).textTheme.titleLarge,
+                          children: [
+                            if (toBeAdded.isNotEmpty && toBeRemoved.isNotEmpty)
+                              TextSpan(
+                                text:
+                                    ' (${toBeAdded.length} added, ${toBeRemoved.length} removed)',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: context.theme.hintColor,
+                                    ),
+                              )
+                            else if (toBeAdded.isNotEmpty)
+                              TextSpan(
+                                text: ' (${toBeAdded.length} added)',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: context.theme.hintColor,
+                                    ),
+                              )
+                            else if (toBeRemoved.isNotEmpty)
+                              TextSpan(
+                                text: ' (${toBeRemoved.length} removed)',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: context.theme.hintColor,
+                                    ),
+                              ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -303,7 +341,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
   Widget _buildMode(BuildContext context, bool aiTagSupport) =>
       switch (expandMode) {
         TagEditExpandMode.favorite => Container(
-            height: 300,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditFavoriteView(
               onRemoved: (tag) {
@@ -321,7 +359,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         TagEditExpandMode.related => Container(
-            height: 350,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditWikiView(
               tag: selectedTag,
@@ -341,7 +379,7 @@ class _TagEditViewState extends ConsumerState<TagEditPage> {
             ),
           ),
         TagEditExpandMode.aiTag => Container(
-            height: 350,
+            height: 280,
             color: context.colorScheme.background,
             child: TagEditAITagView(
               postId: widget.postId,
@@ -682,7 +720,8 @@ class _RelatedTagChips extends ConsumerWidget {
               value ? onAdded(tag.name) : onRemoved(tag.name),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.8),
+              maxWidth: context.screenWidth * 0.8,
+            ),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
@@ -779,7 +818,8 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                         : widget.onRemoved(tag.name),
                     label: ConstrainedBox(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.8),
+                        maxWidth: context.screenWidth * 0.8,
+                      ),
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(

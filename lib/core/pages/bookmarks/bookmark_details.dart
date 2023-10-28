@@ -11,6 +11,7 @@ import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_media_item.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/flutter.dart';
 import 'package:boorusama/functional.dart';
 
 class BookmarkDetailsPage extends ConsumerStatefulWidget {
@@ -143,7 +144,7 @@ class _PostSliderState extends ConsumerState<BookmarkSlider> {
         scrollPhysics: enableSwipe
             ? const PageViewScrollPhysics()
             : const NeverScrollableScrollPhysics(),
-        height: MediaQuery.of(context).size.height,
+        height: context.screenHeight,
         viewportFraction: 1,
         enableInfiniteScroll: false,
         initialPage: widget.initialPage,

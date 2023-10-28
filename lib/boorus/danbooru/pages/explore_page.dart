@@ -35,7 +35,7 @@ class ExplorePage extends ConsumerWidget {
         slivers: [
           SliverSizedBox(
             height:
-                useAppBarPadding ? MediaQuery.of(context).viewPadding.top : 0,
+                useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
           ),
           const SliverToBoxAdapter(child: _PopularExplore()),
           const SliverToBoxAdapter(child: _HotExplore()),

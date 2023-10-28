@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 extension FlutterX on BuildContext {
   DefaultTextStyle get defaultTextStyle => DefaultTextStyle.of(this);
 
-  MediaQueryData get mediaQuery => MediaQuery.of(this);
+  double get screenHeight => MediaQuery.sizeOf(this).height;
 
-  double get screenHeight => mediaQuery.size.height;
+  double get screenWidth => MediaQuery.sizeOf(this).width;
 
-  double get screenWidth => mediaQuery.size.width;
-
-  double get screenAspectRatio => mediaQuery.size.aspectRatio;
+  double get screenAspectRatio =>
+      screenWidth != 0 ? screenHeight / screenWidth : 0;
 
   NavigatorState get navigator => Navigator.of(this);
 

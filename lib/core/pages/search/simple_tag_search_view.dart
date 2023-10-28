@@ -40,8 +40,8 @@ void showSimpleTagSearchView(
       settings: settings,
       backgroundColor: context.theme.cardColor,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      width: min(MediaQuery.of(context).size.width * 0.7, 600),
-      height: min(MediaQuery.of(context).size.height * 0.7, 500),
+      width: min(context.screenWidth * 0.7, 600),
+      height: min(context.screenHeight * 0.7, 500),
       builder: (context) => CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.escape): () =>

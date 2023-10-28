@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/flutter.dart';
+
 class RecommendSectionPlaceHolder extends StatelessWidget {
   const RecommendSectionPlaceHolder({
     super.key,
@@ -17,7 +20,7 @@ class RecommendSectionPlaceHolder extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(4),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: context.screenHeight * 0.3,
             child: const Center(
               child: CircularProgressIndicator.adaptive(),
             ),
