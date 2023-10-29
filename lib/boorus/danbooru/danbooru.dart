@@ -30,7 +30,7 @@ const kDanbooruPostSample = <String, String>{
   'artist': 'artist_x_(abc) artist_2',
   'character':
       'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
-  'copyright': 'genshin_impact original',
+  'copyright': 'genshin_impact fate/grand_order',
   'general': '1girl solo',
   'meta': 'highres translated',
   'tags':

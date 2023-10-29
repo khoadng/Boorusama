@@ -14,8 +14,11 @@ final class RatingSingleLetterOption extends BooleanTokenOption {
 
 final class UnsafeOption extends BooleanTokenOption {
   UnsafeOption(
-    String? value,
-  ) : super(name: 'unsafe', value: value);
+    String? value, {
+    required this.unsafeCharacters,
+  }) : super(name: 'unsafe', value: value);
+
+  final List<String> unsafeCharacters;
 }
 
 final class NoModifiersOption extends BooleanTokenOption {
@@ -27,7 +30,7 @@ final class NoModifiersOption extends BooleanTokenOption {
 final class UniqueCounterOption extends BooleanTokenOption {
   UniqueCounterOption(
     String? value,
-  ) : super(name: 'unique_counter', value: value);
+  ) : super(name: '_unique_counter', value: value);
 }
 
 final class IncludeNamesOption extends BooleanTokenOption {

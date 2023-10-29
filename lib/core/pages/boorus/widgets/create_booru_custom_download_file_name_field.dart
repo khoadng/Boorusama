@@ -162,9 +162,13 @@ class _CreateBooruCustomDownloadFileNameFieldState
                                     itemCount: tokenOptions.length,
                                     itemBuilder: (context, index) {
                                       final option = tokenOptions[index];
+                                      final docs = downloadFilenameBuilder
+                                          ?.getDocsForTokenOption(option);
 
                                       return ListTile(
                                         title: Text(option),
+                                        subtitle:
+                                            docs != null ? Text(docs) : null,
                                         trailing: IconButton(
                                           onPressed: () {
                                             Clipboard.setData(

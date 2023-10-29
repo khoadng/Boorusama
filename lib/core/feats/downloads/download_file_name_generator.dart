@@ -14,6 +14,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   Map<RegExp, TextStyle> get patternMatchMap;
 
   List<String> getTokenOptions(String token);
+  String? getDocsForTokenOption(String tokenOption);
 
   String generate(
     Settings settings,
@@ -78,6 +79,9 @@ class LegacyFilenameBuilder<T extends Post>
 
   @override
   Map<RegExp, TextStyle> get patternMatchMap => {};
+
+  @override
+  String? getDocsForTokenOption(String tokenOption) => null;
 }
 
 class DownloadFileNameBuilder<T extends Post>
@@ -135,7 +139,7 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   List<String> getTokenOptions(String token) {
-    final tokenDef = tokenizerConfigs.tokenDefinitions[token];
+    final tokenDef = tokenizerConfigs.tokenOptionsOf(token);
 
     if (tokenDef == null) return [];
 
@@ -173,5 +177,10 @@ class DownloadFileNameBuilder<T extends Post>
     );
 
     return filename.isNotEmpty ? filename : fallbackName ?? '';
+  }
+
+  @override
+  String? getDocsForTokenOption(String tokenOption) {
+    return tokenizerConfigs.tokenOptionDocs[tokenOption];
   }
 }

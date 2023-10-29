@@ -13,10 +13,15 @@ part 'token_option_string.dart';
 
 typedef TokenOptionHandler = String Function(TokenContext context);
 
-TokenOption getTokenOptionBuilder(TokenOptionPair pair) => switch (pair.key) {
+TokenOption getTokenOptionBuilder(
+        TokenOptionPair pair, TokenizerConfigs configs) =>
+    switch (pair.key) {
       'maxlength' => MaxLengthOption(pair.value),
       'delimiter' => DelimiterOption(pair.value),
-      'unsafe' => UnsafeOption(pair.value),
+      'unsafe' => UnsafeOption(
+          pair.value,
+          unsafeCharacters: configs.unsafeCharacters,
+        ),
       'format' => DateFormatOption(pair.value),
       'single_letter' => RatingSingleLetterOption(pair.value),
       'urlencode' => UrlEncodeOption(pair.value),
@@ -45,8 +50,12 @@ TokenOptionHandler getTokenOptionHandler(
 
           return data.split(' ').join(l);
         },
-      UnsafeOption o => (context) =>
-          o.value ? data : data.replaceAll(RegExp(r'[\/:*?"<>|]'), '_'),
+      UnsafeOption o => (context) => o.value
+          ? data
+          : data
+              .split('')
+              .map((e) => o.unsafeCharacters.contains(e) ? '_' : e)
+              .join(''),
       DateFormatOption o => (context) =>
           DateFormat(o.value).format(clock?.now() ?? DateTime.now()),
       RatingSingleLetterOption _ => (context) => data.substring(0, 1),

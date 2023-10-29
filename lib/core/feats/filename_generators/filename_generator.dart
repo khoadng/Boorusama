@@ -12,7 +12,7 @@ String generateFileName(
 }) {
   final cfg = configs ?? TokenizerConfigs.defaultConfigs();
   final tokens = parse(cfg, format);
-  final globalOptions = parseTokenOptions(cfg.globalOptionToken);
+  final globalOptions = parseTokenOptions(cfg.globalOptionToken, cfg);
 
   // filter null metadata
   final meta = {
