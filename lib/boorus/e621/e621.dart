@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -191,7 +190,7 @@ class E621Builder
   DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
       LegacyFilenameBuilder(
         generateFileName: (post, downloadUrl) =>
-            Md5OnlyFileNameGenerator().generateFor(post, downloadUrl),
+            generateMd5FileNameFor(post, downloadUrl),
       );
 }
 

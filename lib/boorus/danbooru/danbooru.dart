@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +9,7 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/comment_page.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/feats/downloads/downloads.dart'
-    hide DownloadFileNameBuilder;
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

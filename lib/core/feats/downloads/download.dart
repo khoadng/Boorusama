@@ -13,7 +13,7 @@ DownloadPathOrError downloadUrl({
   required Dio dio,
   required DownloadNotifications notifications,
   required String url,
-  required DownloadFileNameBuilder fileNameBuilder,
+  required DownloadFilenameBuilder fileNameBuilder,
   bool enableNotification = true,
 }) =>
     TaskEither.Do(($) async {
@@ -39,7 +39,7 @@ DownloadPathOrError downloadUrlCustomLocation({
   required DownloadNotifications notifications,
   required String path,
   required String url,
-  required DownloadFileNameBuilder fileNameBuilder,
+  required DownloadFilenameBuilder fileNameBuilder,
   bool enableNotification = true,
 }) =>
     TaskEither.Do(($) async {

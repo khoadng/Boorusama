@@ -42,16 +42,8 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
   ],
 );
 
-class DownloadUrlBaseNameFileNameGenerator implements FileNameGenerator<Post> {
-  @override
-  String generateFor(Post item, String fileUrl) => basename(fileUrl);
-}
-
-class Md5OnlyFileNameGenerator implements FileNameGenerator<Post> {
-  @override
-  String generateFor(Post item, String fileUrl) =>
-      '${item.md5}${extension((sanitizedUrl(fileUrl)))}';
-}
+String generateMd5FileNameFor(Post item, String fileUrl) =>
+    '${item.md5}${extension((sanitizedUrl(fileUrl)))}';
 
 String sanitizedUrl(String url) {
   final ext = extension(url);

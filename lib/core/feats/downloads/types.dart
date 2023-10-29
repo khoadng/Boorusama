@@ -1,1 +1,1 @@
-typedef DownloadFileNameBuilder = String Function();
+typedef DownloadFilenameBuilder = String Function();

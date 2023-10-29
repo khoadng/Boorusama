@@ -9,7 +9,7 @@ abstract class BulkDownloader {
   Future<void> enqueueDownload({
     required String url,
     String? path,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   });
 
   Future<void> pause(String url);
