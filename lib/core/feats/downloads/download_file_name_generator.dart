@@ -1,12 +1,17 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:equatable/equatable.dart';
+import 'package:path/path.dart';
+
+// Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
 import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
   List<String> get availableTokens;

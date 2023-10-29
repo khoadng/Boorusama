@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,10 +12,12 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'pages/create_gelbooru_config_page.dart';
 import 'pages/gelbooru_artist_page.dart';
 import 'pages/gelbooru_home_page.dart';

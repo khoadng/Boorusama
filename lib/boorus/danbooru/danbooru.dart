@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/foundation/path.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -13,6 +12,7 @@ import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'pages/create_danbooru_config_page.dart';
 import 'pages/danbooru_artist_page.dart';
 import 'pages/danbooru_home_page.dart';

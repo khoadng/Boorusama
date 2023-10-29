@@ -1,6 +1,4 @@
 // Package imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -8,9 +6,11 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'feats/autocomplete/autocomplete.dart';
 import 'feats/posts/posts.dart';
 import 'pages/create_moebooru_config_page.dart';

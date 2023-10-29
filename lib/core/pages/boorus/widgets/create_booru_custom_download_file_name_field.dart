@@ -1,18 +1,20 @@
 // Flutter imports:
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
-// Project imports:
 import 'package:boorusama/foundation/theme/theme.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rich_text_controller/rich_text_controller.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: remind user that this feature is experimental
 class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {

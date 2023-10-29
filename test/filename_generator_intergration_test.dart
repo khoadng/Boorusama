@@ -1,6 +1,9 @@
-import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
+// Package imports:
 import 'package:clock/clock.dart';
 import 'package:test/test.dart';
+
+// Project imports:
+import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
 
 void main() {
   test('generateFileName many options', () {

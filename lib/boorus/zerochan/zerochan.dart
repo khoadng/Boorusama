@@ -1,6 +1,4 @@
 // Package imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
-import 'package:boorusama/foundation/path.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,11 +8,13 @@ import 'package:boorusama/clients/zerochan/types/types.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/pages/boorus/create_anon_config_page.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 
 final zerochanClientProvider =
