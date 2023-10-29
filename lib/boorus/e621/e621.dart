@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/pages/create_danbooru_config_page.dart';
 import 'package:boorusama/boorus/e621/feats/posts/posts.dart';
 import 'package:boorusama/boorus/e621/feats/tags/e621_tag_category.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -20,6 +19,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'pages/create_e621_config_page.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
 import 'pages/e621_home_page.dart';
@@ -80,7 +80,6 @@ class E621Builder
   final AutocompleteRepository autocompleteRepo;
   final NoteRepository noteRepo;
 
-  //FIXME: don't use Danbooru's config page
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
         context,
@@ -88,14 +87,13 @@ class E621Builder
         booruType, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
+          CreateE621ConfigPage(
             config: BooruConfig.defaultConfig(
               booruType: booruType,
               url: url,
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
-            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override
@@ -108,10 +106,9 @@ class E621Builder
         config, {
         backgroundColor,
       }) =>
-          CreateDanbooruConfigPage(
+          CreateE621ConfigPage(
             config: config,
             backgroundColor: backgroundColor,
-            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override
