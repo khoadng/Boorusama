@@ -73,6 +73,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
                   kBoorusamaCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
+            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override
@@ -88,6 +89,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
           CreateDanbooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override

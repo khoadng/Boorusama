@@ -21,9 +21,11 @@ class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
     this.format,
     this.onChanged,
     required this.config,
+    required this.defaultFormat,
   });
 
   final String? format;
+  final String defaultFormat;
   final void Function(String value)? onChanged;
   final BooruConfig config;
 
@@ -63,8 +65,8 @@ class _CreateBooruCustomDownloadFileNameFieldState
             const Expanded(
                 child: Text('Custom download file name format (Experimental)')),
             TextButton(
-              onPressed: () => print('object'),
-              child: const Text('Help'),
+              onPressed: () => textController.text = widget.defaultFormat,
+              child: const Text('Reset'),
             ),
           ],
         ),

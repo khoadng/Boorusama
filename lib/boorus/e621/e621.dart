@@ -95,6 +95,7 @@ class E621Builder
               customDownloadFileNameFormat: null,
             ),
             backgroundColor: backgroundColor,
+            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override
@@ -110,6 +111,7 @@ class E621Builder
           CreateDanbooruConfigPage(
             config: config,
             backgroundColor: backgroundColor,
+            defaultFilenameFormat: kBoorusamaCustomDownloadFileNameFormat,
           );
 
   @override
