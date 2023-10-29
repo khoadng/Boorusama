@@ -16,7 +16,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-//FIXME: remind user that this feature is experimental
 class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
   const CreateBooruCustomDownloadFileNameField({
     super.key,
