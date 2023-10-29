@@ -99,6 +99,9 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                     children: [
                       ExtendedImage.network(
                         widget.imageUrl,
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        fit: BoxFit.contain,
                         headers: {
                           'User-Agent': ref
                               .watch(userAgentGeneratorProvider(config))

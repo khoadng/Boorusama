@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
+import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/core/feats/tags/booru_tag_type_store.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -56,6 +57,8 @@ class _DanbooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return PostDetailsPageScaffold(
       posts: posts,
       initialIndex: widget.intitialIndex,
@@ -101,7 +104,10 @@ class _DanbooruPostDetailsPageState
         showSource: true,
       ),
       artistInfoBuilder: (context, post) => DanbooruArtistSection(post: post),
-      swipeImageUrlBuilder: (post) => post.url720x720,
+      swipeImageUrlBuilder: (post) => switch (settings.imageQuality) {
+        ImageQuality.highest || ImageQuality.original => post.sampleImageUrl,
+        _ => post.url720x720,
+      },
       placeholderImageUrlBuilder: (post, currentPage) =>
           currentPage == widget.intitialIndex && post.isTranslated
               ? null
