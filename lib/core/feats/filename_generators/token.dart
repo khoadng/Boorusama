@@ -85,7 +85,7 @@ class TokenizerConfigs {
         'unsafe':
             'Whether to allow unsafe characters. The following characters are considered unsafe: ${unsafeCharacters.join()}". They will be replaced with an underscore.',
         'sort':
-            'Sort a list of values. Supported attributes are: "name", "length". Available options are: "asc", "desc".',
+            'Sort a list of values. Supported attributes are: "name", "length". Available options are: "asc", "desc"\n Example: "sort[name]=asc"',
         'case':
             'Whether to change the case of the token. Available options are: "lower", "upper".',
         'limit':
