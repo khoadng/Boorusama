@@ -161,24 +161,6 @@ class _CreateDanbooruConfigPageState
             onChanged: (value) =>
                 setState(() => customDownloadFileNameFormat = value),
           ),
-          const SizedBox(height: 16),
-          CreateBooruRatingOptionsTile(
-            value: ratingFilter,
-            onChanged: (value) =>
-                value != null ? setState(() => ratingFilter = value) : null,
-          ),
-          const SizedBox(height: 16),
-          CreateBooruHideDeletedSwitch(
-              value: hideDeleted,
-              onChanged: (value) => setState(() => hideDeleted = value),
-              subtitle: Text(
-                'Hide low-quality images, some decent ones might also be hidden.',
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.theme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              )),
         ],
       ),
     );
