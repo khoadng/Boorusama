@@ -69,5 +69,6 @@ final newbooruConfigProvider =
     url: url,
     customDownloadFileNameFormat:
         ref.watch(booruCustomDownloadFileNameFormatProvider),
+    customBulkDownloadFileNameFormat: null,
   );
 });

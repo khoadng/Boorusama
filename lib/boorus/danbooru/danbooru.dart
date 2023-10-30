@@ -37,7 +37,6 @@ const kDanbooruPostSample = <String, String>{
   'md5': '9cf364e77f46183e2ebd75de757488e2',
   'source': 'https://example.com/filename.jpg',
   'rating': 'general',
-  'index': '0',
 };
 
 class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {

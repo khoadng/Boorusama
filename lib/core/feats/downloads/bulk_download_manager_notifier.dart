@@ -94,8 +94,8 @@ class BulkDownloadManagerNotifier extends FamilyNotifier<void, BooruConfig> {
           downloader.enqueueDownload(
             url: downloadUrl,
             path: storagePath,
-            fileNameBuilder: () =>
-                fileNameBuilder.generate(settings, arg, item, index: index),
+            fileNameBuilder: () => fileNameBuilder
+                .generateForBulkDownload(settings, arg, item, index: index),
           );
 
           ref.read(bulkDownloadThumbnailsProvider.notifier).state = {

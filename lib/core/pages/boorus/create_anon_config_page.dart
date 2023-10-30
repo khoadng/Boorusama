@@ -81,6 +81,8 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
             ratingFilter: BooruConfigRatingFilter.none,
             url: widget.config.url,
             customDownloadFileNameFormat: customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat:
+                widget.config.customBulkDownloadFileNameFormat,
           ),
         );
     context.pop();

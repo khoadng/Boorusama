@@ -16,19 +16,21 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-//FIXME: Bulk download rule?
 class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
   const CreateBooruCustomDownloadFileNameField({
     super.key,
     this.format,
-    this.onChanged,
+    this.onSingleDownloadChanged,
+    this.onBulkDownloadChanged,
     required this.config,
     required this.defaultFormat,
   });
 
   final String? format;
   final String defaultFormat;
-  final void Function(String value)? onChanged;
+  final void Function(String value)? onSingleDownloadChanged;
+  final void Function(String value)? onBulkDownloadChanged;
+
   final BooruConfig config;
 
   @override
@@ -38,8 +40,16 @@ class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
 
 class _CreateBooruCustomDownloadFileNameFieldState
     extends ConsumerState<CreateBooruCustomDownloadFileNameField> {
-  late final textController = RichTextController(
+  late final singleTextController = RichTextController(
     text: widget.format,
+    patternMatchMap: ref
+        .readBooruBuilder(widget.config)
+        ?.downloadFilenameBuilder
+        .patternMatchMap,
+    onMatch: (match) {},
+  );
+  late final bulkTextController = RichTextController(
+    text: widget.config.customBulkDownloadFileNameFormat,
     patternMatchMap: ref
         .readBooruBuilder(widget.config)
         ?.downloadFilenameBuilder
@@ -49,7 +59,8 @@ class _CreateBooruCustomDownloadFileNameFieldState
 
   @override
   void dispose() {
-    textController.dispose();
+    singleTextController.dispose();
+    bulkTextController.dispose();
     super.dispose();
   }
 
@@ -67,7 +78,7 @@ class _CreateBooruCustomDownloadFileNameFieldState
             const Expanded(
                 child: Text('Custom download file name format (Experimental)')),
             TextButton(
-              onPressed: () => textController.text = widget.defaultFormat,
+              onPressed: () => singleTextController.text = widget.defaultFormat,
               child: const Text('Reset'),
             ),
           ],
@@ -75,9 +86,9 @@ class _CreateBooruCustomDownloadFileNameFieldState
         Container(
           constraints: const BoxConstraints(maxHeight: 150),
           child: TextField(
-            controller: textController,
+            controller: singleTextController,
             maxLines: null,
-            onChanged: widget.onChanged,
+            onChanged: widget.onSingleDownloadChanged,
             decoration: InputDecoration(
               hintMaxLines: 4,
               hintText: '\n\n\n',
@@ -111,9 +122,75 @@ class _CreateBooruCustomDownloadFileNameFieldState
                 const SizedBox(width: 4),
                 Expanded(
                   child: ValueListenableBuilder(
-                    valueListenable: textController,
+                    valueListenable: singleTextController,
                     builder: (context, value, child) => Text(
                       downloadFilenameBuilder.generateSample(value.text),
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: context.theme.hintColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Row(
+          children: [
+            const Expanded(
+                child: Text(
+                    'Bulk download custom file name format (Experimental)')),
+            TextButton(
+              onPressed: () => bulkTextController.text = widget.defaultFormat,
+              child: const Text('Reset'),
+            ),
+          ],
+        ),
+        Container(
+          constraints: const BoxConstraints(maxHeight: 150),
+          child: TextField(
+            controller: bulkTextController,
+            maxLines: null,
+            onChanged: widget.onBulkDownloadChanged,
+            decoration: InputDecoration(
+              hintMaxLines: 4,
+              hintText: '\n\n\n',
+              filled: true,
+              fillColor: context.colorScheme.background,
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                borderSide: BorderSide(
+                  color: context.theme.colorScheme.secondary,
+                  width: 2,
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(12),
+            ),
+          ),
+        ),
+        if (downloadFilenameBuilder != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.hashtag,
+                  size: 16,
+                  color: context.colorScheme.primary,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: bulkTextController,
+                    builder: (context, value, child) => Text(
+                      downloadFilenameBuilder.generateSample(
+                        value.text,
+                        index: 0,
+                      ),
                       style: context.textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w700,
                         color: context.theme.hintColor,

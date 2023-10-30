@@ -105,6 +105,7 @@ class _CreateGelbooruConfigPageState
       ratingFilter: ratingFilter,
       url: widget.config.url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: null,
     );
 
     ref

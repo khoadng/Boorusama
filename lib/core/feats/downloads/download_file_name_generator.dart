@@ -24,11 +24,20 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   String generate(
     Settings settings,
     BooruConfig config,
+    T post,
+  );
+
+  String generateForBulkDownload(
+    Settings settings,
+    BooruConfig config,
     T post, {
     int? index,
   });
 
-  String generateSample(String format);
+  String generateSample(
+    String format, {
+    int? index,
+  });
 }
 
 typedef DownloadFilenameTokenHandler<T extends Post> = String? Function(
@@ -68,16 +77,27 @@ class LegacyFilenameBuilder<T extends Post>
   String generate(
     Settings settings,
     BooruConfig config,
-    T post, {
-    int? index,
-  }) {
+    T post,
+  ) {
     final downloadUrl = getDownloadFileUrl(post, settings);
 
     return generateFileName(post, downloadUrl);
   }
 
   @override
-  String generateSample(String format) => '';
+  String generateForBulkDownload(Settings settings, BooruConfig config, T post,
+      {int? index}) {
+    final downloadUrl = getDownloadFileUrl(post, settings);
+
+    return generateFileName(post, downloadUrl);
+  }
+
+  @override
+  String generateSample(
+    String format, {
+    int? index,
+  }) =>
+      '';
 
   @override
   List<String> getTokenOptions(String token) => [];
@@ -108,16 +128,15 @@ class DownloadFileNameBuilder<T extends Post>
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
-  @override
-  String generate(
+  String _generate(
     Settings settings,
     BooruConfig config,
+    String? format,
     T post, {
     int? index,
   }) {
     final downloadUrl = getDownloadFileUrl(post, settings);
     final fallbackName = basename(downloadUrl);
-    final format = config.customDownloadFileNameFormat;
 
     if (format == null || format.isEmpty) return fallbackName;
 
@@ -141,6 +160,34 @@ class DownloadFileNameBuilder<T extends Post>
 
     return fileName;
   }
+
+  @override
+  String generate(
+    Settings settings,
+    BooruConfig config,
+    T post,
+  ) =>
+      _generate(
+        settings,
+        config,
+        config.customDownloadFileNameFormat,
+        post,
+      );
+
+  @override
+  String generateForBulkDownload(
+    Settings settings,
+    BooruConfig config,
+    T post, {
+    int? index,
+  }) =>
+      _generate(
+        settings,
+        config,
+        config.customBulkDownloadFileNameFormat,
+        post,
+        index: index,
+      );
 
   @override
   List<String> getTokenOptions(String token) {
@@ -171,12 +218,18 @@ class DownloadFileNameBuilder<T extends Post>
       };
 
   @override
-  String generateSample(String format) {
+  String generateSample(
+    String format, {
+    int? index,
+  }) {
     final downloadUrl = sampleData['source'];
     final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
 
     final filename = generateFileName(
-      sampleData,
+      {
+        ...sampleData,
+        if (index != null) 'index': index.toString(),
+      },
       format,
       configs: tokenizerConfigs,
     );

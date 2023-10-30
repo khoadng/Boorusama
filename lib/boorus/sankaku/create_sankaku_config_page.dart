@@ -110,6 +110,7 @@ class _CreateDanbooruConfigPageState
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: null,
     );
 
     ref

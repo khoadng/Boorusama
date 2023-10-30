@@ -16,6 +16,7 @@ class BooruConfig extends Equatable {
     required this.deletedItemBehavior,
     required this.url,
     required this.customDownloadFileNameFormat,
+    required this.customBulkDownloadFileNameFormat,
   });
 
   static const BooruConfig empty = BooruConfig(
@@ -29,6 +30,7 @@ class BooruConfig extends Equatable {
     ratingFilter: BooruConfigRatingFilter.none,
     url: '',
     customDownloadFileNameFormat: null,
+    customBulkDownloadFileNameFormat: null,
   );
 
   static BooruConfig defaultConfig({
@@ -47,6 +49,7 @@ class BooruConfig extends Equatable {
         ratingFilter: BooruConfigRatingFilter.none,
         url: url,
         customDownloadFileNameFormat: customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
       );
 
   final int id;
@@ -59,6 +62,7 @@ class BooruConfig extends Equatable {
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   final BooruConfigRatingFilter ratingFilter;
   final String? customDownloadFileNameFormat;
+  final String? customBulkDownloadFileNameFormat;
 
   BooruConfig copyWith({
     String? url,
@@ -77,6 +81,7 @@ class BooruConfig extends Equatable {
       deletedItemBehavior: deletedItemBehavior,
       ratingFilter: ratingFilter,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
     );
   }
 
@@ -92,6 +97,7 @@ class BooruConfig extends Equatable {
         ratingFilter,
         url,
         customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat,
       ];
 }
 

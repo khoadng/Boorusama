@@ -102,6 +102,7 @@ class _CreatePhilomenaConfigPageState
             ratingFilter: BooruConfigRatingFilter.none,
             url: widget.config.url,
             customDownloadFileNameFormat: customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat: null,
           ),
         );
     context.pop();

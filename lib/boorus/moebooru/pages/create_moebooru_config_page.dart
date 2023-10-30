@@ -158,6 +158,7 @@ class _CreateMoebooruConfigPageState
             ratingFilter: ratingFilter,
             url: widget.config.url,
             customDownloadFileNameFormat: customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat: null,
           ),
         );
     context.navigator.pop();

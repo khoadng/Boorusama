@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,6 +13,7 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_sw
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
@@ -45,6 +45,8 @@ class _CreateDanbooruConfigPageState
       widget.config.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide;
   late String? customDownloadFileNameFormat =
       widget.config.customDownloadFileNameFormat;
+  late var customBulkDownloadFileNameFormat =
+      widget.config.customBulkDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +160,10 @@ class _CreateDanbooruConfigPageState
             config: widget.config,
             format: customDownloadFileNameFormat,
             defaultFormat: widget.defaultFilenameFormat,
-            onChanged: (value) =>
+            onSingleDownloadChanged: (value) =>
                 setState(() => customDownloadFileNameFormat = value),
+            onBulkDownloadChanged: (value) =>
+                setState(() => customBulkDownloadFileNameFormat = value),
           ),
         ],
       ),
@@ -210,6 +214,7 @@ class _CreateDanbooruConfigPageState
       ratingFilter: ratingFilter,
       url: widget.config.url,
       customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
     );
 
     ref
