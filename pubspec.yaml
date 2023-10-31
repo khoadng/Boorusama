@@ -34,6 +34,7 @@ dependencies:
       path: plugins/http2_adapter
   easy_localization: ^3.0.2
   equatable: ^2.0.5
+  expandable: ^5.0.1
   exprollable_page_view: ^1.0.0-rc.1
   extended_image: ^8.1.1
   fast_immutable_collections: ^9.1.5

@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_custom_download_file_name_field.dart';
+import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_hide_deleted_switch.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_rating_options_tile.dart';
@@ -154,7 +154,7 @@ class _CreateDanbooruConfigPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CreateBooruCustomDownloadFileNameField(
+          CustomDownloadFileNameSection(
             config: widget.config,
             format: customDownloadFileNameFormat,
             onSingleDownloadChanged: (value) =>
