@@ -18,6 +18,7 @@ import 'package:boorusama/core/feats/notes/notes.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/comment_page_scaffold.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'pages/create_e621_config_page.dart';
 import 'pages/e621_artist_page.dart';
 import 'pages/e621_favorites_page.dart';
@@ -62,6 +63,40 @@ final e621AutocompleteRepoProvider =
     },
   );
 });
+
+const kE621PostSamples = [
+  {
+    'id': '123456',
+    'artist': 'artist_x_(abc) artist_2',
+    'character': 'sonic_the_hedgehog classic_sonic',
+    'copyright': 'sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series)',
+    'general': 'male solo',
+    'meta': 'highres translated',
+    'species': 'mammal hedgehog',
+    'tags':
+        'male solo sonic_the_hedgehog classic_sonic sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series) highres translated mammal hedgehog',
+    'extension': 'jpg',
+    'md5': '9cf364e77f46183e2ebd75de757488e2',
+    'source': 'https://example.com/filename.jpg',
+    'rating': 'general',
+    'index': '0',
+  },
+  {
+    'id': '654321',
+    'artist': 'artist_3',
+    'character': 'classic_sonic',
+    'copyright': 'sega',
+    'general': 'male solo',
+    'meta': 'highres translated',
+    'species': 'mammal hedgehog',
+    'tags': 'male solo classic_sonic sega highres translated mammal hedgehog',
+    'extension': 'png',
+    'md5': '2ebd75de757488e29cf364e77f46183e',
+    'source': 'https://example.com/example_filename.jpg',
+    'rating': 'general',
+    'index': '1',
+  }
+];
 
 class E621Builder
     with PostCountNotSupportedMixin, DefaultThumbnailUrlMixin
@@ -187,10 +222,28 @@ class E621Builder
   NoteFetcher? get noteFetcher => (postId) => noteRepo.getNotes(postId);
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) =>
-            generateMd5FileNameFor(post, downloadUrl),
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder<E621Post>(
+        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kBoorusamaBulkDownloadCustomFileNameFormat,
+        sampleData: kE621PostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'artist': (post, config) => post.artistTags.join(' '),
+          'character': (post, config) => post.characterTags.join(' '),
+          'copyright': (post, config) => post.copyrightTags.join(' '),
+          'general': (post, config) => post.generalTags.join(' '),
+          'meta': (post, config) => post.metaTags.join(' '),
+          'species': (post, config) => post.speciesTags.join(' '),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
       );
 }
 

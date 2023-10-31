@@ -59,6 +59,9 @@ class TokenizerConfigs {
         'general': [
           ...tagTokenOptions,
         ],
+        'species': [
+          ...tagTokenOptions,
+        ],
         'id': [],
         'source': [
           'urlencode',

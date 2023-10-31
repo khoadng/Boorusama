@@ -218,6 +218,7 @@ class DownloadFileNameBuilder<T extends Post>
               'copyright' => const Color.fromARGB(255, 199, 151, 255),
               'general' => const Color.fromARGB(255, 0, 155, 230),
               'meta' => const Color.fromARGB(255, 217, 187, 98),
+              'species' => const Color(0xffed5d1f),
               'extension' => const Color.fromARGB(255, 204, 143, 180),
               'md5' => const Color.fromARGB(255, 204, 143, 180),
               'date' => const Color.fromARGB(255, 73, 170, 190),
