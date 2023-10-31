@@ -332,7 +332,7 @@ class AvailableTokens extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final availableTokens = downloadFilenameBuilder?.availableTokens ?? [];
+    final availableTokens = downloadFilenameBuilder?.availableTokens ?? {};
 
     return Wrap(
       runSpacing: isMobilePlatform() ? -4 : 8,
@@ -386,7 +386,7 @@ class AvailableTokens extends ConsumerWidget {
                                 itemBuilder: (context, index) {
                                   final option = tokenOptions[index];
                                   final docs = downloadFilenameBuilder
-                                      ?.getDocsForTokenOption(option);
+                                      ?.getDocsForTokenOption(token, option);
 
                                   return ListTile(
                                     title: Text(option),

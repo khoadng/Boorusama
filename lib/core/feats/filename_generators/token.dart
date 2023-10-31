@@ -9,6 +9,7 @@ class TokenizerConfigs {
     required this.tokenRegex,
     this.tokenOptionDocs = const {},
     required this.unsafeCharacters,
+    required this.namespacedTokens,
   });
 
   factory TokenizerConfigs.defaultConfigs() {
@@ -88,7 +89,6 @@ class TokenizerConfigs {
         ],
         'source': [
           ...stringTokenOptions,
-          'urlencode',
         ],
         'rating': [
           ...stringTokenOptions,
@@ -97,12 +97,16 @@ class TokenizerConfigs {
         'date': [
           'format',
         ],
+        'uuid': [
+          'uuid:version',
+        ],
         'index': [
           '_unique_counter',
           'pad_left',
         ]
       },
       standaloneTokens: {
+        'uuid': 'version=4',
         'date': 'format=dd-MM-yyyy hh.mm',
         'source': 'urlencode',
         'index': '_unique_counter',
@@ -140,15 +144,27 @@ class TokenizerConfigs {
             'Floating point precision. For example, "2" will round the number to 2 decimal places.',
         'count':
             'When used, the token will be replaced with the number of values in the list.',
+        'uuid:version': 'UUID version. Available options are: "v1", "v4".',
       },
       unsafeCharacters: unsafeCharacters,
+      namespacedTokens: {
+        'uuid',
+      },
     );
   }
 
   List<String>? tokenOptionsOf(String token) => tokenDefinitions[token]
       // Ignore internal token options
       ?.where((e) => !e.startsWith('_'))
+      .map((e) => namespacedTokens.contains(token) && e.contains(':')
+          ? e.substring(e.indexOf(':') + 1)
+          : e)
       .toList();
+
+  String? tokenOptionDocsOf(String? token, String tokenOption) =>
+      tokenOptionDocs[token != null && namespacedTokens.contains(token)
+          ? '$token:$tokenOption'
+          : tokenOption];
 
   final Map<String, List<String>> tokenDefinitions;
   // For token that can be used without token options
@@ -157,6 +173,7 @@ class TokenizerConfigs {
   final String globalOptionToken;
   final RegExp tokenRegex;
   final List<String> unsafeCharacters;
+  final Set<String> namespacedTokens;
 }
 
 class Token extends Equatable {

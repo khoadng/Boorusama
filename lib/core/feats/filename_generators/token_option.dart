@@ -2,8 +2,10 @@
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 // Project imports:
+import 'package:boorusama/functional.dart';
 import 'token.dart';
 import 'utils.dart';
 
@@ -16,10 +18,16 @@ part 'token_option_string.dart';
 typedef TokenOptionHandler = String Function(TokenContext context);
 
 TokenOption getTokenOption(
+  String? token,
   TokenOptionPair pair,
   TokenizerConfigs configs,
 ) =>
-    switch (pair.key) {
+    switch (token.toOption().fold(
+          () => pair.key,
+          (t) => configs.namespacedTokens.contains(t)
+              ? '$t:${pair.key}'
+              : pair.key,
+        )) {
       'maxlength' => MaxLengthOption(pair.value),
       'delimiter' => DelimiterOption(pair.value),
       'unsafe' => UnsafeOption(
@@ -39,12 +47,14 @@ TokenOption getTokenOption(
       'separator' => FloatingPointSeparator.parse(value: pair.value),
       'precision' => FloatingPointPrecisionOption(pair.value),
       'count' => CountOption(pair.value),
+      'uuid:version' => UuidVersionOption.parse(value: pair.value),
       _ => UnknownOption(pair.key, pair.value ?? '')
     };
 
 TokenOptionHandler getTokenOptionHandler(
   String data,
   TokenOption option, {
+  required Uuid uuid,
   Clock? clock,
 }) =>
     switch (option) {
@@ -59,6 +69,10 @@ TokenOptionHandler getTokenOptionHandler(
       FloatingPointPrecisionOption o => (context) => switch (o.value) {
             0 => data.toDoubleCommaAware()?.round().toString() ?? data,
             _ => data.toDoubleCommaAware()?.toStringAsFixed(o.value) ?? data,
+          },
+      UuidVersionOption o => (context) => switch (o.value) {
+            UuidVersion.v1 => uuid.v1(),
+            UuidVersion.v4 => uuid.v4(),
           },
       DelimiterOption o => (context) {
           final l = o.value.contains('comma')

@@ -25,9 +25,10 @@ List<TokenData> parse(
   final parts = splitTokenString(tokenString);
   final token = parseToken(parts[0], configs.tokenDefinitions);
   final tokenOptions = parts.length > 1
-      ? parseTokenOptions(parts[1], configs)
+      ? parseTokenOptions(parts[1], token?.name, configs)
       : configs.standaloneTokens.containsKey(parts[0])
-          ? parseTokenOptions(configs.standaloneTokens[parts[0]]!, configs)
+          ? parseTokenOptions(
+              configs.standaloneTokens[parts[0]]!, token?.name, configs)
           : <TokenOption>[];
 
   return (token, tokenOptions);
@@ -46,15 +47,17 @@ Token? parseToken(
 ) =>
     tokenDef.containsKey(value) ? Token(name: value) : null;
 
-List<TokenOption> parseTokenOptions(String value, TokenizerConfigs configs) =>
+List<TokenOption> parseTokenOptions(
+        String value, String? token, TokenizerConfigs configs) =>
     value
         .split(',')
-        .map((value) => parseTokenOption(value, configs))
+        .map((value) => parseTokenOption(value, token, configs))
         .whereNotNull()
         .toList();
 
-TokenOption? parseTokenOption(String value, TokenizerConfigs configs) =>
-    getTokenOption(TokenOptionPair.parse(value), configs);
+TokenOption? parseTokenOption(
+        String value, String? token, TokenizerConfigs configs) =>
+    getTokenOption(token, TokenOptionPair.parse(value), configs);
 
 List<String> parseParts(
   String format,

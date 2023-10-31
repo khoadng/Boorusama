@@ -116,6 +116,7 @@ dependencies:
   timeago: ^3.5.0
   toggle_switch: ^2.1.0
   url_launcher: ^6.1.12
+  uuid: ^4.1.0
   version: ^3.0.2
   video_player: ^2.7.0
   video_player_macos: ^2.0.1

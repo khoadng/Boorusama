@@ -15,12 +15,12 @@ import 'package:boorusama/core/feats/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
-  List<String> get availableTokens;
+  Set<String> get availableTokens;
 
   Map<RegExp, TextStyle> get patternMatchMap;
 
   List<String> getTokenOptions(String token);
-  String? getDocsForTokenOption(String tokenOption);
+  String? getDocsForTokenOption(String token, String tokenOption);
 
   String generate(
     Settings settings,
@@ -72,7 +72,7 @@ class LegacyFilenameBuilder<T extends Post>
   });
 
   @override
-  List<String> get availableTokens => [];
+  Set<String> get availableTokens => {};
 
   final String Function(T post, String downloadUrl) generateFileName;
 
@@ -108,7 +108,7 @@ class LegacyFilenameBuilder<T extends Post>
   Map<RegExp, TextStyle> get patternMatchMap => {};
 
   @override
-  String? getDocsForTokenOption(String tokenOption) => null;
+  String? getDocsForTokenOption(String token, String tokenOption) => null;
 
   @override
   String get defaultBulkDownloadFileNameFormat => '';
@@ -129,10 +129,11 @@ class DownloadFileNameBuilder<T extends Post>
   final List<Map<String, String>> sampleData;
 
   @override
-  List<String> get availableTokens => {
+  Set<String> get availableTokens => {
         ...tokenHandlers.keys,
         'date',
-      }.toList();
+        'uuid',
+      }.toSet();
 
   final Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers;
 
@@ -261,8 +262,8 @@ class DownloadFileNameBuilder<T extends Post>
   }
 
   @override
-  String? getDocsForTokenOption(String tokenOption) {
-    return tokenizerConfigs.tokenOptionDocs[tokenOption];
+  String? getDocsForTokenOption(String token, String tokenOption) {
+    return tokenizerConfigs.tokenOptionDocsOf(token, tokenOption);
   }
 
   @override

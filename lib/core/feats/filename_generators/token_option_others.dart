@@ -101,3 +101,28 @@ final class FloatingPointSeparator extends TokenOption
   @override
   final FloatingPointSeparatorType value;
 }
+
+enum UuidVersion {
+  v1,
+  v4,
+}
+
+final class UuidVersionOption extends TokenOption with TokenValue<UuidVersion> {
+  UuidVersionOption({
+    required this.value,
+  }) : super(name: 'uuid:version');
+
+  factory UuidVersionOption.parse({
+    required String? value,
+  }) =>
+      UuidVersionOption(
+        value: switch (value) {
+          '1' => UuidVersion.v1,
+          '4' => UuidVersion.v4,
+          _ => UuidVersion.v4,
+        },
+      );
+
+  @override
+  final UuidVersion value;
+}

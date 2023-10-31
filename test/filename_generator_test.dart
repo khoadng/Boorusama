@@ -1,6 +1,8 @@
 // Package imports:
 import 'package:clock/clock.dart';
 import 'package:test/test.dart';
+import 'package:uuid/data.dart';
+import 'package:uuid/uuid.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/filename_generators/filename_generator.dart';
@@ -202,7 +204,7 @@ void main() {
       'artist': 'foo',
       'source': 'https://www.example.com',
     };
-    String format = '{artist}_{source}';
+    String format = '{artist}_{source:unsafe,urlencode}';
 
     // Act
     String filename = generateFileName(metadata, format);
@@ -398,4 +400,81 @@ void main() {
     // Assert
     expect(filename, equals('bar by foo (3)'));
   });
+
+  // test uuid option
+  test('generateFileName with uuid option', () {
+    // Arrange
+    Map<String, String> metadata = {
+      'artist': 'foo',
+      'character': 'bar',
+    };
+    Uuid uuid = MockUuid();
+
+    String format = '{character} by {artist} ({uuid:v=1})';
+
+    // Act
+    String filename = generateFileName(metadata, format, uuid: uuid);
+
+    // Assert
+    expect(
+        filename, equals('bar by foo (11111111-1111-1111-1111-111111111111)'));
+  });
+}
+
+class MockUuid implements Uuid {
+  @override
+  GlobalOptions? get goptions => null;
+  @override
+  String v1({Map<String, dynamic>? options, V1Options? config}) =>
+      '11111111-1111-1111-1111-111111111111';
+  @override
+  List<int> v1buffer(List<int> buffer,
+          {Map<String, dynamic>? options, V1Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v1obj({Map<String, dynamic>? options, V1Options? config}) =>
+      UuidValue.dns;
+  @override
+  String v4({Map<String, dynamic>? options, V4Options? config}) =>
+      '44444444-4444-4444-4444-444444444444';
+  @override
+  List<int> v4buffer(List<int> buffer,
+          {Map<String, dynamic>? options, V4Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v4obj({Map<String, dynamic>? options, V4Options? config}) =>
+      UuidValue.dns;
+  @override
+  String v5(String? namespace, String? name,
+          {Map<String, dynamic>? options, V5Options? config}) =>
+      '55555555-5555-5555-5555-555555555555';
+  @override
+  List<int> v5buffer(String? namespace, String? name, List<int>? buffer,
+          {Map<String, dynamic>? options, V5Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v5obj(String? namespace, String? name,
+          {Map<String, dynamic>? options, V5Options? config}) =>
+      UuidValue.dns;
+  @override
+  String v6({V6Options? config}) => '66666666-6666-6666-6666-666666666666';
+  @override
+  List<int> v6buffer(List<int> buffer, {V6Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v6obj({V6Options? config}) => UuidValue.dns;
+  @override
+  String v7({V7Options? config}) => '77777777-7777-7777-7777-777777777777';
+  @override
+  List<int> v7buffer(List<int> buffer, {V7Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v7obj({V7Options? config}) => UuidValue.dns;
+  @override
+  String v8({V8Options? config}) => '88888888-8888-8888-8888-888888888888';
+  @override
+  List<int> v8buffer(List<int> buffer, {V8Options? config, int offset = 0}) =>
+      [];
+  @override
+  UuidValue v8obj({V8Options? config}) => UuidValue.dns;
 }

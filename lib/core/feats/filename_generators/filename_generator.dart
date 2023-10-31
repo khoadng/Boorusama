@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:clock/clock.dart';
+import 'package:uuid/uuid.dart';
 
 // Project imports:
 import 'parser.dart';
@@ -10,11 +11,11 @@ String generateFileName(
   Map<String, String?> metadata,
   String format, {
   Clock? clock,
+  Uuid uuid = const Uuid(),
   TokenizerConfigs? configs,
 }) {
   final cfg = configs ?? TokenizerConfigs.defaultConfigs();
   final tokens = parse(cfg, format);
-  final globalOptions = parseTokenOptions(cfg.globalOptionToken, cfg);
 
   // filter null metadata
   final meta = {
@@ -29,11 +30,12 @@ String generateFileName(
               token: e.token,
               config: cfg,
               options: filterDuplicatedOptions([
-                ...globalOptions,
+                ...parseTokenOptions(cfg.globalOptionToken, e.token.name, cfg),
                 ...e.options,
               ]),
             ),
             clock: clock,
+            uuid: uuid,
           ))
       .toList();
 
@@ -46,6 +48,7 @@ String applyTokenOptions(
   String data,
   TokenContext context, {
   Clock? clock,
+  required Uuid uuid,
 }) =>
     context.options
         .where((o) =>
@@ -58,6 +61,7 @@ String applyTokenOptions(
             data,
             option,
             clock: clock,
+            uuid: uuid,
           )(context),
         );
 
