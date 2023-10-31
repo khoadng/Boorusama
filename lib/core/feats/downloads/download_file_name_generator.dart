@@ -221,6 +221,7 @@ class DownloadFileNameBuilder<T extends Post>
               'extension' => const Color.fromARGB(255, 204, 143, 180),
               'md5' => const Color.fromARGB(255, 204, 143, 180),
               'date' => const Color.fromARGB(255, 73, 170, 190),
+              'index' => const Color.fromARGB(255, 176, 86, 182),
               _ => const Color.fromARGB(255, 0, 155, 230),
             },
           ),
