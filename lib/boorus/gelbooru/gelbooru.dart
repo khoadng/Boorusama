@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -24,7 +25,8 @@ import 'pages/gelbooru_home_page.dart';
 import 'pages/gelbooru_post_details_desktop_page.dart';
 import 'pages/gelbooru_post_details_page.dart';
 
-const kGelbooruCustomDownloadFileNameFormat = '{id}_{md5}.{extension}';
+const kGelbooruCustomDownloadFileNameFormat =
+    '{id}_{md5:maxlength=8}.{extension}';
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
@@ -208,10 +210,10 @@ class GelbooruBuilder
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
       DownloadFileNameBuilder(
-        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
         defaultBulkDownloadFileNameFormat:
-            kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: [],
+            kGelbooruCustomDownloadFileNameFormat,
+        sampleData: kDanbooruPostSamples,
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),
           'tags': (post, config) => post.tags.join(' '),

@@ -11,14 +11,16 @@ import 'package:boorusama/widgets/login_field.dart';
 class CreateBooruPasswordField extends StatefulWidget {
   const CreateBooruPasswordField({
     super.key,
-    required this.onChanged,
+    this.onChanged,
     this.readOnly = false,
     this.text,
+    this.controller,
   });
 
-  final void Function(String value) onChanged;
+  final void Function(String value)? onChanged;
   final bool readOnly;
   final String? text;
+  final TextEditingController? controller;
 
   @override
   State<CreateBooruPasswordField> createState() =>
@@ -27,12 +29,15 @@ class CreateBooruPasswordField extends StatefulWidget {
 
 class _CreateBooruPasswordFieldState extends State<CreateBooruPasswordField> {
   var revealKey = false;
-  late var controller = TextEditingController(text: widget.text);
+  late var controller =
+      widget.controller ?? TextEditingController(text: widget.text);
 
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
   }
 
   @override

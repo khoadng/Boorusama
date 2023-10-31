@@ -109,6 +109,7 @@ class _CustomDownloadFileNameSectionState
             ),
           ),
         ),
+        const SizedBox(height: 8),
         AvailableTokens(
           downloadFilenameBuilder: downloadFilenameBuilder,
         ),
@@ -333,7 +334,7 @@ class AvailableTokens extends ConsumerWidget {
                 context,
                 builder: (context) => Scaffold(
                   appBar: AppBar(
-                    title: const Text('Available options'),
+                    title: Text(token),
                     automaticallyImplyLeading: false,
                     actions: [
                       IconButton(
@@ -344,7 +345,18 @@ class AvailableTokens extends ConsumerWidget {
                   ),
                   body: tokenOptions.isNotEmpty
                       ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                'Available options',
+                                style: context.textTheme.titleLarge,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
                             Expanded(
                               child: ListView.builder(
                                 itemCount: tokenOptions.length,

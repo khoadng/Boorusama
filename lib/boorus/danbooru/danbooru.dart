@@ -33,7 +33,7 @@ const kDanbooruPostSamples = [
     'general': '1girl solo',
     'meta': 'highres translated',
     'tags':
-        'genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) 1girl solo highres translated',
+        '1girl solo genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) highres translated',
     'extension': 'jpg',
     'md5': '9cf364e77f46183e2ebd75de757488e2',
     'source': 'https://example.com/filename.jpg',
@@ -47,7 +47,7 @@ const kDanbooruPostSamples = [
     'copyright': 'vocaloid',
     'general': '1girl solo',
     'meta': 'highres translated',
-    'tags': 'hatsune_miku vocaloid 1girl solo highres translated',
+    'tags': '1girl solo hatsune_miku vocaloid highres translated',
     'extension': 'png',
     'md5': '2ebd75de757488e29cf364e77f46183e',
     'source': 'https://example.com/example_filename.jpg',
