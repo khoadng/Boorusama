@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
-import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +10,8 @@ import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_fie
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_login_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_passworld_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
+import 'package:boorusama/core/pages/boorus/widgets/selected_booru_chip.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';

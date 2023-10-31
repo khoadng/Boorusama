@@ -1,11 +1,9 @@
 // Flutter imports:
-import 'package:boorusama/core/feats/downloads/download_file_name_generator.dart';
-import 'package:boorusama/core/feats/posts/post.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -13,6 +11,8 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
