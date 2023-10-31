@@ -160,7 +160,7 @@ class _CreateGelbooruConfigPageState
           CustomDownloadFileNameSection(
             config: widget.config,
             format: customDownloadFileNameFormat,
-            onSingleDownloadChanged: (value) =>
+            onIndividualDownloadChanged: (value) =>
                 setState(() => customDownloadFileNameFormat = value),
             onBulkDownloadChanged: (value) =>
                 setState(() => customBulkDownloadFileNameFormat = value),

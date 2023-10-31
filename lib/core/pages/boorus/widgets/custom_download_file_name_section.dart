@@ -23,13 +23,13 @@ class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
   const CustomDownloadFileNameSection({
     super.key,
     this.format,
-    this.onSingleDownloadChanged,
+    this.onIndividualDownloadChanged,
     this.onBulkDownloadChanged,
     required this.config,
   });
 
   final String? format;
-  final void Function(String value)? onSingleDownloadChanged;
+  final void Function(String value)? onIndividualDownloadChanged;
   final void Function(String value)? onBulkDownloadChanged;
 
   final BooruConfig config;
@@ -42,7 +42,7 @@ class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
 class _CustomDownloadFileNameSectionState
     extends ConsumerState<CustomDownloadFileNameSection> {
   late final Map<RegExp, TextStyle>? patternMatchMap;
-  late final RichTextController singleTextController;
+  late final RichTextController individualTextController;
   late final RichTextController bulkTextController;
 
   @override
@@ -52,7 +52,7 @@ class _CustomDownloadFileNameSectionState
         ?.downloadFilenameBuilder
         .patternMatchMap;
 
-    singleTextController = RichTextController(
+    individualTextController = RichTextController(
       text: widget.config.customDownloadFileNameFormat,
       patternMatchMap: patternMatchMap,
       onMatch: (match) {},
@@ -69,7 +69,7 @@ class _CustomDownloadFileNameSectionState
 
   @override
   void dispose() {
-    singleTextController.dispose();
+    individualTextController.dispose();
     bulkTextController.dispose();
     super.dispose();
   }
@@ -87,14 +87,24 @@ class _CustomDownloadFileNameSectionState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 16),
-        const Text('Custom file name format (Experimental)'),
+        RichText(
+          text: const TextSpan(
+            text: 'Custom filename format ',
+            children: [
+              TextSpan(
+                text: '(Experimental)',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 8),
         DownloadFormatCard(
-          title: 'Single download',
+          title: 'Individual download',
           downloadFilenameBuilder: downloadFilenameBuilder,
           defaultFileNameFormat: defaultFileNameFormat,
           format: widget.format,
-          onChanged: widget.onSingleDownloadChanged,
+          onChanged: widget.onIndividualDownloadChanged,
           config: widget.config,
         ),
         const SizedBox(height: 8),
