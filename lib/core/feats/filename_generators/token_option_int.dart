@@ -17,3 +17,9 @@ final class LimitOption extends IntegerTokenOption {
     String? value,
   ) : super(name: 'limit', value: value);
 }
+
+final class FloatingPointPrecisionOption extends IntegerTokenOption {
+  FloatingPointPrecisionOption(
+    String? value,
+  ) : super(name: 'precision', value: value);
+}

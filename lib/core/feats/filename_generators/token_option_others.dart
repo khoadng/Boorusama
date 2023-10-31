@@ -75,3 +75,29 @@ final class CaseOption extends TokenOption with TokenValue<StringCase> {
   @override
   final StringCase value;
 }
+
+enum FloatingPointSeparatorType {
+  dot,
+  comma,
+}
+
+final class FloatingPointSeparator extends TokenOption
+    with TokenValue<FloatingPointSeparatorType> {
+  FloatingPointSeparator(
+    this.value,
+  ) : super(name: 'separator');
+
+  factory FloatingPointSeparator.parse({
+    required String? value,
+  }) =>
+      FloatingPointSeparator(
+        switch (value) {
+          'dot' => FloatingPointSeparatorType.dot,
+          'comma' => FloatingPointSeparatorType.comma,
+          _ => FloatingPointSeparatorType.dot,
+        },
+      );
+
+  @override
+  final FloatingPointSeparatorType value;
+}

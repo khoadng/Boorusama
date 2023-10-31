@@ -8,6 +8,14 @@ extension StringX on String {
     if (isEmpty) return this;
     return this[0].toUpperCase() + substring(1);
   }
+
+  double? toDoubleCommaAware() {
+    final index = indexOf(',');
+    if (index != -1) {
+      return double.tryParse(replaceAll(',', '.'));
+    }
+    return double.tryParse(this);
+  }
 }
 
 List<String> cleanAndRemoveDuplicates(List<String> input) {

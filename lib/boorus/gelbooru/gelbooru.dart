@@ -219,6 +219,10 @@ class GelbooruBuilder
           'tags': (post, config) => post.tags.join(' '),
           'extension': (post, config) =>
               extension(config.downloadUrl).substring(1),
+          'width': (post, config) => post.width.toString(),
+          'height': (post, config) => post.height.toString(),
+          'mpixels': (post, config) => post.mpixels.toString(),
+          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
           'md5': (post, config) => post.md5,
           'source': (post, config) => config.downloadUrl,
           'rating': (post, config) => post.rating.name,

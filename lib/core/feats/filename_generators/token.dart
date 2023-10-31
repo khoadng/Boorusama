@@ -21,6 +21,19 @@ class TokenizerConfigs {
       'delimiter',
       'include_namespace',
     ];
+
+    final stringTokenOptions = [
+      'maxlength',
+      'unsafe',
+      'case',
+      'urlencode',
+    ];
+
+    final floatingPointTokenOptions = [
+      'separator',
+      'precision',
+    ];
+
     final unsafeCharacters = [
       '/',
       r'\',
@@ -38,6 +51,7 @@ class TokenizerConfigs {
       tokenDefinitions: {
         'md5': [
           'maxlength',
+          'case',
         ],
         'extension': [],
         'tags': [
@@ -63,10 +77,20 @@ class TokenizerConfigs {
           ...tagTokenOptions,
         ],
         'id': [],
+        'width': [],
+        'height': [],
+        'aspect_ratio': [
+          ...floatingPointTokenOptions,
+        ],
+        'mpixels': [
+          ...floatingPointTokenOptions,
+        ],
         'source': [
+          ...stringTokenOptions,
           'urlencode',
         ],
         'rating': [
+          ...stringTokenOptions,
           'single_letter',
         ],
         'date': [
@@ -81,6 +105,8 @@ class TokenizerConfigs {
         'date': 'format=dd-MM-yyyy hh.mm',
         'source': 'urlencode',
         'index': '_unique_counter',
+        'aspect_ratio': 'separator=dot,precision=4',
+        'mpixels': 'separator=dot,precision=2',
       },
       globalOptionToken: 'unsafe=false',
       tokenRegex: RegExp(r'\{([^}]+)\}'),
@@ -107,6 +133,10 @@ class TokenizerConfigs {
         'format':
             'Format a date using the given format. For example, "dd-MM-yyyy hh.mm".',
         'pad_left': 'Whether to pad the token with zeros.',
+        'separator':
+            'Floating point separator. Available options are: "comma", "dot".',
+        'precision':
+            'Floating point precision. For example, "2" will round the number to 2 decimal places.',
       },
       unsafeCharacters: unsafeCharacters,
     );

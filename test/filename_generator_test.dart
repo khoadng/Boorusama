@@ -340,4 +340,44 @@ void main() {
     // Assert
     expect(filename, equals('character:bar by artist:foo/a'));
   });
+
+  // test floating point separator option
+  test('generateFileName with floating point separator option', () {
+    // Arrange
+    Map<String, String> metadata = {
+      'artist': 'foo',
+      'character': 'bar',
+      'aspect_ratio': '1.23',
+      'mpixels': '1,23',
+    };
+
+    String format =
+        '{character} by {artist} ({aspect_ratio:separator=comma}) ({mpixels:separator=dot})';
+
+    // Act
+    String filename = generateFileName(metadata, format);
+
+    // Assert
+    expect(filename, equals('bar by foo (1,23) (1.23)'));
+  });
+
+  // test floating point precision option
+  test('generateFileName with floating point precision option', () {
+    // Arrange
+    Map<String, String> metadata = {
+      'artist': 'foo',
+      'character': 'bar',
+      'aspect_ratio': '1.23456789',
+      'mpixels': '1.23456789',
+    };
+
+    String format =
+        '{character} by {artist} ({aspect_ratio:precision=0}) ({mpixels:precision=2})';
+
+    // Act
+    String filename = generateFileName(metadata, format);
+
+    // Assert
+    expect(filename, equals('bar by foo (1) (1.23)'));
+  });
 }

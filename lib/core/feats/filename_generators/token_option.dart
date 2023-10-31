@@ -34,6 +34,8 @@ TokenOption getTokenOptionBuilder(
       'index' => UniqueCounterOption(pair.value),
       'pad_left' => PadLeftOption(pair.value ?? ''),
       'include_namespace' => IncludeNamesOption(pair.value),
+      'separator' => FloatingPointSeparator.parse(value: pair.value),
+      'precision' => FloatingPointPrecisionOption(pair.value),
       _ => UnknownOption(pair.key, pair.value ?? '')
     };
 
@@ -45,6 +47,14 @@ TokenOptionHandler getTokenOptionHandler(
     switch (option) {
       MaxLengthOption o => (context) =>
           data.length > o.value ? data.substring(0, o.value) : data,
+      FloatingPointSeparator o => (context) => switch (o.value) {
+            FloatingPointSeparatorType.comma => data.replaceAll('.', ','),
+            FloatingPointSeparatorType.dot => data.replaceAll(',', '.'),
+          },
+      FloatingPointPrecisionOption o => (context) => switch (o.value) {
+            0 => data.toDoubleCommaAware()?.round().toString() ?? data,
+            _ => data.toDoubleCommaAware()?.toStringAsFixed(o.value) ?? data,
+          },
       DelimiterOption o => (context) {
           final l = o.value.contains('comma')
               ? o.value.replaceAll('comma', ',')
