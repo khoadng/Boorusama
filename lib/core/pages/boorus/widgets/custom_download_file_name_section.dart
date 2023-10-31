@@ -41,22 +41,31 @@ class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
 
 class _CustomDownloadFileNameSectionState
     extends ConsumerState<CustomDownloadFileNameSection> {
-  late final singleTextController = RichTextController(
-    text: widget.format,
-    patternMatchMap: ref
+  late final Map<RegExp, TextStyle>? patternMatchMap;
+  late final RichTextController singleTextController;
+  late final RichTextController bulkTextController;
+
+  @override
+  void initState() {
+    patternMatchMap = ref
         .readBooruBuilder(widget.config)
         ?.downloadFilenameBuilder
-        .patternMatchMap,
-    onMatch: (match) {},
-  );
-  late final bulkTextController = RichTextController(
-    text: widget.config.customBulkDownloadFileNameFormat,
-    patternMatchMap: ref
-        .readBooruBuilder(widget.config)
-        ?.downloadFilenameBuilder
-        .patternMatchMap,
-    onMatch: (match) {},
-  );
+        .patternMatchMap;
+
+    singleTextController = RichTextController(
+      text: widget.config.customDownloadFileNameFormat,
+      patternMatchMap: patternMatchMap,
+      onMatch: (match) {},
+    );
+
+    bulkTextController = RichTextController(
+      text: widget.config.customBulkDownloadFileNameFormat,
+      patternMatchMap: patternMatchMap,
+      onMatch: (match) {},
+    );
+
+    super.initState();
+  }
 
   @override
   void dispose() {
