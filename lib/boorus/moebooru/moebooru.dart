@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
@@ -59,7 +61,8 @@ class MoebooruBuilder
             config: BooruConfig.defaultConfig(
               booruType: booruType,
               url: url,
-              customDownloadFileNameFormat: null,
+              customDownloadFileNameFormat:
+                  kGelbooruCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
           );
@@ -108,8 +111,21 @@ class MoebooruBuilder
             );
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) => basename(downloadUrl),
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder(
+        defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kGelbooruCustomDownloadFileNameFormat,
+        sampleData: kDanbooruPostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              extension(config.downloadUrl).substring(1),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => config.downloadUrl,
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
       );
 }
