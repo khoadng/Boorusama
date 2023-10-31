@@ -380,4 +380,22 @@ void main() {
     // Assert
     expect(filename, equals('bar by foo (1) (1.23)'));
   });
+
+  // test count option
+  test('generateFileName with count option', () {
+    // Arrange
+    Map<String, String> metadata = {
+      'artist': 'foo',
+      'character': 'bar',
+      'tags': 'tag1 tag2 tag3',
+    };
+
+    String format = '{character} by {artist} ({tags:count})';
+
+    // Act
+    String filename = generateFileName(metadata, format);
+
+    // Assert
+    expect(filename, equals('bar by foo (3)'));
+  });
 }

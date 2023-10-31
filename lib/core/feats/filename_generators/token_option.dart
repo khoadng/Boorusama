@@ -15,8 +15,10 @@ part 'token_option_string.dart';
 
 typedef TokenOptionHandler = String Function(TokenContext context);
 
-TokenOption getTokenOptionBuilder(
-        TokenOptionPair pair, TokenizerConfigs configs) =>
+TokenOption getTokenOption(
+  TokenOptionPair pair,
+  TokenizerConfigs configs,
+) =>
     switch (pair.key) {
       'maxlength' => MaxLengthOption(pair.value),
       'delimiter' => DelimiterOption(pair.value),
@@ -36,6 +38,7 @@ TokenOption getTokenOptionBuilder(
       'include_namespace' => IncludeNamesOption(pair.value),
       'separator' => FloatingPointSeparator.parse(value: pair.value),
       'precision' => FloatingPointPrecisionOption(pair.value),
+      'count' => CountOption(pair.value),
       _ => UnknownOption(pair.key, pair.value ?? '')
     };
 
@@ -45,6 +48,8 @@ TokenOptionHandler getTokenOptionHandler(
   Clock? clock,
 }) =>
     switch (option) {
+      CountOption o => (context) =>
+          o.value ? data.split(' ').length.toString() : data,
       MaxLengthOption o => (context) =>
           data.length > o.value ? data.substring(0, o.value) : data,
       FloatingPointSeparator o => (context) => switch (o.value) {

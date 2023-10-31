@@ -54,7 +54,7 @@ List<TokenOption> parseTokenOptions(String value, TokenizerConfigs configs) =>
         .toList();
 
 TokenOption? parseTokenOption(String value, TokenizerConfigs configs) =>
-    getTokenOptionBuilder(TokenOptionPair.parse(value), configs);
+    getTokenOption(TokenOptionPair.parse(value), configs);
 
 List<String> parseParts(
   String format,

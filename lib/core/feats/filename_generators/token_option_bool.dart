@@ -38,3 +38,9 @@ final class IncludeNamesOption extends BooleanTokenOption {
     String? value,
   ) : super(name: 'include_namespace', value: value);
 }
+
+final class CountOption extends BooleanTokenOption {
+  CountOption(
+    String? value,
+  ) : super(name: 'count', value: value);
+}

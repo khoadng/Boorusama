@@ -20,6 +20,7 @@ class TokenizerConfigs {
       'limit',
       'delimiter',
       'include_namespace',
+      'count',
     ];
 
     final stringTokenOptions = [
@@ -137,6 +138,8 @@ class TokenizerConfigs {
             'Floating point separator. Available options are: "comma", "dot".',
         'precision':
             'Floating point precision. For example, "2" will round the number to 2 decimal places.',
+        'count':
+            'When used, the token will be replaced with the number of values in the list.',
       },
       unsafeCharacters: unsafeCharacters,
     );
