@@ -23,11 +23,9 @@ class CreateBooruCustomDownloadFileNameField extends ConsumerStatefulWidget {
     this.onSingleDownloadChanged,
     this.onBulkDownloadChanged,
     required this.config,
-    required this.defaultFormat,
   });
 
   final String? format;
-  final String defaultFormat;
   final void Function(String value)? onSingleDownloadChanged;
   final void Function(String value)? onBulkDownloadChanged;
 
@@ -69,6 +67,10 @@ class _CreateBooruCustomDownloadFileNameFieldState
     final downloadFilenameBuilder =
         ref.watchBooruBuilder(widget.config)?.downloadFilenameBuilder;
     final availableTokens = downloadFilenameBuilder?.availableTokens ?? [];
+    final defaultFileNameFormat =
+        downloadFilenameBuilder?.defaultFileNameFormat ?? '';
+    final defaultBulkDownloadFileNameFormat =
+        downloadFilenameBuilder?.defaultBulkDownloadFileNameFormat ?? '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +80,8 @@ class _CreateBooruCustomDownloadFileNameFieldState
             const Expanded(
                 child: Text('Custom download file name format (Experimental)')),
             TextButton(
-              onPressed: () => singleTextController.text = widget.defaultFormat,
+              onPressed: () =>
+                  singleTextController.text = defaultFileNameFormat,
               child: const Text('Reset'),
             ),
           ],
@@ -141,7 +144,8 @@ class _CreateBooruCustomDownloadFileNameFieldState
                 child: Text(
                     'Bulk download custom file name format (Experimental)')),
             TextButton(
-              onPressed: () => bulkTextController.text = widget.defaultFormat,
+              onPressed: () =>
+                  bulkTextController.text = defaultBulkDownloadFileNameFormat,
               child: const Text('Reset'),
             ),
           ],

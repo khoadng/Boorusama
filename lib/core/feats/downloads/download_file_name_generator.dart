@@ -38,6 +38,9 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     String format, {
     int? index,
   });
+
+  String get defaultFileNameFormat;
+  String get defaultBulkDownloadFileNameFormat;
 }
 
 typedef DownloadFilenameTokenHandler<T extends Post> = String? Function(
@@ -107,6 +110,12 @@ class LegacyFilenameBuilder<T extends Post>
 
   @override
   String? getDocsForTokenOption(String tokenOption) => null;
+
+  @override
+  String get defaultBulkDownloadFileNameFormat => '';
+
+  @override
+  String get defaultFileNameFormat => '';
 }
 
 class DownloadFileNameBuilder<T extends Post>
@@ -114,6 +123,8 @@ class DownloadFileNameBuilder<T extends Post>
   DownloadFileNameBuilder({
     required this.tokenHandlers,
     required this.sampleData,
+    required this.defaultFileNameFormat,
+    required this.defaultBulkDownloadFileNameFormat,
   });
 
   final Map<String, String> sampleData;
@@ -241,4 +252,10 @@ class DownloadFileNameBuilder<T extends Post>
   String? getDocsForTokenOption(String tokenOption) {
     return tokenizerConfigs.tokenOptionDocs[tokenOption];
   }
+
+  @override
+  final String defaultBulkDownloadFileNameFormat;
+
+  @override
+  final String defaultFileNameFormat;
 }

@@ -208,6 +208,9 @@ class GelbooruBuilder
   @override
   DownloadFilenameGenerator get downloadFilenameBuilder =>
       DownloadFileNameBuilder(
+        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kBoorusamaBulkDownloadCustomFileNameFormat,
         sampleData: {},
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),

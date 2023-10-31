@@ -23,12 +23,10 @@ class CreateDanbooruConfigPage extends ConsumerStatefulWidget {
     super.key,
     this.backgroundColor,
     required this.config,
-    required this.defaultFilenameFormat,
   });
 
   final Color? backgroundColor;
   final BooruConfig config;
-  final String defaultFilenameFormat;
 
   @override
   ConsumerState<CreateDanbooruConfigPage> createState() =>
@@ -159,7 +157,6 @@ class _CreateDanbooruConfigPageState
           CreateBooruCustomDownloadFileNameField(
             config: widget.config,
             format: customDownloadFileNameFormat,
-            defaultFormat: widget.defaultFilenameFormat,
             onSingleDownloadChanged: (value) =>
                 setState(() => customDownloadFileNameFormat = value),
             onBulkDownloadChanged: (value) =>
