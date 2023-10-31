@@ -12,6 +12,7 @@ import 'package:boorusama/core/feats/filename_generators/filename_generator.dart
 import 'package:boorusama/core/feats/filename_generators/token.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/settings.dart';
+import 'package:boorusama/functional.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {
   List<String> get availableTokens;
@@ -229,8 +230,19 @@ class DownloadFileNameBuilder<T extends Post>
       };
 
   @override
-  String generateSample(String format) {
-    final data = sampleData.first;
+  String generateSample(String format) => sampleData.firstOption.fold(
+        () => '',
+        (data) => _generateSample(data, format),
+      );
+
+  @override
+  List<String> generateSamples(String format) =>
+      sampleData.map((data) => _generateSample(data, format)).toList();
+
+  String _generateSample(
+    Map<String, String> data,
+    String format,
+  ) {
     final downloadUrl = data['source'];
     final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
 
@@ -241,26 +253,6 @@ class DownloadFileNameBuilder<T extends Post>
     );
 
     return filename.isNotEmpty ? filename : fallbackName ?? '';
-  }
-
-  @override
-  List<String> generateSamples(String format) {
-    final samples = <String>[];
-
-    for (final data in sampleData) {
-      final downloadUrl = data['source'];
-      final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
-
-      final filename = generateFileName(
-        data,
-        format,
-        configs: tokenizerConfigs,
-      );
-
-      samples.add(filename.isNotEmpty ? filename : fallbackName ?? '');
-    }
-
-    return samples;
   }
 
   @override
