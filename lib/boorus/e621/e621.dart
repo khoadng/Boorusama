@@ -125,7 +125,8 @@ class E621Builder
             config: BooruConfig.defaultConfig(
               booruType: booruType,
               url: url,
-              customDownloadFileNameFormat: null,
+              customDownloadFileNameFormat:
+                  kBoorusamaCustomDownloadFileNameFormat,
             ),
             backgroundColor: backgroundColor,
           );

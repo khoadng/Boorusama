@@ -9,10 +9,11 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
+import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/router.dart';
 
-class CreateAnonConfigPage extends ConsumerStatefulWidget {
-  const CreateAnonConfigPage({
+class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
+  const CreateGelbooruV1ConfigPage({
     super.key,
     required this.config,
     this.backgroundColor,
@@ -23,11 +24,16 @@ class CreateAnonConfigPage extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreateAnonConfigPageState();
+      _CreateGelbooruV1ConfigPageState();
 }
 
-class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
+class _CreateGelbooruV1ConfigPageState
+    extends ConsumerState<CreateGelbooruV1ConfigPage> {
   late String configName = widget.config.name;
+  late String? customDownloadFileNameFormat =
+      widget.config.customDownloadFileNameFormat;
+  late var customBulkDownloadFileNameFormat =
+      widget.config.customBulkDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +54,16 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
                 text: configName,
                 onChanged: (value) => setState(() => configName = value),
               ),
-              // CreateBooruCustomDownloadFileNameField(
-              //   format: customDownloadFileNameFormat,
-              //   onChanged: (value) =>
-              //       setState(() => customDownloadFileNameFormat = value),
-              // ),
+              const SizedBox(height: 8),
+              CustomDownloadFileNameSection(
+                config: widget.config,
+                format: customDownloadFileNameFormat,
+                onIndividualDownloadChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+                onBulkDownloadChanged: (value) =>
+                    setState(() => customBulkDownloadFileNameFormat = value),
+              ),
+              const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),
@@ -77,13 +88,14 @@ class _CreateAnonConfigPageState extends ConsumerState<CreateAnonConfigPage> {
       hideDeleted: false,
       ratingFilter: BooruConfigRatingFilter.none,
       url: widget.config.url,
-      customDownloadFileNameFormat: null,
-      customBulkDownloadFileNameFormat: null,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
     );
 
     ref
         .read(booruConfigProvider.notifier)
         .addOrUpdate(config: widget.config, newConfig: config);
+
     context.pop();
   }
 }

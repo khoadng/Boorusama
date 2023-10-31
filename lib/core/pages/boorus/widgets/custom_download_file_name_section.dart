@@ -227,8 +227,12 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
               child: Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () =>
-                        textController.text = widget.defaultFileNameFormat,
+                    onPressed: () {
+                      setState(() {
+                        textController.text = widget.defaultFileNameFormat;
+                        widget.onChanged?.call(widget.defaultFileNameFormat);
+                      });
+                    },
                     child: const Text('Reset'),
                   ),
                 ],
