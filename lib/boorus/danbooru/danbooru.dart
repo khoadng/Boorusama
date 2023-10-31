@@ -23,21 +23,38 @@ import 'pages/favorites_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
-const kDanbooruPostSample = <String, String>{
-  'id': '123456',
-  'artist': 'artist_x_(abc) artist_2',
-  'character':
-      'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
-  'copyright': 'genshin_impact fate/grand_order',
-  'general': '1girl solo',
-  'meta': 'highres translated',
-  'tags':
-      'genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) 1girl solo highres translated',
-  'extension': 'jpg',
-  'md5': '9cf364e77f46183e2ebd75de757488e2',
-  'source': 'https://example.com/filename.jpg',
-  'rating': 'general',
-};
+const kDanbooruPostSamples = [
+  {
+    'id': '123456',
+    'artist': 'artist_x_(abc) artist_2',
+    'character':
+        'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
+    'copyright': 'genshin_impact fate/grand_order',
+    'general': '1girl solo',
+    'meta': 'highres translated',
+    'tags':
+        'genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) 1girl solo highres translated',
+    'extension': 'jpg',
+    'md5': '9cf364e77f46183e2ebd75de757488e2',
+    'source': 'https://example.com/filename.jpg',
+    'rating': 'general',
+    'index': '0',
+  },
+  {
+    'id': '654321',
+    'artist': 'artist_3',
+    'character': 'hatsune_miku',
+    'copyright': 'vocaloid',
+    'general': '1girl solo',
+    'meta': 'highres translated',
+    'tags': 'hatsune_miku vocaloid 1girl solo highres translated',
+    'extension': 'png',
+    'md5': '2ebd75de757488e29cf364e77f46183e',
+    'source': 'https://example.com/example_filename.jpg',
+    'rating': 'general',
+    'index': '1',
+  }
+];
 
 class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   const DanbooruBuilder({
@@ -168,7 +185,7 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
         defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
         defaultBulkDownloadFileNameFormat:
             kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: kDanbooruPostSample,
+        sampleData: kDanbooruPostSamples,
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),
           'artist': (post, config) => post.artistTags.join(' '),

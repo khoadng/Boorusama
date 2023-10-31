@@ -34,10 +34,9 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     int? index,
   });
 
-  String generateSample(
-    String format, {
-    int? index,
-  });
+  String generateSample(String format);
+
+  List<String> generateSamples(String format);
 
   String get defaultFileNameFormat;
   String get defaultBulkDownloadFileNameFormat;
@@ -96,11 +95,10 @@ class LegacyFilenameBuilder<T extends Post>
   }
 
   @override
-  String generateSample(
-    String format, {
-    int? index,
-  }) =>
-      '';
+  String generateSample(String format) => '';
+
+  @override
+  List<String> generateSamples(String format) => [];
 
   @override
   List<String> getTokenOptions(String token) => [];
@@ -127,7 +125,7 @@ class DownloadFileNameBuilder<T extends Post>
     required this.defaultBulkDownloadFileNameFormat,
   });
 
-  final Map<String, String> sampleData;
+  final List<Map<String, String>> sampleData;
 
   @override
   List<String> get availableTokens => {
@@ -229,23 +227,38 @@ class DownloadFileNameBuilder<T extends Post>
       };
 
   @override
-  String generateSample(
-    String format, {
-    int? index,
-  }) {
-    final downloadUrl = sampleData['source'];
+  String generateSample(String format) {
+    final data = sampleData.first;
+    final downloadUrl = data['source'];
     final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
 
     final filename = generateFileName(
-      {
-        ...sampleData,
-        if (index != null) 'index': index.toString(),
-      },
+      data,
       format,
       configs: tokenizerConfigs,
     );
 
     return filename.isNotEmpty ? filename : fallbackName ?? '';
+  }
+
+  @override
+  List<String> generateSamples(String format) {
+    final samples = <String>[];
+
+    for (final data in sampleData) {
+      final downloadUrl = data['source'];
+      final fallbackName = downloadUrl != null ? basename(downloadUrl) : null;
+
+      final filename = generateFileName(
+        data,
+        format,
+        configs: tokenizerConfigs,
+      );
+
+      samples.add(filename.isNotEmpty ? filename : fallbackName ?? '');
+    }
+
+    return samples;
   }
 
   @override

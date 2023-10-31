@@ -211,7 +211,7 @@ class GelbooruBuilder
         defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
         defaultBulkDownloadFileNameFormat:
             kBoorusamaBulkDownloadCustomFileNameFormat,
-        sampleData: {},
+        sampleData: [],
         tokenHandlers: {
           'id': (post, config) => post.id.toString(),
           'tags': (post, config) => post.tags.join(' '),

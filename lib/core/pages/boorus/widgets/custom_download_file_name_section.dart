@@ -96,7 +96,18 @@ class _CustomDownloadFileNameSectionState
           format: widget.config.customBulkDownloadFileNameFormat,
           onChanged: widget.onBulkDownloadChanged,
           config: widget.config,
-          index: 0,
+          previewBuilder: (generator, format) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Column(
+              children: generator
+                  .generateSamples(format)
+                  .map((e) => FilenamePreview(
+                        filename: e,
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                      ))
+                  .toList(),
+            ),
+          ),
         ),
         AvailableTokens(
           downloadFilenameBuilder: downloadFilenameBuilder,
@@ -115,7 +126,7 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
     required this.onChanged,
     required this.config,
     required this.title,
-    this.index,
+    this.previewBuilder,
   });
 
   final DownloadFilenameGenerator<Post>? downloadFilenameBuilder;
@@ -124,7 +135,8 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
   final BooruConfig config;
   final void Function(String value)? onChanged;
   final String title;
-  final int? index;
+  final Widget Function(
+      DownloadFilenameGenerator<Post> generator, String format)? previewBuilder;
 
   @override
   ConsumerState<DownloadFormatCard> createState() => _DownloadFormatCardState();
@@ -149,18 +161,20 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
   @override
   Widget build(BuildContext context) {
     final preview = widget.downloadFilenameBuilder != null
-        ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: FilenamePreview(
-              controller: textController,
-              filenameBuilder: (value) =>
-                  widget.downloadFilenameBuilder!.generateSample(
-                value,
-                index: widget.index,
-              ),
-            ),
+        ? ValueListenableBuilder(
+            valueListenable: textController,
+            builder: (context, value, child) => widget.previewBuilder != null
+                ? widget.previewBuilder!(
+                    widget.downloadFilenameBuilder!, value.text)
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: FilenamePreview(
+                      filename: widget.downloadFilenameBuilder!
+                          .generateSample(value.text),
+                    ),
+                  ),
           )
-        : const SizedBox.shrink();
+        : const SizedBox();
 
     return Container(
       decoration: BoxDecoration(
@@ -251,17 +265,17 @@ class FormatEditingField extends StatelessWidget {
 class FilenamePreview extends StatelessWidget {
   const FilenamePreview({
     super.key,
-    required this.controller,
-    required this.filenameBuilder,
+    required this.filename,
+    this.padding,
   });
 
-  final RichTextController controller;
-  final String Function(String value) filenameBuilder;
+  final String filename;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           FaIcon(
@@ -271,17 +285,13 @@ class FilenamePreview extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: controller,
-              builder: (context, value, child) => Text(
-                filenameBuilder(value.text),
-                style: context.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.theme.hintColor,
-                ),
-              ),
+              child: Text(
+            filename,
+            style: context.textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w700,
+              color: context.theme.hintColor,
             ),
-          ),
+          )),
         ],
       ),
     );
