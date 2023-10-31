@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -148,10 +149,25 @@ class SankakuBuilder
             );
 
   @override
-  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
-      LegacyFilenameBuilder(
-        generateFileName: (post, downloadUrl) =>
-            generateMd5FileNameFor(post, downloadUrl),
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder<SankakuPost>(
+        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kBoorusamaBulkDownloadCustomFileNameFormat,
+        sampleData: kDanbooruPostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'artist': (post, config) => post.artistTags.join(' '),
+          'character': (post, config) => post.characterTags.join(' '),
+          'copyright': (post, config) => post.copyrightTags.join(' '),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              sanitizedExtension(config.downloadUrl).substring(1),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => sanitizedUrl(config.downloadUrl),
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
       );
 }
 

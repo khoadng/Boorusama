@@ -43,7 +43,11 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
 );
 
 String generateMd5FileNameFor(Post item, String fileUrl) =>
-    '${item.md5}${extension((sanitizedUrl(fileUrl)))}';
+    '${item.md5}${sanitizedExtension(fileUrl)}';
+
+String sanitizedExtension(String url) {
+  return extension(sanitizedUrl(url));
+}
 
 String sanitizedUrl(String url) {
   final ext = extension(url);
