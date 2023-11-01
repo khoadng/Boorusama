@@ -42,7 +42,7 @@ class CrossplatformBulkDownloader implements BulkDownloader {
   Future<void> enqueueDownload({
     required String url,
     String? path,
-    required DownloadFileNameBuilder fileNameBuilder,
+    required DownloadFilenameBuilder fileNameBuilder,
   }) async {
     final fileName = fileNameBuilder();
     _downloadDataController.add(BulkDownloadInitializing(url, fileName));

@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/philomena/create_philomena_config_page.dart';
 import 'package:boorusama/core/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/router.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
@@ -44,7 +45,11 @@ class PhilomenaBuilder
         backgroundColor,
       }) =>
           CreatePhilomenaConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat: null,
+            ),
             backgroundColor: backgroundColor,
           );
 
@@ -124,6 +129,13 @@ class PhilomenaBuilder
                 ? Colors.green
                 : const Color.fromARGB(255, 111, 143, 13),
           };
+
+  @override
+  DownloadFilenameGenerator<Post> get downloadFilenameBuilder =>
+      LegacyFilenameBuilder(
+        generateFileName: (post, downloadUrl) =>
+            generateMd5FileNameFor(post, downloadUrl),
+      );
 }
 
 String _generatePercentText(PhilomenaPost? post) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
@@ -21,20 +22,28 @@ Future<void> _download(
   PermissionStatus? permission,
   required Settings settings,
 }) async {
-  final booruConfig = ref.watchConfig;
+  final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider(booruConfig));
-  final fileNameGenerator =
-      ref.read(downloadFileNameGeneratorProvider(booruConfig));
-  final downloadUrl = ref.read(downloadUrlProvider(downloadable));
+  final fileNameBuilder =
+      ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
+  final downloadUrl = getDownloadFileUrl(downloadable, settings);
+
   final logger = ref.read(loggerProvider);
+
+  if (fileNameBuilder == null) {
+    logger.logE('Single Download', 'No file name builder found, aborting...');
+    showErrorToast('Download aborted, cannot create file name');
+    return;
+  }
 
   Future<void> download() async => service
       .downloadWithSettings(
         settings,
         url: downloadUrl,
-        fileNameBuilder: () => fileNameGenerator.generateFor(
+        fileNameBuilder: () => fileNameBuilder.generate(
+          settings,
+          booruConfig,
           downloadable,
-          downloadUrl,
         ),
       )
       .run();

@@ -11,14 +11,16 @@ import 'package:boorusama/widgets/login_field.dart';
 class CreateBooruApiKeyField extends StatefulWidget {
   const CreateBooruApiKeyField({
     super.key,
-    required this.onChanged,
+    this.onChanged,
     this.hintText,
     this.text,
+    this.controller,
   });
 
-  final void Function(String value) onChanged;
+  final void Function(String value)? onChanged;
   final String? text;
   final String? hintText;
+  final TextEditingController? controller;
 
   @override
   State<CreateBooruApiKeyField> createState() => _CreateBooruApiKeyFieldState();
@@ -26,12 +28,15 @@ class CreateBooruApiKeyField extends StatefulWidget {
 
 class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
   var revealKey = false;
-  late var controller = TextEditingController(text: widget.text);
+  late var controller =
+      widget.controller ?? TextEditingController(text: widget.text);
 
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
   }
 
   @override

@@ -6,15 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
-import 'package:boorusama/core/pages/boorus/widgets/create_booru_api_key_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_config_name_field.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_scaffold.dart';
 import 'package:boorusama/core/pages/boorus/widgets/create_booru_submit_button.dart';
-import 'package:boorusama/foundation/theme/theme.dart';
+import 'package:boorusama/core/pages/boorus/widgets/custom_download_file_name_section.dart';
 import 'package:boorusama/router.dart';
 
-class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
-  const CreatePhilomenaConfigPage({
+class CreateGelbooruV1ConfigPage extends ConsumerStatefulWidget {
+  const CreateGelbooruV1ConfigPage({
     super.key,
     required this.config,
     this.backgroundColor,
@@ -25,15 +24,16 @@ class CreatePhilomenaConfigPage extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreatePhilomenaConfigPageState();
+      _CreateGelbooruV1ConfigPageState();
 }
 
-class _CreatePhilomenaConfigPageState
-    extends ConsumerState<CreatePhilomenaConfigPage> {
+class _CreateGelbooruV1ConfigPageState
+    extends ConsumerState<CreateGelbooruV1ConfigPage> {
   late String configName = widget.config.name;
-  late String key = widget.config.apiKey ?? '';
   late String? customDownloadFileNameFormat =
       widget.config.customDownloadFileNameFormat;
+  late var customBulkDownloadFileNameFormat =
+      widget.config.customBulkDownloadFileNameFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -54,28 +54,16 @@ class _CreatePhilomenaConfigPageState
                 text: configName,
                 onChanged: (value) => setState(() => configName = value),
               ),
-              const SizedBox(height: 16),
-              CreateBooruApiKeyField(
-                text: key,
-                hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
-                onChanged: (value) => setState(() => key = value),
-              ),
               const SizedBox(height: 8),
-              Text(
-                '*You can find your authentication token in your account settings in the browser',
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.theme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+              CustomDownloadFileNameSection(
+                config: widget.config,
+                format: customDownloadFileNameFormat,
+                onIndividualDownloadChanged: (value) =>
+                    setState(() => customDownloadFileNameFormat = value),
+                onBulkDownloadChanged: (value) =>
+                    setState(() => customBulkDownloadFileNameFormat = value),
               ),
               const SizedBox(height: 16),
-              // CreateBooruCustomDownloadFileNameField(
-              //   format: customDownloadFileNameFormat,
-              //   onChanged: (value) =>
-              //       setState(() => customDownloadFileNameFormat = value),
-              // ),
-              // const SizedBox(height: 16),
               CreateBooruSubmitButton(
                 onSubmit: allowSubmit() ? submit : null,
               ),
@@ -91,20 +79,23 @@ class _CreatePhilomenaConfigPageState
   }
 
   void submit() {
-    ref.read(booruConfigProvider.notifier).addFromAddBooruConfig(
-          newConfig: AddNewBooruConfig(
-            login: '',
-            apiKey: key,
-            booru: widget.config.booruType,
-            booruHint: widget.config.booruType,
-            configName: configName,
-            hideDeleted: false,
-            ratingFilter: BooruConfigRatingFilter.none,
-            url: widget.config.url,
-            customDownloadFileNameFormat: customDownloadFileNameFormat,
-            customBulkDownloadFileNameFormat: null,
-          ),
-        );
+    final config = AddNewBooruConfig(
+      login: '',
+      apiKey: '',
+      booru: widget.config.booruType,
+      booruHint: widget.config.booruType,
+      configName: configName,
+      hideDeleted: false,
+      ratingFilter: BooruConfigRatingFilter.none,
+      url: widget.config.url,
+      customDownloadFileNameFormat: customDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+    );
+
+    ref
+        .read(booruConfigProvider.notifier)
+        .addOrUpdate(config: widget.config, newConfig: config);
+
     context.pop();
   }
 }

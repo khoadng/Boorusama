@@ -16,6 +16,12 @@ const List<String> _allowedDownloadFolders = [
   'Pictures',
 ];
 
+const kBoorusamaCustomDownloadFileNameFormat =
+    '{character:nomod,delimiter=comma ,limit=5} ({copyright:nomod,limit=3}) drawn by {artist} - {md5}.{extension}';
+
+const kBoorusamaBulkDownloadCustomFileNameFormat =
+    '{index}_{md5:maxlength=8}.{extension}';
+
 bool isInternalStorage(String? path) => path?.startsWith(_basePath) ?? false;
 
 bool isUserspaceInternalStorage(String? path) {

@@ -11,6 +11,8 @@ class BooruConfigData {
     required this.deletedItemBehavior,
     required this.ratingFilter,
     required this.url,
+    required this.customDownloadFileNameFormat,
+    required this.customBulkDownloadFileNameFormat,
   });
 
   factory BooruConfigData.anonymous({
@@ -19,6 +21,8 @@ class BooruConfigData {
     required String name,
     required BooruConfigRatingFilter filter,
     required String url,
+    required String? customDownloadFileNameFormat,
+    required String? customBulkDownloadFileNameFormat,
   }) =>
       BooruConfigData(
         booruId: booru.toBooruId(),
@@ -29,6 +33,8 @@ class BooruConfigData {
         name: name,
         deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
         ratingFilter: filter.index,
+        customDownloadFileNameFormat: customDownloadFileNameFormat,
+        customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -42,6 +48,10 @@ class BooruConfigData {
         name: json['name'] as String,
         deletedItemBehavior: json['deletedItemBehavior'] as int,
         ratingFilter: json['ratingFilter'] as int,
+        customDownloadFileNameFormat:
+            json['customDownloadFileNameFormat'] as String?,
+        customBulkDownloadFileNameFormat:
+            json['customBulkDownloadFileNameFormat'] as String?,
       );
     } catch (e) {
       return null;
@@ -58,6 +68,8 @@ class BooruConfigData {
       'name': name,
       'deletedItemBehavior': deletedItemBehavior,
       'ratingFilter': ratingFilter,
+      'customDownloadFileNameFormat': customDownloadFileNameFormat,
+      'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
     };
   }
 
@@ -69,6 +81,8 @@ class BooruConfigData {
   final int deletedItemBehavior;
   final int ratingFilter;
   final String url;
+  final String? customDownloadFileNameFormat;
+  final String? customBulkDownloadFileNameFormat;
 }
 
 BooruConfig? convertToBooruConfig({
@@ -88,5 +102,8 @@ BooruConfig? convertToBooruConfig({
     ratingFilter: BooruConfigRatingFilter.values[booruConfigData.ratingFilter],
     deletedItemBehavior: BooruConfigDeletedItemBehavior
         .values[booruConfigData.deletedItemBehavior],
+    customDownloadFileNameFormat: booruConfigData.customDownloadFileNameFormat,
+    customBulkDownloadFileNameFormat:
+        booruConfigData.customBulkDownloadFileNameFormat,
   );
 }

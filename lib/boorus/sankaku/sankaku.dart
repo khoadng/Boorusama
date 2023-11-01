@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/feats/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/feats/blacklists/blacklists.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
+import 'package:boorusama/core/feats/downloads/downloads.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 import 'package:boorusama/core/router.dart';
@@ -56,7 +58,12 @@ class SankakuBuilder
         backgroundColor,
       }) =>
           CreateSankakuConfigPage(
-            config: BooruConfig.defaultConfig(booruType: booruType, url: url),
+            config: BooruConfig.defaultConfig(
+              booruType: booruType,
+              url: url,
+              customDownloadFileNameFormat:
+                  kBoorusamaCustomDownloadFileNameFormat,
+            ),
             backgroundColor: backgroundColor,
           );
 
@@ -141,6 +148,32 @@ class SankakuBuilder
                     'You need to provide login details to use this feature.'),
               ),
             );
+
+  @override
+  DownloadFilenameGenerator get downloadFilenameBuilder =>
+      DownloadFileNameBuilder<SankakuPost>(
+        defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        defaultBulkDownloadFileNameFormat:
+            kBoorusamaBulkDownloadCustomFileNameFormat,
+        sampleData: kDanbooruPostSamples,
+        tokenHandlers: {
+          'id': (post, config) => post.id.toString(),
+          'artist': (post, config) => post.artistTags.join(' '),
+          'character': (post, config) => post.characterTags.join(' '),
+          'copyright': (post, config) => post.copyrightTags.join(' '),
+          'tags': (post, config) => post.tags.join(' '),
+          'extension': (post, config) =>
+              sanitizedExtension(config.downloadUrl).substring(1),
+          'width': (post, config) => post.width.toString(),
+          'height': (post, config) => post.height.toString(),
+          'mpixels': (post, config) => post.mpixels.toString(),
+          'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+          'md5': (post, config) => post.md5,
+          'source': (post, config) => sanitizedUrl(config.downloadUrl),
+          'rating': (post, config) => post.rating.name,
+          'index': (post, config) => config.index?.toString(),
+        },
+      );
 }
 
 class SankakuArtistPage extends ConsumerWidget {

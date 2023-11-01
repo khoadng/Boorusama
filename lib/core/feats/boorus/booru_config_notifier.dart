@@ -72,6 +72,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             url: config.url,
             booruId: config.booru.toBooruId(),
             booruIdHint: config.booruHint.toBooruId(),
+            customDownloadFileNameFormat: config.customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat:
+                config.customBulkDownloadFileNameFormat,
           )
         : BooruConfigData(
             login: config.login,
@@ -84,6 +87,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
             ratingFilter: config.ratingFilter.index,
             name: config.configName,
             url: config.url,
+            customDownloadFileNameFormat: config.customDownloadFileNameFormat,
+            customBulkDownloadFileNameFormat:
+                config.customBulkDownloadFileNameFormat,
           );
     final updatedConfig =
         await ref.read(booruConfigRepoProvider).update(id, booruConfigData);
@@ -117,6 +123,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           filter: newConfig.ratingFilter,
           name: newConfig.configName,
           url: newConfig.url,
+          customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
+          customBulkDownloadFileNameFormat:
+              newConfig.customBulkDownloadFileNameFormat,
         );
 
         final config =
@@ -147,6 +156,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?> {
           url: newConfig.url,
           booruId: newConfig.booru.toBooruId(),
           booruIdHint: newConfig.booruHint.toBooruId(),
+          customDownloadFileNameFormat: newConfig.customDownloadFileNameFormat,
+          customBulkDownloadFileNameFormat:
+              newConfig.customBulkDownloadFileNameFormat,
         );
 
         final config =
@@ -206,6 +218,8 @@ class AddNewBooruConfig {
     required this.ratingFilter,
     required this.url,
     required this.booruHint,
+    required this.customDownloadFileNameFormat,
+    required this.customBulkDownloadFileNameFormat,
   });
 
   final String login;
@@ -216,4 +230,6 @@ class AddNewBooruConfig {
   final bool hideDeleted;
   final BooruConfigRatingFilter ratingFilter;
   final String url;
+  final String? customDownloadFileNameFormat;
+  final String? customBulkDownloadFileNameFormat;
 }
