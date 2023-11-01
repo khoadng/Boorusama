@@ -12,6 +12,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/downloads/downloads.dart';
+import 'package:boorusama/core/feats/filename_generators/token_option.dart';
 import 'package:boorusama/core/feats/posts/post.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
@@ -355,65 +356,104 @@ class AvailableTokens extends ConsumerWidget {
 
               showAdaptiveBottomSheet(
                 context,
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: Text(token),
-                    automaticallyImplyLeading: false,
-                    actions: [
-                      IconButton(
-                        onPressed: context.navigator.pop,
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  body: tokenOptions.isNotEmpty
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                'Available options',
-                                style: context.textTheme.titleLarge,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: tokenOptions.length,
-                                itemBuilder: (context, index) {
-                                  final option = tokenOptions[index];
-                                  final docs = downloadFilenameBuilder
-                                      ?.getDocsForTokenOption(token, option);
-
-                                  return ListTile(
-                                    title: Text(option),
-                                    subtitle: docs != null ? Text(docs) : null,
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        Clipboard.setData(
-                                                ClipboardData(text: option))
-                                            .then((value) =>
-                                                showSuccessToast('Copied'));
-                                      },
-                                      icon: const Icon(Icons.copy),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : const Center(
-                          child: Text('No options available'),
-                        ),
+                builder: (context) => TokenOptionHelpModal(
+                  token: token,
+                  tokenOptions: tokenOptions,
+                  downloadFilenameBuilder: downloadFilenameBuilder,
                 ),
               );
             },
           ),
       ],
+    );
+  }
+}
+
+class TokenOptionHelpModal extends StatelessWidget {
+  const TokenOptionHelpModal({
+    super.key,
+    required this.token,
+    required this.tokenOptions,
+    required this.downloadFilenameBuilder,
+  });
+
+  final String token;
+  final List<String> tokenOptions;
+  final DownloadFilenameGenerator<Post>? downloadFilenameBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(token),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: context.navigator.pop,
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      body: tokenOptions.isNotEmpty
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    'Available options',
+                    style: context.textTheme.titleLarge,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: tokenOptions.length,
+                    itemBuilder: (context, index) {
+                      final option = tokenOptions[index];
+                      final docs = downloadFilenameBuilder
+                          ?.getDocsForTokenOption(token, option);
+
+                      return ListTile(
+                        title: Row(
+                          children: [
+                            Flexible(child: Text(option)),
+                            const SizedBox(width: 4),
+                            switch (docs?.tokenOption) {
+                              IntegerTokenOption _ => const Chip(
+                                  label: Text('integer'),
+                                  visualDensity: ShrinkVisualDensity(),
+                                ),
+                              BooleanTokenOption _ => const Chip(
+                                  label: Text('boolean'),
+                                  visualDensity: ShrinkVisualDensity(),
+                                ),
+                              StringTokenOption _ => const Chip(
+                                  label: Text('string'),
+                                  visualDensity: ShrinkVisualDensity(),
+                                ),
+                              _ => const SizedBox.shrink(),
+                            }
+                          ],
+                        ),
+                        subtitle: docs != null ? Text(docs.description) : null,
+                        trailing: IconButton(
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: option))
+                                .then((value) => showSuccessToast('Copied'));
+                          },
+                          icon: const Icon(Icons.copy),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            )
+          : const Center(
+              child: Text('No options available'),
+            ),
     );
   }
 }

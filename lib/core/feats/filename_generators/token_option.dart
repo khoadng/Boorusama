@@ -16,6 +16,10 @@ part 'token_option_int.dart';
 part 'token_option_string.dart';
 
 typedef TokenOptionHandler = String Function(TokenContext context);
+typedef TokenOptionDocs = ({
+  TokenOption tokenOption,
+  String description,
+});
 
 TokenOption getTokenOption(
   String? token,

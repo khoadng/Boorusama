@@ -1,6 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'parser.dart';
+import 'token_option.dart';
+
 class TokenizerConfigs {
   TokenizerConfigs({
     required this.tokenDefinitions,
@@ -75,6 +79,9 @@ class TokenizerConfigs {
         'general': [
           ...tagTokenOptions,
         ],
+        'meta': [
+          ...tagTokenOptions,
+        ],
         'species': [
           ...tagTokenOptions,
         ],
@@ -134,7 +141,7 @@ class TokenizerConfigs {
         'urlencode':
             'Whether to encode the token using URL encoding. This is useful when the token is a URL.',
         'single_letter':
-            'Whether to use a single letter to represent the token. This is useful when the token is a rating.',
+            'Whether to use a single letter to represent the token.',
         'format':
             'Format a date using the given format. For example, "dd-MM-yyyy hh.mm".',
         'pad_left': 'Whether to pad the token with zeros.',
@@ -144,7 +151,7 @@ class TokenizerConfigs {
             'Floating point precision. For example, "2" will round the number to 2 decimal places.',
         'count':
             'When used, the token will be replaced with the number of values in the list.',
-        'uuid:version': 'UUID version. Available options are: "v1", "v4".',
+        'uuid:version': 'UUID version. Available options are: "1", "4".',
       },
       unsafeCharacters: unsafeCharacters,
       namespacedTokens: {
@@ -161,10 +168,18 @@ class TokenizerConfigs {
           : e)
       .toList();
 
-  String? tokenOptionDocsOf(String? token, String tokenOption) =>
-      tokenOptionDocs[token != null && namespacedTokens.contains(token)
-          ? '$token:$tokenOption'
-          : tokenOption];
+  TokenOptionDocs? tokenOptionDocsOf(String? token, String tokenOption) {
+    final desc = tokenOptionDocs[
+        token != null && namespacedTokens.contains(token)
+            ? '$token:$tokenOption'
+            : tokenOption];
+
+    final option = parseTokenOption(tokenOption, token, this);
+
+    return desc != null && option != null
+        ? (description: desc, tokenOption: option)
+        : null;
+  }
 
   final Map<String, List<String>> tokenDefinitions;
   // For token that can be used without token options
