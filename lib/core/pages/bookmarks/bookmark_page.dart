@@ -16,6 +16,7 @@ import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/settings/types.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
+import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -40,10 +41,9 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
 });
 
 final tagCountProvider = Provider.autoDispose.family<int, String>((ref, tag) {
-  final config = ref.watchConfig;
-  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+  final tagMap = ref.watch(tagMapProvider);
 
-  return bookmarks.where((bookmark) => bookmark.tags.contains(tag)).length;
+  return tagMap[tag] ?? 0;
 });
 
 final tagColorProvider =
@@ -60,10 +60,7 @@ final tagColorProvider =
   return color != null && color != Colors.white ? color : Colors.white;
 });
 
-final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
-  final tag = ref.watch(selectedTagsProvider);
-  if (tag.isEmpty) return const [];
-
+final tagMapProvider = Provider<Map<String, int>>((ref) {
   final config = ref.watchConfig;
   final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
 
@@ -74,6 +71,15 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
       tagMap[tag] = (tagMap[tag] ?? 0) + 1;
     }
   }
+
+  return tagMap;
+});
+
+final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
+  final tag = ref.watch(selectedTagsProvider);
+  if (tag.isEmpty) return const [];
+
+  final tagMap = ref.watch(tagMapProvider);
 
   final tags = tagMap.keys.toList();
 
@@ -241,6 +247,19 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
                       onPressed: () =>
                           ref.bookmarks.downloadBookmarks([bookmark]),
                     ),
+                    // remove bookmark
+                    ContextMenuButtonConfig(
+                      'post.detail.remove_from_bookmark'.tr(),
+                      onPressed: () => ref.bookmarks.removeBookmarkWithToast(
+                        bookmark,
+                      ),
+                    ),
+                    // open in browser
+                    ContextMenuButtonConfig(
+                      'Open source in browser',
+                      onPressed: () =>
+                          launchExternalUrlString(bookmark.sourceUrl),
+                    ),
                   ],
                 ),
                 child: Stack(
@@ -298,6 +317,24 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
         focusNode: focusNode,
         maxSuggestionsInViewPort: 10,
         searchInputDecoration: InputDecoration(
+          prefixIcon: const Icon(Icons.search),
+          suffix: ref.watch(selectedTagsProvider).isNotEmpty
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Material(
+                    child: InkWell(
+                      child: const Padding(
+                        padding: EdgeInsets.all(2),
+                        child: Icon(Icons.clear, size: 18),
+                      ),
+                      onTap: () {
+                        _searchController.clear();
+                        ref.read(selectedTagsProvider.notifier).state = '';
+                      },
+                    ),
+                  ),
+                )
+              : null,
           filled: true,
           fillColor: context.colorScheme.background,
           enabledBorder: const OutlineInputBorder(
