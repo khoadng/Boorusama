@@ -78,7 +78,7 @@ class SuggestionsNotifier
           fallback.state = data.lock;
         }
       },
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 350),
     );
   }
 }
