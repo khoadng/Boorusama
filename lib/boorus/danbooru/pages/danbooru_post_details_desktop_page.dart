@@ -27,6 +27,7 @@ import 'package:boorusama/core/widgets/posts/file_details_section.dart';
 import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_post_details_page.dart';
+import 'widgets/danbooru_tags_tile.dart';
 
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsDesktopPage({
@@ -135,7 +136,7 @@ class _DanbooruPostDetailsDesktopPageState
                       child: DanbooruPostStatsTile(post: post),
                     ),
                     const Divider(height: 8, thickness: 1),
-                    TagsTile(post: post),
+                    DanbooruTagsTile(post: post),
                     FileDetailsSection(
                       post: post,
                       rating: post.rating,
