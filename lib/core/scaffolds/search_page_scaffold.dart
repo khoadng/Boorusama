@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/feats/search/search.dart';
 import 'package:boorusama/core/pages/search/search_app_bar.dart';
@@ -48,26 +46,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final booruBuilder = ref.read(booruBuilderProvider);
-      final postCountFetcher = booruBuilder?.postCountFetcher;
-
-      if (postCountFetcher != null && widget.initialQuery != null) {
-        ref
-            .read(postCountStateProvider(ref.readConfig).notifier)
-            .getPostCount([widget.initialQuery!]);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
-    final postCountFetcher = booruBuilder?.postCountFetcher;
-
     return CustomContextMenuOverlay(
       child: SearchScope(
         initialQuery: widget.initialQuery,
@@ -78,12 +57,6 @@ class _SearchPageScaffoldState<T extends Post>
               floatingActionButton: SearchButton(
                 allowSearch: allowSearch,
                 onSearch: () {
-                  if (postCountFetcher != null) {
-                    ref
-                        .read(postCountStateProvider(ref.readConfig).notifier)
-                        .getPostCount(selectedTagController.rawTags);
-                  }
-
                   searchController.search();
                 },
               ),
@@ -159,7 +132,7 @@ class _SearchPageScaffoldState<T extends Post>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (postCountFetcher != null) ...[
+                        ...[
                           ResultHeaderWithProvider(
                               selectedTags: selectedTagController.rawTags),
                           const Spacer(),
