@@ -8,7 +8,12 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class PhilomenaPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        VideoInfoMixin,
+        TagListCheckMixin
     implements Post {
   PhilomenaPost({
     required this.id,

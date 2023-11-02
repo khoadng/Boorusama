@@ -8,7 +8,12 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class SankakuPost extends Equatable
-    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
+    with
+        MediaInfoMixin,
+        TranslatedMixin,
+        ImageInfoMixin,
+        VideoInfoMixin,
+        TagListCheckMixin
     implements Post {
   SankakuPost({
     required this.id,

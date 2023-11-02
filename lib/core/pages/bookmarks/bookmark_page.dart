@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:searchfield/searchfield.dart';
@@ -93,12 +94,14 @@ class BookmarkPage extends ConsumerStatefulWidget {
 class _BookmarkPageState extends ConsumerState<BookmarkPage>
     with EditableMixin {
   final _searchController = TextEditingController();
+  final scrollController = ScrollController();
   final focusNode = FocusNode();
 
   @override
   void dispose() {
     super.dispose();
     _searchController.dispose();
+    scrollController.dispose();
     focusNode.dispose();
   }
 
@@ -128,6 +131,8 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
         child: CustomContextMenuOverlay(
           child: Scaffold(
             appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
               title: const Text('Bookmarks'),
               automaticallyImplyLeading: !edit,
               leading: edit
@@ -210,73 +215,77 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage>
           );
         }
 
-        return CustomScrollView(
-          slivers: [
-            SliverMasonryGrid.count(
-              crossAxisCount: switch (Screen.of(context).size) {
-                ScreenSize.small => 2,
-                ScreenSize.medium => 3,
-                ScreenSize.large => 5,
-                ScreenSize.veryLarge => 6,
-              },
-              mainAxisSpacing: settings.imageGridSpacing,
-              crossAxisSpacing: settings.imageGridSpacing,
-              childCount: bookmarks.length,
-              itemBuilder: (context, index) {
-                final bookmark = bookmarks[index];
-                final source = PostSource.from(bookmark.sourceUrl);
+        return DraggableScrollbar.semicircle(
+          controller: scrollController,
+          heightScrollThumb: 56,
+          child: MasonryGridView.count(
+            controller: scrollController,
+            crossAxisCount: switch (Screen.of(context).size) {
+              ScreenSize.small => 2,
+              ScreenSize.medium => 3,
+              ScreenSize.large => 5,
+              ScreenSize.veryLarge => 6,
+            },
+            mainAxisSpacing: settings.imageGridSpacing,
+            crossAxisSpacing: settings.imageGridSpacing,
+            itemCount: bookmarks.length,
+            itemBuilder: (context, index) {
+              final bookmark = bookmarks[index];
+              final source = PostSource.from(bookmark.sourceUrl);
 
-                return ContextMenuRegion(
-                  contextMenu: GenericContextMenu(
-                    buttonConfigs: [
-                      ContextMenuButtonConfig(
-                        'download.download'.tr(),
-                        onPressed: () =>
-                            ref.bookmarks.downloadBookmarks([bookmark]),
-                      ),
-                    ],
-                  ),
-                  child: GestureDetector(
-                    onTap: () => context.go('/bookmarks/details?index=$index'),
-                    child: Stack(
-                      children: [
-                        BooruImage(
-                          borderRadius:
-                              BorderRadius.circular(settings.imageBorderRadius),
-                          aspectRatio: bookmark.aspectRatio,
-                          fit: BoxFit.cover,
-                          imageUrl: bookmark.isVideo
-                              ? bookmark.thumbnailUrl
-                              : bookmark.sampleUrl,
-                          placeholderUrl: bookmark.thumbnailUrl,
-                        ),
-                        source.whenWeb(
-                          (url) => Positioned(
-                            bottom: 5,
-                            right: 5,
-                            child: BooruLogo(
-                              source: url,
-                            ),
-                          ),
-                          () => const SizedBox(),
-                        ),
-                        if (edit)
-                          Positioned(
-                            top: 5,
-                            right: 5,
-                            child: CircularIconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () => ref.bookmarks
-                                  .removeBookmarkWithToast(bookmark),
-                            ),
-                          ),
-                      ],
+              return ContextMenuRegion(
+                contextMenu: GenericContextMenu(
+                  buttonConfigs: [
+                    ContextMenuButtonConfig(
+                      'download.download'.tr(),
+                      onPressed: () =>
+                          ref.bookmarks.downloadBookmarks([bookmark]),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    ImageGridItem(
+                      isAnimated: bookmark.isVideo,
+                      isAI: bookmark.isAI,
+                      onTap: () =>
+                          context.go('/bookmarks/details?index=$index'),
+                      image: BooruImage(
+                        borderRadius:
+                            BorderRadius.circular(settings.imageBorderRadius),
+                        aspectRatio: bookmark.aspectRatio,
+                        fit: BoxFit.cover,
+                        imageUrl: bookmark.isVideo
+                            ? bookmark.thumbnailUrl
+                            : bookmark.sampleUrl,
+                        placeholderUrl: bookmark.thumbnailUrl,
+                      ),
+                    ),
+                    source.whenWeb(
+                      (url) => Positioned(
+                        bottom: 5,
+                        right: 5,
+                        child: BooruLogo(
+                          source: url,
+                        ),
+                      ),
+                      () => const SizedBox(),
+                    ),
+                    if (edit)
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: CircularIconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () =>
+                              ref.bookmarks.removeBookmarkWithToast(bookmark),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );

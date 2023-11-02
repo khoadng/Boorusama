@@ -4,10 +4,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/path.dart';
 
-class Bookmark extends Equatable with ImageInfoMixin {
+class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   const Bookmark({
     required this.id,
     required this.booruId,
@@ -36,6 +37,7 @@ class Bookmark extends Equatable with ImageInfoMixin {
   @override
   final double height;
   final String md5;
+  @override
   final List<String> tags;
 
   bool get isVideo => ['.mp4', '.webm'].contains(extension(sampleUrl));
