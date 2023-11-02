@@ -134,7 +134,8 @@ class DanbooruBuilder with DefaultTagColorMixin implements BooruBuilder {
   final FavoriteChecker? favoriteChecker;
 
   @override
-  PostCountFetcher? get postCountFetcher => (tags) => postCountRepo.count(tags);
+  PostCountFetcher? get postCountFetcher =>
+      (config, tags) => postCountRepo.count(tags);
 
   @override
   SearchPageBuilder get searchPageBuilder =>

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'post_count_repository.dart';
 
 final postCountProvider =
@@ -10,7 +11,7 @@ final postCountProvider =
   final booruBuilder = ref.watch(booruBuilderProvider);
   final fetcher = booruBuilder?.postCountFetcher;
 
-  final postCount = await fetcher?.call(tags.split(' '));
+  final postCount = await fetcher?.call(ref.watchConfig, tags.split(' '));
 
   return postCount;
 });

@@ -100,7 +100,10 @@ typedef FavoriteAdder = Future<bool> Function(int postId);
 typedef FavoriteRemover = Future<bool> Function(int postId);
 typedef FavoriteChecker = bool Function(int postId);
 
-typedef PostCountFetcher = Future<int?> Function(List<String> tags);
+typedef PostCountFetcher = Future<int?> Function(
+  BooruConfig config,
+  List<String> tags,
+);
 
 typedef GridThumbnailUrlBuilder = String Function(
   Settings settings,

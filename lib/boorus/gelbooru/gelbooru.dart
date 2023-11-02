@@ -173,8 +173,16 @@ class GelbooruBuilder
       (query) => autocompleteRepo.getAutocomplete(query);
 
   @override
-  PostCountFetcher? get postCountFetcher =>
-      (tags) => client.countPosts(tags: tags);
+  PostCountFetcher? get postCountFetcher => (config, tags) {
+        final tag = booruFilterConfigToGelbooruTag(config.ratingFilter);
+
+        return client.getPosts(
+          tags: [
+            ...tags,
+            if (tag != null) tag,
+          ],
+        ).then((value) => value.count);
+      };
 
   @override
   SearchPageBuilder get searchPageBuilder =>

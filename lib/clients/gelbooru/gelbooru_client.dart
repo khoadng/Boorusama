@@ -16,7 +16,12 @@ import 'types/tag_dto.dart';
 const _kGelbooruUrl = 'https://gelbooru.com/';
 const _kRule34XXXUrl = 'https://rule34.xxx/';
 
-class GelbooruClient {
+typedef GelbooruPosts = ({
+  List<PostDto> posts,
+  int? count,
+});
+
+class GelbooruClient with RequestDeduplicator<GelbooruPosts> {
   GelbooruClient({
     String? baseUrl,
     Map<String, String>? headers,
@@ -70,69 +75,61 @@ class GelbooruClient {
         apiKey: apiKey,
       );
 
-  Future<List<PostDto>> getPosts({
+  Future<GelbooruPosts> getPosts({
     int? page,
     int? limit,
     List<String>? tags,
   }) async {
-    final response = await _dio.get(
-      '/index.php',
-      queryParameters: {
-        'page': 'dapi',
-        's': 'post',
-        'q': 'index',
-        'json': '1',
-        if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
-        if (page != null) 'pid': page - 1,
-        if (limit != null) 'limit': limit,
-        if (userId != null) 'user_id': userId,
-        if (apiKey != null) 'api_key': apiKey,
-      },
-    );
-
-    final data = response.data;
     final baseUrl = _dio.options.baseUrl;
+    final key = '${baseUrl}_getPosts_${tags?.join(' ')}_${page ?? 1}';
 
-    return switch (data) {
-      List l => l.map((item) => PostDto.fromJson(item, baseUrl)).toList(),
-      Map m => m.containsKey('post')
-          ? (m['post'] as List)
-              .map((item) => PostDto.fromJson(item, baseUrl))
-              .toList()
-          : <PostDto>[],
-      String s => (jsonDecode(s) as List<dynamic>)
-          .map<PostDto>((item) => PostDto.fromJson(item, baseUrl))
-          .toList(),
-      _ => <PostDto>[],
-    };
-  }
+    return deduplicate(
+      key,
+      () async {
+        final response = await _dio.get(
+          '/index.php',
+          queryParameters: {
+            'page': 'dapi',
+            's': 'post',
+            'q': 'index',
+            'json': '1',
+            if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
+            if (page != null) 'pid': page - 1,
+            if (limit != null) 'limit': limit,
+            if (userId != null) 'user_id': userId,
+            if (apiKey != null) 'api_key': apiKey,
+          },
+        );
 
-  Future<int?> countPosts({
-    required List<String> tags,
-  }) async {
-    if (tags.isEmpty) return null;
+        final data = response.data;
 
-    final response = await _dio.get(
-      '/index.php',
-      queryParameters: {
-        'page': 'dapi',
-        's': 'post',
-        'q': 'index',
-        'json': '1',
-        'tags': tags.join(' '),
-        'pid': 0,
-        'limit': 0,
-        if (userId != null) 'user_id': userId,
-        if (apiKey != null) 'api_key': apiKey,
+        return switch (data) {
+          List l => (
+              posts: l.map((item) => PostDto.fromJson(item, baseUrl)).toList(),
+              count: null
+            ),
+          Map m => () {
+              final count = m['@attributes']['count'] as int?;
+
+              return (
+                posts: m.containsKey('post')
+                    ? (m['post'] as List)
+                        .map((item) => PostDto.fromJson(item, baseUrl))
+                        .toList()
+                    : <PostDto>[],
+                count: count,
+              );
+            }(),
+          String s => (
+              posts: (jsonDecode(s) as List<dynamic>)
+                  .map<PostDto>((item) => PostDto.fromJson(item, baseUrl))
+                  .toList(),
+              count: null
+            ),
+          _ => (posts: <PostDto>[], count: null),
+        };
       },
     );
-
-    final data = response.data;
-
-    return switch (data) {
-      Map m => m['@attributes']['count'] as int?,
-      _ => null,
-    };
   }
 
   Future<List<AutocompleteDto>> autocomplete({
@@ -288,4 +285,20 @@ FutureOr<List<CommentDto>> _parseCommentDtos(value) {
     dtos.add(CommentDto.fromXml(item));
   }
   return dtos;
+}
+
+mixin RequestDeduplicator<T> {
+  final _ongoingRequests = <String, Future<T>>{};
+
+  Future<T> deduplicate(String key, Future<T> Function() request) {
+    if (_ongoingRequests.containsKey(key)) {
+      return _ongoingRequests[key]!;
+    }
+
+    _ongoingRequests[key] = request().whenComplete(() {
+      _ongoingRequests.remove(key);
+    });
+
+    return _ongoingRequests[key]!;
+  }
 }
