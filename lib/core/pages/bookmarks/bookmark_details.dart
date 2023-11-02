@@ -8,11 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_media_item.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_page.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/functional.dart';
 
 class BookmarkDetailsPage extends ConsumerStatefulWidget {
   const BookmarkDetailsPage({
@@ -34,8 +33,7 @@ class _BookmarkDetailsPageState extends ConsumerState<BookmarkDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-    final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+    final bookmarks = ref.watch(filteredBookmarksProvider);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -93,7 +91,7 @@ class BookmarkSlider extends ConsumerStatefulWidget {
     this.onTap,
   });
 
-  final IList<Bookmark> bookmarks;
+  final List<Bookmark> bookmarks;
   final int initialPage;
   final void Function(int index) onPageChange;
   final bool fullscreen;

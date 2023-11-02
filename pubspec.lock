@@ -1373,6 +1373,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  searchfield:
+    dependency: "direct main"
+    description:
+      name: searchfield
+      sha256: "99a2089edf5495d5cf042827cb716dc690b0de317d3164929d01eb36af09cf97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.7"
   share_handler:
     dependency: "direct main"
     description:
