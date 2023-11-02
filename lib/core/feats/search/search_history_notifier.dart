@@ -33,30 +33,22 @@ class SearchHistoryState {
   }
 }
 
-class SearchHistoryNotifier extends StateNotifier<SearchHistoryState> {
-  SearchHistoryNotifier({
-    required SearchHistoryRepository searchHistoryRepository,
-  })  : _searchHistoryRepository = searchHistoryRepository,
-        super(SearchHistoryState.initial());
+class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
+  @override
+  Future<SearchHistoryState> build() async {
+    final histories = await ref.watch(searchHistoryRepoProvider).getHistories();
 
-  final SearchHistoryRepository _searchHistoryRepository;
-
-  Future<void> fetchHistories() async {
-    final histories = await _searchHistoryRepository.getHistories();
-    state = state.copyWith(
+    return SearchHistoryState.initial().copyWith(
       histories: _sortByDateDesc(histories),
       filteredHistories: _sortByDateDesc(histories),
     );
   }
 
   Future<void> clearHistories() async {
-    final success = await _searchHistoryRepository.clearAll();
+    final success = await ref.read(searchHistoryRepoProvider).clearAll();
 
     if (success) {
-      state = state.copyWith(
-        histories: [],
-        filteredHistories: [],
-      );
+      state = AsyncData(SearchHistoryState.initial());
     }
   }
 
@@ -65,28 +57,45 @@ class SearchHistoryNotifier extends StateNotifier<SearchHistoryState> {
     // This is a limitation of Hive.
     if (history.length > 255) return;
 
-    final histories = await _searchHistoryRepository.addHistory(history);
-    state = state.copyWith(
+    final currentState = state.value;
+
+    if (currentState == null) return;
+
+    final histories =
+        await ref.read(searchHistoryRepoProvider).addHistory(history);
+    state = AsyncData(currentState.copyWith(
       histories: _sortByDateDesc(histories),
-    );
-    filterHistories(state.currentQuery);
+    ));
+
+    filterHistories(currentState.currentQuery);
   }
 
   Future<void> removeHistory(String history) async {
-    final histories = await _searchHistoryRepository.removeHistory(history);
-    state = state.copyWith(
+    final currentState = state.value;
+
+    if (currentState == null) return;
+
+    final histories =
+        await ref.read(searchHistoryRepoProvider).removeHistory(history);
+
+    state = AsyncData(currentState.copyWith(
       histories: _sortByDateDesc(histories),
-    );
-    filterHistories(state.currentQuery);
+    ));
+
+    filterHistories(currentState.currentQuery);
   }
 
   void filterHistories(String pattern) {
+    final currentState = state.value;
+
+    if (currentState == null) return;
+
     final filteredHistories =
-        state.histories.where((e) => e.query.contains(pattern)).toList();
-    state = state.copyWith(
+        currentState.histories.where((e) => e.query.contains(pattern)).toList();
+    state = AsyncData(currentState.copyWith(
       currentQuery: pattern,
       filteredHistories: _sortByDateDesc(filteredHistories),
-    );
+    ));
   }
 }
 

@@ -28,12 +28,6 @@ class _MoebooruDesktopHomePageState
       SelectedTagController(tagInfo: ref.read(tagInfoProvider));
 
   @override
-  void initState() {
-    super.initState();
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
-  }
-
-  @override
   void dispose() {
     selectedTagController.dispose();
     super.dispose();

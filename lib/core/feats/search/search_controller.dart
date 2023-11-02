@@ -19,7 +19,6 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     required this.suggestions,
   }) : super() {
     textEditingController.addListener(_onTextChanged);
-    searchHistory.fetchHistories();
   }
 
   final SuggestionsNotifier suggestions;

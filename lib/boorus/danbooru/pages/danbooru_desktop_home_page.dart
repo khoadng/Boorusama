@@ -31,7 +31,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruDesktopHomePage> {
   void initState() {
     super.initState();
     final config = ref.readConfig;
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
     ref.read(postCountStateProvider(config).notifier).getPostCount([]);
   }
 

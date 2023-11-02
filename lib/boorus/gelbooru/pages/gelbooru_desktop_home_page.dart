@@ -30,7 +30,6 @@ class _GelbooruDesktopHomePageState
   @override
   void initState() {
     super.initState();
-    ref.read(searchHistoryProvider.notifier).fetchHistories();
     ref.read(postCountStateProvider(ref.readConfig).notifier).getPostCount([]);
   }
 
