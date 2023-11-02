@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -54,9 +57,8 @@ mixin DanbooruClientPools {
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
-        .map((item) => PoolDto.fromJson(item))
-        .toList();
+    return Isolate.run(() =>
+        (response.data as List).map((item) => PoolDto.fromJson(item)).toList());
   }
 
   Future<List<PoolDto>> getPoolsFromPostIds({

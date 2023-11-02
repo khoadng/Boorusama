@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -29,9 +32,8 @@ mixin DanbooruClientTags {
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
-        .map((item) => TagDto.fromJson(item))
-        .toList();
+    return Isolate.run(() =>
+        (response.data as List).map((item) => TagDto.fromJson(item)).toList());
   }
 
   Future<RelatedTagDto> getRelatedTag({
@@ -52,7 +54,7 @@ mixin DanbooruClientTags {
       cancelToken: cancelToken,
     );
 
-    return RelatedTagDto.fromJson(response.data);
+    return Isolate.run(() => RelatedTagDto.fromJson(response.data));
   }
 
   Future<List<AITagDto>> getAITags({

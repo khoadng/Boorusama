@@ -46,8 +46,6 @@ class _DanbooruTagDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final related =
-        ref.watch(danbooruRelatedTagCosineSimilarityProvider(widget.tagName));
     final config = ref.watchConfig;
     final postRepo = ref.watch(danbooruArtistCharacterPostRepoProvider(config));
 
@@ -61,13 +59,9 @@ class _DanbooruTagDetailsPageState
           const SizedBox(height: 36),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: related.maybeWhen(
-              data: (data) => _buildTagCloud(
-                data,
-                context,
-                data.tags.take(_kTagCloudTotal).toList(),
-              ),
-              orElse: () => null,
+            child: ArtistTagCloud(
+              tagName: widget.tagName,
+              dummyTags: _dummyTags,
             ),
           ),
         ],
@@ -101,13 +95,9 @@ class _DanbooruTagDetailsPageState
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverToBoxAdapter(
-                child: related.maybeWhen(
-                  data: (data) => _buildTagCloud(
-                    data,
-                    context,
-                    data.tags.take(_kTagCloudTotal).toList(),
-                  ),
-                  orElse: () => null,
+                child: ArtistTagCloud(
+                  tagName: widget.tagName,
+                  dummyTags: _dummyTags,
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
@@ -128,31 +118,30 @@ class _DanbooruTagDetailsPageState
       ),
     );
   }
+}
 
-  Widget _buildTagCloud(
-    RelatedTag? related,
-    BuildContext context,
-    List<RelatedTagItem> tags,
-  ) {
-    return related == null
-        ? FittedBox(
-            child: Scatter(
-              fillGaps: true,
-              delegate: FermatSpiralScatterDelegate(
-                ratio: context.screenAspectRatio,
-              ),
-              children: [
-                for (var i = 0; i < _kTagCloudTotal; i++)
-                  RelatedTagCloudChip(
-                    index: i,
-                    tag: _dummyTags[i],
-                    isDummy: true,
-                    onPressed: () {},
-                  ),
-              ],
-            ),
-          )
-        : FittedBox(
+class ArtistTagCloud extends ConsumerWidget {
+  const ArtistTagCloud({
+    super.key,
+    required this.tagName,
+    required this.dummyTags,
+  });
+
+  final String tagName;
+  final List<RelatedTagItem> dummyTags;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async =
+        ref.watch(danbooruRelatedTagCosineSimilarityProvider(tagName));
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 200),
+      child: async.when(
+        data: (related) {
+          final tags = related.tags.take(_kTagCloudTotal).toList();
+
+          return FittedBox(
             child: Scatter(
               fillGaps: true,
               delegate: FermatSpiralScatterDelegate(
@@ -171,5 +160,26 @@ class _DanbooruTagDetailsPageState
               ],
             ),
           );
+        },
+        error: (error, stackTrace) => const SizedBox.shrink(),
+        loading: () => FittedBox(
+          child: Scatter(
+            fillGaps: true,
+            delegate: FermatSpiralScatterDelegate(
+              ratio: context.screenAspectRatio,
+            ),
+            children: [
+              for (var i = 0; i < _kTagCloudTotal; i++)
+                RelatedTagCloudChip(
+                  index: i,
+                  tag: dummyTags[i],
+                  isDummy: true,
+                  onPressed: () {},
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

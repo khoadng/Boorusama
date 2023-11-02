@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_more_action_button.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_recommend_artist_list.dart';
-import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_recommend_character_list.dart';
 import 'package:boorusama/boorus/danbooru/pages/widgets/details/pool_tiles.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -28,6 +27,8 @@ import 'package:boorusama/core/widgets/posts/information_section.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'danbooru_post_details_page.dart';
 import 'widgets/danbooru_tags_tile.dart';
+
+// import 'package:boorusama/boorus/danbooru/pages/widgets/details/danbooru_recommend_character_list.dart';
 
 class DanbooruPostDetailsDesktopPage extends ConsumerStatefulWidget {
   const DanbooruPostDetailsDesktopPage({
@@ -66,7 +67,7 @@ class _DanbooruPostDetailsDesktopPageState
         .map((e) => e.name)
         .toList();
     final artists = ref.watch(danbooruPostDetailsArtistProvider(post));
-    final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
+    // final characters = ref.watch(danbooruPostDetailsCharacterProvider(post));
     final pools = ref.watch(danbooruPostDetailsPoolsProvider(post.id));
     final isFav = ref.watch(danbooruFavoriteProvider(post.id));
     final booruConfig = ref.watchConfig;
@@ -155,11 +156,12 @@ class _DanbooruPostDetailsDesktopPageState
                     DanbooruRecommendArtistList(artists: artists),
                 orElse: () => const SliverToBoxAdapter(),
               ),
-              characters.maybeWhen(
-                data: (characters) =>
-                    DanbooruRecommendCharacterList(characters: characters),
-                orElse: () => const SliverToBoxAdapter(),
-              ),
+              //FIXME: update desktop layout
+              // characters.maybeWhen(
+              //   data: (characters) =>
+              //       DanbooruRecommendCharacterList(characters: characters),
+              //   orElse: () => const SliverToBoxAdapter(),
+              // ),
             ],
           );
         },

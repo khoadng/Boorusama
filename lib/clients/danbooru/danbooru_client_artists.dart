@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:isolate';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -54,9 +57,9 @@ mixin DanbooruClientArtists {
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
+    return Isolate.run(() => (response.data as List)
         .map((item) => ArtistCommentaryDto.fromJson(item))
-        .toList();
+        .toList());
   }
 
   Future<ArtistCommentaryDto?> getFirstMatchingArtistCommentary({

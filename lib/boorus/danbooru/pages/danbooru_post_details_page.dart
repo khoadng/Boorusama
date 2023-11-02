@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/feats/artist_commentaries/artist_commentaries.dart';
 import 'package:boorusama/boorus/danbooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/feats/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/notes/notes.dart';
@@ -24,7 +25,6 @@ import 'widgets/danbooru_tags_tile.dart';
 import 'widgets/details/danbooru_more_action_button.dart';
 import 'widgets/details/danbooru_post_action_toolbar.dart';
 import 'widgets/details/danbooru_recommend_artist_list.dart';
-import 'widgets/details/danbooru_recommend_character_list.dart';
 import 'widgets/details/pool_tiles.dart';
 
 class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
@@ -222,11 +222,37 @@ class DanbooruCharacterPostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruPostDetailsCharacterProvider(post)).maybeWhen(
-          data: (characters) =>
-              DanbooruRecommendCharacterList(characters: characters),
-          orElse: () => const SliverToBoxAdapter(),
-        );
+    final tags = post.characterTags.take(2).toList();
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => ref
+            .watch(danbooruPostDetailsCharacterProvider(tags[index]))
+            .maybeWhen(
+              data: (r) {
+                if (r.posts.isEmpty) return const SizedBox();
+
+                return RecommendPostSection(
+                  grid: false,
+                  header: ListTile(
+                    onTap: () => goToCharacterPage(context, tags[index]),
+                    title: Text(r.title),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  posts: r.posts,
+                  onTap: (postIdx) => goToPostDetailsPage(
+                    context: context,
+                    posts: r.posts,
+                    initialIndex: index,
+                  ),
+                  imageUrl: (post) => post.url360x360,
+                );
+              },
+              orElse: () => const SizedBox.shrink(),
+            ),
+        childCount: tags.length,
+      ),
+    );
   }
 }
 

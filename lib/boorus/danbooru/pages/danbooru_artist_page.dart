@@ -43,7 +43,7 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
         ),
         extraBuilder: (context) => [
           const SizedBox(height: 8),
-          artist.maybeWhen(
+          artist.when(
             data: (artist) {
               final urls = artist.urls
                   .filterActive()
@@ -74,7 +74,8 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
                 ],
               );
             },
-            orElse: () => const SizedBox.shrink(),
+            loading: () => const SizedBox(height: 24),
+            error: (e, st) => const SizedBox.shrink(),
           ),
         ],
         backgroundImageUrl: widget.backgroundImageUrl,
