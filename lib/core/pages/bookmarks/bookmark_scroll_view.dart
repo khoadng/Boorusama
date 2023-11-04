@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
 import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_update_grid_buttons.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/router.dart';
@@ -24,7 +24,10 @@ import 'providers.dart';
 class BookmarkScrollView extends ConsumerWidget {
   const BookmarkScrollView({
     super.key,
+    required this.controller,
   });
+
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +35,7 @@ class BookmarkScrollView extends ConsumerWidget {
     final edit = ref.watch(bookmarkEditProvider);
 
     return CustomScrollView(
+      controller: controller,
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
@@ -48,6 +52,7 @@ class BookmarkScrollView extends ConsumerWidget {
               BookmarkBooruTypeSelector(),
               BookmarkSortButton(),
               Spacer(),
+              BookmarkGridUpdateButtons(),
             ],
           ),
         ),
@@ -63,12 +68,7 @@ class BookmarkScrollView extends ConsumerWidget {
             }
 
             return SliverMasonryGrid.count(
-              crossAxisCount: switch (Screen.of(context).size) {
-                ScreenSize.small => 2,
-                ScreenSize.medium => 3,
-                ScreenSize.large => 5,
-                ScreenSize.veryLarge => 6,
-              },
+              crossAxisCount: ref.watch(selectRowCountProvider),
               mainAxisSpacing: settings.imageGridSpacing,
               crossAxisSpacing: settings.imageGridSpacing,
               childCount: bookmarks.length,

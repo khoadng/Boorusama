@@ -52,6 +52,7 @@ class _FavoriteGroupDetailsPageState
     fetcher: (page) => getPostsFromIdQueue(widget.postIds),
     refresher: () => getPostsFromIdQueue(widget.postIds),
   );
+
   int rowCountEditMode = 2;
 
   List<DanbooruPost> items = [];
@@ -186,24 +187,16 @@ class _FavoriteGroupDetailsPageState
                       const Expanded(
                         child: Text('Drag and drop to determine ordering.'),
                       ),
-                      ButtonBar(
-                        children: [
-                          IconButton(
-                            onPressed: rowCountEditMode > 1
-                                ? () => setState(() => rowCountEditMode -= 1)
-                                : null,
-                            icon: const Icon(Icons.remove),
-                          ),
-                          IconButton(
-                            onPressed: rowCountEditMode <
-                                    _sizeToGridCount(
-                                      Screen.of(context).nextBreakpoint(),
-                                    )
-                                ? () => setState(() => rowCountEditMode += 1)
-                                : null,
-                            icon: const Icon(Icons.add),
-                          ),
-                        ],
+                      GridSizeAdjustmentButtons(
+                        minCount: 2,
+                        maxCount: _sizeToGridCount(
+                          Screen.of(context).nextBreakpoint(),
+                        ),
+                        count: rowCountEditMode,
+                        onAdded: (count) =>
+                            setState(() => rowCountEditMode = count + 1),
+                        onDecreased: (count) =>
+                            setState(() => rowCountEditMode = count - 1),
                       ),
                     ],
                   ),
@@ -304,15 +297,9 @@ class _FavoriteGroupDetailsPageState
   }
 }
 
-int _sizeToGridCount(ScreenSize size) {
-  switch (size) {
-    case ScreenSize.small:
-      return 2;
-    case ScreenSize.medium:
-      return 4;
-    case ScreenSize.large:
-      return 6;
-    case ScreenSize.veryLarge:
-      return 8;
-  }
-}
+int _sizeToGridCount(ScreenSize size) => switch (size) {
+      ScreenSize.small => 2,
+      ScreenSize.medium => 4,
+      ScreenSize.large => 6,
+      ScreenSize.veryLarge => 8
+    };

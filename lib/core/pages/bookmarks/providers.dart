@@ -106,6 +106,7 @@ final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
 final selectedBooruProvider = StateProvider.autoDispose<BooruType?>((ref) {
   return null;
 });
+final selectRowCountProvider = StateProvider.autoDispose<int>((ref) => 2);
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
