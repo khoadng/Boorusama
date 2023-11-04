@@ -12,9 +12,15 @@ import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/tags/tags.dart';
 
+enum BookmarkSortType {
+  newest,
+  oldest,
+}
+
 final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final tags = ref.watch(selectedTagsProvider);
   final selectedBooru = ref.watch(selectedBooruProvider);
+  final sortType = ref.watch(selectedBookmarkSortTypeProvider);
   final config = ref.watchConfig;
   final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
 
@@ -25,6 +31,10 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
           ? true
           : intToBooruType(bookmark.booruId) == selectedBooru)
       .where((bookmark) => tagsList.every((tag) => bookmark.tags.contains(tag)))
+      .sorted((a, b) => switch (sortType) {
+            BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
+            BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
+          })
       .toList();
 });
 
@@ -96,6 +106,10 @@ final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
 final selectedBooruProvider = StateProvider.autoDispose<BooruType?>((ref) {
   return null;
 });
+
+final selectedBookmarkSortTypeProvider =
+    StateProvider.autoDispose<BookmarkSortType>(
+        (ref) => BookmarkSortType.newest);
 
 final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
     (ref) => [...BooruType.values, null]

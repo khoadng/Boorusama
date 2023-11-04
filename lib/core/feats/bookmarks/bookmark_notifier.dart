@@ -44,12 +44,9 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
     bookmarkRepository.getAllBookmarks().run().then(
           (value) => value.match(
             (error) => onError?.call(error),
-            (bookmarks) {
-              bookmarks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              state = state.copyWith(
-                bookmarks: bookmarks.lock,
-              );
-            },
+            (bookmarks) => state = state.copyWith(
+              bookmarks: bookmarks.lock,
+            ),
           ),
         );
   }
@@ -65,11 +62,7 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
       final bookmarks =
           await bookmarkRepository.addBookmarks(booruId, booruUrl, posts);
       onSuccess?.call();
-      state = state.copyWith(
-        bookmarks: state.bookmarks
-            .addAll(bookmarks)
-            .sort((a, b) => b.createdAt.compareTo(a.createdAt)),
-      );
+      state = state.copyWith(bookmarks: state.bookmarks.addAll(bookmarks));
     } catch (e) {
       onError?.call();
     }
@@ -86,10 +79,7 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
       final bookmark =
           await bookmarkRepository.addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
-      state = state.copyWith(
-          bookmarks: state.bookmarks.add(bookmark).sort(
-                (a, b) => b.createdAt.compareTo(a.createdAt),
-              ));
+      state = state.copyWith(bookmarks: state.bookmarks.add(bookmark));
     } catch (e) {
       onError?.call();
     }

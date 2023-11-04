@@ -10,6 +10,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/feats/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
+import 'package:boorusama/core/pages/bookmarks/bookmark_sort_button.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -45,6 +46,7 @@ class BookmarkScrollView extends ConsumerWidget {
           child: Row(
             children: [
               BookmarkBooruTypeSelector(),
+              BookmarkSortButton(),
               Spacer(),
             ],
           ),

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'providers.dart';
 
@@ -60,7 +59,7 @@ class BookmarkSearchBar extends ConsumerWidget {
             ),
           ),
           contentPadding: const EdgeInsets.all(12),
-          hintText: 'search.hint'.tr(),
+          hintText: 'Filter...',
         ),
         controller: controller,
         onSuggestionTap: (p0) {
