@@ -11,10 +11,12 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme.dart';
 import 'package:boorusama/string.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
-  const PostGridConfigIconButton({super.key});
+  const PostGridConfigIconButton({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -185,9 +187,16 @@ class PostGridActionSheet extends ConsumerWidget {
 
     return Material(
       color: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: isMobilePlatform() ? mobileButtons : desktopButtons,
+      child: ConditionalParentWidget(
+        condition: isMobilePlatform(),
+        conditionalBuilder: (child) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: child,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: isMobilePlatform() ? mobileButtons : desktopButtons,
+        ),
       ),
     );
   }

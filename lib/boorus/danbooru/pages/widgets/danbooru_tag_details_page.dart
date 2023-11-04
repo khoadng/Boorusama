@@ -136,7 +136,7 @@ class ArtistTagCloud extends ConsumerWidget {
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(tagName));
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 200),
+      constraints: const BoxConstraints(minHeight: 180),
       child: async.when(
         data: (related) {
           final tags = related.tags.take(_kTagCloudTotal).toList();
