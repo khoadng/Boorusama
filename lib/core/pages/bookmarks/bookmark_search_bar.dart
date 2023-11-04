@@ -21,6 +21,10 @@ class BookmarkSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasBookmarks = ref.watch(hasBookmarkProvider);
+
+    if (!hasBookmarks) return const SizedBox.shrink();
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SearchField(

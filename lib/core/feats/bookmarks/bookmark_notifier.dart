@@ -120,35 +120,64 @@ class BookmarkNotifier extends FamilyNotifier<BookmarkState, BooruConfig> {
     }
   }
 
-  Future<void> exportAllBookmarks() async =>
-      tryGetDownloadDirectory().run().then((value) => value.fold(
-            (error) => showErrorToast(error.name),
-            (directory) async {
-              // request permission
-              final deviceInfo = ref.read(deviceInfoProvider);
-              final status = await checkMediaPermissions(deviceInfo);
+  Future<void> exportAllBookmarks(String path) async {
+    try {
+      // request permission
+      final deviceInfo = ref.read(deviceInfoProvider);
+      final status = await checkMediaPermissions(deviceInfo);
 
-              if (status != PermissionStatus.granted) {
-                final status = await requestMediaPermissions(deviceInfo);
+      if (status != PermissionStatus.granted) {
+        final status = await requestMediaPermissions(deviceInfo);
 
-                if (status != PermissionStatus.granted) {
-                  showErrorToast('Permission to access storage denied');
-                  return;
-                }
-              }
+        if (status != PermissionStatus.granted) {
+          showErrorToast('Permission to access storage denied');
+          return;
+        }
+      }
+      final dir = Directory(path);
+      final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
+      final file = File(join(dir.path, 'boorusama_bookmarks_$date.json'));
+      final json =
+          state.bookmarks.map((bookmark) => bookmark.toJson()).toList();
+      final jsonString = jsonEncode(json);
+      await file.writeAsString(jsonString);
 
-              final file = File('${directory.path}/boorusama_bookmarks.json');
-              final json =
-                  state.bookmarks.map((bookmark) => bookmark.toJson()).toList();
-              final jsonString = jsonEncode(json);
-              await file.writeAsString(jsonString);
+      showSuccessToast(
+        '${state.bookmarks.length} bookmarks exported to ${file.path}',
+        duration: const Duration(seconds: 4),
+      );
+    } catch (e) {
+      showErrorToast('Failed to export bookmarks: $e');
+    }
+  }
 
-              showSuccessToast(
-                '${state.bookmarks.length} bookmarks exported to ${file.path}',
-                duration: const Duration(seconds: 4),
-              );
-            },
-          ));
+  Future<void> importBookmarks(File file) async {
+    try {
+      final jsonString = file.readAsStringSync();
+      final json = jsonDecode(jsonString) as List<dynamic>;
+      try {
+        final bookmarks = json
+            .map((bookmark) => Bookmark.fromJson(bookmark))
+            .toList()
+            // remove duplicates
+            .where((bookmark) => !state.bookmarks
+                .where((b) => b.originalUrl == bookmark.originalUrl)
+                .isNotEmpty)
+            .toList();
+
+        await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
+        await getAllBookmarks();
+        showSuccessToast(
+          '${bookmarks.length} bookmarks imported',
+          duration: const Duration(seconds: 4),
+        );
+      } catch (e) {
+        showErrorToast('Failed to import bookmarks');
+      }
+    } catch (e) {
+      showErrorToast('Invalid export file');
+    }
+  }
 
   Future<void> downloadBookmarks(List<Bookmark> bookmarks) async {
     final settings = ref.read(settingsProvider);

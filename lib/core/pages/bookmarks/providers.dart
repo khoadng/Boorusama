@@ -117,3 +117,10 @@ final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
         .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
         .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
         .toList());
+
+final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
+  final config = ref.watchConfig;
+  final bookmarks = ref.watch(bookmarkProvider(config)).bookmarks;
+
+  return bookmarks.isNotEmpty;
+});

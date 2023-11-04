@@ -103,6 +103,23 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     );
   }
 
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as int,
+      booruId: json['booruId'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      thumbnailUrl: json['thumbnailUrl'] as String,
+      sampleUrl: json['sampleUrl'] as String,
+      originalUrl: json['originalUrl'] as String,
+      sourceUrl: json['sourceUrl'] as String,
+      width: (json['width'] as num).toDouble(),
+      height: (json['height'] as num).toDouble(),
+      md5: json['md5'] as String,
+      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

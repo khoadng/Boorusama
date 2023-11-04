@@ -65,4 +65,11 @@ class BookmarkHiveRepository implements BookmarkRepository {
     final bookmarks = await Future.wait(futures);
     return bookmarks.toList();
   }
+
+  @override
+  Future<void> addBookmarkWithBookmarks(List<Bookmark> bookmarks) {
+    final futures =
+        bookmarks.map((bookmark) => _box.add(favoriteToHiveObject(bookmark)));
+    return Future.wait(futures);
+  }
 }

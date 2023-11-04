@@ -22,6 +22,11 @@ abstract class BookmarkRepository {
     String booruUrl,
     List<Post> posts,
   );
+
+  Future<void> addBookmarkWithBookmarks(
+    List<Bookmark> bookmarks,
+  );
+
   Future<void> removeBookmark(Bookmark favorite);
   Future<void> updateBookmark(Bookmark favorite);
   BookmarksOrError getAllBookmarks();
