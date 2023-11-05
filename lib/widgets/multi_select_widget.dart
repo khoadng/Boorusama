@@ -119,12 +119,12 @@ class SelectableItem extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
 
   const SelectableItem({
-    Key? key,
+    super.key,
     required this.isSelected,
     required this.onTap,
     required this.itemBuilder,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   State<SelectableItem> createState() => _SelectableItemState();

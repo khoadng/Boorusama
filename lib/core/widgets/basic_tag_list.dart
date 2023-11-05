@@ -15,10 +15,10 @@ import 'package:boorusama/foundation/theme/theme.dart';
 
 class BasicTagList extends ConsumerWidget {
   const BasicTagList({
-    Key? key,
+    super.key,
     required this.tags,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final List<String> tags;
   final void Function(String tag) onTap;

@@ -19,7 +19,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
-          case DioException:
+          case DioException _:
             final response = (obj as DioException).response;
             if (response == null) return false;
             return response.statusCode == 302;
@@ -34,7 +34,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
           .then((value) => true)
           .catchError((Object obj) {
         switch (obj.runtimeType) {
-          case DioException:
+          case DioException _:
             final response = (obj as DioException).response;
             if (response == null) return false;
             return response.statusCode == 302;

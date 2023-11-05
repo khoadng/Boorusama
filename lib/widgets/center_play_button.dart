@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class CenterPlayButton extends StatelessWidget {
   const CenterPlayButton({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     this.iconColor,
     required this.show,
     required this.isPlaying,
     required this.isFinished,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final Color? iconColor;
@@ -57,11 +57,11 @@ class CenterPlayButton extends StatelessWidget {
 /// A widget that animates implicitly between a play and a pause icon.
 class AnimatedPlayPause extends StatefulWidget {
   const AnimatedPlayPause({
-    Key? key,
+    super.key,
     required this.playing,
     this.size,
     this.color,
-  }) : super(key: key);
+  });
 
   final double? size;
   final bool playing;

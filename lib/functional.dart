@@ -1,6 +1,7 @@
 /// This file is used to export all the functional programming libraries used in
 /// the project. It also exports the `FpState` type alias, which is used to
 /// avoid conflicts with the `State` class from the Flutter SDK.
+library;
 
 // Package imports:
 import 'package:fpdart/fpdart.dart' as fpdart show State, Option, Either;

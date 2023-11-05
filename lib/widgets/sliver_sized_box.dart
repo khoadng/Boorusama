@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class SliverSizedBox extends StatelessWidget {
   const SliverSizedBox({
-    Key? key,
+    super.key,
     this.height,
     this.width,
-  }) : super(key: key);
+  });
 
   const SliverSizedBox.shrink({
     super.key,

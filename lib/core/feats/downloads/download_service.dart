@@ -33,39 +33,30 @@ sealed class DownloadError {
 
 final class HttpDownloadError extends DownloadError {
   HttpDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.exception,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        );
+  });
 
   final DioException exception;
 }
 
 final class GenericDownloadError extends DownloadError {
   GenericDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.message,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        );
+  });
 
   final String message;
 }
 
 final class FileSystemDownloadError extends DownloadError {
   FileSystemDownloadError({
-    required Option<String> savedPath,
-    required String fileName,
+    required super.savedPath,
+    required super.fileName,
     required this.error,
-  }) : super(
-          savedPath: savedPath,
-          fileName: fileName,
-        ) {
+  }) {
     if (error is PathNotFoundException) {
       type = FileSystemDownloadErrorType.directoryNotFound;
     } else {

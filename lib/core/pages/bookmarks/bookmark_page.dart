@@ -15,7 +15,9 @@ import 'bookmark_search_bar.dart';
 import 'providers.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
-  const BookmarkPage({Key? key}) : super(key: key);
+  const BookmarkPage({
+    super.key,
+  });
 
   @override
   ConsumerState<BookmarkPage> createState() => _BookmarkPageState();
