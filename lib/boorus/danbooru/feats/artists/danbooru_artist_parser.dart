@@ -21,5 +21,6 @@ DanbooruArtist artistDtoToArtist(ArtistDto dto) {
     otherNames: List<String>.of(dto.otherNames),
     updatedAt: dto.updatedAt,
     urls: dto.urls.map(artistUrlDtoToArtistUrl).toList(),
+    postCount: dto.tag?.postCount,
   );
 }

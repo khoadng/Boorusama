@@ -13,6 +13,8 @@ sealed class PostSource {
     'lofter': 'https://www.lofter.com/favicon.ico',
     'lolibooru': 'https://lolibooru.moe/favicon.ico',
     'e926': 'https://www.e926.net/favicon.ico',
+    'sketch.pixiv': 'https://sketch.pixiv.net/favicon.ico',
+    'pixiv.me': 'https://www.pixiv.net/favicon.ico',
   }.lock;
 
   factory PostSource.from(

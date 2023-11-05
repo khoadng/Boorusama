@@ -7,8 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/feats/boorus/boorus.dart';
 import 'package:boorusama/core/feats/posts/posts.dart';
-import 'package:boorusama/core/widgets/booru_logo.dart';
-import 'package:boorusama/widgets/square_chip.dart';
+import 'package:boorusama/widgets/widgets.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
@@ -21,7 +20,9 @@ class CurrentBooruTile extends ConsumerWidget {
     final source = PostSource.from(booruConfig.url);
 
     final logo = switch (source) {
-      WebSource s => BooruLogo(source: s),
+      WebSource s => WebsiteLogo(
+          url: s.faviconUrl,
+        ),
       _ => const SizedBox.shrink(),
     };
 

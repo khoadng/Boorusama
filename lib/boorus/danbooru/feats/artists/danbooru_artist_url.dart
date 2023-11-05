@@ -19,6 +19,8 @@ class DanbooruArtistUrl extends Equatable {
 
 const _pixivStacc = '/stacc/';
 const _twitterIntent = '/intent/user';
+const _pawooAccount = '/web/accounts/';
+const _misskeyAccount = '/users/';
 
 extension DanbooruArtistUrlX on DanbooruArtistUrl {
   DanbooruArtistUrl copyWith({
@@ -36,8 +38,9 @@ extension DanbooruArtistUrlIterableX on Iterable<DanbooruArtistUrl> {
     return where((element) => element.isActive).toList();
   }
 
-  Iterable<DanbooruArtistUrl> filterPixivStaccAndTwitterIntent() =>
-      where((element) =>
-          !element.url.contains(_pixivStacc) &&
-          !element.url.contains(_twitterIntent)).toList();
+  Iterable<DanbooruArtistUrl> filterDuplicates() => where((element) =>
+      !element.url.contains(_pixivStacc) &&
+      !element.url.contains(_pawooAccount) &&
+      !element.url.contains(_misskeyAccount) &&
+      !element.url.contains(_twitterIntent)).toList();
 }

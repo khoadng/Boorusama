@@ -26,6 +26,7 @@ import 'package:boorusama/utils/flutter_utils.dart';
 import '../feats/dmails/dmails.dart';
 import '../feats/users/users.dart';
 import 'blacklisted_tags_page.dart';
+import 'danbooru_artist_search_page.dart';
 import 'danbooru_desktop_home_page.dart';
 import 'danbooru_dmail_page.dart';
 import 'danbooru_forum_page.dart';
@@ -171,6 +172,13 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             goToForumPage(context);
           },
         ),
+        SideMenuTile(
+          icon: const Icon(Icons.search_outlined),
+          title: const Text('Artists'),
+          onTap: () {
+            goToArtistSearchPage(context);
+          },
+        ),
         if (widget.config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Icons.favorite_outline),
@@ -257,10 +265,18 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           icon: const Icon(Icons.forum_outlined),
           title: 'forum.forum'.tr(),
         ),
+        HomeNavigationTile(
+          value: 4,
+          controller: controller,
+          constraints: constraints,
+          selectedIcon: const Icon(Icons.search),
+          icon: const Icon(Icons.search_outlined),
+          title: 'Artists',
+        ),
         if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             HomeNavigationTile(
-              value: 4,
+              value: 5,
               controller: controller,
               constraints: constraints,
               selectedIcon: const Icon(Icons.account_box),
@@ -270,7 +286,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           else
             const SizedBox(),
           HomeNavigationTile(
-            value: 5,
+            value: 6,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.favorite),
@@ -278,7 +294,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'Favorites',
           ),
           HomeNavigationTile(
-            value: 6,
+            value: 7,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.collections),
@@ -286,7 +302,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'favorite_groups.favorite_groups'.tr(),
           ),
           HomeNavigationTile(
-            value: 7,
+            value: 8,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.saved_search),
@@ -294,7 +310,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'saved_search.saved_search'.tr(),
           ),
           HomeNavigationTile(
-            value: 8,
+            value: 9,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.tag),
@@ -302,7 +318,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             title: 'blacklisted_tags.blacklisted_tags'.tr(),
           ),
           HomeNavigationTile(
-            value: 9,
+            value: 10,
             controller: controller,
             constraints: constraints,
             selectedIcon: const Icon(Icons.mail),
@@ -312,7 +328,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ],
         const Divider(),
         HomeNavigationTile(
-          value: 10,
+          value: 11,
           controller: controller,
           constraints: constraints,
           selectedIcon: const Icon(Icons.bookmark),
@@ -320,7 +336,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           title: 'sideMenu.your_bookmarks'.tr(),
         ),
         HomeNavigationTile(
-          value: 11,
+          value: 12,
           controller: controller,
           constraints: constraints,
           selectedIcon: const Icon(Icons.list_alt),
@@ -328,7 +344,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           title: 'sideMenu.your_blacklist'.tr(),
         ),
         HomeNavigationTile(
-          value: 12,
+          value: 13,
           controller: controller,
           constraints: constraints,
           selectedIcon: const Icon(Icons.download),
@@ -351,6 +367,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         const ExplorePage(),
         const PoolPage(),
         const DanbooruForumPage(),
+        const DanbooruArtistSearchPage(),
         if (widget.config.hasLoginDetails()) ...[
           if (userId != null)
             UserDetailsPage(
@@ -366,6 +383,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           const DanbooruDmailPage(),
         ] else ...[
           //TODO: hacky way to prevent accessing wrong index... Will need better solution
+          const SizedBox(),
           const SizedBox(),
           const SizedBox(),
           const SizedBox(),

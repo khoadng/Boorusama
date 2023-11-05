@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
@@ -25,10 +26,15 @@ class WebsiteLogo extends StatelessWidget {
       ),
       child: ExtendedImage.network(
         url,
+        clearMemoryCacheIfFailed: false,
         fit: BoxFit.cover,
         loadStateChanged: (state) =>
             state.extendedImageLoadState == LoadState.failed
-                ? const Icon(Icons.arrow_outward)
+                ? const FaIcon(
+                    FontAwesomeIcons.globe,
+                    size: 22,
+                    color: Colors.blue,
+                  )
                 : null,
       ),
     );

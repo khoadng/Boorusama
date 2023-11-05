@@ -15,6 +15,7 @@ class DanbooruArtist extends Equatable {
     required this.otherNames,
     required this.name,
     required this.urls,
+    this.postCount,
   });
 
   factory DanbooruArtist.empty() => DanbooruArtist(
@@ -37,6 +38,7 @@ class DanbooruArtist extends Equatable {
   final bool isBanned;
   final List<String> otherNames;
   final String name;
+  final int? postCount;
   final List<DanbooruArtistUrl> urls;
 
   @override
@@ -50,6 +52,7 @@ class DanbooruArtist extends Equatable {
         otherNames,
         name,
         urls,
+        postCount,
       ];
 }
 
@@ -71,5 +74,14 @@ extension DanbooruArtistX on DanbooruArtist {
         otherNames: otherNames ?? this.otherNames,
         name: name ?? this.name,
         urls: urls,
+        postCount: postCount,
       );
+
+  List<DanbooruArtistUrl> get activeUrls {
+    final urls = this.urls.filterActive().filterDuplicates().toList();
+
+    urls.sort((a, b) => b.url.compareTo(a.url));
+
+    return urls;
+  }
 }

@@ -40,9 +40,9 @@ class ForumCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = generateChipColors(creatorColor, context.themeMode);
 
-    return InkWell(
-      onTap: onTap,
-      child: Card(
+    return Card(
+      child: InkWell(
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: Column(

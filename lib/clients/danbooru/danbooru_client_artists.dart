@@ -10,25 +10,54 @@ import 'types/types.dart';
 const _kArtistParams =
     'id,created_at,name,updated_at,is_deleted,group_name,is_banned,other_names,urls';
 
+const _kArtistWithTagsParams =
+    'id,created_at,name,updated_at,is_deleted,group_name,is_banned,other_names,urls,tag';
+
+enum ArtistOrder {
+  recentCreated,
+  lastUpdated,
+  name,
+  count,
+}
+
 mixin DanbooruClientArtists {
   Dio get dio;
 
   Future<List<ArtistDto>> getArtists({
     String? name,
+    String? url,
+    bool? isDeleted,
+    bool? isBanned,
+    bool? hasTag,
+    bool? includeTag,
+    ArtistOrder? order,
     CancelToken? cancelToken,
+    int? page,
   }) async {
     final response = await dio.get(
       '/artists.json',
       queryParameters: {
-        if (name != null) 'search[name]': name,
-        'only': _kArtistParams,
+        if (name != null) 'search[any_name_matches]': name,
+        if (url != null) 'search[url_matches]': url,
+        if (isDeleted != null) 'search[is_deleted]': isDeleted,
+        if (isBanned != null) 'search[is_banned]': isBanned,
+        if (hasTag != null) 'search[has_tag]': hasTag,
+        if (order != null)
+          'search[order]': switch (order) {
+            ArtistOrder.recentCreated => 'created_at',
+            ArtistOrder.lastUpdated => 'updated_at',
+            ArtistOrder.name => 'name',
+            ArtistOrder.count => 'post_count',
+          },
+        if (page != null) 'page': page,
+        'only': includeTag == true ? _kArtistWithTagsParams : _kArtistParams,
       },
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
+    return Isolate.run(() => (response.data as List)
         .map((item) => ArtistDto.fromJson(item))
-        .toList();
+        .toList());
   }
 
   Future<ArtistDto?> getFirstMatchingArtist({

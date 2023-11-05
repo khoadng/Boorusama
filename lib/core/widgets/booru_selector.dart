@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
@@ -97,9 +98,10 @@ class _BooruSelectorState extends ConsumerState<BooruSelector> {
                                         loadStateChanged: (state) => switch (
                                             state.extendedImageLoadState) {
                                           LoadState.failed => const Card(
-                                              child: SizedBox(
-                                                width: 32,
-                                                height: 32,
+                                              child: FaIcon(
+                                                FontAwesomeIcons.globe,
+                                                size: 22,
+                                                color: Colors.blue,
                                               ),
                                             ),
                                           _ => state.completedWidget,

@@ -135,13 +135,15 @@ class ArtistTagCloud extends ConsumerWidget {
     final async =
         ref.watch(danbooruRelatedTagCosineSimilarityProvider(tagName));
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 180),
-      child: async.when(
-        data: (related) {
-          final tags = related.tags.take(_kTagCloudTotal).toList();
+    return async.when(
+      data: (related) {
+        final tags = related.tags.take(_kTagCloudTotal).toList();
 
-          return FittedBox(
+        if (tags.isEmpty) return const SizedBox.shrink();
+
+        return ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 180),
+          child: FittedBox(
             child: Scatter(
               fillGaps: true,
               delegate: FermatSpiralScatterDelegate(
@@ -159,10 +161,13 @@ class ArtistTagCloud extends ConsumerWidget {
                   ),
               ],
             ),
-          );
-        },
-        error: (error, stackTrace) => const SizedBox.shrink(),
-        loading: () => FittedBox(
+          ),
+        );
+      },
+      error: (error, stackTrace) => const SizedBox.shrink(),
+      loading: () => ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 180),
+        child: FittedBox(
           child: Scatter(
             fillGaps: true,
             delegate: FermatSpiralScatterDelegate(
